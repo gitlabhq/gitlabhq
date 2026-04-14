@@ -76,6 +76,8 @@ Grants the ability to read audit events.
 | ------ | ------ | ------ | ---- |
 | Read | Group | `GET` | `/groups/:id/audit_events` |
 | Read | Group | `GET` | `/groups/:id/audit_events/:audit_event_id` |
+| Read | Instance | `GET` | `/audit_events` |
+| Read | Instance | `GET` | `/audit_events/:id` |
 
 #### Compliance Policy Setting
 
@@ -115,7 +117,7 @@ Grants the ability to read, retry, and update external status checks.
 
 #### External Status Check Service
 
-Grants the ability to create, read, update, and delete external status check services.
+Grants the ability to create, delete, read, and update external status check services.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -124,7 +126,7 @@ Grants the ability to create, read, update, and delete external status check ser
 | Read | Project | `GET` | `/projects/:id/external_status_checks` |
 | Update | Project | `PUT` | `/projects/:id/external_status_checks/:check_id` |
 
-#### Sbom Occurrence
+#### SBOM Occurrence
 
 Grants the ability to read SBOM occurrences.
 
@@ -144,16 +146,21 @@ Grants the ability to read and update security settings.
 
 #### Vulnerability
 
-Grants the ability to create and read vulnerabilities.
+Grants the ability to create, read, and update vulnerabilities.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/vulnerabilities` |
+| Read | Project | `GET` | `/vulnerabilities/:id` |
 | Read | Project | `GET` | `/projects/:id/vulnerabilities` |
+| Update | Project | `POST` | `/vulnerabilities/:id/resolve` |
+| Update | Project | `POST` | `/vulnerabilities/:id/dismiss` |
+| Update | Project | `POST` | `/vulnerabilities/:id/confirm` |
+| Update | Project | `POST` | `/vulnerabilities/:id/revert` |
 
 #### Vulnerability Export
 
-Grants the ability to create vulnerability exports.
+Grants the ability to create and read vulnerability exports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -167,7 +174,7 @@ Grants the ability to create vulnerability exports.
 
 #### Artifact
 
-Grants the ability to delete all artifacts from a project.
+Grants the ability to delete artifacts.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -182,17 +189,9 @@ Grants the ability to read and validate CI/CD configuration.
 | Read | Project | `GET` | `/projects/:id/ci/lint` |
 | Validate | Project | `POST` | `/projects/:id/ci/lint` |
 
-#### Catalog Version
+#### CI Minute
 
-Grants the ability to publish CI catalog versions.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Publish | Project | `POST` | `/projects/:id/catalog/publish` |
-
-#### Ci Minute
-
-Grants the ability to manage CI minutes.
+Grants the ability to create and transfer CI minutes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -201,9 +200,17 @@ Grants the ability to manage CI minutes.
 | Transfer | Group | `PATCH` | `/namespaces/:id/minutes/move/:target_id` |
 | Transfer | User | `PATCH` | `/namespaces/:id/minutes/move/:target_id` |
 
+#### Catalog Version
+
+Grants the ability to publish CI catalog versions.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Publish | Project | `POST` | `/projects/:id/catalog/publish` |
+
 #### Cluster
 
-Grants the ability to create, read, update, and delete clusters.
+Grants the ability to create, delete, read, and update clusters.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -225,7 +232,7 @@ Grants the ability to create, read, update, and delete clusters.
 
 #### Cluster Agent
 
-Grants the ability to create, read, and delete cluster agents.
+Grants the ability to create, delete, and read cluster agents.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -247,7 +254,7 @@ Grants the ability to create, read, and revoke cluster agent tokens.
 
 #### Cluster Agent URL Configuration
 
-Grants the ability to create, read, and delete cluster agent URL configurations.
+Grants the ability to create, delete, and read cluster agent URL configurations.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -256,9 +263,9 @@ Grants the ability to create, read, and delete cluster agent URL configurations.
 | Read | Project | `GET` | `/projects/:id/cluster_agents/:agent_id/url_configurations` |
 | Read | Project | `GET` | `/projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id` |
 
-#### Deployments
+#### Deployment
 
-Grants the ability to approve, create, read, update, and delete deployments.
+Grants the ability to approve, create, delete, read, and update deployments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -274,7 +281,7 @@ Grants the ability to approve, create, read, update, and delete deployments.
 
 #### Environment
 
-Grants the ability to create, read, update, stop, and delete environments.
+Grants the ability to create, delete, read, stop, and update environments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -289,7 +296,7 @@ Grants the ability to create, read, update, stop, and delete environments.
 
 #### Job
 
-Grants the ability to cancel, erase, play, read, and retry jobs.
+Grants the ability to delete, read, run job, and update jobs.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -303,7 +310,7 @@ Grants the ability to cancel, erase, play, read, and retry jobs.
 
 #### Job Artifact
 
-Grants the ability to delete, download, and keep job artifacts from expiring.
+Grants the ability to delete, read, and update job artifacts.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -327,7 +334,7 @@ Grants the ability to read merge trains.
 
 #### Merge Train Merge Request
 
-Grants the ability to add merge requests to merge trains and read merge train status for a specific merge request.
+Grants the ability to add merge requests to merge trains.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -335,7 +342,7 @@ Grants the ability to add merge requests to merge trains and read merge train st
 
 #### Pipeline
 
-Grants the ability to cancel, create, delete, read, and retry pipelines.
+Grants the ability to create, delete, read, and update pipelines.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -355,7 +362,7 @@ Grants the ability to cancel, create, delete, read, and retry pipelines.
 
 #### Pipeline Schedule
 
-Grants the ability to create, delete, play, read, take ownership of, and update pipeline schedules.
+Grants the ability to create, delete, read, and update pipeline schedules.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -376,7 +383,7 @@ Grants the ability to create, delete, play, read, take ownership of, and update 
 
 #### Protected Environment
 
-Grants the ability to create, read, update, and delete protected environments.
+Grants the ability to create, delete, read, and update protected environments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -403,7 +410,7 @@ Grants the ability to create, read, and update pull mirrors.
 
 #### Repository Storage Move
 
-Grants the ability to create and read repository storage moves.
+Grants the ability to create, manage, and read repository storage moves.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -442,7 +449,7 @@ Grants the ability to read and update resource groups.
 
 #### Runner
 
-Grants the ability to create, delete, and read runners.
+Grants the ability to assign, create, and read runners.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -463,7 +470,7 @@ Grants the ability to reset runner registration tokens.
 
 #### Secure File
 
-Grants the ability to create, read, download, and delete secure files.
+Grants the ability to create, delete, and read secure files.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -475,7 +482,7 @@ Grants the ability to create, read, download, and delete secure files.
 
 #### Terraform State
 
-Grants the ability to read and manage Terraform state.
+Grants the ability to create, delete, lock, and read Terraform state.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -485,11 +492,12 @@ Grants the ability to read and manage Terraform state.
 | Lock | Project | `POST` | `/projects/:id/terraform/state/:name/lock` |
 | Lock | Project | `DELETE` | `/projects/:id/terraform/state/:name/lock` |
 | Read | Project | `GET` | `/projects/:id/terraform/state/:name` |
+| Read | Project | `GET` | `/projects/:id/terraform/state_protection_rules` |
 | Read | Project | `GET` | `/projects/:id/terraform/state/:name/versions/:serial` |
 
 #### Trigger
 
-Grants the ability to create, delete, read, and update pipeline triggers.
+Grants the ability to create, delete, read, and update triggers.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -555,7 +563,7 @@ Grants the ability to create code suggestion direct access.
 | ------ | ------ | ------ | ---- |
 | Create | User | `POST` | `/code_suggestions/direct_access` |
 
-#### Code Suggestion Enabled
+#### Code Suggestion Enabled Status
 
 Grants the ability to read code suggestion enabled status.
 
@@ -563,11 +571,19 @@ Grants the ability to read code suggestion enabled status.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `POST` | `/code_suggestions/enabled` |
 
+#### Duo Workflows
+
+Grants the ability to resume duo workflows.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Resume | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
+
 ### Geo resources
 
 #### Geo Node
 
-Grants the ability to read, create, update, and delete Geo nodes.
+Grants the ability to create, delete, read, repair, and update Geo nodes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -582,7 +598,7 @@ Grants the ability to read, create, update, and delete Geo nodes.
 
 #### Geo Site
 
-Grants the ability to read, create, update, and delete Geo sites.
+Grants the ability to create, delete, read, repair, and update Geo sites.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -599,7 +615,7 @@ Grants the ability to read, create, update, and delete Geo sites.
 
 #### Admin Member Role
 
-Grants the ability to create, delete, and read admin member roles.
+Grants the ability to create, delete, read, and update admin member roles.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -619,7 +635,7 @@ Grants the ability to read avatars.
 
 #### Group
 
-Grants the ability to manage groups.
+Grants the ability to archive, create, delete, read, share, transfer, and update groups.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -655,9 +671,19 @@ Grants the ability to create, delete, and read member roles.
 | Read | Group | `GET` | `/groups/:id/member_roles` |
 | Read | Instance | `GET` | `/member_roles` |
 
+#### Namespace
+
+Grants the ability to read namespaces.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/namespaces` |
+| Read | User | `GET` | `/namespaces/:id` |
+| Read | User | `GET` | `/namespaces/:id/exists` |
+
 #### SAML Identity
 
-Grants the ability to read, update, and delete SAML identities.
+Grants the ability to delete, read, and update SAML identities.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -687,7 +713,7 @@ Grants the ability to read templates.
 
 #### Topic
 
-Grants the ability to create, delete, merge, and update topics.
+Grants the ability to create, delete, merge, read, and update topics.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -698,7 +724,7 @@ Grants the ability to create, delete, merge, and update topics.
 
 #### User Activity
 
-Grants the ability to read user activity.
+Grants the ability to read user activities.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -736,9 +762,9 @@ Grants the ability to read user following.
 | ------ | ------ | ------ | ---- |
 | Read | User | `GET` | `/users/:id/following` |
 
-#### User Gpg Key
+#### User GPG Key
 
-Grants the ability to create, read, revoke, and delete user GPG keys.
+Grants the ability to create, delete, read, and revoke user GPG keys.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -769,7 +795,7 @@ Grants the ability to read user project deploy keys.
 
 #### User Status
 
-Grants the ability to read and update user status.
+Grants the ability to read and update user statuses.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -812,7 +838,7 @@ Grants the ability to read Sidekiq metrics.
 
 #### Vulnerability Note
 
-Grants the ability to manage vulnerability notes.
+Grants the ability to create, delete, read, and update vulnerability notes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -826,7 +852,7 @@ Grants the ability to manage vulnerability notes.
 
 #### Todo
 
-Grants the ability to read, create, and complete todos.
+Grants the ability to create, read, and update todos.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -840,7 +866,7 @@ Grants the ability to read, create, and complete todos.
 
 #### Knowledge Graph
 
-Grants the ability to query and read knowledge graph data.
+Grants the ability to read knowledge graph data.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -853,7 +879,7 @@ Grants the ability to query and read knowledge graph data.
 
 #### Container Registry Protection Tag Rule
 
-Grants the ability to create, read, update, and delete container repository protection tag rules.
+Grants the ability to create, delete, read, and update container registry protection tag rules.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -864,7 +890,7 @@ Grants the ability to create, read, update, and delete container repository prot
 
 #### Container Repository
 
-Grants the ability to read and delete container repositories.
+Grants the ability to delete and read container repositories.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -879,7 +905,7 @@ Grants the ability to read and delete container repositories.
 
 #### Container Repository Protection Rule
 
-Grants the ability to create, read, update, and delete container repository protection rules.
+Grants the ability to create, delete, read, and update container repository protection rules.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -890,7 +916,7 @@ Grants the ability to create, read, update, and delete container repository prot
 
 #### Debian Distribution
 
-Grants the ability to read, create, update, and delete Debian distribution packages
+Grants the ability to create, delete, read, and update Debian distributions.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -909,7 +935,7 @@ Grants the ability to read, create, update, and delete Debian distribution packa
 
 #### Dependency Proxy Cache
 
-Grants the ability to delete dependency proxy cache.
+Grants the ability to purge dependency proxy caches.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -917,48 +943,33 @@ Grants the ability to delete dependency proxy cache.
 
 #### Package
 
-Grants the ability to create, delete and read packages.
+Grants the ability to create, delete, and read packages.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/packages/composer` |
 | Create | Project | `POST` | `/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` |
 | Create | Project | `POST` | `/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` |
-| Create | Project | `POST` | `/projects/:id/packages/helm/api/:channel/charts` |
 | Create | Project | `POST` | `/projects/:id/packages/rubygems/api/v1/gems` |
-| Create | Project | `POST` | `/projects/:id/packages/rubygems/api/v1/gems/authorize` |
 | Create | Project | `POST` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls` |
 | Create | Project | `POST` | `/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` |
-| Create | Project | `POST` | `/projects/:id/packages/pypi/authorize` |
 | Create | Project | `POST` | `/projects/:id/packages/pypi` |
-| Create | Project | `POST` | `/projects/:id/packages/helm/api/:channel/charts/authorize` |
-| Create | Project | `PUT` | `/packages/npm/-/package/*package_name/dist-tags/:tag` |
-| Create | Project | `PUT` | `/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` |
-| Create | Project | `PUT` | `/projects/:id/packages/npm/:package_name/authorize` |
-| Create | Project | `PUT` | `/projects/:id/packages/npm/:package_name` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget/authorize` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget/symbolpackage` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget/symbolpackage/authorize` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget/v2` |
-| Create | Project | `PUT` | `/projects/:id/packages/nuget/v2/authorize` |
-| Create | Project | `PUT` | `/projects/:id/packages/terraform/modules/:module_name/:module_system/*module_version/file/authorize` |
+| Create | Project | `POST` | `/projects/:id/packages/helm/api/:channel/charts` |
 | Create | Project | `PUT` | `/projects/:id/packages/terraform/modules/:module_name/:module_system/*module_version/file` |
+| Create | Project | `PUT` | `/projects/:id/packages/nuget/v2` |
+| Create | Project | `PUT` | `/projects/:id/packages/nuget/symbolpackage` |
+| Create | Project | `PUT` | `/projects/:id/packages/nuget` |
+| Create | Project | `PUT` | `/projects/:id/packages/npm/:package_name` |
+| Create | Project | `PUT` | `/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` |
+| Create | Project | `PUT` | `/packages/npm/-/package/*package_name/dist-tags/:tag` |
 | Create | Project | `PUT` | `/projects/:id/packages/maven/*path/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` |
-| Create | Project | `PUT` | `/projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` |
 | Create | Project | `PUT` | `/projects/:id/packages/debian/:file_name` |
-| Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name/authorize` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` |
-| Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
-| Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` |
-| Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
-| Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` |
-| Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` |
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Group | `POST` | `/virtual_registries/packages/maven/:id/*path/upload` |
 | Create | Group | `PUT` | `/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag` |
@@ -1038,6 +1049,7 @@ Grants the ability to create, delete and read packages.
 | Read | Project | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
+| Read | Project | `GET` | `/projects/:id/packages/rubygems/quick/Marshal.4.8/:file_name` |
 | Read | Project | `GET` | `/projects/:id/packages/rubygems/gems/:file_name` |
 | Read | Project | `GET` | `/projects/:id/packages/rubygems/api/v1/dependencies` |
 | Read | Project | `GET` | `/projects/:id/packages/terraform/modules/:module_name/:module_system` |
@@ -1086,7 +1098,7 @@ Grants the ability to read package pipelines.
 
 #### Virtual Registry
 
-Grants the ability to create, read, update, and delete virtual registries.
+Grants the ability to create, delete, read, and update virtual registries.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1145,7 +1157,7 @@ Grants the ability to create, read, update, and delete virtual registries.
 
 #### Virtual Registry Cleanup Policy
 
-Grants the ability to create, read, update, and delete virtual registry cleanup policies.
+Grants the ability to create, delete, read, and update virtual registry cleanup policies.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1204,7 +1216,7 @@ Grants the ability to create, delete, read, and update releases.
 
 #### Release Link
 
-Grants the ability to create, read, update, and delete release links.
+Grants the ability to create, delete, read, and update release links.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1216,7 +1228,7 @@ Grants the ability to create, read, update, and delete release links.
 
 #### Remote Mirror
 
-Grants the ability to create, delete, read, sync, and update remote mirrors.
+Grants the ability to create, delete, read, and update remote mirrors.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1260,11 +1272,38 @@ Grants the ability to create, delete, read, and update snippets.
 | Read | Instance | `GET` | `/snippets/:id/user_agent_detail` |
 | Update | User | `PUT` | `/snippets/:id` |
 
+### Project Model Registry And Experiments resources
+
+#### MLflow Artifact
+
+Grants the ability to read MLflow artifacts.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Project | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow-artifacts/artifacts` |
+| Read | Project | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/:model_version/*file_path` |
+
+#### MLflow Run
+
+Grants the ability to create, delete, log, read, and update MLflow runs.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/create` |
+| Delete | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/delete` |
+| Log | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-metric` |
+| Log | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-parameter` |
+| Log | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-batch` |
+| Read | Project | `GET` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/get` |
+| Read | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/search` |
+| Update | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/update` |
+| Update | Project | `POST` | `/projects/:id/ml/mlflow/api/2.0/mlflow/runs/set-tag` |
+
 ### Project Planning resources
 
 #### Custom Attribute
 
-Grants the ability to read, update, and delete custom attributes.
+Grants the ability to delete, read, and update custom attributes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1304,7 +1343,7 @@ Grants the ability to create, delete, read, and update feature flags.
 
 #### Feature Flag User List
 
-Grants the ability to create, read, update, and delete feature flag user lists.
+Grants the ability to create, delete, read, and update feature flag user lists.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1344,6 +1383,29 @@ Grants the ability to read issue label events.
 | Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events` |
 | Read | Project | `GET` | `/projects/:id/issues/:eventable_id/resource_label_events/:event_id` |
 
+#### Label
+
+Grants the ability to create, delete, promote, read, and update labels.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/labels` |
+| Create | Group | `POST` | `/groups/:id/labels` |
+| Delete | Project | `DELETE` | `/projects/:id/labels` |
+| Delete | Project | `DELETE` | `/projects/:id/labels/:name` |
+| Delete | Group | `DELETE` | `/groups/:id/labels` |
+| Delete | Group | `DELETE` | `/groups/:id/labels/:name` |
+| Promote | Project | `PUT` | `/projects/:id/labels/promote` |
+| Promote | Project | `PUT` | `/projects/:id/labels/:name/promote` |
+| Read | Project | `GET` | `/projects/:id/labels` |
+| Read | Project | `GET` | `/projects/:id/labels/:name` |
+| Read | Group | `GET` | `/groups/:id/labels` |
+| Read | Group | `GET` | `/groups/:id/labels/:name` |
+| Update | Project | `PUT` | `/projects/:id/labels` |
+| Update | Project | `PUT` | `/projects/:id/labels/:name` |
+| Update | Group | `PUT` | `/groups/:id/labels` |
+| Update | Group | `PUT` | `/groups/:id/labels/:name` |
+
 #### Merge Request Label Event
 
 Grants the ability to read merge request label events.
@@ -1363,7 +1425,7 @@ Grants the ability to read service ping data.
 
 #### Usage Data Metric
 
-Grants the ability to read and increment usage data metrics.
+Grants the ability to increment and read usage data metrics.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1373,7 +1435,7 @@ Grants the ability to read and increment usage data metrics.
 
 #### Work Item
 
-Grants the ability to read, write, and delete work items.
+Grants the ability to delete, read, and write work items.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1385,6 +1447,8 @@ Grants the ability to read, write, and delete work items.
 | Delete | Project | `DELETE` | `/projects/:id/snippets/:snippet_id/notes/:note_id/award_emoji/:award_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid/links/:issue_link_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid` |
+| Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id` |
@@ -1396,10 +1460,10 @@ Grants the ability to read, write, and delete work items.
 | Delete | Project | `DELETE` | `/projects/:id/milestones/:milestone_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji/:award_id` |
+| Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id/lists/:list_id` |
-| Delete | Group | `DELETE` | `/groups/:id/labels` |
-| Delete | Group | `DELETE` | `/groups/:id/labels/:name` |
 | Delete | Group | `DELETE` | `/groups/:id/milestones/:milestone_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
@@ -1436,8 +1500,8 @@ Grants the ability to read, write, and delete work items.
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events/:event_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items` |
-| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/projects/:id/-/work_items` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/projects/:id/boards` |
 | Read | Project | `GET` | `/projects/:id/boards/:board_id` |
@@ -1480,8 +1544,8 @@ Grants the ability to read, write, and delete work items.
 | Read | Group | `GET` | `/groups/:id/issues` |
 | Read | Group | `GET` | `/groups/:id/issues_statistics` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items` |
-| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Group | `GET` | `/groups/:id/-/work_items` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -1491,8 +1555,6 @@ Grants the ability to read, write, and delete work items.
 | Read | Group | `GET` | `/groups/:id/boards/:board_id` |
 | Read | Group | `GET` | `/groups/:id/boards/:board_id/lists` |
 | Read | Group | `GET` | `/groups/:id/boards/:board_id/lists/:list_id` |
-| Read | Group | `GET` | `/groups/:id/labels` |
-| Read | Group | `GET` | `/groups/:id/labels/:name` |
 | Read | Group | `GET` | `/groups/:id/milestones` |
 | Read | Group | `GET` | `/groups/:id/milestones/:milestone_id` |
 | Read | Group | `GET` | `/groups/:id/milestones/:milestone_id/issues` |
@@ -1521,22 +1583,23 @@ Grants the ability to read, write, and delete work items.
 | Read | User | `GET` | `/issues_statistics` |
 | Read | User | `GET` | `/issues` |
 | Read | Instance | `GET` | `/issues/:id` |
-| Write | Project | `POST` | `/projects/:id/milestones/:milestone_id/promote` |
-| Write | Project | `POST` | `/projects/:id/milestones` |
-| Write | Project | `POST` | `/projects/:id/wiki_pages/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/notes` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes` |
-| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes` |
-| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions` |
-| Write | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
-| Write | Project | `POST` | `/projects/:id/boards` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_spent_time` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/add_spent_time` |
 | Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_time_estimate` |
-| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/time_estimate` |
+| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/add_spent_time` |
+| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/reset_spent_time` |
+| Write | Project | `POST` | `/namespaces/:id/-/work_items` |
+| Write | Project | `POST` | `/projects/:id/-/work_items` |
+| Write | Project | `POST` | `/projects/:id/boards` |
+| Write | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
+| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions` |
+| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes` |
+| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions` |
+| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes` |
+| Write | Project | `POST` | `/projects/:id/issues/:noteable_id/notes` |
+| Write | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/notes` |
+| Write | Project | `POST` | `/projects/:id/snippets/:noteable_id/notes` |
+| Write | Project | `POST` | `/projects/:id/wiki_pages/:noteable_id/notes` |
+| Write | Project | `POST` | `/projects/:id/milestones` |
+| Write | Project | `POST` | `/projects/:id/milestones/:milestone_id/promote` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/award_emoji` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/notes/:note_id/award_emoji` |
 | Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/award_emoji` |
@@ -1546,22 +1609,23 @@ Grants the ability to read, write, and delete work items.
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/links` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/time_estimate` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_time_estimate` |
+| Write | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/time_estimate` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/clone` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/move` |
 | Write | Project | `POST` | `/projects/:id/issues` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_spent_time` |
 | Write | Project | `POST` | `/projects/:id/issues/:issue_iid/add_spent_time` |
-| Write | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
-| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | Write | Project | `PUT` | `/projects/:id/boards/:board_id` |
-| Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id` |
-| Write | Project | `PUT` | `/projects/:id/merge_requests/:noteable_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/notes/:note_id` |
 | Write | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
-| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/merge_requests/:noteable_id/notes/:note_id` |
 | Write | Project | `PUT` | `/projects/:id/issues/:issue_iid/reorder` |
-| Write | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
 | Write | Project | `PUT` | `/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Write | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Write | Project | `PUT` | `/projects/:id/milestones/:milestone_id` |
 | Write | Group | `POST` | `/groups/:id/epics/:epic_iid/related_epics` |
 | Write | Group | `POST` | `/groups/:id/(-/)epics` |
@@ -1574,21 +1638,20 @@ Grants the ability to read, write, and delete work items.
 | Write | Group | `POST` | `/groups/:id/milestones` |
 | Write | Group | `POST` | `/groups/:id/epics/:epic_iid/award_emoji` |
 | Write | Group | `POST` | `/groups/:id/epics/:epic_iid/notes/:note_id/award_emoji` |
+| Write | Group | `POST` | `/namespaces/:id/-/work_items` |
+| Write | Group | `POST` | `/groups/:id/-/work_items` |
 | Write | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions` |
 | Write | Group | `POST` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
 | Write | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
-| Write | Group | `POST` | `/groups/:id/labels` |
-| Write | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
-| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/boards/:board_id` |
-| Write | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
-| Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes/:note_id` |
-| Write | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
-| Write | Group | `PUT` | `/groups/:id/labels/:name` |
+| Write | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
+| Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
+| Write | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
+| Write | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
+| Write | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
-| Write | Group | `PUT` | `/groups/:id/labels` |
+| Write | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Write | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid` |
 
 ### Projects resources
@@ -1618,7 +1681,7 @@ Grants the ability to create, delete, read, update, and verify pages domains.
 
 #### Project
 
-Grants the ability to archive, create, delete, fork, import members, mark as forked, read, recalculate storage, restore, share, star, transfer, trigger repository housekeeping, unarchive, unstar, update, and view various project attributes including contributed projects, forks, groups, invited groups, languages, page access, share locations, starrers, starred projects, storage, transfer locations, and users, as well as delete project group links.
+Grants the ability to archive, create, delete, fork, read, read starred, share, transfer, and update projects.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1714,13 +1777,20 @@ Grants the ability to create, delete, protect, and read branches.
 | Read | Project | `GET` | `/projects/:id/repository/branches/:branch` |
 | Read | Project | `HEAD` | `/projects/:id/repository/branches/:branch` |
 
-#### Commit
+#### Code
 
-Grants the ability to create, read, and update commits.
+Grants the ability to download, push, and read code.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Create | Project | `POST` | `/projects/:id/repository/commits/authorize` |
+| Read | Project | `GET` | `/projects/:id/(-/)search/semantic` |
+
+#### Commit
+
+Grants the ability to create, delete, read, and update commits.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/projects/:id/repository/commits` |
 | Create | Project | `POST` | `/projects/:id/repository/commits/:sha/cherry_pick` |
 | Create | Project | `POST` | `/projects/:id/repository/commits/:sha/revert` |
@@ -1744,7 +1814,7 @@ Grants the ability to create, read, and update commits.
 
 #### Merge Request
 
-Grants the ability to approve, reset approvals, and unapprove merge requests.
+Grants the ability to approve, create, delete, merge, read, and update merge requests.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1809,7 +1879,7 @@ Grants the ability to create, delete, read, and update merge request approval ru
 
 #### Merge Request Approval State
 
-Grants the ability to read merge request approval state.
+Grants the ability to read merge request approval states.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1830,7 +1900,7 @@ Grants the ability to create, delete, and read merge request dependencies.
 
 #### Protected Branch
 
-Grants the ability to create, delete, read, and update protected branches.
+Grants the ability to read and update protected branches.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1843,7 +1913,7 @@ Grants the ability to create, delete, read, and update protected branches.
 
 #### Protected Tag
 
-Grants the ability to create, delete, and read protected tags.
+Grants the ability to read protected tags.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1867,7 +1937,7 @@ Grants the ability to create, delete, read, and update push rules.
 
 #### Repository
 
-Grants the ability to create and read repositories.
+Grants the ability to create, delete, read, and update repositories.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1912,7 +1982,7 @@ Grants the ability to create, delete, and read repository tags.
 
 #### Tag
 
-Grants the ability to create, delete, and read tags.
+Grants the ability to protect tags.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1933,7 +2003,7 @@ Grants the ability to use global search functionality.
 
 #### Search Migration
 
-Grants the ability to use global search functionality.
+Grants the ability to read search migrations.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1942,7 +2012,7 @@ Grants the ability to use global search functionality.
 
 #### Zoekt Index
 
-Grants the ability to update Zoekt indexes
+Grants the ability to update Zoekt indexes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1950,7 +2020,7 @@ Grants the ability to update Zoekt indexes
 
 #### Zoekt Namespace
 
-Grants the ability to create, read, update, and delete Zoekt namespace permissions
+Grants the ability to create, delete, and update Zoekt namespaces.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1969,9 +2039,22 @@ Grants the ability to read Zoekt nodes.
 
 ### Subscription And Licensing resources
 
+#### GitLab Subscription
+
+Grants the ability to create, read, and update GitLab subscriptions.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Group | `POST` | `/namespaces/:id/gitlab_subscription` |
+| Create | User | `POST` | `/namespaces/:id/gitlab_subscription` |
+| Read | Group | `GET` | `/namespaces/:id/gitlab_subscription` |
+| Read | User | `GET` | `/namespaces/:id/gitlab_subscription` |
+| Update | Group | `PUT` | `/namespaces/:id/gitlab_subscription` |
+| Update | User | `PUT` | `/namespaces/:id/gitlab_subscription` |
+
 #### License
 
-Grants the ability to read, create, and delete licenses.
+Grants the ability to create, delete, and read licenses.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -1994,7 +2077,7 @@ Grants the ability to refresh billable users for licenses.
 
 #### Access Request
 
-Grants the ability to approve, delete, and read access requests.
+Grants the ability to approve, create, delete, and read access requests.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2020,7 +2103,7 @@ Grants the ability to read and update application appearance settings.
 
 #### Deploy Key
 
-Grants the ability to create, read, update, enable, and delete deploy keys.
+Grants the ability to create, delete, enable, read, and update deploy keys.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2035,7 +2118,7 @@ Grants the ability to create, read, update, enable, and delete deploy keys.
 
 #### Deploy Token
 
-Grants the ability to create, read, and delete deploy tokens.
+Grants the ability to create, delete, and read deploy tokens.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2051,7 +2134,7 @@ Grants the ability to create, read, and delete deploy tokens.
 
 #### Enterprise User
 
-Grants the ability to read, update, delete, and disable two-factor authentication for enterprise users.
+Grants the ability to delete, disable two factor, read, and update enterprise users.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2071,7 +2154,7 @@ Grants the ability to read experiments.
 
 #### Invitation
 
-Grants the ability to create, read, update, and delete invitations.
+Grants the ability to create, delete, read, and update invitations.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2086,7 +2169,7 @@ Grants the ability to create, read, update, and delete invitations.
 
 #### Job Token Scope
 
-Grants the ability to read and update job token scope.
+Grants the ability to read and update job token scopes.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2095,7 +2178,7 @@ Grants the ability to read and update job token scope.
 
 #### Job Token Scope Allowlist
 
-Grants the ability to create, read, and delete job token scope allowlist entries.
+Grants the ability to create, delete, and read job token scope allowlists.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2108,7 +2191,7 @@ Grants the ability to create, read, and delete job token scope allowlist entries
 
 #### LDAP Group Link
 
-Grants the ability to create, read, and delete LDAP group links.
+Grants the ability to create, delete, and read LDAP group links.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2120,7 +2203,7 @@ Grants the ability to create, read, and delete LDAP group links.
 
 #### LDAP Group Sync
 
-Grants the ability to run LDAP group sync.
+Grants the ability to read LDAP group syncs.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2168,7 +2251,7 @@ Grants the ability to read instance metadata.
 
 #### Notification Setting
 
-Grants the ability to manage notification settings.
+Grants the ability to read and update notification settings.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2181,7 +2264,7 @@ Grants the ability to manage notification settings.
 
 #### OAuth Application
 
-Grants the ability to create, read, update, renew secret, and delete OAuth applications.
+Grants the ability to create, delete, read, and renew secret OAuth applications.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2192,7 +2275,7 @@ Grants the ability to create, read, update, renew secret, and delete OAuth appli
 
 #### Personal Access Token
 
-Grants the ability to read, create, revoke, and rotate personal access tokens.
+Grants the ability to create, read, revoke, and rotate personal access tokens.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2204,7 +2287,7 @@ Grants the ability to read, create, revoke, and rotate personal access tokens.
 
 #### Plan Limit
 
-Grants the ability to view and modify plan limits.
+Grants the ability to read and update plan limits.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2221,7 +2304,7 @@ Grants the ability to read provisioned users.
 
 #### Resource Access Token
 
-Grants the ability to create, read, rotate, and delete resource access tokens.
+Grants the ability to create, delete, read, and rotate resource access tokens.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2240,7 +2323,7 @@ Grants the ability to create, read, rotate, and delete resource access tokens.
 
 #### SAML Group Link
 
-Grants the ability to create, read, and delete SAML group links.
+Grants the ability to create, delete, and read SAML group links.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2257,18 +2340,9 @@ Grants the ability to read SAML users.
 | ------ | ------ | ------ | ---- |
 | Read | Group | `GET` | `/groups/:id/saml_users` |
 
-#### SSH Key
+#### SCIM Identity
 
-Grants the ability to view SSH keys by ID or fingerprint.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | Instance | `GET` | `/keys/:id` |
-| Read | Instance | `GET` | `/keys` |
-
-#### Scim Identity
-
-Grants the ability to read, update, and delete SCIM identities.
+Grants the ability to delete, read, and update SCIM identities.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2276,6 +2350,15 @@ Grants the ability to read, update, and delete SCIM identities.
 | Read | Group | `GET` | `/groups/:id/scim/identities` |
 | Read | Group | `GET` | `/groups/:id/scim/:uid` |
 | Update | Group | `PATCH` | `/groups/:id/scim/:uid` |
+
+#### SSH Key
+
+Grants the ability to read SSH keys.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/keys/:id` |
+| Read | Instance | `GET` | `/keys` |
 
 #### Service Account
 
@@ -2320,7 +2403,7 @@ Grants the ability to read usage data queries.
 
 #### User
 
-Grants the ability to read, follow, and unfollow users.
+Grants the ability to follow, read, and unfollow users.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2339,7 +2422,7 @@ Grants the ability to read user counts.
 
 #### User Email
 
-Grants the ability to create, read, and delete user emails.
+Grants the ability to create, delete, and read user emails.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2350,7 +2433,7 @@ Grants the ability to create, read, and delete user emails.
 
 #### User SSH Key
 
-Grants the ability to create, read, and delete user SSH keys.
+Grants the ability to create, delete, and read user SSH keys.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2393,7 +2476,7 @@ Grants the ability to create Bitbucket Server imports.
 
 #### Bulk Import
 
-Grants the ability to create, read, and cancel bulk imports.
+Grants the ability to cancel, create, and read bulk imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2430,7 +2513,7 @@ Grants the ability to mark database migrations.
 
 #### GitHub Gist Import
 
-Grants the ability to import gists from GitHub
+Grants the ability to create GitHub gist imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2438,7 +2521,7 @@ Grants the ability to import gists from GitHub
 
 #### GitHub Import
 
-Grants the ability to create and cancel GitHub project imports
+Grants the ability to cancel and create GitHub imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2448,7 +2531,7 @@ Grants the ability to create and cancel GitHub project imports
 
 #### Group Export
 
-Grants the ability to start and download group exports.
+Grants the ability to download and start group exports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2457,26 +2540,24 @@ Grants the ability to start and download group exports.
 
 #### Group Import
 
-Grants the ability to authorize and create group imports.
+Grants the ability to create group imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Authorize | Instance | `POST` | `/groups/import/authorize` |
 | Create | Instance | `POST` | `/groups/import` |
 
 #### Placeholder Reassignment
 
-Grants the ability to authorize, create, and read placeholder reassignments.
+Grants the ability to create and read placeholder reassignments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Authorize | Group | `POST` | `/groups/:id/placeholder_reassignments/authorize` |
 | Create | Group | `POST` | `/groups/:id/placeholder_reassignments` |
 | Read | Group | `GET` | `/groups/:id/placeholder_reassignments` |
 
 #### Project Export
 
-Grants the ability to create, read, and download project exports.
+Grants the ability to create, download, and read project exports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2486,11 +2567,10 @@ Grants the ability to create, read, and download project exports.
 
 #### Project Import
 
-Grants the ability to authorize and create project imports.
+Grants the ability to create and read project imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Authorize | Instance | `POST` | `/projects/import/authorize` |
 | Create | Project | `POST` | `/projects/:id/import/git` |
 | Create | Group | `POST` | `/projects/import` |
 | Create | Group | `POST` | `/projects/remote-import` |
@@ -2502,7 +2582,7 @@ Grants the ability to authorize and create project imports.
 
 #### Project Relation Export
 
-Grants the ability to create, read, and download project relation exports.
+Grants the ability to create, download, and read project relation exports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2512,17 +2592,16 @@ Grants the ability to create, read, and download project relation exports.
 
 #### Project Relation Import
 
-Grants the ability to authorize, create, and read project relation imports.
+Grants the ability to create and read project relation imports.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Authorize | Instance | `POST` | `/projects/import-relation/authorize` |
 | Create | Project | `POST` | `/projects/import-relation` |
 | Read | Project | `GET` | `/projects/:id/relation-imports` |
 
 #### Webhook
 
-Grants the ability to create, read, update, test, and delete webhooks.
+Grants the ability to create, delete, read, test, and update webhooks.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2548,7 +2627,7 @@ Grants the ability to create, read, update, test, and delete webhooks.
 
 #### Webhook Custom Header
 
-Grants the ability to update and delete webhook custom headers.
+Grants the ability to delete and update webhook custom headers.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2570,7 +2649,7 @@ Grants the ability to resend webhook events.
 
 #### Webhook URL variable
 
-Grants the ability to update and delete webhook URL variables.
+Grants the ability to delete and update webhook URL variables.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2585,11 +2664,10 @@ Grants the ability to update and delete webhook URL variables.
 
 #### Markdown Upload
 
-Grants the ability to authorize, create, delete, and read Markdown uploads.
+Grants the ability to create, delete, and read Markdown uploads.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
-| Authorize | Project | `POST` | `/projects/:id/uploads/authorize` |
 | Create | Project | `POST` | `/projects/:id/uploads` |
 | Delete | Project | `DELETE` | `/projects/:id/uploads/:upload_id` |
 | Delete | Project | `DELETE` | `/projects/:id/uploads/:secret/:filename` |
@@ -2604,7 +2682,7 @@ Grants the ability to authorize, create, delete, and read Markdown uploads.
 
 #### Wiki
 
-Grants the ability to create, delete, edit, read, and update wikis.
+Grants the ability to create, delete, read, and update wikis.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -2621,49 +2699,23 @@ Grants the ability to create, delete, edit, read, and update wikis.
 | Update | Group | `POST` | `/groups/:id/wikis/attachments` |
 | Update | Group | `PUT` | `/groups/:id/wikis/:slug` |
 
-## Unavailable endpoints
+## Always accessible endpoints
 
-The following endpoints cannot authenticate with fine-grained tokens.
-These endpoints use alternative authorization mechanisms, such as
-job token policies or resource-specific access controls.
+The following public endpoints do not require authentication.
+Fine-grained token scope checks are not applied to these endpoints.
 
 | Method | Path |
 | ------ | ---- |
-| `POST` | `/container_registry_event/events` |
-| `GET` | `/feature_flags/unleash/:project_id` |
-| `GET` | `/feature_flags/unleash/:project_id/client/features` |
-| `POST` | `/feature_flags/unleash/:project_id/client/metrics` |
-| `POST` | `/feature_flags/unleash/:project_id/client/register` |
-| `GET` | `/feature_flags/unleash/:project_id/features` |
-| `GET` | `/geo/proxy` |
-| `GET` | `/groups/:id/-/packages/npm/*package_name` |
-| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` |
-| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` |
 | `GET` | `/groups/:id/-/packages/nuget/index` |
 | `GET` | `/groups/:id/-/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
 | `GET` | `/groups/:id/-/packages/nuget/v2` |
 | `GET` | `/groups/:id/-/packages/nuget/v2/$metadata` |
-| `GET` | `/internal/orbit/project/:project_id/info` |
-| `GET` | `/internal/orbit/project/:project_id/repository/archive` |
-| `GET` | `/internal/orbit/project/:project_id/repository/commits` |
-| `GET` | `/orbit/mcp` |
-| `POST` | `/orbit/mcp` |
 | `GET` | `/packages/conan/v1/ping` |
-| `GET` | `/packages/npm/*package_name` |
-| `POST` | `/packages/npm/-/npm/v1/security/advisories/bulk` |
-| `POST` | `/packages/npm/-/npm/v1/security/audits/quick` |
-| `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` |
-| `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` |
 | `GET` | `/projects/:id/packages/conan/v1/ping` |
-| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` |
-| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/audits/quick` |
 | `GET` | `/projects/:id/packages/nuget/index` |
 | `GET` | `/projects/:id/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
 | `GET` | `/projects/:id/packages/nuget/v2` |
 | `GET` | `/projects/:id/packages/nuget/v2/$metadata` |
-| `POST` | `/projects/:id/repository/files/:file_path/authorize` |
-| `PUT` | `/projects/:id/repository/files/:file_path/authorize` |
-| `POST` | `/projects/:id/terraform/state/:name/authorize` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/FindPackagesById\(\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(Id='*package_name',Version='*package_version'\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(\)` |
@@ -2677,5 +2729,181 @@ job token policies or resource-specific access controls.
 | `GET` | `/templates/licenses/:name` |
 | `GET` | `/topics` |
 | `GET` | `/topics/:id` |
-| `GET` | `/usage_data/metric_definitions` |
-| `GET` | `/usage_data/metric_definitions` |
+
+## Unavailable endpoints
+
+The following endpoints cannot authenticate with fine-grained tokens.
+These endpoints use alternative authentication mechanisms that are
+incompatible with personal access tokens.
+
+| Method | Path | Reason |
+| ------ | ---- | ------ |
+| `GET` | `/api/scim/:version/application/Groups` | SCIM token |
+| `POST` | `/api/scim/:version/application/Groups` | SCIM token |
+| `GET` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `PATCH` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `PUT` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `DELETE` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `GET` | `/api/scim/:version/application/Users` | SCIM token |
+| `POST` | `/api/scim/:version/application/Users` | SCIM token |
+| `GET` | `/api/scim/:version/application/Users/:id` | SCIM token |
+| `PATCH` | `/api/scim/:version/application/Users/:id` | SCIM token |
+| `DELETE` | `/api/scim/:version/application/Users/:id` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/Users` | SCIM token |
+| `POST` | `/api/scim/:version/groups/:group/Users` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/Users/:id` | SCIM token |
+| `PATCH` | `/api/scim/:version/groups/:group/Users/:id` | SCIM token |
+| `DELETE` | `/api/scim/:version/groups/:group/Users/:id` | SCIM token |
+| `GET` | `/chaos/test` | Internal testing |
+| `POST` | `/container_registry_event/events` | Container registry event token |
+| `GET` | `/feature_flags/unleash/:project_id` | Unleash token |
+| `GET` | `/feature_flags/unleash/:project_id/client/features` | Unleash token |
+| `POST` | `/feature_flags/unleash/:project_id/client/metrics` | Unleash token |
+| `POST` | `/feature_flags/unleash/:project_id/client/register` | Unleash token |
+| `GET` | `/feature_flags/unleash/:project_id/features` | Unleash token |
+| `GET` | `/geo/proxy` | Geo proxy |
+| `POST` | `/geo/proxy_git_ssh/info_refs_receive_pack` | GitLab Shell token |
+| `POST` | `/geo/proxy_git_ssh/info_refs_upload_pack` | GitLab Shell token |
+| `POST` | `/geo/proxy_git_ssh/receive_pack` | GitLab Shell token |
+| `POST` | `/geo/proxy_git_ssh/upload_pack` | GitLab Shell token |
+| `GET` | `/geo/repositories/:gl_repository/pipeline_refs` | Geo node JWT |
+| `GET` | `/geo/retrieve/:replicable_name/:replicable_id` | Geo node JWT |
+| `POST` | `/geo/status` | Geo node JWT |
+| `GET` | `/groups/:id/-/packages/npm/*package_name` | External registry redirect |
+| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` | External registry redirect |
+| `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` | External registry redirect |
+| `POST` | `/groups/:id/placeholder_reassignments/authorize` | Workhorse pre-authorization |
+| `POST` | `/groups/import/authorize` | Workhorse pre-authorization |
+| `GET` | `/internal/agents/agentk/agent_info` | Kubernetes agent JWT |
+| `GET` | `/internal/agents/agentw/agent_info` | Kubernetes agent JWT |
+| `GET` | `/internal/agents/agentw/authorize_user_access` | Kubernetes agent JWT |
+| `GET` | `/internal/agents/agentw/server_config` | Kubernetes agent JWT |
+| `POST` | `/internal/allowed` | GitLab Shell token |
+| `GET` | `/internal/authorized_certs` | GitLab Shell token |
+| `GET` | `/internal/authorized_keys` | GitLab Shell token |
+| `GET` | `/internal/autoflow/repository_info` | Kubernetes agent JWT |
+| `GET` | `/internal/check` | GitLab Shell token |
+| `GET` | `/internal/ci/agents/runner/info` | Kubernetes agent JWT |
+| `GET` | `/internal/ci/agents/runnerc/info` | Kubernetes agent JWT |
+| `PUT` | `/internal/ci/job_router/jobs/:id` | CI job token |
+| `GET` | `/internal/ci/job_router/runner_controllers/job_admission` | Kubernetes agent JWT |
+| `POST` | `/internal/dast/site_validations/:id/transition` | CI job token |
+| `GET` | `/internal/discover` | GitLab Shell token |
+| `POST` | `/internal/error_tracking/allowed` | Error tracking token |
+| `GET` | `/internal/gitaly/object_pool_members` | GitLab Shell token |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:id` | Subscription portal JWT |
+| `PUT` | `/internal/gitlab_subscriptions/namespaces/:id` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription` | Subscription portal JWT |
+| `POST` | `/internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription` | Subscription portal JWT |
+| `PUT` | `/internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription` | Subscription portal JWT |
+| `POST` | `/internal/gitlab_subscriptions/namespaces/:id/minutes` | Subscription portal JWT |
+| `PATCH` | `/internal/gitlab_subscriptions/namespaces/:id/minutes/move/:target_id` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:id/owners` | Subscription portal JWT |
+| `POST` | `/internal/gitlab_subscriptions/namespaces/:id/provision` | Subscription portal JWT |
+| `POST` | `/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases/:add_on_name` | Subscription portal JWT |
+| `PUT` | `/internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations` | Subscription portal JWT |
+| `DELETE` | `/internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:namespace_id/user_permissions/:user_id` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/users/:id` | Subscription portal JWT |
+| `PUT` | `/internal/gitlab_subscriptions/users/:user_id/credit_card_validation` | Subscription portal JWT |
+| `POST` | `/internal/jobs/:id/x_ray/dependencies` | CI job token |
+| `POST` | `/internal/jobs/:id/x_ray/scan` | CI job token |
+| `POST` | `/internal/kubernetes/agent_configuration` | Kubernetes agent JWT |
+| `POST` | `/internal/kubernetes/agent_events` | Kubernetes agent JWT |
+| `POST` | `/internal/kubernetes/authorize_proxy_user` | Kubernetes agent JWT |
+| `GET` | `/internal/kubernetes/modules/remote_development/prerequisites` | Kubernetes agent JWT |
+| `POST` | `/internal/kubernetes/modules/remote_development/reconcile` | Kubernetes agent JWT |
+| `PUT` | `/internal/kubernetes/modules/starboard_vulnerability` | Kubernetes agent JWT |
+| `GET` | `/internal/kubernetes/modules/starboard_vulnerability/policies_configuration` | Kubernetes agent JWT |
+| `POST` | `/internal/kubernetes/modules/starboard_vulnerability/scan_result` | Kubernetes agent JWT |
+| `GET` | `/internal/kubernetes/receptive_agents` | Kubernetes agent JWT |
+| `POST` | `/internal/kubernetes/usage_metrics` | Kubernetes agent JWT |
+| `GET` | `/internal/kubernetes/verify_project_access` | Kubernetes agent JWT |
+| `GET` | `/internal/lfs` | GitLab Shell token |
+| `POST` | `/internal/lfs_authenticate` | GitLab Shell token |
+| `POST` | `/internal/mail_room/*mailbox_type` | Mailroom token |
+| `GET` | `/internal/observability/project/:id/read/analytics` | Workhorse verification |
+| `GET` | `/internal/observability/project/:id/read/logs` | Workhorse verification |
+| `GET` | `/internal/observability/project/:id/read/metrics` | Workhorse verification |
+| `GET` | `/internal/observability/project/:id/read/services` | Workhorse verification |
+| `GET` | `/internal/observability/project/:id/read/traces` | Workhorse verification |
+| `POST` | `/internal/observability/project/:id/write/logs` | Workhorse verification |
+| `POST` | `/internal/observability/project/:id/write/metrics` | Workhorse verification |
+| `POST` | `/internal/observability/project/:id/write/traces` | Workhorse verification |
+| `GET` | `/internal/orbit/project/:project_id/info` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/archive` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/changed_paths` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/commits` | Orbit internal token |
+| `POST` | `/internal/orbit/project/:project_id/repository/list_blobs` | Orbit internal token |
+| `POST` | `/internal/orbit/redaction` | Orbit internal token |
+| `GET` | `/internal/pages` | GitLab Pages token |
+| `GET` | `/internal/pages/status` | GitLab Pages token |
+| `POST` | `/internal/personal_access_token` | GitLab Shell token |
+| `POST` | `/internal/post_receive` | GitLab Shell token |
+| `POST` | `/internal/pre_receive` | GitLab Shell token |
+| `POST` | `/internal/search/zoekt/:uuid/callback` | GitLab Shell token |
+| `POST` | `/internal/search/zoekt/:uuid/heartbeat` | GitLab Shell token |
+| `POST` | `/internal/secrets_manager/audit_logs` | OpenBao token |
+| `POST` | `/internal/shellhorse/git_audit_event` | GitLab shared secret |
+| `POST` | `/internal/two_factor_config` | GitLab Shell token |
+| `POST` | `/internal/two_factor_manual_otp_check` | GitLab Shell token |
+| `POST` | `/internal/two_factor_push_otp_check` | GitLab Shell token |
+| `POST` | `/internal/two_factor_recovery_codes` | GitLab Shell token |
+| `POST` | `/internal/workhorse/authorize_upload` | Workhorse verification |
+| `GET` | `/job` | CI job token |
+| `GET` | `/job/allowed_agents` | CI job token |
+| `PUT` | `/jobs/:id` | CI job token |
+| `GET` | `/jobs/:id/artifacts` | CI job token |
+| `POST` | `/jobs/:id/artifacts` | CI job token |
+| `POST` | `/jobs/:id/artifacts/authorize` | CI job token |
+| `POST` | `/jobs/:id/sbom_scans` | CI job token |
+| `POST` | `/jobs/:id/sbom_scans/:sbom_digest` | CI job token |
+| `GET` | `/jobs/:id/sbom_scans/:sbom_scan_id` | CI job token |
+| `POST` | `/jobs/:id/sbom_scans/authorize` | CI job token |
+| `PATCH` | `/jobs/:id/trace` | CI job token |
+| `POST` | `/jobs/request` | Runner token |
+| `GET` | `/orbit/mcp` | Orbit internal token |
+| `POST` | `/orbit/mcp` | Orbit internal token |
+| `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse pre-authorization |
+| `GET` | `/packages/npm/*package_name` | External registry redirect |
+| `POST` | `/packages/npm/-/npm/v1/security/advisories/bulk` | External registry redirect |
+| `POST` | `/packages/npm/-/npm/v1/security/audits/quick` | External registry redirect |
+| `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` | CI trigger token |
+| `POST` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/authorize` | Workhorse pre-authorization |
+| `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` | Compliance external control token |
+| `POST` | `/projects/:id/issues/:issue_iid/metric_images/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/debian/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/packages/helm/api/:channel/charts/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/maven/*path/:file_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` | External registry redirect |
+| `POST` | `/projects/:id/packages/npm/-/npm/v1/security/audits/quick` | External registry redirect |
+| `PUT` | `/projects/:id/packages/npm/:package_name/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/nuget/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/nuget/symbolpackage/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/nuget/v2/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/packages/pypi/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/packages/rpm/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/packages/rubygems/api/v1/gems/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/packages/terraform/modules/:module_name/:module_system/*module_version/file/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/repository/commits/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/repository/files/:file_path/authorize` | Workhorse pre-authorization |
+| `PUT` | `/projects/:id/repository/files/:file_path/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/terraform/state/:name/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/:id/uploads/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/import-relation/authorize` | Workhorse pre-authorization |
+| `POST` | `/projects/import/authorize` | Workhorse pre-authorization |
+| `POST` | `/runners` | Runner token |
+| `DELETE` | `/runners` | Runner token |
+| `DELETE` | `/runners/managers` | Runner token |
+| `POST` | `/runners/reset_authentication_token` | Runner token |
+| `GET` | `/runners/router/discovery` | Runner token |
+| `POST` | `/runners/verify` | Runner token |
+| `GET` | `/usage_data/metric_definitions` | Usage data token |

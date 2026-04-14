@@ -1,0 +1,4 @@
+---
+name: delete_timelog
+description: Grants the ability to delete a timelog. Timelogs track time spent on
+  issuables such as issues and merge requests.

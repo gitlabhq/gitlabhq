@@ -7,12 +7,12 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import groupCountsQuery from '../graphql/queries/group_counts.query.graphql';
 import {
-  GROUP_DASHBOARD_TABS,
-  FIRST_TAB_ROUTE_NAMES,
-  SORT_OPTION_UPDATED,
-  SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  FILTERED_SEARCH_TERM_KEY,
+  FIRST_TAB_ROUTE_NAMES,
+  GROUP_DASHBOARD_TABS,
+  SORT_OPTION_CREATED,
+  SORT_OPTION_UPDATED,
 } from '../constants';
 
 export default {
@@ -64,5 +64,6 @@ export default {
     :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
     :should-update-active-tab-count-from-tab-query="false"
     :event-tracking="$options.eventTracking"
+    sort-storage-key="groups"
   />
 </template>

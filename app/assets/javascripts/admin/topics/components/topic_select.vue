@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__, n__ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';

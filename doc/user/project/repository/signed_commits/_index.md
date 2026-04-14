@@ -31,11 +31,11 @@ marked **Verified** in the GitLab UI.
 > The committer and author fields are distinct in Git. The author writes the commit, and the committer
 > applies it. Commit signing verifies only the committer's identity.
 
-GitLab supports the following commit signing methods:
+GitLab verifies signatures on commits and tags. The following signing methods are supported:
 
-- [SSH key](ssh.md)
-- [GPG key](gpg.md)
-- [Personal X.509 certificate](x509.md)
+- [SSH key](ssh.md): Commits and tags
+- [GPG key](gpg.md): Commits only
+- [X.509 certificate](x509.md): Commits and tags
 
 ## Verify commits
 

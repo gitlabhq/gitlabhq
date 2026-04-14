@@ -100,7 +100,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webh
           hook
           visit webhooks_path
 
-          expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)
+          expect { click_link 'Delete' }.to change { ProjectHook.count }.by(-1)
         end
 
         it 'from webhook edit page' do
@@ -108,7 +108,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webh
           visit webhooks_path
           click_link 'Edit'
 
-          expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)
+          expect { click_link 'Delete' }.to change { ProjectHook.count }.by(-1)
         end
       end
     end

@@ -47,6 +47,7 @@ module API
                   tags %w[job_router runner]
                 end
                 route_setting :authentication
+                route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
                 get '/info' do
                   status 200
                   {

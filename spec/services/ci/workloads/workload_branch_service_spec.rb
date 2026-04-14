@@ -77,11 +77,12 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
         allow(project.repository).to receive(:create_ref).and_return(nil)
       end
 
-      it 'returns an error response' do
+      it 'returns an error response with ref_creation_failed reason' do
         result = execute
 
         expect(result).to be_error
         expect(result.message).to eq('Error in git ref creation')
+        expect(result.reason).to eq(:ref_creation_failed)
       end
     end
 
@@ -92,11 +93,12 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
                                       .and_return(true)
       end
 
-      it 'returns an error response' do
+      it 'returns an error response with ref_already_exists reason' do
         result = execute
 
         expect(result).to be_error
         expect(result.message).to eq('Ref already exists')
+        expect(result.reason).to eq(:ref_already_exists)
       end
     end
 
@@ -105,11 +107,12 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
         allow(project.repository).to receive(:commit).and_return(nil)
       end
 
-      it 'returns an error response' do
+      it 'returns an error response with source_ref_not_found reason' do
         result = execute
 
         expect(result).to be_error
         expect(result.message).to eq('Source ref not found')
+        expect(result.reason).to eq(:source_ref_not_found)
       end
     end
 
@@ -119,7 +122,7 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
                                       .and_raise(Gitlab::Git::CommandError.new('git error'))
       end
 
-      it 'tracks the exception and returns an error response' do
+      it 'tracks the exception and returns an error response with git_command_error reason' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
                                           .with(instance_of(Gitlab::Git::CommandError))
 
@@ -127,6 +130,7 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
 
         expect(result).to be_error
         expect(result.message).to eq('Failed to create workload ref')
+        expect(result.reason).to eq(:git_command_error)
       end
     end
   end

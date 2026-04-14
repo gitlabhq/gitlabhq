@@ -17,6 +17,10 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
     allow_next_instance_of(Gitlab::ImportExport::VersionSaver) do |saver|
       allow(saver).to receive(:save).and_return(true)
     end
+
+    allow_next_instance_of(Gitlab::ImportExport::Project::MaxIidsSaver) do |saver|
+      allow(saver).to receive(:save).and_return(true)
+    end
   end
 
   describe '#execute' do
@@ -37,6 +41,7 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
         'Parallel project export started',
         'Parallel project export - Gitlab::ImportExport::VersionSaver saver started',
         'Parallel project export - Gitlab::ImportExport::Project::ExportedRelationsMerger saver started',
+        'Parallel project export - Gitlab::ImportExport::Project::MaxIidsSaver saver started',
         'Parallel project export finished successfully'
       ]
       messages.each do |message|
@@ -78,6 +83,12 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
         end
 
         service.execute
+      end
+    end
+
+    describe '#exporters' do
+      it 'includes MaxIidsSaver' do
+        expect(service.send(:exporters)).to include(an_instance_of(Gitlab::ImportExport::Project::MaxIidsSaver))
       end
     end
 

@@ -1,4 +1,4 @@
-import { omitBy, isNil } from 'lodash';
+import { omitBy, isNil } from 'lodash-es';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { FETCH_TYPES } from '../constants';

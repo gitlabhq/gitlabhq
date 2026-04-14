@@ -164,6 +164,67 @@ RSpec.shared_examples 'graphql issue list request spec' do
       end
     end
 
+    context 'when filtering by workItemTypeIds' do
+      let_it_be(:incident) { create(:incident, project: issue_a.project) }
+
+      # Override base_params so the iids constraint in issues_spec.rb doesn't
+      # interfere with type-based filtering (no-op for project/issues_spec.rb).
+      let(:base_params) { {} }
+
+      context 'with a single work item type id' do
+        let(:issue_filter_params) { { workItemTypeIds: [incident.work_item_type.to_global_id.to_s] } }
+
+        it 'returns only issues of that type' do
+          post_query
+
+          expect(issue_ids).to contain_exactly(incident.to_global_id.to_s)
+        end
+      end
+
+      context 'with multiple work item type ids' do
+        let(:issue_filter_params) do
+          {
+            workItemTypeIds: [
+              incident.work_item_type.to_global_id.to_s,
+              issue_a.work_item_type.to_global_id.to_s
+            ]
+          }
+        end
+
+        it 'returns issues of all specified types' do
+          post_query
+
+          expect(issue_ids).to include(incident.to_global_id.to_s, issue_a.to_global_id.to_s)
+        end
+      end
+
+      context 'when both types and workItemTypeIds are provided' do
+        let(:issue_filter_params) do
+          { types: [:INCIDENT], workItemTypeIds: [incident.work_item_type.to_global_id.to_s] }
+        end
+
+        it 'returns a mutually exclusive filter error' do
+          post_query
+
+          expect_graphql_errors_to_include(
+            'Only one of [issueTypes, workItemTypeIds] arguments is allowed at the same time.'
+          )
+        end
+      end
+
+      context 'when workItemTypeIds exceeds the maximum limit' do
+        let(:issue_filter_params) do
+          { workItemTypeIds: (1..101).map { |id| "gid://gitlab/WorkItems::Type/#{id}" } }
+        end
+
+        it 'returns an error' do
+          post_query
+
+          expect_graphql_errors_to_include('workItemTypeIds is too long (maximum is 100)')
+        end
+      end
+    end
+
     context 'when filtering by reaction emoji' do
       using RSpec::Parameterized::TableSyntax
 

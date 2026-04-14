@@ -3,6 +3,7 @@ import { GlButton, GlCard } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { exploreCatalogIndexPath } from '~/lib/utils/path_helpers/explore';
 import {
   CATALOG_TRACKING_LABEL,
   GITLAB_UNIVERSITY_TRACKING_LABEL,
@@ -51,7 +52,7 @@ const cards = {
   },
   ci_cd_catalog_card: {
     id: 'ci_cd_catalog',
-    buttonLink: '/explore/catalog',
+    buttonLink: exploreCatalogIndexPath(),
     buttonText: s__('Pipelines|Explore CI/CD Catalog'),
     description: s__(
       'Pipelines|Explore CI components in the CI/CD Catalog to see if they suit your requirements.',

@@ -9,6 +9,7 @@ import Diagram from '~/content_editor/extensions/diagram';
 import CodeSuggestion from '~/content_editor/extensions/code_suggestion';
 import CodeBlockWrapper from '~/content_editor/components/wrappers/code_block.vue';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
+import * as contentEditorUtils from '~/content_editor/services/utils';
 import { emitEditorEvent, createTestEditor, mockChainedCommands } from '../../test_utils';
 
 // Disabled due to eslint reporting errors for inline snapshots
@@ -214,13 +215,10 @@ describe('content/components/wrappers/code_block', () => {
       contentEditor = {
         codeSuggestionsConfig: {
           canSuggest: true,
-          line: { new_line: 5 },
-          lines: [{ new_line: 5 }],
+          lineRange: { start: 5, end: 5 },
           showPopover: false,
-          diffFile: {
-            view_path:
-              '/gitlab-org/gitlab-test/-/blob/468abc807a2b2572f43e72c743b76cee6db24025/README.md',
-          },
+          blobRawPath:
+            '/gitlab-org/gitlab-test/-/raw/468abc807a2b2572f43e72c743b76cee6db24025/README.md',
         },
       };
 
@@ -417,6 +415,37 @@ describe('content/components/wrappers/code_block', () => {
   </span>
 </code>
 `);
+      });
+    });
+
+    describe('when blobRawPath is not provided', () => {
+      beforeEach(async () => {
+        contentEditorUtils.memoizedGet.mockClear();
+        contentEditor = {
+          codeSuggestionsConfig: {
+            canSuggest: true,
+            lineRange: { start: 5, end: 5 },
+            showPopover: false,
+            blobRawPath: null,
+          },
+        };
+
+        createWrapper(nodeAttrs);
+        await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      });
+
+      it('still shows the suggestion block header', () => {
+        expect(wrapper.findByTestId('code-suggestion-box').exists()).toBe(true);
+        expect(findCodeSuggestionBoxText()).toContain('Suggested change');
+      });
+
+      it('does not show expand/shrink controls', () => {
+        expect(wrapper.findByTestId('decrement-line-start').exists()).toBe(false);
+        expect(wrapper.findByTestId('increment-line-end').exists()).toBe(false);
+      });
+
+      it('does not attempt to fetch file content', () => {
+        expect(contentEditorUtils.memoizedGet).not.toHaveBeenCalled();
       });
     });
 

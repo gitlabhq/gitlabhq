@@ -225,6 +225,7 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
     # - Jira shared secret (:sharedSecret)
+    # - IAM login and consent challenges and verifiers (:login_challenge, :login_verifier, :consent_challenge, :consent_verifier)
     # - Titles, bodies, and descriptions for notes, issues, etc.
     #
     # NOTE: It is **IMPORTANT** to also update labkit's filter when
@@ -264,6 +265,10 @@ module Gitlab
       question
       SAMLResponse
       selectedText
+      login_challenge
+      login_verifier
+      consent_challenge
+      consent_verifier
     ]
 
     # Enable escaping HTML in JSON.
@@ -363,6 +368,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/observability.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "page_bundles/operations.css"
+    config.assets.precompile << "page_bundles/orbit.css"
     config.assets.precompile << "page_bundles/organizations.css"
     config.assets.precompile << "page_bundles/paginated_table.css"
     config.assets.precompile << "page_bundles/personal_homepage.css"

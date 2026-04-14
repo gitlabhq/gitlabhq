@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/projects/new/event_hub';
 import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';

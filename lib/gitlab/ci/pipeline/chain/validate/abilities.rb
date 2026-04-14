@@ -49,7 +49,7 @@ module Gitlab
             private
 
             def allowed_to_create_pipeline?
-              can?(current_user, :create_pipeline, project)
+              can?(current_user, :create_pipeline, command)
             end
 
             def allowed_to_run_pipeline?

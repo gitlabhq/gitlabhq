@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
+RSpec.describe JiraConnect::EventsController, :with_current_organization, feature_category: :integrations do
   shared_examples 'verifies asymmetric JWT token' do
     context 'when token is valid' do
       include_context 'valid JWT token'
@@ -106,11 +106,11 @@ RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
     it 'saves the correct values' do
       subject
 
-      installation = JiraConnectInstallation.find_by_client_key(client_key)
+      installation = JiraConnectInstallation.find_by_client_key_and_organization_id(client_key, current_organization.id)
 
       expect(installation.shared_secret).to eq(shared_secret)
       expect(installation.base_url).to eq('https://test.atlassian.net')
-      expect(installation.organization_id).to eq(Current.organization.id)
+      expect(installation.organization_id).to eq(current_organization.id)
       expect(installation.display_url).to eq('https://custom.example.com')
     end
 
@@ -134,7 +134,16 @@ RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
     end
 
     context 'when an installation already exists' do
-      let_it_be(:installation) { create(:jira_connect_installation, base_url: base_url, client_key: client_key, shared_secret: shared_secret, display_url: display_url) }
+      let_it_be(:installation) do
+        create(
+          :jira_connect_installation,
+          base_url: base_url,
+          client_key: client_key,
+          shared_secret: shared_secret,
+          display_url: display_url,
+          organization: current_organization
+        )
+      end
 
       it 'validates the JWT token in authorization header and returns 200 without creating a new installation', :aggregate_failures do
         expect { subject }.not_to change { JiraConnectInstallation.count }
@@ -286,7 +295,7 @@ RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
   end
 
   describe '#uninstalled' do
-    let_it_be(:installation) { create(:jira_connect_installation) }
+    let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
 
     let(:client_key) { installation.client_key }
     let(:jwt_token) { Atlassian::Jwt.encode({ iss: client_key, qsh: 'test' }, installation.shared_secret) }

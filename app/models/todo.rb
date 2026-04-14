@@ -107,7 +107,7 @@ class Todo < ApplicationRecord
     preload(:target, :author, :note, group: :route, project: [:route, :group, { namespace: [:route, :owner] }, :project_setting])
   end
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
-  scope :for_internal_notes, -> { joins(:note).where(note: { confidential: true }) }
+  scope :for_internal_notes, -> { joins(:note).where(note: { internal: true }) }
   scope :with_preloaded_user, -> { preload(:user) }
   scope :without_banned_user, -> { joins("LEFT JOIN banned_users ON todos.author_id = banned_users.user_id").where(banned_users: { user_id: nil }) }
   scope :pending_without_hidden, -> { pending.without_banned_user }

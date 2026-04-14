@@ -31,8 +31,26 @@ RSpec.describe GitlabSchema do
     expect(connection).to eq(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
   end
 
-  it 'sets an appropriate validation timeout' do
-    expect(described_class.validate_timeout).to be <= 0.2.seconds
+  describe 'validate_timeout' do
+    context 'when graphql_increased_validate_timeout is disabled' do
+      before do
+        stub_feature_flags(graphql_increased_validate_timeout: false)
+      end
+
+      it 'returns the default timeout' do
+        expect(described_class.validate_timeout).to eq(0.2.seconds)
+      end
+    end
+
+    context 'when graphql_increased_validate_timeout is enabled' do
+      before do
+        stub_feature_flags(graphql_increased_validate_timeout: true)
+      end
+
+      it 'returns the increased timeout' do
+        expect(described_class.validate_timeout).to eq(0.5.seconds)
+      end
+    end
   end
 
   describe '.execute' do

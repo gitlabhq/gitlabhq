@@ -87,18 +87,6 @@ RSpec.describe Ci::PipelineCreationMetricsWorker, feature_category: :continuous_
     end
 
     context 'when tracking pipeline metrics' do
-      it 'increments pipeline created counter' do
-        counter = instance_double(Prometheus::Client::Counter)
-        allow(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipelines_created_counter).and_return(counter)
-
-        expect(counter).to receive(:increment).with(
-          source: pipeline.source,
-          partition_id: pipeline.partition_id
-        )
-
-        perform
-      end
-
       context 'when pipeline has a name', :snowplow do
         it 'tracks snowplow event' do
           issue_url = 'https://gitlab.com/gitlab-org/gitlab/-/issues/424281'

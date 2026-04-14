@@ -91,6 +91,7 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Settings'),
         nav_sub_items: [
           _('General'),
+          (_('Service accounts') if Gitlab.ee?),
           _('Integrations'),
           _('Webhooks'),
           _('Access tokens'),
@@ -100,7 +101,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Packages and registries'),
           _('Monitor'),
           s_('UsageQuota|Usage quotas')
-        ]
+        ].compact
       }
     ].compact
   end
@@ -110,6 +111,7 @@ RSpec.shared_context 'project navbar structure' do
   let(:group_owned_structure) do
     structure.last[:nav_sub_items] = [
       _('General'),
+      (_('Service accounts') if Gitlab.ee?),
       _('Integrations'),
       _('Webhooks'),
       _('Access tokens'),
@@ -120,7 +122,7 @@ RSpec.shared_context 'project navbar structure' do
       _('Monitor'),
       _('Analytics'),
       s_('UsageQuota|Usage quotas')
-    ]
+    ].compact
     structure
   end
 end
@@ -183,7 +185,7 @@ RSpec.shared_context 'group navbar structure' do
     [
       {
         nav_item: _("Manage"),
-        nav_sub_items: [_("Activity"), _("Members"), _("Labels")]
+        nav_sub_items: [_("Activity"), _("Members"), _("Labels"), _("Achievements")]
       },
       {
         nav_item: _("Plan"),
@@ -219,7 +221,7 @@ RSpec.shared_context 'dashboard navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: _("Issues"),
+        nav_item: _("Work items"),
         nav_sub_items: []
       },
       {

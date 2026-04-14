@@ -379,6 +379,35 @@ describe('Observability App Component', () => {
     });
   });
 
+  describe('Query parameter forwarding', () => {
+    it('appends allowed query params from the current URL to the iframe src', async () => {
+      await setupComponent({
+        o11yUrl: 'https://o11y.gitlab.com',
+        path: 'traces-explorer',
+        queryParams: { startTime: '2024-01-01', endTime: '2024-01-02', search: 'myservice' },
+      });
+
+      const iframeSrc = wrapper.find('iframe').attributes('src');
+      expect(iframeSrc).toContain('startTime=2024-01-01');
+      expect(iframeSrc).toContain('endTime=2024-01-02');
+      expect(iframeSrc).toContain('search=myservice');
+    });
+
+    it('builds a clean iframe URL when no query params are present', async () => {
+      delete window.location;
+      window.location = new URL('https://gitlab.com/group/project/-/observability');
+
+      await setupComponent({
+        o11yUrl: 'https://o11y.gitlab.com',
+        path: 'traces-explorer',
+      });
+
+      expect(wrapper.find('iframe').attributes('src')).toBe(
+        'https://o11y.gitlab.com/traces-explorer',
+      );
+    });
+  });
+
   describe('Snapshots', () => {
     it('matches snapshot while loading', async () => {
       await setupComponent();

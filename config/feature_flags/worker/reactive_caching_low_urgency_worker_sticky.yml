@@ -1,0 +1,10 @@
+---
+name: reactive_caching_low_urgency_worker_sticky
+description: Change the ReactiveCaching::LowUrgencyWorker data_consistency to sticky
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/593777
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227552
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593771
+milestone: '18.11'
+group: group::database frameworks
+type: worker
+default_enabled: false

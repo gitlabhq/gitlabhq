@@ -23,6 +23,42 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
 
         expect(response).to be_redirect
       end
+
+      it 'tracks the project_repository' do
+        expect { request }.to change { project.reload.project_repository }.from(nil).to(be_present)
+      end
+
+      it 'redirects to project path without an alert' do
+        request
+
+        expect(response).to redirect_to(project_path(project))
+        expect(flash[:alert]).to be_nil
+      end
+
+      context 'when repository creation fails' do
+        before do
+          allow_next_found_instance_of(Project) do |instance|
+            allow(instance).to receive(:create_repository).and_return(false)
+          end
+        end
+
+        it 'redirects to project path with an alert' do
+          request
+
+          expect(response).to redirect_to(project_path(project))
+          expect(flash[:alert]).to eq(_('Failed to create repository'))
+        end
+
+        it 'does not call track_project_repository' do
+          expect(project).not_to receive(:track_project_repository)
+
+          request
+        end
+
+        it 'does not create project_repository records' do
+          expect { request }.not_to change { project.reload.project_repository }.from(nil)
+        end
+      end
     end
 
     context 'when repository already exists' do
@@ -31,6 +67,24 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
         request
 
         expect(response).to be_redirect
+      end
+
+      it 'redirects to project path' do
+        request
+
+        expect(response).to redirect_to(project_path(project))
+      end
+
+      it 'does not call create_repository' do
+        expect(project).not_to receive(:create_repository)
+
+        request
+      end
+
+      it 'does not call track_project_repository' do
+        expect(project).not_to receive(:track_project_repository)
+
+        request
       end
     end
   end

@@ -5,11 +5,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import SmartInterval from '~/smart_interval';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import App from '~/merge_requests/reports/components/app.vue';
 import routes from '~/merge_requests/reports/routes';
 
 jest.mock('ee_else_ce/vue_merge_request_widget/services/mr_widget_service', () => ({
-  fetchInitialData: jest.fn().mockResolvedValue({ data: { current_user: {} } }),
+  fetchInitialData: jest.fn().mockReturnValue(new Promise(() => {})),
 }));
 
 jest.mock('~/smart_interval');
@@ -28,7 +29,37 @@ describe('Merge request reports App component', () => {
   const findCodeQualityProvider = () => wrapper.findComponent({ name: 'CodeQualityProvider' });
   const findCodeQualityNavItem = () => wrapper.findComponent({ name: 'CodeQualityNavItem' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findStatusIcon = () => wrapper.findComponent(StatusIcon);
+  const findKeepAlive = () => wrapper.findByTestId('keep-alive');
   const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
+  const findStatusMessage = () => wrapper.findByTestId('status-message');
+
+  const expectProvidersToExist = (exists) => {
+    expect(findSecurityScansProvider().exists()).toBe(exists);
+    expect(findLicenseComplianceProvider().exists()).toBe(exists);
+    expect(findCodeQualityProvider().exists()).toBe(exists);
+  };
+
+  const expectNavItemsToExist = (exists) => {
+    expect(findSecurityNavItem().exists()).toBe(exists);
+    expect(findLicenseComplianceNavItem().exists()).toBe(exists);
+    expect(findCodeQualityNavItem().exists()).toBe(exists);
+  };
+
+  const mockNoPipeline = () => {
+    MRWidgetService.fetchInitialData.mockResolvedValue({
+      data: { current_user: {} },
+    });
+  };
+
+  const mockPipeline = (active) => {
+    MRWidgetService.fetchInitialData.mockResolvedValue({
+      data: {
+        current_user: {},
+        pipeline: { active, iid: 1, details: { status: {} } },
+      },
+    });
+  };
 
   const createComponent = () => {
     gl.mrWidgetData = {
@@ -45,6 +76,9 @@ describe('Merge request reports App component', () => {
         iid: '1',
       },
       stubs: {
+        'keep-alive': {
+          template: '<div data-testid="keep-alive"><slot /></div>',
+        },
         SecurityScansProvider: {
           name: 'SecurityScansProvider',
           template: '<div><slot /></div>',
@@ -77,91 +111,122 @@ describe('Merge request reports App component', () => {
     gl.mrWidgetData = {};
   });
 
-  describe('rendering', () => {
-    it('shows loading icon when mr is not loaded', () => {
+  describe('when no MR data', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('shows loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('does not render router-view', () => {
       expect(findRouterView().exists()).toBe(false);
     });
 
-    it('shows router-view when mr is loaded', async () => {
+    it('does not render providers', () => {
+      expectProvidersToExist(false);
+    });
+
+    it('does not render nav items', () => {
+      expectNavItemsToExist(false);
+    });
+  });
+
+  describe('when no pipeline exists', () => {
+    beforeEach(async () => {
+      mockNoPipeline();
       createComponent();
-
       await waitForPromises();
+    });
 
-      expect(findLoadingIcon().exists()).toBe(false);
+    it('shows status message', () => {
+      expect(findStatusMessage().text()).toContain(
+        'No pipelines started yet. Results will appear when a pipeline completes.',
+      );
+    });
+
+    it('does not show loading status icon', () => {
+      expect(findStatusIcon().exists()).toBe(false);
+    });
+
+    it('does not render router-view', () => {
+      expect(findRouterView().exists()).toBe(false);
+    });
+
+    it('does not render providers', () => {
+      expectProvidersToExist(false);
+    });
+
+    it('does not render nav items', () => {
+      expectNavItemsToExist(false);
+    });
+  });
+
+  describe('when pipeline is running', () => {
+    beforeEach(async () => {
+      mockPipeline(true);
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('shows status message', () => {
+      expect(findStatusMessage().text()).toContain('Waiting for pipeline to complete');
+    });
+
+    it('shows loading status icon', () => {
+      expect(findStatusIcon().props('isLoading')).toBe(true);
+    });
+
+    it('does not render router-view', () => {
+      expect(findRouterView().exists()).toBe(false);
+    });
+
+    it('does not render providers', () => {
+      expectProvidersToExist(false);
+    });
+
+    it('does not render nav items', () => {
+      expectNavItemsToExist(false);
+    });
+  });
+
+  describe('when pipeline is complete', () => {
+    beforeEach(async () => {
+      mockPipeline(false);
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders router-view', () => {
       expect(findRouterView().exists()).toBe(true);
     });
-  });
 
-  describe('security scans', () => {
-    it('renders SecurityScansProvider when mr is loaded', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findSecurityScansProvider().exists()).toBe(true);
+    it('keeps the report view mounted so users do not re-fetch data when switching tabs', () => {
+      expect(findKeepAlive().exists()).toBe(true);
+      expect(findKeepAlive().findComponent({ name: 'RouterView' }).exists()).toBe(true);
     });
 
-    it('renders SecurityNavItem inside provider', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findSecurityNavItem().exists()).toBe(true);
-    });
-  });
-
-  describe('license compliance', () => {
-    it('renders LicenseComplianceProvider when mr is loaded', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findLicenseComplianceProvider().exists()).toBe(true);
+    it('does not show status message', () => {
+      expect(findStatusMessage().isVisible()).toBe(false);
     });
 
-    it('renders LicenseComplianceNavItem inside provider', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findLicenseComplianceNavItem().exists()).toBe(true);
-    });
-  });
-
-  describe('code quality', () => {
-    it('renders CodeQualityProvider when mr is loaded', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findCodeQualityProvider().exists()).toBe(true);
+    it('does not show loading icon', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('renders CodeQualityNavItem inside provider', async () => {
-      createComponent();
+    it('renders providers', () => {
+      expectProvidersToExist(true);
+    });
 
-      await waitForPromises();
-
-      expect(findCodeQualityNavItem().exists()).toBe(true);
+    it('renders nav items', () => {
+      expectNavItemsToExist(true);
     });
   });
 
   describe('MR data polling', () => {
-    const mockActivePipeline = () => {
-      MRWidgetService.fetchInitialData.mockResolvedValue({
-        data: { current_user: {}, pipeline: { active: true, details: { status: {} } } },
-      });
-    };
-
-    afterEach(() => {
-      MRWidgetService.fetchInitialData.mockResolvedValue({ data: { current_user: {} } });
-    });
-
     it('starts polling when pipeline is active', async () => {
-      mockActivePipeline();
+      mockPipeline(true);
       createComponent();
       await waitForPromises();
 
@@ -176,7 +241,20 @@ describe('Merge request reports App component', () => {
       );
     });
 
-    it('does not start polling when pipeline is not active', async () => {
+    it('starts polling when no pipeline exists', async () => {
+      mockNoPipeline();
+      createComponent();
+      await waitForPromises();
+
+      expect(SmartInterval).toHaveBeenCalledWith(
+        expect.objectContaining({
+          callback: expect.any(Function),
+        }),
+      );
+    });
+
+    it('does not start polling when pipeline is complete', async () => {
+      mockPipeline(false);
       createComponent();
       await waitForPromises();
 
@@ -186,7 +264,7 @@ describe('Merge request reports App component', () => {
     it('cleans up polling on destroy', async () => {
       const destroy = jest.fn();
       SmartInterval.mockImplementation(() => ({ destroy }));
-      mockActivePipeline();
+      mockPipeline(true);
       createComponent();
       await waitForPromises();
 

@@ -53,6 +53,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
 
       it_behaves_like 'work item listing endpoint'
       it_behaves_like 'work item listing filters'
+      it_behaves_like 'work item listing sorting'
 
       it 'supports unescaped namespace full paths' do
         get api("/namespaces/#{namespace_record.full_path}/-/work_items", user)
@@ -128,6 +129,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
 
     it_behaves_like 'work item listing endpoint'
     it_behaves_like 'work item listing filters'
+    it_behaves_like 'work item listing sorting'
 
     it 'supports unescaped project full paths' do
       get api("/projects/#{project.full_path}/-/work_items", user)
@@ -143,7 +145,8 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
       end
     end
 
-    context 'with N+1 query prevention' do
+    context 'with N+1 query prevention',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37950' do
       let(:api_request_path) { "/projects/#{project.id}/-/work_items" }
 
       it_behaves_like 'work item N+1 query prevention'

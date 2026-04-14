@@ -47,7 +47,7 @@ You can find all those directories listed in the [Linux package configuration do
 - [Modify password complexity requirements](../administration/settings/sign_up_restrictions.md#modify-password-complexity-requirements).
 - [Restrict SSH key technologies and require minimum key lengths](ssh_keys_restrictions.md).
 - [Restrict account creation with sign up restrictions](../administration/settings/sign_up_restrictions.md).
-- [Send email confirmation on sign-up](user_email_confirmation.md)
+- [Send email confirmation on new account creation](user_email_confirmation.md)
 - [Enforce two-factor authentication](two_factor_authentication.md) to require users to [enable two-factor authentication](../user/profile/account/two_factor_authentication.md).
 - [Restrict logins from multiple IPs](../administration/reporting/ip_addr_restrictions.md).
 - [How to reset a user password](reset_user_password.md).

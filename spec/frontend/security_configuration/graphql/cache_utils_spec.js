@@ -115,8 +115,8 @@ describe('EE - Security configuration graphQL cache utils', () => {
 
       expect(mutationResponse).toEqual({
         __typename: 'Mutation',
-        securityTrackedRefsUntrack: {
-          __typename: 'SecurityTrackedRefsUntrackPayload',
+        securityRefsUntrack: {
+          __typename: 'SecurityRefsUntrackPayload',
           errors: [],
           untrackedRefIds: refIds,
         },
@@ -155,7 +155,7 @@ describe('EE - Security configuration graphQL cache utils', () => {
         variables: { fullPath: 'gitlab/project' },
       })(mockCache, {
         data: {
-          securityTrackedRefsUntrack: {
+          securityRefsUntrack: {
             untrackedRefIds: refsToUntrack,
           },
         },
@@ -179,7 +179,7 @@ describe('EE - Security configuration graphQL cache utils', () => {
         variables: { fullPath: 'gitlab/project' },
       })(mockCache, {
         data: {
-          securityTrackedRefsUntrack: {
+          securityRefsUntrack: {
             untrackedRefIds: refsToUntrack,
           },
         },

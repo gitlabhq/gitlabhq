@@ -1080,6 +1080,32 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
     end
 
+    context 'when transfer succeeds' do
+      let_it_be_with_reload(:group) { create(:group, :nested) }
+      let_it_be(:target) { create(:group) }
+
+      before do
+        group.add_owner(user)
+        target.add_owner(user)
+      end
+
+      it 'sends transfer notification email with the old path' do
+        old_path = group.full_path
+
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:group_was_transferred).with(group, old_path)
+        end
+
+        transfer_service.execute(target)
+      end
+
+      it 'does not send notification when transfer fails' do
+        expect(NotificationService).not_to receive(:new)
+
+        transfer_service.execute(group.parent)
+      end
+    end
+
     context 'with namespace_commit_emails concerns' do
       let_it_be(:group, reload: true) { create(:group) }
       let_it_be(:target) { create(:group) }
@@ -1110,6 +1136,89 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
           transfer_service.execute(target)
         end
+      end
+    end
+  end
+
+  describe '#schedule_async_transfer' do
+    let_it_be_with_reload(:group) { create(:group, :public) }
+    let_it_be(:new_parent_group) { create(:group, :public) }
+    let!(:new_parent_group_member) { create(:group_member, :owner, group: new_parent_group, user: user) }
+
+    subject(:schedule) { transfer_service.schedule_async_transfer(new_parent_group) }
+
+    it 'returns true and enqueues the worker' do
+      expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
+        group.id,
+        new_parent_group.id,
+        user.id
+      )
+
+      expect(schedule).to be true
+    end
+
+    it 'transitions the group to transfer_scheduled' do
+      allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+
+      schedule
+
+      expect(group.reload.state).to eq('transfer_scheduled')
+    end
+
+    it 'stores transfer_target_parent_id in state_metadata' do
+      allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+
+      schedule
+
+      metadata = group.reload.state_metadata
+      expect(metadata['transfer_target_parent_id']).to eq(new_parent_group.id)
+      expect(metadata['transfer_scheduled_by_user_id']).to eq(user.id)
+      expect(metadata['transfer_scheduled_at']).to be_present
+    end
+
+    context 'when transferring to root (nil parent)' do
+      subject(:schedule) { transfer_service.schedule_async_transfer(nil) }
+
+      it 'enqueues the worker with nil new_parent_group_id' do
+        expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
+          group.id,
+          nil,
+          user.id
+        )
+
+        expect(schedule).to be true
+      end
+
+      it 'stores nil transfer_target_parent_id' do
+        allow(Namespaces::Groups::TransferWorker).to receive(:perform_async)
+
+        schedule
+
+        expect(group.reload.state_metadata['transfer_target_parent_id']).to be_nil
+      end
+    end
+
+    context 'when the state transition fails' do
+      before do
+        group.update_column(:state, Group.states[:creation_in_progress])
+      end
+
+      it 'returns false and does not enqueue the worker' do
+        expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+        expect(schedule).to be false
+      end
+    end
+
+    context 'when the group is already in transfer_scheduled state' do
+      before do
+        group.schedule_transfer!(transition_user: user)
+      end
+
+      it 'returns false and does not enqueue the worker' do
+        expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+        expect(schedule).to be false
       end
     end
   end

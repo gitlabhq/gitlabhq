@@ -16,6 +16,19 @@ module API
       def find_remote_mirror
         user_project.remote_mirrors.find(params[:mirror_id])
       end
+
+      def build_mirror_params(declared, url:)
+        result = declared.dup
+        return result unless result.key?(:host_keys)
+
+        host_keys = result.delete(:host_keys)
+        converter = ::RemoteMirrors::HostKeysConverter.new(host_keys, url: url)
+        result[:ssh_known_hosts] = converter.to_ssh_known_hosts!
+
+        result
+      rescue ::RemoteMirrors::HostKeysConverter::InvalidHostKeyError => e
+        render_api_error!(e.message, 400)
+      end
     end
 
     params do
@@ -100,13 +113,16 @@ module API
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
           documentation: { example: false }
         use :mirror_branches_setting
+        use :host_key_params
       end
       route_setting :authorization, permissions: :create_remote_mirror, boundary_type: :project
       post ':id/remote_mirrors' do
+        mirror_params = build_mirror_params(declared_params(include_missing: false), url: params[:url])
+
         service = ::RemoteMirrors::CreateService.new(
           user_project,
           current_user,
-          declared_params(include_missing: false)
+          mirror_params
         )
 
         result = service.execute
@@ -134,15 +150,17 @@ module API
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
           documentation: { example: false }
         use :mirror_branches_setting
+        use :host_key_params
       end
       route_setting :authorization, permissions: :update_remote_mirror, boundary_type: :project
       put ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
+        mirror_params = build_mirror_params(declared_params(include_missing: false), url: mirror.url)
 
         service = ::RemoteMirrors::UpdateService.new(
           user_project,
           current_user,
-          declared_params(include_missing: false)
+          mirror_params
         )
 
         result = service.execute(mirror)

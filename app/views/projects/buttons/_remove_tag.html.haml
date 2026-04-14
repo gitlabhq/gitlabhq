@@ -4,8 +4,9 @@
 - title = s_('TagsPage|Delete tag')
 - if protected_tag?(project, tag)
   - title = s_('TagsPage|Delete protected tag')
-  - if !can?(current_user, :maintainer_access, project)
-    - title = s_('TagsPage|Only a project maintainer or owner can delete a protected tag')
+  - can_delete = can?(current_user, :delete_protected_tag, project) && user_access(project).can_create_tag?(tag.name)
+  - unless can_delete
+    - title = s_('TagsPage|You do not have permission to delete this protected tag')
     - disabled = true
 
 = render Pajamas::ButtonComponent.new(variant: :default, icon: 'remove', button_options: { class: "js-delete-tag-button", 'aria-label': s_('TagsPage|Delete tag'), title: title, disabled: disabled, data: { toggle: 'tooltip', container: 'body', path: project_tag_path(@project, tag.name), tag_name: tag.name, is_protected: protected_tag?(project, tag).to_s } })

@@ -1,0 +1,8 @@
+---
+table: knowledge_graph_enabled_namespaces
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_knowledge_graph_enabled_namespaces
+    dedup_by:
+      - id

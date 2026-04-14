@@ -663,7 +663,7 @@ module Gitlab
 
       def gitaly_user(user)
         Gitlab::Git::User
-          .from_gitlab(Gitlab::Auth::Identity.invert_composite_identity(user))
+          .from_gitlab(Gitlab::Auth::Identity.resolve_composite_identity_actor(user))
           .to_gitaly
       end
 

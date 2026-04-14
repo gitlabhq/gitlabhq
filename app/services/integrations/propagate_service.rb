@@ -74,18 +74,11 @@ module Integrations
     end
 
     def create_integration_for_projects_without_integration_belonging_to_group
-      if Feature.enabled?(:optimize_propagate_integration_projects, integration.group)
-        propagate_integrations(
-          Project.without_integration_excluding_ancestor_archived_check(integration)
-                .in_namespace(integration.group.self_and_descendants.excluding_self_and_ancestors_archived),
-          PropagateIntegrationProjectWorker
-        )
-      else
-        propagate_integrations(
-          Project.without_integration(integration).in_namespace(integration.group.self_and_descendants),
-          PropagateIntegrationProjectWorker
-        )
-      end
+      propagate_integrations(
+        Project.without_integration_excluding_ancestor_archived_check(integration)
+              .in_namespace(integration.group.self_and_descendants.excluding_self_and_ancestors_archived),
+        PropagateIntegrationProjectWorker
+      )
     end
 
     def propagate_integrations(relation, worker_class)

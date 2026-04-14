@@ -52,7 +52,7 @@ module Namespaces
       STATE_MEMORY_CONFIG = {
         schedule_deletion: :cancel_deletion,
         start_deletion: :reschedule_deletion,
-        start_transfer: [:complete_transfer, :cancel_transfer]
+        schedule_transfer: [:complete_transfer, :cancel_transfer]
       }.freeze
 
       private
@@ -94,8 +94,8 @@ module Namespaces
       #
       # @example
       #   preserve_event_for(:cancel_deletion)   # => :schedule_deletion
-      #   preserve_event_for(:complete_transfer)  # => :start_transfer
-      #   preserve_event_for(:cancel_transfer)      # => :start_transfer
+      #   preserve_event_for(:complete_transfer)  # => :schedule_transfer
+      #   preserve_event_for(:cancel_transfer)      # => :schedule_transfer
       #   preserve_event_for(:schedule_deletion)  # => nil (not a restore event)
       #
       # @param restore_event [Symbol] the restore event (e.g., :cancel_deletion)
@@ -185,7 +185,7 @@ module Namespaces
       # Guard method used in state machine transition definitions.
       # Determines if complete_transfer should restore to :archived state.
       #
-      # @return [Boolean] true if the namespace was in archived before transfer started
+      # @return [Boolean] true if the namespace was in archived before transfer was scheduled
       def restore_to_archived_on_complete_transfer?
         preserve_event = preserve_event_for(:complete_transfer)
         should_restore_to?(preserve_event, :archived)
@@ -194,7 +194,7 @@ module Namespaces
       # Guard method used in state machine transition definitions.
       # Determines if cancel_transfer should restore to :archived state.
       #
-      # @return [Boolean] true if the namespace was in archived before transfer started
+      # @return [Boolean] true if the namespace was in archived before transfer was scheduled
       def restore_to_archived_on_cancel_transfer?
         preserve_event = preserve_event_for(:cancel_transfer)
         should_restore_to?(preserve_event, :archived)

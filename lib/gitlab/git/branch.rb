@@ -13,6 +13,10 @@ module Gitlab
         end
       end
 
+      def self.from_ref(repository, ref, commit: nil)
+        new(repository, ref.name, ref.target, commit)
+      end
+
       def active?
         self.dereferenced_target.committed_date >= STALE_BRANCH_THRESHOLD.ago
       end

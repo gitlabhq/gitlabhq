@@ -124,16 +124,20 @@ RSpec.shared_examples 'yaml backed permission' do
   end
 
   describe 'methods delegated to resource' do
-    it 'returns nil resource_name' do
-      expect(instance.resource_name).to be_nil
-    end
+    # Assignable always returns a default Resource via Resource.get,
+    # so these methods never return nil for Assignable instances.
+    context 'when no resource is defined', unless: -> { described_class == Authz::PermissionGroups::Assignable } do
+      it 'returns nil resource_name' do
+        expect(instance.resource_name).to be_nil
+      end
 
-    it 'returns nil resource_description' do
-      expect(instance.resource_description).to be_nil
-    end
+      it 'returns nil resource_description' do
+        expect(instance.resource_description).to be_nil
+      end
 
-    it 'returns nil feature_category' do
-      expect(instance.feature_category).to be_nil
+      it 'returns nil feature_category' do
+        expect(instance.feature_category).to be_nil
+      end
     end
 
     context 'when resource is defined' do

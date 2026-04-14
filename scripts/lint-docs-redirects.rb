@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
-
 # frozen_string_literal: true
 
-#
-# https://docs.gitlab.com/development/documentation/redirects/
-#
+# For more information, see https://docs.gitlab.com/development/documentation/redirects/
 require 'net/http'
 require 'uri'
 require 'json'
@@ -12,9 +9,10 @@ require 'cgi'
 require 'yaml'
 
 class LintDocsRedirect
-  COLOR_CODE_RED = "\e[31m"
+  COLOR_CODE_RED = "\e[1;31m"
+  COLOR_CODE_GREEN = "\e[1;32m"
   COLOR_CODE_RESET = "\e[0m"
-  # All the projects we want this script to run
+  # Script only supports these projects
   PROJECT_PATHS = ['gitlab-org/gitlab',
     'gitlab-org/gitlab-runner',
     'gitlab-org/omnibus-gitlab',
@@ -23,12 +21,21 @@ class LintDocsRedirect
     'gitlab-org/cli'].freeze
 
   def execute
+    puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking documentation redirects..."
     return unless project_supported?
 
-    abort_unless_merge_request_iid_exists
+    abort_unless_merge_request_iid_exists unless ENV['CI']
 
+    @errors = false
     check_renamed_deleted_files
     check_for_circular_redirects
+
+    if @errors
+      puts "#{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} Check of documentation redirects complete with errors!"
+      abort
+    else
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Check of documentation redirects complete with no errors."
+    end
   end
 
   private
@@ -88,6 +95,7 @@ class LintDocsRedirect
   ##   The navigation.yaml equivalent is:              administration/appearance/
   ##
   def check_for_missing_nav_entry(file)
+    puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking for navigation entry to file..."
     # Translate the file path to its website path:
     # 1. gsub(docs_path, project_slug) - Replaces the local docs directory with the appropriate project URL prefix
     # 2. gsub(/_?index\.md/, '') - Removes both index.md and _index.md
@@ -98,72 +106,40 @@ class LintDocsRedirect
       .gsub('.md', '/')
 
     result = navigation_file.include?("'#{file_sub}'")
-    return unless result
 
-    # If we're here, the path exists in navigation
-    # Now check if this is a rename between index.md and _index.md
-    if renamed_doc_file?(file)
-      old_basename = File.basename(file['old_path'])
-      new_basename = File.basename(file['new_path'])
-
-      # Allow renames between index.md and _index.md
-      return if %w[index.md _index.md].include?(old_basename) &&
-        %w[index.md _index.md].include?(new_basename)
-
-      # Handle the case where page.md is moved to page/_index.md
-      if !old_basename.start_with?('_') &&
-          new_basename == '_index.md' &&
-          File.dirname(file['old_path']) == File.dirname(File.dirname(file['new_path']))
-        # The path structure looks like:
-        # old: doc/path/page.md
-        # new: doc/path/page/_index.md
-        return
-      end
+    if result
+      puts <<~ERROR
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} File #{file['old_path']} has a navigation entry: #{file_sub}!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} You must either add a redirect for the page or remove the page from the global navigation!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} For more information, see:
+              - https://docs.gitlab.com/development/documentation/redirects/
+              - https://docs.gitlab.com/development/documentation/site_architecture/global_nav/#add-a-navigation-entry
+      ERROR
+      @errors = true
+    else
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} No navigation entry for file #{file['old_path']} found."
     end
-
-    warning(file)
-
-    abort
   end
 
-  def warning(file)
-    warn <<~WARNING
-      #{COLOR_CODE_RED}✖ ERROR: Missing redirect for a deleted or moved page#{COLOR_CODE_RESET}
+  # When renaming files, we can't have either:
+  #   - file.md renamed to file/_index.md
+  #   - file/_index.md renamed to file.md
+  # This situation causes Hugo build errors because both paths will publish to the same URL.
+  def check_for_invalid_rename(file)
+    puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking if file #{file['old_path']} is invalidly renamed..."
 
-      The following file is linked in the global navigation for docs.gitlab.com:
-
-      => #{file['old_path']}
-
-      Unless you add a redirect or remove the page from the global navigation,
-      this change will break pipelines in the
-      https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com project.
-
-      #{rake_command(file)}
-
-      For more information, see:
-      - Create a redirect   : https://docs.gitlab.com/development/documentation/redirects/
-      - Edit the global nav : https://docs.gitlab.com/development/documentation/site_architecture/global_nav/#add-a-navigation-entry
-    WARNING
-  end
-
-  # Rake task to use depending on the file being deleted or renamed
-  def rake_command(file)
-    # The Rake task is only available for gitlab-org/gitlab
-    return unless ENV['CI_PROJECT_PATH'] == 'gitlab-org/gitlab'
-
-    if renamed_doc_file?(file)
-      rake = "bundle exec rake \"gitlab:docs:redirect[#{file['old_path']}, #{file['new_path']}]\""
-      msg = "It seems you renamed a page, run the following Rake task locally and commit the changes.\n"
-    elsif deleted_doc_file?(file)
-      rake = "bundle exec rake \"gitlab:docs:redirect[#{file['old_path']}, doc/new/path.md]\""
-      msg = "It seems you deleted a page. Run the following Rake task by replacing\n" \
-            "'doc/new/path.md' with the page to redirect to, and commit the changes.\n"
+    if file['old_path'].delete_suffix('.md') == file['new_path'].delete_suffix('/_index.md') ||
+        file['old_path'].delete_suffix('/_index.md') == file['new_path'].delete_suffix('.md')
+      puts <<~ERROR
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} File #{file['old_path']} is invalidly renamed!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} The file #{file['old_path']} must not be renamed to #{file['new_path']}!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} Choose an alternative name for the new file!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} For more information, see: https://docs.gitlab.com/development/documentation/redirects/#troubleshooting
+      ERROR
+      @errors = true
+    else
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} File is validly renamed."
     end
-
-    <<~MSG
-      #{msg}
-      #{rake}
-    MSG
   end
 
   # GitLab API URL
@@ -186,12 +162,31 @@ class LintDocsRedirect
   end
 
   def abort_unless_merge_request_iid_exists
-    abort("Error: CI_MERGE_REQUEST_IID environment variable is missing") if merge_request_iid.nil?
+    if merge_request_iid
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} CI_MERGE_REQUEST_IID environment variable is set."
+    else
+      abort <<~ERROR
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} CI_MERGE_REQUEST_IID environment variable is not set!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} You must run the script against an existing merge request!
+      ERROR
+    end
   end
 
   # Skip if CI_PROJECT_PATH is not in the designated project paths
   def project_supported?
-    PROJECT_PATHS.include? ENV['CI_PROJECT_PATH']
+    if !ENV['CI_PROJECT_PATH']
+      abort <<~ERROR
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} CI_PROJECT_PATH environment variable is not set!
+        #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} Must be one of: #{PROJECT_PATHS.join(', ')}!
+      ERROR
+    elsif PROJECT_PATHS.none?(ENV['CI_PROJECT_PATH'])
+      abort "#{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} CI_PROJECT_PATH of #{ENV['CI_PROJECT_PATH']} is not supported!"
+    end
+
+    puts <<~INFO
+      #{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Running in supported project.
+    INFO
+    true
   end
 
   # Fetch the merge request diff JSON object
@@ -224,6 +219,7 @@ class LintDocsRedirect
 
   # Create a list of hashes of the renamed documentation files
   def check_renamed_deleted_files
+    puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking for renamed or deleted files..."
     renamed_files = merge_request_diff.select do |file|
       renamed_doc_file?(file)
     end
@@ -235,16 +231,25 @@ class LintDocsRedirect
     # Merge the two arrays
     all_files = renamed_files + deleted_files
 
-    return if all_files.empty?
+    if all_files.empty?
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} No renamed or deleted files found."
+      return
+    end
 
     all_files.each do |file|
       status = deleted_doc_file?(file) ? 'deleted' : 'renamed'
-      puts "Checking #{status} file..."
-      puts "=> Old_path: #{file['old_path']}"
-      puts "=> New_path: #{file['new_path']}"
-      puts
 
-      check_for_missing_nav_entry(file)
+      if status == 'renamed'
+        puts <<~INFO
+          #{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Found #{status} file #{file['old_path']}. File is being renamed to #{file['new_path']}.
+        INFO
+        check_for_invalid_rename(file)
+      else
+        puts <<~INFO
+          #{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Found #{status} file #{file['old_path']}. File #{file['old_path']} is being deleted.
+        INFO
+        check_for_missing_nav_entry(file)
+      end
     end
   end
 
@@ -270,23 +275,23 @@ class LintDocsRedirect
 
   # Check if a page redirects to itself
   def check_for_circular_redirects
+    puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking for pages that redirect to themselves..."
     all_doc_files.each do |file|
       next if redirect_to(file).nil?
 
+      puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} Checking redirection in file #{file['old_path']}..."
       basename = File.basename(file['old_path'])
 
       # Fail if the 'redirect_to' value is the same as the file's basename.
-      next unless redirect_to(file) == basename
-
-      warn <<~WARNING
-        #{COLOR_CODE_RED}✖ ERROR: Circular redirect detected. The 'redirect_to' value points to the same file.#{COLOR_CODE_RESET}
-      WARNING
-
-      puts
-      puts "File        : #{file['old_path']}"
-      puts "Redirect to : #{redirect_to(file)}"
-
-      abort
+      if redirect_to(file) == basename
+        puts <<~ERROR
+          #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} Circular redirect detected in file #{file['old_path']}!
+          #{COLOR_CODE_RED}ERROR#{COLOR_CODE_RESET} The 'redirect_to' value of #{redirect_to(file)} in #{file['old_path']} points to #{file['old_path']}!
+        ERROR
+        @errors = true
+      else
+        puts "#{COLOR_CODE_GREEN}INFO#{COLOR_CODE_RESET} File #{file['old_path']} redirects to another file."
+      end
     end
   end
 end

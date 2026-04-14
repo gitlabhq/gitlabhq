@@ -2914,6 +2914,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         })
       end
 
+      it_behaves_like 'storing arguments in the application context for the API' do
+        subject { discovery }
+
+        let(:expected_params) { { organization_id: project_runner.organization_id } }
+      end
+
       context 'when KAS is disabled' do
         before do
           allow(Gitlab::Kas).to receive(:enabled?).and_return(false)

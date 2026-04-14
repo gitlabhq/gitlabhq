@@ -10,7 +10,7 @@ module Integrations
 
     data_consistency :sticky
     sidekiq_options retry: 3
-    feature_category :integrations
+    feature_category :team_planning
     urgency :low
 
     def perform(project_id, channels, colors, push_data, settings)

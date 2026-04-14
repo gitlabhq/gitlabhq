@@ -96,32 +96,28 @@ module QA
         end
 
         let(:hook_trigger_times) { 5 }
-        let(:disabled_after) { 4 }
 
         before do
           Runtime::Feature.enable(:auto_disabling_web_hooks)
         end
 
-        it 'hook is auto-disabled',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
-            type: :flaky,
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18789'
-          } do
+        it 'hook is temporarily disabled after repeated failures',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595' do
           Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
-            hook_trigger_times.times do
+            hook_trigger_times.times do |_i|
               create(:issue, project: webhook.project)
-
-              # using sleep to give rate limiter a chance to activate.
-              sleep 0.5
+              sleep 1
             end
 
-            expect { smocker.events(session).size }.to eventually_eq(disabled_after)
-                                                  .within(max_duration: 30, sleep_interval: 2),
-              -> { "Should have #{disabled_after} events, got: #{smocker.events(session).size}" }
+            expect { smocker.events(session).size >= 4 }.to eventually_be_truthy
+              .within(max_duration: 30, sleep_interval: 2),
+              -> { "Should have at least 4 events, got: #{smocker.events(session).size}" }
 
             webhook.reload!
 
-            expect(webhook.alert_status).to eql('disabled')
+            expect { webhook.reload!.alert_status }.to eventually_eq('temporarily_disabled')
+              .within(max_duration: 30, sleep_interval: 2),
+              -> { "Expected temporarily_disabled, got: #{webhook.alert_status}" }
           end
         end
       end

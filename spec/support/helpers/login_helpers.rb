@@ -51,37 +51,30 @@ module LoginHelpers
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
     mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
-    visit new_user_session_path
-    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+    click_oauth_provider(provider)
   end
 
   def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, additional_info: {})
     response_object = saml_xml(saml_response) if saml_response.present?
     mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
-
-    visit new_admin_session_path
-    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+    click_oauth_provider(provider, sign_in_path: new_admin_session_path)
   end
 
   # Requires Javascript driver.
   def gitlab_sign_out(user = @current_user)
-    if has_testid?('super-sidebar')
+    within_testid('user-dropdown') do
       click_on "#{user.name} user’s menu"
-    else
-      # This can be removed once https://gitlab.com/gitlab-org/gitlab/-/issues/420121 is complete.
-      find(".header-user-dropdown-toggle").click
+      click_link _('Sign out')
     end
-
-    click_link "Sign out"
     @current_user = nil
-
-    expect(page).to have_button('Sign in')
+    expect(page).to have_button(_('Sign in'))
   end
 
   # Requires Javascript driver.
-  def gitlab_disable_admin_mode
+  def leave_admin_mode
     find_by_testid('user-menu-toggle').click
-    click_on 'Leave Admin Mode'
+    click_link(s_('CurrentUser|Leave Admin Mode'), href: destroy_admin_session_path)
+    expect(page).to have_selector('[data-testid="alert-info"]', text: _('Admin mode is inactive.'))
   end
 
   private
@@ -98,7 +91,7 @@ module LoginHelpers
     fill_in "user_login", with: user.email
 
     # When JavaScript is enabled, wait for the password field, with class `.js-password`,
-    # to be replaced by the Vue passsword component,
+    # to be replaced by the Vue password component,
     # `app/assets/javascripts/authentication/password/components/password_input.vue`.
     expect(page).not_to have_selector('.js-password') if javascript_test?
 
@@ -121,12 +114,28 @@ module LoginHelpers
 
   def login_via(provider, user, uid, remember_me: false, additional_info: {})
     mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
-    visit new_user_session_path
-    expect(page).to have_css('.js-oauth-login')
+    click_oauth_provider(provider, remember_me: remember_me)
+  end
 
-    check 'js-remember-me-omniauth' if remember_me
+  # The remember_me functionality requires Javascript driver.
+  def click_oauth_provider(provider, remember_me: false, sign_in_path: new_user_session_path)
+    3.times do
+      visit sign_in_path
+      expect(page).to have_button(Gitlab::Auth::OAuth::Provider.label_for(provider))
 
-    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+      if remember_me
+        within('body.page-initialised') do
+          check 'js-remember-me-omniauth'
+        end
+        find("form[action='/users/auth/#{provider}?remember_me=1']")
+      end
+
+      click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+      # Chrome intermittently fails to send cookies on the POST request, causing a silent
+      # CSRF failure that redirects back to sign-in. Wait for navigation, then retry if needed.
+      page.has_no_current_path?(sign_in_path, wait: 10, ignore_query: true)
+      break unless page.has_current_path?(sign_in_path, wait: 0, ignore_query: true)
+    end
   end
 
   def sign_in_using_ldap!(user, ldap_tab, ldap_name)
@@ -141,10 +150,7 @@ module LoginHelpers
 
   def register_via(provider, uid, email, additional_info: {})
     mock_auth_hash(provider, uid, email, additional_info: additional_info)
-    visit new_user_registration_path
-    expect(page).to have_content('Create an account using').or(have_content('Continue with'))
-
-    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+    click_oauth_provider(provider, sign_in_path: new_user_registration_path)
   end
 
   def fake_successful_webauthn_authentication
@@ -229,12 +235,52 @@ module LoginHelpers
     config
   end
 
+  # Adds a provider route for use in controller specs.
+  #
+  # This is the only safe way to add OmniAuth provider routes in tests.
+  # It tags the current example so that an after(:each) hook
+  # (registered in spec/support/omniauth.rb) automatically:
+  #   1. Resets disable_clear_and_finalize
+  #   2. Reloads routes
+  #   3. Re-aliases missing provider actions on OmniauthCallbacksController
+  #
+  # Do NOT manipulate routes.disable_clear_and_finalize or draw provider
+  # routes directly - the cleanup won't run and state will leak.
   def prepare_provider_route(provider_name)
     routes = Rails.application.routes
     routes.disable_clear_and_finalize = true
     routes.formatter.clear
     routes.draw do
       post "/users/auth/#{provider_name}" => "omniauth_callbacks##{provider_name}"
+    end
+
+    # Tag the example so the after hook in spec/support/omniauth.rb
+    # calls cleanup_provider_routes after the test.
+    RSpec.current_example.metadata[:provider_routes_modified] = true
+  end
+
+  # Reverses the global side effects of prepare_provider_route.
+  # Called from the after hook in spec/support/omniauth.rb.
+  #
+  # Must restore:
+  # 1. The route set flag so subsequent draws clear/finalize properly.
+  # 2. The full route table via reload_routes!.
+  # 3. Any provider actions on OmniauthCallbacksController that were lost
+  #    when the controller was autoloaded while Provider.providers was
+  #    stubbed to a subset (e.g. only [:saml]).
+  def self.cleanup_provider_routes
+    Rails.application.routes.disable_clear_and_finalize = false
+    Rails.application.reload_routes!
+
+    # Mirror the filtering from AuthHelper.providers_for_base_controller
+    # (which we can't call here because Provider.providers may still be stubbed):
+    # exclude LDAP providers (handled by Ldap::OmniauthCallbacksController)
+    # and :group_saml (EE group-level provider, handled by Groups::OmniauthCallbacksController).
+    providers = Devise.omniauth_providers.reject { |p| p.to_s.start_with?('ldap') || p == :group_saml }
+    providers.each do |provider|
+      next if OmniauthCallbacksController.method_defined?(provider)
+
+      OmniauthCallbacksController.alias_method provider, :handle_omniauth
     end
   end
 

@@ -4,53 +4,6 @@ module Ci
   module RunnersHelper
     include IconsHelper
 
-    def runner_status_icon(runner, size: 16, icon_class: '')
-      status = runner.status
-      contacted_at = runner.contacted_at
-
-      title = ''
-      icon = 'warning-solid'
-      span_class = ''
-
-      case status
-      when :online
-        title = safe_format(s_("Runners|Runner is online; last contact was %{runner_contact} ago"),
-          runner_contact: time_ago_in_words(contacted_at))
-        icon = 'status-active'
-        span_class = 'gl-text-success'
-      when :never_contacted
-        title = s_("Runners|Runner has never contacted this instance")
-        icon = 'warning-solid'
-      when :offline
-        title =
-          if contacted_at
-            safe_format(s_("Runners|Runner is offline; last contact was %{runner_contact} ago"),
-              runner_contact: time_ago_in_words(contacted_at))
-          else
-            s_("Runners|Runner is offline; it has never contacted this instance")
-          end
-
-        icon = 'status-waiting'
-        span_class = 'gl-text-subtle'
-      when :stale
-        # runner may have contacted (or not) and be stale: consider both cases.
-        title = if contacted_at
-                  safe_format(s_("Runners|Runner is stale; last contact was %{runner_contact} ago"),
-                    runner_contact: time_ago_in_words(contacted_at))
-                else
-                  s_("Runners|Runner is stale; it has never contacted this instance")
-                end
-
-        icon = 'time-out'
-        span_class = 'gl-text-warning'
-      end
-
-      content_tag(:span, class: span_class, title: title,
-        data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
-        sprite_icon(icon, size: size, css_class: icon_class)
-      end
-    end
-
     def runner_short_name(runner)
       "##{runner.id} (#{runner.short_sha})"
     end
@@ -142,6 +95,8 @@ module Ci
       data = {
         project_id: project.id,
         can_create_runner: can?(current_user, :create_runners, project).to_s,
+        can_assign_runners: can?(current_user, :admin_runners, project).to_s,
+        can_unassign_runners: can?(current_user, :admin_runners, project).to_s,
         allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
         registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,
         project_full_path: project.full_path,
@@ -149,9 +104,12 @@ module Ci
 
         # group runners tab
         can_create_runner_for_group: can_create_runner_for_group.to_s,
+        can_toggle_group_runners: can?(current_user, :admin_project, project).to_s,
+        group_runners_enabled: project.group_runners_enabled?.to_s,
         group_runners_path: project&.group ? group_runners_path(project.group) : nil,
 
         # instance runners tab
+        can_toggle_instance_runners: can?(current_user, :admin_runners, project).to_s,
         instance_runners_enabled: project.shared_runners_enabled?.to_s,
         instance_runners_disabled_and_unoverridable: (
           project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE

@@ -8,6 +8,7 @@ module BulkImports
       UPLOADS_RELATION = 'uploads'
       SELF_RELATION = 'self'
       USER_CONTRIBUTIONS_RELATION = 'user_contributions'
+      MAX_IIDS_RELATION = 'max_iids'
 
       def initialize(portable)
         @portable = portable
@@ -34,7 +35,7 @@ module BulkImports
       end
 
       def portable_relations
-        tree_relations + file_relations + self_relation - skipped_relations
+        tree_relations + file_relations + self_relation + max_iids_relation - skipped_relations
       end
 
       def batchable_relations
@@ -48,6 +49,10 @@ module BulkImports
 
       def self_relation?(relation)
         relation == SELF_RELATION
+      end
+
+      def max_iids_relation?(relation)
+        relation == MAX_IIDS_RELATION
       end
 
       def tree_relation?(relation)
@@ -80,11 +85,14 @@ module BulkImports
       # Returns an export service class for the given relation.
       # @return TreeExportService if a relation is serializable and is listed in import_export.yml
       # @return FileExportService if a relation is a file (uploads, lfs objects, git repository, etc.)
+      # @return MaxIidsExportService if the relation is max_iids metadata
       def export_service_for(relation)
         if tree_relation?(relation) || self_relation?(relation)
           ::BulkImports::TreeExportService
         elsif file_relation?(relation)
           ::BulkImports::FileExportService
+        elsif max_iids_relation?(relation)
+          ::Import::BulkImports::MaxIidsExportService
         else
           raise ::BulkImports::Error, 'Unsupported export relation'
         end
@@ -130,6 +138,10 @@ module BulkImports
 
       def self_relation
         [SELF_RELATION]
+      end
+
+      def max_iids_relation
+        [MAX_IIDS_RELATION]
       end
     end
   end

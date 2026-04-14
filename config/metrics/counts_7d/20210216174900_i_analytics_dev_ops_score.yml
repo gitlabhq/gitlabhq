@@ -3,6 +3,8 @@ data_category: optional
 key_path: analytics_unique_visits.i_analytics_dev_ops_score
 description: Unique visitors to /-/instance_statistics/dev_ops_score
 product_group: optimize
+product_categories:
+- devops_reports
 value_type: number
 status: active
 time_frame: 7d

@@ -19,10 +19,15 @@ module Organizations
 
     private
 
-    attr_reader :params
+    attr_reader :current_user, :params
 
     def base_scope
-      ::Organizations::Organization.all
+      return ::Organizations::Organization.public_only unless current_user
+      return ::Organizations::Organization.all if current_user.can_read_all_resources?
+
+      ::Organizations::Organization
+         .public_to_user(current_user)
+         .or(current_user.organizations)
     end
 
     def filter_organizations(organizations)

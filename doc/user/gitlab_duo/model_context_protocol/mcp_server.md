@@ -68,6 +68,7 @@ and provide different methods to configure the GitLab MCP server settings.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/577575) in GitLab 18.6.
+- Tool prefixing [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230406) in GitLab 18.11.
 
 {{< /history >}}
 
@@ -83,6 +84,27 @@ To configure the GitLab MCP server by using HTTP transport, use this format:
     "GitLab": {
       "type": "http",
       "url": "https://<gitlab.example.com>/api/v4/mcp"
+    }
+  }
+}
+```
+
+You can add a prefix to tool names by configuring an
+`X-Gitlab-Mcp-Server-Tool-Name-Prefix` HTTP header.
+Prefixing can help you avoid tool name conflicts with other MCP servers
+or with multiple GitLab instances in your configuration.
+
+The prefix is truncated to the first 32 characters if it exceeds this limit.
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://<gitlab.example.com>/api/v4/mcp",
+      "headers": {
+        "X-Gitlab-Mcp-Server-Tool-Name-Prefix": "gitlab_"
+      }
     }
   }
 }
@@ -324,6 +346,40 @@ To configure the GitLab MCP server in Continue in VS Code:
 1. Save the configuration.
 
    The OAuth authorization page should appear.
+
+1. In your browser, review and approve the authorization request.
+
+You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
+
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
+
+## Connect Kiro IDE and CLI to the GitLab MCP server
+
+Kiro IDE and CLI use HTTP transport for direct connection without additional dependencies.
+To configure the GitLab MCP server in Kiro IDE or CLI:
+
+1. Edit `~/.kiro/settings/mcp.json` and add the GitLab MCP server.
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "type": "http",
+         "url": "https://<gitlab.example.com>/api/v4/mcp"
+       }
+     }
+   }
+   ```
+
+1. Save the configuration.
+
+   The OAuth authorization page should appear.
+   Otherwise, open Kiro CLI and run the `/mcp` command.
 
 1. In your browser, review and approve the authorization request.
 

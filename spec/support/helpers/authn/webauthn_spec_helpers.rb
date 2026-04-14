@@ -33,7 +33,8 @@ module Authn
         challenge: challenge,
         sign_count: webauthn_credential.counter + 1,
         allow_credentials: user.get_all_webauthn_credential_ids,
-        extensions: { "credProps" => { "rk" => is_passkey } }
+        extensions: { "credProps" => { "rk" => is_passkey } },
+        user_verified: true
       )
       webauthn_authenticate_result.to_json
     end

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { memoize, cloneDeep } from 'lodash';
+import { memoize, cloneDeep } from 'lodash-es';
 import usersFixture from 'test_fixtures/autocomplete/users.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';

@@ -6,14 +6,16 @@ module Gitlab
       attr_reader :lhs, :rhs
 
       def open_on_left?
-        lhs.nil?
+        lhs.nil? || lhs.relative_position.nil?
       end
 
       def open_on_right?
-        rhs.nil?
+        rhs.nil? || rhs.relative_position.nil?
       end
 
       def cover?(item_context)
+        return true if open_on_left? && open_on_right?
+
         return false unless item_context
         return false unless item_context.positioned?
         return true if item_context.object == lhs&.object

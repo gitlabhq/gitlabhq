@@ -18,7 +18,7 @@ module Ci
 
         PIPELINE_FIELD_NAMES = %i[id duration status source ref].freeze
         PIPELINE_EPOCH_FIELD_NAMES = %i[committed_at created_at started_at finished_at].freeze
-        PIPELINE_COMPUTED_FIELD_NAMES = %i[path].freeze
+        PIPELINE_COMPUTED_FIELD_NAMES = %i[path is_default_branch].freeze
         PIPELINE_META_FIELD_NAMES = %i[name].freeze
 
         CSV_MAPPING = {
@@ -154,6 +154,19 @@ module Ci
             Ci::NamespaceMirror.by_namespace_id(pipeline_ids_to_proj_namespace_ids.values)
               .pluck(:namespace_id, :traversal_ids).to_h
           # rubocop: enable Database/AvoidUsingPluckWithoutLimit
+
+          # Uses repository.root_ref directly instead of Project#default_branch to avoid
+          # N+1 SQL queries through Group -> root_ancestor -> NamespaceSetting.
+          # preload(:route) is needed because repository initialization requires project.full_path.
+          projects = Project.preload(:route)
+            .by_project_namespace(pipeline_ids_to_proj_namespace_ids.values.uniq)
+
+          # Bulk-fetch root_ref values from Redis in a single read_multi call,
+          # avoiding N sequential Redis round-trips per project.
+          Gitlab::RepositoryCache::Preloader.new(projects.map(&:repository)).preload(%i[root_ref])
+
+          default_branches_by_namespace_id =
+            projects.to_h { |project| [project.project_namespace_id, project.repository.root_ref] }
           # rubocop: enable CodeReuse/ActiveRecord
 
           Ci::Pipeline.id_in(pipeline_ids_to_proj_namespace_ids.keys)
@@ -161,7 +174,10 @@ module Ci
             .select(:finished_at, *finished_pipeline_projections)
             .map { |pipeline| pipeline.attributes.symbolize_keys }
             .each do |pipeline_attrs|
-              fixup_pipeline_attrs(pipeline_attrs, pipeline_ids_to_proj_namespace_ids, project_namespace_ids_to_paths)
+              fixup_pipeline_attrs(
+                pipeline_attrs, pipeline_ids_to_proj_namespace_ids,
+                project_namespace_ids_to_paths, default_branches_by_namespace_id
+              )
 
               if check_pipeline_errors(pipeline_attrs)
                 next pipeline_ids_to_proj_namespace_ids.delete(pipeline_attrs[:id])
@@ -173,14 +189,18 @@ module Ci
           @processed_record_ids += pipeline_ids_to_proj_namespace_ids.keys
         end
 
-        def fixup_pipeline_attrs(pipeline_attrs, pipeline_ids_to_project_namespace_ids, project_namespace_ids_to_paths)
+        def fixup_pipeline_attrs(
+          pipeline_attrs, pipeline_ids_to_project_namespace_ids,
+          project_namespace_ids_to_paths, default_branches_by_namespace_id
+        )
           project_namespace_id = pipeline_ids_to_project_namespace_ids[pipeline_attrs[:id]]
           traversal_ids = project_namespace_ids_to_paths[project_namespace_id]
 
           # populate the path as the full project namespace path
           pipeline_attrs[:path] = to_traversal_path(traversal_ids)
-
           pipeline_attrs[:duration] = 0 if pipeline_attrs[:duration].nil? || pipeline_attrs[:duration] < 0
+          pipeline_attrs[:is_default_branch] =
+            pipeline_attrs[:ref] == default_branches_by_namespace_id[project_namespace_id]
         end
 
         def check_pipeline_errors(pipeline_attrs)

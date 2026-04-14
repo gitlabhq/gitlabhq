@@ -1,5 +1,5 @@
 <script>
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';

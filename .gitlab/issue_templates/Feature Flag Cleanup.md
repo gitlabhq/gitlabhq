@@ -33,7 +33,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- The checklist here is to help stakeholders keep track of the feature flag status -->
 - [ ] Specify in the issue description if this feature will be removed completely or will be productized as part of the Feature Flag cleanup
-- [ ] Verify that external API consumers (e.g., IDE extensions, CLI tools) that may check this feature flag have been updated or can gracefully handle its removal.
+- [ ] Verify that external API consumers (for example, IDE extensions, Duo CLI, or CI integrations) that may query this feature flag have been updated or can gracefully handle its removal. See the [external API consumer guidance](https://docs.gitlab.com/development/feature_flags/#do-not-use-feature-flags-in-external-api-consumers) for details on fail-open patterns and upgrade timing considerations.
 - [ ] Create a merge request to remove `<feature-flag-name>` feature flag. Ask for review and merge it.
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
@@ -41,9 +41,9 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - [ ] Ensure that the cleanup MR has been deployed to both production and canary.
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
-    - [ ] `/chatops run auto_deploy status <merge-commit-of-cleanup-mr>`
+    - [ ] `/chatops gitlab run auto_deploy status <merge-commit-of-cleanup-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
-- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
+- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops gitlab run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
 - [ ] Close [the rollout issue](ISSUE LINK).
 
 

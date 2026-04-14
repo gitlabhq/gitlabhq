@@ -1,3 +1,0 @@
----
-name: authorize_nuget_package
-description: Grants the ability to authorize a NuGet package upload

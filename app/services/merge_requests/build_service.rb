@@ -247,11 +247,13 @@ module MergeRequests
     def assign_title_and_description
       assign_description_from_repository_template
       replace_variables_in_description
+
+      assign_title_from_template if mr_title_template_enabled?
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= branch_name_to_title(source_branch)
-      set_draft_title_if_needed
 
+      set_draft_title_if_needed
       append_closes_description
     end
 
@@ -280,6 +282,10 @@ module MergeRequests
       else
         merge_request.description = closes_issue
       end
+    end
+
+    def assign_title_from_template
+      merge_request.title ||= message_generator.new_mr_title(target_project.mr_default_title_template)
     end
 
     def assign_title_and_description_from_commits
@@ -311,15 +317,7 @@ module MergeRequests
     end
 
     def branch_name_to_title(branch_name)
-      # Replicate Rails titleize.humanize behavior without using ActiveSupport::Inflector
-      # to avoid acronym-based word splitting (like EE)
-      # Note: Rails preserves slashes, only converts underscores and hyphens to spaces
-      # Rails also preserves the number of spaces (doesn't squeeze multiple spaces)
-
-      branch_name
-        .tr('_-', ' ')                    # Convert underscores and hyphens to spaces
-        .lstrip                           # Remove leading spaces only (like Rails lstrip)
-        .humanize                         # Convert to humanized format (capitalize first letter, lowercase others)
+      ::Gitlab::MergeRequests::MessageGenerator.humanize_branch_name(branch_name)
     end
 
     def assign_description_from_repository_template
@@ -356,10 +354,26 @@ module MergeRequests
     def replace_variables_in_description
       return unless merge_request.description.present?
 
-      merge_request.description = ::Gitlab::MergeRequests::MessageGenerator.new(
-        merge_request: merge_request,
-        current_user: current_user
-      ).new_mr_description
+      merge_request.description = message_generator.new_mr_description
+    end
+
+    def mr_title_template_enabled?
+      Feature.enabled?(:mr_default_title_template, target_project) &&
+        target_project.mr_default_title_template.present?
+    end
+
+    # Memoized because it is shared between replace_variables_in_description
+    # (description template) and assign_title_from_template (title template).
+    # Safe to share: for new MRs, merge_user and metrics are nil, so
+    # current_user is always used. Placeholder lambdas read MR attributes
+    # lazily at call time, so ordering of title vs description is safe.
+    def message_generator
+      strong_memoize(:message_generator) do
+        ::Gitlab::MergeRequests::MessageGenerator.new(
+          merge_request: merge_request,
+          current_user: current_user
+        )
+      end
     end
 
     def issue_iid

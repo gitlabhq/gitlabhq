@@ -28,6 +28,8 @@ development:
     url: redis://localhost:6379
 
 test:
+  action_cable:
+    url: redis://localhost:6379
   chat:
     cluster:
       - redis://localhost:7001

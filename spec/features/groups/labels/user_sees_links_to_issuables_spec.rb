@@ -10,10 +10,10 @@ RSpec.describe 'Groups > Labels > User sees links to issuables', feature_categor
     visit group_labels_path(group)
   end
 
-  it 'shows links to MRs and issues' do
+  it 'shows links to MRs and Work items' do
     page.within('.labels-container') do
       expect(page).to have_link('Merge requests')
-      expect(page).to have_link('Issues')
+      expect(page).to have_link('Work items')
     end
   end
 end

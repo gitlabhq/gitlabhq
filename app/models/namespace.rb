@@ -434,6 +434,20 @@ class Namespace < ApplicationRecord
         )
         .where(namespace_setting_table[:archived].eq(true))
     end
+
+    # namespaces.traversal_ids could be either an integer[] or a bigint[]
+    # this utility method exists to help cast arguments when writing raw queries
+    def traversal_ids_type
+      type_name = Gitlab::Database.column_type(connection, Namespace.table_name, 'traversal_ids')
+      case type_name
+      when '_int4'
+        'integer[]'
+      when '_int8'
+        'bigint[]'
+      else
+        raise ArgumentError, %(unrecognized column type: #{type_name} id should be either an _int4 or _int8)
+      end
+    end
   end
 
   def archived?
@@ -569,6 +583,14 @@ class Namespace < ApplicationRecord
 
   def default_branch_protected?
     Gitlab::Access::DefaultBranchProtection.new(default_branch_protection_settings).any?
+  end
+
+  def can_push_initial_commit?(user)
+    return true if user.can_admin_all_resources?
+
+    branch_protection = Gitlab::Access::DefaultBranchProtection.new(default_branch_protection_settings)
+    member_access = max_member_access_for_user(user)
+    branch_protection.can_initial_push?(member_access)
   end
 
   def emails_enabled?
@@ -876,16 +898,16 @@ class Namespace < ApplicationRecord
   end
 
   def allowed_work_item_types
-    ::WorkItems::TypesFilter.new(container: self).allowed_types
+    ::WorkItems::TypesFramework::Provider.new(self).allowed_types.map(&:base_type)
   end
   strong_memoize_attr :allowed_work_item_types
 
   def allowed_work_item_type?(type)
     type = type.to_s
 
-    unless ::WorkItems::TypesFilter.base_types.include?(type)
+    unless ::WorkItems::TypesFramework::Provider.unfiltered_base_types.map(&:to_s).include?(type)
       raise ArgumentError,
-        %("#{type}" is not a valid WorkItems::Type.base_types)
+        %("#{type}" is not a valid Work Item Type)
     end
 
     allowed_work_item_types.include?(type)

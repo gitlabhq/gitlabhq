@@ -95,6 +95,7 @@ export default {
         },
         showValidation: true,
       }),
+      searchTerm: '',
     };
   },
   computed: {
@@ -112,6 +113,14 @@ export default {
     },
     dropdownOptions() {
       return this.item.options?.map((option) => ({ value: option, text: String(option) })) || [];
+    },
+    filteredDropdownOptions() {
+      if (!this.searchTerm) {
+        return this.dropdownOptions;
+      }
+
+      const term = this.searchTerm.toLowerCase();
+      return this.dropdownOptions.filter((item) => item.text.toLowerCase().includes(term));
     },
     hasArrayFormatError() {
       const field = this.form.fields[this.item.name];
@@ -131,6 +140,9 @@ export default {
     },
     isDropdown() {
       return Boolean(this.item.options?.length);
+    },
+    toggleText() {
+      return this.inputValue || __('Select option');
     },
     validationFeedback() {
       const field = this.form.fields[this.item.name];
@@ -178,10 +190,13 @@ export default {
       v-if="isDropdown"
       v-model="inputValue"
       block
+      searchable
       :aria-label="item.name"
       toggle-class="!gl-pl-4"
+      :toggle-text="toggleText"
       :header-text="__('Options')"
-      :items="dropdownOptions"
+      :items="filteredDropdownOptions"
+      @search="searchTerm = $event"
     />
 
     <!-- Button cell for boolean types -->

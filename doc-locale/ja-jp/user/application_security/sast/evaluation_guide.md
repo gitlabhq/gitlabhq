@@ -1,9 +1,9 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: テストコードベースを選択し、スキャンを設定し、結果を解釈し、他のセキュリティツールと機能を比較して、GitLab SASTを評価する方法について説明します。
-title: GitLab SASTの評価
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: テストコードベースを選択し、スキャンを設定し、結果を解釈し、他のセキュリティツールと機能を比較することで、GitLab SASTを評価する方法について説明します。
+title: GitLab SASTを評価する
 ---
 
 {{< details >}}
@@ -13,77 +13,81 @@ title: GitLab SASTの評価
 
 {{< /details >}}
 
-組織で使用する前に、GitLab SASTを評価することを選択できます。評価を計画および実施する際に、次のガイダンスを考慮してください。
+組織でGitLab SASTを使用する前に、それを評価することを選択できます。評価を計画し実施する際は、以下のガイダンスを考慮してください。
 
 ## 重要な概念 {#important-concepts}
 
-GitLab SASTは、チームが共同で記述するのセキュリティを向上させるのに役立つように設計されています。コードをスキャンして結果を表示するために実行する手順は、スキャンされるソースコードリポジトリを中心にしています。
+GitLab SASTは、チームが共同で記述するコードのセキュリティを向上させるように設計されています。コードをスキャンして結果を表示する手順は、スキャン対象のソースコードリポジトリを中心にしています。
 
 ### スキャンプロセス {#scanning-process}
 
-GitLab SASTは、プロジェクトで見つかったプログラミング言語に応じて、使用する適切なスキャンテクノロジーを自動的に選択します。Groovyを除くすべての言語について、GitLab SASTは、コンパイルまたはビルドステップを必要とせずに、ソースを直接スキャンします。これにより、さまざまなプロジェクトでスキャンを簡単に有効にできます。詳細については、[サポートされている言語とフレームワーク](_index.md#supported-languages-and-frameworks)を参照してください。
+GitLab SASTは、プロジェクト内で見つかったプログラミング言語に応じて、適切なスキャン技術を自動的に選択します。Groovyを除くすべての言語について、GitLab SASTはコンパイルやビルドステップを必要とせずにソースコードを直接スキャンします。これにより、さまざまなプロジェクトでスキャンを有効にすることが容易になります。詳細については、[サポートされている言語とフレームワーク](_index.md#supported-languages-and-frameworks)を参照してください。
 
 ### 脆弱性が報告されるタイミング {#when-vulnerabilities-are-reported}
 
-GitLab SAST [アナライザー](analyzers.md)とその[ルール](rules.md)は、開発チームとセキュリティチームのノイズを最小限に抑えるように設計されています。
+GitLab SASTの[アナライザー](analyzers.md)とそれらの[ルール](rules.md)は、開発チームとセキュリティチームにとってノイズを最小限に抑えるように設計されています。
 
-GitLab Advanced SASTアナライザーが脆弱性をレポートするタイミングの詳細については、[脆弱性がレポートされるタイミング](gitlab_advanced_sast.md#when-vulnerabilities-are-reported)を参照してください。
+GitLab Advanced SASTアナライザーが脆弱性を報告するタイミングの詳細については、[脆弱性検出基準](gitlab_advanced_sast.md#vulnerability-detection-criteria)を参照してください。
 
 ### その他のプラットフォーム機能 {#other-platform-features}
 
-SASTは、GitLab Ultimateプランの他のセキュリティおよびコンプライアンス機能と統合されています。GitLab SASTを別の製品と比較している場合、その機能の一部がSASTではなく、関連するGitLab機能領域に含まれている場合があります:
+SASTは、Ultimateの他のセキュリティおよびコンプライアンス機能と統合されています。GitLab SASTを他の製品と比較する場合、その機能の一部がSASTではなく、関連するGitLabの機能領域に含まれている場合があります:
 
-- [IaCスキャン](../iac_scanning/_index.md)は、Infrastructure as Code（IaC）定義のセキュリティ問題をスキャンします。
-- [シークレット検出](../secret_detection/_index.md)は、内で流出したシークレットを見つけます。
-- [セキュリティポリシー](../policies/_index.md)を使用すると、スキャンの実行を強制したり、脆弱性の修正を要求したりできます。
-- [脆弱性管理とレポート](../vulnerability_report/_index.md)は、コードベースに存在する脆弱性を管理し、イシュー追跡ツールと統合します。
-- GitLab Duoの[脆弱性の説明](../vulnerabilities/_index.md#vulnerability-explanation)と[脆弱性の解決](../vulnerabilities/_index.md#vulnerability-resolution)は、AIを使用して、脆弱性を迅速に修正するのに役立ちます。
+- [IaCスキャン](../iac_scanning/_index.md)は、Infrastructure as Code (IaC) 定義のセキュリティ問題をスキャンします。
+- [シークレット検出](../secret_detection/_index.md)は、コード内の流出したシークレットを検出します。
+- [セキュリティポリシー](../policies/_index.md)を使用すると、スキャンの実行を強制したり、脆弱性が修正されることを要求したりできます。
+- [脆弱性管理とレポート](../vulnerability_report/_index.md)は、コードベースに存在する脆弱性を管理し、イシュートラッカーと統合します。
+- GitLab Duoの[脆弱性の説明](../analyze/duo.md)と[脆弱性の修正](../remediate/duo.md)は、AIを使用して脆弱性を迅速に修正するのに役立ちます。
 
-## テストコードベースを選択 {#choose-a-test-codebase}
+## テスト用のコードベースを選択する {#choose-a-test-codebase}
 
-SASTをテストするためのコードベースを選択する場合は、次のことを行う必要があります:
+SASTをテストするコードベースを選択する際は、以下の点に注意してください:
 
-- 通常の開発作業を妨げることなく、CI/CD設定を安全に変更できるリポジトリでテストします。SASTスキャンはCI/CDパイプラインで実行されるため、CI/CD設定を少し編集して[SASTを有効にする](_index.md#configuration)必要があります。
-  - 既存のリポジトリのフォークまたはコピーを作成してテストできます。これにより、通常の開発を中断することなく、テスト環境をセットアップできます。
-- 組織の一般的なテクノロジースタックに一致するコードベースを使用します。
-- [GitLab Advanced SASTがサポートする](gitlab_advanced_sast.md#supported-languages)言語を使用します。GitLab Advanced SASTは、他の[アナライザー](analyzers.md)よりも正確な結果を生成します。
+- 通常開発を中断することなく、CI/CD設定を安全に変更できるリポジトリでテストしてください。SASTスキャンはCI/CDパイプラインで実行されるため、CI/CD設定を少し編集して[SASTを有効にする](_index.md#configuration)必要があります。
+  - テスト用に既存のリポジトリをフォークまたはコピーできます。この方法により、通常開発を中断することなく、テスト環境をセットアップできます。
+- 組織の標準的な技術スタックに一致するコードベースを使用してください。
+- [GitLab Advanced SASTがサポートしている](gitlab_advanced_sast.md#supported-languages)言語を使用してください。GitLab Advanced SASTは、他の[アナライザー](analyzers.md)よりも正確な結果を生成します。
 
-テストプロジェクトにはGitLab Ultimateが必要です。Ultimateプランのみに、次のような[機能](_index.md#features)が含まれています:
+テストプロジェクトにはUltimateが必要です。Ultimateのみが次の[機能](_index.md#features)を含んでいます:
 
-- GitLab高度なSASTによるクロスファイル、クロスファンクションスキャン
-- マージリクエストウィジェット、パイプラインセキュリティレポート、およびスキャン結果を表示してアクションを実行できるようにするデフォルトブランチの脆弱性レポート。
+- GitLab Advanced SASTによる独自のクロスファイル、クロスファンクションスキャン。
+- マージリクエストウィジェット、パイプラインセキュリティレポート、デフォルト-ブランチ脆弱性レポートにより、スキャン結果が可視化され、対処可能になります。
 
 ### ベンチマークとサンプルプロジェクト {#benchmarks-and-example-projects}
 
-ベンチマークまたは意図的に脆弱なアプリケーションをテストに使用する場合は、これらのアプリケーションが次の点に注意してください:
+ベンチマークまたは意図的に脆弱性のあるアプリケーションをテストに使用する場合、これらのアプリケーションは次の点に注意してください:
 
-- 特定の脆弱性タイプに焦点を当てます。ベンチマークの焦点は、組織が検出と修正を優先する脆弱性タイプとは異なる場合があります。
-- 組織のソフトウェアビルド方法とは異なる特定の方法で特定のテクノロジーを使用します。
-- 結果をレポートする方法で、暗黙のうちに他の基準よりも特定の基準を強調する場合があります。たとえば、ベンチマークが再現率（偽陰性の結果が少ない）のみに基づいてスコアリングする場合、精度（偽陽性の結果が少ない）を優先する場合があります。
+- 特定の脆弱性タイプに焦点を当てます。ベンチマークの焦点は、組織が検出と修正のために優先する脆弱性タイプとは異なる場合があります。
+- 組織がソフトウェアをビルドする方法とは異なる特定の技術を特定の形で使用します。
+- 特定の基準を他の基準よりも暗黙的に強調する形で結果をレポートします。たとえば、精度 (より少ない誤検出結果) を優先するかもしれませんが、ベンチマークは再現率 (より少ない偽陰性結果) に基づいてのみスコアを付けます。
 
-[エピック15296](https://gitlab.com/groups/gitlab-org/-/epics/15296)は、テスト用の特定のプロジェクトを推奨する作業を追跡します。
+[エピック15296](https://gitlab.com/groups/gitlab-org/-/epics/15296)は、テスト対象として推奨する具体的なプロジェクトの選定作業を追跡しています。
 
-### AIによって生成されたテスト {#ai-generated-test-code}
+### AIが生成したテストコード {#ai-generated-test-code}
 
-SASTをテストするために、AIツールを使用して脆弱なを作成しないでください。AIモデルは、実際には悪用できないを返すことがよくあります。
+AIツールを使用して、SASTテスト用の脆弱なコードを作成しないでください。AIモデルは、実際には悪用できないコードを返すことがよくあります。
 
 例: 
 
-- AIツールは、多くの場合、パラメータを受け取り、機密性の高いコンテキスト（「シンク」と呼ばれる）で使用する小さな関数を作成しますが、実際にはユーザー入力を受信しません。関数が定数などのプログラム制御された値でのみ呼び出すされる場合、これは安全な設計になる可能性があります。ユーザー入力が最初にサニタイズまたは検証されずにこれらのシンクに流れることが許可されない限り、は脆弱ではありません。
-- AIツールは、誤ってを実行するのを防ぐために、脆弱性の一部をコメントアウトする場合があります。
+- AIツールは、実際にはユーザー入力を受け取らないにもかかわらず、パラメータを受け取ってそれを機密性の高いコンテキスト（「シンク」と呼ばれる）で使用する小さな関数を記述することがよくあります。その関数が定数のようなプログラム制御の値でのみ呼び出されるのであれば、これは安全な設計と言えます。ユーザー入力がサニタイズや検証なしにこれらのシンクに流れない限り、コードに脆弱性はありません。
+- AIツールは、脆弱性の一部をコメントアウトして、誤ってコードを実行するのを防ぐ場合があります。
 
-これらの非現実的な例で脆弱性をレポートすると、実際の世界ので偽陽性の結果が発生します。GitLab SASTは、これらの場合に脆弱性をレポートするように設計されていません。
+これらの非現実的な例で脆弱性を報告すると、実際のコードで誤検出結果が発生する可能性があります。GitLab SASTは、これらのケースで脆弱性を報告するようには設計されていません。
 
-## テストの実施 {#conduct-the-test}
+## テストを実施する {#conduct-the-test}
 
-テストするコードベースを選択したら、テストを実施する準備が整います。次の手順に従うことができます:
+前提条件: 
 
-1. [SASTを有効にする](_index.md#configuration)には、CI/CD設定にSASTを追加するマージリクエスト（MR）を作成します。
-   - より正確な結果を得るには、CI/CD変数を設定して[GitLab Advanced SASTを有効にする](gitlab_advanced_sast.md#enable-gitlab-advanced-sast-scanning)ようにしてください。
-1. MRをリポジトリのデフォルトブランチにマージします。
-1. [脆弱性レポート](../vulnerability_report/_index.md)を開いて、デフォルトブランチで見つかった脆弱性を確認します。
+- プロジェクトのメンテナーまたはオーナーのロール。
+
+テストするコードベースを選択したら、テストを実施する準備が整います。次の手順に従ってください:
+
+1. CI/CD設定にSASTを追加するマージリクエスト (MR) を作成して、[SASTを有効にします](_index.md#configuration)。
+   - より正確な結果を得るために、CI/CD変数を設定して[GitLab Advanced SASTをオンにする](gitlab_advanced_sast.md#turn-on-gitlab-advanced-sast)ようにしてください。
+1. MRをリポジトリのデフォルトブランチにマージする。
+1. [脆弱性レポート](../vulnerability_report/_index.md)を開いて、デフォルトブランチで見つかった脆弱性を確認してください。
    - GitLab Advanced SASTを使用している場合は、[スキャナーフィルター](../vulnerability_report/_index.md#scanner-filter)を使用して、そのスキャナーからの結果のみを表示できます。
-1. 脆弱性の結果をレビューします。
-   - SQLインジェクションやパストラバーサルなどの、汚染されたユーザー入力を含むGitLab Advanced SASTの脆弱性については、[コードフロービュー](../vulnerabilities/_index.md#vulnerability-code-flow)を確認してください。
-   - GitLab Duo Enterpriseをお持ちの場合は、脆弱性を[説明](../vulnerabilities/_index.md#vulnerability-explanation)または[解決](../vulnerabilities/_index.md#vulnerability-resolution)します。
-1. 新しいが開発されるにつれてスキャンがどのように機能するかを確認するには、アプリケーションを変更し、新しい脆弱性または脆弱性を追加する新しいマージリクエストを作成します。
+1. 脆弱性結果をレビューします。
+   - GitLab Advanced SASTの脆弱性で、汚染されたユーザー入力 (SQLインジェクションやパストラバーサルなど) を含むものについては、[コードフロービュー](../vulnerabilities/_index.md#vulnerability-code-flow)を確認してください。
+   - GitLab Duo Enterpriseをお持ちの場合、[脆弱性の説明](../analyze/duo.md)または[脆弱性を解決する](../remediate/duo.md)ことができます。
+1. 新しいコードが開発されるにつれてスキャンがどのように機能するかを確認するには、アプリケーションコードを変更し、新しい脆弱性または弱点を追加する新しいマージリクエストを作成します。

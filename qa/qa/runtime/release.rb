@@ -22,7 +22,7 @@ module QA
       end
 
       def self.method_missing(name, *args)
-        self.new.strategy.public_send(name, *args)
+        new.strategy.public_send(name, *args)
       rescue StandardError
         saved = Capybara::Screenshot.screenshot_and_save_page
 

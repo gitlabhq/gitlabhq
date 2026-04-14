@@ -22,7 +22,7 @@ code `429` to POST requests that exceed 10 requests per minute per IP address an
 For example, the following are limited to a maximum 10 requests per minute:
 
 - User sign-in
-- User sign-up (if enabled)
+- New user account creation (if enabled)
 - User password reset
 
 After 10 requests, the client must wait 60 seconds before it can try again.

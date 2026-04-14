@@ -98,5 +98,72 @@ RSpec.describe 'Net::HTTP#connect DNS rebinding tests', feature_category: :share
 
       it_behaves_like 'GET request'
     end
+
+    context 'with IPv6 address', if: Socket.ip_address_list.any?(&:ipv6_loopback?) do
+      let(:http_host) { '::1' }
+      let(:expected_sni) { nil }
+      let(:hostname_override) { nil }
+
+      it_behaves_like 'GET request'
+    end
+
+    context 'with IPv6 address and hostname override', if: Socket.ip_address_list.any?(&:ipv6_loopback?) do
+      let(:http_host) { '::1' }
+      let(:hostname_override) { host }
+      let(:expected_sni) { host }
+
+      it_behaves_like 'GET request'
+    end
+  end
+
+  describe 'CONNECT request format through proxy' do
+    before do
+      WebMock.allow_net_connect!(net_http_connect_on_start: true)
+    end
+
+    after do
+      WebMock.disable_net_connect! # rubocop:disable RSpec/WebMockEnable -- method not available in gem
+    end
+
+    shared_examples 'proxy CONNECT request' do |target_host, expected_target|
+      it "sends correct CONNECT request for #{target_host}" do
+        fake_proxy = TCPServer.new('127.0.0.1', 0)
+        proxy_port = fake_proxy.addr[1]
+        connect_request = nil
+
+        proxy_thread = Thread.new do
+          client = fake_proxy.accept
+          lines = []
+          lines << client.gets until lines.last == "\r\n"
+          connect_request = lines.join
+          client.write("HTTP/1.1 400 Bad Request\r\n\r\n")
+          client.close
+        rescue StandardError
+          # ignore errors from client disconnect
+        ensure
+          fake_proxy.close
+        end
+
+        http = Net::HTTP.new(target_host, 8080, '127.0.0.1', proxy_port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+        begin
+          http.start
+        rescue StandardError
+          nil
+        end
+        proxy_thread.join(2)
+
+        expect(connect_request).to include("CONNECT #{expected_target}:8080")
+        expect(connect_request).to include("Host: #{expected_target}:8080")
+      end
+    end
+
+    it_behaves_like 'proxy CONNECT request', '2001:db8::1', '[2001:db8::1]'
+    it_behaves_like 'proxy CONNECT request', '::1', '[::1]'
+    it_behaves_like 'proxy CONNECT request', 'fe80::1', '[fe80::1]'
+    it_behaves_like 'proxy CONNECT request', '127.0.0.1', '127.0.0.1'
+    it_behaves_like 'proxy CONNECT request', 'example.com', 'example.com'
   end
 end

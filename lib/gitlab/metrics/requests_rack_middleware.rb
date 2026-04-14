@@ -7,15 +7,8 @@ module Gitlab
 
       puma_enabled!
 
-      HTTP_METHODS = {
-        "delete" => %w[200 202 204 303 400 401 403 404 500 503],
-        "get" => %w[200 204 301 302 303 304 307 400 401 403 404 410 422 429 500 503],
-        "head" => %w[200 204 301 302 303 401 403 404 410 500],
-        "options" => %w[200 404],
-        "patch" => %w[200 202 204 400 403 404 409 416 500],
-        "post" => %w[200 201 202 204 301 302 303 304 400 401 403 404 406 409 410 412 422 429 500 503],
-        "put" => %w[200 202 204 400 401 403 404 405 406 409 410 422 500]
-      }.freeze
+      HTTP_METHODS = %w[delete get head options patch post put].freeze
+      HTTP_STATUS_CLASSES = %w[2xx 3xx 4xx 5xx].freeze
 
       HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}
 
@@ -59,12 +52,12 @@ module Gitlab
         # restarts. It makes sure all counters/histograms are available at
         # process start.
         #
-        # For example `rate(http_requests_total{status="500"}[1m])` would return
-        # no data until the first 500 error would occur.
-        HTTP_METHODS.each do |method, statuses|
+        # For example `rate(http_requests_total{status="5xx"}[1m])` would return
+        # no data until the first 5xx error would occur.
+        HTTP_METHODS.each do |method|
           http_request_duration_seconds.get({ method: method })
 
-          statuses.product(FEATURE_CATEGORIES_TO_INITIALIZE) do |status, feature_category|
+          HTTP_STATUS_CLASSES.product(FEATURE_CATEGORIES_TO_INITIALIZE) do |status, feature_category|
             http_requests_total.get({ method: method, status: status, feature_category: feature_category })
           end
         end
@@ -74,7 +67,7 @@ module Gitlab
 
       def call(env)
         method = env['REQUEST_METHOD'].downcase
-        method = 'INVALID' unless HTTP_METHODS.key?(method)
+        method = 'INVALID' unless HTTP_METHODS.include?(method)
         started = ::Gitlab::Metrics::System.monotonic_time
         health_endpoint = health_endpoint?(env['PATH_INFO'])
         status = 'undefined'
@@ -98,10 +91,10 @@ module Gitlab
           raise
         ensure
           if health_endpoint
-            self.class.http_health_requests_total.increment(status: status.to_s, method: method)
+            self.class.http_health_requests_total.increment(status: status_class(status), method: method)
           else
             self.class.http_requests_total.increment(
-              status: status.to_s,
+              status: status_class(status),
               method: method,
               feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT
             )
@@ -142,6 +135,13 @@ module Gitlab
           feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT,
           endpoint_id: endpoint_id.presence || ENDPOINT_MISSING
         }
+      end
+
+      def status_class(status)
+        status_s = status.to_s
+        return 'undefined' unless status_s.match?(/\A\d{3}\z/)
+
+        "#{status_s[0]}xx"
       end
 
       def urgency_for_env(env)

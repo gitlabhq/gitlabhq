@@ -164,7 +164,7 @@ class GroupSeeder
         group = Group.find(group_id)
         label_title = FFaker::Product.brand
 
-        Labels::CreateService.new(title: label_title, color: ::Gitlab::Color.color_for(label_title).to_s).execute(group: group)
+        Labels::CreateService.new(nil, title: label_title, color: ::Gitlab::Color.color_for(label_title).to_s).execute(group: group)
       end
     end
   end

@@ -50,6 +50,9 @@ module Gitlab
               sql = event.payload[:sql].strip
 
               next if should_skip_sql_statement?(sql)
+              # If the transaction has already failed, executing check_current_locks would raise
+              # PG::InFailedSqlTransaction, so we skip it and let the original exception propagate out.
+              next if event.payload[:exception_object]
 
               newly_locked_tables = []
               if likely_to_acquire_locks?(sql)

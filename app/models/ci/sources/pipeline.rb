@@ -5,6 +5,7 @@ module Ci
     class Pipeline < Ci::ApplicationRecord
       include Ci::Partitionable
       include Ci::NamespacedModelName
+      include FromUnion
 
       self.table_name = "ci_sources_pipelines"
 

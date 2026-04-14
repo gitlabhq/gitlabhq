@@ -89,9 +89,9 @@ module ApplicationSettingsHelper
         }
       ),
       form.gitlab_ui_checkbox_component(
-        :global_search_issues_enabled,
-        _("Show issues in global search results"),
-        checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
+        :global_search_work_items_enabled,
+        _("Show work items in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_work_items_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_merge_requests_enabled,
@@ -112,11 +112,11 @@ module ApplicationSettingsHelper
   end
 
   def default_search_scope_options_for_select
-    options = Search::Scopes.scope_definitions.map do |scope, definition|
+    # Exclude API-only scopes from UI
+    scope_defs = Search::Scopes.scope_definitions(include_api_only: false)
+    sorted_options = scope_defs.to_a.sort_by { |_, definition| definition[:sort] }.map do |scope, definition|
       [definition[:label].call, scope.to_s]
     end
-
-    sorted_options = options.sort_by { |_label, value| Search::Scopes.scope_definitions[value.to_sym][:sort] }
     sorted_options.prepend([_('System default (automatic)'), 'system default'])
   end
 
@@ -291,7 +291,6 @@ module ApplicationSettingsHelper
       :allow_bypass_placeholder_confirmation,
       :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
-      :ci_partitions_size_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -607,6 +606,7 @@ module ApplicationSettingsHelper
       :allow_contribution_mapping_to_admins,
       :allow_s3_compatible_storage_for_offline_transfer,
       :allow_runner_registration_token,
+      :valid_runner_registrars,
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
@@ -651,7 +651,7 @@ module ApplicationSettingsHelper
       :ropc_without_client_credentials,
       :global_search_snippet_titles_enabled,
       :global_search_users_enabled,
-      :global_search_issues_enabled,
+      :global_search_work_items_enabled,
       :global_search_merge_requests_enabled,
       :global_search_block_anonymous_searches_enabled,
       :enable_language_server_restrictions,
@@ -670,7 +670,9 @@ module ApplicationSettingsHelper
       :runner_jobs_request_api_limit,
       :runner_jobs_patch_trace_api_limit,
       :runner_jobs_endpoints_api_limit,
-      :background_operations_max_jobs
+      :background_operations_max_jobs,
+      :enforce_granular_tokens,
+      :granular_tokens_enforced_after
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

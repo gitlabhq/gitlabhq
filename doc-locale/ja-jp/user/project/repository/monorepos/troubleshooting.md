@@ -1,69 +1,69 @@
 ---
-stage: Data Access
+stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: モノレポのパフォーマンスのトラブルシューティング
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: トラブルシューティングモノレポのパフォーマンス
 ---
 
-モノレポに関するパフォーマンスの問題について、これらの提案を確認してください。
+モノレポのパフォーマンス問題について、これらの提案を確認してください。
 
-## `git clone`または`git fetch`の実行速度が遅い {#slowness-during-git-clone-or-git-fetch}
+## `git clone`または`git fetch`中の遅延 {#slowness-during-git-clone-or-git-fetch}
 
-クローンとフェッチの速度が低下する主な原因がいくつかあります。
+クローンとフェッチにおける遅延の主な原因がいくつかあります。
 
-### CPU使用率が高い {#high-cpu-utilization}
+### 高いCPU使用率 {#high-cpu-utilization}
 
-GitalyノードのCPU使用率が高い場合は、[特定の値をフィルタリング](observability.md#cpu-and-memory)して、クローンで使用されているCPUの量を確認することもできます。
+GitalyノードのCPU使用率が高い場合、[特定の値をフィルタリングして](observability.md#cpu-and-memory)クローンによって消費されるCPU量をチェックすることもできます。
 
-特に、`command.cpu_time_ms`フィールドは、クローンとフェッチによってどれだけのCPUが使用されているかを示すことができます。
+特に、`command.cpu_time_ms`フィールドは、クローンとフェッチによってどれくらいのCPUが消費されているかを示します。
 
-ほとんどの場合、サーバーの負荷の大部分は`git-pack-objects`プロセスから生成され、これはクローンとフェッチ中に開始されます。モノレポは非常にビジー状態であることが多く、CI/CDシステムは多くのクローンおよびフェッチコマンドをサーバーに送信します。
+ほとんどの場合、サーバー負荷の大部分は、クローンとフェッチ中に開始される`git-pack-objects`プロセスから生成されます。モノレポは非常に頻繁に使用され、CI/CDシステムは多くのクローンおよびフェッチコマンドをサーバーに送信します。
 
-CPU使用率が高いと、パフォーマンスが低下する一般的な原因となります。相互に排他的でない以下の原因が考えられます:
+高いCPU使用率は、パフォーマンス低下の一般的な原因です。以下の相互排他的ではない原因が考えられます:
 
 - [Gitalyが処理するにはクローンが多すぎる](#cause-too-many-large-clones)。
-- [Gitalyクラスター (Praefect) での読み取り分散が不十分](#cause-poor-read-distribution)。
+- [Gitalyクラスター (Praefect) における読み取り分散の不備](#cause-poor-read-distribution)。
 
 #### 原因: 大規模なクローンが多すぎる {#cause-too-many-large-clones}
 
-Gitalyが処理するには、大規模なクローンが多すぎる可能性があります。Gitalyは、いくつかの要因により、対応に苦慮する可能性があります:
+Gitalyが処理するには、大規模なクローンが多すぎる可能性があります。Gitalyは、いくつかの要因により対応が困難になることがあります:
 
 - リポジトリのサイズ。
-- クローンとフェッチのボリューム。
+- クローンとフェッチの量。
 - CPU容量の不足。
 
-Gitalyが多数の大型クローンを処理できるようにするために、次のような最適化戦略を通じて、Gitalyサーバーの負荷を軽減する必要がある場合があります:
+Gitalyが多数の大規模なクローンを処理できるようにするには、以下のような最適化戦略によってGitalyサーバーへの負荷を軽減する必要があるかもしれません:
 
-- [pack-objects-cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)をオンにして、`git-pack-objects`が行う必要のある作業を減らします。
-- CI/CD設定の[Git戦略](_index.md#use-git-fetch-in-cicd-operations)を`clone`から`fetch`または`none`に変更します。
-- テストで必要な場合を除き、[タグ付けのフェッチを停止](_index.md#change-git-fetch-behavior-with-flags)します。
-- 可能な限り[シャロークローンを使用](_index.md#use-shallow-clones-and-filters-in-cicd-processes)してください。
+- `git-pack-objects`の作業を減らすには、[パックオブジェクトキャッシュ](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)をオンにします。
+- CI/CD設定で[Git戦略](_index.md#use-git-fetch-in-cicd-operations)を`clone`から`fetch`または`none`に変更します。
+- テストで必要な場合を除き、[タグのフェッチを停止します](_index.md#change-git-fetch-behavior-with-flags)。
+- 可能な限り[シャロークローンを使用](_index.md#use-shallow-clones-and-filters-in-cicd-processes)します。
 
-もう1つのオプションは、GitalyサーバーのCPU容量を増やすことです。
+もう1つの選択肢は、GitalyサーバーのCPU容量を増やすことです。
 
-#### 原因: 読み取り分散の不具合 {#cause-poor-read-distribution}
+#### 原因: 読み取り分散の不備 {#cause-poor-read-distribution}
 
-Gitalyクラスター（Praefect）での読み取り分散が不十分である可能性があります。
+Gitalyクラスター (Praefect) における読み取り分散が不十分な場合があります。
 
-ほとんどの読み取りトラフィックがクラスター全体に分散される代わりに、プライマリGitalyノードに送信されているかどうかを確認するには、[読み取り分散Prometheusメトリクス](observability.md#read-distribution)を使用します。
+ほとんどの読み取りトラフィックがクラスター全体に分散されずにプライマリGitalyノードに向かっているかどうかを観察するには、[読み取り分散Prometheusメトリクス](observability.md#read-distribution)を使用します。
 
-セカンダリGitalyノードがあまりトラフィックを受信していない場合、セカンダリノードが常に同期していない可能性があります。この問題はモノレポで悪化します。
+セカンダリGitalyノードが多くのトラフィックを受信していない場合、セカンダリノードが永続的に同期が取れていない可能性があります。この問題はモノレポで悪化します。
 
-モノレポは、大規模でビジー状態であることがよくあります。これにより、2つの影響があります。まず、モノレポはプッシュされることが多く、多くのCIジョブが実行されています。ブランチの削除などの書き込み操作が、セカンダリノードへのプロキシ呼び出しに失敗する場合があります。これにより、セカンダリノードが最終的に追いつくように、Gitalyクラスター（Praefect）でレプリケーションジョブがトリガーされます。
+モノレポは、大規模で頻繁に使用される傾向があります。これは2つの影響をもたらします。まず、モノレポには頻繁にプッシュされ、多くのCIジョブが実行されています。ブランチの削除などの書き込み操作が、セカンダリノードへのプロキシ呼び出しを失敗させることがあります。これにより、Gitalyクラスター (Praefect) でレプリケーションジョブがトリガーされ、セカンダリノードはいずれ追いつきます。
 
-レプリケーションジョブは基本的に、セカンダリノードからプライマリノードへの`git fetch`であり、モノレポは非常に大きいことが多いため、このフェッチには時間がかかることがあります。
+レプリケーションジョブは、本質的にセカンダリノードからプライマリノードへの`git fetch`であり、モノレポは非常に大規模であるため、このフェッチには長い時間がかかることがあります。
 
-前のレプリケーションジョブが完了する前に次の呼び出しが失敗し、これが繰り返し発生する場合、モノレポがセカンダリで常に遅れている状態になる可能性があります。これにより、すべてのトラフィックがプライマリノードに送信されます。
+前のレプリケーションジョブが完了する前に次の呼び出しが失敗し、これが継続的に発生する場合、モノレポのセカンダリが常に遅れている状態になる可能性があります。これにより、すべてのトラフィックがプライマリノードに送られます。
 
-これらのプロキシされた書き込みの失敗の原因の1つは、Git `$GIT_DIR/packed-refs`ファイルに関する既知の問題です。ファイル内のエントリを削除するには、ファイルをロックする必要があります。これにより、同時削除が発生すると削除が失敗する競合状態が発生する可能性があります。
+これらの失敗したプロキシ書き込みの1つの理由は、Git `$GIT_DIR/packed-refs`ファイルに関する既知の問題です。ファイルをロックしてファイル内のエントリを削除する必要がありますが、これにより競合状態が発生し、同時削除が発生した場合に削除が失敗する可能性があります。
 
-GitLabのエンジニアは、参照削除をバッチ処理しようとする軽減策を開発しました。
+GitLabのエンジニアは、参照削除をバッチ処理する軽減策を開発しました。
 
-GitLabが参照削除をバッチ処理できるようにするには、次の[機能フラグ](../../../../administration/feature_flags/_index.md)をオンにします。これらの機能フラグを有効にするために、ダウンタイムは必要ありません。
+GitLabが参照削除をバッチ処理できるように、以下の[機能フラグ](../../../../administration/feature_flags/_index.md)をオンにします。これらの機能フラグを有効にするためにダウンタイムは必要ありません。
 
 - `merge_request_cleanup_ref_worker_async`
 - `pipeline_cleanup_ref_worker_async`
 - `pipeline_delete_gitaly_refs_in_batches`
 - `merge_request_delete_gitaly_refs_in_batches`
 
-[エピック4220](https://gitlab.com/groups/gitlab-org/-/epics/4220)は、長期的なソリューションと見なされている、GitLabでのreftableサポートの追加を提案しています。
+[エピック4220](https://gitlab.com/groups/gitlab-org/-/epics/4220)は、GitLabにreftableサポートを追加することを提案しており、これは長期的なソリューションと見なされています。

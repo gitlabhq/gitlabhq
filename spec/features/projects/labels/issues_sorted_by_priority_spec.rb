@@ -14,10 +14,7 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
   let(:label_5) { create(:label, title: 'label_5', project: project) } # no priority
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
   end
 
   # According to https://gitlab.com/gitlab-org/gitlab-foss/issues/14189#note_4360653
@@ -38,7 +35,7 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
       issue_1.labels << label_5
 
       sign_in user
-      visit project_issues_path(project, sort: 'label_priority')
+      visit project_work_items_path(project, sort: 'label_priority')
 
       wait_for_requests
 
@@ -77,7 +74,7 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
       issue_6.labels << label_5 # 8 - No priority
 
       sign_in user
-      visit project_issues_path(project, sort: 'label_priority')
+      visit project_work_items_path(project, sort: 'label_priority')
 
       wait_for_requests
 

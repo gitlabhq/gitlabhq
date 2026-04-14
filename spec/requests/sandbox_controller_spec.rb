@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe SandboxController, feature_category: :shared do
-  describe 'GET #mermaid' do
-    subject(:get_mermaid) { get sandbox_mermaid_path }
+  shared_examples 'mermaid sandbox endpoint' do |path_helper|
+    subject(:get_mermaid) { get send(path_helper) }
 
     it 'renders page without template' do
       get_mermaid
@@ -107,5 +107,13 @@ RSpec.describe SandboxController, feature_category: :shared do
         expect(directives['frame-src']).not_to eq("'none'")
       end
     end
+  end
+
+  describe 'GET #mermaid_v10' do
+    it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v10_path
+  end
+
+  describe 'GET #mermaid_v11' do
+    it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v11_path
   end
 end

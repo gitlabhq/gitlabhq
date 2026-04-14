@@ -34,8 +34,7 @@
             = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
           -# Top bar
-          - unless @hide_top_bar
-            = render "layouts/nav/top_bar", paneled_view: true
+          = render "layouts/nav/top_bar", paneled_view: true
 
         .panel-content
           .panel-content-inner.js-static-panel-inner

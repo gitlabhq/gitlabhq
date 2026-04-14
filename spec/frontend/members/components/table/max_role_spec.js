@@ -1,4 +1,5 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints; component is deprecated
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';

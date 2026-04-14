@@ -30,11 +30,11 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
         it 'does not allow changing the type' do
           within_testid 'work-item-tree' do
             find_by_testid('add-tree-child-button').click
-            click_button "Existing task"
+            click_button "Existing Task"
             fill_in 'Search existing items', with: task.title
             click_button task.title
             send_keys :escape
-            click_button "Add task"
+            click_button "Add Task"
             wait_for_all_requests
           end
           page.refresh
@@ -87,10 +87,24 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
         expect(page).to have_button('Change type', disabled: false)
 
         within_testid('change-type-warning-message', wait: 20) do
-          message = s_('Some fields are not present in %{type}. If you change type now, this information will be lost.')
-          expect(page).to have_content(format(message, type: 'task'))
+          message = _('Some fields are not present in %{type}. If you change type now, this information will be lost.')
+          expect(page).to have_content(format(message, type: 'Task'))
           expect(page).to have_content(s_('WorkItem|Designs'))
         end
+      end
+    end
+
+    context 'when converting to incident' do
+      it 'redirects to the legacy view' do
+        visit project_work_item_path(project, issue.iid)
+
+        click_button _('More actions'), match: :first
+        click_button s_('WorkItem|Change type')
+        select 'Incident', from: s_('WorkItem|Type')
+        click_button s_('WorkItem|Change type')
+
+        # Legacy issue app rendered
+        expect(page).to have_selector('.issuable-details')
       end
     end
   end
@@ -98,6 +112,6 @@ RSpec.describe 'Change type action', :js, feature_category: :portfolio_managemen
   def trigger_change_type(type)
     click_button _('More actions'), match: :first
     click_button s_('WorkItem|Change type')
-    find_by_testid('work-item-change-type-select').select(type)
+    select type, from: s_('WorkItem|Type')
   end
 end

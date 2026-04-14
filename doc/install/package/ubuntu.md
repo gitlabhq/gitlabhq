@@ -200,4 +200,4 @@ for our dedicated security newsletter.
 ## Recommended next steps
 
 After completing your installation, consider the
-[recommended next steps, including authentication options and sign-up restrictions](../next_steps.md).
+[recommended next steps, including authentication options and new user account restrictions](../next_steps.md).

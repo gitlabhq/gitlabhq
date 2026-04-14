@@ -131,11 +131,16 @@ export default {
         }
 
         if (isAdding) {
+          if (line.type === 'match') break;
+
           if (line.type !== OLD_LINE_TYPE) {
             lines.push(line);
           }
 
-          if (end.line_code === line.line_code) {
+          if (
+            end.line_code === line.line_code ||
+            (end.new_line != null && line.new_line === end.new_line)
+          ) {
             break;
           }
         }

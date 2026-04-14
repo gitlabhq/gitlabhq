@@ -114,7 +114,7 @@ officially supported and might be removed from the product.
 When migrating to SBOM-based dependency scanning, be aware of potential impacts on compliance frameworks:
 
 - The "Dependency scanning running" compliance control may fail on GitLab Self-Managed instances (from 18.4) when using SBOM-based scanning because it expects the traditional `gl-dependency-scanning-report.json` artifact.
-- This issue does not affect GitLab.com (SaaS) instances.
+- This issue does not affect GitLab.com instances.
 - If your organization uses compliance frameworks with dependency scanning controls, test the migration in a non-production environment first.
 
 For more information, see [compliance framework compatibility](dependency_scanning_sbom/_index.md#compliance-framework-compatibility).

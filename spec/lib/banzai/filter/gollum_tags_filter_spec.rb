@@ -44,19 +44,19 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
       it 'does not unescape HTML entities' do
         doc = filter('This is [[a link|&lt;script&gt;alert(0)&lt;/script&gt;]]', context)
 
-        expect(doc.to_html).to eq 'This is <a href="&lt;script&gt;alert(0)&lt;/script&gt;" data-wikilink="true">a link</a>'
+        expect(doc.to_html).to eq_html 'This is <a href="&lt;script&gt;alert(0)&lt;/script&gt;" data-wikilink="true">a link</a>'
       end
 
       it 'does not unescape HTML entities in the link text' do
         doc = filter('This is [[&lt;script&gt;alert(0)&lt;/script&gt;|link]]', context)
 
-        expect(doc.to_html).to eq 'This is <a href="link" data-wikilink="true">&lt;script&gt;alert(0)&lt;/script&gt;</a>'
+        expect(doc.to_html).to eq_html 'This is <a href="link" data-wikilink="true">&lt;script&gt;alert(0)&lt;/script&gt;</a>'
       end
 
       it 'does not unescape HTML entities outside the link text' do
         doc = filter('This is &lt;script&gt;alert(0)&lt;/script&gt; [[a link|link]]', context)
 
-        expect(doc.to_html).to eq 'This is &lt;script&gt;alert(0)&lt;/script&gt; <a href="link" data-wikilink="true">a link</a>'
+        expect(doc.to_html).to eq_html 'This is &lt;script&gt;alert(0)&lt;/script&gt; <a href="link" data-wikilink="true">a link</a>'
       end
     end
 
@@ -64,14 +64,14 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
       tag = '[[a|http:\'"injected=attribute&gt;&lt;img/src="0"onerror="alert(0)"&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1]]'
       doc = filter("See #{tag}", context)
 
-      expect(doc.at_css('a').to_html).to eq '<a href="http:\'%22injected=attribute&gt;&lt;img/src=%220%22onerror=%22alert(0)%22&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1" data-wikilink="true">a</a>'
+      expect(doc.at_css('a').to_html).to eq_html '<a href="http:\'%22injected=attribute&gt;&lt;img/src=%220%22onerror=%22alert(0)%22&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1" data-wikilink="true">a</a>'
     end
 
     it 'sanitizes the href attribute (case 2)' do
       tag = '<i>[[a|\'"&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title="&lt;script&gt;alert(0)&lt;/script&gt;"/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1]]'
       doc = filter("See #{tag}", context)
 
-      expect(doc.at_css('i a').to_html).to eq "<a href=\"'%22&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title=%22&lt;script&gt;alert(0)&lt;/script&gt;%22/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1\" data-wikilink=\"true\">a</a>"
+      expect(doc.at_css('i a').to_html).to eq_html "<a href=\"'%22&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title=%22&lt;script&gt;alert(0)&lt;/script&gt;%22/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1\" data-wikilink=\"true\">a</a>"
     end
 
     it 'protects against malicious input' do

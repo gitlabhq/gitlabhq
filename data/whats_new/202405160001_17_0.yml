@@ -1,6 +1,6 @@
 - name: CI/CD Catalog with components and inputs now generally available
   description: |
-     The CI/CD Catalog is now generally available. As part of this release, we're also making [CI/CD components](https://docs.gitlab.com/ee/ci/components/) and [inputs](https://docs.gitlab.com/ee/ci/yaml/inputs.html) generally available.
+     The CI/CD Catalog is now generally available. As part of this release, we're also making [CI/CD components](https://docs.gitlab.com/ci/components/) and [inputs](https://docs.gitlab.com/ci/yaml/inputs/) generally available.
 
      With the CI/CD Catalog, you gain access to a vast array of components created by the community and industry experts.
      Whether you're seeking solutions for continuous integration, deployment pipelines, or automation tasks, you'll find a diverse selection of components tailored to suit your requirements.
@@ -11,27 +11,27 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/components/#cicd-catalog
+  documentation_link: https://docs.gitlab.com/ci/components/#cicd-catalog
   image_url: https://img.youtube.com/vi/QDn77nwIb-o/hqdefault.jpg
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: AI Impact analytics in the Value Streams Dashboard
   description: |
       AI Impact is a dashboard available in the Value Streams Dashboard that helps organizations understand the [impact of GitLab Duo on their productivity](https://about.gitlab.com/blog/2024/02/20/measuring-ai-effectiveness-beyond-developer-productivity-metrics/).
       This new month-over-month metric view compares the AI Usage trends with SDLC metrics like lead time, cycle time, DORA, and vulnerabilities. Software leaders can use the AI Impact dashboard to measure how much time is saved in their end-to-end workstream, while staying focused on business outcomes rather than developer activity.
 
-      In this first release, the AI usage is measured as the monthly [Code Suggestions](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/) usage rate, and is calculated as the number of monthly unique Code Suggestions users divided by total monthly unique [contributors](https://docs.gitlab.com/ee/user/group/contribution_analytics/).
+      In this first release, the AI usage is measured as the monthly [Code Suggestions](https://docs.gitlab.com/user/project/repository/code_suggestions/) usage rate, and is calculated as the number of monthly unique Code Suggestions users divided by total monthly unique [contributors](https://docs.gitlab.com/user/group/contribution_analytics/).
 
       The AI Impact dashboard is available to users on the Ultimate tier for a limited time. Afterwards, a GitLab Duo Enterprise license will be required to use the dashboard.
   stage: plan
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#ai-impact-analytics
+  documentation_link: https://docs.gitlab.com/user/analytics/value_streams_dashboard/#ai-impact-analytics
   image_url: https://about.gitlab.com/images/17_0/17.0_vsd_ai2.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: Introducing hosted runners on Linux Arm
   description: |
@@ -43,10 +43,10 @@
   self-managed: false
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/runners/hosted_runners/linux.html
+  documentation_link: https://docs.gitlab.com/ci/runners/hosted_runners/linux/
   image_url: https://about.gitlab.com/images/17_0/larger-runners.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: Introducing deployment detail pages
   description: |
@@ -57,10 +57,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#approve-or-reject-a-deployment
+  documentation_link: https://docs.gitlab.com/ci/environments/deployment_approvals/#approve-or-reject-a-deployment
   image_url: https://about.gitlab.com/images/17_0/deployment-detail-page.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: GitLab Duo Chat now uses Anthropic Claude 3 Sonnet
   description: |
@@ -71,10 +71,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/ai_features.html#gitlab-duo-chat
+  documentation_link: https://docs.gitlab.com/user/ai_features/#gitlab-duo-chat
   image_url: https://about.gitlab.com/images/17_0/gitlabduo.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: Enhanced context control with the `rules:exists` CI/CD keyword
   description: |
@@ -85,10 +85,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#rulesexistsproject
+  documentation_link: https://docs.gitlab.com/ci/yaml/#rulesexistsproject
   image_url: https://about.gitlab.com/images/17_0/exists.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: Add a group to the CI/CD job token allowlist
   description: |
@@ -99,10 +99,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#control-job-token-access-to-your-project
+  documentation_link: https://docs.gitlab.com/ci/jobs/ci_job_token/#control-job-token-access-to-your-project
   image_url: https://about.gitlab.com/images/17_0/verify-add-a-group-to-the-job-token-allowlist.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"
 
 - name: New usage overview panel in the Value Streams Dashboard
   description: |
@@ -113,7 +113,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#overview-panel
+  documentation_link: https://docs.gitlab.com/user/analytics/value_streams_dashboard/#overview-panel
   image_url: https://about.gitlab.com/images/17_0/vsd_overview_17.png
   published_at: 2024-05-16
-  release: 17.0
+  release: "17.0"

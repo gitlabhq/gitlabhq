@@ -16,7 +16,7 @@ title: Tags API
 Use this API to manage [Git tags](../user/project/repository/tags/_index.md). This API also returns X.509
 signature information from signed tags.
 
-## List project repository tags
+## List all project repository tags
 
 {{< history >}}
 
@@ -24,7 +24,7 @@ signature information from signed tags.
 
 {{< /history >}}
 
-Get a list of repository tags from a project, sorted by update date and time in
+Lists all repository tags from a project, sorted by update date and time in
 descending order.
 
 > [!note]
@@ -113,7 +113,7 @@ Example response:
 ]
 ```
 
-## Get a single repository tag
+## Retrieve a single repository tag
 
 {{< history >}}
 
@@ -121,7 +121,7 @@ Example response:
 
 {{< /history >}}
 
-Get a specific repository tag determined by its name. This endpoint can be
+Retrieves a repository tag with the specified name. This endpoint can be
 accessed without authentication if the repository is publicly accessible.
 
 ```plaintext
@@ -294,7 +294,7 @@ Errors return status code `405` with an explanatory error message.
 
 ## Delete a tag
 
-Deletes a tag of a repository with given name.
+Deletes a repository tag with the specified name.
 
 ```plaintext
 DELETE /projects/:id/repository/tags/:tag_name
@@ -307,9 +307,9 @@ Supported attributes:
 | `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `tag_name` | string            | Yes      | Name of a tag. |
 
-## Get X.509 signature of a tag
+## Retrieve X.509 signature of a tag
 
-Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
+Retrieves the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.
 
 ```plaintext

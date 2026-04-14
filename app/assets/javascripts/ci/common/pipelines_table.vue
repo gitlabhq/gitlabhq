@@ -1,6 +1,7 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
+import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -44,6 +45,7 @@ export default {
     PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
+    RunPipelineButton,
     DuoWorkflowAction,
   },
   directives: {
@@ -76,8 +78,23 @@ export default {
         return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
       },
     },
+    showRunPipelineButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    runPipelineButtonLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    mergeRequestId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['cancel-pipeline', 'refresh-pipelines-table', 'retry-pipeline'],
+  emits: ['cancel-pipeline', 'job-action-executed', 'retry-pipeline', 'run-pipeline'],
   computed: {
     tableFields() {
       return [
@@ -160,8 +177,8 @@ export default {
     onCancelPipeline(pipeline) {
       this.$emit('cancel-pipeline', pipeline);
     },
-    onRefreshPipelinesTable() {
-      this.$emit('refresh-pipelines-table');
+    onJobActionExecuted(pipeline) {
+      this.$emit('job-action-executed', pipeline);
     },
     onRetryPipeline(pipeline) {
       this.$emit('retry-pipeline', pipeline);
@@ -227,9 +244,15 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <slot name="table-header-actions">
-          <span class="gl-block gl-text-right">{{ s__('Pipeline|Actions') }}</span>
-        </slot>
+        <div v-if="showRunPipelineButton" class="gl-text-right">
+          <run-pipeline-button
+            data-testid="run_pipeline_button"
+            :is-loading="runPipelineButtonLoading"
+            :merge-request-id="mergeRequestId"
+            @run-pipeline="$emit('run-pipeline')"
+          />
+        </div>
+        <span v-else class="gl-block gl-text-right">{{ s__('Pipeline|Actions') }}</span>
       </template>
 
       <template #table-colgroup="{ fields }">
@@ -268,6 +291,7 @@ export default {
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
           :upstream-pipeline="getUpstreamPipeline(item)"
+          @job-action-executed="onJobActionExecuted(item)"
           @mini-graph-stage-click="trackPipelineMiniGraph"
         />
       </template>
@@ -280,7 +304,7 @@ export default {
           v-else
           :pipeline="item"
           @cancel-pipeline="onCancelPipeline"
-          @refresh-pipelines-table="onRefreshPipelinesTable"
+          @job-action-executed="onJobActionExecuted(item)"
           @retry-pipeline="onRetryPipeline"
         >
           <template #duo-workflow-action>

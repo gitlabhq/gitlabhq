@@ -23,7 +23,7 @@ They provide you with the following benefits:
 
 To use Git operations effectively, it's important to understand key concepts such as
 repositories, branches, commits, and merge requests.
-For more information, see [Get started learning Git](get_started.md).
+For more information, see [get started learning Git](get_started.md).
 
 ## Best practices
 
@@ -44,7 +44,7 @@ It confirms that changes in your branch don't conflict with changes in the targe
 If you have a [merge conflict](../../user/project/merge_requests/conflicts.md),
 you can rebase to fix it.
 
-For more information, see [Rebase to address merge conflicts](git_rebase.md).
+For more information, see [rebase to address merge conflicts](git_rebase.md).
 
 ## Cherry-pick changes
 
@@ -55,7 +55,7 @@ Use it to:
 - Copy changes from a fork to the upstream repository.
 - Apply specific changes without merging entire branches.
 
-For more information, see [Cherry-pick changes with Git](cherry_pick.md).
+For more information, see [cherry-pick changes with Git](cherry_pick.md).
 
 ## Revert and undo changes
 
@@ -66,15 +66,16 @@ The following Git commands help you to revert and undo changes:
 - `git reset`: Resets and undoes changes that are not yet committed.
 - `git restore`: Restores changes that are lost or deleted.
 
-For more information, see [Revert changes](undo.md).
+For more information, see [revert changes](undo.md).
 
 ## Reduce repository size
 
 The size of a Git repository can impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
-For more information about repository size, see [Repository size](../../user/project/repository/repository_size.md).
+For more information about repository size, see [repository size](../../user/project/repository/repository_size.md).
 
-You can use Git to purge files from your repository's history and reduce its size. For more information, see [Reduce repository size](repository.md).
+You can use Git to purge files from your repository's history and reduce its size.
+For more information, see [reduce repository size](repository.md).
 
 ## File management
 
@@ -84,11 +85,7 @@ You can use Git to manage files in your repository. It helps you track changes, 
 - `git blame`: Identify who last modified a line of code in a file.
 - `git lfs`: Manage, track, and lock files in your repository.
 
-<!-- Include when the relevant MR is merged.
-
-For more information, see [File management](file_management.md).
-
--->
+For more information, see [file management](file_management.md).
 
 ## Update Git remote URLs
 
@@ -99,7 +96,7 @@ Use this if:
 - Your organization moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-For more information, see [Update Git remote URLs](../../tutorials/update_git_remote_url/_index.md).
+For more information, see [update Git remote URLs](../../tutorials/update_git_remote_url/_index.md).
 
 ## Related topics
 

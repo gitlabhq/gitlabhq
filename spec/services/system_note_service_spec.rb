@@ -826,4 +826,23 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       expect { described_class.reviewed(noteable, author) }.to change { Note.count }.by(1)
     end
   end
+
+  describe '.move_child_to_new_parent' do
+    let(:child) { double }
+    let(:new_parent) { double }
+    let(:prev_parent) { double('prev_parent', project: project) }
+
+    it 'calls IssuablesService' do
+      expect_next_instance_of(SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:move_child_to_new_parent).with(child, new_parent)
+      end
+
+      described_class.move_child_to_new_parent(
+        prev_parent: prev_parent,
+        child: child,
+        new_parent: new_parent,
+        author: author
+      )
+    end
+  end
 end

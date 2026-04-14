@@ -12,7 +12,8 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       ignore_whitespace_change: false,
       expanded: false,
       use_extra_viewer_as_main: true,
-      offset_index: 0
+      offset_index: 0,
+      only_context_commits: false
     }
   end
 
@@ -79,6 +80,26 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         end
 
         go
+      end
+
+      context 'when rapid_diffs_on_mr_show feature flag is disabled' do
+        before do
+          stub_feature_flags(rapid_diffs_on_mr_show: false)
+        end
+
+        it 'does not include only_context_commits in options' do
+          expected_options = diff_options_hash.except(:only_context_commits)
+
+          expect_next_instance_of(::Projects::MergeRequests::DiffsStreamController) do |controller|
+            context = controller.view_context
+            allow(controller).to receive(:view_context).and_return(context)
+            expect(controller).to receive(:stream_diff_files)
+              .with(expected_options, context)
+              .and_call_original
+          end
+
+          go
+        end
       end
     end
 
@@ -169,5 +190,42 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
     end
 
     include_examples 'with diffs_blobs param'
+
+    context 'when only_context_commits is true' do
+      let_it_be(:sha1) { "33f3729a45c02fc67d00adb1b8bca394b0e761d9" }
+      let_it_be(:sha2) { "ae73cb07c9eeaf35924a10f713b364d32b2dd34f" }
+
+      before_all do
+        create(:merge_request_context_commit, merge_request: merge_request, sha: sha1,
+          committed_date: project.commit_by(oid: sha1).committed_date)
+        create(:merge_request_context_commit, merge_request: merge_request, sha: sha2,
+          committed_date: project.commit_by(oid: sha2).committed_date)
+      end
+
+      it 'streams context commit diffs' do
+        go(only_context_commits: true)
+
+        expect(response).to have_gitlab_http_status(:success)
+
+        context_diff_files = merge_request.context_commits_diff.diffs.diff_files
+        context_file_hashes = context_diff_files.to_a.map(&:file_hash)
+
+        expect(response.body).to include(*context_file_hashes)
+      end
+
+      it 'passes only_context_commits option to stream_diff_files' do
+        expected_options = diff_options_hash.merge(only_context_commits: true)
+
+        expect_next_instance_of(::Projects::MergeRequests::DiffsStreamController) do |controller|
+          context = controller.view_context
+          allow(controller).to receive(:view_context).and_return(context)
+          expect(controller).to receive(:stream_diff_files)
+            .with(expected_options, context)
+            .and_call_original
+        end
+
+        go(only_context_commits: true)
+      end
+    end
   end
 end

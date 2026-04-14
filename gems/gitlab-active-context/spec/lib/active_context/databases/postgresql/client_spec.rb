@@ -114,7 +114,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
       allow(ar_connection).to receive(:execute).and_return(query_result)
       allow(ActiveContext::Databases::Postgresql::QueryResult).to receive(:new).and_return(processed_result)
-      allow(processed_result).to receive(:authorized_results).and_return(authorized_results)
+      allow(processed_result).to receive_messages(authorized_results: authorized_results, count: 5)
     end
 
     it 'executes query and returns authorized results' do
@@ -128,6 +128,20 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       result = client.search(collection: collection, query: ActiveContext::Query.filter(project_id: 1), user: user)
 
       expect(result).to eq(authorized_results)
+    end
+
+    it 'logs search duration and result count' do
+      allow(ActiveContext::Databases::Postgresql::Processor)
+        .to receive(:transform).and_return('SELECT * FROM pg_stat_activity')
+
+      expect(ActiveContext::Logger).to receive(:info).with(
+        message: 'ActiveContext client search completed',
+        collection: collection,
+        duration_s: be_a(Float),
+        result_count: 5
+      )
+
+      client.search(collection: collection, query: ActiveContext::Query.filter(project_id: 1), user: user)
     end
   end
 

@@ -155,10 +155,10 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
     end
 
     context 'when scope passed is included in allowed_scopes' do
-      let(:scope) { 'issues' }
+      let(:scope) { 'work_items' }
 
       it 'returns that scope' do
-        expect(service.scope).to eq('issues')
+        expect(service.scope).to eq('work_items')
       end
     end
 

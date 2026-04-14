@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Back up your self-managed GitLab instance using `gitlab-backup` command, including database, repositories, and configuration files.
 title: Back up GitLab
-description: Guide to backing up GitLab instances, covering backup strategies, data types, command options, and scaling considerations.
+description: Back up your GitLab Self-Managed instance.
 ---
 
 {{< details >}}
@@ -463,13 +462,13 @@ DECOMPRESS_CMD=tee gitlab-backup restore
 An example of compressing backups with `pigz` using 4 processes:
 
 ```shell
-COMPRESS_CMD="pigz --compress --stdout --fast --processes=4" sudo gitlab-backup create
+sudo COMPRESS_CMD="pigz --compress --stdout --fast --processes=4" gitlab-backup create
 ```
 
 Because `pigz` compresses to the `gzip` format, it is not required to use `pigz` to decompress backups which were compressed by `pigz`. However, it can still have a performance benefit over `gzip`. An example of decompressing backups with `pigz`:
 
 ```shell
-DECOMPRESS_CMD="pigz --decompress --stdout" sudo gitlab-backup restore
+sudo DECOMPRESS_CMD="pigz --decompress --stdout" gitlab-backup restore
 ```
 
 > [!note]
@@ -483,13 +482,13 @@ DECOMPRESS_CMD="pigz --decompress --stdout" sudo gitlab-backup restore
 An example of compressing backups with `zstd` using 4 threads:
 
 ```shell
-COMPRESS_CMD="zstd --compress --stdout --fast --threads=4" sudo gitlab-backup create
+sudo COMPRESS_CMD="zstd --compress --stdout --fast --threads=4" gitlab-backup create
 ```
 
 An example of decompressing backups with `zstd`:
 
 ```shell
-DECOMPRESS_CMD="zstd --decompress --stdout" sudo gitlab-backup restore
+sudo DECOMPRESS_CMD="zstd --decompress --stdout" gitlab-backup restore
 ```
 
 > [!note]

@@ -1,9 +1,13 @@
 .gl-flex.gl-flex-col.gl-gap-5{ @options }
-  = render ::Layouts::PageHeadingComponent.new(@heading, options: { class: '!gl-my-0' }) do |c|
+  = render ::Layouts::PageHeadingComponent.new(@heading, options: { class: page_heading_classes }) do |c|
     - c.with_heading do
       = heading || @heading
-    - c.with_description do
-      = description || @description
+    - if actions?
+      - c.with_actions do
+        = actions
+    - if description? || @description
+      - c.with_description do
+        = description || @description
 
   - if alerts?
     .gl-flex.gl-flex-col.gl-gap-3{ data: { testid: 'index-layout-alerts' } }

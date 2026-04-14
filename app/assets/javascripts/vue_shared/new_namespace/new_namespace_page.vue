@@ -1,6 +1,6 @@
 <script>
 import { MountingPortal } from 'portal-vue';
-import { GlBreadcrumb, GlIcon, GlAlert } from '@gitlab/ui';
+import { GlBreadcrumb, GlIcon, GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import LegacyContainer from './components/legacy_container.vue';
@@ -12,6 +12,8 @@ export default {
     GlBreadcrumb,
     GlIcon,
     GlAlert,
+    GlSprintf,
+    GlLink,
     WelcomePage,
     LegacyContainer,
     MountingPortal,
@@ -109,6 +111,9 @@ export default {
   },
 
   i18n: {
+    message: s__(
+      'ProjectTemplates|Learn how to %{linkStart}contribute to the built-in templates%{linkEnd}.',
+    ),
     restrictedAlert: {
       title: s__(
         'IdentityVerification|Before you can create additional groups, we need to verify your account.',
@@ -124,17 +129,8 @@ export default {
 
 <template>
   <div>
-    <mounting-portal mount-to=".panel-header" name="breadcrumbs" append>
-      <div
-        class="top-bar-fixed container-fluid gl-border-b gl-top-0 gl-mx-0 gl-w-full"
-        data-testid="top-bar"
-      >
-        <div
-          class="top-bar-container gl-flex gl-items-center gl-border-b-0 gl-border-b-default gl-border-b-solid"
-        >
-          <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
-        </div>
-      </div>
+    <mounting-portal mount-to="#js-vue-page-breadcrumbs-wrapper" name="breadcrumbs" append>
+      <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
     </mounting-portal>
 
     <template v-if="activePanel">
@@ -142,6 +138,16 @@ export default {
         <template #description>
           <template v-if="hasTextDetails">{{ details }}</template>
           <component :is="details" v-else v-bind="detailProps" />
+          <gl-sprintf v-if="activePanel.key === 'template'" :message="$options.i18n.message">
+            <template #link="{ content }">
+              <gl-link
+                href="https://gitlab.com/gitlab-org/project-templates/contributing"
+                target="_blank"
+                rel="noopener noreferrer"
+                >{{ content }}</gl-link
+              >
+            </template>
+          </gl-sprintf>
           <slot name="extra-description"></slot>
         </template>
       </page-heading>

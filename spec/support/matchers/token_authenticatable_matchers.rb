@@ -5,9 +5,9 @@ module TokenAuthenticatableMatchers
 
   ROUTING_PAYLOAD_REGEX =
     %r{
-      (c:\w+\n)?
-      (g:\w+\n)?
-      o:\w+
+      (c:\w+(\n|\z))?
+      (g:\w+(\n|\z))?
+      (o:\w+)?
       (\np:\w+)?
       (\nu:\w+)?
     }mx

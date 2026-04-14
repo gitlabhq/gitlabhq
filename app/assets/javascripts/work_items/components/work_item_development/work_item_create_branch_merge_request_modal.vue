@@ -4,7 +4,7 @@ import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
-import { NAME_TO_TEXT_LOWERCASE_MAP } from '~/work_items/constants';
+
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -244,7 +244,7 @@ export default {
         createAlert({
           message: sprintf(
             s__('WorkItem|Failed to create a branch for this %{workItemType}. Please try again.'),
-            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+            { workItemType: this.workItemType },
           ),
         });
       } finally {

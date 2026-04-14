@@ -8,6 +8,8 @@ project:
   permissions: []
   raw_permissions:
   - add_cluster
+  - admin_ai_catalog_item
+  - admin_ai_catalog_item_consumer
   - admin_build
   - admin_cicd_variables
   - admin_cluster
@@ -15,14 +17,19 @@ project:
   - admin_deployment
   - admin_environment
   - admin_feature_flags_client
+  - admin_google_cloud_artifact_registry
+  - admin_incident_management_escalation_policy
+  - admin_incident_management_oncall_schedule
   - admin_incident_management_timeline_event_tag
   - admin_integrations
   - admin_issue_board
   - admin_member_access_request
+  - admin_merge_request_approval_settings
   - admin_note
   - admin_operations
   - admin_package
   - admin_pages
+  - admin_path_locks
   - admin_pipeline
   - admin_project
   - admin_project_aws
@@ -33,23 +40,51 @@ project:
   - admin_push_rules
   - admin_runners
   - admin_secure_files
+  - admin_security_attributes
+  - admin_security_testing
   - admin_sentry
+  - admin_service_account_member
+  - admin_service_accounts
   - admin_snippet
+  - admin_software_license_policy
+  - admin_target_branch_rule
   - admin_terraform_state
+  - admin_timelog
   - admin_upload
+  - admin_vulnerability
   - admin_web_hook
   - admin_wiki
+  - apply_security_scan_profiles
+  - change_commit_committer_check
+  - change_commit_committer_name_check
+  - change_push_rules
+  - change_reject_non_dco_commits
+  - change_reject_unsigned_commits
   - change_restrict_user_defined_variables
+  - create_ai_catalog_flow
+  - create_ai_catalog_flow_item_consumer
+  - create_ai_catalog_third_party_flow
+  - create_ai_catalog_third_party_flow_item_consumer
+  - create_ai_foundational_flow_item_consumer
+  - create_ascp_component
+  - create_ascp_scan
+  - create_ascp_security_context
   - create_branch_rule
   - create_cluster
   - create_deploy_token
   - create_environment_terminal
   - create_freeze_period
+  - create_pipeline_subscription
   - create_protected_branch
+  - create_protected_tags
   - create_resource_access_tokens
   - create_runners
+  - create_service_account
   - delete_freeze_period
   - delete_job_artifact
+  - delete_protected_tag
+  - delete_service_account
+  - delete_timelog
   - destroy_deploy_token
   - destroy_deployment
   - destroy_package
@@ -57,55 +92,116 @@ project:
   - destroy_release
   - destroy_resource_access_tokens
   - destroy_upload
+  - enable_container_scanning_for_registry
+  - enable_secret_push_protection
+  - force_cancel_build
   - import_project_members_from_another_project
   - invite_member
   - invite_project_members
+  - manage_ai_flow_triggers
   - manage_deploy_tokens
   - manage_merge_request_settings
+  - manage_project_security_exclusions
   - manage_protected_tags
   - manage_resource_access_tokens
+  - modify_approvers_rules
+  - modify_merge_request_author_setting
+  - modify_merge_request_committer_setting
+  - modify_product_analytics_settings
+  - pages_multiple_versions
+  - provision_cloud_runner
+  - provision_gke_runner
+  - push_code_to_protected_branches
   - push_to_delete_protected_branch
+  - read_approvers
+  - read_branch_rule
+  - read_commit_committer_check
+  - read_commit_committer_name_check
   - read_deploy_token
   - read_freeze_period
   - read_import_error
   - read_member_access_request
+  - read_namespace_cluster_agent_mapping
   - read_pages
+  - read_project_secrets_manager
+  - read_project_security_exclusions
   - read_protected_branch
+  - read_protected_tags
+  - read_reject_non_dco_commits
+  - read_reject_unsigned_commits
   - read_resource_access_tokens
+  - read_runner_cloud_provisioning_info
+  - read_runner_gke_provisioning_info
+  - read_runner_usage
   - read_runners
   - read_runners_registration_token
+  - read_service_account
   - read_usage_quotas
   - read_web_hook
   - remove_pages
   - rename_project
+  - set_license_information_source
   - stop_environment
+  - update_approvers
   - update_cluster
   - update_freeze_period
   - update_pages
   - update_protected_branch
+  - update_protected_tags
   - update_runners_registration_token
+  - update_secret_detection_validity_check
+  - update_security_setting
   - update_snippet
+  - use_protected_cache
   - view_edit_page
 group:
   permissions: []
   raw_permissions:
   - add_cluster
   - admin_achievement
+  - admin_ai_catalog_item_consumer
   - admin_build
   - admin_cluster
+  - admin_note
   - admin_pipeline
   - admin_push_rules
+  - admin_security_attributes
+  - admin_security_testing
   - admin_upload
+  - admin_vulnerability
+  - admin_wiki
+  - apply_security_scan_profiles
   - award_achievement
+  - change_commit_committer_check
+  - change_commit_committer_name_check
+  - change_push_rules
+  - change_reject_non_dco_commits
+  - change_reject_unsigned_commits
+  - create_ai_catalog_flow_item_consumer
+  - create_ai_catalog_third_party_flow_item_consumer
+  - create_ai_foundational_flow_item_consumer
   - create_cluster
   - create_jira_connect_subscription
   - create_protected_branch
+  - delete_custom_emoji
   - destroy_package
   - destroy_protected_branch
   - destroy_upload
+  - enable_secret_push_protection
   - import_projects
+  - maintainer_access
+  - modify_product_analytics_settings
+  - provision_cloud_runner
+  - provision_gke_runner
   - read_deploy_token
+  - read_jobs_statistics
+  - read_namespace_cluster_agent_mapping
   - read_protected_branch
+  - read_runner_cloud_provisioning_info
+  - read_runner_gke_provisioning_info
+  - read_runner_usage
   - read_runners
+  - read_secrets_manager
+  - read_secrets_permission
   - update_cluster
   - update_protected_branch

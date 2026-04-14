@@ -58,6 +58,26 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
     end
 
     describe 'creating Notes in reply to a discussion' do
+      context 'when the discussion is a system note' do
+        let(:system_note) { create(:note, :system, project: project, noteable: noteable) }
+        let(:mutation) do
+          variables = {
+            noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+            discussion_id: GitlabSchema.id_from_object(system_note.to_discussion).to_s,
+            body: body
+          }
+
+          graphql_mutation(:create_note, variables)
+        end
+
+        it 'returns an error' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['errors']).to include('Replies to system notes are not allowed')
+          expect(mutation_response['note']).to be_nil
+        end
+      end
+
       context 'when the user does not have permission to create notes on the discussion' do
         let(:discussion) { create(:discussion_note).to_discussion }
 

@@ -56,7 +56,7 @@ RSpec.describe Gitlab::BackgroundTask, feature_category: :build do
           Struct.new(:started, :start_retval, :run) do
             def start
               self.started = true
-              self.start_retval
+              start_retval
             end
 
             def call

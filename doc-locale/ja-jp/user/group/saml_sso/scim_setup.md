@@ -1,9 +1,9 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab.comグループのSCIMを設定
-description: 自動化されたアカウントプロビジョニングでユーザーライフサイクルを管理します。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLab.comグループのSCIMを設定する
+description: 自動アカウントプロビジョニングでユーザーライフサイクルを管理します。
 ---
 
 {{< details >}}
@@ -13,212 +13,214 @@ description: 自動化されたアカウントプロビジョニングでユー�
 
 {{< /details >}}
 
-オープン標準のSystem for Cross-domain Identity Management (SCIM) を使用して、以下を自動化できます:
+オープンスタンダードのSystem for Cross-domain Identity Management（SCIM）を使用して、以下を自動的に実行できます:
 
 - ユーザーを作成します。
-- ユーザーを削除します (SCIMアイデンティティ管理を無効化)。
-- ユーザーを再度追加します (SCIMアイデンティティ管理を再度有効化)。
+- ユーザーを削除します（SCIMアイデンティティを無効化）。
+- ユーザーを再追加します（SCIMアイデンティティを再アクティブ化）。
 
 GitLab SAML SSO SCIMは、ユーザーの更新をサポートしていません。
 
-GitLabグループに対してSCIMが有効になっている場合、そのグループのグループメンバーシップは、GitLabとIdentity Providerの間で同期されます。
+SCIMがGitLabグループで有効になっている場合、そのグループのグループメンバーシップは、GitLabとIdentity Provider間で同期されます。
 
-[内部GitLabグループSCIM API](../../../development/internal_api/_index.md#group-scim-api)は、[RFC7644プロトコル](https://www.rfc-editor.org/rfc/rfc7644)の一部を実装しています。Identity Providerは、[内部GitLabグループSCIM API](../../../development/internal_api/_index.md#group-scim-api)を使用して、SCIMアプリを開発できます。
+[内部GitLabグループSCIM API](../../../development/internal_api/_index.md#group-scim-api)は、[RFC7644プロトコル](https://www.rfc-editor.org/rfc/rfc7644)の一部を実装しています。Identity Providerは、[内部GitLabグループSCIM API](../../../development/internal_api/_index.md#group-scim-api)を使用してSCIMアプリを開発できます。
 
-GitLabセルフマネージドでSCIMをセットアップするには、[GitLabセルフマネージドのSCIMを設定](../../../administration/settings/scim_setup.md)を参照してください。
+GitLab Self-ManagedでSCIMをセットアップするには、[GitLab Self-ManagedのSCIMを設定](../../../administration/settings/scim_setup.md)を参照してください。
 
 ## GitLabを設定する {#configure-gitlab}
 
-前提要件: 
+前提条件: 
 
-- [グループシングルサインオン](_index.md)が設定されている必要があります。
+- [グループシングルサインオン](_index.md)を設定する必要があります。
 
 GitLab SAML SSO SCIMを設定するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **設定** > **SAML SSO**を選択します。
 1. **SCIMトークンを生成**を選択します。
-1. Identity Providerの設定のために、以下を保存します:
-   - **あなたのSCIMトークン**フィールドのトークン。
-   - **SCIM APIエンドポイントのURL**フィールドのURL。
+1. Identity Providerの設定については、以下を保存します:
+   - **あなたのSCIMトークン**フィールドからトークン。
+   - **SCIM APIエンドポイントのURL**フィールドからURL。
 
-## Identity Providerを設定 {#configure-an-identity-provider}
+## Identity Providerを設定する {#configure-an-identity-provider}
 
-Identity Providerとして、次のいずれかを設定できます:
+次のいずれかをIdentity Providerとして設定できます:
 
 - [Azure Active Directory](#configure-microsoft-entra-id-formerly-azure-active-directory)。
 - [Okta](#configure-okta)。
 
-{{< alert type="note" >}}
+> [!note]
+> その他のプロバイダーもGitLabで動作する可能性がありますが、テストされておらずサポートされていません。サポートについては、プロバイダーに連絡してください。GitLabサポートは、関連するログエントリをレビューして支援できます。
 
-他のプロバイダーもGitLabで動作する可能性がありますが、テストされておらず、サポートされていません。サポートについては、プロバイダーにお問い合わせください。GitLabのサポートは、関連するログエントリを確認することで支援できます。
-
-{{< /alert >}}
-
-### Microsoft Entra ID（旧Azure Active Directory）を設定する {#configure-microsoft-entra-id-formerly-azure-active-directory}
+### Microsoft Entra ID（以前のAzure Active Directory）を設定する {#configure-microsoft-entra-id-formerly-azure-active-directory}
 
 {{< history >}}
 
-- [変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146) GitLab 16.10のMicrosoft Entra ID用語へ。
+- GitLab 16.10でMicrosoft Entra IDの用語に[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146)されました。
 
 {{< /history >}}
 
-前提要件: 
+前提条件: 
 
-- [GitLabが設定されました](#configure-gitlab)。
+- [GitLabが設定されています](#configure-gitlab)。
 - [グループシングルサインオン](_index.md)が設定されています。
 
-[Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)の[シングルサインオン](_index.md)の設定時に作成されたSAMLアプリケーションは、SCIM用にセットアップする必要があります。例については、[設定例](example_saml_config.md#scim-mapping)を参照してください。
+[シングルサインオン](_index.md)のセットアップ中に作成された[Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)用のSAMLアプリケーションは、SCIM用に設定する必要があります。例については、[設定例](example_saml_config.md#scim-mapping)を参照してください。
 
-{{< alert type="note" >}}
+> [!note]
+> SCIMプロビジョニングは、次の手順に詳しく記載されているとおりに設定する必要があります。設定が誤っている場合、ユーザープロビジョニングやサインインで問題が発生し、その解決には多大な労力が必要です。いずれかの手順で問題や質問がある場合は、GitLabサポートに連絡してください。
 
-次の手順で詳しく説明されているように、SCIMプロビジョニングを正確に設定する必要があります。設定を誤ると、ユーザーのプロビジョニングとサインインで問題が発生し、解決に多くの労力がかかります。いずれかの手順で問題や質問がある場合は、GitLabサポートにお問い合わせください。
+Microsoft Entra IDのSCIMを設定するには:
 
-{{< /alert >}}
+1. アプリで、**Provisioning**タブに移動し、**始めましょう**を選択します。
+1. **Provisioning Mode**を**Automatic**に設定します。
+1. **Admin Credentials**を次の値を使用して完了します:
+   - **Tenant URL**フィールドについては、GitLabの**SCIM APIエンドポイントのURL**。
+   - **Secret Token**フィールドについては、GitLabの**あなたのSCIMトークン**。
+1. **Test Connection**を選択します。テストが成功した場合は、続行する前に設定を保存するか、[トラブルシューティング](troubleshooting.md)情報を参照してください。
+1. **Save**を選択します。
 
-SCIMのMicrosoft Entra IDを設定するには:
-
-1. アプリで、**Provisioning**（プロビジョニング） タブに移動し、**始めましょう**を選択します。
-1. **Provisioning Mode**（プロビジョニングモード）を**Automatic**（自動）に設定します。
-1. 次の値を使用して、**Admin Credentials**（管理者認証情報）を完了します:
-   - **SCIM APIエンドポイントのURL**を**Tenant URL**（テナントURL）フィールドに入力します。
-   - **あなたのSCIMトークン**を**Secret Token**（シークレットトークン）フィールドに入力します。
-1. **Test Connection**（接続のテスト）を選択します。テストが成功した場合は、続行する前に設定を保存するか、[トラブルシューティング](troubleshooting.md)の情報を参照してください。
-1. **保存**を選択します。
-
-保存後、**Mappings**（マッピング）と**設定**セクションが表示されます。
+保存後、**Mappings**と**設定**セクションが表示されます。
 
 #### マッピングを設定する {#configure-mappings}
 
-**Mappings**（マッピング）セクションで、最初にグループをプロビジョニングします:
+**Mappings**セクションで、まずグループをプロビジョニングします:
 
-1. **Provision Microsoft Entra ID Groups**（Microsoft Entra IDグループのプロビジョニング）を選択します。
-1. 属性のマッピングページで、**有効**切替をオフにします。SCIMグループのプロビジョニングはGitLabではサポートされていません。グループのプロビジョニングを有効のままにしてもSCIMユーザーのプロビジョニングが中断されることはありませんが、Entra ID SCIMプロビジョニングログに混乱を招く可能性のあるエラーが発生します。
+1. **Provision Microsoft Entra ID Groups**を選択します。
+1. 属性マッピングページで、**有効**切替をオフにします。SCIMグループプロビジョニングはGitLabではサポートされていません。グループプロビジョニングを有効のままにしてもSCIMユーザープロビジョニングが中断されることはありませんが、Entra ID SCIMプロビジョニングログで混乱や誤解を招くようなエラーが発生する可能性があります。
 
-   {{< alert type="note" >}}
+   > [!note]
+   > **Provision Microsoft Entra ID Groups**が無効になっている場合でも、マッピングセクションには「有効: 可能」と表示される場合があります。この動作は、安全に無視できる表示バグです。
 
-   **Provision Microsoft Entra ID Groups**（Microsoft Entra IDグループのプロビジョニング）が無効になっている場合でも、マッピングセクションに「有効: はい」と表示されることがあります。これは表示上のバグであり、無視しても問題ありません。
-
-   {{< /alert >}}
-
-1. **保存**を選択します。
+1. **Save**を選択します。
 
 次に、ユーザーをプロビジョニングします:
 
-1. **Provision Microsoft Entra ID Users**（Microsoft Entra IDユーザーのプロビジョニング）を選択します。
+1. **Provision Microsoft Entra ID Users**を選択します。
 1. **有効**切替が**可能**に設定されていることを確認します。
-1. すべての**Target Object Actions**（ターゲットオブジェクトアクション）が有効になっていることを確認します。
-1. **Attribute Mappings**（属性のマッピング）で、[構成済みの属性のマッピング](#configure-attribute-mappings)と一致するようにマッピングを設定します:
-   1. オプション。**customappsso Attribute**（customappsso属性）列で、`externalId`を見つけて削除します。
-   1. 最初属性を編集して、以下を設定します:
-      - `objectId`の**source attribute**（ソース属性）
-      - `externalId`の**target attribute**（ターゲット属性）
-      - `1`の**matching precedence**（一致の優先順位）
-   1. 既存の**customappsso**属性を更新して、[構成済みの属性のマッピング](#configure-attribute-mappings)と一致させます。
-   1. 次の表にない追加の属性を削除します。削除しなくても問題は発生しませんが、GitLabは属性を使用しません。
-1. マッピングリストで、**Show advanced options**（詳細オプションを表示）チェックボックスを選択します。
-1. **Edit attribute list for customappsso**（customappssoの属性リストを編集）リンクを選択します。
-1. `id`がプライマリ必須フィールドであり、`externalId`も必須であることを確認してください。
-1. **保存**を選択すると、属性のマッピング設定ページに戻ります。
-1. **Attribute Mapping**（属性のマッピング）設定ページを閉じるには、右上隅の`X`を選択します。
+1. すべての**Target Object Actions**が有効になっていることを確認します。
+1. **Attribute Mappings**で、[設定済みの属性マッピング](#configure-attribute-mappings)と一致するようにマッピングを設定します:
+   1. オプション。オプション。**customappsso Attribute**カラムで`externalId`を見つけて削除します。
+   1. 最初の属性を次のように編集します:
+      - **source attribute**は`objectId`
+      - **target attribute**は`externalId`
+      - **matching precedence**は`1`
+   1. 既存の**customappsso**属性を[設定済みの属性マッピング](#configure-attribute-mappings)と一致するように更新します。
+   1. 次の表に記載されていない追加の属性をすべて削除します。削除しなくても問題は発生しませんが、GitLabはこれらの属性を使用しません。
+1. マッピングリストで、**Show advanced options**チェックボックスを選択します。
+1. **Edit attribute list for customappsso**リンクを選択します。
+1. `id`がプライマリで必須フィールドであり、`externalId`も必須であることを確認します。
+1. **保存**を選択すると、属性マッピング設定ページに戻ります。
+1. **Attribute Mapping**設定ページを閉じるには、右上隅の`X`を選択します。
 
-#### 設定を構成する {#configure-settings}
+#### 設定を設定する {#configure-settings}
 
-**設定**セクション:
+**設定**セクションで:
 
-1. オプション。必要に応じて、**Send an email notification when a failure occurs**（エラー発生時にメール通知を送信する）チェックボックスを選択します。
-1. オプション。必要に応じて、**Prevent accidental deletion**（誤った削除を防ぐ）チェックボックスを選択します。
-1. 必要に応じて、**保存**を選択して、すべての変更が保存されていることを確認します。
+1. オプション。オプション。必要に応じて、**Send an email notification when a failure occurs**チェックボックスを選択します。
+1. オプション。オプション。必要に応じて、**Prevent accidental deletion**チェックボックスを選択します。
+1. 必要な場合は、すべての変更が保存されていることを確認するために**保存**を選択します。
 
-マッピングと設定を設定したら、アプリの概要ページに戻り、**Start provisioning**（プロビジョニングを開始）を選択して、GitLabでのユーザーの自動SCIMプロビジョニングを開始します。
+マッピングと設定を設定したら、アプリの概要ページに戻り、**Start provisioning**を選択して、GitLabでのユーザーの自動SCIMプロビジョニングを開始します。
 
-{{< alert type="warning" >}}
+> [!warning]
+> 一度同期されると、`id`と`externalId`にマップされたフィールドを変更するとエラーが発生する可能性があります。これにはプロビジョニングエラー、重複ユーザーが含まれ、既存のユーザーがGitLabグループにアクセスするのを妨げる可能性があります。
 
-同期されると、`id`および`externalId`にマップされたフィールドを変更すると、エラーが発生する可能性があります。これには、プロビジョニングエラー、重複するユーザーが含まれ、既存のユーザーがGitLabグループにアクセスできなくなる可能性があります。
+#### 属性マッピングを設定する {#configure-attribute-mappings}
 
-{{< /alert >}}
+> [!note]
+> MicrosoftがAzure Active DirectoryからEntra IDへの命名スキームに移行している間、ユーザーインターフェースに一貫性のない点が見られる場合があります。問題が発生した場合は、このドキュメントの古いバージョンを表示するか、GitLabサポートに連絡してください。
 
-#### 属性のマッピングを設定する {#configure-attribute-mappings}
+[Entra IDのSCIMを設定](#configure-microsoft-entra-id-formerly-azure-active-directory)する際に、属性マッピングを設定します。例については、[設定例](example_saml_config.md#scim-mapping)を参照してください。
 
-{{< alert type="note" >}}
+次の表は、GitLabに必要な属性マッピングを示しています。
 
-MicrosoftがAzure Active DirectoryからEntra IDの命名スキームに移行する間、ユーザーインターフェースに矛盾が見られる場合があります。問題が発生した場合は、このドキュメントの古いバージョンを表示するか、GitLabサポートにお問い合わせください。
-
-{{< /alert >}}
-
-[SCIMのEntra IDを設定する](#configure-microsoft-entra-id-formerly-azure-active-directory)と、属性のマッピングを設定します。例については、[設定例](example_saml_config.md#scim-mapping)を参照してください。
-
-次の表に、GitLabに必要な属性のマッピングを示します。
-
-| ソース属性                                                           | ターゲット属性               | 一致の優先順位 |
+| ソース属性                                                           | ターゲット属性               | 照合の優先順位 |
 |:---------------------------------------------------------------------------|:-------------------------------|:--------------------|
 | `objectId`                                                                 | `externalId`                   | 1                   |
 | `userPrincipalName`または`mail` <sup>1</sup>                                 | `emails[type eq "work"].value` |                     |
 | `mailNickname`                                                             | `userName`                     |                     |
-| `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
+| `displayName`または`Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
 | `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
 
-1. `userPrincipalName`がメールアドレスでない場合、または配信できない場合は、ソース属性として`mail`を使用します。
+1. `userPrincipalName`がメールアドレスではないか、配信可能ではない場合は、`mail`をソース属性として使用します。
 1. `displayName`が`Firstname Lastname`の形式と一致しない場合は、`Join`式を使用します。
-1. これは式マッピングタイプであり、直接マッピングではありません。**Mapping type**（マッピングタイプ）ドロップダウンリストで`Expression`を選択します。
+1. これは式マッピングタイプであり、直接マッピングではありません。**Mapping type**ドロップダウンリストで`Expression`を選択します。
 
-各属性マッピングには、以下があります:
+各属性マッピングには以下があります:
 
-- **customappsso Attribute**（customappsso属性）。これは、**target attribute**（ターゲット属性）に対応します。
-- **Microsoft Entra ID Attribute**（Microsoft Entra ID属性）。これは、**source attribute**（ソース属性）に対応します。
-- 一致の優先順位。
+- **customappsso Attribute**は、**target attribute**に対応します。
+- **Microsoft Entra ID Attribute**は、**source attribute**に対応します。
+- 照合の優先順位。
 
 各属性について:
 
 1. 既存の属性を編集するか、新しい属性を追加します。
-1. ドロップダウンリストから、必要なソースとターゲットの属性のマッピングを選択します。
+1. ドロップダウンリストから、必要なソースとターゲット属性マッピングを選択します。
 1. **OK**を選択します。
-1. **保存**を選択します。
+1. **Save**を選択します。
 
-SAMLの設定が[推奨されるSAML設定](_index.md#azure)と異なる場合は、マッピング属性を選択し、それに応じて変更します。`externalId`ターゲット属性にマップするソース属性は、SAML `NameID`に使用される属性と一致する必要があります。
+SAML設定が[推奨されるSAML設定](_index.md#azure)と異なる場合は、マッピング属性を選択し、それに応じて変更します。`externalId`ターゲット属性にマップするソース属性は、SAML `NameID`に使用される属性と一致する必要があります。
 
-マッピングが表にリストされていない場合は、Microsoft Entra IDデフォルトを使用します。必要な属性のリストについては、[内部グループSCIM API](../../../development/internal_api/_index.md#group-scim-api)ドキュメントを参照してください。
+マッピングがリストにない場合は、Microsoft Entra IDのデフォルトを使用します。必須属性のリストについては、[内部グループSCIM API](../../../development/internal_api/_index.md#group-scim-api)ドキュメントを参照してください。
 
 ### Oktaを設定する {#configure-okta}
 
-Oktaの[シングルサインオン](_index.md)の設定時に作成されたSAMLアプリケーションは、SCIM用にセットアップする必要があります。
+[シングルサインオン](_index.md)のセットアップ中に作成されたOkta用のSAMLアプリケーションは、SCIM用に設定する必要があります。
 
-前提要件: 
+前提条件: 
 
-- Okta [ライフサイクル管理](https://www.okta.com/products/lifecycle-management/)製品を使用する必要があります。この製品層は、OktaでSCIMを使用するために必要です。
-- [GitLabが設定されました](#configure-gitlab)。
-- [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/)のSAMLアプリケーションは、[Okta設定ノート](_index.md#okta)で説明されているようにセットアップします。
-- Okta SAMLの設定が[構成手順](_index.md)と正確に一致していること、特にNameIDの設定。
+- Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/)製品を使用する必要があります。この製品ティアは、OktaでSCIMを使用するために必要です。
+- [GitLabが設定されています](#configure-gitlab)。
+- [Oktaのセットアップノート](_index.md#okta)に記載されているとおりに設定された[Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/)用のSAMLアプリケーション。
+- OktaのSAMLセットアップは、[設定手順](_index.md)、特にNameID設定と完全に一致します。
 
-SCIM用にOktaを設定するには:
+OktaのSCIMを設定するには:
 
 1. Oktaにサインインします。
-1. 右上隅で**管理者**を選択します。ボタンは**管理者**エリアからは見えません。
-1. **Application**（アプリケーション）タブで、**Browse App Catalog**（アプリカタログの参照）を選択します。
+1. 右上隅で、**管理者**を選択します。ボタンは**管理者**エリアからは表示されません。
+1. **Application**タブで、**Browse App Catalog**を選択します。
 1. **GitLab**を検索し、**GitLab**アプリケーションを見つけて選択します。
 1. GitLabアプリケーションの概要ページで、**追加**を選択します。
-1. **Application Visibility**（アプリケーションの表示レベル）で、両方のチェックボックスを選択します。現在、GitLabアプリケーションはSAML認証をサポートしていないため、アイコンはユーザーに表示されません。
+1. **Application Visibility**で両方のチェックボックスを選択します。現在、GitLabアプリケーションはSAML認証をサポートしていないため、アイコンはユーザーに表示されるべきではありません。
 1. **完了**を選択して、アプリケーションの追加を完了します。
-1. **Provisioning**（プロビジョニング）タブで、**Configure API integration**（APIインテグレーションの設定）を選択します。
-1. **Enable API integration**（APIインテグレーションを有効にする）を選択します。
-   - **Base URL**（ベースURL）には、GitLab SCIM設定ページの**SCIM APIエンドポイントのURL**からコピーしたURLを貼り付けます。
-   - **API Token**（APIトークン）には、GitLab SCIM設定ページの**あなたのSCIMトークン**からコピーしたSCIMトークンを貼り付けます。
-1. 設定を確認するには、**Test API Credentials**（API認証情報のテスト）を選択します。
-1. **保存**を選択します。
-1. APIインテグレーションの詳細を保存すると、左側に新しい設定タブが表示されます。**To App**（アプリへ）を選択します。
+1. **Provisioning**タブで、**Configure API integration**を選択します。
+1. **Enable API integration**を選択します。
+   - **Base URL**には、GitLab SCIM設定ページで**SCIM APIエンドポイントのURL**からコピーしたURLを貼り付けます。
+   - **API Token**には、GitLab SCIM設定ページで**あなたのSCIMトークン**からコピーしたSCIMトークンを貼り付けます。
+1. 設定を確認するには、**Test API Credentials**を選択します。
+1. **Save**を選択します。
+1. 保存後、APIインテグレーションの詳細に、新しい設定タブが左側に表示されます。**To App**を選択します。
 1. **編集**を選択します。
-1. **Create Users**（ユーザーの作成）と**Deactivate Users**（ユーザーの無効化）の両方に対して、**有効**チェックボックスを選択します。
-1. **保存**を選択します。
-1. **Assignments**（課題）タブでユーザーを割り当てます。割り当てられたユーザーは、GitLabグループで作成および管理されます。
+1. **Create Users**と**Deactivate Users**の両方のチェックボックスで**有効**を選択します。
+1. **Save**を選択します。
+1. **割り当て**タブでユーザーを割り当てます。割り当てられたユーザーは、GitLabグループで作成および管理されます。
 
 ## ユーザーアクセス {#user-access}
 
-同期プロセス中、すべての新しいユーザーは:
+同期プロセス中に、すべての新しいユーザーは次のようになります:
 
 - GitLabアカウントを受け取ります。
-- 招待メールで自分のグループに歓迎されます。[確認済みのドメインでメール確認を回避する](_index.md#bypass-user-email-confirmation-with-verified-domains)ことができます。
+- 招待メールでグループに歓迎されます。[メール確認を確認済みのドメインでバイパスする](_index.md#bypass-user-email-confirmation-with-verified-domains)ことができます。
 
-次の図は、SCIMアプリにユーザーを追加したときに発生することを示しています:
+### プロビジョニングの動作（制限付きアクセス） {#provisioning-behavior-with-restricted-access}
+
+{{< history >}}
+
+- GitLab 18.6で`bso_minimal_access_fallback`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932)されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+> [!flag]
+> この機能は機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+[制限付きアクセス](../manage.md#restricted-access)が有効でサブスクリプションシートが利用可能でない場合、SCIMを通じてプロビジョニングされたユーザーには最小アクセスロールが割り当てられます。
+
+これが発生すると、ユーザーはMinimal Access（レスポンス`HTTP 201 Created`）で正常に作成され、ユーザーの`roles`属性にこの割り当てが反映されます。その後のロール更新操作は、シートが利用可能でない場合、失敗する可能性があります。
+
+詳細については、[SAML、SCIM、およびLDAPによるプロビジョニングの動作](../manage.md#provisioning-behavior-with-saml-scim-and-ldap)を参照してください。
+
+次の図は、SCIMアプリにユーザーを追加したときに発生することを説明しています:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -236,47 +238,44 @@ accDescr: How GitLab determines whether or not to associate a SCIM identity with
   D -->|Yes| G[Associate SCIM identity to user]
 ```
 
-プロビジョニング中:
+プロビジョニング中に:
 
-- GitLabユーザーアカウントが存在するかどうかを確認する際、プライマリメールとセカンダリメールの両方が考慮されます。
-- ユーザーの作成時に、重複するユーザー名にはサフィックス`1`を追加することで処理されます。たとえば、`test_user`が既に存在する場合は、`test_user1`が使用されます。`test_user1`が既に存在する場合、GitLabはサフィックスを増やして、未使用のユーザー名を見つけます。4回試行しても未使用のユーザー名が見つからない場合は、ランダムな文字列がユーザー名に追加されます。
+- GitLabユーザーアカウントが存在するかどうかを確認する際、プライマリとセカンダリの両方のメールが考慮されます。
+- ユーザーを作成する際、重複するユーザー名はサフィックス`1`を追加することで処理されます。たとえば、`test_user`がすでに存在する場合、`test_user1`が使用されます。`test_user1`がすでに存在する場合、GitLabは未使用のユーザー名を見つけるためにサフィックスを増分します。4回試行しても未使用のユーザー名が見つからない場合、ランダムな文字列がユーザー名に付加されます。
 
-その後のアクセスでは、新規および既存のユーザーは次のいずれかの方法でグループにアクセスできます:
+その後の訪問では、新規および既存のユーザーは次のいずれかの方法でグループにアクセスできます:
 
-- Identity Providerのダッシュボード経由。
-- リンクに直接アクセス。
+- Identity Providerのダッシュボードを介して。
+- リンクを直接訪問して。
 
 ロール情報については、[グループSAML](_index.md#user-access-and-management)ページを参照してください。
 
-### GitLabグループのSCIMを介して作成されたユーザーのパスワード {#passwords-for-users-created-through-scim-for-gitlab-groups}
+### GitLabグループのSCIMを通じて作成されたユーザーのパスワード {#passwords-for-users-created-through-scim-for-gitlab-groups}
 
-GitLabでは、すべてのユーザーアカウントにパスワードが必要です。SCIMプロビジョニングを使用して作成されたユーザーの場合、GitLabはランダムなパスワードを自動的に生成し、ユーザーは最初のサインイン時にパスワードを設定する必要はありません。GitLabグループのSCIMで作成されたユーザーに対してGitLabがパスワードを生成する方法の詳細については、[統合認証で生成されたユーザーのパスワード](../../../security/passwords_for_integrated_authentication_methods.md)を参照してください。
+GitLabはすべてのユーザーアカウントにパスワードを要求します。SCIMプロビジョニングを使用して作成されたユーザーの場合、GitLabは自動的にランダムなパスワードを生成し、ユーザーは最初のサインイン時にパスワードを設定する必要はありません。GitLabグループのSCIMを通じて作成されたユーザーのパスワードをGitLabがどのように生成するかについての詳細は、[統合認証を通じて作成されたユーザーの生成されたパスワード](../../../security/passwords_for_integrated_authentication_methods.md)を参照してください。
 
-### SCIMとSAMLのアイデンティティをリンクする {#link-scim-and-saml-identities}
+### SCIMおよびSAMLアイデンティティをリンクする {#link-scim-and-saml-identities}
 
-[グループSAML](_index.md)が設定されており、既存のGitLab.comアカウントがある場合、ユーザーはSCIMとSAMLのアイデンティティをリンクできます。ユーザーは、同期がアクティブな場合に既存のユーザーに対してプロビジョニングエラーが発生する可能性があるため、同期をオンにする前にこれを行う必要があります。
+[グループSAML](_index.md)が設定されており、既存のGitLab.comアカウントがある場合、ユーザーはSCIMおよびSAMLアイデンティティをリンクできます。同期がオンになる前に、ユーザーはこれを実行する必要があります。これは、同期がアクティブな場合に、既存のユーザーに対してプロビジョニングエラーが発生する可能性があるためです。
 
-SCIMとSAMLのアイデンティティをリンクするには:
+SCIMおよびSAMLアイデンティティをリンクするには:
 
-1. Identity Providerのユーザープロファイルメールアドレスと一致するように、GitLab.comユーザーアカウントの[プライマリメール](../../profile/_index.md#change-your-primary-email)アドレスを更新します。
-1. [SAMLアイデンティティをリンクする](_index.md#link-saml-to-your-existing-gitlabcom-account)。
+1. GitLab.comユーザーアカウントの[プライマリメール](../../profile/_index.md#change-your-primary-email)アドレスを、Identity Providerのユーザープロファイルメールアドレスと一致するように更新します。
+1. [あなたのSAMLアイデンティティをリンク](_index.md#link-saml-to-your-existing-gitlabcom-account)します。
 
-### アクセス権を削除する {#remove-access}
+### アクセスを削除する {#remove-access}
 
-Identity Providerでユーザーを削除または非アクティブ化して、以下へのアクセス権を削除します:
+Identity Providerでユーザーを削除または無効にすると、そのユーザーの次のものへのアクセスが削除されます:
 
 - トップレベルグループ。
 - すべてのサブグループとプロジェクト。
 
-Identity Providerが設定されたスケジュールに基づいて同期を実行すると、ユーザーのグループメンバーシップが失効され、アクセス権が失われます。
+Identity Providerが設定されたスケジュールに基づいて同期を実行すると、ユーザーのメンバーシップは失効するし、アクセスを失います。
 
-SCIMを有効にしても、SAMLアイデンティティを持たない既存のユーザーは自動的に削除されません。
+SCIMを有効にしても、SAMLアイデンティティを持たない既存のユーザーが自動的に削除されることはありません。
 
-{{< alert type="note" >}}
-
-デプロビジョニングは、GitLabユーザーアカウントを削除しません。
-
-{{< /alert >}}
+> [!note]
+> プロビジョニング解除では、GitLabユーザーアカウントは削除されません。
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -289,7 +288,7 @@ accDescr: How removing users from your SCIM app removes them from GitLab groups.
   B -->|Yes| D[GitLab removes user from GitLab group]
 ```
 
-### アクセス権を再度有効にする {#reactivate-access}
+### アクセスを再アクティブ化する {#reactivate-access}
 
 {{< history >}}
 
@@ -298,6 +297,6 @@ accDescr: How removing users from your SCIM app removes them from GitLab groups.
 
 {{< /history >}}
 
-SCIMを通じてユーザーが削除または非アクティブ化された後、SCIMIdentity Providerにユーザーを追加することで、そのユーザーを再度有効にできます。
+SCIMを通じてユーザーが削除または無効にされた後、そのユーザーをSCIM Identity Providerに追加することで再アクティブ化できます。
 
-Identity Providerが構成されたスケジュールに基づいて同期を実行すると、ユーザーのSCIM IDが再度アクティブ化され、グループメンバーシップが復元されます。
+Identity Providerが設定されたスケジュールに基づいて同期を実行すると、ユーザーのSCIMアイデンティティは再アクティブ化され、グループメンバーシップは復元されます。

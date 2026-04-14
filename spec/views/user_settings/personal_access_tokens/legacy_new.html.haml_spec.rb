@@ -11,11 +11,11 @@ RSpec.describe 'user_settings/personal_access_tokens/legacy_new.html.haml', feat
     sign_in(user)
   end
 
-  context 'when VSCode extension parameters are provided' do
+  context 'when pre-filled access token parameters are provided' do
     let(:access_token_params) do
       {
-        name: 'GitLab Workflow Extension',
-        description: 'Token for VSCode extension',
+        name: 'My Token',
+        description: 'My token description',
         scopes: [:api, :read_user]
       }
     end
@@ -28,8 +28,8 @@ RSpec.describe 'user_settings/personal_access_tokens/legacy_new.html.haml', feat
       render
 
       expect(rendered).to have_selector('div#js-create-legacy-token-app') do |element|
-        expect(element['data-access-token-name']).to eq('GitLab Workflow Extension')
-        expect(element['data-access-token-description']).to eq('Token for VSCode extension')
+        expect(element['data-access-token-name']).to eq('My Token')
+        expect(element['data-access-token-description']).to eq('My token description')
         expect(element['data-access-token-scopes']).to eq(%w[api read_user].to_json)
       end
     end

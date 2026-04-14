@@ -162,7 +162,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       context 'when variables_attributes has one variable' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123', variable_type: 'file' }]
+            variables_attributes: [{ key: 'AAA', value: 'AAA123', variable_type: 'file' }]
           })
         end
 
@@ -198,8 +198,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       context 'when variables_attributes has two variables and duplicated' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
-              { key: 'AAA', secret_value: 'BBB123' }]
+            variables_attributes: [{ key: 'AAA', value: 'AAA123' },
+              { key: 'AAA', value: 'BBB123' }]
           })
         end
 
@@ -261,7 +261,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         context 'when params include one variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
             })
           end
 
@@ -294,8 +294,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         context 'when params include two duplicated variables' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
-                { key: 'AAA', secret_value: 'BBB123' }]
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' },
+                { key: 'AAA', value: 'BBB123' }]
             })
           end
 
@@ -320,7 +320,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         context 'when adds a new variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
             })
           end
 
@@ -335,7 +335,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         context 'when adds a new duplicated variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'dup_key', secret_value: 'value_one' }, { key: 'dup_key', secret_value: 'value_two' }]
+              variables_attributes: [{ key: 'dup_key', value: 'value_one' }, { key: 'dup_key', value: 'value_two' }]
             })
           end
 
@@ -350,7 +350,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         context 'when updates a variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ id: pipeline_schedule_variable.id, secret_value: 'new_value' }]
+              variables_attributes: [{ id: pipeline_schedule_variable.id, value: 'new_value' }]
             })
           end
 
@@ -378,7 +378,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
-                { key: 'AAA', secret_value: 'AAA123' }]
+                { key: 'AAA', value: 'AAA123' }]
             })
           end
 

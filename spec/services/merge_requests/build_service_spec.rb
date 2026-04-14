@@ -723,6 +723,104 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
         expect(merge_request.target_branch).to eq('with-codeowners')
       end
     end
+
+    context 'with mr_default_title_template' do
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(mr_default_title_template: false)
+          project.mr_default_title_template = '%{source_branch}'
+          stub_compare
+        end
+
+        let(:commits) { Commit.decorate([commit_2], project) }
+
+        it 'ignores the template and uses the default cascade' do
+          expect(merge_request.title).to eq(commit_2.safe_message.split("\n").first)
+        end
+      end
+
+      context 'when the project has a title template configured' do
+        before do
+          stub_feature_flags(mr_default_title_template: project)
+          project.mr_default_title_template = title_template
+          stub_compare
+        end
+
+        context 'with a static template' do
+          let(:title_template) { 'Draft: New merge request' }
+          let(:commits) { Commit.decorate([commit_1], project) }
+
+          it 'uses the static template as the title' do
+            expect(merge_request.title).to eq('Draft: New merge request')
+          end
+        end
+
+        context 'with a single commit' do
+          let(:title_template) { '%{source_branch}' }
+          let(:commits) { Commit.decorate([commit_2], project) }
+
+          it 'still uses the template instead of the commit title' do
+            expect(merge_request.title).to eq('feature')
+          end
+
+          it 'still populates the description from the commit body' do
+            expect(merge_request.description).to eq('Create the app')
+          end
+        end
+
+        context 'when user provides an explicit title in params' do
+          let(:title_template) { '%{source_branch}' }
+          let(:commits) { Commit.decorate([commit_1], project) }
+
+          let(:params) do
+            {
+              title: 'My custom title',
+              source_branch: source_branch,
+              target_branch: target_branch
+            }
+          end
+
+          it 'uses the user-provided title over the template' do
+            expect(merge_request.title).to eq('My custom title')
+          end
+        end
+
+        context 'when template is set and there are no commits' do
+          let(:title_template) { '%{source_branch}' }
+          let(:commits) { [] }
+
+          it 'sets a draft title' do
+            expect(merge_request.title).to start_with('Draft:')
+          end
+        end
+
+        context 'when source branch matches an issue' do
+          let(:title_template) { '%{source_branch}' }
+          let(:source_branch) { "#{issue.iid}-fix-bug" }
+          let(:commits) { Commit.decorate([commit_1], project) }
+
+          it 'still appends closes description' do
+            expect(merge_request.description).to include(issue.to_reference)
+          end
+        end
+      end
+
+      context 'when the project has no title template' do
+        let(:commits) { Commit.decorate([commit_2], project) }
+
+        before do
+          stub_compare
+        end
+
+        it 'falls back to the existing cascade behavior' do
+          expect(merge_request.title).to eq(commit_2.safe_message.split("\n").first)
+        end
+      end
+    end
   end
 
   context 'when assigning labels' do

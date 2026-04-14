@@ -439,9 +439,8 @@ module Gitlab
       def init_from_gitaly(commit)
         @raw_commit = commit
         @id = commit.id
-        # TODO: Once gitaly "takes over" Rugged consider separating the
-        # subject from the message to make it clearer when there's one
-        # available but not the other.
+        # TODO: Consider separating the subject from the message to make it
+        # clearer when there's one available but not the other.
         @message = message_from_gitaly_body
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup

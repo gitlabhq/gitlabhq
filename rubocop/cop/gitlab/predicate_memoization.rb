@@ -4,11 +4,11 @@ module RuboCop
   module Cop
     module Gitlab
       class PredicateMemoization < RuboCop::Cop::Base
-        MSG = <<~EOL
+        MSG = <<~TEXT
           Avoid using `@value ||= query` inside predicate methods in order to
           properly memoize `false` or `nil` values.
           https://docs.gitlab.com/ee/development/utilities.html#strongmemoize
-        EOL
+        TEXT
 
         def on_def(node)
           return unless predicate_method?(node)

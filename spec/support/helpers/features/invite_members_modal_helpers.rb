@@ -81,7 +81,10 @@ module Features
         select_listbox_item(role, exact_text: use_exact_text_match)
       end
 
-      fill_in 'YYYY-MM-DD', with: expires_at.to_date.iso8601 if expires_at
+      return unless expires_at
+
+      find('[data-testid="temporary-access-toggle"]').click
+      fill_in 'YYYY-MM-DD', with: expires_at.to_date.iso8601
     end
 
     def click_groups_tab

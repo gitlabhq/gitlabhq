@@ -8,10 +8,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/requirements/
-  image_url: https://docs.gitlab.com/ee/user/project/requirements/img/requirements_list_v13_5.png
+  documentation_link: https://docs.gitlab.com/user/project/requirements/
+  image_url: https://docs.gitlab.com/user/project/requirements/img/requirements_list_v13_5.png
   published_at: 2020-04-22
-  release: 12.10
+  release: "12.10"
 - name: Retrieve CI/CD secrets from HashiCorp Vault
   description: |
     In this release, GitLab adds support for lightweight JSON Web Token (JWT) authentication to integrate with your existing HashiCorp Vault.
@@ -21,10 +21,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/
+  documentation_link: https://docs.gitlab.com/ci/examples/authenticating-with-hashicorp-vault/
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
-  release: 12.10
+  release: "12.10"
 - name: Epic and Issue Health Tracking
   description: |
     To help users track projects and in-flight work GitLab now enables you to report on and quickly respond to the health of individual issues and epics by showing a red, amber, or green health status on your Epic Tree.
@@ -36,10 +36,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/issues/#health-status
+  documentation_link: https://docs.gitlab.com/user/project/issues/#health-status
   image_url: https://about.gitlab.com/images/12_10/epic-health-status.png
   published_at: 2020-04-22
-  release: 12.10
+  release: "12.10"
 - name: Import Issues from Jira to GitLab
   description: |
     Until now, the only way to get Jira issues into GitLab was manually, with our CSV importer, or by hand-rolling your own migration utility.
@@ -49,10 +49,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/import/jira.html
+  documentation_link: https://docs.gitlab.com/user/project/import/jira/
   image_url: https://about.gitlab.com/images/12_10/jira-importer.png
   published_at: 2020-04-22
-  release: 12.10
+  release: "12.10"
 - name: Autoscaling GitLab CI jobs on AWS Fargate
   description: |
     You can now auto-scale GitLab CI on AWS Fargate with the MVC release of GitLab’s AWS Fargate Driver.
@@ -65,4 +65,4 @@
   documentation_link: https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/blob/master/docs/README.md
   image_url: https://about.gitlab.com/images/12_9/autoscaling_ci_fargate.png
   published_at: 2020-04-22
-  release: 12.10
+  release: "12.10"

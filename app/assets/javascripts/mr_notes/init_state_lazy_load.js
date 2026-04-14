@@ -1,4 +1,6 @@
 import eventHub from '~/notes/event_hub';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
 import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { useNotes } from '~/notes/store/legacy_notes';
@@ -17,7 +19,17 @@ export function initMrStateLazyLoad() {
     // prevent loading MR state on commits and pipelines pages
     // this is due to them having a shared controller with the Overview page
     if (['diffs', 'show'].includes(useMrNotes(pinia).activeTab)) {
-      eventHub.$once('fetchNotesData', () => useNotes().fetchNotes());
+      eventHub.$once('fetchNotesData', () =>
+        useNotes()
+          .fetchNotes()
+          .catch((error) =>
+            createAlert({
+              message: __('Something went wrong while fetching comments. Please try again.'),
+              captureError: true,
+              error,
+            }),
+          ),
+      );
       eventHub.$once('fetchedNotesData', () => initOverviewTabCounter());
 
       requestIdleCallback(() => {

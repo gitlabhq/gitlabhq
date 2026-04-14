@@ -22,6 +22,7 @@ import PersonalAccessTokensTable from './personal_access_tokens_table.vue';
 import PersonalAccessTokenDrawer from './personal_access_token_drawer.vue';
 import PersonalAccessTokenStatistics from './personal_access_token_statistics.vue';
 import PersonalAccessTokenActions from './personal_access_token_actions.vue';
+import PersonalAccessTokenDuplicateModal from './personal_access_token_duplicate_modal.vue';
 import RotatedPersonalAccessToken from './rotated_personal_access_token.vue';
 
 export default {
@@ -37,6 +38,7 @@ export default {
     PersonalAccessTokenDrawer,
     PersonalAccessTokenStatistics,
     PersonalAccessTokenActions,
+    PersonalAccessTokenDuplicateModal,
     RotatedPersonalAccessToken,
   },
   data() {
@@ -56,6 +58,7 @@ export default {
         token: null,
         action: null,
       },
+      selectedDuplicateToken: null,
       rotatedToken: null,
       pagination: {
         first: PAGE_SIZE,
@@ -185,6 +188,12 @@ export default {
 
       this.clearSelectedToken();
     },
+    duplicateToken(token) {
+      this.selectedDuplicateToken = token;
+    },
+    clearDuplicateToken() {
+      this.selectedDuplicateToken = null;
+    },
     handleStatisticsFilter(filter) {
       this.filter = filter;
       this.filterObject = convertFiltersToVariables(this.filter);
@@ -251,6 +260,7 @@ export default {
         @select="selectToken"
         @rotate="selectActionableToken($event, $options.ACTIONS.ROTATE)"
         @revoke="selectActionableToken($event, $options.ACTIONS.REVOKE)"
+        @duplicate="duplicateToken"
       />
 
       <template #pagination>
@@ -268,6 +278,7 @@ export default {
       @close="clearSelectedToken"
       @rotate="selectActionableToken($event, $options.ACTIONS.ROTATE)"
       @revoke="selectActionableToken($event, $options.ACTIONS.REVOKE)"
+      @duplicate="duplicateToken"
     />
 
     <personal-access-token-actions
@@ -276,6 +287,11 @@ export default {
       @close="clearActionableToken"
       @rotated="handleTokenRotated"
       @revoked="clearSelectedToken"
+    />
+
+    <personal-access-token-duplicate-modal
+      :token="selectedDuplicateToken"
+      @cancel="clearDuplicateToken"
     />
   </div>
 </template>

@@ -9,7 +9,11 @@ class Import::UrlController < ApplicationController
   end
 
   def new
-    render_404 unless Feature.enabled?(:import_by_url_new_page, current_user)
+    return render_404 unless Feature.enabled?(:import_by_url_new_page, current_user)
+
+    unless can?(current_user, :import_projects, current_user.namespace)
+      return access_denied!(s_('ProjectImportByURL|You do not have permission to import projects.'))
+    end
 
     return unless namespace_id.present?
 

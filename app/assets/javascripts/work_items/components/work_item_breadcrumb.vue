@@ -1,19 +1,14 @@
 <script>
 import { GlBreadcrumb } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ROUTES, WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
+import { ROUTES, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 
 export default {
   components: {
     GlBreadcrumb,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     workItemType: {
-      default: null,
-    },
-    listPath: {
       default: null,
     },
   },
@@ -24,12 +19,6 @@ export default {
     },
   },
   computed: {
-    isWorkItemPlanningViewEnabled() {
-      return this.glFeatures.workItemPlanningView;
-    },
-    isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
-    },
     isServiceDeskList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
     },
@@ -38,56 +27,24 @@ export default {
         return __('Service Desk');
       }
 
-      if (this.isWorkItemPlanningViewEnabled) {
-        return s__('WorkItem|Work items');
-      }
-
-      if (this.isEpicsList) {
-        return __('Epics');
-      }
-
-      return __('Issues');
+      return s__('WorkItem|Work items');
     },
     breadcrumbType() {
       if (this.isServiceDeskList) {
         return 'service_desk';
       }
 
-      if (this.isWorkItemPlanningViewEnabled) {
-        return 'work_items';
-      }
-
-      if (this.isEpicsList) {
-        return 'epics';
-      }
-
-      return 'issues';
-    },
-    shouldUseRouterNavigation() {
-      // NOTE: task are redirected to /issues -> /work_items from BE
-      // When clicking breadcrumb, we navigate to the list view using the same path prefix.
-      // This redirect users to /work_items in case of "tasks"
-      // even if the feature flag is off as we don't show 404 for work_items path when feature flag is off anymore
-      const isOnWorkItemsPath = this.$route.path?.includes('work_items');
-      if (isOnWorkItemsPath && !this.isWorkItemPlanningViewEnabled) {
-        return false;
-      }
-      return true;
+      return 'work_items';
     },
     crumbs() {
       const indexCrumb = {
         text: this.listName,
-      };
-
-      if (this.shouldUseRouterNavigation) {
-        indexCrumb.to = {
+        to: {
           name: ROUTES.index,
-          query: this.$route.query,
+          query: undefined,
           params: { type: this.breadcrumbType },
-        };
-      } else {
-        indexCrumb.href = this.listPath;
-      }
+        },
+      };
 
       const crumbs = [...this.staticBreadcrumbs, indexCrumb];
 

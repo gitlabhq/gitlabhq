@@ -9,14 +9,11 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
   let(:role) { nil }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
     stub_feature_flags(hide_error_tracking_features: false)
 
     project.add_role(user, role) if role
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
     project.update!(service_desk_enabled: true)
@@ -38,7 +35,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
       it 'renders when expected to' do
         project.project_feature.update_attribute(:monitor_access_level, monitor_level)
 
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
 
         click_button('Monitor')
 
@@ -61,19 +58,19 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
       end
 
       it 'does not show the incident menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).not_to have_link('Incidents', href: project_incidents_path(project))
       end
 
       it 'does not show the alert menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       end
 
       it 'does not show the error tracking menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
       end
@@ -88,19 +85,19 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
       end
 
       it 'shows the incident menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).to have_link('Incidents', href: project_incidents_path(project))
       end
 
       it 'shows the alert menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       end
 
       it 'shows the error tracking menu' do
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
         click_button('Monitor')
         expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
       end
@@ -112,7 +109,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
 
     before do
       project.project_feature.update_attribute(:monitor_access_level, access_level)
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
       click_button('Monitor')
     end
 
@@ -149,7 +146,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
     let(:role) { :guest }
 
     it 'has the correct `Monitor` and `Operate` menu items' do
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
 
       click_button('Monitor')
 
@@ -172,7 +169,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
     let(:role) { :reporter }
 
     it 'has the correct `Monitor` and `Operate` menu items' do
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
 
       click_button('Monitor')
 
@@ -195,7 +192,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
     let(:role) { :developer }
 
     it 'has the correct `Monitor` and `Operate` menu items' do
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
 
       click_button('Monitor')
 
@@ -217,7 +214,7 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
     let(:role) { :maintainer }
 
     it 'has the correct `Monitor` and `Operate` menu items' do
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
 
       click_button('Monitor')
 

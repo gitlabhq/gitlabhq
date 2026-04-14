@@ -109,6 +109,7 @@ function createTransparencyToggle(img) {
 
 const TRANSPARENT_IMAGE_FORMATS = /\.(png|webp|gif)(\?.*)?$/i;
 const ANALYZE_MAX_SIZE = 100;
+const TRANSPARENCY_THRESHOLD = 0.05;
 
 function supportsTransparency(link) {
   const filename = link.href?.split('/').pop() || '';
@@ -128,9 +129,17 @@ function checkPixelsForTransparency(img) {
   ctx.drawImage(img, 0, 0, width, height);
 
   const { data } = ctx.getImageData(0, 0, width, height);
+  const totalPixels = width * height;
+  if (totalPixels === 0) return false;
+
+  const threshold = Math.ceil(totalPixels * TRANSPARENCY_THRESHOLD);
+  let transparentCount = 0;
 
   for (let i = 3; i < data.length; i += 4) {
-    if (data[i] < 255) return true;
+    if (data[i] < 255) {
+      transparentCount += 1;
+      if (transparentCount === threshold) return true;
+    }
   }
 
   return false;

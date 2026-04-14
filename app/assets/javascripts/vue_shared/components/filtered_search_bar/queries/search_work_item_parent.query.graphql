@@ -1,8 +1,10 @@
+# @feature_category: portfolio_management
 query parentWorkItems(
   $search: String
   $fullPath: ID!
   $groupPath: ID!
   $types: [IssueType!]
+  $workItemTypeIds: [WorkItemsTypeID!]
   $in: [IssuableSearchableField!]
   $ids: [WorkItemID!]
   $includeAncestors: Boolean = false
@@ -14,6 +16,7 @@ query parentWorkItems(
     workItems(
       search: $search
       types: $types
+      workItemTypeIds: $workItemTypeIds
       in: $in
       includeAncestors: $includeAncestors
       includeDescendants: $includeDescendants
@@ -27,7 +30,13 @@ query parentWorkItems(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    workItems(search: $search, types: $types, in: $in, ids: $ids) {
+    workItems(
+      search: $search
+      types: $types
+      workItemTypeIds: $workItemTypeIds
+      in: $in
+      ids: $ids
+    ) {
       nodes {
         id
         iid

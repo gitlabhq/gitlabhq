@@ -10,5 +10,10 @@ FactoryBot.define do
     pattern { package_name_pattern }
     pattern_type { :wildcard }
     target_field { :package_name }
+
+    trait :terraform_module do
+      package_name_pattern { 'my-module/my-system' }
+      package_type { :terraform_module }
+    end
   end
 end

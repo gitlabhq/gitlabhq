@@ -6,7 +6,13 @@ class Route < ApplicationRecord
   include EachBatch
   include Cells::Claimable
 
-  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES, feature_flag: :cells_claims_routes
+  cells_claims_scope do
+    where("strpos(path, '/') = 0")
+  end
+
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+    feature_flag: :cells_claims_routes,
+    if: ->(record) { record.path.exclude?('/') }
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :namespace_id
 

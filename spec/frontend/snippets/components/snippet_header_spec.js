@@ -103,7 +103,7 @@ describe('Snippet header component', () => {
 
   const findAuthoredMessage = () => wrapper.findByTestId('authored-message').text();
   const findEditButton = () => wrapper.findByTestId('snippet-action-button');
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdown = () => wrapper.findByTestId('snippets-more-actions-dropdown');
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItemAt = (i) => findDropdownItems().at(i).props('item');
   const findSpamAction = () => wrapper.findByText('Submit as spam');
@@ -288,6 +288,10 @@ describe('Snippet header component', () => {
   describe('with guest user', () => {
     beforeEach(() => {
       createComponent({
+        snippetProps: {
+          sshUrlToRepo: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/snippets/22.git',
+          httpUrlToRepo: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/snippets/22.git',
+        },
         permissions: {
           adminSnippet: false,
           updateSnippet: false,

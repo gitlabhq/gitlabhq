@@ -12,7 +12,7 @@
   documentation_link: https://docs.gitlab.com/user/interface_redesign/  # This is the documentation URL, but can be a URL to a video if there is one
   image_url: https://about.gitlab.com/images/18_6/new-panel-ui.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2025-11-20  # YYYY-MM-DD
-  release: 18.6  # XX.Y
+  release: "18.6"  # XX.Y
 
 - name: "Exact code search in limited availability"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
@@ -28,7 +28,7 @@
   documentation_link: https://docs.gitlab.com/user/search/exact_code_search/  # This is the documentation URL, but can be a URL to a video if there is one
   image_url: https://about.gitlab.com/images/18_6/exact_code_search.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2025-11-20  # YYYY-MM-DD
-  release: 18.6  # XX.Y
+  release: "18.6"  # XX.Y
 
 - name: "CI/CD Components can reference their own metadata"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
@@ -42,4 +42,4 @@
   documentation_link: https://docs.gitlab.com/ci/yaml/expressions/#component-context  # This is the documentation URL, but can be a URL to a video if there is one
   image_url: https://about.gitlab.com/images/18_6/context.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2025-11-20  # YYYY-MM-DD
-  release: 18.6  # XX.Y
+  release: "18.6"  # XX.Y

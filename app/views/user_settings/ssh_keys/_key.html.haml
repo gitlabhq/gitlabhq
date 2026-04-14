@@ -19,7 +19,7 @@
     = ssh_key_usage_types.invert[key.usage_type]
 
   %td{ data: { label: s_('Profiles|Created'), testid: 'created' } }
-    = html_escape(s_('%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at).html_safe}
+    = html_escape(_('%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at).html_safe}
 
   %td{ data: { label: s_('Profiles|Last used'), testid: 'last-used' } }
     = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')

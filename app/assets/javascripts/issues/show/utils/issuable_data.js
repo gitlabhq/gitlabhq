@@ -1,7 +1,3 @@
-const WORK_ITEM_TYPE_INCIDENT = 'incident';
-const WORK_ITEM_TYPE_ISSUE = 'issue';
-const WORK_ITEM_TYPE_TICKET = 'ticket';
-
 export const SUPPORT_BOT_USERNAME = 'support-bot';
 
 export const issuableInitialDataById = (id) => {
@@ -15,17 +11,6 @@ export const issuableInitialDataById = (id) => {
   }
 };
 
-const isIssuableIncident = (data) => {
-  return data?.issueType === WORK_ITEM_TYPE_INCIDENT;
-};
-
-const isIssuableServiceDeskIssue = (data) => {
-  return (
-    data?.issueType === WORK_ITEM_TYPE_TICKET ||
-    (data?.issueType === WORK_ITEM_TYPE_ISSUE && data?.authorUsername === SUPPORT_BOT_USERNAME)
-  );
-};
-
 export const isLegacyIssueType = (issuableData) => {
-  return isIssuableIncident(issuableData) || isIssuableServiceDeskIssue(issuableData);
+  return issuableData?.isIncidentManagement || issuableData?.isServiceDesk;
 };

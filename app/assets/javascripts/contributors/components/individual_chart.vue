@@ -1,5 +1,5 @@
 <script>
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { isInTimePeriod } from '~/lib/utils/datetime/date_calculation_utility';
 import { INDIVIDUAL_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';

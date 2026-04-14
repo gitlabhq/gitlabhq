@@ -41,23 +41,23 @@ To use full screen mode, your web browser must also support it. If your web brow
 
 {{< history >}}
 
-- Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/), `FF_SCRIPT_SECTIONS`.
+- Multi-line command output in bash shells [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 [with a feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/) named `FF_SCRIPT_SECTIONS`. Disabled by default.
 
 {{< /history >}}
 
-Job logs are divided into sections that can be collapsed or expanded. Each section displays
-the duration.
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
-In the following example:
+When `FF_SCRIPT_SECTIONS` is enabled, multi-line script commands appear as collapsible sections
+in job logs. Single-line commands are printed directly with a `$` prefix. Durations are not
+displayed.
 
-- Three sections have been collapsed and can be expanded.
-- Three sections are expanded and can be collapsed.
+In `powershell` and `pwsh` shells, `FF_SCRIPT_SECTIONS` does not create collapsible sections.
+Commands are printed with color output only.
 
-![A job log with expandable and collapsible sections](img/collapsible_log_v13_10.png)
+### Create custom collapsible sections
 
-### Custom collapsible sections
-
-You can create [collapsible sections in job logs](#expand-and-collapse-job-log-sections)
+You can create collapsible sections in job logs
 by manually outputting special codes
 that GitLab uses to delimit collapsible sections:
 
@@ -103,7 +103,7 @@ Sample job console log:
 
 ![A job log showing a collapsed section with hidden content](img/collapsible_job_v16_10.png)
 
-#### Use a script to improve display of collapsible sections
+#### Improve section display with a script
 
 To remove the `echo` statements that create the section markers from the job output,
 you can move the job contents to a script file and invoke it from the job:
@@ -144,11 +144,10 @@ you can move the job contents to a script file and invoke it from the job:
        - source script.sh
    ```
 
-### Pre-collapse sections
+### Collapse sections by default
 
-You can make the job log automatically collapse collapsible sections by adding the `collapsed` option to the section start.
-Add `[collapsed=true]` after the section name and before the `\r`. The section end marker
-remains unchanged:
+To collapse sections by default, add `[collapsed=true]`
+to the section start marker, after the section name, and before the `\r`:
 
 - Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
 - Section end marker (unchanged): `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`

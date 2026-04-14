@@ -176,9 +176,9 @@ describe('WorkItemDevelopment CE', () => {
 
     it.each`
       developmentWidgetQueryHandler             | message                                                            | workItemState   | linkedMRsNumber
-      ${devWidgetSuccessQueryHandlerWithOneMR}  | ${'This task will be closed when the following is merged.'}        | ${STATE_OPEN}   | ${1}
-      ${devWidgetSuccessQueryHandlerWithMRList} | ${'This task will be closed when any of the following is merged.'} | ${STATE_OPEN}   | ${workItemDevelopmentMRNodes.length}
-      ${devWidgetSuccessQueryHandlerWithMRList} | ${'The task was closed automatically when a branch was merged.'}   | ${STATE_CLOSED} | ${workItemDevelopmentMRNodes.length}
+      ${devWidgetSuccessQueryHandlerWithOneMR}  | ${'This Task will be closed when the following is merged.'}        | ${STATE_OPEN}   | ${1}
+      ${devWidgetSuccessQueryHandlerWithMRList} | ${'This Task will be closed when any of the following is merged.'} | ${STATE_OPEN}   | ${workItemDevelopmentMRNodes.length}
+      ${devWidgetSuccessQueryHandlerWithMRList} | ${'The Task was closed automatically when a branch was merged.'}   | ${STATE_CLOSED} | ${workItemDevelopmentMRNodes.length}
     `(
       'when the workItemState is `$workItemState` and number of linked MRs is `$linkedMRsNumber` shows message `$message`',
       async ({ developmentWidgetQueryHandler, message, workItemState }) => {

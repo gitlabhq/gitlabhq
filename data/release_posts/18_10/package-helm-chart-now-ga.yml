@@ -1,0 +1,21 @@
+---
+features:
+  secondary:
+    - name: "GitLab Helm Chart registry generally available"
+      available_in: [core, premium, ultimate]
+      gitlab_dedicated: true
+      gitlab_dedicated_for_government: true
+      gitlab_com: true
+      self_managed: true
+      documentation_link: 'https://docs.gitlab.com/user/packages/helm_repository/'
+      reporter: trizzi
+      stage: package
+      categories:
+        - 'Package Registry'
+      issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/573715'
+      description: |
+        Teams using Helm to manage Kubernetes application deployments can now rely on the GitLab Helm Chart registry for production workloads. Previously in beta, the registry is now generally available following the resolution of key architectural and reliability concerns.
+
+        The path to GA included resolving a hard limit that prevented the `index.yaml` endpoint from returning more than 1,000 charts, fixing a background indexing bug that caused newly published chart versions to be missing from the index, completing a full AppSec security review, and adding Geo replication support for Helm metadata cache, ensuring high availability for self-managed customers running GitLab Geo.
+
+        Platform and DevOps teams can publish and install Helm charts directly from GitLab using standard Helm client workflows, with support for project-level endpoints and authentication using personal access tokens, deploy tokens, and CI/CD job tokens. Now you can keep charts alongside the source code, pipelines, and security scanning that depend on them.

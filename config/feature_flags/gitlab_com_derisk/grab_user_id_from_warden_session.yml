@@ -1,0 +1,10 @@
+
+name: grab_user_id_from_warden_session
+description: Patch LB rack middleware to rely on the user id from the warden session
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/573726
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225584
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591967
+milestone: '18.11'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

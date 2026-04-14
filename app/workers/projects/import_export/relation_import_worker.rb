@@ -120,8 +120,6 @@ module Projects
 
       def perform_post_import_tasks
         project.reset_counters_and_iids
-        # Issue iids are scoped on :namespace so that scope must be flushed as well
-        InternalId.flush_records!(namespace: project.project_namespace)
       end
 
       def log_failure(exception)

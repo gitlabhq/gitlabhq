@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { userList } from 'jest/feature_flags/mock_data';
 import { states } from '~/user_lists/constants/show';
 import * as types from '~/user_lists/store/show/mutation_types';

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner_with_token
 description: Count of unique groups where a group runner was created using a runner registration token
-product_group: runner
+product_group: runner_core
 product_categories:
 - runner_core
 performance_indicator_type: []

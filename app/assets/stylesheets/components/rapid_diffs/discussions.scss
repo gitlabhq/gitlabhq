@@ -45,12 +45,22 @@
   }
 }
 
+diff-file[data-line-range-dragging] .rd-discussion-row {
+  pointer-events: none;
+}
+
 .rd-discussion-row.rd-discussion-row:last-child {
   border-bottom: 0;
+  border-bottom-left-radius: var(--rd-row-bottom-left-radius);
+  border-bottom-right-radius: var(--rd-row-bottom-right-radius);
 }
 
 .rd-gutter-toggle {
   z-index: constants.$diff-file-discussion-row-z-index;
+}
+
+.rd-draft-note {
+  z-index: constants.$diff-file-draft-note-z-index;
 }
 
 .rd-discussion-row > td {
@@ -77,6 +87,14 @@
   border-bottom: 0;
 }
 
+.rd-discussion-row:last-child > :first-child {
+  border-bottom-left-radius: var(--rd-row-bottom-left-radius);
+}
+
+.rd-discussion-row:last-child > :last-child {
+  border-bottom-right-radius: var(--rd-row-bottom-right-radius);
+}
+
 .rd-discussion-row[data-collapsed],
 .rd-discussion-row[data-collapsed] > td {
   border: 0;
@@ -88,10 +106,19 @@
   border-radius: var(--content-border-radius);
 }
 
+.rd-note-suggestions {
+  position: relative;
+  z-index: constants.$diff-file-suggestion-header-z-index;
+}
+
 @container discussion-cell (min-width: theme('maxWidth.limited')) {
   .rd-diff-line-discussions-list {
     border-right: 1px solid var(--rd-line-border-color);
   }
+}
+
+.rd-hunk-lines[data-has-new-discussion-toggle] {
+  z-index: constants.$diff-file-new-discussion-toggle-row-z-index;
 }
 
 .rd-new-discussion-toggle {

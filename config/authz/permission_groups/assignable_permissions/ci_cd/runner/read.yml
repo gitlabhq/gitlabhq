@@ -3,6 +3,7 @@ name: read_runner
 description: Grants the ability to read runners
 boundaries:
   - group
+  - instance
   - project
 permissions:
   - read_runner

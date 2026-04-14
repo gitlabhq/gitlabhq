@@ -43,6 +43,7 @@ describe('WorkItemCrmContacts component', () => {
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     workItemIid = '1',
     items = [],
+    provide = {},
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       canUpdate: true,
@@ -62,6 +63,7 @@ describe('WorkItemCrmContacts component', () => {
         fullPath: 'test-project-path',
         workItemType: 'Task',
       },
+      provide,
     });
   };
 
@@ -328,4 +330,25 @@ describe('WorkItemCrmContacts component', () => {
       expect(wrapper.emitted('error')).toEqual([[expectedErrorMessage]]);
     },
   );
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    it('passes useWorkItemFeatures as true to the mutation', async () => {
+      createComponent({
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+      showDropdown();
+      updateItems([item1Id]);
+      await waitForPromises();
+
+      expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: workItemId,
+          crmContactsWidget: {
+            contactIds: [item1Id],
+          },
+        },
+        useWorkItemFeatures: true,
+      });
+    });
+  });
 });

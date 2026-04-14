@@ -9,6 +9,7 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
@@ -109,16 +110,11 @@ describe('Init file browser', () => {
   const initAppData = ({
     diffFilesEndpoint = '/diff-files-metadata',
     shouldSortMetadataFiles = true,
-    linkedFileData,
   } = {}) => {
-    const data = {
+    appData = {
       diffFilesEndpoint,
       shouldSortMetadataFiles,
     };
-    if (linkedFileData !== undefined) {
-      data.linkedFileData = linkedFileData;
-    }
-    appData = data;
   };
 
   const init = () => {
@@ -136,6 +132,7 @@ describe('Init file browser', () => {
     // eslint-disable-next-line no-underscore-dangle
     useMainContainer()._setCurrentBreakpoint('md');
     useApp().$reset();
+    useDiffsList().$reset();
 
     mockAxios = new MockAdapter(axios);
     mockAxios
@@ -244,28 +241,27 @@ describe('Init file browser', () => {
 
   describe('linkedFileData', () => {
     it('passes linkedFilePath from linkedFileData old_path first', async () => {
-      initAppData({ linkedFileData: { old_path: 'old.txt', new_path: 'new.txt' } });
+      useDiffsList().setLinkedFileData({ old_path: 'old.txt', new_path: 'new.txt' });
       await init();
       const fileBrowser = getFileBrowser();
       expect(fileBrowser.dataset.linkedFilePath).toBe('old.txt');
     });
 
     it('uses new_path when old_path is not available', async () => {
-      initAppData({ linkedFileData: { new_path: 'new.txt' } });
+      useDiffsList().setLinkedFileData({ new_path: 'new.txt' });
       await init();
       const fileBrowser = getFileBrowser();
       expect(fileBrowser.dataset.linkedFilePath).toBe('new.txt');
     });
 
     it('uses old_path when new_path is not available', async () => {
-      initAppData({ linkedFileData: { old_path: 'old.txt' } });
+      useDiffsList().setLinkedFileData({ old_path: 'old.txt' });
       await init();
       const fileBrowser = getFileBrowser();
       expect(fileBrowser.dataset.linkedFilePath).toBe('old.txt');
     });
 
     it('passes null if linkedFileData is null', async () => {
-      initAppData({ linkedFileData: null });
       await init();
       const fileBrowser = getFileBrowser();
       expect(fileBrowser.dataset.linkedFilePath).toBeUndefined();

@@ -394,8 +394,9 @@ describe('WorkItemNotes component', () => {
       });
 
       describe('when sort order is set to newest first by default', () => {
+        useLocalStorageSpy();
+
         it('fetches notes in descending order', async () => {
-          useLocalStorageSpy();
           localStorage.setItem(WORK_ITEM_NOTES_SORT_ORDER_KEY, DESC);
 
           createComponent({ defaultWorkItemNotesQueryHandler: workItemMoreNotesQueryHandler });

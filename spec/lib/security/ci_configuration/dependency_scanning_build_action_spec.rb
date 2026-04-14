@@ -13,14 +13,8 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
 
       context 'when dependency scanning has not been included' do
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           - security
@@ -28,7 +22,7 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
             RANDOM: make sure this persists
           include:
           - template: existing.yml
-          - template: Security/Dependency-Scanning.gitlab-ci.yml
+          - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
           CI_YML
         end
 
@@ -61,20 +55,14 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
 
       context 'when dependency_scanning has been included' do
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           variables:
             RANDOM: make sure this persists
           include:
-          - template: Security/Dependency-Scanning.gitlab-ci.yml
+          - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
           CI_YML
         end
 
@@ -82,7 +70,7 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
           let(:gitlab_ci_content) do
             { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
-              "include" => [{ "template" => "Security/Dependency-Scanning.gitlab-ci.yml" }] }
+              "include" => [{ "template" => "Jobs/Dependency-Scanning.v2.gitlab-ci.yml" }] }
           end
 
           it 'generates the correct YML' do
@@ -95,7 +83,7 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
           let(:gitlab_ci_content) do
             { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
-              "include" => { "template" => "Security/Dependency-Scanning.gitlab-ci.yml" } }
+              "include" => { "template" => "Jobs/Dependency-Scanning.v2.gitlab-ci.yml" } }
           end
 
           it 'generates the correct YML' do
@@ -111,19 +99,13 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
         end
 
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - build
           - test
           include:
-          - template: Security/Dependency-Scanning.gitlab-ci.yml
+          - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
           CI_YML
         end
 
@@ -153,18 +135,12 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
     context 'with autodevops disabled' do
       let(:auto_devops_enabled) { false }
       let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+        <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           include:
-          - template: Security/Dependency-Scanning.gitlab-ci.yml
+          - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
         CI_YML
       end
 
@@ -177,14 +153,8 @@ RSpec.describe Security::CiConfiguration::DependencyScanningBuildAction, feature
     context 'with autodevops enabled' do
       let(:auto_devops_enabled) { true }
       let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+        <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           include:
           - template: Auto-DevOps.gitlab-ci.yml
         CI_YML

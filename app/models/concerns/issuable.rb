@@ -45,7 +45,7 @@ module Issuable
   }.with_indifferent_access.freeze
 
   included do
-    cache_markdown_field :title, pipeline: :single_line_markdown
+    cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     redact_field :description
@@ -54,17 +54,15 @@ module Issuable
     belongs_to :updated_by, class_name: 'User'
     belongs_to :last_edited_by, class_name: 'User'
 
-    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do # rubocop:disable Cop/ActiveRecordDependent
-      def authors_loaded?
-        # We check first if we're loaded to not load unnecessarily.
-        loaded? && to_a.all? { |note| note.association(:author).loaded? }
-      end
-
-      def award_emojis_loaded?
-        # We check first if we're loaded to not load unnecessarily.
-        loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
-      end
-    end
+    has_many :notes, -> { extending Notes::ParticipantAssociationsExtension }, as: :noteable, inverse_of: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :notes_with_possible_mentions, -> {
+      Note.from_union(
+        [
+          user,
+          system.with_possible_mentions
+        ], remove_duplicates: false
+      ).extending(Notes::ParticipantAssociationsExtension)
+    }, class_name: 'Note', as: :noteable, inverse_of: :noteable
 
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
     has_many :user_note_authors, -> { distinct.where("notes.system = false") }, through: :notes, source: :author
@@ -143,10 +141,11 @@ module Issuable
       includes(*associations)
     end
 
-    attr_mentionable :title, pipeline: :single_line_markdown
+    attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
 
     participant :author
+    participant :system_note_authors
     participant :notes_for_participants
     participant :assignees
 
@@ -260,7 +259,11 @@ module Issuable
 
   class_methods do
     def participant_includes
-      [:author, :award_emoji, { notes: [:author, :award_emoji] }]
+      if Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
+        [:author, :award_emoji, { notes_with_possible_mentions: [:author, :award_emoji] }]
+      else
+        [:author, :award_emoji, { notes: [:author, :award_emoji] }]
+      end
     end
 
     # Searches for records with a matching title.
@@ -643,11 +646,21 @@ module Issuable
     assignees.map(&:username).join(',')
   end
 
-  def notes_for_participants
-    notes_with_associations.limit(Noteable::MAX_NOTES_LIMIT * 2)
+  def system_note_authors
+    return [] unless Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
+
+    User.id_in(notes.system.select(:author_id).distinct)
   end
 
-  def notes_with_associations
+  def notes_for_participants
+    if Feature.enabled?(:optimize_issuable_participants, Feature.current_request)
+      notes_with_associations(notes_with_possible_mentions).limit(Noteable::MAX_NOTES_LIMIT * 2)
+    else
+      notes_with_associations.limit(Noteable::MAX_NOTES_LIMIT * 2)
+    end
+  end
+
+  def notes_with_associations(relation = notes)
     # If A has_many Bs, and B has_many Cs, and you do
     # `A.includes(b: :c).each { |a| a.b.includes(:c) }`, sadly ActiveRecord
     # will do the inclusion again. So, we check if all notes in the relation
@@ -655,13 +668,13 @@ module Issuable
     # `inc_notes_with_associations` was used) and skip the inclusion if that's
     # the case.
     includes = []
-    includes << :author unless notes.authors_loaded?
-    includes << :award_emoji unless notes.award_emojis_loaded?
+    includes << :author unless relation.authors_loaded?
+    includes << :award_emoji unless relation.award_emojis_loaded?
 
     if persisted? && includes.any?
-      notes.includes(includes)
+      relation.includes(includes)
     else
-      notes
+      relation
     end
   end
 

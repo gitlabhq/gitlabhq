@@ -136,10 +136,6 @@ module Gitlab
         monotonic_time_start = Gitlab::Metrics::System.monotonic_time
         job_thread_cputime_start = get_thread_cputime
 
-        ensure_gvltools!
-        gvl_local_time_start = GVLTools::LocalTimer.monotonic_time
-        gvl_global_time_start = GVLTools::GlobalTimer.monotonic_time
-
         begin
           transaction = Gitlab::Metrics::BackgroundTransaction.new
           transaction.run { yield }
@@ -152,8 +148,6 @@ module Gitlab
 
           @monotonic_time = monotonic_time_end - monotonic_time_start
           @job_thread_cputime = job_thread_cputime_end - job_thread_cputime_start
-          @gvl_local_time = (GVLTools::LocalTimer.monotonic_time - gvl_local_time_start) / 1_000_000_000.0
-          @gvl_global_time = (GVLTools::GlobalTimer.monotonic_time - gvl_global_time_start) / 1_000_000_000.0
 
           @metrics[:sidekiq_running_jobs].increment(labels, -1)
 
@@ -235,7 +229,10 @@ module Gitlab
 
       def record_gvl_measurements
         @metrics[:sidekiq_gvl_measurement_enabled].set(labels, gvl_tools_enabled? ? 1 : 0)
-        return unless gvl_tools_enabled?
+
+        gvl_thread_wait = get_gvl_thread_wait_time(instrumentation)
+        gvl_process_wait = get_gvl_process_wait_time(instrumentation)
+        return unless gvl_thread_wait && gvl_process_wait
 
         unless @metrics[:sidekiq_gvl_thread_wait_seconds]
           @metrics[:sidekiq_gvl_thread_wait_seconds] = ::Gitlab::Metrics.histogram(
@@ -253,8 +250,8 @@ module Gitlab
             :all)
         end
 
-        @metrics[:sidekiq_gvl_thread_wait_seconds].observe(labels, @gvl_local_time)
-        @metrics[:sidekiq_gvl_process_wait_seconds].increment(labels, @gvl_global_time)
+        @metrics[:sidekiq_gvl_thread_wait_seconds].observe(labels, gvl_thread_wait)
+        @metrics[:sidekiq_gvl_process_wait_seconds].increment(labels, gvl_process_wait)
       end
 
       def with_load_balancing_settings(job)
@@ -292,15 +289,12 @@ module Gitlab
         payload.fetch(:gitaly_duration_s, 0)
       end
 
-      def ensure_gvltools!
-        # Enabling GVLTools incurs some overhead, so we ensure it's only enabled when the FF is enabled too.
-        if gvl_tools_enabled?
-          GVLTools::LocalTimer.enable
-          GVLTools::GlobalTimer.enable
-        else
-          GVLTools::LocalTimer.disable
-          GVLTools::GlobalTimer.disable
-        end
+      def get_gvl_thread_wait_time(payload)
+        payload[:gvl_thread_wait_s]
+      end
+
+      def get_gvl_process_wait_time(payload)
+        payload[:gvl_process_wait_s]
       end
 
       def gvl_tools_enabled?

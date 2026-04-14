@@ -25,6 +25,8 @@ module ActiveContext
         # no-op, scheduled on a cronjob
       end
 
+      private
+
       def enqueue_all_shards
         self.class.bulk_perform_async_with_contexts(
           ActiveContext.raw_queues,
@@ -39,7 +41,7 @@ module ActiveContext
             log_extra_metadata_on_done(:records_count, records_count)
             log_extra_metadata_on_done(:shard_number, shard)
 
-            re_enqueue_shard(queue, shard) if should_re_enqueue?(records_count, failures_count)
+            re_enqueue_shard(queue, shard) if should_re_enqueue?(queue, records_count, failures_count)
           end
         end
       end
@@ -48,9 +50,10 @@ module ActiveContext
         self.class.perform_in(RESCHEDULE_INTERVAL, queue.to_s, shard)
       end
 
-      def should_re_enqueue?(records_count, failures_count)
+      def should_re_enqueue?(queue, records_count, failures_count)
         return false if failures_count&.positive?
         return false unless records_count&.positive?
+        return false if queue.limit_throughput?
 
         ActiveContext::Config.re_enqueue_indexing_workers?
       end

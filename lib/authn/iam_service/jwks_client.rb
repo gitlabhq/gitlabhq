@@ -8,6 +8,9 @@ module Authn
       KeyNotFoundError = Class.new(StandardError)
 
       JWKS_PATH = '/.well-known/jwks.json'
+      MIN_CACHE_TTL = 5.minutes
+      MAX_CACHE_TTL = 24.hours
+      DEFAULT_CACHE_TTL = 1.hour
       RACE_CONDITION_TTL = 5.seconds
       HTTP_TIMEOUT_SECONDS = 5
 
@@ -26,10 +29,20 @@ module Authn
       end
 
       def keyset
-        Rails.cache.fetch(cache_key, expires_in: cache_ttl, race_condition_ttl: RACE_CONDITION_TTL) { fetch_keyset }
+        Rails.cache.fetch(cache_key, race_condition_ttl: RACE_CONDITION_TTL) do |_, options|
+          response = fetch_keyset
+          options.expires_in = cache_ttl(response)
+          parse_keyset(response)
+        end
       end
 
       private
+
+      def service_url
+        Authn::IamAuthService.url
+      rescue Authn::IamAuthService::ConfigurationError => e
+        raise ConfigurationError, e.message
+      end
 
       def fetch_keyset
         response = Gitlab::HTTP.get(endpoint, timeout: HTTP_TIMEOUT_SECONDS)
@@ -38,10 +51,7 @@ module Authn
           raise JwksFetchFailedError, "Failed to fetch keyset from IAM service: HTTP #{response.code}"
         end
 
-        parse_keyset(response)
-      rescue JWT::JWKError => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise JwksFetchFailedError, "Failed to parse keyset: invalid JWKS format"
+        response
       rescue *Gitlab::HTTP_V2::HTTP_ERRORS => e
         Gitlab::ErrorTracking.track_exception(e)
         raise JwksFetchFailedError, "Failed to connect to IAM service"
@@ -59,6 +69,9 @@ module Authn
         )
 
         parsed_keyset
+      rescue JWT::JWKError => e
+        Gitlab::ErrorTracking.track_exception(e)
+        raise JwksFetchFailedError, "Failed to parse keyset: invalid JWKS format"
       end
 
       def extract_verification_key(kid)
@@ -78,18 +91,14 @@ module Authn
         "iam:jwks:#{service_url}"
       end
 
-      def cache_ttl
-        ttl = Gitlab.config.authn.iam_service.jwks_cache_ttl
-        raise ConfigurationError, 'JWKS cache TTL must be a positive number' unless ttl.is_a?(Numeric) && ttl > 0
+      def cache_ttl(response)
+        cache_control_header = response.headers['cache-control'] || response.headers['Cache-Control']
+        return DEFAULT_CACHE_TTL unless cache_control_header
 
-        ttl
-      end
+        match = cache_control_header.match(/max-age=(\d+)/i)
+        ttl = match.present? ? match[1].to_i.seconds : 0
 
-      def service_url
-        url = Gitlab.config.authn.iam_service.url
-        raise ConfigurationError, 'IAM service URL is not configured' if url.nil?
-
-        url
+        ttl >= MIN_CACHE_TTL && ttl <= MAX_CACHE_TTL ? ttl : DEFAULT_CACHE_TTL
       end
     end
   end

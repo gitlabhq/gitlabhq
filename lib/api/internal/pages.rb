@@ -22,6 +22,7 @@ module API
           desc 'Indicates that pages API is enabled and auth token is valid' do
             detail 'This feature was introduced in GitLab 12.10.'
           end
+          route_setting :authorization, skip_granular_token_authorization: :pages_token_auth
           get "status" do
             no_content!
           end
@@ -32,6 +33,7 @@ module API
           params do
             requires :host, type: String, desc: 'The host to query for'
           end
+          route_setting :authorization, skip_granular_token_authorization: :pages_token_auth
           get "/" do
             virtual_domain = ::Gitlab::Pages::VirtualHostFinder.new(params[:host]).execute
             no_content! unless virtual_domain

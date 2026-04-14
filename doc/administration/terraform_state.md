@@ -23,7 +23,7 @@ The storage location of these files defaults to:
 
 These locations can be configured using the options described below.
 
-Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
+Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy-secure-files) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
 
 ## Disabling Terraform state
 
@@ -145,7 +145,7 @@ To migrate Terraform state files to object storage:
   ```
 
 You can optionally track progress and verify that all Terraform state files migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database):
 
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.

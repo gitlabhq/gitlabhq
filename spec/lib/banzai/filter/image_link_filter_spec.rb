@@ -128,14 +128,14 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :markdown do
 
         # It gets URL encoded since it went through src. Good for it.
         expect(doc.at_css('a').text).to eq(html.gsub(' ', '%20'))
-        expect(doc.to_html).not_to include('<style>')
+        expect(doc.at_css('style')).to be_nil
       end
 
       it 'data-src attribute is used as the link text, without XSS' do
         doc = filter(image(path, data_src: html), context)
 
         expect(doc.at_css('a').text).to eq(html)
-        expect(doc.to_html).not_to include('<style>')
+        expect(doc.at_css('style')).to be_nil
       end
     end
   end

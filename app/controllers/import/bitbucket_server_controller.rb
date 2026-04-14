@@ -37,7 +37,7 @@ class Import::BitbucketServerController < Import::BaseController
     unless repo
       return render json: {
         errors: safe_format(
-          s_("Project %{project_repo} could not be found"),
+          _("Project %{project_repo} could not be found"),
           project_repo: "#{@project_key}/#{@repo_slug}"
         )
       }, status: :unprocessable_entity

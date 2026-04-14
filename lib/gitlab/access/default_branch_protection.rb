@@ -68,6 +68,15 @@ module Gitlab
         allowed_to_merge_values.any? { |entry| entry[:access_level] == Gitlab::Access::DEVELOPER }
       end
 
+      def can_initial_push?(member_access_level)
+        return true if member_access_level >= Gitlab::Access::MAINTAINER
+        if member_access_level >= Gitlab::Access::DEVELOPER && (developer_can_push? || developer_can_initial_push?)
+          return true
+        end
+
+        false
+      end
+
       def fully_protected?
         return false if settings[:allow_force_push] || developer_can_initial_push?
 

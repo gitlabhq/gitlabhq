@@ -1,7 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { isValidDate, localeDateFormat } from '~/lib/utils/datetime_utility';
 import {
   DATE_RANGE_CUSTOM_VALUE,
@@ -57,6 +57,7 @@ export default {
       default: false,
     },
   },
+  emits: ['customDateRangeSelected', 'selected'],
   data() {
     return {
       selectedValue: this.selected || this.dateRangeOptions[0].value,

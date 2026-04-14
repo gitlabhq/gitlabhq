@@ -68,6 +68,6 @@ export default {
     :timestamp-type-map="$options.timestampTypeMap"
     :initial-sort="initialSort"
     :should-update-active-tab-count-from-tab-query="false"
-    user-preferences-sort-key="projectsSort"
+    sort-storage-key="group_projects"
   />
 </template>

@@ -9,6 +9,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
 
   before do
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
+    stub_feature_flags(groups_and_projects_async_transfer: false)
 
     group.add_owner(user)
     sign_in(user)

@@ -98,6 +98,7 @@ module API
           failure FAILURES
           tags %w[ml_model_registry]
         end
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
         put 'authorize' do
           authorize_workhorse!(subject: project, maximum_size: project.actual_limits.ml_model_max_file_size)
         end

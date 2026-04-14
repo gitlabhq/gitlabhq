@@ -29,8 +29,7 @@ export default {
   inject: [
     'secretPushProtectionAvailable',
     'secretPushProtectionEnabled',
-    'canEnableSpp',
-    'secretPushProtectionLicensed',
+    'userIsProjectAdmin',
     'projectFullPath',
     'secretDetectionConfigurationPath',
   ],
@@ -74,7 +73,8 @@ export default {
       };
     },
     isToggleDisabled() {
-      return !this.secretPushProtectionAvailable || !this.canEnableSpp;
+      const toggleable = this.userIsProjectAdmin || this.feature.canUserConfigure;
+      return !this.secretPushProtectionAvailable || !toggleable;
     },
     showLock() {
       return this.isToggleDisabled && this.available;
@@ -83,7 +83,7 @@ export default {
       if (!this.secretPushProtectionAvailable) {
         return this.$options.i18n.tooltipDescription;
       }
-      if (!this.canEnableSpp) {
+      if (!this.userIsProjectAdmin && !this.feature.canUserConfigure) {
         return this.$options.i18n.accessLevelTooltipDescription;
       }
       return '';
@@ -134,7 +134,7 @@ export default {
       'SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
     ),
     accessLevelTooltipDescription: s__(
-      'SecretDetection|Only a project maintainer or owner can toggle this feature.',
+      'SecretDetection|Only security managers, maintainers, and owners can toggle this feature.',
     ),
     toastMessageEnabled: s__('SecretDetection|Secret push protection is enabled'),
     toastMessageDisabled: s__('SecretDetection|Secret push protection is disabled'),
@@ -204,7 +204,7 @@ export default {
           @change="toggleSecretPushProtection"
         />
         <gl-button
-          v-if="secretPushProtectionLicensed"
+          v-if="secretPushProtectionAvailable"
           v-gl-tooltip.left.viewport="$options.i18n.settingsButtonTooltip"
           icon="settings"
           category="secondary"

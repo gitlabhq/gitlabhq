@@ -13,6 +13,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
 
 import {
+  ACTIONS_BROWSE_ARTIFACTS,
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
   ACTIONS_UNSCHEDULE,
@@ -34,6 +35,7 @@ import retryJobMutation from '../../graphql/mutations/job_retry.mutation.graphql
 import unscheduleJobMutation from '../../graphql/mutations/job_unschedule.mutation.graphql';
 
 export default {
+  ACTIONS_BROWSE_ARTIFACTS,
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
   ACTIONS_UNSCHEDULE,
@@ -84,7 +86,10 @@ export default {
       return this.job.artifacts.nodes.find((artifact) => artifact.fileType === FILE_TYPE_ARCHIVE);
     },
     artifactDownloadPath() {
-      return this.hasArtifacts.downloadPath;
+      return this.hasArtifacts?.downloadPath;
+    },
+    artifactBrowsePath() {
+      return this.job.browseArtifactsPath ?? null;
     },
     canCancelJob() {
       return this.job.userPermissions?.cancelBuild;
@@ -274,16 +279,25 @@ export default {
         />
       </template>
     </template>
-    <gl-button
-      v-if="shouldDisplayArtifacts"
-      v-gl-tooltip
-      icon="download"
-      :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
-      :aria-label="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
-      :href="artifactDownloadPath"
-      rel="nofollow"
-      download
-      data-testid="download-artifacts"
-    />
+    <template v-if="shouldDisplayArtifacts">
+      <gl-button
+        v-gl-tooltip
+        icon="folder-open"
+        :title="$options.ACTIONS_BROWSE_ARTIFACTS"
+        :aria-label="$options.ACTIONS_BROWSE_ARTIFACTS"
+        :href="artifactBrowsePath"
+        data-testid="browse-artifacts"
+      />
+      <gl-button
+        v-gl-tooltip
+        icon="download"
+        :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
+        :aria-label="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
+        :href="artifactDownloadPath"
+        rel="nofollow"
+        download
+        data-testid="download-artifacts"
+      />
+    </template>
   </gl-button-group>
 </template>

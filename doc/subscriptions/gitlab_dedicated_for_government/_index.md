@@ -134,6 +134,12 @@ some GitLab features are not available in GitLab Dedicated for Government.
 | [Server-side Git hooks](../../administration/server_hooks.md)      | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) |
 | Features configured outside of the GitLab user interface           | Contact support |
 
+### Application features
+
+GitLab Pages is not available when a custom domain is configured.
+When you configure a custom domain, the original `tenant_name.gitlab-dedicated.com`
+domain is no longer available, which prevents GitLab Pages from functioning.
+
 ### Operational features
 
 The following operational features are not available:

@@ -131,6 +131,36 @@ describe('DynamicValueRenderer', () => {
         expect(dropdownItems[1].value).toBe('option2');
         expect(dropdownItems[2].value).toBe('option3');
       });
+
+      it('displays selected value in dropdown toggle text', () => {
+        createComponent({
+          props: {
+            item: {
+              ...defaultProps.item,
+              type: 'ARRAY',
+              value: 'option2',
+              options: ['option1', 'option2', 'option3'],
+            },
+          },
+        });
+
+        expect(findDropdown().props('toggleText')).toBe('option2');
+      });
+
+      it('displays placeholder in dropdown toggle text when array value is empty', () => {
+        createComponent({
+          props: {
+            item: {
+              ...defaultProps.item,
+              type: 'ARRAY',
+              value: '',
+              options: ['option1', 'option2', 'option3'],
+            },
+          },
+        });
+
+        expect(findDropdown().props('toggleText')).toBe('Select option');
+      });
     });
   });
 
@@ -322,6 +352,56 @@ describe('DynamicValueRenderer', () => {
         );
         expect(findValidationFeedback().text()).toContain(`Pattern: ${regex}`);
       });
+    });
+  });
+
+  describe('dropdown search filtering', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          item: {
+            ...defaultProps.item,
+            options: ['production', 'staging', 'development', 'preview'],
+          },
+        },
+      });
+    });
+
+    it('filters options based on search term', async () => {
+      findDropdown().vm.$emit('search', 'prod');
+      await nextTick();
+
+      const items = findDropdown().props('items');
+      expect(items).toHaveLength(1);
+      expect(items[0].text).toBe('production');
+    });
+
+    it('filters options case-insensitively', async () => {
+      findDropdown().vm.$emit('search', 'PROD');
+      await nextTick();
+
+      const items = findDropdown().props('items');
+      expect(items).toHaveLength(1);
+      expect(items[0].text).toBe('production');
+    });
+
+    it('handles no matches', async () => {
+      findDropdown().vm.$emit('search', 'xyz');
+      await nextTick();
+
+      expect(findDropdown().props('items')).toHaveLength(0);
+    });
+
+    it('restores all options when search is cleared', async () => {
+      findDropdown().vm.$emit('search', 'prod');
+      await nextTick();
+
+      expect(findDropdown().props('items')).toHaveLength(1);
+
+      findDropdown().vm.$emit('search', '');
+      await nextTick();
+
+      expect(findDropdown().props('items')).toHaveLength(4);
     });
   });
 });

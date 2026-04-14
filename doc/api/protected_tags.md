@@ -145,6 +145,7 @@ Example response:
 {{< history >}}
 
 - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166866) in GitLab 17.5.
+- `deploy_key_id` configuration [moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224542) from GitLab Premium to GitLab Free in GitLab 18.10.
 
 {{< /history >}}
 
@@ -161,7 +162,7 @@ Supported attributes:
 |-----------------------|-------------------|----------|-------------|
 | `id`                  | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                | string            | Yes      | Name of the tag or wildcard. |
-| `allowed_to_create`   | array             | No       | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_create`   | array             | No       | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. `user_id`, `group_id`, and `access_level` are Premium and Ultimate only. |
 | `create_access_level` | integer           | No       | Access levels allowed to create. Default is `40` (Maintainer role). |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the

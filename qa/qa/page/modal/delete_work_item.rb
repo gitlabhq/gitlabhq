@@ -10,7 +10,7 @@ module QA
 
         def confirm_delete_work_item
           within_element('work-item-confirm-delete') do
-            click_button('Delete issue')
+            click_button('Delete Issue')
           end
         end
       end

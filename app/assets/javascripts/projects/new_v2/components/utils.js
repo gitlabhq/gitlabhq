@@ -3,7 +3,7 @@ import { isReasonableGitUrl } from '~/lib/utils/url_utility';
 
 export async function checkRepositoryConnection(validationPath, { url, user, password }) {
   if (!isReasonableGitUrl(url)) {
-    return { isValid: false, error: null };
+    return { isValid: false, success: false, message: null };
   }
 
   try {
@@ -19,11 +19,10 @@ export async function checkRepositoryConnection(validationPath, { url, user, pas
       message: data.message,
     };
   } catch (error) {
-    const message = error.response?.data?.message || error.message;
     return {
       isValid: true,
       success: false,
-      message,
+      message: error.message,
     };
   }
 }

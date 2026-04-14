@@ -1,0 +1,10 @@
+# @feature_category: wiki
+
+query AutoCommitMessagePreference {
+  currentUser {
+    id
+    userPreferences {
+      wikiUseAutoCommitMessage
+    }
+  }
+}

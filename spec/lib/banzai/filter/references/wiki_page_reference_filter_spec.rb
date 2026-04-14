@@ -37,7 +37,7 @@ RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_cate
     end
 
     it 'escapes the title attribute' do
-      title = %("></a>whatever<a title=")
+      title = %("></a>whatever<a evil title=")
       allow_next_instance_of(WikiPage) do |instance|
         allow(instance).to receive(:title).and_return(title)
       end
@@ -50,7 +50,7 @@ RSpec.describe Banzai::Filter::References::WikiPageReferenceFilter, feature_cate
 
       # There should be no indication that any of the text has escaped into HTML.
       expect(doc.to_html).not_to include('"></a')
-      expect(doc.to_html).not_to include('whatever<a')
+      expect(doc.at_css('a[evil]')).to be_nil
     end
 
     it 'renders non-HTML tooltips' do

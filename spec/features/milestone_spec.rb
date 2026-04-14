@@ -81,8 +81,12 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       wait_for_requests
 
-      within_testid('noTrackingPane') do
-        expect(page).to have_content 'No estimate or time spent'
+      expand_right_sidebar
+
+      page.within('.right-sidebar.right-sidebar-expanded') do
+        within_testid('noTrackingPane') do
+          expect(page).to have_content 'No estimate or time spent'
+        end
       end
     end
 
@@ -99,8 +103,12 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       wait_for_requests
 
-      within_testid('spentOnlyPane') do
-        expect(page).to have_content 'Spent: 3h'
+      expand_right_sidebar
+
+      page.within('.right-sidebar.right-sidebar-expanded') do
+        within_testid('spentOnlyPane') do
+          expect(page).to have_content 'Spent: 3h'
+        end
       end
     end
   end
@@ -144,5 +152,29 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
         expect(page).to have_selector('.badge-success')
       end
     end
+  end
+
+  private
+
+  # Forces the right sidebar into the expanded state via JavaScript so
+  # assertions run against a known, stable layout. The sidebar may be
+  # auto-collapsed by JS after page load, making click-based expansion
+  # unreliable.
+  def expand_right_sidebar
+    # Wait up to 1s to detect any post-load auto-collapse before forcing state.
+    page.has_css?('aside.right-sidebar.right-sidebar-collapsed', wait: 1)
+
+    execute_script(<<~JS)
+      const sidebar = document.querySelector('aside.right-sidebar');
+      const layoutPage = document.querySelector('.layout-page');
+      if (sidebar) {
+        sidebar.classList.remove('right-sidebar-collapsed');
+        sidebar.classList.add('right-sidebar-expanded');
+      }
+      if (layoutPage) {
+        layoutPage.classList.remove('right-sidebar-collapsed');
+        layoutPage.classList.add('right-sidebar-expanded');
+      }
+    JS
   end
 end

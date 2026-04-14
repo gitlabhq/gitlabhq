@@ -1,3 +1,6 @@
 ---
 name: update_saved_view_visibility
-description: Grants the ability to update a saved view's visibility
+description: Grants the ability to toggle a private saved view's visibility between
+  private and shared. Saved views are user-configured filters and sorts on work
+  item lists. The saved view policy combines this permission with an authorship
+  check to ensure only the author can change their saved view's visibility.

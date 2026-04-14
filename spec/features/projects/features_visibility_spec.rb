@@ -199,6 +199,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       wait_for_requests
 
       visit project_path(project)
+      wait_for_requests
 
       expect(page).to have_content "joined project"
     end
@@ -212,6 +213,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       wait_for_requests
 
       visit activity_project_path(project)
+      wait_for_requests
 
       page.within(".event-filter") do
         expect(page).to have_content("All")
@@ -253,6 +255,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       wait_for_requests
 
       visit activity_project_path(project)
+      wait_for_requests
 
       page.within(".event-filter") do
         yield

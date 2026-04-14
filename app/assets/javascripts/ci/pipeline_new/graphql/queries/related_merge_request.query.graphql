@@ -1,0 +1,12 @@
+# @feature_category: continuous_integration
+
+query relatedMergeRequest($fullPath: ID!, $iid: String!) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      sourceBranch
+      webPath
+    }
+  }
+}

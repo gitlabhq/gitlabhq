@@ -15,7 +15,7 @@ module RestrictedSignup
     [
       signup_email_invalid_message,
       error_message[created_by_key][error_type]
-    ].join(' ')
+    ].compact_blank.join(' ')
   end
 
   def fetch_error_type(email)
@@ -31,9 +31,9 @@ module RestrictedSignup
   def error_message
     {
       admin: {
-        allowlist: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; Sign-up restrictions', and check 'Allowed domains for sign-ups'.")).html_safe,
-        denylist: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; Sign-up restrictions', and check the 'Domain denylist'.")).html_safe,
-        restricted: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; Sign-up restrictions', and check 'Email restrictions for sign-ups'.")).html_safe,
+        allowlist: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; New user account restrictions', and check 'Domains allowed for new users'.")).html_safe,
+        denylist: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; New user account restrictions', and check the 'Domain denylist'.")).html_safe,
+        restricted: ERB::Util.html_escape_once(_("Go to the 'Admin area &gt; New user account restrictions', and check 'Email restrictions for new users'.")).html_safe,
         group_setting: ERB::Util.html_escape_once(_("Go to the group’s 'Settings &gt; General' page, and check 'Restrict membership by email domain'.")).html_safe
       },
       nonadmin: {

@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -965,6 +966,73 @@ func TestPumaReadinessChecker_WithoutSuccessTracking(t *testing.T) {
 	if result.Details["readiness_endpoint"] != true {
 		t.Error("Should have checked readiness endpoint")
 	}
+}
+
+func TestPumaReadinessChecker_ProbeDurationHistogram(t *testing.T) {
+	config := testServerConfig{
+		readinessResponse: `{"status": "ok"}`,
+		readinessStatus:   http.StatusOK,
+	}
+	readinessServer, _ := createTestServers(config)
+	defer readinessServer.Close()
+
+	reg := prometheus.NewRegistry()
+	hist := prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "test_puma_readiness_probe_duration_seconds",
+		Buckets: []float64{0.1, 0.5, 1.0},
+	}, []string{"result"})
+	reg.MustRegister(hist)
+
+	checker := NewPumaReadinessChecker(
+		readinessServer.URL+"/-/readiness",
+		"",
+		time.Second,
+		createTestLogger(),
+		WithProbeDurationHistogram(hist),
+	)
+
+	result := checker.Check(context.Background())
+	require.True(t, result.Healthy)
+
+	// After a successful check, only result="ok" should have been observed once
+	mfs, err := reg.Gather()
+	require.NoError(t, err)
+	require.Len(t, mfs, 1)
+	metrics := mfs[0].GetMetric()
+	require.Len(t, metrics, 1)
+	assert.Equal(t, "ok", metrics[0].GetLabel()[0].GetValue())
+	assert.EqualValues(t, 1, metrics[0].GetHistogram().GetSampleCount())
+
+	// Now trigger an error
+	errorConfig := testServerConfig{
+		readinessResponse: "Service Unavailable",
+		readinessStatus:   http.StatusServiceUnavailable,
+	}
+	errorServer, _ := createTestServers(errorConfig)
+	defer errorServer.Close()
+
+	errorChecker := NewPumaReadinessChecker(
+		errorServer.URL+"/-/readiness",
+		"",
+		time.Second,
+		createTestLogger(),
+		WithProbeDurationHistogram(hist),
+	)
+
+	result = errorChecker.Check(context.Background())
+	require.False(t, result.Healthy)
+
+	// After an error check, both result="error" and result="ok" should each have one observation
+	// Labels are returned in sorted order: "error" < "ok"
+	mfs, err = reg.Gather()
+	require.NoError(t, err)
+	require.Len(t, mfs, 1)
+	metrics = mfs[0].GetMetric()
+	require.Len(t, metrics, 2)
+	assert.Equal(t, "error", metrics[0].GetLabel()[0].GetValue())
+	assert.EqualValues(t, 1, metrics[0].GetHistogram().GetSampleCount())
+	assert.Equal(t, "ok", metrics[1].GetLabel()[0].GetValue())
+	assert.EqualValues(t, 1, metrics[1].GetHistogram().GetSampleCount())
 }
 
 func TestPumaReadinessChecker_FunctionalOptions(t *testing.T) {

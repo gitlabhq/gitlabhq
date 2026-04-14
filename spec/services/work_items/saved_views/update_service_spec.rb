@@ -24,19 +24,6 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
   end
 
   describe '#execute' do
-    context 'when saved views are not enabled for the namespace' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns an error' do
-        result = service.execute
-
-        expect(result).to be_error
-        expect(result.message).to eq('Saved views are not enabled for this namespace.')
-      end
-    end
-
     context 'when user does not have permission to update the saved view' do
       let(:service) do
         described_class.new(current_user: other_user, saved_view: saved_view, params: params)
@@ -48,6 +35,8 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
         expect(result).to be_error
         expect(result.message).to eq('You do not have permission to update this saved view.')
       end
+
+      it_behaves_like 'does not track non work item event'
     end
 
     context 'with all optional arguments' do
@@ -74,7 +63,29 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
         expect(updated_view.display_settings).to eq({ 'hiddenMetadataKeys' => %w[assignee labels] })
         expect(updated_view.sort).to eq('created_asc')
         expect(updated_view.private).to be(true)
+        expect(updated_view.updated_by).to eq(current_user)
       end
+
+      it_behaves_like 'tracks non work item event', :current_user,
+        Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_UPDATE
+    end
+
+    context 'when container is a group (non-Project)' do
+      let_it_be(:group) { create(:group, planners: current_user) }
+      let_it_be(:group_saved_view) do
+        create(:saved_view,
+          namespace: group,
+          author: current_user,
+          name: 'Group View'
+        )
+      end
+
+      subject(:service) do
+        described_class.new(current_user: current_user, saved_view: group_saved_view, params: params)
+      end
+
+      it_behaves_like 'tracks non work item event', :current_user,
+        Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_UPDATE
     end
 
     context 'when updating visibility' do
@@ -112,6 +123,8 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
           expect(result).to be_success
           expect(other_saved_view.reload.name).to eq('New Name')
         end
+
+        it_behaves_like 'does not track non work item event'
       end
 
       context 'when changing from private to public' do
@@ -255,6 +268,47 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
         expect(result).to be_success
         expect(saved_view.reload.private).to be(true)
       end
+
+      it 'sets updated_by to the current user' do
+        service = described_class.new(
+          current_user: current_user,
+          saved_view: saved_view,
+          params: { name: 'Updated Name' }
+        )
+        result = service.execute
+
+        expect(result).to be_success
+        expect(saved_view.reload.updated_by).to eq(current_user)
+      end
+
+      context 'when a different user updates the saved view' do
+        before do
+          project.add_planner(other_user)
+        end
+
+        it 'sets updated_by to the user who performed the update' do
+          service = described_class.new(
+            current_user: other_user,
+            saved_view: saved_view,
+            params: { name: 'Updated by other' }
+          )
+          result = service.execute
+
+          expect(result).to be_success
+          expect(saved_view.reload.updated_by).to eq(other_user)
+        end
+      end
+    end
+
+    context 'when params are empty' do
+      it 'does not set updated_by' do
+        service = described_class.new(current_user: current_user, saved_view: saved_view, params: {})
+
+        result = service.execute
+
+        expect(result).to be_success
+        expect(saved_view.reload.updated_by).to be_nil
+      end
     end
 
     context 'when the update fails' do
@@ -274,6 +328,8 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
 
         expect(saved_view.reload.name).to eq(original_name)
       end
+
+      it_behaves_like 'does not track non work item event'
     end
 
     context 'when filter normalization fails' do
@@ -293,6 +349,8 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
         expect(result).to be_error
         expect(result.message).to eq('Invalid filter')
       end
+
+      it_behaves_like 'does not track non work item event'
     end
   end
 end

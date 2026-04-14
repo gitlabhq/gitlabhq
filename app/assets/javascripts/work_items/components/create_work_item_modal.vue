@@ -9,8 +9,6 @@ import { routeForWorkItemTypeName } from '~/work_items/router/utils';
 
 import {
   NAME_TO_ENUM_MAP,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  NAME_TO_TEXT_MAP,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   ROUTES,
   WORK_ITEM_TYPE_NAME_INCIDENT,
@@ -173,12 +171,12 @@ export default {
     },
     newWorkItemText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
     workItemCreatedText() {
       return sprintf(s__('WorkItem|%{workItemType} created.'), {
-        workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
   },

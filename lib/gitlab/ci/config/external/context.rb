@@ -85,7 +85,6 @@ module Gitlab
               ctx.max_includes = max_includes
               ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
               ctx.parallel_requests = parallel_requests
-              ctx.component_data = component_data
             end
           end
 

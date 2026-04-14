@@ -117,6 +117,17 @@ RSpec.describe 'SetGroupCustomAttribute', feature_category: :groups_and_projects
       end
     end
 
+    context 'when key is empty' do
+      let(:key) { '' }
+
+      it 'returns validation errors' do
+        post_graphql_mutation(mutation, current_user: admin)
+
+        expect(mutation_response['customAttribute']).to be_nil
+        expect(mutation_response['errors']).to include("Key can't be blank")
+      end
+    end
+
     context 'with nested group' do
       let_it_be(:parent_group) { create(:group) }
       let_it_be(:child_group) { create(:group, parent: parent_group) }

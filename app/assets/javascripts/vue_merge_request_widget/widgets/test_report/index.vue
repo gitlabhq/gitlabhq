@@ -1,5 +1,5 @@
 <script>
-import { uniqueId, uniq } from 'lodash';
+import { uniqueId, uniq } from 'lodash-es';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';

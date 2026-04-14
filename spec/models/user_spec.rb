@@ -296,6 +296,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:ml_candidates).class_name('Ml::Candidate').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
     it { is_expected.to have_many(:ml_experiments).class_name('Ml::Experiment').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
     it { is_expected.to have_many(:ml_models).class_name('Ml::Model').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:cluster_agent_activity_events).class_name('Clusters::Agents::ActivityEvent').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster').inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:cluster_agents).class_name('Clusters::Agent').with_foreign_key(:created_by_user_id).inverse_of(:created_by_user).dependent(:nullify) }
+    it { is_expected.to have_many(:cluster_agent_tokens).class_name('Clusters::AgentToken').with_foreign_key(:created_by_user_id).inverse_of(:created_by_user).dependent(:nullify) }
+    it { is_expected.to have_many(:deploy_tokens).class_name('DeployToken').with_foreign_key(:creator_id).inverse_of(:user).dependent(:nullify) }
+    it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').with_foreign_key(:locked_by_user_id).inverse_of(:locked_by_user).dependent(:nullify) }
+    it { is_expected.to have_many(:terraform_state_versions).class_name('Terraform::StateVersion').with_foreign_key(:created_by_user_id).inverse_of(:created_by_user).dependent(:nullify) }
 
     describe '#triggers' do
       let_it_be_with_refind(:user) { create(:user) }
@@ -1219,7 +1226,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     describe 'email' do
-      let(:expected_error) { _('is not allowed for sign-up. Please use your regular email address. Check with your administrator.') }
+      let(:expected_error) { _('is not allowed. Please use your regular email address. Check with your administrator.') }
 
       context 'when no signup domains allowed' do
         before do
@@ -1809,64 +1816,111 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#authorization_user' do
-    context 'when user is not a service account' do
-      it 'returns self' do
-        user = build(:user)
-
-        expect(user.authorization_user).to eq(user)
-      end
-    end
-
-    context 'when user is a service account without composite identity enforced' do
-      it 'returns self' do
-        user = build(:user, :service_account, composite_identity_enforced: false)
-
-        expect(user.authorization_user).to eq(user)
-      end
-    end
-
-    context 'when user is a service account with composite identity enforced' do
-      let(:user) { build(:user, :service_account, composite_identity_enforced: true) }
-
-      context 'when no identity is currently linked' do
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(nil)
-        end
-
-        it 'returns self' do
-          expect(user.authorization_user).to eq(user)
-        end
-      end
-
-      context 'when an identity is linked but not active' do
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: false) }
-
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
-        end
-
-        it 'returns self' do
-          expect(user.authorization_user).to eq(user)
-        end
-      end
-
-      context 'when an active identity is linked' do
-        let(:scoped_user) { build(:user) }
-        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: true, scoped_user: scoped_user) }
-
-        before do
-          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
-        end
-
-        it 'returns the scoped user' do
-          expect(user.authorization_user).to eq(scoped_user)
-        end
-      end
-    end
-  end
-
   describe 'scopes' do
+    describe '.with_provisioning_group' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group) }
+
+      subject(:with_provisioning_group) { described_class.with_provisioning_group(group) }
+
+      it 'does not find users without a provisioning group' do
+        expect(with_provisioning_group).to be_empty
+      end
+
+      context 'when users have a provisioning group' do
+        before do
+          user.provisioned_by_group = group
+          user.save!
+        end
+
+        it 'finds the matching users' do
+          expect(with_provisioning_group).to match_array([user])
+        end
+
+        it 'does not find users with a different provisioning group' do
+          group = create(:group)
+
+          expect(described_class.with_provisioning_group(group)).to be_empty
+        end
+      end
+    end
+
+    describe '.with_provisioning_project' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+
+      subject(:with_provisioning_project) { described_class.with_provisioning_project(project) }
+
+      it 'does not find users without a provisioning project' do
+        expect(with_provisioning_project).to be_empty
+      end
+
+      context 'when users have a provisioning project' do
+        before do
+          user.provisioned_by_project = project
+          user.save!
+        end
+
+        it 'finds the matching users' do
+          expect(with_provisioning_project).to match_array([user])
+        end
+
+        it 'does not find users with a different provisioning project' do
+          project = create(:project)
+
+          expect(described_class.with_provisioning_project(project)).to be_empty
+        end
+      end
+    end
+
+    describe '.with_provisioning_project_in' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:project_in_group) { create(:project, namespace: group) }
+      let_it_be(:project_in_subgroup) { create(:project, namespace: subgroup) }
+
+      let_it_be(:sa_in_group_project) do
+        create(:user, :service_account).tap do |user|
+          user.user_detail.update!(provisioned_by_project_id: project_in_group.id)
+        end
+      end
+
+      let_it_be(:sa_in_subgroup_project) do
+        create(:user, :service_account).tap do |user|
+          user.user_detail.update!(provisioned_by_project_id: project_in_subgroup.id)
+        end
+      end
+
+      it 'finds users provisioned by projects in the given namespaces' do
+        result = described_class.with_provisioning_project_in(group)
+
+        expect(result).to include(sa_in_group_project)
+        expect(result).not_to include(sa_in_subgroup_project)
+      end
+
+      it 'finds users across multiple namespaces' do
+        result = described_class.with_provisioning_project_in(group.self_and_descendants)
+
+        expect(result).to include(sa_in_group_project, sa_in_subgroup_project)
+      end
+
+      it 'excludes users provisioned by projects in other namespaces' do
+        other_group = create(:group)
+
+        expect(described_class.with_provisioning_project_in(other_group)).not_to include(
+          sa_in_group_project, sa_in_subgroup_project
+        )
+      end
+
+      it 'excludes users without a provisioning project' do
+        create(:user, :service_account)
+
+        result = described_class.with_provisioning_project_in(group.self_and_descendants)
+
+        expect(result).to match_array([sa_in_group_project, sa_in_subgroup_project])
+      end
+    end
+
     describe '.ordered_by_name_asc_id_desc' do
       it 'returns users ordered by name ASC, id DESC' do
         user1 = create(:user, name: 'BBB')
@@ -3774,54 +3828,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         .with(save: true).and_call_original
 
       is_expected.to eq(true)
-    end
-  end
-
-  describe '#work_items_consolidated_list_enabled?' do
-    subject { user.work_items_consolidated_list_enabled? }
-
-    let_it_be_with_reload(:user) { create(:user) }
-
-    context 'when work_items_consolidated_list_user feature flag is enabled' do
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: true)
-      end
-
-      it 'returns true' do
-        is_expected.to eq(true)
-      end
-    end
-
-    context 'when work_items_consolidated_list_user feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: false)
-      end
-
-      it 'returns false' do
-        is_expected.to eq(false)
-      end
-    end
-
-    context 'when work_items_consolidated_list_user feature flag is enabled for specific user' do
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: user)
-      end
-
-      it 'returns true' do
-        is_expected.to eq(true)
-      end
-    end
-
-    context 'when work_items_consolidated_list_user feature flag is enabled for different user' do
-      let(:other_user) { create(:user) }
-
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: other_user)
-      end
-
-      it 'returns false' do
-        is_expected.to eq(false)
-      end
     end
   end
 
@@ -7163,42 +7169,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let(:user) { build_stubbed(:user, :admin) }
 
       it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#can_access_organization_admin_area?' do
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:organization_owner) { create(:organization_owner, organization: organization).user }
-    let_it_be(:regular_user) { create(:user) }
-
-    subject { user.can_access_organization_admin_area?(organization) }
-
-    context 'when user is an organization owner' do
-      let(:user) { organization_owner }
-
-      it { is_expected.to be_truthy }
-
-      context 'when org_admin_area feature flag is disabled' do
-        before do
-          stub_feature_flags(org_admin_area: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'when user is a regular user' do
-      let(:user) { regular_user }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when organization is nil' do
-      let(:user) { organization_owner }
-
-      subject { user.can_access_organization_admin_area?(nil) }
-
-      it { is_expected.to be_falsey }
     end
   end
 

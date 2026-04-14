@@ -10,7 +10,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
-import { NAME_TO_TEXT_LOWERCASE_MAP } from '../../constants';
+
 import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
 
 export default {
@@ -136,7 +136,7 @@ export default {
     },
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{workItemType}.'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        workItemType: this.workItemType,
       });
     },
     displayMemberBadgeText() {

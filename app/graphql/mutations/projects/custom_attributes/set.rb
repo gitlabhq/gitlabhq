@@ -27,20 +27,16 @@ module Mutations
           null: true,
           description: 'Custom attribute after mutation.'
 
-        # rubocop: disable CodeReuse/ActiveRecord -- Custom attribute CRUD is simple enough to not need a service
         def resolve(project_path:, key:, value:)
           project = authorized_find!(project_path)
 
-          custom_attribute = project.custom_attributes.find_or_initialize_by(key: key)
-          custom_attribute.value = value
+          result = ::CustomAttributes::UpsertService.new(project, current_user: current_user, key: key, value: value)
+            .execute
 
-          if custom_attribute.save
-            { custom_attribute: custom_attribute, errors: [] }
-          else
-            { custom_attribute: nil, errors: custom_attribute.errors.full_messages }
-          end
+          return { custom_attribute: nil, errors: Array(result.message) } if result.error?
+
+          { custom_attribute: result.payload[:custom_attribute], errors: [] }
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

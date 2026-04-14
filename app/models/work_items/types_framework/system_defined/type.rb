@@ -277,6 +277,14 @@ module WorkItems
           configuration_class.try(:filterable_board_view?, resource_parent) || false
         end
 
+        def disabled_workflow_type?
+          configuration_class.try(:disabled_workflow_type?) || false
+        end
+
+        def okr?
+          configuration_class.try(:okr?) || false
+        end
+
         private
 
         def licenses_for_parent

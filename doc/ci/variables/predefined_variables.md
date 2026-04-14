@@ -64,6 +64,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_CONCURRENT_ID`                              | Job-only     | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`                      | Job-only     | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                                | Pre-pipeline | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
+| `CI_CONFIG_REF_URI`                             | Pipeline     | The fully qualified ref path to the top-level pipeline definition, for example `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. Not available when the pipeline source ref cannot be determined. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/593105) in GitLab 19.0. |
 | `CI_DEBUG_TRACE`                                | Pipeline     | `true` if [debug logging (tracing)](variables_troubleshooting.md#enable-debug-logging) is enabled. |
 | `CI_DEBUG_SERVICES`                             | Pipeline     | `true` if [service container logging](../services/_index.md#capturing-service-container-logs) is enabled. Introduced in GitLab 15.7. Requires GitLab Runner 15.7. |
 | `CI_DEFAULT_BRANCH`                             | Pre-pipeline | The name of the project's default branch. |

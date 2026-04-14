@@ -16,18 +16,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
   end
 
   describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
-    context 'when deletion_scheduled_at is present in namespace_details.state_metadata' do
-      before do
-        allow(record).to receive(:namespace_details).and_return(
-          instance_double(Namespace::Detail, state_metadata: { 'deletion_scheduled_at' => Time.current.to_s })
-        )
-      end
-
-      it 'returns parsed deletion_scheduled_at' do
-        expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
-      end
-    end
-
     context 'when deletion_scheduled_at is not present in namespace_details.state_metadata' do
       before do
         allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
@@ -213,6 +201,25 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
         end
       end
     end
+
+    describe '#ancestors_scheduled_for_deletion', :request_store do
+      let_it_be(:parent_group) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago) }
+
+      it 'does not perform N+1 queries for sibling groups' do
+        sibling1 = create(:group, parent: parent_group)
+
+        control = ActiveRecord::QueryRecorder.new do
+          sibling1.ancestor_scheduled_for_deletion?
+        end
+
+        sibling2 = create(:group, parent: parent_group)
+
+        expect do
+          sibling1.ancestor_scheduled_for_deletion?
+          sibling2.ancestor_scheduled_for_deletion?
+        end.not_to exceed_query_limit(control)
+      end
+    end
   end
 
   describe Project do
@@ -275,6 +282,36 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
         it 'returns the ancestors marked for deletion, ordered from closest to farthest' do
           expect(project.first_scheduled_for_deletion_in_hierarchy_chain).to eq(subgroup_a)
         end
+      end
+    end
+
+    describe '#ancestors_scheduled_for_deletion', :request_store do
+      let_it_be(:parent_group) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago) }
+
+      context 'when the project belongs to a personal namespace' do
+        let_it_be(:project) { create(:project) }
+
+        it 'returns an empty array without querying the database' do
+          project # force creation
+
+          expect { project.send(:ancestors_scheduled_for_deletion) }.not_to exceed_query_limit(0)
+          expect(project.ancestor_scheduled_for_deletion?).to be(false)
+        end
+      end
+
+      it 'does not perform N+1 queries for sibling projects' do
+        sibling1 = create(:project, namespace: parent_group)
+
+        control = ActiveRecord::QueryRecorder.new do
+          sibling1.ancestor_scheduled_for_deletion?
+        end
+
+        sibling2 = create(:project, namespace: parent_group)
+
+        expect do
+          sibling1.ancestor_scheduled_for_deletion?
+          sibling2.ancestor_scheduled_for_deletion?
+        end.not_to exceed_query_limit(control)
       end
     end
   end

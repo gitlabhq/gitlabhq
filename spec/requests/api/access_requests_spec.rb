@@ -240,9 +240,10 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
         end
 
         it 'calls Members::DestroyService with skip_subresources' do
-          expect_next_instance_of(Members::DestroyService, maintainer) do |service|
-            expect(service).to receive(:execute).with(anything, skip_subresources: true)
-          end
+          expect(Members::DestroyService).to receive(:new).with(
+            anything,
+            hash_including(current_user: maintainer, skip_subresources: true)
+          ).and_call_original
 
           delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", maintainer)
 

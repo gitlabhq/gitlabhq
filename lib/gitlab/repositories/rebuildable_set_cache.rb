@@ -17,6 +17,7 @@ module Gitlab
       # TTL for trust flag (cache self-heals when expired).
       # This value is arbitrary and can be adjusted based on observed behavior.
       TRUST_TTL = 1.hour
+      DRAIN_BATCH_SIZE = 1000
 
       # Value used for Redis flag keys (trust, rebuild)
       FLAG_VALUE = '1'
@@ -90,45 +91,106 @@ module Gitlab
         ref_name = Gitlab::Git.ref_name(ref)
 
         if rebuilding?(key)
+          log_event(:dual_write, key, ref: ref_name, deleted: deleted)
           dual_write(key, ref_name, deleted)
         else
+          log_event(:simple_update, key, ref: ref_name, deleted: deleted)
           simple_update(key, ref_name, deleted)
         end
       end
 
+      # Rebuild cache with queue drain mechanism
+      # @param key [String] Cache key
+      # @param value [Array<String>] Canonical values from source (e.g., Gitaly)
+      # @return [Array<String>] Final cache contents after reconciliation
       def write(key, value)
         full_key = cache_key(key)
 
-        with do |redis|
-          redis.multi do |multi|
-            multi.unlink(full_key)
-
-            # Splitting into groups of 1000 prevents us from creating a too-long
-            # Redis command
-            value.each_slice(1000) { |subset| multi.sadd(full_key, subset) }
-
-            multi.expire(full_key, expires_in)
-          end
+        # 1. Acquire rebuild lock (prevents concurrent rebuilds)
+        unless mark_rebuild_in_progress(key)
+          log_event(:rebuild_skipped, key, reason: 'another rebuild in progress')
+          return value
         end
 
-        mark_trusted(key)
+        begin
+          with do |redis|
+            log_event(:rebuild_started, key, canonical_count: value.size)
 
-        value
+            # 2. Pre-drain: collect pending events before overwrite
+            pre_drain_additions, pre_drain_deletions = drain_pending_events(key)
+
+            if pre_drain_additions.any? || pre_drain_deletions.any?
+              log_event(:pre_drain_completed, key,
+                additions: pre_drain_additions.size,
+                deletions: pre_drain_deletions.size)
+            end
+
+            # 3. Build final set: canonical + pending events
+            final_set = Set.new(value)
+            final_set.merge(pre_drain_additions)
+            final_set.subtract(pre_drain_deletions)
+
+            # 4. Atomic cache overwrite
+            redis.multi do |multi|
+              multi.unlink(full_key)
+
+              # Splitting into groups of 1000 prevents us from creating a too-long
+              # Redis command
+              final_set.each_slice(DRAIN_BATCH_SIZE) { |subset| multi.sadd(full_key, subset) }
+
+              multi.expire(full_key, expires_in)
+            end
+
+            # 5. Post-drain: repair events that arrived during overwrite
+            post_drain_additions, post_drain_deletions = drain_pending_events(key)
+
+            if post_drain_additions.any? || post_drain_deletions.any?
+              log_event(:post_drain_completed, key,
+                additions: post_drain_additions.size,
+                deletions: post_drain_deletions.size)
+              apply_pending_events(key, post_drain_additions, post_drain_deletions)
+            end
+
+            # 6. Mark cache as trusted
+            mark_trusted(key)
+
+            # Return final contents
+            final_set.merge(post_drain_additions)
+            final_set.subtract(post_drain_deletions)
+
+            log_event(:rebuild_completed, key, final_count: final_set.size)
+
+            final_set.to_a
+          end
+        ensure
+          # 7. Release rebuild lock
+          mark_rebuild_complete(key)
+        end
+      rescue ::Redis::BaseError => e
+        log_event(:rebuild_failed, key, level: :error,
+          error_class: e.class.name,
+          error_message: e.message)
+        mark_untrusted(key)
+        raise
       end
 
       def fetch(key)
         full_key = cache_key(key)
 
-        smembers, exists = with do |redis|
+        smembers, exists, is_trusted = with do |redis|
           redis.multi do |multi|
             multi.smembers(full_key)
             multi.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+            multi.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
           end
         end
 
-        return smembers if exists
+        if exists && is_trusted
+          log_event(:cache_hit, key, count: smembers.size)
+          return smembers
+        end
 
-        log_cache_operation(key)
+        log_event(:cache_miss, key, exists: exists, trusted: is_trusted)
 
         write(key, yield)
       end
@@ -141,8 +203,12 @@ module Gitlab
         full_key = cache_key(key)
 
         with do |redis|
-          exists = redis.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
-          write(key, yield) unless exists
+          exists, is_trusted = redis.pipelined do |pipeline|
+            pipeline.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+            pipeline.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          end
+
+          write(key, yield) unless exists && is_trusted
 
           redis.sscan_each(full_key, match: pattern)
         end
@@ -166,7 +232,9 @@ module Gitlab
           end
         end
       rescue ::Redis::BaseError => e
-        log_error(:simple_update_failed, key, e)
+        log_event(:simple_update_failed, key, level: :error,
+          error_class: e.class.name,
+          error_message: e.message)
         mark_untrusted(key)
         raise
       end
@@ -198,7 +266,9 @@ module Gitlab
           end
         end
       rescue ::Redis::BaseError => e
-        log_error(:dual_write_failed, key, e)
+        log_event(:dual_write_failed, key, level: :error,
+          error_class: e.class.name,
+          error_message: e.message)
         mark_untrusted(key)
         raise
       end
@@ -213,6 +283,52 @@ module Gitlab
         false
       end
 
+      # Drain pending queue and return events separated by operation type
+      # @param key [String] Cache key
+      # @return [Array<Set, Set>] [additions, deletions]
+      def drain_pending_events(key)
+        pending = pending_key(key)
+        additions = Set.new
+        deletions = Set.new
+
+        with do |redis|
+          loop do
+            events = redis.rpop(pending, DRAIN_BATCH_SIZE)
+            break if events.blank?
+
+            events.each do |event|
+              ref_name, deleted = decode_event(event)
+              next if ref_name.nil?
+
+              if deleted
+                deletions.add(ref_name)
+                additions.delete(ref_name)
+              else
+                additions.add(ref_name)
+                deletions.delete(ref_name)
+              end
+            end
+          end
+        end
+
+        [additions, deletions]
+      end
+
+      # Apply pending events directly to cache
+      # @param key [String] Cache key
+      # @param additions [Set<String>] Refs to add
+      # @param deletions [Set<String>] Refs to remove
+      def apply_pending_events(key, additions, deletions)
+        full_key = cache_key(key)
+
+        with do |redis|
+          redis.pipelined do |pipeline|
+            additions.each_slice(DRAIN_BATCH_SIZE) { |batch| pipeline.sadd(full_key, batch) }
+            deletions.each_slice(DRAIN_BATCH_SIZE) { |batch| pipeline.srem(full_key, batch) }
+          end
+        end
+      end
+
       # Encode event for pending queue
       # @param ref_name [String] Short ref name
       # @param deleted [Boolean] Whether ref was deleted
@@ -221,12 +337,26 @@ module Gitlab
         "#{deleted ? '-' : '+'}#{ref_name}"
       end
 
+      # Decode event from pending queue
+      # @param event [String] Encoded event (e.g., "+main" or "-feature")
+      # @return [Array<String, Boolean>] [ref_name, deleted]
+      def decode_event(event)
+        return [nil, false] if event.blank?
+
+        deleted = event.start_with?('-')
+        ref_name = event[1..]
+
+        [ref_name, deleted]
+      end
+
       def mark_trusted(key)
         with { |redis| redis.set(trust_key(key), FLAG_VALUE, ex: TRUST_TTL) }
+        log_event(:cache_marked_trusted, key)
       end
 
       def mark_untrusted(key)
         with { |redis| redis.del(trust_key(key)) }
+        log_event(:cache_marked_untrusted, key)
       end
 
       def mark_rebuild_in_progress(key)
@@ -237,23 +367,20 @@ module Gitlab
         with { |redis| redis.del(rebuild_flag_key(key)) }
       end
 
-      def log_cache_operation(key)
-        Gitlab::AppLogger.info(
-          message: 'RebuildableSetCache cache miss',
-          cache_key: key,
-          class: self.class.name
-        )
-      end
-
-      def log_error(event, key, error)
-        Gitlab::AppLogger.error(
-          message: 'RebuildableSetCache error',
+      def log_event(event, key, level: :info, **extra)
+        payload = {
+          message: 'RebuildableSetCache',
           event: event,
           cache_key: key,
-          error_class: error.class.name,
-          error_message: error.message,
           class: self.class.name
-        )
+        }
+
+        case level
+        when :error
+          Gitlab::AppLogger.error(payload.merge(**extra))
+        else
+          Gitlab::AppLogger.info(payload.merge(**extra))
+        end
       end
 
       def cache

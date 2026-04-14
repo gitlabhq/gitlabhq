@@ -1,0 +1,24 @@
+---
+features:
+  secondary:
+  - name: "Dependency Scanning with SBOM support for Java Gradle build files"
+    available_in: [ultimate]
+    gitlab_com: true
+    self_managed: true
+    gitlab_dedicated: true
+    gitlab_dedicated_for_government: true
+    add_ons: []
+    documentation_link: 'https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/#manifest-fallback'
+    reporter: joelpatterson
+    stage: application_security_testing
+    categories:
+    - Software Composition Analysis
+    issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/588788'
+    description: |
+      GitLab dependency scanning by using SBOM now supports scanning Java `build.gradle` and `build.gradle.kts` build files.
+
+      Previously, dependency scanning for Java projects using Gradle required a lock file to be present.
+      Now, when a lock file is not available, the analyzer automatically falls back to scanning `build.gradle` and `build.gradle.kts` files, extracting and reporting only direct dependencies for vulnerability analysis.
+      This improvement makes it easier for Java projects using Gradle to enable dependency scanning without requiring a lock file.
+
+      To enable manifest fallback, set the `DS_ENABLE_MANIFEST_FALLBACK` CI/CD variable to `"true"`.

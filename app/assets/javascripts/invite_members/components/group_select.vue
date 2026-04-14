@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups, getProjectShareLocations } from '~/rest_api';

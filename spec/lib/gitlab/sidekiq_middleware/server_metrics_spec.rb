@@ -165,10 +165,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
-          expect(GVLTools::LocalTimer).to receive(:enable)
-          expect(GVLTools::GlobalTimer).to receive(:enable)
-          expect(gvl_thread_metric).to receive(:observe).with(labels_with_job_status, gvl_thread_duration / 1_000_000_000.0)
-          expect(gvl_process_metric).to receive(:increment).with(labels_with_job_status, gvl_process_duration / 1_000_000_000.0)
+          expect(gvl_thread_metric).to receive(:observe).with(labels_with_job_status, gvl_thread_wait)
+          expect(gvl_process_metric).to receive(:increment).with(labels_with_job_status, gvl_process_wait)
           expect(gvl_enabled_metric).to receive(:set).with(labels_with_job_status, 1)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex)
                                                     .with(labels.slice(:worker,
@@ -330,19 +328,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           end
         end
 
-        context 'when enable_sidekiq_gvl_metrics FF is disabled' do
+        context 'when gvl metrics are not in instrumentation' do
           include_context 'server metrics with mocked prometheus'
           include_context 'server metrics call'
 
-          before do
-            stub_feature_flags(enable_sidekiq_gvl_metrics: false)
+          let(:instrumentation) do
+            {
+              gitaly_duration_s: gitaly_duration,
+              redis_calls: redis_calls,
+              redis_duration_s: redis_duration,
+              elasticsearch_calls: elasticsearch_calls,
+              elasticsearch_duration_s: elasticsearch_duration,
+              mem_total_bytes: mem_total_bytes
+            }
           end
 
-          it 'does not report gvl duration' do
-            expect(GVLTools::LocalTimer).to receive(:disable)
-            expect(GVLTools::GlobalTimer).to receive(:disable)
+          it 'does not report gvl duration to prometheus' do
             expect(Gitlab::Metrics).not_to receive(:histogram).with(:sidekiq_gvl_thread_wait_seconds, anything, anything, anything)
-            expect(Gitlab::Metrics).not_to receive(:histogram).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything)
+            expect(Gitlab::Metrics).not_to receive(:gauge).with(:sidekiq_gvl_process_wait_seconds, anything, anything, anything)
 
             subject.call(worker, job, :test) { nil }
           end

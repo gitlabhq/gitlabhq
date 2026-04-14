@@ -26,17 +26,14 @@ module Mutations
           description: 'Custom attribute after mutation.'
 
         def resolve(user_id:, key:, value:)
-          user = user_id.find
+          user = authorized_find!(id: user_id)
 
           result = ::CustomAttributes::UpsertService.new(user, current_user: current_user, key: key,
             value: value).execute
-          raise_resource_not_available_error! if result.reason == :unauthorized
 
-          return { custom_attribute: nil, errors: result.message } if result.error?
+          return { custom_attribute: nil, errors: Array(result.message) } if result.error?
 
-          { custom_attribute: result[:custom_attribute], errors: [] }
-        rescue ActiveRecord::RecordNotFound
-          raise_resource_not_available_error!
+          { custom_attribute: result.payload[:custom_attribute], errors: [] }
         end
       end
     end

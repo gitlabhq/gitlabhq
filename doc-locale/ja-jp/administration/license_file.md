@@ -56,7 +56,8 @@ export GITLAB_ACTIVATION_CODE=your_activation_code
 
 - Helm Chartsインストールの場合、[`global.gitlab.license`設定キー](https://docs.gitlab.com/charts/installation/command-line-options/#basic-configuration)を使用します。
 
-> [!warning]これらの方法は、インストール時にのみライセンスを追加します。ライセンスを更新またはアップグレードするには、ウェブユーザーインターフェースの**管理者**エリアでライセンスを追加します。
+> [!warning]
+> これらの方法は、インストール時にのみライセンスを追加します。ライセンスを更新またはアップグレードするには、ウェブユーザーインターフェースの**管理者**エリアでライセンスを追加します。
 
 ## ライセンス利用状況データを提出する {#submit-license-usage-data}
 

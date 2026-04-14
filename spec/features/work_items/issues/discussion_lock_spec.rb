@@ -82,7 +82,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
 
         expect(page).not_to have_button 'Unlock discussion'
         expect(page).not_to have_field 'Add a reply'
-        expect(page).to have_text('The discussion in this issue is locked. Only project members can comment.')
+        expect(page).to have_text('Discussion is locked. Only members can comment.')
       end
     end
   end

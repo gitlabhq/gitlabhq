@@ -12,6 +12,7 @@ const MAX_ROWS = 10;
 const MAX_COLS = 10;
 
 export default {
+  name: 'ToolbarTableButton',
   components: {
     GlButton,
     GlDisclosureDropdown,

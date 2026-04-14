@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 const PANEL_SELECTOR = '.panel-content-inner';
 const CSS_VARIABLE = '--panel-content-inner-height';

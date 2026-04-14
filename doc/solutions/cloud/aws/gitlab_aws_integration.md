@@ -32,7 +32,7 @@ These integrations have to do with using GitLab to build application workloads a
 
 #### AWS CodeStar Connection Integrations
 
-[8/14/2023 AWS Release Announcement for GitLab.com SaaS](https://aws.amazon.com/about-aws/whats-new/2023/08/aws-codepipeline-supports-gitlab/)
+[8/14/2023 AWS Release Announcement for GitLab.com](https://aws.amazon.com/about-aws/whats-new/2023/08/aws-codepipeline-supports-gitlab/)
 
 [12/28/2023 AWS Release Announcement for Self-Managed / Dedicated](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)
 
@@ -41,7 +41,7 @@ These integrations have to do with using GitLab to build application workloads a
 [Supported Providers](https://docs.aws.amazon.com/dtconsole/latest/userguide/supported-versions-connections.html).
 [Supported AWS Services](https://docs.aws.amazon.com/dtconsole/latest/userguide/integrations-connections.html) -
 each one may have to make updates to support GitLab, so here is the subset that
-support GitLab. This works with GitLab.com SaaS, GitLab Self-Managed and GitLab Dedicated.
+support GitLab. This works with GitLab.com, GitLab Self-Managed and GitLab Dedicated.
 AWS CodeStar connections are not available in all AWS regions - the exclusion list is
 [documented here](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodestarConnectionSource.html).
 ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`

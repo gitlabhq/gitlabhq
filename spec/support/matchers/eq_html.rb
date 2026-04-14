@@ -83,7 +83,7 @@ end
 
 module EqHtmlMatcher
   def normalize_html(html, trim_text_nodes: false)
-    doc = Nokogiri::HTML.fragment(html)
+    doc = Nokogiri::HTML5.fragment(html)
     doc.children.each { |n| normalize_node(n, trim_text_nodes:) }
     doc.to_html
   end

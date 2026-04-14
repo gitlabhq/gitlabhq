@@ -16,12 +16,17 @@ module Packages
 
       def execute
         try_obtain_lease do
-          Packages::Helm::MetadataCache
+          metadata_cache = Packages::Helm::MetadataCache
             .find_or_build(project_id: project.id, channel: channel)
-            .update!(
-              file: CarrierWaveStringFile.new(metadata_content),
-              size: metadata_content.bytesize
-            )
+
+          was_persisted = metadata_cache.persisted?
+
+          metadata_cache.update!(
+            file: CarrierWaveStringFile.new(metadata_content),
+            size: metadata_content.bytesize
+          )
+
+          after_cache_update(metadata_cache) if was_persisted
         end
 
         ServiceResponse.success
@@ -32,6 +37,8 @@ module Packages
       private
 
       attr_reader :channel, :project
+
+      def after_cache_update(metadata_cache); end
 
       def metadata_content
         index_content = ::API::Entities::Helm::Index.represent(metadata.payload)
@@ -65,3 +72,5 @@ module Packages
     end
   end
 end
+
+Packages::Helm::CreateMetadataCacheService.prepend_mod

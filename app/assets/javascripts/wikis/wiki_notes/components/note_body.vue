@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import { __ } from '~/locale';

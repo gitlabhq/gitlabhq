@@ -27,7 +27,8 @@ title: GitLab CI/CDアーティファクトのレポートタイプ
 
 レポートの出力ファイルを参照するには、ジョブの定義に必ず[`artifacts:paths`](_index.md#artifactspaths)キーワードを含めます。
 
-> [!note]親パイプラインでの[子パイプラインからのアーティファクト](_index.md#needspipelinejob)を使用した統合レポートはサポートされていません。この機能のサポートは、[エピック8205](https://gitlab.com/groups/gitlab-org/-/epics/8205)で提案されています。
+> [!note]
+> 親パイプラインでの[子パイプラインからのアーティファクト](_index.md#needspipelinejob)を使用した統合レポートはサポートされていません。この機能のサポートは、[エピック8205](https://gitlab.com/groups/gitlab-org/-/epics/8205)で提案されています。
 
 ## `artifacts:reports:accessibility` {#artifactsreportsaccessibility}
 
@@ -138,7 +139,8 @@ artifacts:
 
 カバレッジレポートの結果は、マージリクエストの[差分注釈](../testing/code_coverage/_index.md#coverage-visualization)に表示されます。
 
-> [!note]子パイプラインからのカバレッジレポートは、マージリクエストの差分注釈に表示されますが、アーティファクト自体は親パイプラインと共有されません。
+> [!note]
+> 子パイプラインからのカバレッジレポートは、マージリクエストの差分注釈に表示されますが、アーティファクト自体は親パイプラインと共有されません。
 
 ## `artifacts:reports:codequality` {#artifactsreportscodequality}
 

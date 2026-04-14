@@ -15,7 +15,7 @@ additional_properties:
     description: Whether token_expires_at was explicitly set (`true` or `false`)
   has_rotation_deadline:
     description: Whether token_rotation_deadline was set (`true` or `false`)
-product_group: runner
+product_group: runner_core
 product_categories:
 - runner_core
 milestone: '17.9'

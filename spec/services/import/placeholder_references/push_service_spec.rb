@@ -99,19 +99,21 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     let_it_be(:source_user) { create(:import_source_user) }
     let_it_be(:record) { create(:merge_request) }
 
+    let(:user_reference_column) { 'author_id' }
+
     subject(:result) do
       described_class.from_record(
         import_source: import_source,
         import_uid: import_uid,
         source_user: source_user,
         record: record,
-        user_reference_column: 'author_id'
+        user_reference_column: user_reference_column
       ).execute
     end
 
     it 'pushes data to Redis' do
       expected_result = [
-        nil, 'MergeRequest', source_user.namespace_id, record.id, source_user.id, 'author_id', 1
+        nil, 'MergeRequest', source_user.namespace_id, record.id, source_user.id, user_reference_column, 1
       ].to_json
 
       expect(result).to be_success
@@ -121,10 +123,12 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
 
     context 'when record is an IssueAssignee' do
       let(:record) { IssueAssignee.new(issue_id: 1, user_id: 2) }
+      let(:user_reference_column) { 'user_id' }
 
       it 'pushes a composite key' do
         expected_result = [
-          { issue_id: 1, user_id: 2 }, 'IssueAssignee', source_user.namespace_id, nil, source_user.id, 'author_id', 1
+          { issue_id: 1, user_id: 2 },
+          'IssueAssignee', source_user.namespace_id, nil, source_user.id, user_reference_column, 1
         ].to_json
 
         expect(result).to be_success
@@ -133,29 +137,47 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
       end
     end
 
-    # rubocop:disable RSpec/VerifiedDoubles -- Custom object
+    context 'when record is a WorkItems::Description' do
+      let(:record) { WorkItems::Description.new(work_item_id: 3, namespace_id: 4) }
+      let(:user_reference_column) { 'last_edited_by_id' }
+
+      it 'pushes a composite key' do
+        expected_result = [
+          { work_item_id: 3, namespace_id: 4 },
+          'WorkItems::Description', source_user.namespace_id, nil, source_user.id, user_reference_column, 1
+        ].to_json
+
+        expect(result).to be_success
+        expect(result.payload).to eq(serialized_reference: expected_result)
+        expect(set).to contain_exactly(expected_result)
+      end
+    end
+
     context 'when record does not respond to :id' do
-      let(:record) { double(:record) }
+      let(:record) { UserStatus.new }
 
       before do
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double',
+      it_behaves_like 'invalid reference', 'UserStatus',
         'Exactly one of numeric_key, composite_key must be present'
     end
 
     context 'when record id is a string' do
-      let(:record) { double(:record, id: 'string') }
+      let(:record) do
+        user = User.new
+        allow(user).to receive(:id).and_return('string')
+        user
+      end
 
       before do
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double',
+      it_behaves_like 'invalid reference', 'User',
         'Exactly one of numeric_key, composite_key must be present'
     end
-    # rubocop:enable RSpec/VerifiedDoubles
   end
 
   def set

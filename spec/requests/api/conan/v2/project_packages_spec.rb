@@ -313,13 +313,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           headers: headers_with_token
       end
 
-      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
-        let(:boundary_object) { project }
-        let(:request) do
-          put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
-        end
-      end
-
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
@@ -363,13 +356,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
 
       subject(:request) { put api(url), headers: headers_with_token }
-
-      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
-        let(:boundary_object) { project }
-        let(:request) do
-          put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
-        end
-      end
 
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false

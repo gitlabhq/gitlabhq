@@ -35,6 +35,7 @@ import {
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -461,7 +462,7 @@ describe('saveSavedView', () => {
               namespacePath: 'my-group',
               name: 'My View',
               description: 'A test view',
-              private: false,
+              isPrivate: false,
               filters: { state: 'opened' },
               sort: 'CREATED_DESC',
               displaySettings: { groupBy: 'assignee' },
@@ -500,7 +501,7 @@ describe('saveSavedView', () => {
               namespacePath: 'my-group',
               name: 'My View',
               description: 'A test view',
-              private: false,
+              isPrivate: false,
               filters: { in: 'TITLE', search: 'work__SV__items' },
               sort: 'CREATED_DESC',
               displaySettings: { groupBy: 'assignee' },
@@ -626,7 +627,7 @@ describe('saveSavedView', () => {
               id: 'gid://gitlab/SavedView/1',
               name: 'Updated View',
               description: 'Updated description',
-              private: false,
+              isPrivate: false,
               filters: { state: 'closed' },
               sort: 'UPDATED_DESC',
               displaySettings: { groupBy: 'status' },
@@ -672,7 +673,7 @@ describe('saveSavedView', () => {
         id: 'gid://gitlab/SavedView/1',
         name: 'Updated View',
         description: 'Updated description',
-        private: false,
+        isPrivate: false,
       });
       expect(callArgs.variables.input.filters).toBeUndefined();
       expect(callArgs.variables.input.sort).toBeUndefined();
@@ -705,6 +706,66 @@ describe('saveSavedView', () => {
 
       expect(mockCache.readQuery).not.toHaveBeenCalled();
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('alphabetical cache ordering (subscribedOnly: false)', () => {
+    const buildCacheData = (views) => ({
+      namespace: {
+        savedViews: {
+          nodes: views.map((v) => ({ ...v })),
+        },
+      },
+    });
+    const buildSubscribedAwareCache = (existingViews) => ({
+      readQuery: jest
+        .fn()
+        .mockImplementation(({ variables }) =>
+          variables.subscribedOnly ? null : buildCacheData(existingViews),
+        ),
+      writeQuery: jest.fn(),
+    });
+
+    const existingViews = [
+      { id: 'gid://gitlab/SavedView/1', name: 'Alpha View' },
+      { id: 'gid://gitlab/SavedView/2', name: 'Beta View' },
+      { id: 'gid://gitlab/SavedView/3', name: 'Gamma View' },
+    ];
+
+    it.each`
+      description                                        | newView                                                      | savedViewFixture       | mutationKey                  | expectedOrder
+      ${'inserts a new view in alphabetical position'}   | ${{ id: 'gid://gitlab/SavedView/4', name: 'Beta-ish View' }} | ${saveSavedViewParams} | ${'workItemSavedViewCreate'} | ${['Alpha View', 'Beta View', 'Beta-ish View', 'Gamma View']}
+      ${'appends a view at end when name sorts last'}    | ${{ id: 'gid://gitlab/SavedView/4', name: 'Zeta View' }}     | ${saveSavedViewParams} | ${'workItemSavedViewCreate'} | ${['Alpha View', 'Beta View', 'Gamma View', 'Zeta View']}
+      ${'re-inserts a renamed view in correct position'} | ${{ id: 'gid://gitlab/SavedView/1', name: 'Zeta View' }}     | ${editSavedViewParams} | ${'workItemSavedViewUpdate'} | ${['Beta View', 'Gamma View', 'Zeta View']}
+    `('$description', async ({ newView, savedViewFixture, mutationKey, expectedOrder }) => {
+      const mockCache = buildSubscribedAwareCache(existingViews);
+      const mutationData = { [mutationKey]: { savedView: newView, errors: [] } };
+
+      mockMutate.mockResolvedValue({ data: mutationData });
+      mockQuery.mockResolvedValue({ data: { namespace: { savedViews: { nodes: [] } } } });
+
+      await saveSavedView({
+        ...savedViewFixture,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      });
+
+      const { update } = mockMutate.mock.calls[0][0];
+      update(mockCache, { data: mutationData });
+
+      expect(mockCache.writeQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: getSubscribedSavedViewsQuery,
+          variables: expect.objectContaining({ subscribedOnly: false, sort: 'NAME_ASC' }),
+          data: {
+            namespace: {
+              savedViews: {
+                nodes: expectedOrder.map((name) => expect.objectContaining({ name })),
+              },
+            },
+          },
+        }),
+      );
     });
   });
 });
@@ -851,7 +912,9 @@ describe('updateCacheAfterViewReorder', () => {
     const secondCallVars = mockCache.readQuery.mock.calls[1][0].variables;
 
     expect(firstCallVars.subscribedOnly).toBe(true);
+    expect(firstCallVars.sort).toBe('RELATIVE_POSITION');
     expect(secondCallVars.subscribedOnly).toBe(false);
+    expect(secondCallVars.sort).toBe('NAME_ASC');
   });
 });
 

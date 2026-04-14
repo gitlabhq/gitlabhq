@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlLink, GlTableLite } from '@gitlab/ui';
-import { isEmpty, maxBy, range } from 'lodash';
+import { isEmpty, maxBy, range } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import DetailRow from './candidate_detail_row.vue';
 

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_project_id_from_collect_time_series_pipeline_analytics
 description: Count of unique projects where time series pipeline analytics was collected
-product_group: runner
+product_group: runner_core
 product_categories:
 - fleet_visibility
 performance_indicator_type: []

@@ -26,11 +26,12 @@ function mountFileDiscussionsApp({ container, oldPath, newPath, appData, store }
         userPermissions: appData.userPermissions,
         endpoints: provideAppData(appData),
         noteableType: appData.noteableType,
+        filePaths: { oldPath, newPath },
+        linkedFileData: appData.linkedFileData,
       };
     },
     render(h) {
       return h(DiffFileDiscussions, {
-        props: { oldPath, newPath },
         on: {
           empty() {
             instance.$destroy();
@@ -56,7 +57,7 @@ export const createFileDiscussionsAdapter = (store) => ({
     fileCommentToggle.classList.remove('disabled');
     fileCommentToggle.removeAttribute('aria-disabled');
     const stopWatcher = watch(
-      () => store.findFileDiscussionsForFile({ oldPath, newPath }),
+      () => store.findAllFileDiscussionsForFile({ oldPath, newPath }),
       (matchedDiscussions) => {
         if (matchedDiscussions.length === 0) return;
         const container = diffElement.querySelector('[data-file-discussions]');

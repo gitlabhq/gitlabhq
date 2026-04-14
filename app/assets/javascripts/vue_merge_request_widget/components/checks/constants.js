@@ -21,6 +21,10 @@ export const COMPONENTS = {
     import(
       'ee_component/vue_merge_request_widget/components/checks/security_policy_violations.vue'
     ),
+  security_policy_pipeline_check: () =>
+    import(
+      'ee_component/vue_merge_request_widget/components/checks/security_policy_pipeline_check.vue'
+    ),
 };
 
 export const FAILURE_REASONS = {
@@ -43,6 +47,9 @@ export const FAILURE_REASONS = {
   locked_paths: __('All paths must be unlocked'),
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
+  security_policy_pipeline_check: __(
+    'When security policies are enforced, all pipelines for the latest commit must succeed before merge.',
+  ),
   merge_time: __('Cannot merge until this date and time.'),
   title_regex: s__('mrWidget|Title must match required pattern'),
 };

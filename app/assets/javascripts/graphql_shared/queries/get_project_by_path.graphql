@@ -1,0 +1,8 @@
+#import "~/graphql_shared/fragments/project.fragment.graphql"
+
+# @feature_category: groups_and_projects
+query getProjectByPath($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    ...Project
+  }
+}

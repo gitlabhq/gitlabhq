@@ -214,4 +214,4 @@ If, for any reason, you wish to switch back to single database connection:
 
 After you configure your installation, consider taking the
 [recommended next steps](../next_steps.md), including authentication options
-and sign-up restrictions.
+and new user account restrictions.

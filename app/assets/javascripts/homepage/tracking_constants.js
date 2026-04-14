@@ -8,7 +8,6 @@ export const TRACKING_LABEL_WORK_ITEMS = 'Issues';
 export const TRACKING_LABEL_TODO_ITEMS = 'To-do items';
 export const TRACKING_LABEL_RECENTLY_VIEWED = 'Recently viewed';
 export const TRACKING_LABEL_PROJECTS = 'Projects';
-export const TRACKING_LABEL_FEEDBACK = 'Feedback';
 
 // Properties
 export const TRACKING_PROPERTY_REVIEW_REQUESTED = 'Review requested';

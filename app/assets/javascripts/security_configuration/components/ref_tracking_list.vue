@@ -11,8 +11,8 @@ import {
 import { s__ } from '~/locale';
 import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
-import untrackSecurityTrackedRefsMutation from '../graphql/untrack_security_tracked_refs.mutation.graphql';
-import trackSecurityTrackedRefsMutation from '../graphql/track_security_tracked_refs.mutation.graphql';
+import untrackSecurityRefsMutation from '../graphql/untrack_security_refs.mutation.graphql';
+import trackSecurityRefsMutation from '../graphql/track_security_refs.mutation.graphql';
 import RefTrackingListItem from './ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 import RefTrackingSelection from './ref_tracking_selection.vue';
@@ -37,15 +37,7 @@ export default {
     trackedRefs: {
       query: securityTrackedRefs,
       variables() {
-        const { after, before } = this.pageCursor;
-
-        return {
-          fullPath: this.projectFullPath,
-          first: before ? null : this.maxTrackedRefs,
-          last: before ? this.maxTrackedRefs : null,
-          after,
-          before,
-        };
+        return this.trackedRefsQueryVariables;
       },
       update(data) {
         return data.project?.securityTrackedRefs?.nodes || [];
@@ -88,6 +80,17 @@ export default {
     isLoading() {
       return this.$apollo.queries.trackedRefs.loading;
     },
+    trackedRefsQueryVariables() {
+      const { after, before } = this.pageCursor;
+
+      return {
+        fullPath: this.projectFullPath,
+        first: before ? null : this.maxTrackedRefs,
+        last: before ? this.maxTrackedRefs : null,
+        after,
+        before,
+      };
+    },
     hasPreviousPage() {
       return Boolean(this.pageInfo.hasPreviousPage);
     },
@@ -129,58 +132,59 @@ export default {
         const refs = selectedRefs.map((ref) => ({
           name: ref.name,
           refType: ref.refType,
-          isProtected: ref.isProtected,
-          commit: ref.commit,
         }));
 
         const { data } = await this.$apollo.mutate({
-          mutation: trackSecurityTrackedRefsMutation,
+          mutation: trackSecurityRefsMutation,
           variables: {
             input: {
               projectPath: this.projectFullPath,
               refs,
             },
           },
-          refetchQueries: [
-            {
-              query: securityTrackedRefs,
-              variables: { fullPath: this.projectFullPath },
-            },
-          ],
-          awaitRefetchQueries: true,
         });
 
-        if (data.securityTrackedRefsTrack.errors?.length) {
+        if (data.securityRefsTrack.errors?.length) {
           throw new Error();
         }
-      } catch {
+
+        try {
+          await this.$apollo.queries.trackedRefs.refetch();
+        } catch {
+          throw new Error(
+            s__(
+              'SecurityTrackedRefs|Refs were tracked successfully but the list could not be refreshed. Please refresh the page.',
+            ),
+          );
+        }
+      } catch (e) {
         this.hasTrackError = true;
-        this.errorMessage = s__(
-          'SecurityTrackedRefs|Could not track refs. Please refresh the page, or try again later.',
-        );
+        this.errorMessage =
+          e?.message ||
+          s__(
+            'SecurityTrackedRefs|Could not track refs. Please refresh the page, or try again later.',
+          );
       } finally {
         this.isTrackingRefs = false;
       }
     },
-    async untrackRef({ refId, archiveVulnerabilities }) {
+    async untrackRef({ refId }) {
       try {
         const { data } = await this.$apollo.mutate({
-          mutation: untrackSecurityTrackedRefsMutation,
+          mutation: untrackSecurityRefsMutation,
           variables: {
             input: {
-              projectPath: this.projectFullPath,
               refIds: [refId],
-              archiveVulnerabilities,
             },
           },
           optimisticResponse: untrackRefsOptimisticResponse([refId]),
           update: updateUntrackedRefsCache({
             query: securityTrackedRefs,
-            variables: { fullPath: this.projectFullPath },
+            variables: this.trackedRefsQueryVariables,
           }),
         });
 
-        if (data.securityTrackedRefsUntrack.errors?.length) {
+        if (data.securityRefsUntrack.errors?.length) {
           throw new Error();
         }
       } catch {

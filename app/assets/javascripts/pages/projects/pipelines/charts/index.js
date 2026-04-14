@@ -1,3 +1,3 @@
-import initProjectPipelinesChartsApp from '~/projects/pipelines/charts/index';
+import { initProjectCiCdAnalytics } from '~/ci/analytics/project_ci_cd_analytics/index';
 
-initProjectPipelinesChartsApp();
+initProjectCiCdAnalytics();

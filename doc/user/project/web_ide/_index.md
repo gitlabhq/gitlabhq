@@ -203,7 +203,7 @@ To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 1. [Commit the changes](#commit-changes).
 1. In the notification that appears in the lower right, select **Create MR**.
 
-For more information, see [View missed notifications](#view-missed-notifications).
+For more information, see [view missed notifications](#view-missed-notifications).
 
 ## Customize the Web IDE
 
@@ -357,7 +357,7 @@ The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) ex
 
 ## Related topics
 
-- [GitLab Duo Chat (non-agentic) in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
+- [GitLab Duo Non-Agentic Chat in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 

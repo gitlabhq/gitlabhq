@@ -19,6 +19,28 @@ RSpec.shared_examples 'issuable participants' do
         expect(issuable.participants).to include(notes_author)
       end
 
+      context 'when note is a system note' do
+        let(:note_params) { params.merge(system: true, author: notes_author) }
+
+        it 'includes the authors of the notes' do
+          expect(issuable.participants).to include(notes_author)
+        end
+      end
+
+      context 'when user is mentioned in system note' do
+        let(:assignee) { create(:user) }
+
+        before do
+          SystemNotes::IssuablesService.new(
+            noteable: issuable, container: issuable.project, author: notes_author
+          ).change_assignee(assignee)
+        end
+
+        it 'includes the mentioned user' do
+          expect(issuable.participants).to include(assignee)
+        end
+      end
+
       context 'and note is confidential' do
         context 'and mentions users' do
           let_it_be(:guest_1) { create(:user) }

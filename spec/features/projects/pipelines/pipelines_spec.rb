@@ -267,6 +267,26 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
       end
 
+      context 'when pipeline is a scheduled pipeline' do
+        let(:project) { create(:project, :repository, public_builds: false) }
+        let(:schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
+        let!(:pipeline) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
+
+        before do
+          visit_project_pipelines
+          wait_for_requests
+        end
+
+        it 'contains pipeline schedule secondary link' do
+          within_testid('pipeline-url-table-cell') do
+            expect(page).to have_link(
+              'pipeline schedule',
+              href: edit_pipeline_schedule_path(schedule)
+            )
+          end
+        end
+      end
+
       context 'when pipeline has configuration errors' do
         let(:pipeline) do
           create(:ci_pipeline, :invalid, project: project)
@@ -670,8 +690,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               end
                 .to change { Ci::Pipeline.count }.by(1)
 
-              expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
-                .to eq [{ key: "key_name", secret_value: "value" }.with_indifferent_access]
+              expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :value) })
+                .to eq [{ key: "key_name", value: "value" }.with_indifferent_access]
             end
           end
         end

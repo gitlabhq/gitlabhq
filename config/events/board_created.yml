@@ -1,0 +1,14 @@
+---
+description: Tracks when a board is created
+action: board_created
+internal_events: true
+product_group: activation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224162
+milestone: '18.11'
+identifiers:
+  - project
+  - namespace
+tiers:
+  - free
+  - premium
+  - ultimate

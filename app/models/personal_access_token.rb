@@ -77,6 +77,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :in_organization, ->(organization) { where(organization_id: organization) }
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
+  scope :preload_granular_scopes, -> { preload(granular_scopes: [:namespace]) }
   scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }
   scope :order_name_desc_id_desc, -> { reorder(name: :desc, id: :desc) }
   scope :order_created_at_asc_id_asc, -> { reorder(created_at: :asc, id: :asc) }
@@ -112,7 +113,11 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def active?
-    !revoked? && !expired?
+    return false if revoked?
+    return false if expired?
+    return false if granular? && ::Feature.disabled?(:granular_personal_access_tokens, user)
+
+    true
   end
 
   override :simple_sorts

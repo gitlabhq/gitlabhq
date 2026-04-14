@@ -1,4 +1,4 @@
-import { uniq, uniqBy } from 'lodash';
+import { uniq, uniqBy } from 'lodash-es';
 
 export const joinedBranches = (state) => {
   return uniq(state.branches).sort();

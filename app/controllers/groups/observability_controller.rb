@@ -2,8 +2,11 @@
 
 module Groups
   class ObservabilityController < Groups::ApplicationController
+    include Gitlab::Utils::StrongMemoize
+
     before_action :authenticate_user!
     before_action :authorize_read_observability!
+    before_action :reject_path_traversal!
 
     feature_category :observability
     urgency :low
@@ -17,13 +20,11 @@ module Groups
       p.frame_src(*frame_src_values)
     end
 
-    VALID_PATHS = ::Observability::ObservabilityPresenter::PATHS.keys.freeze
-
     def show
-      path = permitted_params[:id]
-      return render_404 unless VALID_PATHS.include?(path)
+      path = observability_path
+      return render_404 unless ::Observability::ObservabilityPresenter.valid_path?(path)
 
-      @data = ::Observability::ObservabilityPresenter.new(group, path)
+      @data = ::Observability::ObservabilityPresenter.new(group, path, query_params: filtered_query_params)
 
       respond_to do |format|
         format.html { render }
@@ -33,14 +34,50 @@ module Groups
 
     private
 
+    # Returns the sub-path from the request, normalising single-segment (:id)
+    # and multi-segment (*sub_path) parameters to a plain string.
+    def observability_path
+      permitted_params[:sub_path] || permitted_params[:id].to_s
+    end
+    strong_memoize_attr :observability_path
+
     def permitted_params
-      params.permit(:id)
+      params.permit(:id, :sub_path)
+    end
+
+    def reject_path_traversal!
+      Gitlab::PathTraversal.check_path_traversal!(observability_path)
+    rescue Gitlab::PathTraversal::PathTraversalAttackError
+      render_404
     end
 
     def authorize_read_observability!
       return render_404 unless ::Feature.enabled?(:observability_sass_features, group)
 
       render_404 unless Ability.allowed?(current_user, :read_observability_portal, group)
+    end
+
+    # Filters the incoming query string according to the allowlist and size limits
+    # defined in the presenter.  Returns a plain Hash of permitted key/value pairs.
+    #
+    # We use request.query_parameters (bypassing strong params) intentionally: this
+    # is read-only forwarding to the iframe, not a model-mutating operation.
+    #
+    # The global byte-size gate measures the URL-encoded query string length (a
+    # conservative upper bound).  The per-value check operates on decoded strings;
+    # this intentional asymmetry means the global gate is slightly stricter, which
+    # is acceptable since it protects against large payloads before any parsing.
+    def filtered_query_params
+      raw_qs = request.query_string
+
+      return {} if raw_qs.bytesize > ::Observability::ObservabilityPresenter::QUERY_STRING_MAX_BYTES
+
+      allowed_keys = ::Observability::ObservabilityPresenter::ALLOWED_QUERY_PARAMS
+      max_value    = ::Observability::ObservabilityPresenter::PARAM_VALUE_MAX_BYTES
+
+      request.query_parameters
+        .slice(*allowed_keys)
+        .reject { |_k, v| !v.is_a?(String) || v.bytesize > max_value }
     end
   end
 end

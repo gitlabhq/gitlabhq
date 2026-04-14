@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cropper from 'cropperjs';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { loadCSSFile } from '../lib/utils/css_utils';

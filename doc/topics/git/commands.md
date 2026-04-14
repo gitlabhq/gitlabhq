@@ -22,7 +22,7 @@ git add <file_path>
 You can recursively stage changes from the current working directory with `git add .`, or stage all changes in the Git
 repository with `git add --all`.
 
-For more information, see [Add files to your branch](add_files.md).
+For more information, see [add files to your branch](add_files.md).
 
 ## `git blame`
 
@@ -70,7 +70,7 @@ git checkout <branch_name>
 
 To create a new branch and switch to it, use `git checkout -b <branch_name>`.
 
-For more information, see [Create a Git branch for your changes](branch.md).
+For more information, see [create a Git branch for your changes](branch.md).
 
 ## `git clone`
 
@@ -80,7 +80,7 @@ Use `git clone` to copy an existing Git repository.
 git clone <repository>
 ```
 
-For more information, see [Clone a Git repository to your local computer](clone.md).
+For more information, see [clone a Git repository to your local computer](clone.md).
 
 ## `git commit`
 
@@ -93,7 +93,7 @@ git commit -m "<commit_message>"
 If the commit message contains a blank line, the first line becomes the commit subject while the remainder becomes the
 commit body. Use the subject to briefly summarize a change, and the commit body to provide additional details.
 
-For more information, see [Stage, commit, and push changes](commit.md).
+For more information, see [stage, commit, and push changes](commit.md).
 
 ## `git commit --amend`
 
@@ -155,7 +155,7 @@ Use `git push` to update remote refs.
 git push
 ```
 
-For more information, see [Stage, commit, and push changes](commit.md).
+For more information, see [stage, commit, and push changes](commit.md).
 
 ## `git reflog`
 
@@ -167,7 +167,7 @@ git reflog
 
 By default, `git reflog` shows a list of changes to `HEAD`.
 
-For more information, see [Undo changes](undo.md).
+For more information, see [undo changes](undo.md).
 
 ## `git remote add`
 
@@ -179,7 +179,7 @@ git remote add <remote_name> <repository_url>
 
 When you clone a repository, by default the source repository is associated with the remote name `origin`.
 
-For more information on configuring additional remotes, see [Forks](../../user/project/repository/forking_workflow.md).
+For more information about configuring additional remotes, see [forks](../../user/project/repository/forking_workflow.md).
 
 ## `git log`
 
@@ -206,7 +206,7 @@ commit ab123c (HEAD -> main, origin/main, origin/HEAD)
 
 Use `git merge` to combine the changes from one branch with another.
 
-For more information on an alternative to `git merge`, see [Rebase to address merge conflicts](git_rebase.md).
+For more information about an alternative to `git merge`, see [rebase to address merge conflicts](git_rebase.md).
 
 ### Example
 
@@ -237,7 +237,7 @@ Use `git reset` to undo a commit and rewind the commit history and continue on f
 git reset
 ```
 
-For more information, see [Undo changes](undo.md).
+For more information, see [undo changes](undo.md).
 
 ## `git status`
 

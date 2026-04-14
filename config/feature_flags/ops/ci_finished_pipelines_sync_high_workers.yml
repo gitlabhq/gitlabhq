@@ -1,0 +1,9 @@
+---
+name: ci_finished_pipelines_sync_high_workers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595198
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229788
+rollout_issue_url:
+milestone: '18.11'
+group: group::ci platform
+type: ops
+default_enabled: false

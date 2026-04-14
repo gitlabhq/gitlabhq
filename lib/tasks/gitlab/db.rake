@@ -77,15 +77,15 @@ namespace :gitlab do
     end
 
     def drop_tables(only_on: nil)
-      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |_, name|
+        connection = Backup::DatabaseConnection.new(name).connection
+
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
         # OpenBao tables can be dropped when they are stored in one of the databases managed by Rails
         tables = connection.tables
 
         # Views that are dependencies to PG_EXTENSION (like pg_stat_statements) should be ignored
-        ignored_views = Gitlab::Database::PgDepend.using_connection(connection) do
-          Gitlab::Database::PgDepend.from_pg_extension('VIEW').pluck('relname')
-        end
+        ignored_views = Gitlab::Database::PgDepend.from_pg_extension('VIEW').pluck('relname')
 
         # Removes the entry from the array
         tables.delete 'schema_migrations'

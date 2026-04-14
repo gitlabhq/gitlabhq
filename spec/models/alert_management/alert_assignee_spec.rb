@@ -10,6 +10,8 @@ RSpec.describe AlertManagement::AlertAssignee do
       is_expected.to belong_to(:assignee).class_name('User')
         .with_foreign_key(:user_id).inverse_of(:alert_assignees)
     end
+
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do

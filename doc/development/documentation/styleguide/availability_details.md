@@ -228,9 +228,35 @@ For features made available to users as part of a program, add a new list item a
 
 For features introduced behind feature flags, add details about the feature flag. For more information, see [Document features deployed behind feature flags](../feature_flags.md).
 
+#### Features for tools released separately
+
+Some GitLab tools are released on their own schedule and use a different versioning system,
+independent of the GitLab instance. For example, editor extensions and CLI tools.
+
+Include tool updates in the history section. Each entry must include both the GitLab version and
+tool version, with a link to the tool's release page for that version.
+
+When a feature requires both a GitLab instance change and a tool update, nest the tool version
+entries under the related instance history item:
+
+```markdown
+- Access to user default namespaces for IDEs [introduced](https://issue-link) in GitLab 18.10.
+  - [Introduced](https://release-page-link) in GitLab for VS Code 6.71.7.
+  - [Introduced](https://release-page-link) in GitLab Duo CLI 8.76.0.
+```
+
+When a feature is not dependent on a GitLab instance change, add a single entry with the
+tool version and use `during the GitLab X.Y release` instead of `in GitLab X.Y` to avoid implying an
+instance requirement:
+
+```markdown
+- [Introduced](https://release-page-link) in GitLab for VS Code 6.14.0 during the GitLab 18.1 release.
+```
+
 #### Removing versions
 
-Remove history items and inline text that refer to unsupported versions.
+Remove history items and inline text that refer to unsupported versions. When you remove a history
+item, remove any tool version entries nested under it as well.
 
 GitLab supports the current major version and two previous major versions.
 For example, if 18.0 is the current major version, all major and minor releases of

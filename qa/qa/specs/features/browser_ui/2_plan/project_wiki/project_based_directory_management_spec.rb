@@ -11,6 +11,10 @@ module QA
       end
 
       it 'can change the directory path of a page',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41033',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347821' do
         initial_wiki.visit!
 

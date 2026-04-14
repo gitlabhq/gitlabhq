@@ -26,7 +26,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
   let(:project_maintainers) { Array.new(users_find_limit + 1) { create(:user, maintainer_of: project) } }
 
   # DOM finders to simplify and improve readability
-  let(:sidebar_assignee_block) { page.find('.js-issuable-sidebar .assignee') }
+  let(:sidebar_assignee_block) { page.find('[data-testid="issuable-sidebar"] .assignee') }
   let(:sidebar_assignee_avatar_link) do
     sidebar_assignee_block.find_all('a').find { |a| a['href'].include? assignee.username }
   end

@@ -41,7 +41,7 @@ are sent as emails.
 
 Any responses they send by email are displayed in the ticket itself.
 
-For additional information see [External participants](external_participants.md) and the
+For more information, see [external participants](external_participants.md) and the
 [headers used for treating email](../../../administration/incoming_email.md#accepted-headers).
 
 ### Create a Service Desk ticket in GitLab UI
@@ -62,7 +62,7 @@ To create a Service Desk ticket from the UI:
 1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For a walkthrough, see [Create Service Desk tickets in the UI and API (GitLab 16.10)](https://www.youtube.com/watch?v=ibUGNc2wifQ).
+For an overview, see [create Service Desk tickets in the UI and API (GitLab 16.10)](https://www.youtube.com/watch?v=ibUGNc2wifQ).
 <!-- Video published on 2024-03-05 -->
 
 ## As a responder to the ticket
@@ -74,7 +74,7 @@ tickets created through customer support requests, and filter or interact with t
 ![Service Desk ticket tracker](img/service_desk_issue_tracker_v16_10.png)
 
 Messages from the end user are shown as coming from the special
-[Support Bot user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
+[Support Bot user](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users).
 You can read and write comments as you usually do in GitLab:
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
@@ -104,7 +104,7 @@ The Service Desk ticket list more closely matches the regular issue list.
 Available features include:
 
 - The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).
-- The same filters, including [the OR operator](#filter-the-list-of-tickets) and [filtering by ticket ID](#filter-tickets-by-id).
+- The same filters, including the [OR operator](#filter-the-list-of-tickets) and [filtering by ticket ID](#filter-tickets-by-id).
 
 There is no longer an option to create a new ticket from the Service Desk ticket list.
 This decision better reflects the nature of Service Desk, where new tickets are created by emailing
@@ -190,7 +190,7 @@ into a Service Desk ticket. This assigns the provided email address as the exter
 and adds them to the list of external participants. They receive Service Desk emails for any public
 comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
 
-GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-external-participants).
+GitLab doesn't send the default [`thank_you` email](configure.md#customize-emails-sent-to-external-participants).
 You can add a public comment on the ticket to let the end user know that the ticket has been created.
 
 ## Privacy considerations

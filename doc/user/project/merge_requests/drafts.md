@@ -72,4 +72,4 @@ draft merge requests:
 
 Draft merge requests run the same pipelines as merge requests marked as ready.
 
-To skip a pipeline for a draft merge request, see [Skip pipelines for draft merge requests](../../../ci/yaml/workflow.md#skip-pipelines-for-draft-merge-requests).
+To skip a pipeline for a draft merge request, see [skip pipelines for draft merge requests](../../../ci/yaml/workflow.md#skip-pipelines-for-draft-merge-requests).

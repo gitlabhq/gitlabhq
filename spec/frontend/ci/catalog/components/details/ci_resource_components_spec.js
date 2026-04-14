@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
-import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
+import getCiCatalogResourceComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -19,11 +19,12 @@ describe('CiResourceComponents', () => {
   const components = mockComponents.data.ciCatalogResource.versions.nodes[0].components.nodes;
 
   const resourcePath = 'twitter/project-1';
+  const version = '1.0.0';
 
-  const defaultProps = { resourcePath };
+  const defaultProps = { resourcePath, version };
 
   const createComponent = async () => {
-    const handlers = [[getCiCatalogcomponentComponents, mockComponentsResponse]];
+    const handlers = [[getCiCatalogResourceComponents, mockComponentsResponse]];
     const mockApollo = createMockApollo(handlers);
 
     wrapper = mountExtended(CiResourceComponents, {
@@ -74,6 +75,13 @@ describe('CiResourceComponents', () => {
 
     it('does not throw an error', () => {
       expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    it('calls query with the correct variables', () => {
+      expect(mockComponentsResponse).toHaveBeenCalledWith({
+        fullPath: resourcePath,
+        version,
+      });
     });
   });
 

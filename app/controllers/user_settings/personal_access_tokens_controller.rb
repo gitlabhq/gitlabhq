@@ -4,20 +4,25 @@ module UserSettings
   class PersonalAccessTokensController < ApplicationController
     include FeedTokenHelper
 
-    GITLAB_WORKFLOW_EXTENSION = "GitLab Workflow Extension"
-
     feature_category :system_access
 
     before_action :check_personal_access_tokens_enabled
     before_action :ensure_granular_tokens_feature_flag, only: [:legacy_new, :granular_new]
     before_action :set_access_token_params, only: [:index, :legacy_new]
     before_action :set_hide_search_settings, only: [:index, :legacy_new, :granular_new]
+    before_action only: [:granular_new] do
+      push_frontend_feature_flag(:pat_permissions_suggestions, current_user)
+    end
+
+    before_action only: [:index] do
+      push_frontend_feature_flag(:granular_personal_access_tokens, current_user)
+    end
 
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
     def index
-      if redirect_for_vscode_extension?
-        redirect_to action: :legacy_new, **vscode_extension_params
+      if redirect_for_legacy_new?
+        redirect_to action: :legacy_new, **legacy_new_params
 
         return
       end
@@ -116,7 +121,7 @@ module UserSettings
       params.require(:personal_access_token).permit(:name, :expires_at, :description, scopes: [])
     end
 
-    def vscode_extension_params
+    def legacy_new_params
       params.permit(:name, :description, :scopes)
     end
 
@@ -150,9 +155,10 @@ module UserSettings
       render_404 unless Feature.enabled?(:granular_personal_access_tokens, current_user)
     end
 
-    def redirect_for_vscode_extension?
+    def redirect_for_legacy_new?
       Feature.enabled?(:granular_personal_access_tokens, current_user) &&
-        params[:name]&.casecmp?(GITLAB_WORKFLOW_EXTENSION)
+        params[:name].present? &&
+        parse_scopes_from_params.any?
     end
   end
 end

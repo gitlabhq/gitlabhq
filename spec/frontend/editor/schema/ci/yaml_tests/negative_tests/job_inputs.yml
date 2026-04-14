@@ -33,3 +33,30 @@ invalid_type:
         default: {}
     script:
       - echo "test"
+
+omitted_type_with_number_default:
+  test-job:
+    inputs:
+      count:
+        default: 42
+        description: "Should fail - when type omitted, default must be string"
+    script:
+      - echo "test"
+
+omitted_type_with_boolean_default:
+  test-job:
+    inputs:
+      enabled:
+        default: true
+        description: "Should fail - when type omitted, default must be string"
+    script:
+      - echo "test"
+
+omitted_type_with_array_default:
+  test-job:
+    inputs:
+      items:
+        default: ["one", "two"]
+        description: "Should fail - when type omitted, default must be string"
+    script:
+      - echo "test"

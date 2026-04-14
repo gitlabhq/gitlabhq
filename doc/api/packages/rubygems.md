@@ -73,6 +73,26 @@ curl --header "Authorization:<personal_access_token>" "https://gitlab.example.co
 
 This writes the downloaded file to `my_gem-1.0.0.gem` in the current directory.
 
+## Download a gemspec file
+
+Downloads a gemspec file in Marshal format for a specific gem version.
+
+```plaintext
+GET projects/:id/packages/rubygems/quick/Marshal.4.8/:file_name
+```
+
+| Attribute    | Type   | Required | Description |
+| ------------ | ------ | -------- | ----------- |
+| `id`         | string | yes      | The ID or full path of the project. |
+| `file_name`  | string | yes      | The gemspec file name in the format `<gem_name>-<version>.gemspec.rz`. |
+
+The response is a deflate-compressed, marshalled `Gem::Specification` object.
+
+```shell
+curl --header "Authorization:<personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/quick/Marshal.4.8/my_gem-1.0.0.gemspec.rz"
+```
+
 ## Retrieve dependencies
 
 Retrieves a list of dependencies for specified gems.

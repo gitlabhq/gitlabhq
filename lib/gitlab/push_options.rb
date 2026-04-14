@@ -23,7 +23,7 @@ module Gitlab
         ]
       },
       ci: {
-        keys: [:skip, :variable, :input]
+        keys: [:skip, :variable, :input, :no_pipeline]
       },
       integrations: {
         keys: [:skip_ci]

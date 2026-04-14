@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', :smoke, feature_category: :organization, feature_flag: {
-    name: 'new_project_creation_form'
-  } do
+  RSpec.describe 'Tenant Scale', :smoke, feature_category: :organization do
     describe 'Project' do
       shared_examples 'successful project creation' do
         it 'creates a new project' do
@@ -15,7 +13,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:new_project_creation_form)
         Flow::Login.sign_in
         project
       end

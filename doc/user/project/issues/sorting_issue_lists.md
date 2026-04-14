@@ -134,7 +134,7 @@ When in descending order, the issues are shown in the following order:
 ## Sorting by weight
 
 When you sort by **Weight**, the issue list changes to sort ascending by the
-[issue weight](issue_weight.md).
+[issue weight](../../work_items/weight.md).
 Issues with lowest weight are first, and issues without a weight are last.
 
 ## Sorting by status

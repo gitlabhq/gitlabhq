@@ -31,11 +31,11 @@ module Lint
 
     # Checks whether the current commit is the first on this branch.
     #
-    # In the commit-msg hook context, HEAD has not yet been updated to include
-    # the commit being created. So `git rev-list merge-base..HEAD` returns only
-    # the commits *before* the current one:
-    # - Empty rev-list = no prior commits = this is the first commit (returns true)
-    # - Non-empty rev-list = prior commits exist = not the first (returns false)
+    # In the post-commit hook context, HEAD already includes the new commit.
+    # So `git rev-list merge-base..HEAD` returns the new commit plus any
+    # prior commits on the branch:
+    # - Exactly 1 commit in rev-list = this is the first commit (returns true)
+    # - More than 1 = prior commits exist = not the first (returns false)
     #
     # On error, returns true (fail-open) so we lint rather than silently skip.
     # This may cause false positives in unusual git states (e.g. shallow clones),
@@ -48,16 +48,26 @@ module Lint
       shas_output, shas_success = run_command("git rev-list #{base_sha}..HEAD")
       return true unless shas_success
 
-      shas_output.strip.empty?
+      shas_output.strip.split("\n").length <= 1
+    end
+
+    def commit_from_head
+      return [] unless first_commit_on_branch?
+
+      output, success = run_command("git log -1 --format='%h%n%B' HEAD")
+      return [] unless success
+
+      short_sha, message = output.strip.split("\n", 2)
+      return [] if short_sha.to_s.empty?
+
+      [CommitData.new(message.to_s.strip, short_sha)]
     end
 
     def commits_from_file(file_path)
       unless file_path && File.exist?(file_path)
-        warn "ERROR: Commit message file not found."
-        exit 1
+        warn "WARNING: Commit message file not found, skipping lint."
+        return []
       end
-
-      return [] unless first_commit_on_branch?
 
       lines = File.read(file_path).lines
       scissors_index = lines.index { |line| line.match?(/^# -+ >8 -+/) }
@@ -92,7 +102,14 @@ module Lint
     end
 
     def run(argv)
-      commits = argv[0] ? commits_from_file(argv[0]) : commits_from_git
+      post_commit = argv.delete('--post-commit')
+      commits = if post_commit
+                  commit_from_head
+                elsif argv[0]
+                  commits_from_file(argv[0])
+                else
+                  commits_from_git
+                end
 
       return 0 if commits.empty?
 
@@ -100,7 +117,7 @@ module Lint
 
       return 0 if failed_linters.empty?
 
-      warn "Commit message linting failed:\n\n"
+      warn "\nCommit message linting failed:\n\n"
 
       failed_linters.each do |linter|
         warn "Commit #{linter.commit.sha}:" if linter.commit.sha
@@ -111,7 +128,13 @@ module Lint
       end
 
       warn "See #{COMMIT_MESSAGE_GUIDELINES}"
-      1
+
+      if post_commit
+        warn "\nTo fix, amend your commit message with: git commit --amend"
+        0
+      else
+        1
+      end
     end
   end
 end

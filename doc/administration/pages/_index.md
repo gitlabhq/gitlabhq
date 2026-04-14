@@ -16,7 +16,7 @@ GitLab Pages provides static site hosting for GitLab projects and groups.
 Server administrators must configure Pages before users can access this feature.
 With GitLab Pages, administrators can:
 
-- Host static websites securely with custom domains and SSL/TLS certificates.
+- Host static websites securely with [custom domains](#custom-domains) and SSL/TLS certificates.
 - Enable authentication to control access to Pages sites through GitLab permissions.
 - Scale deployments using object storage or network storage in multi-node environments.
 - Monitor and manage traffic with rate limiting and custom headers.
@@ -34,7 +34,7 @@ For user documentation, see [GitLab Pages](../../user/project/pages/_index.md).
 
 GitLab Pages uses the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a basic HTTP server
 written in Go that can listen on an external IP address and provide support for
-custom domains and custom certificates. It supports dynamic certificates through
+[custom domains](#custom-domains) and custom certificates. It supports dynamic certificates through
 Server Name Indication (SNI) and exposes pages using HTTP2 by default.
 
 For more information, see the [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md).
@@ -185,7 +185,7 @@ To configure GitLab Pages DNS for single-domain sites without wildcard DNS:
 
 If you need custom domain support, all subdomains of the Pages root domain must point to the
 secondary IP dedicated to the Pages daemon. Without this configuration, users cannot use `CNAME`
-records to point their custom domains to their GitLab Pages.
+records to point their [custom domains](#custom-domains) to their GitLab Pages.
 
 For example:
 
@@ -524,6 +524,11 @@ or without TLS certificates. In either case, you need a **secondary IP**. If you
 IPv4 addresses, you can use them both.
 
 ### Custom domains
+
+By default, GitLab Pages sites are served on a subdomain of the Pages root domain, for example, `namespace.example.io/project`.
+To configure a custom domain for a Pages site, add a CNAME DNS record that points your own domain (for example, `example-custom-site-here.com`) to GitLab Pages.
+
+If you only need the default `*.example.io` subdomain URLs, you don't need to configure custom domain support.
 
 In this configuration, the Pages daemon is running and NGINX proxies requests to it, but the daemon
 can also receive requests from the public internet. Custom domains are supported without TLS.
@@ -1272,7 +1277,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 ```
 
 You can track progress and verify that all Pages deployments migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-bundled-postgresql-database):
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database):
 
 - `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.

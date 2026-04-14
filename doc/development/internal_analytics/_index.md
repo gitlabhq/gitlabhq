@@ -215,7 +215,7 @@ flowchart LR;
 
 **For GitLab 18.0 and later**: GitLab collects event-level data from Self-Managed instances with pseudonymized identifiers to protect privacy.
 
-**For versions prior to 18.0**: GitLab only receives event counts or similarly aggregated information from Self-Managed instances. For the SaaS version, user identifiers for individual events are pseudonymized.
+**For versions prior to 18.0**: GitLab only receives event counts or similarly aggregated information from Self-Managed instances. For the GitLab.com version, user identifiers for individual events are pseudonymized.
 An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
 
 ## Contribution guidelines

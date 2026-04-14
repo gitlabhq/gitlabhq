@@ -39,7 +39,7 @@ module Repositories
     end
 
     def allowed?
-      Ability.allowed?(current_user, :owner_access, project)
+      Ability.allowed?(current_user, :rewrite_repository_history, project)
     end
 
     def mark_repository_read_only

@@ -859,37 +859,98 @@ RSpec.describe Trigger, feature_category: :tooling do
     end
 
     describe '#cleanup!' do
-      let(:downstream_environment_response) { double('downstream_environment', id: 42) }
+      let(:downstream_environment_response) { double('downstream_environment', id: 42, state: 'available') }
       let(:downstream_environments_response) { [downstream_environment_response] }
 
       before do
         expect(com_gitlab_client).to receive(:environments)
           .with(downstream_project_path, name: subject.__send__(:downstream_environment))
           .and_return(downstream_environments_response)
-        expect(com_gitlab_client).to receive(:stop_environment)
-          .with(downstream_project_path, downstream_environment_response.id)
-          .and_return(downstream_environment_stopping_response)
+      end
+
+      context "when no environment is found" do
+        let(:downstream_environments_response) { [] }
+
+        before do
+          allow(com_gitlab_client).to receive(:environments)
+            .with(downstream_project_path, name: subject.__send__(:downstream_environment))
+            .and_return(downstream_environments_response)
+        end
+
+        it 'returns without error' do
+          allow(subject).to receive(:puts)
+
+          subject.cleanup!
+
+          expect(subject).to have_received(:puts)
+            .with(include("No environment found"))
+        end
+      end
+
+      context "when the API raises an error on stop" do
+        let(:response) do
+          Gitlab::ObjectifiedHash.new(
+            code: 500,
+            parsed_response: "Server Error",
+            request: { base_uri: "gitlab.com", path: "/stop_environment" }
+          )
+        end
+
+        before do
+          expect(com_gitlab_client).to receive(:stop_environment)
+            .with(downstream_project_path, downstream_environment_response.id)
+            .and_raise(Gitlab::Error::InternalServerError.new(response))
+        end
+
+        it 'displays an error message and exits' do
+          allow(subject).to receive(:puts)
+
+          expect { subject.cleanup! }.to raise_error(SystemExit) do |error|
+            expect(error.status).to eq(1)
+          end
+
+          expect(subject).to have_received(:puts)
+            .with(include("Failed to stop"))
+        end
       end
 
       context "when stopping the environment succeeds" do
-        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'stopped') }
+        let(:downstream_environment_stopping_response) { double('downstream_environment', id: 42, state: 'stopped') }
+
+        before do
+          expect(com_gitlab_client).to receive(:stop_environment)
+            .with(downstream_project_path, downstream_environment_response.id)
+            .and_return(downstream_environment_stopping_response)
+        end
 
         it 'displays a success message' do
-          expect(subject).to receive(:puts)
-            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' stopped.")
+          allow(subject).to receive(:puts)
 
           subject.cleanup!
+
+          expect(subject).to have_received(:puts)
+            .with(include("stopped"))
         end
       end
 
       context "when stopping the environment fails" do
-        let(:downstream_environment_stopping_response) { double('downstream_environment', state: 'running') }
+        let(:downstream_environment_stopping_response) { double('downstream_environment', id: 42, state: 'running') }
 
-        it 'displays a failure message' do
-          expect(subject).to receive(:puts)
-            .with("=> Downstream environment '#{subject.__send__(:downstream_environment)}' failed to stop.")
+        before do
+          expect(com_gitlab_client).to receive(:stop_environment)
+            .with(downstream_project_path, downstream_environment_response.id)
+            .and_return(downstream_environment_stopping_response)
+        end
 
-          subject.cleanup!
+        it 'displays a failure message and exits with non-zero status' do
+          allow(subject).to receive(:puts)
+
+          expect { subject.cleanup! }.to raise_error(SystemExit) do |error|
+            expect(error.status).to eq(1)
+          end
+
+          expect(subject).to have_received(:puts)
+            .with(include("failed to stop"))
         end
       end
     end

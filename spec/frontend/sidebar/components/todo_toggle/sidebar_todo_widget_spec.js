@@ -144,6 +144,25 @@ describe('Sidebar Todo Widget', () => {
       expect(findTodoButton().attributes('loading')).toBeUndefined();
       expect(findTodoButton().attributes().disabled).toBe('true');
     });
+
+    it('shows disabled icon button instead of loading for merge requests', () => {
+      const mockSubscription = createMockSubscription();
+      const mrApolloProvider = createMockApollo([
+        [mergeRequestTodoQuery, jest.fn().mockResolvedValue(noMergeRequestTodosResponse)],
+      ]);
+      mrApolloProvider.defaultClient.setRequestHandler(
+        mergeRequestTodoSubscription,
+        jest.fn().mockReturnValue(mockSubscription),
+      );
+
+      createComponent({
+        propsData: { issuableType: 'merge_request' },
+        apolloProvider: mrApolloProvider,
+      });
+
+      expect(findTodoButton().attributes('loading')).toBeUndefined();
+      expect(findTodoButton().attributes().disabled).toBe('true');
+    });
   });
 
   describe('for merge request issuable type', () => {

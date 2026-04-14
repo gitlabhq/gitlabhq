@@ -7,6 +7,10 @@ import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
+import { TYPENAME_WORK_ITEMS_TYPE } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ISSUE } from '~/issues/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { listsQuery, FilterFields, GroupByParamType } from 'ee_else_ce/boards/constants';
 import { formatBoardLists, filterVariables, FiltersInfo } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
@@ -24,6 +28,7 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'fullPath',
     'initialBoardId',
@@ -106,11 +111,27 @@ export default {
       return this.activeListId ? this.boardLists[this.activeListId] : undefined;
     },
     formattedFilterParams() {
+      const filterInfo = FiltersInfo;
+      const filterFields = FilterFields;
+
+      // TODO move into FiltersInfo and FilterFields when removing the feature flag
+      if (this.glFeatures.workItemConfigurableTypes) {
+        filterFields[TYPE_ISSUE] = filterFields[TYPE_ISSUE].filter(
+          (field) => field !== 'types',
+        ).concat('workItemTypeIds');
+
+        filterInfo.types.remap = () => 'workItemTypeIds';
+        filterInfo.workItemTypeIds = {
+          negatedSupport: true,
+          transform: (val) => convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, val),
+        };
+      }
+
       return filterVariables({
         filters: omit(this.filterParams, 'groupBy'),
         issuableType: this.issuableType,
-        filterInfo: FiltersInfo,
-        filterFields: FilterFields,
+        filterInfo,
+        filterFields,
         options: { hasCustomFieldsFeature: this.hasCustomFieldsFeature },
       });
     },

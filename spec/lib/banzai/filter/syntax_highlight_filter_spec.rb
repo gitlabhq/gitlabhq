@@ -125,7 +125,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :markdow
     it "escape sourcepos metadata to prevent XSS" do
       result = filter('<pre data-sourcepos="&#34;%22 href=&#34;x&#34;></pre><base href=http://unsafe-website.com/><pre x=&#34;"><code></code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos=\'"%22 href="x"&gt;&lt;/pre&gt;&lt;base href=http://unsafe-website.com/&gt;&lt;pre x="\' class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>')
+      expect(result.to_html.delete("\n")).to eq_html('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos=\'"%22 href="x"&gt;&lt;/pre&gt;&lt;base href=http://unsafe-website.com/&gt;&lt;pre x="\' class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>')
     end
   end
 

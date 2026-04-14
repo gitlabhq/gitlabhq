@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe IssueLink, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:namespace) }
+  end
+
   it_behaves_like 'issuable link' do
     let_it_be_with_reload(:issuable_link) { create(:issue_link) }
     let_it_be(:issuable) { create(:issue, project: project) }

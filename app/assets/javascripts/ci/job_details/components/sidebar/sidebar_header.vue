@@ -45,10 +45,11 @@ export default {
         };
       },
       update(data) {
-        const { name, manualJob } = data?.project?.job || {};
+        const { name, manualJob, inputsSpec } = data?.project?.job || {};
         return {
           name,
           manualJob,
+          inputsSpec,
         };
       },
       error() {
@@ -86,7 +87,10 @@ export default {
       return this.restJob.status.action.confirmation_message;
     },
     isManualJob() {
-      return this.job?.manualJob;
+      return Boolean(this.job?.manualJob);
+    },
+    hasInputs() {
+      return this.job?.inputsSpec?.length > 0;
     },
     retryButtonVariant() {
       return this.restJob.status && this.restJob.recoverable ? 'confirm' : 'default';
@@ -149,6 +153,7 @@ export default {
             v-gl-tooltip.bottom
             :retry-button-title="buttonTitle"
             :is-manual-job="isManualJob"
+            :has-inputs="hasInputs"
             :href="restJob.retry_path"
             :confirmation-message="jobConfirmationMessage"
             :job-name="restJob.name"

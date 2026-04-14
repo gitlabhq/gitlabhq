@@ -6,7 +6,6 @@ import vue2 from '@vitejs/plugin-vue2';
 // eslint-disable-next-line import/no-unresolved -- False positive: eslint doesn't read `exports` and reports `unresolved`. See https://github.com/import-js/eslint-plugin-import/issues/1810
 import vue3 from '@vitejs/plugin-vue';
 import graphql from '@rollup/plugin-graphql';
-import glob from 'glob';
 import webpackConfig from './config/webpack.config';
 import {
   IS_EE,
@@ -27,6 +26,7 @@ import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
 import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
+import { Vue3InfectionPlugin } from './config/helpers/vite_plugin_vue3_infection.mjs';
 import * as vue3SfcCompiler from './config/vue3migration/vue3_sfc_compiler.mjs';
 import vue2Compiler from './config/vue3migration/vue2_compiler';
 
@@ -63,7 +63,6 @@ const aliasArr = Object.entries(webpackConfig.resolve.alias).map(([find, replace
 }));
 
 const assetsPath = path.resolve(__dirname, 'app/assets');
-const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
@@ -112,6 +111,13 @@ export default defineConfig({
         find: '~katex',
         replacement: 'katex',
       },
+      {
+        // Mermaid v10's mindmap chunk imports cytoscape's UMD build directly, but
+        // that subpath only has a "require" export condition. Redirect to the ESM
+        // build so Vite's dep optimizer can pre-bundle it.
+        find: 'cytoscape/dist/cytoscape.umd.js',
+        replacement: 'cytoscape/dist/cytoscape.esm.mjs',
+      },
       /*
        Alias for GitLab Fonts
        If we were to import directly from node_modules,
@@ -125,6 +131,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    ...(!USE_VUE3 ? [Vue3InfectionPlugin()] : []),
     PageEntrypointsPlugin(),
     IconsPlugin(),
     ImagesPlugin(),
@@ -211,25 +218,40 @@ export default defineConfig({
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
       },
     },
-    exclude: ['@gitlab/ui'],
-    include: [
-      // When building @gitlab/ui from source, lodash imports fail in vite because lodash publishes commonjs modules.
-      // Vite supports glob expansions in `optimizeDeps.include` that solves this, but it adds a `.js` extension in the
-      // resulting `includes` entries so lodash imports do not get re-included correctly. Make our own glob expansion
-      // that expands to:
-      //   [ '@gitlab/ui > lodash/add', '@gitlab/ui > lodash/after', '@gitlab/ui > lodash/array', ... ]
-      ...glob
-        .sync('lodash/**/[a-zA-Z]*.js', { cwd: nodeModulesPath })
-        .map((m) => m.replace('.js', ''))
-        .map((m) => `@gitlab/ui > ${m}`),
+    exclude: [
+      '@gitlab/ui',
+      ...(!USE_VUE3
+        ? [
+            '@vue/compat',
+            '@gitlab/vuex-vue3',
+            '@gitlab/vue-router-vue3',
+            '@vue/apollo-option',
+            'pinia',
+            'vue-demi',
+            '@gitlab/vuedraggable-vue3',
+          ]
+        : []),
     ],
   },
+  css: {
+    lightningcss: {
+      errorRecovery: true,
+    },
+  },
   build: {
-    // speed up build in CI by disabling sourcemaps and compression
-    // TODO: allow sourcemaps and compression when we are ready for Vite in production
-    sourcemap: false,
-    minify: false,
-    cssMinify: false,
-    reportCompressedSize: false,
+    sourcemap: true,
+    minify: true,
+    cssMinify: true,
+    reportCompressedSize: true,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'shared', test: /^((?!node_modules).)*$/, maxSize: 120000, minShareCount: 50 },
+          ],
+        },
+        strictExecutionOrder: true,
+      },
+    },
   },
 });

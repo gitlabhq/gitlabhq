@@ -39,7 +39,7 @@ After you install and set up the extension, you can access the following feature
   requests, run CI/CD commands, view pipeline status, and perform security scanning.
   You can also extend your view with [custom queries](custom_queries.md).
 - In the left sidebar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
-  - The chat tab: Interact with GitLab Duo Chat (agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+  - The chat tab: Interact with GitLab Duo Agentic Chat, or use the **New chat** ({{< icon name="duo-chat-new" >}})
     dropdown list to select a foundational or custom agent to work with.
   - The flows tab: Use the Software Development Flow. Learn more about the
     [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
@@ -47,66 +47,9 @@ After you install and set up the extension, you can access the following feature
   GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.
 - In the left sidebar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
-  GitLab Duo Chat (non-agentic).
+  GitLab Duo Non-Agentic Chat.
 
 If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-are-unavailable) for guidance.
-
-## Switch GitLab accounts in VS Code
-
-The GitLab for VS Code extension uses one account for each
-[VS Code Workspace](https://code.visualstudio.com/docs/editor/workspaces) (window). The extension
-automatically selects the account when:
-
-- You have added only one GitLab account to the extension.
-- All workspaces in your VS Code window use the same GitLab account, based on the `git remote` configuration.
-
-What the extension shows in the status bar depends on your account setup:
-
-![Status bar for a user with multiple GitLab accounts, with one preselected.](img/preselected_account_v17_11.png)
-
-- If only one GitLab account exists, the status bar shows no information.
-- If multiple GitLab accounts exist, and the extension can determine which account to use,
-  the status bar shows the account name next to the tanuki ({{< icon name="tanuki" >}}) icon.
-- If multiple GitLab accounts exist, and the extension can't determine which account to use,
-  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o" >}}).
-
-To select a GitLab account for the active VS Code window, select the status bar item, or:
-
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. Run the command `GitLab: Select Account for this Workspace`.
-1. Select your desired account from the list.
-
-## Select your GitLab project
-
-When your Git repository can be associated with multiple GitLab projects, the extension cannot
-determine which account to use. This can happen when you have multiple remotes, for example:
-
-- `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
-- `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`
-
-In these cases, the extension adds a **(multiple projects)** label to show you must choose an account.
-
-To select an account:
-
-1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-1. Expand **Issues and Merge Requests**.
-1. Select the line containing **(multiple projects, click to select)**.
-1. Select your desired project:
-
-   ![select project-account combination](img/select-project-account_v17_7.png)
-
-The **Issues and Merge requests** list updates with your selected project's information.
-
-### Change your selection
-
-To change your project selection:
-
-1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-1. Expand **Issues and Merge Requests** to show the project list.
-1. Select the project.
-1. Next to the project name, select **Clear Selected Project** ({{< icon name="close-xs" >}}).
 
 ## Customize keyboard shortcuts
 
@@ -128,31 +71,27 @@ To update your extension to the latest version:
 1. From **Extension: GitLab**, select **Update to {later version}**.
 1. Optional. To enable automatic updates in the future, select **Auto-Update**.
 
-## Check status
+## Install the pre-release version
+
+GitLab publishes pre-release builds of the extension to the VS Code Extension Marketplace.
+
+To install the pre-release build:
+
+1. Open VS Code.
+1. Under **Extensions** > **GitLab**, select **Switch to Pre-release Version**.
+1. Select **Restart Extensions**.
+
+## Check GitLab Duo status
 
 1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki" >}}).
 1. A menu opens under the VS Code search box, and the GitLab for VS Code extension shows the status.
    Any errors are displayed next to **Status:**.
 
-For GitLab Duo Chat (non-agentic), you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
-
-## Enable telemetry
-
-GitLab for VS Code uses the telemetry settings in Visual Studio Code to send usage and error
-information to GitLab. To enable or customize telemetry in Visual Studio Code:
-
-1. In Visual Studio Code, go to **File** > **Preferences** > **Settings** (on Windows/Linux) or **Code** > **Settings** > **Settings** (on macOS).
-1. In the search bar, search for `Telemetry`.
-1. In the left sidebar, select **Telemetry**.
-1. For **Telemetry Level**, select the data you want to share:
-   - `all`: Sends usage data, general error telemetry, and crash reports.
-   - `error`: Sends general error telemetry, and crash reports.
-   - `crash`: Sends OS-level crash reports.
-   - `off`: Disables all telemetry data in Visual Studio Code.
-1. Save your changes.
+For GitLab Duo Non-Agentic Chat, you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
 
 ## Related topics
 
+- [GitLab for VS Code releases](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases)
 - [Security considerations for editor extensions](../security_considerations.md)
 - [Command Palette commands](settings.md#command-palette-commands)
 - [Troubleshooting the GitLab for VS Code extension](troubleshooting.md)

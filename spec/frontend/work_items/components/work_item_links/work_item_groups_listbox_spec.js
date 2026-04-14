@@ -59,7 +59,7 @@ describe('WorkItemGroupsListbox', () => {
     const dropdownItem = findDropdownItemFor(namespaceGroupsData[0].fullPath);
 
     expect(dropdownItem.text()).toContain(namespaceGroupsData[0].name);
-    expect(dropdownItem.text()).toContain(namespaceGroupsData[0].path);
+    expect(dropdownItem.text()).toContain(namespaceGroupsData[0].fullName);
   });
 
   it('supports selecting a group', async () => {

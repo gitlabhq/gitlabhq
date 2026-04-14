@@ -9,6 +9,8 @@ module Ci
     include Limitable
     include Presentable
 
+    ignore_column :value, remove_with: '19.1', remove_after: '2026-05-21' # https://gitlab.com/gitlab-org/gitlab/-/work_items/592747
+
     prepend HasEnvironmentScope
 
     belongs_to :group, class_name: "::Group"

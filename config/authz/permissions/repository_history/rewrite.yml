@@ -1,0 +1,3 @@
+---
+name: rewrite_repository_history
+description: Grants the ability to rewrite repository history by removing blobs or redacting text.

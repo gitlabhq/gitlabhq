@@ -22,9 +22,10 @@ For information about group members, see the [Group members API](group_members.m
 - The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/_index.md)
   of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 
-## List all members of a project
+## List all direct members of a project
 
-Gets a list of project members viewable by the authenticated user.
+Lists all direct members of a specified project viewable by the authenticated user.
+Use [List all members of a project](#list-all-members-of-a-project) to list inherited members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -98,7 +99,7 @@ Example response:
 ]
 ```
 
-## List all members of a project, including inherited and invited members
+## List all members of a project
 
 {{< history >}}
 
@@ -108,7 +109,8 @@ Example response:
 
 {{< /history >}}
 
-Gets a list of project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
+Lists all project members viewable by the authenticated user, including inherited members,
+invited users, and permissions through ancestor groups.
 
 If a user is a member of this project and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
@@ -216,9 +218,10 @@ Example response:
 ]
 ```
 
-## Get a member of a project
+## Retrieve a direct member of a project
 
-Gets a member of a project. Returns only direct members and not inherited members through ancestor groups.
+Retrieves a specified direct member of a project.
+Use [retrieve a member of a project](#retrieve-a-member-of-a-project) to retrieve inherited members.
 
 ```plaintext
 GET /projects/:id/members/:user_id
@@ -270,7 +273,7 @@ Example response:
 }
 ```
 
-## Get a member of a project, including inherited and invited members
+## Retrieve a member of a project
 
 {{< history >}}
 
@@ -281,7 +284,8 @@ Example response:
 
 {{< /history >}}
 
-Gets a member of a project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-project-including-inherited-and-invited-members) for details.
+Retrieves a specified member of a project, including members inherited or invited through ancestor
+groups. For more information, see [list all members of a project](#list-all-members-of-a-project).
 
 > [!note]
 > The invited group members have shared membership in the shared group or project.
@@ -330,7 +334,7 @@ Example response:
 
 ## Add a member to a project
 
-Adds a member to a project.
+Adds a direct member to a specified project.
 
 To give a group access to a project, see [share a project with group](projects.md#share-a-project-with-a-group).
 
@@ -343,7 +347,7 @@ POST /projects/:id/members
 | `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer or string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
 | `username`       | string            | yes, if `user_id` is not provided  | The username of the new member or multiple usernames separated by commas. |
-| `access_level`   | integer           | yes                                | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level`   | integer           | yes                                | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                 | A date string in the format `YEAR-MONTH-DAY`. |
 | `invite_source`  | string            | no                                 | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120`. |
 | `member_role_id` | integer           | no                                 | Ultimate only. The ID of a custom member role. |
@@ -420,9 +424,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Edit a member of a project
+## Update a member of a project
 
-Updates a member of a project.
+Updates the specified member of a project.
 
 ```plaintext
 PUT /projects/:id/members/:user_id
@@ -432,7 +436,7 @@ PUT /projects/:id/members/:user_id
 | ---------------- | ----------------- | -------- | ----------- |
 | `id`             | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer           | yes      | The user ID of the member. |
-| `access_level`   | integer           | yes       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level`   | integer           | yes       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no       | A date string in the format `YEAR-MONTH-DAY`. |
 | `member_role_id` | integer           | no       | Ultimate only. The ID of a custom member role. If no value is specified, removes all roles. |
 
@@ -483,11 +487,10 @@ Example response:
 }
 ```
 
-## Remove a member from a project
+## Remove a direct member of a project
 
-Removes a user from a project where the user has been explicitly assigned a role.
+Removes the specified direct member of a project.
 
-The user needs to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group but not this
 group explicitly, you cannot use this endpoint to remove them. For more information, see
 [Remove a billable member from a group](group_members.md#remove-a-billable-group-member).

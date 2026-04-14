@@ -1,4 +1,4 @@
-import { GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReportSection, {
   SECTION_ITEM_LEVEL,
@@ -148,6 +148,8 @@ describe('ReportSection', () => {
           icon: { name: 'failed' },
           link: { href: 'https://example.com/gpl', text: 'GPL-3.0' },
           supportingText: 'Used by lodash, webpack',
+          text: 'Minor code smell found',
+          badge: { text: 'New' },
         },
       ],
     };
@@ -207,6 +209,12 @@ describe('ReportSection', () => {
 
         expect(findAllSectionTexts()).toHaveLength(0);
       });
+
+      it('does not render section header when header is not provided', () => {
+        createComponent({ sections: [{ children: [{ icon: { name: 'notice' } }] }] });
+
+        expect(findAllSectionHeaders()).toHaveLength(0);
+      });
     });
 
     describe('section items', () => {
@@ -237,6 +245,21 @@ describe('ReportSection', () => {
         const supportingText = wrapper.findByTestId('item-supporting-text');
 
         expect(supportingText.text()).toBe(MOCK_DENIED_SECTION.children[0].supportingText);
+      });
+
+      it('renders item text when text is provided', () => {
+        createComponent({ sections: MOCK_SECTIONS });
+
+        expect(wrapper.findByTestId('item-text').text()).toBe(MOCK_DENIED_SECTION.children[0].text);
+      });
+
+      it('renders item badge with default variant when badge is provided', () => {
+        createComponent({ sections: MOCK_SECTIONS });
+
+        const badge = wrapper.findComponent(GlBadge);
+
+        expect(badge.text()).toBe(MOCK_DENIED_SECTION.children[0].badge.text);
+        expect(badge.props('variant')).toBe('info');
       });
 
       it('renders item action buttons for non-denied licenses', () => {

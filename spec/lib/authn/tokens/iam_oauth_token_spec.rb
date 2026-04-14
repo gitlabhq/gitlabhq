@@ -20,7 +20,7 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   describe '.from_jwt' do
     context 'when IAM is disabled' do
       before do
-        stub_iam_service_config(enabled: false, url: iam_service_url, audience: iam_audience)
+        stub_iam_service_config(enabled: false, url: iam_service_url, jwt_audience: iam_audience)
       end
 
       it 'returns nil' do

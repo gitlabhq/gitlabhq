@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';

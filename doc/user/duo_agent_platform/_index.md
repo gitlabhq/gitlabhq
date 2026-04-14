@@ -8,7 +8,7 @@ title: GitLab Duo Agent Platform
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -64,34 +64,44 @@ To use the Agent Platform in your local environment:
 
 These features are generally available and consume [GitLab Credits](../../subscriptions/gitlab_credits.md) when used.
 
-| Feature | Description |
-|---------|-------------|
-| [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md) | Answer complex questions and autonomously create and edit files. |
-| [Planner Agent](agents/foundational_agents/planner.md) | Plan, prioritize, and track work. |
-| [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) | Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. |
-| [Custom agents](agents/custom.md) | Build team-specific agents for your unique development requirements. |
-| [External agents](agents/external.md) | Securely connect third-party integrations and tools to extend Agent Platform capabilities. |
-| [Software Development Flow](flows/foundational_flows/software_development.md) | Create a full, multi-step plan before executing it. |
-| [Developer Flow](flows/foundational_flows/developer.md) | Convert issues into merge requests. |
-| [Fix CI/CD Pipeline Flow](flows/foundational_flows/fix_pipeline.md) | Diagnose and automatically fix failing CI/CD pipelines. |
-| [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) | Convert legacy CI/CD pipelines to the GitLab CI/CD format. |
-| [Code Review Flow](flows/foundational_flows/code_review.md) | Automate code review tasks and enforce coding standards across your team. |
-| [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) | Automatically identify and filter out false positives in SAST security scans. |
-| [Code Suggestions](code_suggestions/_index.md) | Get AI-powered suggestions as you write code. |
+Features available on the Free tier for GitLab.com customers require the purchase of [GitLab Credits](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom).
+
+| Feature | Free | Premium | Ultimate |
+|---------|---------|---------|---------|
+| [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md) <br /> Answer complex questions and autonomously create and edit files. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Code Suggestions](code_suggestions/_index.md) <br /> Get AI-powered suggestions as you write code. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Custom agents](agents/custom.md) <br /> Build team-specific agents for your unique development requirements. | {{< yes >}} |  {{< yes >}}  | {{< yes >}} |
+| [External agents](agents/external.md) <br /> Securely connect third-party integrations and tools to extend Agent Platform capabilities. | {{< no >}} |  {{< yes >}}  | {{< yes >}} |
+| [Planner Agent](agents/foundational_agents/planner.md) <br /> Plan, prioritize, and track work. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Developer Flow](flows/foundational_flows/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Code Review Flow](flows/foundational_flows/code_review.md) <br /> Automate code review tasks and enforce coding standards across your team. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Fix CI/CD Pipeline Flow](flows/foundational_flows/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Software Development Flow](flows/foundational_flows/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension. <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) <br /> Automatically identify and filter out false positives in SAST security scans. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+| [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+| [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) <br /> Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+
+**Footnotes**:
+
+1. MCP clients do not consume credits directly. However, any Agent Platform usage, such as model requests made through an MCP client, might consume credits.
 
 ## Beta and experiment features
 
 These features are either beta or experiment and do not consume GitLab Credits.
 
+For [GitLab.com users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom) tier, beta and experimental features don't consume credits,
+but you require credits in your Monthly Commitment Pool to access them.
+
 > [!warning]
 > When a feature becomes generally available, usage of the feature starts to consume GitLab Credits on all GitLab versions and on all offerings.
 > Beta features can change to generally available with usage billing at any time.
 
-| Feature | Description |
-|---------|-------------|
-| [Data Analyst Agent](agents/foundational_agents/data_analyst.md) | Analyze data and generate insights from your development metrics and project data. |
-| [Custom flows](flows/custom.md) | Combine multiple agents to solve your business problems. |
-| [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) | Automatically generate fixes and remediation steps for SAST vulnerabilities. |
-| [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) | Securely connect AI tools and applications to your GitLab instance. |
-| [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) | Connect custom agents to external data sources and third-party services using MCP servers. |
-| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Create structured, queryable representations of code repositories to power AI features. |
+| Feature | Free | Premium | Ultimate |
+|---------|---|---|---|
+| [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) <br /> Securely connect AI tools and applications to your GitLab instance. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Data Analyst Agent](agents/foundational_agents/data_analyst.md) <br /> Analyze data and generate insights from your development metrics and project data. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) <br /> Connect custom agents to external data sources and third-party services using MCP servers. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) <br /> Create structured, queryable representations of code repositories to power AI features. | {{< no >}} |{{< yes >}} | {{< yes >}} |

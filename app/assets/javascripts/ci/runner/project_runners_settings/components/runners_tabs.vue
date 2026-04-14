@@ -25,7 +25,22 @@ export default {
     RunnerToggleAssignButton,
   },
   inject: {
+    canAssignRunners: {
+      default: false,
+    },
+    canUnassignRunners: {
+      default: false,
+    },
     canCreateRunnerForGroup: {
+      default: false,
+    },
+    canToggleGroupRunners: {
+      default: false,
+    },
+    canToggleInstanceRunners: {
+      default: false,
+    },
+    isGroupRunnersEnabled: {
       default: false,
     },
     groupRunnersPath: {
@@ -63,7 +78,7 @@ export default {
   emits: ['error'],
   data() {
     return {
-      groupRunnersEnabled: null,
+      groupRunnersEnabled: this.isGroupRunnersEnabled,
       instanceRunnersEnabledModel: this.instanceRunnersEnabled,
     };
   },
@@ -100,6 +115,7 @@ export default {
   <gl-tabs>
     <runners-tab
       ref="assignedRunners"
+      data-testid="project-runners-tab"
       :title="s__('Runners|Assigned project runners')"
       :runner-type="$options.PROJECT_TYPE"
       :project-full-path="projectFullPath"
@@ -110,7 +126,8 @@ export default {
       </template>
       <template #other-runner-actions="{ runner }">
         <runner-toggle-assign-button
-          v-if="notOwnedByProject(runner)"
+          v-if="canUnassignRunners && notOwnedByProject(runner)"
+          data-testid="runner-unassign-button"
           :project-full-path="projectFullPath"
           :runner="runner"
           :assigns="false"
@@ -121,6 +138,7 @@ export default {
     </runners-tab>
     <runners-tab
       ref="otherAvailableRunners"
+      data-testid="other-project-runners-tab"
       :title="s__('Runners|Other available project runners')"
       :runner-type="$options.PROJECT_TYPE"
       :project-full-path="projectFullPath"
@@ -132,6 +150,8 @@ export default {
       </template>
       <template #other-runner-actions="{ runner }">
         <runner-toggle-assign-button
+          v-if="canAssignRunners"
+          data-testid="runner-assign-button"
           :project-full-path="projectFullPath"
           :runner="runner"
           :assigns="true"
@@ -142,6 +162,7 @@ export default {
     </runners-tab>
     <runners-tab
       ref="groupRunners"
+      data-testid="group-runners-tab"
       :title="s__('Runners|Group')"
       :runner-type="$options.GROUP_TYPE"
       :project-full-path="projectFullPath"
@@ -152,6 +173,7 @@ export default {
       </template>
       <template #settings>
         <group-runners-toggle
+          v-if="canToggleGroupRunners"
           :project-full-path="projectFullPath"
           @change="onGroupRunnersToggled"
           @error="onError"
@@ -163,6 +185,7 @@ export default {
     </runners-tab>
     <runners-tab
       ref="instanceRunners"
+      data-testid="instance-runners-tab"
       :title="s__('Runners|Instance')"
       :runner-type="$options.INSTANCE_TYPE"
       :project-full-path="projectFullPath"
@@ -170,6 +193,7 @@ export default {
     >
       <template #settings>
         <instance-runners-toggle
+          v-if="canToggleInstanceRunners"
           :is-enabled="instanceRunnersEnabledModel"
           :is-disabled-and-unoverridable="instanceRunnersDisabledAndUnoverridable"
           :update-path="instanceRunnersUpdatePath"

@@ -131,6 +131,41 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
     end
   end
 
+  describe '#authenticate_runner_from_header!', feature_category: :runner_core do
+    let_it_be(:group, freeze: true) { create(:group) }
+    let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+
+    before do
+      allow(helper).to receive_messages(
+        headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => runner.token },
+        params: {}
+      )
+    end
+
+    it 'sets Current.organization from the runner' do
+      helper.authenticate_runner_from_header!
+
+      expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => group.organization_id)
+    end
+
+    context 'with an instance runner' do
+      let_it_be(:instance_runner, freeze: true) { create(:ci_runner, :instance) }
+
+      before do
+        allow(helper).to receive_messages(
+          headers: { API::Ci::Helpers::Runner::RUNNER_TOKEN_HEADER => instance_runner.token },
+          params: {}
+        )
+      end
+
+      it 'does not set Current.organization' do
+        helper.authenticate_runner_from_header!
+
+        expect(Current.organization_assigned).to be_falsey
+      end
+    end
+  end
+
   describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
     let_it_be(:group) { create(:group) }
 
@@ -236,6 +271,130 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
         expect { subject }.to change { failure_counter.get }.by(1)
           .and not_change { success_counter.get(runner_type: 'instance_type') }
           .and not_change { success_counter.get(runner_type: 'project_type') }
+      end
+    end
+  end
+
+  describe '#set_application_context' do
+    let_it_be(:group, freeze: true) { create(:group) }
+    let_it_be(:project, freeze: true) { create(:project, group: group) }
+    let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:build, freeze: true) { create(:ci_build, :running, runner: runner, project: project) }
+
+    subject(:set_context) { helper.set_application_context }
+
+    before do
+      allow(helper).to receive(:params).and_return({})
+    end
+
+    context 'when current_job is present' do
+      before do
+        allow(helper).to receive_messages(params: { id: build.id, token: runner.token })
+      end
+
+      it 'pushes job and runner context and sets Current.organization' do
+        set_context
+
+        expect(Gitlab::ApplicationContext.current).to include(
+          'meta.job_id' => build.id,
+          'meta.organization_id' => group.organization_id
+        )
+      end
+    end
+
+    context 'when only current_runner is present' do
+      before do
+        allow(helper).to receive(:params).and_return(token: runner.token)
+      end
+
+      it 'pushes runner context and sets Current.organization' do
+        set_context
+
+        expect(Current.organization).to eq(Organizations::Organization.find(group.organization_id))
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => group.organization_id)
+      end
+    end
+
+    context 'when neither job nor runner is present' do
+      it 'does not push application context or set Current.organization' do
+        expect(Gitlab::ApplicationContext).not_to receive(:push)
+
+        set_context
+
+        expect(Current.organization_assigned).to be_falsey
+      end
+    end
+  end
+
+  describe '#set_current_organization_from_runner' do
+    let_it_be(:group, freeze: true) { create(:group) }
+    let_it_be(:project, freeze: true) { create(:project, group: group) }
+
+    subject(:set_current_organization) { helper.send(:set_current_organization_from_runner, runner) }
+
+    context 'when runner is nil' do
+      let(:runner) { nil }
+
+      it 'does not set Current.organization' do
+        set_current_organization
+
+        expect(Current.organization_assigned).to be_falsey
+      end
+    end
+
+    context 'with instance runner' do
+      let(:runner) { build_stubbed(:ci_runner, :instance, organization_id: nil) }
+
+      it 'does not set Current.organization' do
+        set_current_organization
+
+        expect(Current.organization_assigned).to be_falsey
+      end
+    end
+
+    context 'with group runner' do
+      let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'sets Current.organization' do
+        set_current_organization
+
+        expect(Current.organization).to eq(Organizations::Organization.find(group.organization_id))
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => group.organization_id)
+      end
+    end
+
+    context 'with project runner' do
+      let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'sets Current.organization' do
+        set_current_organization
+
+        expect(Current.organization).to eq(Organizations::Organization.find(project.organization_id))
+        expect(Gitlab::ApplicationContext.current).to include('meta.organization_id' => project.organization_id)
+      end
+    end
+
+    context 'when organization has been deleted' do
+      let(:runner) { build_stubbed(:ci_runner, :group, organization_id: non_existing_record_id) }
+
+      it 'assigns nil to Current.organization' do
+        set_current_organization
+
+        expect(Current.organization_assigned).to be true
+        expect(Current.organization).to be_nil
+      end
+    end
+
+    context 'when Current.organization is already assigned' do
+      let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:other_organization, freeze: true) { create(:organization) }
+
+      before do
+        Current.organization = other_organization
+      end
+
+      it 'does not overwrite the existing organization' do
+        expect { set_current_organization }.not_to change { Current.organization }
       end
     end
   end

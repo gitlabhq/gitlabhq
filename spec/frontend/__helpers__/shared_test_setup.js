@@ -3,7 +3,7 @@ import { ReadableStream, WritableStream } from 'node:stream/web';
 import { BroadcastChannel } from 'node:worker_threads';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { enableAutoDestroy } from '@vue/test-utils';
 import 'jquery';
 import Translate from '~/vue_shared/translate';
@@ -25,7 +25,6 @@ enableAutoDestroy(afterEach);
 
 // This module has some fairly decent visual test coverage in it's own repository.
 jest.mock('@gitlab/favicon-overlay');
-jest.mock('~/lib/utils/axios_utils', () => jest.requireActual('helpers/mocks/axios_utils'));
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
 

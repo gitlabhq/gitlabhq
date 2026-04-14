@@ -178,3 +178,8 @@ export function findClosestMatchLine(lines, target) {
 export function lineExists(lines, oldLineNumber, newLineNumber) {
   return lines.some((line) => line.new_line === newLineNumber || line.old_line === oldLineNumber);
 }
+
+export function getRawPath(diffFile) {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls
+  return diffFile.view_path.replace('/-/blob/', '/-/raw/');
+}

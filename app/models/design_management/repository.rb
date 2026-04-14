@@ -6,6 +6,7 @@ module DesignManagement
     include HasRepository
 
     belongs_to :project, inverse_of: :design_management_repository
+    belongs_to :namespace
     validates :project, presence: true, uniqueness: true
 
     delegate :lfs_enabled?, :storage, :repository_storage, :run_after_commit, :run_after_commit_or_now, to: :project

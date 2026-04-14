@@ -13,4 +13,4 @@
   = render_if_exists "protected_branches/protected_branches", protected_branch_entity: @group
 
 - if can?(current_user, :change_push_rules, @group)
-  = render "push_rules"
+  = render_if_exists "groups/settings/repository/push_rules"

@@ -203,7 +203,7 @@ module API
           # 2. When forwarding is disabled, authorize_read_package!(project) provides authorization
           route_setting :authorization, job_token_policies: :read_packages,
             allow_public_access_for_enabled_project_features: :package_registry,
-            skip_granular_token_authorization: true
+            skip_granular_token_authorization: :external_registry_redirect
           post '-/npm/v1/security/advisories/bulk' do
             redirect_or_present_audit_report
           end
@@ -228,7 +228,7 @@ module API
           # 2. When forwarding is disabled, authorize_read_package!(project) provides authorization
           route_setting :authorization, job_token_policies: :read_packages,
             allow_public_access_for_enabled_project_features: :package_registry,
-            skip_granular_token_authorization: true
+            skip_granular_token_authorization: :external_registry_redirect
           post '-/npm/v1/security/audits/quick' do
             redirect_or_present_audit_report
           end

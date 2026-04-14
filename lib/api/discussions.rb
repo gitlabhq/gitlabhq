@@ -12,7 +12,10 @@ module API
       request.get? || request.head? || request.post?
     end
 
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     urgency :low, [
       '/projects/:id/merge_requests/:noteable_id/discussions',
@@ -183,6 +186,8 @@ module API
 
           break not_found!("Discussion") if notes.empty?
 
+          break bad_request!("Replies to system notes are not allowed.") if first_note.system?
+
           unless first_note.part_of_discussion? || first_note.to_discussion.can_convert_to_discussion?
             break bad_request!("Discussion can not be replied to.")
           end
@@ -218,7 +223,7 @@ module API
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
-          get_note(noteable, params[:note_id])
+          get_note(noteable, params[:note_id], noteable_type)
         end
 
         desc "Edit a comment in a #{notable_name} discussion" do
@@ -238,9 +243,9 @@ module API
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           if params[:resolved].nil?
-            update_note(noteable, params[:note_id])
+            update_note(noteable, params[:note_id], noteable_type)
           else
-            resolve_note(noteable, params[:note_id], params[:resolved])
+            resolve_note(noteable, params[:note_id], params[:resolved], noteable_type)
           end
         end
 

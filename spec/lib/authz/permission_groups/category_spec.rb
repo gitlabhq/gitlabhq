@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 RSpec.describe Authz::PermissionGroups::Category, feature_category: :permissions do
   describe '.config_path' do
     it 'returns the glob pattern for category metadata files' do
-      expect(described_class.config_path).to include('*/_metadata.yml')
+      expect(described_class.config_path).to include('*/.metadata.yml')
     end
   end
 
@@ -26,7 +26,7 @@ RSpec.describe Authz::PermissionGroups::Category, feature_category: :permissions
     context 'when category metadata exists' do
       let(:temp_dir) { Dir.mktmpdir }
       let(:base_path) { "#{temp_dir}/config/authz/permission_groups/assignable_permissions" }
-      let(:category_metadata_file) { "#{base_path}/test_category/_metadata.yml" }
+      let(:category_metadata_file) { "#{base_path}/test_category/.metadata.yml" }
       let(:category_definition) { { 'name' => 'Test Category' } }
 
       before do
@@ -59,7 +59,7 @@ RSpec.describe Authz::PermissionGroups::Category, feature_category: :permissions
 
   describe 'instance methods' do
     let(:definition) { { name: 'CI/CD' } }
-    let(:file_path) { "config/authz/permission_groups/assignable_permissions/ci_cd/_metadata.yml" }
+    let(:file_path) { "config/authz/permission_groups/assignable_permissions/ci_cd/.metadata.yml" }
 
     subject(:category) { described_class.new(definition, file_path) }
 

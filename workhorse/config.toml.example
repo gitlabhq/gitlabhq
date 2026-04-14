@@ -62,6 +62,22 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   min_version = "tls1.2"
   max_version = "tls1.3"
 
+# Metrics listener configuration
+# Exposes Prometheus metrics on a dedicated endpoint.
+# Mutually exclusive with the -prometheusListenAddr CLI flag.
+[metrics_listener]
+  # Network type for the metrics listener (tcp, tcp4, tcp6, unix)
+  network = "tcp"
+  # Address to bind the Prometheus metrics server to
+  addr = "localhost:9229"
+
+  # Optional: TLS configuration for the metrics listener
+  # [metrics_listener.tls]
+  #   certificate = "/path/to/certificate"
+  #   key = "/path/to/private/key"
+  #   min_version = "tls1.2"
+  #   max_version = "tls1.3"
+
 [circuit_breaker]
   enabled = true
   timeout = 60

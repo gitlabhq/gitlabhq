@@ -70,14 +70,14 @@ describe('CreateLegacyPersonalAccessTokenForm', () => {
 
   it('renders access token form with pre-filled values', () => {
     createComponent({
-      accessTokenName: 'GitLab Workflow Extension',
-      accessTokenDescription: 'Token for VSCode extension',
+      accessTokenName: 'My Token',
+      accessTokenDescription: 'My token description',
       accessTokenScopes: ['api', 'read_user'],
     });
 
     expect(findAccessTokenForm().props()).toMatchObject({
-      name: 'GitLab Workflow Extension',
-      description: 'Token for VSCode extension',
+      name: 'My Token',
+      description: 'My token description',
       scopes: ['api', 'read_user'],
     });
   });

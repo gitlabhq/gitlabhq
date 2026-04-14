@@ -1,24 +1,26 @@
 import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { createLineDiscussionsAdapter } from '~/rapid_diffs/adapters/line_discussions';
 import { HIGHLIGHT_LINES, CLEAR_HIGHLIGHT } from '~/rapid_diffs/adapter_events';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
+import { createAlert } from '~/alert';
+
+jest.mock('~/alert');
 
 const useDiscussionsStore = defineStore('discussionsStore', {
   state: () => ({
     discussions: [],
   }),
   actions: {
-    findAllDiscussionsForFile() {
+    findAllLineDiscussionsForFile() {
       return this.discussions;
     },
     findDiscussionsForPosition() {
       return this.discussions;
     },
-    replyToLineDiscussion() {},
     addNewLineDiscussionForm() {},
     setPositionDiscussionsHidden() {},
     setFileDiscussionsHidden() {},
@@ -34,7 +36,16 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
   return {
     props: jest.requireActual('~/rapid_diffs/app/discussions/diff_line_discussions.vue').default
       .props,
-    inject: ['userPermissions', 'endpoints', 'noteableType'],
+    inject: [
+      'userPermissions',
+      'endpoints',
+      'noteableType',
+      'filePaths',
+      'blobRawPath',
+      'suggestionsHelpPath',
+      'defaultSuggestionCommitMessage',
+      'linkedFileData',
+    ],
     methods: {
       empty() {
         this.$emit('empty');
@@ -44,6 +55,9 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
       },
       emitClearHighlight() {
         this.$emit('clear-highlight');
+      },
+      startThread(position) {
+        this.$emit('start-thread', position);
       },
     },
     mounted() {
@@ -63,6 +77,11 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
         renderAsDataAttr('user-permissions', this.userPermissions),
         renderAsDataAttr('endpoints', this.endpoints),
         renderAsDataAttr('noteable-type', this.noteableType),
+        renderAsDataAttr('file-paths', this.filePaths),
+        renderAsDataAttr('blob-raw-path', this.blobRawPath),
+        renderAsDataAttr('suggestions-help-path', this.suggestionsHelpPath),
+        renderAsDataAttr('default-suggestion-commit-message', this.defaultSuggestionCommitMessage),
+        renderAsDataAttr('linked-file-data', this.linkedFileData),
       ];
       return h('div', { attrs: { id: 'discussions-component' } }, [...props, ...injected]);
     },
@@ -88,6 +107,7 @@ describe('discussions adapters', () => {
     signIn: 'signInPath',
     reportAbuse: 'reportAbusePath',
   };
+  const linkedFileData = { old_path: oldPath, new_path: newPath };
   const appData = {
     userPermissions,
     previewMarkdownEndpoint: 'previewMarkdownEndpoint',
@@ -96,6 +116,9 @@ describe('discussions adapters', () => {
     signInPath: 'signInPath',
     noteableType: 'Commit',
     reportAbusePath: 'reportAbusePath',
+    suggestionsHelpPath: '/help/suggestions',
+    defaultSuggestionCommitMessage: 'Apply suggestion',
+    linkedFileData,
   };
 
   const getDiffFile = () => document.querySelector('diff-file');
@@ -126,11 +149,11 @@ describe('discussions adapters', () => {
               <thead><tr><td></td><td></td></tr></thead>
               <tbody>
                 <tr data-hunk-lines>
-                  <td data-position="old"><a data-line-number="1"></a></td>
+                  <td data-position="old" data-change="removed"><a data-line-number="1"></a></td>
                   <td></td>
                 </tr>
                 <tr data-hunk-lines>
-                  <td data-position="new"><a data-line-number="1"></a></td>
+                  <td data-position="new" data-change="added"><a data-line-number="1"></a></td>
                   <td></td>
                 </tr>
                 <tr data-hunk-lines>
@@ -146,7 +169,11 @@ describe('discussions adapters', () => {
         </diff-file>
       `);
       getDiffFile().mount({
-        adapterConfig: { text_inline: [createLineDiscussionsAdapter({ store, parallel: false })] },
+        adapterConfig: {
+          text_inline: [
+            createLineDiscussionsAdapter({ store, parallel: false, errorMessage: 'test error' }),
+          ],
+        },
         appData,
         unobserve: jest.fn(),
       });
@@ -184,6 +211,23 @@ describe('discussions adapters', () => {
       expect(
         JSON.parse(document.querySelector('[data-noteable-type]').dataset.noteableType),
       ).toStrictEqual('Commit');
+      expect(
+        JSON.parse(document.querySelector('[data-file-paths]').dataset.filePaths),
+      ).toStrictEqual({ oldPath, newPath });
+      expect(
+        JSON.parse(document.querySelector('[data-linked-file-data]').dataset.linkedFileData),
+      ).toStrictEqual(linkedFileData);
+      expect(
+        JSON.parse(
+          document.querySelector('[data-suggestions-help-path]').dataset.suggestionsHelpPath,
+        ),
+      ).toBe('/help/suggestions');
+      expect(
+        JSON.parse(
+          document.querySelector('[data-default-suggestion-commit-message]').dataset
+            .defaultSuggestionCommitMessage,
+        ),
+      ).toBe('Apply suggestion');
     });
 
     it('mounts discussion row for hidden discussions', async () => {
@@ -233,7 +277,7 @@ describe('discussions adapters', () => {
       expect(getDiscussionRows()).toHaveLength(0);
     });
 
-    it('skips discussions whose line is not in the DOM', async () => {
+    it('skips mounting when discussion line is not found', async () => {
       store.discussions = [
         {
           id: 'abc',
@@ -242,25 +286,68 @@ describe('discussions adapters', () => {
         },
       ];
       await nextTick();
+      expect(createAlert).not.toHaveBeenCalled();
       expect(getDiscussionRows()).toHaveLength(0);
     });
 
-    it('forwards click to store.replyToLineDiscussion', () => {
+    it('forwards click to store', () => {
       let event;
       const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
       const pos = { old_line: 2, new_line: null, type: null };
-      button.lineRange = { start: pos, end: pos };
+      const lineRange = { start: pos, end: pos };
+      button.lineRange = lineRange;
       button.addEventListener('click', (e) => {
         event = e;
       });
       button.click();
       getDiffFile().onClick(event);
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({ oldPath, newPath, lineRange }),
+      );
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({ lineRange, lineCode: expect.stringMatching(/_\d+_\d+$/) }),
+      );
+    });
 
-      expect(store.replyToLineDiscussion).toHaveBeenCalledWith({
+    it('resolves lineCode on start-thread from discussion row', async () => {
+      store.discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+        },
+      ];
+      await nextTick();
+      const row = getDiscussionRows()[0];
+      row.querySelector('#discussions-component').instance().startThread({
         oldPath,
         newPath,
-        lineRange: { start: pos, end: pos },
+        oldLine: 1,
+        newLine: null,
       });
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          oldPath,
+          newPath,
+          lineCode: expect.stringMatching(/_\d+_\d+$/),
+        }),
+      );
+    });
+
+    it('keeps discussion row when discussions are hidden', async () => {
+      const oldLine = 1;
+      store.discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: oldLine, new_line: null },
+        },
+      ];
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(1);
+      store.setFileDiscussionsHidden(oldPath, newPath, true);
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(1);
     });
 
     it('destroys Vue instances on cleanup', async () => {
@@ -498,22 +585,90 @@ describe('discussions adapters', () => {
       expect(discussionRows[0].querySelectorAll('td')).toHaveLength(2);
     });
 
-    it('forwards click to store.replyToLineDiscussion', () => {
+    it('forwards click to store.addNewLineDiscussionForm', () => {
       let event;
       const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
       const pos = { old_line: 4, new_line: 4, type: null };
-      button.lineRange = { start: pos, end: pos };
+      const lineRange = { start: pos, end: pos };
+      button.lineRange = lineRange;
       button.addEventListener('click', (e) => {
         event = e;
       });
       button.click();
       getDiffFile().onClick(event);
 
-      expect(store.replyToLineDiscussion).toHaveBeenCalledWith({
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          oldPath,
+          newPath,
+          lineCode: expect.stringMatching(/_\d+_\d+$/),
+          lineChange: { change: undefined, position: 'new' },
+          lineRange,
+        }),
+      );
+    });
+
+    it('includes lineCode in the created form', () => {
+      let event;
+      const button = getDiffFile().querySelector('[data-click="newDiscussion"]');
+      const pos = { old_line: 1, new_line: 1 };
+      button.lineRange = { start: pos, end: pos };
+      button.addEventListener('click', (e) => {
+        event = e;
+      });
+      button.click();
+      getDiffFile().onClick(event);
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({ lineCode: expect.stringMatching(/_\d+_\d+$/) }),
+      );
+    });
+
+    it('resolves lineChange per side on start-thread from discussion row', async () => {
+      store.discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 5, new_line: null },
+        },
+      ];
+      await nextTick();
+      const row = getDiscussionRows()[0];
+      row.querySelector('#discussions-component').instance().startThread({
         oldPath,
         newPath,
-        lineRange: { start: pos, end: pos },
+        oldLine: 5,
+        newLine: null,
       });
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lineChange: { change: 'removed', position: 'old' },
+          lineCode: expect.stringMatching(/_\d+_\d+$/),
+        }),
+      );
+    });
+
+    it('resolves lineChange for an unchanged line on start-thread from discussion row', async () => {
+      store.discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 3, new_line: 3 },
+        },
+      ];
+      await nextTick();
+      const row = getDiscussionRows()[0];
+      row.querySelector('#discussions-component').instance().startThread({
+        oldPath,
+        newPath,
+        oldLine: 3,
+        newLine: 3,
+      });
+      expect(store.addNewLineDiscussionForm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          lineChange: { change: undefined, position: 'old' },
+          lineCode: expect.stringMatching(/_\d+_\d+$/),
+        }),
+      );
     });
 
     it('removes empty row', async () => {

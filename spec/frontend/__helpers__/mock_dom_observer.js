@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this, max-classes-per-file */
-import { isMatch } from 'lodash';
+import { isMatch } from 'lodash-es';
 
 /**
  * This class gives us a JSDom friendly DOM observer which we can manually trigger in tests

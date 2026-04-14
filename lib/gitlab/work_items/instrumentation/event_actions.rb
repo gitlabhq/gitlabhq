@@ -62,6 +62,9 @@ module Gitlab
         RELATED_ITEM_ADD = 'work_item_related_item_add'
         RELATED_ITEM_REMOVE = 'work_item_related_item_remove'
         REOPEN = 'work_item_reopen'
+        SAVED_VIEW_CREATE = 'saved_view_create'
+        SAVED_VIEW_UPDATE = 'saved_view_update'
+        SAVED_VIEW_VIEW = 'saved_view_view'
         START_DATE_UPDATE = 'work_item_start_date_update'
         TIME_ESTIMATE_UPDATE = 'work_item_time_estimate_update'
         TIME_SPENT_UPDATE = 'work_item_time_spent_update'
@@ -69,7 +72,7 @@ module Gitlab
         UNLOCK = 'work_item_unlock'
         WEIGHT_UPDATE = 'work_item_weight_update'
 
-        ALL_EVENTS = [
+        WORK_ITEM_EVENTS = [
           ASSIGNEES_UPDATE,
           BLOCKED_BY_ITEM_ADD,
           BLOCKED_BY_ITEM_REMOVE,
@@ -113,8 +116,8 @@ module Gitlab
           WEIGHT_UPDATE
         ].freeze
 
-        def self.valid_event?(event)
-          ALL_EVENTS.include?(event)
+        def self.valid_work_item_event?(event)
+          WORK_ITEM_EVENTS.include?(event)
         end
       end
     end

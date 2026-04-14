@@ -238,6 +238,7 @@ module Gitlab
           raise ImpersonationDisabled
         end
 
+        clear_auth_failure_in_application_context(save_auth_context)
         save_current_token_in_env
         access_token
       end
@@ -324,6 +325,24 @@ module Gitlab
         )
       end
 
+      def clear_auth_failure_in_application_context(save_auth_context)
+        return unless save_auth_context
+
+        # Use Labkit::Context.push directly to avoid triggering `to_lazy_hash`
+        # inside Gitlab::ApplicationContext.push. That path calls `include_client?`,
+        # which evaluates the existing client_id lambda and transitively the user
+        # lazy-attribute reader -- memoizing nil because @current_user hasn't been
+        # assigned yet (we are still inside its computation). Pushing at the Labkit
+        # level bypasses that evaluation entirely.
+        Labkit::Context.push(
+          auth_fail_reason: nil,
+          auth_fail_token_id: nil,
+          auth_fail_requested_scopes: nil,
+          auth_fail_token_type: nil,
+          auth_fail_auth_header_type: nil
+        )
+      end
+
       def find_user_from_job_bearer_token
         return unless route_authentication_setting[:job_token_allowed]
 
@@ -354,7 +373,7 @@ module Gitlab
 
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
-          elsif Feature.enabled?(:optimize_pat_lookup, Feature.current_request) && pat_prefix_token?
+          elsif pat_prefix_token?
             # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
             # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
             # for tokens that are clearly Personal Access Tokens.
@@ -610,9 +629,11 @@ module Gitlab
       # Repositories::LfsApiController normally does the authentication,
       # but Rack Attack runs before those controllers.
       def find_user_for_git_or_lfs_request
-        return unless git_or_lfs_request?
+        strong_memoize(:find_user_for_git_or_lfs_request) do
+          next unless git_or_lfs_request?
 
-        find_user_from_lfs_token || find_user_from_basic_auth_password
+          find_user_from_lfs_token || find_user_from_basic_auth_password
+        end
       end
 
       def find_user_from_personal_access_token_for_api_or_git

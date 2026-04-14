@@ -26,6 +26,8 @@ When you're ready to create a merge request, use a method that fits your workflo
 When you create a merge request, GitLab enforces your project's branch naming rules.
 To connect your merge request to a branch, follow [branch naming patterns](../repository/branches/_index.md#name-your-branch).
 
+Merge request titles have [limited formatting support](../../../user/markdown.md#work-item-and-merge-request-titles).
+
 ## From the top bar
 
 You can create a merge request from the top bar in a project:

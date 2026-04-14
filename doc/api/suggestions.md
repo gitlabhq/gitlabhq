@@ -21,7 +21,7 @@ this API. Every API call to suggestions must be authenticated.
 ## Create a suggestion
 
 To create a suggestion through the API, use the Discussions API to
-[create a new thread in the merge request diff](discussions.md#create-new-merge-request-thread).
+[create a new thread in the merge request diff](discussions.md#create-a-merge-request-thread).
 The format for suggestions is:
 
 ````markdown

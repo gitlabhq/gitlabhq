@@ -9,18 +9,42 @@ Performance is an essential part and one of the main areas of concern for any mo
 
 ## Monitoring
 
-We have a performance dashboard available in one of our [Grafana instances](https://dashboards.gitlab.net/d/000000043/sitespeed-page-summary?orgId=1). This dashboard automatically aggregates metric data from [sitespeed.io](https://www.sitespeed.io/) every 4 hours. These changes are displayed after a set number of pages are aggregated.
+We use [sitespeed.io](https://www.sitespeed.io/) to continuously measure frontend performance. There are two complementary levels of monitoring: page-level and journey-level.
 
-These pages can be found inside text files in the [`sitespeed-measurement-setup` repository](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup) called [`gitlab`](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup/-/tree/master/gitlab)
-Any frontend engineer can contribute to this dashboard. They can contribute by adding or removing URLs of pages to the text files. The changes are pushed live on the next scheduled run after the changes are merged into `main`.
+### Page-level monitoring
+
+The [page summary Grafana dashboard](https://dashboards.gitlab.net/d/fe-perf-sitespeed-page-metrics/fe-perf3a-fe-perf3a-sitespeed-page-metrics?var-function=median&orgId=1&from=now-7d&to=now&timezone=browser&var-path=desktop&var-testname=gitlab&var-group=gitlab_com&var-page=SourceCode_Blob_Large&var-browser=chrome&var-connectivity=cable) automatically aggregates metric data every 4 hours across a set of individual pages.
+
+These pages are defined in text files inside the [`sitespeed-measurement-setup` repository](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup) under [`gitlab`](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup/-/tree/master/gitlab).
+Any frontend engineer can contribute by adding or removing URLs from those text files. Changes go live on the next scheduled run after merging into `master`.
 
 There are 3 recommended high impact metrics (core web vitals) to review on each page:
 
 - [Largest Contentful Paint](https://web.dev/articles/lcp)
-- [First Input Delay](https://web.dev/articles/fid/)
+- [Interaction to Next Paint](https://web.dev/articles/inp)
 - [Cumulative Layout Shift](https://web.dev/articles/cls)
 
 For these metrics, lower numbers are better as it means that the website is more performant.
+
+The dashboard also surfaces [Total Blocking Time (TBT)](https://web.dev/articles/tbt), which measures how long the main thread is blocked during page load. TBT is not a Core Web Vital (it is a lab metric, not measurable in the field), but it is a useful diagnostic for identifying interactivity problems and is available on the Sitespeed dashboard.
+
+Both the page-level and journey-level dashboards also capture [User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/User_timing) marks and measures emitted by the GitLab frontend code. This means any custom `performance.mark()` or `performance.measure()` calls you add to the codebase using the [`performanceMarkAndMeasure` utility](#user-timing-api-utility) are automatically collected and visible in Grafana. Use this to instrument and monitor rendering milestones that matter specifically to your feature.
+
+### Journey-level monitoring (user journeys)
+
+In addition to page-level metrics, we measure the performance of complete user workflows end-to-end. These are called user journeys and represent the workflows that matter most to users, such as editing and committing a file, creating a merge request, or running a pipeline.
+
+Journey metrics are visualized in the [User Journey Grafana dashboard](https://dashboards.gitlab.net/d/jegpwkh/sitespeed-user-journey?orgId=1&from=now-7d&to=now&timezone=utc). Each journey reports cumulative stopwatch timings per step, flowing into Graphite under `sitespeed_io.desktop.gitlab-workflows.<journeyName>.<stopwatchName>`. Use Grafana's `diffSeries()` to compute per-step deltas.
+
+Journey scripts live in [`gitlab/desktop/workflows/`](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup/-/tree/master/gitlab/desktop/workflows) in the `sitespeed-measurement-setup` repository. The `Create_SourceCode_WritingCode` journey (editing and committing a file via the web editor) serves as the reference implementation.
+
+To add a user journey for your own team, follow the [user journey guide](https://gitlab.com/gitlab-org/frontend/sitespeed-measurement-setup/-/blob/master/docs/user-journey-guide.md) in the `sitespeed-measurement-setup` repository. It covers:
+
+- Defining journey steps and selectors
+- Creating fixture data in the test group
+- Implementing the journey script with `workflow_helper` stopwatches
+- Testing locally with Docker
+- Reading and interpreting the Grafana metrics
 
 ## User Timing API
 
@@ -150,9 +174,8 @@ To use the Vue performance plugin:
    ```javascript
    Vue.use(PerformancePlugin, {
      components: [
-       'IdeTreeList',
-       'FileTree',
-       'RepoEditor',
+       'MyComponent',
+       'MyOtherComponent',
      ]
    });
    ```
@@ -165,7 +188,7 @@ most components in the codebase don't have this option set:
 
 ```javascript
 export default {
-  name: 'IdeTreeList',
+  name: 'MyComponent',
   components: {
     ...
   ...
@@ -268,7 +291,7 @@ properties once, and handle the actual animation with transforms.
 
 In addition to prefetching data from the [API](graphql.md#making-initial-queries-early-with-graphql-startup-calls)
 we allow prefetching the named JavaScript "chunks" as
-[defined in the Webpack configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/webpack.config.js#L298-359).
+[defined in the Webpack configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/webpack.config.js).
 We support two types of prefetching for the chunks:
 
 - The [`prefetch` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/prefetch)

@@ -72,12 +72,11 @@ export default normalizeRender({
       canReadCrmOrganization: computed(() => Boolean(this.metadata?.readCrmOrganization)),
       canReadCrmContact: computed(() => Boolean(this.metadata?.readCrmContact)),
       projectNamespaceFullPath: computed(() => this.metadata?.namespaceFullPath),
-      getWorkItemTypeConfiguration: computed(() => (typeName) => {
-        return this.workItemTypesConfiguration[typeName];
-      }),
-      workItemTypesConfiguration: computed(() => this.workItemTypesConfiguration),
+      getWorkItemTypeConfiguration: computed(() => (name) => this.workItemTypesConfiguration[name]),
+      workItemTypesConfiguration: computed(() => Object.values(this.workItemTypesConfiguration)),
       subscribedSavedViewLimit: computed(() => this.metadata.subscribedSavedViewLimit),
       canCreateSavedView: computed(() => Boolean(this.metadata?.createSavedView)),
+      namespaceName: computed(() => this.metadata?.namespaceName),
     };
   },
   props: {
@@ -108,6 +107,7 @@ export default normalizeRender({
           ...(namespace.userPermissions || {}),
           ...(namespace.metadata || {}),
           id: namespace.id,
+          namespaceName: namespace.name,
           subscribedSavedViewLimit: namespace.subscribedSavedViewLimit,
         };
       },

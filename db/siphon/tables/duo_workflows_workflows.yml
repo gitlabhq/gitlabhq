@@ -1,0 +1,8 @@
+---
+table: duo_workflows_workflows
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_duo_workflows_workflows
+    dedup_by:
+      - id

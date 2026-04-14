@@ -31,12 +31,12 @@ Choose the right method based on your organization's size, security requirements
 ## Create a user on the sign-in page
 
 By default, any user visiting your GitLab instance can register for an account.
-If you have previously [disabled this setting](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), you must turn it back on.
+If you have previously [disabled this setting](../../../administration/settings/sign_up_restrictions.md#disable-new-user-account-creation), you must turn it back on.
 
 Users can create their own accounts by either:
 
 - Selecting the **Register now** link on the sign-in page.
-- Navigating to your GitLab instance's sign-up link (for example: `https://gitlab.example.com/users/sign_up`).
+- Navigating to your GitLab instance's new user account link (for example: `https://gitlab.example.com/users/sign_up`).
 
 ## Create a user in the Admin area
 
@@ -124,7 +124,7 @@ To create a user through the Rails console:
    ```
 
    > [!note]
-   > If you have [disabled new sign-ups](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups),
+   > If you have [disabled new user accounts](../../../administration/settings/sign_up_restrictions.md#disable-new-user-account-creation),
    > you must run this command as an administrator. In the previous command, replace `Users::CreateService.new(nil,`
    > with `Users::CreateService.new(User.find_by(admin: true),`
 

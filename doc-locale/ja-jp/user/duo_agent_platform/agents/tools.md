@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Workflow Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: エージェントツール
 ---
 
@@ -9,92 +9,100 @@ title: エージェントツール
 
 <!-- markdownlint-disable MD044 -->
 
-| 名前 | 説明 |
-|-------|-------------|
-| Gitlab Blob Search | グループまたはプロジェクト内のファイルの内容を検索します。 |
-| CI Lint | CI/CDのYAML設定をCI/CD構文ルールに対して検証します。 |
-| Gitコマンドの実行 | 現在の作業ディレクトリでGitコマンドを実行します。 |
-| Gitlabコミット検索 | プロジェクトまたはグループ内のコミットを検索します。 |
-| エピックの作成 | グループにエピックを作成します。 |
-| イシューの作成 | プロジェクトにイシューを作成します。 |
-| イシューノートの作成 | イシューにノートを追加します。 |
-| マージリクエストの作成 | プロジェクトにマージリクエストを作成します。 |
-| マージリクエストノートの作成 | マージリクエストにノートを追加します。クイックアクションはサポートされていません。 |
-| ファイルの編集 | 既存のファイルを編集します。 |
-| ファイルの検索 | プロジェクト内のファイルを再帰的に検索します。 |
-| コミットの取得 | プロジェクトからコミットを取得します。 |
-| コミットコメントの取得 | プロジェクト内のコミットのコメントを取得します。 |
-| コミットの差分を取得 | プロジェクト内のコミットの差分を取得します。 |
-| エピックの取得 | グループ内のエピックを取得します。 |
-| エピックノートの取得 | エピックからノートを取得します。 |
-| イシューの取得 | プロジェクトからイシューを取得します。 |
-| イシューノートの取得 | イシューからノートを取得します。 |
-| ジョブログの取得 | ジョブのトレースを取得します。 |
-| マージリクエストの取得 | マージリクエストに関する詳細を取得します。 |
-| パイプラインのエラーの取得 | マージリクエストの最新パイプラインから、失敗したジョブのログを取得します。 |
-| プロジェクトの取得 | プロジェクトに関する詳細を取得します。 |
-| リポジトリファイルの取得 | リモートリポジトリからファイルの内容を取得します。 |
-| Grep | ファイル内のテキストパターンを再帰的に検索します。このツールは、`.gitignore`ファイルのルールを尊重します。 |
-| Gitlabグループプロジェクト検索 | グループ内のプロジェクトを検索します。 |
-| Gitlabイシュー検索 | プロジェクトまたはグループ内のイシューを検索します。 |
-| すべてのマージリクエストノートをリスト | マージリクエストのすべてのノートをリストします。 |
-| コミットの一覧表示 | プロジェクト内のコミットをリストします。 |
-| ディレクトリの一覧表示 | プロジェクトのルートを基準としたディレクトリ内のファイルをリストします。 |
-| エピックノートの一覧表示 | エピックのすべてのノートをリストします。 |
-| エピックの一覧表示 | グループとそのサブグループのすべてのエピックをリストします。 |
-| イシューノートの一覧表示 | イシューのすべてのノートをリストします。 |
-| イシューの一覧表示 | プロジェクト内のすべてのイシューをリストします。 |
-| マージリクエストの差分の一覧表示 | マージリクエストで変更されたファイルの差分をリストします。 |
-| Gitlabマージリクエスト検索 | プロジェクトまたはグループ内のマージリクエストを検索します。 |
-| Gitlabマイルストーン検索 | プロジェクトまたはグループ内のマイルストーンを検索します。 |
-| Mkdir | 現在のワークツリーにディレクトリを作成します。 |
-| Gitlabノート検索 | プロジェクト内のノートを検索します。 |
-| ファイルの読み取り | ファイルの内容を読み取ります。 |
-| コマンドの実行 | 現在の作業ディレクトリでbashコマンドを実行します。Gitコマンドはサポートされていません。 |
-| タスクのステータスの設定 | タスクのステータスを設定します。 |
-| エピックの更新 | グループ内のエピックを更新します。 |
-| イシューの更新 | プロジェクト内のイシューを更新します。 |
-| マージリクエストの更新 | マージリクエストを更新します。ターゲットブランチを変更したり、タイトルを編集したり、MRを閉じたりすることもできます。 |
-| Gitlabユーザー検索 | プロジェクトまたはグループ内のユーザーを検索します。 |
-| Gitlab Wiki Blob検索 | プロジェクトまたはグループ内のWikiの内容を検索します。 |
-| コンテンツ付きファイルの作成 | ファイルを作成し、コンテンツを書き込みます。 |
-| Gitlabドキュメント検索 | GitLabドキュメントで情報を検索します。 |
-| 現在のユーザーを取得 | 現在のユーザーに関する次の情報を取得します: ユーザー名、役職、優先言語。 |
-| 新しいタスクを追加 | タスクを追加します。 |
-| 脆弱性イシューの作成 | プロジェクト内のセキュリティ脆弱性にリンクされたイシューを作成します。プロジェクトをフルパスで指定する必要があります。例: 「group/subgroup/project」。IDで脆弱性にリンクされたイシューを作成できます。一度に最大100個のIDを指定できます。 |
-| ファイルの読み取り | ファイルの内容を読み取ります。 |
-| 作業アイテムの取得 | グループまたはプロジェクトから作業アイテムを取得します。`group_id/project_id`と`work_item_iid`、または作業アイテムへのURLのいずれかを指定する必要があります。 |
-| 計画の作成 | タスクのリストを作成します。 |
-| 計画の取得 | タスクのリストを取得します。 |
-| タスクの説明を更新 | タスクの説明を更新します。 |
-| 検出された脆弱性に復元 | 脆弱性の状態を`detected`に戻します。復元する理由を説明するオプションのコメントを指定できます。IDで脆弱性を識別する必要があります。 |
-| 以前のセッションコンテキストを取得 | 以前のセッションからコンテキストを取得します。 |
-| リポジトリツリーの一覧表示 | リポジトリ内のファイルとディレクトリを一覧表示します。プロジェクトを識別するには、`project_id`またはプロジェクトへのURLのいずれかを指定する必要があります。サブディレクトリまたは特定のrefの内容を取得するためのパスを指定できます。 |
-| 作業アイテムノートの作成 | 作業アイテムにノートを追加します。クイックアクションはサポートされていません。 |
-| タスクの削除 | タスクのリストからタスクを削除します。IDでタスクを指定する必要があります。 |
-| 脆弱性の重大度を更新 | プロジェクト内の脆弱性の重大度レベルを更新します。プロジェクトのフルパスを指定する必要があります。更新を説明するオプションのコメントを指定できます。 |
-| プロジェクト監査イベントの一覧表示 | プロジェクトの監査イベントをリストします。プロジェクト監査イベントにアクセスするには、オーナーロールが必要です。 |
-| グループ監査イベントの一覧表示 | グループの監査イベントをリストします。グループ監査イベントにアクセスするには、オーナーロールが必要です。 |
-| 脆弱性をイシューにリンク | プロジェクト内のセキュリティ脆弱性にイシューをリンクします。プロジェクトのフルパスを指定する必要があります。一度に最大100個の脆弱性IDを指定できます。 |
-| インスタンス監査イベントの一覧表示 | インスタンスレベルの監査イベントをリストします。インスタンス監査イベントを表示するには、管理者である必要があります。 |
-| 脆弱性の詳細の取得 | IDで指定された脆弱性に関する次の情報を取得します: 基本的な脆弱性情報、場所の詳細、CVEエンリッチメントデータ、検出パイプライン情報、詳細な脆弱性レポートデータ。 |
-| 脆弱性の無視 | プロジェクト内のセキュリティ脆弱性を無視します。プロジェクトのフルパスを指定する必要があります。無視を説明するオプションのコメントを指定できます。 |
-| 脆弱性の確認 | プロジェクト内の脆弱性の状態を`CONFIRMED`に変更します。 |
-| 作業アイテムの更新 | グループまたはプロジェクト内の既存の作業アイテムを更新します。クイックアクションはサポートされていません。 |
-| 作業アイテムの一覧表示 | プロジェクトまたはグループ内の作業アイテムをリストします。 |
-| コミットの作成 | リポジトリ内で複数のファイルアクションを含むコミットを作成します。プロジェクトを識別するには、`project_id`またはプロジェクトへのURLのいずれかを指定する必要があります。アクションには、ファイルのアクセス許可の作成、更新、削除、移動、または変更が含まれます。 |
-| 脆弱性の一覧表示 | プロジェクト内のセキュリティ脆弱性をリストします。プロジェクトのフルパスを指定する必要があります。重大度レベルとレポートタイプで脆弱性をフィルタリングできます。 |
-| 作業アイテムのノートを取得 | 作業アイテムのすべてのノートを取得します。作業アイテムを識別するには、`group_id/project_id`と`work_item_iid`、または作業アイテムへのURLのいずれかを指定する必要があります。 |
-| 作業アイテムの作成 | グループまたはプロジェクトに作業アイテムを作成します。クイックアクションはサポートされていません。 |
-| Wikiページの取得 | すべてのコメントを含め、プロジェクトまたはグループからWikiページを取得します。Wikiページのslugと、`project_id`または`group_id`のいずれかを指定する必要があります。 |
-| セキュリティ検出結果の詳細を取得 | IDと、それを識別したパイプラインスキャンのIDで、潜在的な脆弱性の詳細を取得します。 |
-| Gitlab Api Get | 任意のREST APIエンドポイントに対して、読み取り専用のGETリクエストを行います。直接APIエンドポイントパスとリソースURLの両方をサポートします。 |
-| Gitlab Graphql | GraphQL APIに対して、読み取り専用のGraphQLクエリを実行します。 |
-| 脆弱性をマージリクエストにリンク | GraphQLを使用して、プロジェクト内のマージリクエストにセキュリティ脆弱性をリンクします。プロジェクトのフルパスを指定する必要があります。このツールは、IDで脆弱性をマージリクエストにリンクすることをサポートしています。マージリクエストIDは、グローバルIDです。 |
-| パイプライン失敗ジョブを取得 | パイプラインで失敗したジョブのIDを取得します。特定のパイプラインIDを指定するか、マージリクエストで失敗したすべてのジョブをリクエストできます。 |
-| テストの実行 | 任意の言語またはフレームワークのテストコマンドを実行します。 |
-| テキストからの行抽出 | テキストから特定の行を抽出します。|
-| セキュリティ検出結果の一覧表示 | 特定のパイプラインセキュリティスキャンから、一時的なセキュリティ検出結果をリストします。 |
-| レビュービルドマージリクエストコンテキスト | コードレビューのための包括的なマージリクエストコンテキストをビルドします。MRの詳細、AIレビュー可能な差分、およびファイルの内容をフェッチします。 |
-| GitlabへのSast Fp分析の投稿 | SASTの誤検出検出分析結果を投稿します。 |
-| Duoコードレビューの投稿 | マージリクエストにGitLab Duoコードレビューを投稿します。 |
+## Web UIとIDEで利用可能なツール {#tools-available-in-the-web-ui-and-ide}
+
+| 名前 | ツール | 説明 |
+|------|------|-------------|
+| Add New Task | `add_new_task` | タスクを追加します。 |
+| Build Review Merge Request Context | `build_review_merge_request_context` | コードレビュー向けに、包括的なマージリクエストコンテキストを構築します。 |
+| Ci Linter | `ci_linter` | CI/CD構文ルールに基づいてCI/CDのYAML設定を検証します。 |
+| Confirm Vulnerability | `confirm_vulnerability` | プロジェクト内の脆弱性のステータスを`CONFIRMED`に変更します。 |
+| Create Commit | `create_commit` | リポジトリで、複数のファイルアクションを含むコミットを作成します。 |
+| Create Epic | `create_epic` | グループにエピックを作成します。 |
+| Create Issue | `create_issue` | プロジェクトにイシューを作成します。 |
+| Create Issue Note | `create_issue_note` | イシューにノートを追加します。 |
+| Create Merge Request | `create_merge_request` | プロジェクトにマージリクエストを作成します。 |
+| Create Merge Request Note | `create_merge_request_note` | マージリクエストにノートを追加します。クイックアクションはサポートされていません。 |
+| Create Plan | `create_plan` | タスクのリストを作成します。 |
+| Create Vulnerability Issue | `create_vulnerability_issue` | プロジェクト内のセキュリティ脆弱性にリンクされたイシューを作成します。 |
+| Create Work Item | `create_work_item` | グループまたはプロジェクトに作業アイテムを作成します。クイックアクションはサポートされていません。 |
+| Create Work Item Note | `create_work_item_note` | 作業アイテムにノートを追加します。クイックアクションはサポートされていません。 |
+| Dismiss Vulnerability | `dismiss_vulnerability` | プロジェクト内のセキュリティ脆弱性を無視します。 |
+| Extract Lines From Text | `extract_lines_from_text` | テキストから特定の行を抽出します。 |
+| Get Commit | `get_commit` | プロジェクトからコミットを取得します。 |
+| Get Commit Comments | `get_commit_comments` | プロジェクト内のコミットのコメントを取得します。 |
+| Get Commit Diff | `get_commit_diff` | プロジェクト内のコミットの差分を取得します。 |
+| Get Current User | `get_current_user` | 現在のユーザーに関する次の情報を取得します: ユーザー名、役職、優先言語。 |
+| Get Epic | `get_epic` | グループ内のエピックを取得します。 |
+| Get Epic Note | `get_epic_note` | エピックからノートを取得します。 |
+| Get Issue | `get_issue` | プロジェクトからイシューを取得します。 |
+| Get Issue Note | `get_issue_note` | イシューからノートを取得します。 |
+| Get Job Logs | `get_job_logs` | ジョブのトレースを取得します。 |
+| Get Merge Request | `get_merge_request` | マージリクエストに関する詳細を取得します。 |
+| Get Pipeline Errors | `get_pipeline_errors` | マージリクエストの最新パイプラインで失敗したジョブのログを取得します。 |
+| Get Pipeline Failing Jobs | `get_pipeline_failing_jobs` | パイプラインで失敗したジョブのIDを取得します。 |
+| Get Plan | `get_plan` | タスクのリストを取得します。 |
+| Get Previous Session Context | `get_previous_session_context` | 以前のセッションからコンテキストを取得します。 |
+| Get Project | `get_project` | プロジェクトに関する詳細を取得します。 |
+| Get Repository File | `get_repository_file` | リモートリポジトリからファイルの内容を取得します。 |
+| Get Security Finding Details | `get_security_finding_details` | 潜在的な脆弱性について、そのIDと、それを特定したパイプラインスキャンのIDを指定して詳細を取得します。 |
+| Get Vulnerability Details | `get_vulnerability_details` | IDで指定された脆弱性に関する次の情報を取得します: 脆弱性の基本情報、位置情報の詳細、CVEエンリッチメントデータ、検出パイプライン情報、詳細な脆弱性レポートデータ。 |
+| Get Wiki Page | `get_wiki_page` | すべてのコメントを含め、プロジェクトまたはグループからWikiページを取得します。 |
+| Get Work Item | `get_work_item` | グループまたはプロジェクトから作業アイテムを取得します。 |
+| Get Work Item Notes | `get_work_item_notes` | 作業アイテムのすべてのノートを取得します。 |
+| GitLab API取得 | `gitlab_api_get` | 任意のREST APIエンドポイントに対して、読み取り専用のGETリクエストを行います。 |
+| GitLab blob検索 | `gitlab_blob_search` | グループ、プロジェクト、またはインスタンス内のファイルのコンテンツを検索します。グループ全体またはインスタンスで検索するには、[advanced](../../../integration/advanced_search/elasticsearch.md#enable-code-search-with-advanced-search)検索または[完全一致コードの検索](../../../integration/zoekt/_index.md#enable-exact-code-search)をオンにする必要があります。  |
+| GitLabコミット検索 | `gitlab_commit_search` | プロジェクトまたはグループ内のコミットを検索します。 |
+| GitLabドキュメント検索 | `gitlab_documentation_search` | GitLabドキュメント内の情報を検索します。 |
+| GitLab GraphQL | `gitlab_graphql` | GraphQL APIに対して、読み取り専用のGraphQLクエリを実行します。 |
+| GitLabグループプロジェクト検索 | `gitlab_group_project_search` | グループ内のプロジェクトを検索します。 |
+| GitLabイシュー検索 | `gitlab_issue_search` | プロジェクトまたはグループ内のイシューを検索します。 |
+| GitLabマージリクエスト検索 | `gitlab_merge_request_search` | プロジェクトまたはグループ内のマージリクエストを検索します。 |
+| GitLabマイルストーン検索 | `gitlab_milestone_search` | プロジェクトまたはグループ内のマイルストーンを検索します。 |
+| GitLabノート検索 | `gitlab_note_search` | プロジェクト内のノートを検索します。 |
+| GitLabユーザー検索 | `gitlab__user_search` | プロジェクトまたはグループ内のユーザーを検索します。 |
+| GitLabウィキblobs検索 | `gitlab_wiki_blob_search` | プロジェクトまたはグループ内のWikiの内容を検索します。 |
+| Link Vulnerability To Issue | `link_vulnerability_to_issue` | プロジェクト内のセキュリティ脆弱性にイシューをリンクします。 |
+| Link Vulnerability To Merge Request | `link_vulnerability_to_merge_request` | GraphQLを使用して、プロジェクト内のマージリクエストにセキュリティ脆弱性をリンクします。 |
+| List All Merge Request Notes | `list_all_merge_request_notes` | マージリクエストのすべてのノートをリストします。 |
+| List Commits | `list_commits` | プロジェクト内のコミットをリストします。 |
+| List Epic Notes | `list_epic_notes` | エピックのすべてのノートをリストします。 |
+| List Epics | `list_epics` | グループとそのサブグループのすべてのエピックをリストします。 |
+| List Group Audit Events | `list_group_audit_events` | グループ監査イベントをリストします。グループ監査イベントにアクセスするには、オーナーロールが必要です。 |
+| List Instance Audit Events | `list_instance_audit_events` | インスタンスレベルの監査イベントをリストします。インスタンス監査イベントを表示するには、管理者である必要があります。 |
+| List Issue Notes | `list_issue_notes` | イシューのすべてのノートをリストします。 |
+| List Issues | `list_issues` | プロジェクト内のすべてのイシューをリストします。 |
+| List Merge Request Diffs | `list_merge_request_diffs` | マージリクエストで変更されたファイルの差分をリストします。 |
+| Project Audit Events | `list_project_audit_events` | プロジェクトの監査イベントをリストします。プロジェクト監査イベントにアクセスするには、オーナーロールが必要です。 |
+| List Repository Tree | `list_repository_tree` | リポジトリ内のファイルとディレクトリをリストします。 |
+| List Security Findings | `list_security_findings` | 特定のパイプラインのセキュリティスキャンから、一時的なセキュリティ検出結果をリストします。 |
+| List Vulnerabilities | `list_vulnerabilities` | プロジェクト内のセキュリティ脆弱性をリストします。 |
+| List Work Items | `list_work_items` | プロジェクトまたはグループ内の作業アイテムをリストします。 |
+| GitLab Duoコードレビューの投稿 | `post_duo_code_review` | GitLab Duoコードレビューをマージリクエストに投稿します。 |
+| SAST FP分析をGitLabに投稿 | `post_sast_fp_analysis_to_gitlab` | SASTの誤検出判定の分析結果を投稿します。 |
+| Remove Task | `remove_task` | タスクのリストからタスクを削除します。 |
+| Revert To Detected Vulnerability | `revert_to_detected_vulnerability` | 脆弱性のステータスを`detected`に戻します。 |
+| GLQLクエリの実行 | `run_glql_query` | 作業アイテム、エピック、およびマージリクエストに対してGLQLクエリを実行します。 |
+| Run Tests | `run_tests` | 任意の言語またはフレームワークのテストコマンドを実行します。 |
+| Set Task Status | `set_task_status` | タスクのステータスを設定します。 |
+| Update Epic | `update_epic` | グループ内のエピックを更新します。 |
+| Update Issue | `update_issue` | プロジェクト内のイシューを更新します。 |
+| Update Merge Request | `update_merge_request` | マージリクエストを更新します。ターゲットブランチの変更、タイトルの編集、MRのクローズも可能です。 |
+| Update Task Description | `update_task_description` | タスクの説明を更新します。 |
+| Update Vulnerability Severity | `update_vulnerability_severity` | プロジェクト内の脆弱性の重大度レベルを更新します。 |
+| Update Work Item | `update_work_item` | グループまたはプロジェクト内の既存の作業アイテムを更新します。クイックアクションはサポートされていません。 |
+
+## IDEのみで利用可能なツール {#tools-available-in-the-ide-only}
+
+| 名前 | ツール | 説明 |
+|------|------|-------------|
+| Create File With Contents | `create_file_with_contents` | ファイルを作成し、内容を書き込みます。 |
+| Edit File | `edit_file` | 既存のファイルを編集します。 |
+| Find Files | `find_files` | プロジェクト内のファイルを再帰的に検索します。 |
+| Grep | `grep` | ファイル内のテキストパターンを再帰的に検索します。このツールは`.gitignore`ファイルのルールを尊重します。 |
+| List Dir | `list_dir` | プロジェクトのルートを基準とした相対パスで、ディレクトリ内のファイルをリストします。 |
+| Mkdir | `mkdir` | 現在のワークツリーにディレクトリを作成します。 |
+| Read File | `read_file` | ファイルの内容を読み取ります。 |
+| Read Files | `read_files` | ファイルの内容を読み取ります。 |
+| Run Command | `run_command` | 現在の作業ディレクトリでbashコマンドを実行します。Gitコマンドはサポートされていません。 |
+| Run Git Command | `run_git_command` | 現在の作業ディレクトリでGitコマンドを実行します。 |

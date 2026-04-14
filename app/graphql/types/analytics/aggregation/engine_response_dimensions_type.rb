@@ -12,7 +12,7 @@ module Types
             Class.new(BaseObject) do
               include BaseResponseType
               graphql_name "#{types_prefix}AggregationResponseDimensions"
-              description "Response dimensions for #{types_prefix} aggregation engine"
+              description "Response dimensions for `#{types_prefix}` aggregation engine"
 
               def self.declare_association_field(dimension)
                 name = dimension.identifier.to_s.delete_suffix('_id')

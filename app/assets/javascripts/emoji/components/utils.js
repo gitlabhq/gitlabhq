@@ -1,4 +1,4 @@
-import { chunk, memoize, uniq } from 'lodash';
+import { chunk, memoize, uniq } from 'lodash-es';
 import { getCookie, removeCookie } from '~/lib/utils/common_utils';
 import { initEmojiMap, getEmojiCategoryMap, getAllEmoji, getEmojisForCategory } from '~/emoji';
 import {

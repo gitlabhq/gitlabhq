@@ -28,7 +28,8 @@ title: エージェントプラットフォームAIモデル
 
 この表は、Agent Platformの機能で選択できるモデルを示しています。
 
-> [!note] GitLab Duo Chat（エージェント型）で使用されるOpenAIモデルは、特にGPT-5、GPT-5 mini、GPT-5-Codexについて、実験的サポートが提供されています。GitLab Duo Chat（エージェント型）のOpenAIモデルに関するフィードバックは、こちらの[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/572864)でお寄せください。
+> [!note]
+> GitLab Duo Chat（エージェント型）で使用されるOpenAIモデルは、特にGPT-5、GPT-5 mini、GPT-5-Codexについて、実験的サポートが提供されています。GitLab Duo Chat（エージェント型）のOpenAIモデルに関するフィードバックは、こちらの[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/572864)でお寄せください。
 
 | モデル | Agentic Chat | その他すべてのエージェント |
 |-------|--------------|------------------|

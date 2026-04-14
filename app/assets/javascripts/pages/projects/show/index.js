@@ -14,7 +14,7 @@ import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { initHomePanel } from '../home_panel';
+import { initHomePanel } from '~/projects/home_panel';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {

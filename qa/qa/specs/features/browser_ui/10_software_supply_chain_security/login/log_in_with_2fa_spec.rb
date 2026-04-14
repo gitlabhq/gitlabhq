@@ -42,7 +42,11 @@ module QA
 
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/38147',
+          type: :stale
+        }
       ) do
         enforce_two_factor_authentication_on_group(group)
 
@@ -78,7 +82,7 @@ module QA
             expect(page).to have_text(two_fa_expected_text)
           end
 
-          Page::Profile::TwoFactorAuth.perform(&:click_configure_it_later_button)
+          Page::Profile::PasswordAndAuth.perform(&:click_configure_it_later_button)
 
           expect(page).not_to have_text(two_fa_expected_text)
         end
@@ -88,7 +92,7 @@ module QA
         Flow::Login.while_signed_in(as: user) do
           expect(page).to have_text(two_fa_expected_text)
 
-          Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
+          Page::Profile::PasswordAndAuth.perform do |two_fa_auth|
             otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
 
             two_fa_auth.set_pin_code(otp.fresh_otp)

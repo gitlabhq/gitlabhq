@@ -1,6 +1,6 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import TransferLocationsForm, { i18n } from '~/groups/components/transfer_group_form.vue';
+import TransferLocationsForm from '~/groups/components/transfer_group_form.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import TransferLocations from '~/groups_projects/components/transfer_locations.vue';
 import { getGroupTransferLocations } from '~/api/groups_api';
@@ -59,7 +59,6 @@ describe('Transfer group form', () => {
       expect(getGroupTransferLocations).toHaveBeenCalled();
       expect(findTransferLocations().props()).toMatchObject({
         value: null,
-        label: i18n.dropdownLabel,
         additionalDropdownItems: TransferLocationsForm.additionalDropdownItems,
       });
     });

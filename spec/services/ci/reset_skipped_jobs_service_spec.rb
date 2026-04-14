@@ -421,7 +421,8 @@ RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :
       stub_ci_pipeline_yaml_file(config)
 
       upstream_pipeline = create(:ci_pipeline, project: project)
-      bridge = create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, status: 'success', user: user)
+      bridge = create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, status: 'success', user: user,
+        downstream: project)
       create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
     end
 

@@ -19,9 +19,9 @@ title: Customize rulesets
 
 {{< /history >}}
 
-Each SAST analyzer supports different levels of customization through the ruleset configuration
-file. The Semgrep-based SAST analyzer and GitLab Advanced SAST analyzer have a
-[default ruleset](rules.md).
+The Semgrep-based SAST analyzer and GitLab Advanced SAST analyzer each have a
+[default ruleset](rules.md). You can customize their rules to suit your organization's security
+requirements. For example, you might want to raise the severity level of a specific rule.
 
 ## Ruleset glossary
 
@@ -29,20 +29,23 @@ Rule
 : An individual security check or detection pattern that scans for specific vulnerabilities.
 
 Ruleset
-: A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
+: YAML-format file that specifies the individual rules to be enforced by an analyzer.
+
+Ruleset configuration file
+: TOML-format file that specifies which ruleset to enforce and whether it is stored locally or
+  remotely. Filename `sast-ruleset.toml`.
 
 Passthrough
 : A passthrough is a configuration source that pulls ruleset customizations from a file, Git
-  repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
-  each one can overwrite or append to the previous configuration.
+  repository, URL, or inline configuration. You can combine multiple passthroughs into a chain,
+  where each one can overwrite or append to the previous configuration.
 
 ## Rule customization options
 
-SAST rulesets come with default rules, but every organization has different security requirements.
-You can customize these rulesets by disabling rules, overriding their metadata, or replacing or
-adding rules.
+You can customize the default rulesets by disabling rules, overriding their metadata, or replacing
+or adding rules.
 
-The table below shows which customization options are available for each analyzer type.
+The table below shows the customization options that are available for each analyzer type.
 
 | Customization                          | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other analyzers](analyzers.md#official-analyzers) |
 |----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|

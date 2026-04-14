@@ -161,40 +161,24 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         stub_feature_flags(granular_personal_access_tokens: true)
       end
 
-      context 'when VSCode extension parameters are present' do
+      context 'when name and valid scopes are present' do
         let(:params) do
           {
-            name: 'GitLab Workflow Extension',
+            name: 'My Token',
             scopes: 'api,read_user',
-            description: 'Token for VSCode'
+            description: 'My token description'
           }
         end
 
-        it 'redirects to legacy_new with VSCode extension params' do
+        it 'redirects to legacy_new with params' do
           get_index
 
           expect(response).to redirect_to(action: :legacy_new, **params)
         end
       end
 
-      context 'when VSCode extension parameters are present but in a different case' do
-        let(:params) do
-          {
-            name: 'gitLab workflow extension',
-            scopes: 'api,read_user',
-            description: 'Token for VSCode'
-          }
-        end
-
-        it 'redirects to legacy_new with VSCode extension params' do
-          get_index
-
-          expect(response).to redirect_to(action: :legacy_new, **params)
-        end
-      end
-
-      context 'when name is not `GitLab Workflow Extension`' do
-        let(:params) { { name: 'Other Token', scopes: 'api' } }
+      context 'when name is present but scopes are not' do
+        let(:params) { { name: 'My Token' } }
 
         it 'does not redirect' do
           get_index
@@ -204,7 +188,20 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         end
       end
 
-      context 'when no name parameter is provided' do
+      context 'when scopes contain only invalid values' do
+        let(:params) { { name: 'My Token', scopes: 'invalid_scope' } }
+
+        it 'does not redirect' do
+          get_index
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).not_to be_redirect
+        end
+      end
+
+      context 'when scopes are present but name is not' do
+        let(:params) { { scopes: 'api,read_user' } }
+
         it 'does not redirect' do
           get_index
 
@@ -219,7 +216,7 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
-      let(:params) { { name: 'GitLab Workflow Extension', scopes: 'api' } }
+      let(:params) { { name: 'My Token', scopes: 'api' } }
 
       it 'does not redirect' do
         get_index
@@ -332,9 +329,9 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       end
 
       context 'with query parameters' do
-        let(:name) { 'GitLab Workflow Extension' }
+        let(:name) { 'My Token' }
         let(:scopes) { 'api,read_user,invalid' }
-        let(:description) { 'VSCode token' }
+        let(:description) { 'My token descripion' }
         let(:params) { { name: name, scopes: scopes, description: description } }
 
         it 'sets access_token_params from query parameters' do

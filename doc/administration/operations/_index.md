@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Backup and restore, move repos, maintenance tasks.
+description: Backup and restore, move repositories, maintenance tasks.
 title: Maintain GitLab
 ---
 
@@ -15,8 +15,12 @@ title: Maintain GitLab
 
 Keep your GitLab instance up and running.
 
+{{< cards >}}
+
 - [Housekeeping](../housekeeping.md)
-- [Activate GitLab EE with license](../license_file.md)
+- [Activate GitLab Enterprise Edition](../license_file.md)
+- [License usage](../license_usage.md)
+- [Import and export large projects](../raketasks/project_import_export.md)
 - [Fast SSH key lookup](fast_ssh_key_lookup.md)
 - [File system benchmarking](filesystem_benchmarking.md)
 - [`gitlab-sshd`](gitlab_sshd.md)
@@ -26,6 +30,11 @@ Keep your GitLab instance up and running.
 - [Rake tasks](../raketasks/_index.md)
 - [Backup and restore](../backup_restore/_index.md)
 - [Dormant project deletion](../dormant_project_deletion.md)
+- [Migrate to a subdomain](migrate_to_subdomain.md)
 - [Move repositories](moving_repositories.md)
+- [Silent mode](../silent_mode/_index.md)
 - [Read-only state](../read_only_gitlab.md)
 - [Restart GitLab](../restart_gitlab.md)
+- [Troubleshooting](../troubleshooting/_index.md)
+
+{{< /cards >}}

@@ -37,6 +37,7 @@ export default {
             this.insertMarkdown(
               '<details>\n<summary>Click to expand</summary>\n\n{text}\n\n</details>',
               'details',
+              'Click to expand',
             ),
         },
         {
@@ -88,7 +89,7 @@ export default {
     getCurrentTextArea() {
       return this.$el.closest('.md-area')?.querySelector('textarea');
     },
-    insertMarkdown(markdownText, trackingProperty) {
+    insertMarkdown(markdownText, trackingProperty, selectText) {
       const textArea = this.getCurrentTextArea();
       if (!textArea) return;
 
@@ -97,6 +98,7 @@ export default {
         tag: markdownText,
         cursorOffset: 0,
         wrap: false,
+        select: selectText,
       });
 
       Tracking.event(undefined, TOOLBAR_CONTROL_TRACKING_ACTION, {

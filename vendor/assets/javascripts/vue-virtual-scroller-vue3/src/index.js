@@ -22,8 +22,6 @@ function registerComponents(app, prefix) {
 }
 
 const plugin = {
-  // eslint-disable-next-line no-undef
-  version: VERSION,
   install(app, options) {
     const finalOptions = Object.assign({}, {
       installComponents: true,

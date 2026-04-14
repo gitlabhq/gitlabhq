@@ -151,6 +151,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     context 'for a merge request ref' do
       let(:origin_ref) { 'refs/merge-requests/1234/merge' }
 
+      before do
+        project.repository.create_ref(project.repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to eq(true) }
     end
 
@@ -168,6 +172,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
 
     context 'for a workload ref' do
       let(:origin_ref) { 'refs/workloads/prod/deployments/123' }
+
+      before do
+        project.repository.create_ref(project.repository.root_ref_sha, origin_ref)
+      end
 
       it { is_expected.to eq(true) }
     end

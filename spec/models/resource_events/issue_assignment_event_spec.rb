@@ -8,6 +8,7 @@ RSpec.describe ResourceEvents::IssueAssignmentEvent, feature_category: :value_st
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do

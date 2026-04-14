@@ -115,7 +115,6 @@ module Gitlab
           user_status: { threshold: -> { application_settings.users_api_limit_status }, interval: 1.minute },
           username_exists: { threshold: 20, interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
-          vertex_embeddings_api: { threshold: 450, interval: 1.minute },
           web_hook_calls: { interval: 1.minute },
           web_hook_calls_low: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },

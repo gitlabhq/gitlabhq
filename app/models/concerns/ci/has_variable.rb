@@ -4,6 +4,12 @@ module Ci
   module HasVariable
     extend ActiveSupport::Concern
 
+    # The following line is included in the models that include this concern.
+    # It doesn't work in the concern itself, so is put here only for reference.
+    # ignore_columns :value, remove_with: '19.1', remove_after: '2026-05-21' # https://gitlab.com/gitlab-org/gitlab/-/work_items/592747
+    # It is _not_ included in ee/app/models/dast/site_profile_secret_variable
+    # as that model does not include the column in its table.
+
     included do
       include Gitlab::EncryptedAttribute
 
@@ -24,9 +30,6 @@ module Ci
         insecure_mode: true,
         key: :db_key_base,
         algorithm: 'aes-256-cbc'
-
-      alias_method :secret_value, :value
-      alias_method :secret_value=, :value=
 
       def key=(new_key)
         super(new_key.to_s.strip)

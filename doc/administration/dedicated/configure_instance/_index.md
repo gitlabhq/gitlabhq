@@ -17,7 +17,9 @@ The instructions on this page guide you through configuring your GitLab Dedicate
 
 Administrators can configure additional settings in their GitLab application by using the [**Admin** area](../../admin_area.md).
 
-As a GitLab-managed solution, you cannot change any GitLab functionality controlled by SaaS environment settings. Examples of such SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
+However, because GitLab Dedicated is a managed solution, you cannot change functionality controlled
+by environment-level settings. These include `gitlab.rb` configurations and access to the shell,
+Rails console, and PostgreSQL console.
 
 GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/_index.md#access-controls).
 

@@ -20,7 +20,6 @@ import {
   LINKED_CATEGORIES_MAP,
   i18n,
   STATE_CLOSED,
-  NAME_TO_TEXT_LOWERCASE_MAP,
 } from '../constants';
 import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
@@ -183,7 +182,7 @@ export default {
           ? s__('WorkItem|Comment & close %{workItemType}')
           : s__('WorkItem|Comment & reopen %{workItemType}');
       }
-      return sprintf(baseText, { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] });
+      return sprintf(baseText, { workItemType: this.workItemType });
     },
     toggleWorkItemStateIcon() {
       return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
@@ -201,7 +200,7 @@ export default {
       const baseText = this.isWorkItemOpen
         ? s__('WorkItem|Closing %{workItemType}')
         : s__('WorkItem|Reopening %{workItemType}');
-      return sprintf(baseText, { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] });
+      return sprintf(baseText, { workItemType: this.workItemType });
     },
     isBlocked() {
       return this.blockerItems.length > 0;
@@ -222,18 +221,18 @@ export default {
     },
     blockedByModalTitle() {
       return sprintf(s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        workItemType: this.workItemType,
       });
     },
     blockedByModalBody() {
       return sprintf(
         s__('WorkItem|This %{workItemType} is currently blocked by the following items:'),
-        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+        { workItemType: this.workItemType },
       );
     },
     openChildrenModalTitle() {
       return sprintf(s__('WorkItem|Are you sure you want to close this %{workItemType}?'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        workItemType: this.workItemType,
       });
     },
     openChildrenModalBody() {
@@ -241,7 +240,7 @@ export default {
         s__(
           'WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open.',
         ),
-        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+        { workItemType: this.workItemType },
       );
     },
     modalActionCancel() {
@@ -252,7 +251,7 @@ export default {
     modalActionPrimary() {
       return {
         text: sprintf(s__('WorkItem|Yes, close %{workItemType}'), {
-          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          workItemType: this.workItemType,
         }),
       };
     },
@@ -288,7 +287,7 @@ export default {
         }
       } catch (error) {
         const msg = sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
-          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          workItemType: this.workItemType,
         });
         this.$emit('error', msg);
         Sentry.captureException(error);

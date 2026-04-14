@@ -1,0 +1,19 @@
+---
+table: issue_metrics
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_issue_metrics
+    priority: 103
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - namespace_id
+    refresh_on_change:
+      - target_stream_identifier: issues
+        target_keys:
+          - id
+        source_keys:
+          - issue_id

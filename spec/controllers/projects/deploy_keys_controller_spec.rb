@@ -133,7 +133,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
     end
 
     it 'creates a new deploy key for the project' do
-      expect { post :create, params: create_params }.to change(project.deploy_keys, :count).by(1)
+      expect { post :create, params: create_params }.to change { project.deploy_keys.count }.by(1)
 
       expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
 

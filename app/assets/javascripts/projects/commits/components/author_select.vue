@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { queryToObject, visitUrl } from '~/lib/utils/url_utility';

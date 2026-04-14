@@ -2,11 +2,9 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, feature_category: :code_review_workflow do
   let_it_be(:diff_file) { build(:diff_file) }
   let(:lines) { diff_file.diff_lines_with_match_tail }
-  let(:old_line) { lines.find { |line| line.type == 'old' } }
-  let(:new_line) { lines.find { |line| line.type == 'new' } }
   let(:hunk) { diff_file.viewer_hunks.first }
 
   it "renders header" do
@@ -25,7 +23,7 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
   it "renders line links" do
     render_component
     hunk.lines.each do |line|
-      id = line.id(diff_file.file_hash)
+      id = line.id(diff_file.short_file_hash)
       expect(page).to have_selector("a[href='##{id}']")
       expect(page).to have_selector("##{id}")
     end
@@ -87,18 +85,76 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
     expect(page).to have_selector("tr[data-hunk-header]")
   end
 
+  it "renders no header row when hunk has no header" do
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: hunk.lines)
+    render_component(diff_hunk)
+    expect(page).not_to have_selector("tr[data-hunk-header]")
+  end
+
+  it "renders only the header when lines is nil" do
+    match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, 1, nil),
+      lines: nil
+    )
+    render_component(diff_hunk)
+    expect(page).to have_selector("tr[data-hunk-header]")
+    expect(page).not_to have_selector("[data-hunk-lines]")
+  end
+
+  it "renders loading spinner inside expand buttons" do
+    match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, nil, 1),
+      lines: []
+    )
+    render_component(diff_hunk)
+    expect(page).to have_selector('button span[data-visible-when="loading"]')
+  end
+
   it "renders data-expanded" do
     lines.each { |line| line.expanded = true }
     render_component
     expect(page).to have_selector("[data-expanded]")
   end
 
+  it "renders no line number link on old side for added line" do
+    added_line = Gitlab::Diff::Line.new("added", 'new', 1, nil, 5)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [added_line])
+    render_component(diff_hunk)
+    expect(page).not_to have_selector("td[data-position='old'] a")
+    expect(page).to have_selector("td[data-position='new'] a")
+  end
+
+  it "renders no line number link on new side for removed line" do
+    removed_line = Gitlab::Diff::Line.new("removed", 'old', 1, 5, nil)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [removed_line])
+    render_component(diff_hunk)
+    expect(page).to have_selector("td[data-position='old'] a")
+    expect(page).not_to have_selector("td[data-position='new'] a")
+  end
+
+  it "renders no line number links for meta line" do
+    meta_line = Gitlab::Diff::Line.new("@@ -1,3 +1,3 @@", 'match', 1, 0, 0)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [meta_line])
+    render_component(diff_hunk)
+    expect(page).not_to have_selector("td[data-position='old'] a")
+    expect(page).not_to have_selector("td[data-position='new'] a")
+  end
+
+  it "renders span instead of link for zero line number" do
+    line = Gitlab::Diff::Line.new("content", nil, 1, 0, 0)
+    diff_hunk = Gitlab::Diff::ViewerHunk.new(lines: [line])
+    render_component(diff_hunk)
+    expect(page).to have_selector("td[data-position] span")
+    expect(page).not_to have_selector("td[data-position] a")
+  end
+
   def render_component(diff_hunk = hunk)
     render_inline(
       described_class.new(
         diff_hunk: diff_hunk,
-        file_hash: diff_file.file_hash,
-        file_path: diff_file.file_path
+        file_hash: diff_file.short_file_hash
       )
     )
   end

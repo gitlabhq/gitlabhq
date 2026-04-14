@@ -14228,6 +14228,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "sort",
+                  "description": "List epics by sort order.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "EpicSort",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -16455,7 +16465,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -26438,6 +26448,12 @@
               "description": "Pipeline created by a pipeline execution policy schedule event",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DEPENDENCY_MANAGEMENT_SECURITY_UPDATE",
+              "description": "Pipeline created by a dependency management security update event",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -32566,7 +32582,7 @@
             },
             {
               "name": "fullTitleHtml",
-              "description": "GitLab Flavored Markdown rendering of `full_title`",
+              "description": "HTML rendering of `full_title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -32846,6 +32862,26 @@
               "deprecationReason": null
             },
             {
+              "name": "tags",
+              "description": "Tag names pointing to the commit.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "title",
               "description": "Title of the commit message.",
               "args": [],
@@ -32859,7 +32895,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -36980,6 +37016,18 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "ONE_DAY",
+              "description": "1 day until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "THREE_DAYS",
+              "description": "3 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SEVEN_DAYS",
               "description": "7 days until tags are automatically removed",
               "isDeprecated": false,
@@ -37006,6 +37054,30 @@
             {
               "name": "NINETY_DAYS",
               "description": "90 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ONE_HUNDRED_EIGHTY_DAYS",
+              "description": "180 days until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "THREE_HUNDRED_SIXTY_FIVE_DAYS",
+              "description": "1 year until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SEVEN_HUNDRED_THIRTY_DAYS",
+              "description": "2 years until tags are automatically removed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ONE_THOUSAND_NINETY_FIVE_DAYS",
+              "description": "3 years until tags are automatically removed",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -40423,7 +40495,7 @@
             },
             {
               "name": "reportType",
-              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI.",
+              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, SARIF, GENERIC). `Scan Type` in the UI.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -40647,6 +40719,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "unverified",
+              "description": "Indicates whether the finding was detected without an identified source (untrusted input).",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -43525,6 +43613,22 @@
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "admin",
+              "description": "Indicates if the user is an instance administrator.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -60691,6 +60795,12 @@
               "description": "Indicates a reviewer has requested changes.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SECURITY_POLICY_PIPELINE_CHECK",
+              "description": "All security policy pipelines must succeed.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -63899,6 +64009,22 @@
             {
               "name": "readDuoWorkflow",
               "description": "If `true`, the user can perform `read_duo_workflow` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resumeDuoWorkflow",
+              "description": "If `true`, the user can perform `resume_duo_workflow` on this resource",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -68064,7 +68190,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -70094,7 +70220,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -82585,7 +82711,7 @@
                 },
                 {
                   "name": "capped",
-                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with owasp_top_ten_2021 or identifier_name filters with Elasticsearch configured.",
+                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with any argument that requires advanced vulnerability management.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -86133,6 +86259,26 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "toolApprovalForSessionEnabled",
+              "description": "Indicates whether tool approval for session is enabled for the group. Introduced in GitLab 18.11: **Status**: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "lockToolApprovalForSessionEnabled",
+              "description": "Indicates if the tool approval for session setting is enforced for all subgroups. Introduced in GitLab 18.11: **Status**: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -88949,7 +89095,7 @@
                 },
                 {
                   "name": "capped",
-                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with owasp_top_ten_2021 or identifier_name filters with Elasticsearch configured.",
+                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with any argument that requires advanced vulnerability management.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -91123,7 +91269,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -94381,7 +94527,7 @@
             },
             {
               "name": "iterationsInAdvance",
-              "description": "Upcoming iterations to be created when iteration cadence is set to automatic.",
+              "description": "Number of future iterations to schedule in addition to the current one.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -94552,7 +94698,7 @@
             },
             {
               "name": "iterationsInAdvance",
-              "description": "Upcoming iterations to be created when iteration cadence is set to automatic.",
+              "description": "Number of future iterations to schedule in addition to the current one.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -94871,7 +95017,7 @@
             },
             {
               "name": "iterationsInAdvance",
-              "description": "Upcoming iterations to be created when iteration cadence is set to automatic.",
+              "description": "Number of future iterations to schedule in addition to the current one.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -96382,6 +96528,12 @@
               "description": "API FUZZING job artifact file type.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SARIF",
+              "description": "SARIF job artifact file type.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -97430,7 +97582,7 @@
           "fields": [
             {
               "name": "enabled",
-              "description": "Indicates whether the Kubernetes agent server is enabled.",
+              "description": "Indicates whether GitLab Relay (KAS) is enabled.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -103162,7 +103314,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -141497,6 +141649,12 @@
               "description": "Packages of the PyPI format.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "TERRAFORM_MODULE",
+              "description": "Packages of the Terraform module format.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -145795,6 +145953,16 @@
                 }
               },
               "defaultValue": null
+            },
+            {
+              "name": "mergeRequestIid",
+              "description": "IID of the merge request to create pipeline for.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -149234,6 +149402,22 @@
               "deprecationReason": null
             },
             {
+              "name": "unverified",
+              "description": "Indicates whether the finding was detected without an identified source (untrusted input).",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [],
@@ -150638,6 +150822,12 @@
             {
               "name": "ARTIFACTS_MISSING",
               "description": "Represents error which occurs when pipeline is misconfigured and does not include necessary artifacts to evaluate a policy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCAN_NOT_SUCCEEDED",
+              "description": "Represents error which occurs when a security scan job did not complete successfully (e.g., was canceled or failed), preventing policy evaluation.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -161751,7 +161941,7 @@
                 },
                 {
                   "name": "capped",
-                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with owasp_top_ten_2021 or identifier_name filters with Elasticsearch configured.",
+                  "description": "Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. Ignored when used along with any argument that requires advanced vulnerability management.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -170670,6 +170860,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "search",
+                  "description": "Filter dashboards by name.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -174022,6 +174222,11 @@
             {
               "kind": "OBJECT",
               "name": "MergeRequest",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "WikiPage",
               "ofType": null
             }
           ]
@@ -178360,7 +178565,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`.",
+              "description": "HTML rendering of `title`.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -184388,22 +184593,6 @@
               "deprecationReason": null
             },
             {
-              "name": "canEnableSpp",
-              "description": "Whether the current user can enable secret push protection.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "canManageAttributes",
               "description": "Whether the current user can manage security attributes.",
               "args": [],
@@ -184536,18 +184725,6 @@
               "deprecationReason": null
             },
             {
-              "name": "isGitlabCom",
-              "description": "Whether the instance is GitLab.com.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "latestPipelinePath",
               "description": "Path to the latest pipeline on the default branch.",
               "args": [],
@@ -184619,22 +184796,6 @@
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "secretPushProtectionLicensed",
-              "description": "Whether the project has a license for secret push protection.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -186216,6 +186377,18 @@
               "deprecationReason": null
             },
             {
+              "name": "sarif",
+              "description": "Aggregated counts for the `sarif` scan",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityReportSummarySection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "sast",
               "description": "Aggregated counts for the `sast` scan",
               "args": [],
@@ -186497,6 +186670,22 @@
             {
               "name": "canEnableByMergeRequest",
               "description": "Whether the security scan can be enabled via merge request.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "canUserConfigure",
+              "description": "Whether the current user can configure the security scan.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -202260,7 +202449,7 @@
             },
             {
               "name": "milestoneId",
-              "description": "ID of the milestone to assign to the issue. On update milestone will be removed if set to null.",
+              "description": "ID of the milestone to assign to the issue. Accepts either a global ID, for example `\"gid://gitlab/Milestone/42\"`, or a numeric ID, for example `\"42\"`. On update milestone will be removed if set to null.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -208444,12 +208633,6 @@
             {
               "name": "EXPIRED_TRIAL_STATUS_WIDGET",
               "description": "Callout feature name for expired_trial_status_widget.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WORK_ITEM_CONSOLIDATED_LIST_FEEDBACK",
-              "description": "Callout feature name for work_item_consolidated_list_feedback.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -215820,7 +216003,7 @@
             },
             {
               "name": "reportType",
-              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI.",
+              "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, SARIF, GENERIC). `Scan Type` in the UI.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -216044,6 +216227,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "unverified",
+              "description": "Indicates whether the finding was detected without an identified source (untrusted input).",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -220716,6 +220915,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SARIF",
+              "description": "Sarif report",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "GENERIC",
               "description": "Generic report",
               "isDeprecated": false,
@@ -223119,7 +223324,7 @@
             },
             {
               "name": "titleHtml",
-              "description": "GitLab Flavored Markdown rendering of `title`",
+              "description": "HTML rendering of `title`",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -224630,6 +224835,11 @@
           "possibleTypes": [
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetAiSession",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetAssignees",
               "ofType": null
             },
@@ -224779,6 +224989,88 @@
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemWidgetAiSession",
+          "description": "Represents an AI session widget",
+          "fields": [
+            {
+              "name": "duoWorkflows",
+              "description": "Duo Workflow sessions associated with the work item.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
         },
         {
           "kind": "OBJECT",
@@ -225765,38 +226057,6 @@
           "name": "WorkItemWidgetDefinitionWeight",
           "description": "Represents a weight widget definition",
           "fields": [
-            {
-              "name": "editable",
-              "description": "Indicates whether editable weight is available.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rollUp",
-              "description": "Indicates whether rolled up weight is available.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
             {
               "name": "type",
               "description": "Widget type.",
@@ -227755,6 +228015,12 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "AI_SESSION",
+              "description": "Ai Session widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ASSIGNEES",
               "description": "Assignees widget.",
               "isDeprecated": false,
@@ -228019,18 +228285,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "widgetDefinition",
-              "description": "Weight widget definition.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "WorkItemWidgetDefinitionWeight",
                 "ofType": null
               },
               "isDeprecated": false,

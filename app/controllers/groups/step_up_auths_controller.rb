@@ -25,8 +25,18 @@ module Groups
     end
 
     def step_up_auth_succeeded?
-      Feature.enabled?(:omniauth_step_up_auth_for_namespace, current_user) &&
-        ::Gitlab::Auth::Oidc::StepUpAuthentication.succeeded?(session, scope: :namespace)
+      return false if Feature.disabled?(:omniauth_step_up_auth_for_namespace, group)
+
+      provider_name = group.step_up_auth_required_oauth_provider_from_self_or_inherited
+      return false unless provider_name
+
+      ::Gitlab::Auth::Oidc::StepUpAuthentication
+        .build_flow(
+          provider: provider_name,
+          session: session,
+          scope: ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
+        )
+        .succeeded?
     end
 
     def redirect_path

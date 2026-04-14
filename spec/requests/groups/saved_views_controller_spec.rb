@@ -37,22 +37,6 @@ RSpec.describe 'Groups::SavedViews', feature_category: :portfolio_management do
       end
     end
 
-    context 'when feature is disabled' do
-      let(:saved_view) { create(:saved_view, namespace: group) }
-
-      subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: saved_view.id) }
-
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns 404' do
-        show_saved_view
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'when user is not authenticated' do
       let(:saved_view) { create(:saved_view, namespace: group) }
 

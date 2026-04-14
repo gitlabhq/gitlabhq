@@ -10,7 +10,8 @@ RSpec.shared_examples 'model with uploads' do |supports_fileuploads|
 
     context 'with mounted uploader' do
       it 'deletes remote uploads' do
-        expect_any_instance_of(CarrierWave::Storage::Fog::File).to receive(:delete).and_call_original
+        # -- needed to allow multiple Fog::File instances to receive delete
+        allow_any_instance_of(CarrierWave::Storage::Fog::File).to receive(:delete).and_call_original
 
         expect { model_object.destroy! }.to change { Upload.count }.by(-1)
       end

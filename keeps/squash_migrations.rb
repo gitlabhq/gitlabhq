@@ -16,11 +16,11 @@ module Keeps
     end
 
     def make_change!(change)
-      squash_branch = squash_branch_name
-      run_squash_task(squash_branch)
+      fetch_squash_branch
+      run_squash_task
 
-      change.title = "Squash database migrations up to #{squash_branch}"
-      change.description = build_description(squash_branch)
+      change.title = "Squash database migrations up to #{squash_remote_branch}"
+      change.description = build_description
       change.labels = labels
       change.reviewers = reviewer('maintainer::database')
       change.changed_files = all_modified_files
@@ -38,10 +38,6 @@ module Keeps
       SCHEDULED_STOPS.include?(current_minor)
     end
 
-    def squash_branch_name
-      "origin/#{target_squash_stop.tr('.', '-')}-stable-ee"
-    end
-
     def target_squash_stop
       stop_index = SCHEDULED_STOPS.index(current_minor)
       squash_stop_index = stop_index - 2
@@ -53,18 +49,22 @@ module Keeps
       end
     end
 
-    def run_squash_task(branch)
-      Gitlab::Housekeeper::Shell.execute('bundle', 'exec', 'rake', "gitlab:db:squash[#{branch}]")
+    def fetch_squash_branch
+      Gitlab::Housekeeper::Shell.execute('git', 'fetch', 'origin', squash_local_branch, '--filter=tree:0')
     end
 
-    def build_description(branch)
+    def run_squash_task
+      Gitlab::Housekeeper::Shell.execute('bundle', 'exec', 'rake', "gitlab:db:squash[#{squash_remote_branch}]")
+    end
+
+    def build_description
       <<~MARKDOWN
         ## What does this MR do and why?
 
-        This MR removes database migrations up to #{branch} and squashes them into `db/init_structure.sql` and
+        This MR removes database migrations up to #{squash_remote_branch} and squashes them into `db/init_structure.sql` and
         removes associated specs and rubocop todos.
 
-        The changes were mainly created by running `bundle exec rake gitlab:db:squash[#{branch}]`.
+        The changes were mainly created by running `bundle exec rake gitlab:db:squash[#{squash_remote_branch}]`.
       MARKDOWN
     end
 
@@ -95,6 +95,14 @@ module Keeps
 
     def milestones_helper
       @milestones_helper ||= ::Keeps::Helpers::Milestones.new
+    end
+
+    def squash_local_branch
+      @squash_local_branch ||= "#{target_squash_stop.tr('.', '-')}-stable-ee"
+    end
+
+    def squash_remote_branch
+      @squash_remote_branch ||= "origin/#{squash_local_branch}"
     end
 
     def reviewer(role)

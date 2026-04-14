@@ -18,7 +18,7 @@ RSpec.shared_examples 'sets Secret Push Protection permissions for the project' 
 
     with_them do
       before do
-        stub_licensed_features(secret_push_protection: licensed)
+        stub_licensed_features(secret_push_protection: licensed, security_dashboard: true)
       end
 
       it { is_expected.to match_expected_result }
@@ -28,56 +28,6 @@ RSpec.shared_examples 'sets Secret Push Protection permissions for the project' 
       let(:current_user) { owner }
 
       it { expect_disallowed(:enable_secret_push_protection) }
-    end
-
-    context 'for public .com projects without Ultimate license' do
-      let_it_be(:project) { public_project }
-
-      before do
-        stub_licensed_features(secret_push_protection: false)
-        stub_saas_features(auto_enable_secret_push_protection_public_projects: true)
-        stub_feature_flags(auto_spp_public_com_projects: true)
-      end
-
-      where(:current_user, :match_expected_result) do
-        ref(:owner)            | be_allowed(:enable_secret_push_protection)
-        ref(:maintainer)       | be_allowed(:enable_secret_push_protection)
-        ref(:developer)        | be_disallowed(:enable_secret_push_protection)
-        ref(:security_manager) | be_allowed(:enable_secret_push_protection)
-        ref(:reporter)         | be_disallowed(:enable_secret_push_protection)
-        ref(:guest)            | be_disallowed(:enable_secret_push_protection)
-      end
-
-      with_them do
-        it { is_expected.to match_expected_result }
-      end
-
-      context 'when project is private' do
-        let_it_be(:project) { create(:project, :private) }
-        let(:current_user) { owner }
-
-        it { expect_disallowed(:enable_secret_push_protection) }
-      end
-
-      context 'when feature flag is disabled' do
-        let(:current_user) { owner }
-
-        before do
-          stub_feature_flags(auto_spp_public_com_projects: false)
-        end
-
-        it { expect_disallowed(:enable_secret_push_protection) }
-      end
-
-      context 'when not on .com' do
-        let(:current_user) { owner }
-
-        before do
-          stub_saas_features(auto_enable_secret_push_protection_public_projects: false)
-        end
-
-        it { expect_disallowed(:enable_secret_push_protection) }
-      end
     end
   end
 

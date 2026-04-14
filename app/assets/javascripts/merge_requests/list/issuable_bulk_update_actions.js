@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { difference, intersection, union } from 'lodash';
+import { difference, intersection, union } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';

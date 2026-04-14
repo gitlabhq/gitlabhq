@@ -4,6 +4,7 @@ query currentUserNamespace {
     namespace {
       id
       fullName
+      fullPath
     }
   }
 }

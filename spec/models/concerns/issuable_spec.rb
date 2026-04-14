@@ -44,6 +44,23 @@ RSpec.describe Issuable, feature_category: :team_planning do
           expect(authors).not_to include(system_user)
         end
       end
+
+      describe 'notes_with_possible_mentions' do
+        let!(:user_note) { create(:note, noteable: issue, project: issue.project) }
+        let!(:system_note_with_mention) do
+          create(:system_note, noteable: issue, project: issue.project, note: 'assigned to @user')
+        end
+
+        let!(:system_note_without_mention) do
+          create(:system_note, noteable: issue, project: issue.project, note: 'merged')
+        end
+
+        it 'returns user notes and system notes with mentions' do
+          results = issue.notes_with_possible_mentions
+
+          expect(results).to contain_exactly(note, user_note, system_note_with_mention)
+        end
+      end
     end
   end
 
@@ -191,7 +208,19 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
   describe '.participant_includes' do
     it 'returns participant associations' do
-      expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji] })
+      expect(issuable_class.participant_includes).to contain_exactly(
+        :assignees, :author, :award_emoji, { notes_with_possible_mentions: [:author, :award_emoji] }
+      )
+    end
+
+    context 'when optimize_issuable_participants is disabled' do
+      before do
+        stub_feature_flags(optimize_issuable_participants: false)
+      end
+
+      it 'returns participant associations' do
+        expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji] })
+      end
     end
   end
 
@@ -1274,7 +1303,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#title_html' do
-    let(:expected_title) { 'An <em>issue</em>' }
+    let(:expected_title) { 'An _issue_' }
 
     subject { issue.title_html }
 

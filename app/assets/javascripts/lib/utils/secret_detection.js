@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, n__, sprintf } from '~/locale';

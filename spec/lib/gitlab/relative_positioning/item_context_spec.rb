@@ -212,4 +212,23 @@ RSpec.describe Gitlab::RelativePositioning::ItemContext do
       expect { subject.at_position(501) }.to raise_error Gitlab::RelativePositioning::InvalidPosition
     end
   end
+
+  context 'with items across projects' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_1) { create(:project, group: group) }
+    let_it_be(:project_2) { create(:project, group: group) }
+
+    let_it_be(:issue_1) { create(:issue, project: project_1, relative_position: 103) }
+    let_it_be(:issue_2) { create(:issue, project: project_1, relative_position: 101) }
+    let_it_be(:issue_3) { create(:issue, project: project_2, relative_position: 102) }
+    let_it_be(:issue_4) { create(:issue, project: project_2, relative_position: 105) }
+
+    it 'computes correct minimum' do
+      expect(described_class.new(issue_1, range).min_relative_position).to eq(101)
+    end
+
+    it 'computes correct maximum' do
+      expect(described_class.new(issue_1, range).max_relative_position).to eq(105)
+    end
+  end
 end

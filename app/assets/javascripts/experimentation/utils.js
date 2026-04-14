@@ -1,5 +1,5 @@
 // This file only applies to use of experiments through https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment
-import { get, mapValues, pick } from 'lodash';
+import { get, mapValues, pick } from 'lodash-es';
 import { DEFAULT_VARIANT, CANDIDATE_VARIANT, TRACKING_CONTEXT_SCHEMA } from './constants';
 
 function getExperimentsData() {

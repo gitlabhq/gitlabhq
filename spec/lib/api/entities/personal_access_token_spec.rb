@@ -20,6 +20,7 @@ RSpec.describe API::Entities::PersonalAccessToken, feature_category: :system_acc
         user_id: user.id,
         last_used_at: nil,
         active: true,
+        granular: false,
         expires_at: token.expires_at.iso8601
       })
     end

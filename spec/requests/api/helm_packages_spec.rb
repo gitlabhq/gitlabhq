@@ -253,15 +253,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
     subject { post api(url), headers: headers }
 
-    it_behaves_like 'authorizing granular token permissions', :authorize_helm_chart do
-      before_all do
-        project.add_developer(user)
-      end
-
-      let(:boundary_object) { project }
-      let(:request) { post api(url), headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers) }
-    end
-
     context 'with valid project' do
       where(:visibility_level, :user_role, :shared_examples_name, :expected_status) do
         :public  | :developer    | 'process helm workhorse authorization' | :success

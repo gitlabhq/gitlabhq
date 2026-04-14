@@ -9,10 +9,10 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
   end
 
   let(:expected_error_message) do
-    <<-EOS.strip_heredoc
+    <<~TEXT
       Please specify a positive integer `increase_by` value
       Example: rake gitlab:db:decomposition:rollback:bump_ci_sequences[100000]
-    EOS
+    TEXT
   end
 
   let(:main_sequence_name) { 'issues_id_seq' }

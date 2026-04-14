@@ -92,7 +92,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     end
   end
 
-  def sign_in_path(user)
+  def sign_in_path(_user)
     new_session_path(:user, anchor: 'login-pane', invite_email: resource.email)
   end
 

@@ -148,6 +148,7 @@ type McpServerConfig struct {
 	Headers          map[string]string
 	Tools            *[]string
 	PreApprovedTools *[]string
+	Trusted          bool
 }
 
 // DuoWorkflowServiceConfig holds configuration for a Duo Workflow service endpoint.

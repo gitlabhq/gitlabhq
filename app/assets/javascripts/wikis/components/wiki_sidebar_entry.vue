@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlButton, GlLink, GlCollapse } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';

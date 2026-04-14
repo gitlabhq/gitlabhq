@@ -1,18 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { nextTick } from 'vue';
-import MockAdapter from 'axios-mock-adapter';
 import ImageDiffViewerWithDiscussions from '~/rapid_diffs/app/image_viewer/image_diff_viewer_with_discussions.vue';
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_viewer.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
-import { useDiscussions } from '~/notes/store/discussions';
-import axios from '~/lib/utils/axios_utils';
 import { clearDraft } from '~/lib/utils/autosave';
 import { createAlert } from '~/alert';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/lib/utils/autosave');
@@ -20,8 +17,8 @@ jest.mock('~/alert');
 
 describe('ImageDiffViewerWithDiscussions', () => {
   let wrapper;
-  let axiosMock;
   let pinia;
+  let store;
 
   const defaultProps = {
     imageData: {
@@ -80,7 +77,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
         ...props,
       },
       provide: {
-        store: useDiffDiscussions(),
+        store,
         ...defaultProvide,
         ...provide,
       },
@@ -98,9 +95,12 @@ describe('ImageDiffViewerWithDiscussions', () => {
   const findNoteForm = () => wrapper.findComponent(NoteForm);
 
   beforeEach(() => {
-    axiosMock = new MockAdapter(axios);
     pinia = createTestingPinia({ stubActions: false });
     useDiffDiscussions();
+    store = {
+      createNewDiscussion: jest.fn().mockResolvedValue(),
+      findAllImageDiscussionsForFile: jest.fn().mockReturnValue([]),
+    };
   });
 
   describe('image view', () => {
@@ -110,7 +110,8 @@ describe('ImageDiffViewerWithDiscussions', () => {
     });
 
     it('passes props overlay', () => {
-      useDiscussions().discussions = [createImageDiscussion('1', 'old.png', 'new.png')];
+      const discussions = [createImageDiscussion('1', 'old.png', 'new.png')];
+      store.findAllImageDiscussionsForFile.mockReturnValue(discussions);
       createComponent();
 
       const overlay = findOverlay();
@@ -132,10 +133,11 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
   describe('discussions', () => {
     it('renders DiffDiscussions with discussions from store', () => {
-      useDiscussions().discussions = [
+      const discussions = [
         createImageDiscussion('1', 'old.png', 'new.png'),
         createImageDiscussion('2', 'old.png', 'new.png'),
       ];
+      store.findAllImageDiscussionsForFile.mockReturnValue(discussions);
       createComponent();
 
       expect(findDiffDiscussions().props('discussions')).toHaveLength(2);
@@ -143,10 +145,8 @@ describe('ImageDiffViewerWithDiscussions', () => {
     });
 
     it('filters discussions by path', () => {
-      useDiscussions().discussions = [
-        createImageDiscussion('1', 'other.png', 'other.png'),
-        createImageDiscussion('2', 'old.png', 'new.png'),
-      ];
+      const discussions = [createImageDiscussion('2', 'old.png', 'new.png')];
+      store.findAllImageDiscussionsForFile.mockReturnValue(discussions);
       createComponent();
 
       expect(findDiffDiscussions().props('discussions')).toHaveLength(1);
@@ -211,27 +211,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
     });
 
     describe('saving notes', () => {
-      const mockDiscussion = {
-        id: 'new-discussion',
-        notes: [
-          {
-            id: 'new-note',
-            position: {
-              position_type: 'image',
-              old_path: 'old.png',
-              new_path: 'new.png',
-            },
-          },
-        ],
-      };
-
       describe('on success', () => {
-        beforeEach(() => {
-          axiosMock
-            .onPost(defaultProvide.endpoints.discussions)
-            .reply(HTTP_STATUS_OK, { discussion: mockDiscussion });
-        });
-
         it('posts note with correct position data', async () => {
           createComponent();
           findOverlay().vm.$emit('image-click', formData);
@@ -239,32 +219,27 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
           await findNoteForm().props('saveNote')('My comment');
 
-          const requestData = JSON.parse(axiosMock.history.post[0].data);
-          expect(requestData).toEqual({
-            note: {
-              position: {
-                old_path: 'old.png',
-                new_path: 'new.png',
-                position_type: 'image',
-                width: 100,
-                height: 200,
-                x: 10,
-                y: 20,
-              },
-              note: 'My comment',
+          expect(store.createNewDiscussion).toHaveBeenCalledWith({
+            position: {
+              old_path: 'old.png',
+              new_path: 'new.png',
+              position_type: 'image',
+              width: 100,
+              height: 200,
+              x: 10,
+              y: 20,
             },
+            note: 'My comment',
           });
         });
 
-        it('adds discussion to store and closes form', async () => {
+        it('closes form on success', async () => {
           createComponent();
           findOverlay().vm.$emit('image-click', formData);
           await nextTick();
 
           await findNoteForm().props('saveNote')('My comment');
 
-          expect(useDiscussions().discussions).toHaveLength(1);
-          expect(useDiscussions().discussions[0].id).toBe('new-discussion');
           expect(findNoteForm().exists()).toBe(false);
         });
 
@@ -281,9 +256,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
       describe('on error', () => {
         beforeEach(() => {
-          axiosMock
-            .onPost(defaultProvide.endpoints.discussions)
-            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+          store.createNewDiscussion.mockRejectedValue(new Error('fail'));
         });
 
         it('shows alert on save failure', async () => {
@@ -295,7 +268,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
           expect(createAlert).toHaveBeenCalledWith(
             expect.objectContaining({
-              message: 'Failed to submit your comment. Please try again.',
+              message: SOMETHING_WENT_WRONG,
             }),
           );
         });

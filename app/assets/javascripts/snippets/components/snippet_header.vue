@@ -10,7 +10,7 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -134,15 +134,22 @@ export default {
           : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
       };
     },
-    hasPersonalSnippetActions() {
+    hasAdminSnippetPermission() {
+      return this.snippet.userPermissions.adminSnippet;
+    },
+    hasUpdateSnippetPermission() {
+      return this.snippet.userPermissions.updateSnippet;
+    },
+    showActionDropdown() {
       return (
-        this.snippet.userPermissions.updateSnippet ||
+        this.hasUpdateSnippetPermission ||
         this.canCreateSnippet ||
-        this.snippet.userPermissions.adminSnippet ||
         this.canReportSpaCheck ||
-        this.embedDropdown ||
-        this.canBeCloned
+        this.hasAdminSnippetPermission
       );
+    },
+    hasPersonalSnippetActions() {
+      return this.showActionDropdown || this.embedDropdown || this.canBeCloned;
     },
     editLink() {
       return `${this.snippet.webUrl}/edit`;
@@ -276,7 +283,7 @@ export default {
         class="gl-flex gl-w-full gl-flex-col gl-gap-3 gl-self-center @sm/panel:gl-w-auto @sm/panel:gl-flex-row"
       >
         <gl-button
-          v-if="snippet.userPermissions.updateSnippet"
+          v-if="hasUpdateSnippetPermission"
           :href="editItem.href"
           :title="editItem.title"
           :disabled="editItem.disabled"
@@ -297,6 +304,7 @@ export default {
         />
 
         <gl-disclosure-dropdown
+          v-if="showActionDropdown"
           data-testid="snippets-more-actions-dropdown"
           placement="bottom-end"
           block
@@ -326,17 +334,11 @@ export default {
               />
             </div>
           </template>
-          <gl-disclosure-dropdown-item
-            v-if="snippet.userPermissions.updateSnippet"
-            :item="editItem"
-          />
+          <gl-disclosure-dropdown-item v-if="hasUpdateSnippetPermission" :item="editItem" />
           <gl-disclosure-dropdown-item v-if="canCreateSnippet" :item="newSnippetItem" />
           <gl-disclosure-dropdown-group bordered>
             <gl-disclosure-dropdown-item v-if="canReportSpaCheck" :item="spamItem" />
-            <gl-disclosure-dropdown-item
-              v-if="snippet.userPermissions.adminSnippet"
-              :item="deleteItem"
-            />
+            <gl-disclosure-dropdown-item v-if="hasAdminSnippetPermission" :item="deleteItem" />
           </gl-disclosure-dropdown-group>
         </gl-disclosure-dropdown>
       </div>

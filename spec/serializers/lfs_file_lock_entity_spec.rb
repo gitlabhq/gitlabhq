@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe LfsFileLockEntity do
-  let(:user)     { create(:user) }
-  let(:resource) { create(:lfs_file_lock, user: user) }
+RSpec.describe LfsFileLockEntity, feature_category: :source_code_management do
+  let(:user)     { build_stubbed(:user) }
+  let(:resource) { build_stubbed(:lfs_file_lock, user: user) }
 
   let(:request) { double('request', current_user: user) }
 

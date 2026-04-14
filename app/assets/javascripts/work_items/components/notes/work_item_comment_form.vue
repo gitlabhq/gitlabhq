@@ -180,6 +180,7 @@ export default {
       emailParticipants: [],
       workItem: {},
       isMeasuringCommentTemperature: false,
+      isCancellingEdit: false,
     };
   },
   computed: {
@@ -308,6 +309,8 @@ export default {
       updateDraft(this.autosaveKeyInternalNote, this.isNoteInternal);
     },
     async cancelEditing() {
+      if (this.isCancellingEdit) return;
+
       // Don't cancel if autosuggest open in plain text editor
       if (
         this.$refs.markdownEditor.$el.querySelector('textarea')?.classList.contains('at-who-active')
@@ -315,16 +318,21 @@ export default {
         return;
       }
       if (this.commentText && this.commentText !== this.initialValue) {
-        const msg = s__('WorkItem|Are you sure you want to cancel editing?');
+        this.isCancellingEdit = true;
+        try {
+          const msg = s__('WorkItem|Are you sure you want to cancel editing?');
 
-        const confirmed = await confirmAction(msg, {
-          primaryBtnText: __('Discard changes'),
-          cancelBtnText: __('Continue editing'),
-          primaryBtnVariant: 'danger',
-        });
+          const confirmed = await confirmAction(msg, {
+            primaryBtnText: __('Discard changes'),
+            cancelBtnText: __('Continue editing'),
+            primaryBtnVariant: 'danger',
+          });
 
-        if (!confirmed) {
-          return;
+          if (!confirmed) {
+            return;
+          }
+        } finally {
+          this.isCancellingEdit = false;
         }
       }
 

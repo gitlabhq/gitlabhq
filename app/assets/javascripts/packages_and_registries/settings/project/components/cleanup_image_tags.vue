@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { isEqual, get, isEmpty } from 'lodash';
+import { isEqual, get, isEmpty } from 'lodash-es';
 import {
   CONTAINER_CLEANUP_POLICY_TITLE,
   CONTAINER_CLEANUP_POLICY_DESCRIPTION,

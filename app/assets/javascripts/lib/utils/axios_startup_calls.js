@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { mergeUrlParams } from './url_utility';
 
 // We should probably not couple this utility to `gon.gitlab_url`

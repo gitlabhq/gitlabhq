@@ -55,15 +55,13 @@ export default {
     <li
       v-for="(item, itemIndex) in items"
       :key="item.id || itemIndex"
-      class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
+      class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-subtle"
       :class="{
-        'gl-border-b !gl-border-b-section': itemIndex !== items.length - 1 || loading,
+        'gl-border-b': itemIndex !== items.length - 1 || loading,
       }"
       :data-testid="`list-item-${itemIndex}`"
     >
-      <div
-        class="gl-str-truncated gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top"
-      >
+      <div class="gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top">
         <h3 class="!gl-heading-5 !gl-mb-1 gl-truncate">
           <field-presenter :item="item" field-key="title" />
         </h3>
@@ -80,8 +78,8 @@ export default {
       <li
         v-for="i in pageSize"
         :key="i"
-        class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
-        :class="{ 'gl-border-b !gl-border-b-section': i !== pageSize }"
+        class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-subtle"
+        :class="{ 'gl-border-b': i !== pageSize }"
       >
         <div class="gl-inline-block gl-align-top">
           <gl-skeleton-loader :width="400" :lines="1" :equal-width-lines="true" />

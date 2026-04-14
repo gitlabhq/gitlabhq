@@ -1,0 +1,18 @@
+---
+table: merge_request_reviewers
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_request_reviewers
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - project_id
+    refresh_on_change:
+      - target_stream_identifier: merge_requests
+        target_keys:
+          - id
+        source_keys:
+          - merge_request_id

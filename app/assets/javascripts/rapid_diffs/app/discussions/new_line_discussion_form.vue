@@ -1,9 +1,10 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
+import { createAlert } from '~/alert';
+import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import NoteForm from './note_form.vue';
 
 export default {
@@ -13,9 +14,7 @@ export default {
   },
   inject: {
     store: { type: Object },
-    endpoints: {
-      type: Object,
-    },
+    blobRawPath: { default: null },
   },
   props: {
     discussion: {
@@ -24,6 +23,22 @@ export default {
     },
   },
   computed: {
+    codeSuggestionsConfig() {
+      const { lines = [], canSuggest = false, previewParams = null } = this.discussion;
+      const posLineRange = this.discussion.position?.line_range;
+      const lineRange = posLineRange
+        ? { start: posLineRange.start.new_line, end: posLineRange.end.new_line }
+        : null;
+      return {
+        canSuggest,
+        lines,
+        lineType: '',
+        showPopover: false,
+        blobRawPath: this.blobRawPath,
+        previewParams,
+        lineRange,
+      };
+    },
     autosaveKey() {
       const {
         old_path: oldPath,
@@ -57,15 +72,32 @@ export default {
       this.store.removeNewLineDiscussionForm(this.discussion);
     }),
     async saveNote(noteBody) {
-      const {
-        data: { discussion },
-      } = await axios.post(this.endpoints.discussions, {
-        note: {
-          position: this.discussion.position,
-          note: noteBody,
-        },
-      });
-      this.store.replaceDiscussionForm(this.discussion, discussion);
+      try {
+        await this.store.createLineDiscussion(this.discussion, noteBody);
+      } catch (e) {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+        createAlert({
+          message: errorMessage,
+          parent: this.$refs.root,
+        });
+      }
+    },
+    async saveDraft(noteBody) {
+      try {
+        await this.store.createDraftLineDiscussion(this.discussion, noteBody);
+      } catch (e) {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+        createAlert({
+          message: errorMessage,
+          parent: this.$refs.root,
+        });
+      }
     },
   },
 };
@@ -74,7 +106,7 @@ export default {
 <template>
   <div
     ref="root"
-    class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-5 gl-py-4"
+    class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-4 gl-py-4"
     :data-discussion-id="discussion.id"
   >
     <note-form
@@ -83,6 +115,9 @@ export default {
       :note-body="discussion.noteBody"
       :save-button-title="__('Comment')"
       :save-note="saveNote"
+      :code-suggestions-config="codeSuggestionsConfig"
+      :save-draft="store.createDraftLineDiscussion ? saveDraft : null"
+      :has-drafts="Boolean(store.hasDrafts)"
       restore-from-autosave
       @input="store.setDiscussionFormText(discussion, $event)"
       @cancel="cancelReplyForm"

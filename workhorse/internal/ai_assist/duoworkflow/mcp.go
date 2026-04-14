@@ -1,6 +1,7 @@
 package duoworkflow
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -13,7 +14,9 @@ import (
 	"strings"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/orbit"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
@@ -23,6 +26,7 @@ import (
 )
 
 const gitlabServerName = "gitlab"
+const orbitServerName = "orbit"
 
 type serverSession struct {
 	name    string
@@ -51,9 +55,29 @@ type manager struct {
 }
 
 type roundTripper struct {
+	serverName  string
 	next        http.RoundTripper
 	headers     map[string]string
 	originalReq *http.Request
+	rails       *api.API
+}
+
+type responseCapture struct {
+	statusCode int
+	headers    http.Header
+	body       bytes.Buffer
+}
+
+func (rc *responseCapture) Header() http.Header         { return rc.headers }
+func (rc *responseCapture) Write(b []byte) (int, error) { return rc.body.Write(b) }
+func (rc *responseCapture) WriteHeader(statusCode int)  { rc.statusCode = statusCode }
+
+func (rc *responseCapture) toResponse() *http.Response {
+	return &http.Response{
+		StatusCode: rc.statusCode,
+		Header:     rc.headers,
+		Body:       io.NopCloser(&rc.body),
+	}
 }
 
 type limitedReadCloser struct {
@@ -84,7 +108,29 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	}
 
 	resp, err := t.next.RoundTrip(r)
-	if resp != nil && resp.Body != nil {
+	if err != nil {
+		return resp, err
+	}
+
+	// Orbit MCP tool calls return a Gitlab-Workhorse-Send-Data header that
+	// triggers gRPC streaming to GKG. Process it inline since this transport
+	// bypasses the normal senddata middleware.
+	if t.serverName == orbitServerName {
+		if sendData := resp.Header.Get(headers.GitlabWorkhorseSendDataHeader); sendData != "" {
+			sq := orbit.NewSendQuery(t.rails, t.rails.Version)
+			if sq.Match(sendData) {
+				if resp.Body != nil {
+					_, _ = io.Copy(io.Discard, resp.Body)
+					_ = resp.Body.Close()
+				}
+				rc := &responseCapture{statusCode: http.StatusOK, headers: make(http.Header)}
+				sq.Inject(rc, r, sendData)
+				return rc.toResponse(), nil
+			}
+		}
+	}
+
+	if resp.Body != nil {
 		resp.Body = &limitedReadCloser{
 			LimitedReader: io.LimitedReader{
 				R: resp.Body,
@@ -135,23 +181,32 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 	var endpoint string
 	var nextTransport http.RoundTripper
 
-	if serverName == gitlabServerName {
-		endpoint = rails.URL.JoinPath("api/v4/mcp").String()
+	internalPaths := map[string]string{
+		gitlabServerName: "api/v4/mcp",
+		orbitServerName:  "api/v4/orbit/mcp",
+	}
+
+	if path, ok := internalPaths[serverName]; ok {
+		endpoint = rails.URL.JoinPath(path).String()
 		nextTransport = rails.Client.Transport
 	} else {
 		endpoint = serverCfg.URL
 		nextTransport = transport.NewRestrictedTransport()
 	}
 
+	rt := &roundTripper{
+		serverName:  serverName,
+		next:        nextTransport,
+		headers:     serverCfg.Headers,
+		originalReq: r,
+	}
+	if serverName == orbitServerName {
+		rt.rails = rails
+	}
+
 	t = &mcp.StreamableClientTransport{
-		Endpoint: endpoint,
-		HTTPClient: &http.Client{
-			Transport: &roundTripper{
-				next:        nextTransport,
-				headers:     serverCfg.Headers,
-				originalReq: r,
-			},
-		},
+		Endpoint:   endpoint,
+		HTTPClient: &http.Client{Transport: rt},
 		// DisableStandaloneSSE must be true because the GitLab MCP server does not support
 		// SSE (Server-Sent Events). Without this flag, the client attempts an SSE connection
 		// first, which fails and breaks the connection flow.
@@ -205,6 +260,7 @@ func (m *manager) buildTools(ctx context.Context) error {
 					Name:        prefixedName,
 					Description: tool.Description,
 					InputSchema: string(schemaBytes),
+					Trusted:     proto.Bool(s.cfg.Trusted),
 				}
 
 				m.tools = append(m.tools, mcpTool)

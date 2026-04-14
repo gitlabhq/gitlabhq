@@ -1,0 +1,3 @@
+---
+name: read_merge_request_status_check_url
+description: Grants visibility of the external service URL in merge request status check API responses.

@@ -47,7 +47,7 @@ module API
           This feature was introduced in GitLab 17.10'
         tags ['groups']
       end
-      route_setting :authorization, permissions: :authorize_placeholder_reassignment, boundary_type: :group
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post ':id/placeholder_reassignments/authorize' do
         require_gitlab_workhorse!
 

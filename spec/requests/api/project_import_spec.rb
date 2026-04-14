@@ -952,13 +952,6 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
-    it_behaves_like 'authorizing granular token permissions', :authorize_project_import do
-      let(:boundary_object) { :instance }
-      let(:request) do
-        post api('/projects/import/authorize', personal_access_token: pat), headers: workhorse_headers
-      end
-    end
-
     it 'authorizes importing project with workhorse header' do
       authorize_import
 
@@ -1017,13 +1010,6 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
-    it_behaves_like 'authorizing granular token permissions', :authorize_project_relation_import do
-      let(:boundary_object) { :instance }
-      let(:request) do
-        post api('/projects/import-relation/authorize', personal_access_token: pat), headers: workhorse_headers
-      end
-    end
-
     it 'authorizes importing project with workhorse header' do
       authorize_import
 

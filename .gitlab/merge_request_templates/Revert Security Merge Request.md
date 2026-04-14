@@ -15,9 +15,9 @@ and the severity the bug fix and due date of the patch release -->
 
 ## Checklist:
 
-- [ ] Stage team has contacted AppSec and [release managers] and explained why the revert is necessary.
+- [ ] Stage team has contacted PSIRT and [release managers] and explained why the revert is necessary.
 - [ ] The security issue has been removed from the [patch release].
-- [ ] **AppSec Approval: AppSec agrees and understands the vulnerability will be disclosed without being fixed when the patch release is published**
+- [ ] **PSIRT Approval: PSIRT agrees and understands the vulnerability will be disclosed without being fixed when the patch release is published**
 
 
 [Reverting a security merge request]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/bugs_introduced_by_security_merge_request.md?ref_type=heads

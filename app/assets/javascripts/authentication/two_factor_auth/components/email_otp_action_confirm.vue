@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormCheckbox, GlFormGroup, GlModal, GlTooltipDirective } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';

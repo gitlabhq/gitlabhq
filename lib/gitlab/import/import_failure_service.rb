@@ -13,7 +13,8 @@ module Gitlab
         metrics: false,
         external_identifiers: {},
         message: 'importer failed',
-        extra_attributes: {}
+        extra_attributes: {},
+        capture_exception: true
       )
         new(
           exception: exception,
@@ -24,7 +25,8 @@ module Gitlab
           metrics: metrics,
           external_identifiers: external_identifiers,
           message: message,
-          extra_attributes: extra_attributes
+          extra_attributes: extra_attributes,
+          capture_exception: capture_exception
         ).execute
       end
 
@@ -37,7 +39,8 @@ module Gitlab
         metrics: false,
         external_identifiers: {},
         message: 'importer failed',
-        extra_attributes: {}
+        extra_attributes: {},
+        capture_exception: true
       )
 
         if import_state.blank? && project_id.blank?
@@ -59,6 +62,7 @@ module Gitlab
         @external_identifiers = external_identifiers
         @message = message
         @extra_attributes = extra_attributes
+        @capture_exception = capture_exception
       end
       # rubocop:enable Metrics/ParameterLists -- all arguments needed
 
@@ -73,7 +77,7 @@ module Gitlab
       private
 
       attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics,
-        :external_identifiers, :message, :extra_attributes
+        :external_identifiers, :message, :extra_attributes, :capture_exception
 
       def track_exception
         attributes = {
@@ -90,7 +94,7 @@ module Gitlab
           )
         )
 
-        Gitlab::ErrorTracking.track_exception(exception, attributes)
+        Gitlab::ErrorTracking.track_exception(exception, attributes) if capture_exception
       end
 
       # Failures with `retry_count: 0` are considered "hard_failures" and those

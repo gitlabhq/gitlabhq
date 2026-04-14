@@ -366,6 +366,121 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       end
     end
 
+    context 'when the URL hostname is an IPv6 literal address' do
+      let(:import_url) { 'https://[2001:db8::1]:8080/path' }
+      let(:ipv6_addr) do
+        instance_double(Addrinfo,
+          ip_address: '2001:db8::1',
+          ipv6_v4mapped?: false,
+          ipv4_private?: false,
+          ipv6_sitelocal?: false,
+          ipv6_unique_local?: false,
+          ipv4_loopback?: false,
+          ipv6_loopback?: false,
+          ipv6_linklocal?: false,
+          ip_port: 8080
+        )
+      end
+
+      before do
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with('2001:db8::1', 8080, nil, :STREAM)
+          .and_return([ipv6_addr])
+      end
+
+      it_behaves_like 'validates URI and hostname' do
+        let(:expected_uri) { import_url }
+        let(:expected_hostname) { nil }
+        let(:expected_use_proxy) { false }
+      end
+
+      context 'with an outbound proxy configured' do
+        before do
+          stub_env('https_proxy', 'http://proxy.example.com')
+        end
+
+        it_behaves_like 'validates URI and hostname' do
+          let(:expected_uri) { import_url }
+          let(:expected_hostname) { nil }
+          let(:expected_use_proxy) { true }
+        end
+
+        context 'when the bare IPv6 address is in no_proxy' do
+          before do
+            stub_env('no_proxy', '2001:db8::1')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
+          end
+        end
+
+        context 'when the bracketed IPv6 address is in no_proxy' do
+          before do
+            stub_env('no_proxy', '[2001:db8::1]')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
+          end
+        end
+
+        context 'when the bracketed IPv6 address with port is in no_proxy' do
+          before do
+            stub_env('no_proxy', '[2001:db8::1]:8080')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
+          end
+        end
+
+        context 'when the IPv6 address is in no_proxy with a different port' do
+          before do
+            stub_env('no_proxy', '[2001:db8::1]:9090')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { true }
+          end
+        end
+
+        context 'when a different address is in no_proxy' do
+          before do
+            stub_env('no_proxy', 'other.example.com')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { true }
+          end
+        end
+
+        context 'when no_proxy uses the expanded form of the same IPv6 address' do
+          # 2001:db8::1 and 2001:db8:0:0:0:0:0:1 are the same address;
+          # IPAddr comparison must handle this, string comparison would not.
+          before do
+            stub_env('no_proxy', '[2001:0db8:0000:0000:0000:0000:0000:0001]:8080')
+          end
+
+          it_behaves_like 'validates URI and hostname' do
+            let(:expected_uri) { import_url }
+            let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
+          end
+        end
+      end
+    end
+
     context 'when DNS rebinding protection with IP allowed' do
       let(:import_url) { 'http://a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
 

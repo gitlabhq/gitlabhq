@@ -14,13 +14,11 @@ module RapidDiffs
       subject, diff_view:, diff_options:,
       current_user: nil, request_params: nil, environment: nil, conflicts: nil
     )
-      super(subject, diff_view:, diff_options:, current_user:, request_params:, environment:)
+      super(
+        ::MergeRequests::VersionedMergeRequest.new(subject),
+        diff_view:, diff_options:, current_user:, request_params:, environment:
+      )
       @conflicts = conflicts
-    end
-
-    override(:diffs_resource)
-    def diffs_resource(options = {})
-      resource.latest_diffs(@diff_options.merge(options))
     end
 
     def diffs_stats_endpoint
@@ -44,7 +42,8 @@ module RapidDiffs
           offset: offset,
           skip_old_path: skip_old_path,
           skip_new_path: skip_new_path,
-          view: diff_view
+          view: diff_view,
+          only_context_commits: only_context_commits? || nil
         )
       )
     end
@@ -53,12 +52,28 @@ module RapidDiffs
       discussions_project_merge_request_path(resource.project, resource)
     end
 
+    def only_context_commits?
+      request_params&.dig(:only_context_commits) == 'true'
+    end
+
+    override(:diffs_slice)
+    def diffs_slice
+      return if offset.to_i == 0
+
+      @diffs_slice ||= transform_file_collection(resource.first_diffs_slice(offset,
+        @diff_options.merge(only_context_commits: only_context_commits?)))
+    end
+
     def sorted?
       true
     end
 
     def mr_path
       project_merge_request_path(resource.project, resource)
+    end
+
+    def project_path
+      resource.project.full_path
     end
 
     def user_permissions
@@ -72,11 +87,20 @@ module RapidDiffs
     end
 
     def preview_markdown_endpoint
-      project_preview_markdown_path(resource.project)
+      project_preview_markdown_path(resource.project, target_type: resource.class.name, target_id: resource.iid)
     end
 
     def markdown_docs_path
       help_page_path('user/markdown.md')
+    end
+
+    def suggestions_help_path
+      help_page_path('user/project/merge_requests/reviews/suggestions.md')
+    end
+
+    def default_suggestion_commit_message
+      resource.project.suggestion_commit_message.presence ||
+        Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
     end
 
     def register_path
@@ -115,6 +139,20 @@ module RapidDiffs
       # rubocop: enable CodeReuse/Presenter
     end
 
+    override(:transform_file_collection)
+    def transform_file_collection(collection)
+      collection_unfolder.unfold!(collection)
+      collection.write_cache
+      super
+    end
+
+    private
+
+    def collection_unfolder
+      ::Gitlab::Diff::CollectionUnfolder.new(resource, @current_user)
+    end
+    strong_memoize_attr :collection_unfolder
+
     def diff_options_from_params
       {
         diff_id: request_params[:diff_id] || resolved_diff_id,
@@ -127,7 +165,7 @@ module RapidDiffs
       return if request_params[:commit_id].present?
 
       version_params = @diff_options.slice(:diff_id, :start_sha)
-      resolved_diff = ::Gitlab::MergeRequests::DiffVersion.new(resource, version_params).resolve
+      resolved_diff = ::Gitlab::MergeRequests::DiffResolver.new(resource, version_params).resolve
       resolved_diff&.id unless resolved_diff.try(:merge_head?)
     end
     strong_memoize_attr :resolved_diff_id

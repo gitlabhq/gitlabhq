@@ -58,7 +58,7 @@ class Project < ApplicationRecord
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
-  ignore_column :delete_error, remove_with: '18.11', remove_after: '2026-03-19'
+  ignore_column :delete_error, remove_with: '19.0', remove_after: '2026-04-22'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -95,6 +95,7 @@ class Project < ApplicationRecord
 
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
+  MAX_MR_TITLE_TEMPLATE_LENGTH = 100
   MAX_MERGE_REQUEST_TITLE_REGEX = 255
   MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION = 255
 
@@ -389,6 +390,8 @@ class Project < ApplicationRecord
 
   has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
     through: :project_members
+  has_many :provisioned_user_details, class_name: 'UserDetail', foreign_key: 'provisioned_by_project_id', inverse_of: :provisioned_by_project
+  has_many :provisioned_users, through: :provisioned_user_details, source: :user
 
   has_many :maintainers,
     -> do
@@ -508,6 +511,7 @@ class Project < ApplicationRecord
   has_many :reviews, inverse_of: :project
 
   has_many :terraform_states, class_name: 'Terraform::State', inverse_of: :project
+  has_many :terraform_state_protection_rules, class_name: 'Terraform::StateProtectionRule', inverse_of: :project
 
   # GitLab Pages
   has_many :pages_domains
@@ -625,6 +629,7 @@ class Project < ApplicationRecord
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
       delegate :squash_commit_template, :squash_commit_template=
+      delegate :mr_default_title_template, :mr_default_title_template=
       delegate :issue_branch_template, :issue_branch_template=
       delegate :show_default_award_emojis, :show_default_award_emojis=
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
@@ -1619,12 +1624,6 @@ class Project < ApplicationRecord
     auto_devops_config[:scope] != :project && auto_devops_config[:status]
   end
 
-  def has_auto_devops_implicitly_disabled?
-    auto_devops_config = first_auto_devops_config
-
-    auto_devops_config[:scope] != :project && !auto_devops_config[:status]
-  end
-
   def packages_cleanup_policy
     super || build_packages_cleanup_policy
   end
@@ -2284,6 +2283,14 @@ class Project < ApplicationRecord
     end
   end
 
+  def first_human_owner
+    if group
+      group.owners.where(user_type: :human, state: :active).order(:id).first
+    else
+      owner
+    end
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
@@ -2759,6 +2766,7 @@ class Project < ApplicationRecord
     # Those records are going to be recreated with the next normal creation
     # of a model instance (e.g. an Issue).
     InternalId.flush_records!(project: self)
+    InternalId.flush_records!(namespace: project_namespace, usage: :issues)
     update_project_counter_caches
   end
 
@@ -3373,20 +3381,10 @@ class Project < ApplicationRecord
     ProtectedBranch.none
   end
 
-  def deploy_token_create_url(opts = {})
-    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_repository_path(self, opts)
-  end
-
   def default_branch_protected?
     branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
 
     !branch_protection.developer_can_push?
-  end
-
-  def initial_push_to_default_branch_allowed_for_developer?
-    branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
-
-    branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
   end
 
   def environments_for_scope(scope)
@@ -3626,20 +3624,15 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
-  def work_items_consolidated_list_enabled?(user = nil)
-    # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
-    # The global check is required for projects which do not have an associated group (i.e. from a user namespace)
-    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :beta)
-
-    user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
+  def use_mermaid_v11_feature_flag_enabled?
+    group&.use_mermaid_v11_feature_flag_enabled? || Feature.enabled?(:use_mermaid_v11, self, type: :gitlab_com_derisk)
   end
 
   def use_work_item_url?
     return false if Feature.enabled?(:work_item_legacy_url, self, type: :gitlab_com_derisk)
-    return work_items_consolidated_list_enabled? if group.blank?
+    return true if group.blank?
 
-    work_items_consolidated_list_enabled? &&
-      group.use_work_item_url?
+    group.use_work_item_url?
   end
 
   def enqueue_record_project_target_platforms
@@ -4133,7 +4126,13 @@ class Project < ApplicationRecord
   # Overriding of Namespaces::AdjournedDeletable method
   override :ancestors_scheduled_for_deletion
   def ancestors_scheduled_for_deletion
-    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+    return [] unless namespace.is_a?(Group)
+
+    cache_key = "ancestors_scheduled_for_deletion:#{namespace.traversal_ids.join(',')}"
+
+    Gitlab::SafeRequestStore.fetch(cache_key) do
+      ancestors(hierarchy_order: :asc).joins(:deletion_schedule).to_a
+    end
   end
 
   def validate_unsafe_import_url?

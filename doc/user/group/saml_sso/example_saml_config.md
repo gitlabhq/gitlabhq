@@ -25,6 +25,7 @@ They may then set up a test configuration of the desired identity provider. We i
 This section includes relevant screenshots of the following example configurations of [Group SAML](_index.md) and [Group SCIM](scim_setup.md):
 
 - [Azure Active Directory](#azure-active-directory)
+- [AWS IAM Identity Center](#aws-iam-identity-center)
 - [Google Workspace](#google-workspace)
 - [Okta](#okta)
 - [OneLogin](#onelogin)
@@ -137,6 +138,47 @@ Setting the username for the newly provisioned users when assigning them the SCI
 ### SSO settings
 
 ![OneLogin SSO settings](img/OneLogin-SSOsettings_v12_8.png)
+
+## AWS IAM Identity Center
+
+Configure AWS IAM Identity Center with the values in the following tables.
+For the full setup instructions, see [AWS IAM Identity Center](_index.md#aws-iam-identity-center).
+
+### Application properties
+
+When setting up your own SAML 2.0 application in AWS IAM Identity Center,
+configure the following application properties:
+
+| AWS Identity Center field       | Value                                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Application ACS URL**         | Your group's **Assertion consumer service URL** (from GitLab **SAML SSO** settings)           |
+| **Application SAML audience**   | Your group's **Identifier** (from GitLab **SAML SSO** settings)                               |
+| **Application start URL**       | Your group's **GitLab single sign-on URL** (from GitLab **SAML SSO** settings)                |
+
+Set the **Application start URL** for SP-initiated login.
+Without it, existing users cannot link their accounts.
+
+### Attribute mappings
+
+| Attribute      | Value                | Format        |
+| -------------- | -------------------- | ------------- |
+| **Subject**    | `${user:email}`      | `unspecified` |
+| **email**      | `${user:email}`      | `unspecified` |
+| **first_name** | `${user:givenName}`  | `unspecified` |
+| **last_name**  | `${user:familyName}` | `unspecified` |
+
+> [!warning]
+> You must set the **Subject** (NameID) format to `unspecified`. If you set the format to
+> `persistent` or `transient`, existing GitLab users receive a `403` error when they attempt
+> to link their accounts through SAML. This error only occurs during account linking and does
+> not affect new users provisioned through AWS IAM Identity Center.
+
+### GitLab SAML SSO settings
+
+| GitLab field                             | Value                                                                           |
+| ---------------------------------------- | ------------------------------------------------------------------------------- |
+| **Identity provider single sign-on URL** | **IAM Identity Center sign-in URL** (from the application's **IAM Identity Center SAML metadata** section)|
+| **Certificate fingerprint**              | SHA1 fingerprint of the certificate downloaded from AWS Identity Center         |
 
 ## SAML response example
 

@@ -122,6 +122,21 @@ RSpec.describe Tooling::Danger::BulkDatabaseActions, feature_category: :tooling 
         end
       end
 
+      context 'with multiple matches in the same file' do
+        let(:file_diff) do
+          <<~DIFF.split("\n")
+          +  scope :by_column_a, ->(a) { where(a: a) }
+          +  scope :by_column_b, ->(b) { where(b: b) }
+          DIFF
+        end
+
+        it 'creates only one suggestion' do
+          expect(bulk_database_actions).to receive(:markdown).once
+
+          bulk_database_actions.add_suggestions_for(filename)
+        end
+      end
+
       context 'when no comment is expected' do
         let(:file_diff) do
           <<~DIFF.split("\n")

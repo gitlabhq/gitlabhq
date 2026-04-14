@@ -14,7 +14,7 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
       end
 
       before do
-        expect(Ci::Build).to receive(:find_by).with({ id: build.id }).and_return(build)
+        allow(Ci::Build).to receive(:find_by_id).with(build.id).and_return(build)
       end
 
       it 'calculates coverage and calls hooks', :aggregate_failures do

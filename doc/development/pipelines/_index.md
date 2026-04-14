@@ -342,6 +342,8 @@ project, which should be even closer to an actual FOSS environment.
 We run them in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
+- when the `pipeline:as-if-foss-run-predictive` label is set on the merge request
+  (runs only predictive tests, RuboCop, eslint, and static analysis in the FOSS pipeline)
 - when the merge request is created in the `gitlab-org/security/gitlab` project
 - when CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
@@ -876,16 +878,16 @@ If you want to force tests to run with a single database, you can add the `pipel
 
 ### Elasticsearch and OpenSearch versions testing
 
-Our test suite runs against Elasticsearch 8 as GitLab.com runs on Elasticsearch 8 when certain conditions are met.
+Our test suite runs against Elasticsearch 9 as GitLab.com runs on Elasticsearch 9 when certain conditions are met.
 
-We run our test suite against Elasticsearch 7, 8 and OpenSearch 1, 2 on nightly scheduled pipelines. All
-test suites use PostgreSQL 16 because there is no dependency between the database and search backend.
+We run our test suite against Elasticsearch 8, 9 and OpenSearch 1, 2 on nightly scheduled pipelines. All
+test suites use PostgreSQL 17 because there is no dependency between the database and search backend.
 
 | Where?                                                                                          | Elasticsearch version | OpenSearch Version   | PostgreSQL version   |
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
-| Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
-| `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
-| `weekly` scheduled pipelines for the `master` branch                                            | 9.X                   | latest               | 16 (default version) |
+| Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 9.X (production)      |                      | 17 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 9.X (production) | 1.X, 2.X             | 17 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 8.X                   | latest               | 17 (default version) |
 
 ## Monitoring
 

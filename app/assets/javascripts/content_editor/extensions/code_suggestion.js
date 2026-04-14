@@ -2,7 +2,6 @@ import { lowlight } from 'lowlight/lib/core';
 import { Fragment } from '@tiptap/pm/model';
 import { textblockTypeInputRule } from '@tiptap/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
-import { memoizedGet } from '../services/utils';
 import CodeBlockHighlight from './code_block_highlight';
 
 const backtickInputRegex = /^```suggestion[\s\n]$/;
@@ -41,18 +40,16 @@ export default CodeBlockHighlight.extend({
           // do not insert a new suggestion if already inside a suggestion
           if (editor.isActive('codeSuggestion')) return false;
 
-          const rawPath = ext.options.codeSuggestionsConfig.diffFile.view_path.replace(
-            '/blob/',
-            '/raw/',
-          );
-          const allLines = (await memoizedGet(rawPath)).split('\n');
-          const { line } = ext.options.codeSuggestionsConfig;
-          let { lines } = ext.options.codeSuggestionsConfig;
+          const config = ext.options.codeSuggestionsConfig;
 
-          if (!lines.length) lines = [line];
+          const suggestionLines = config.lines ?? [];
 
-          const content = lines.map((l) => allLines[l.new_line - 1]).join('\n');
-          const lineNumbers = `-${lines.length - 1}+0`;
+          // Ensure insertContent is always dispatched asynchronously so it's
+          // outside TipTap's synchronous command dispatch cycle.
+          await Promise.resolve();
+
+          const content = suggestionLines.join('\n');
+          const lineNumbers = `-${Math.max(suggestionLines.length - 1, 0)}+0`;
 
           editor.commands.insertContent({
             type: 'codeSuggestion',

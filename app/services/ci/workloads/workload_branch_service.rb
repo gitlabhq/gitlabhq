@@ -15,22 +15,22 @@ module Ci
         create_internal_refs(source_ref, workload_ref)
       rescue Gitlab::Git::CommandError => e
         Gitlab::ErrorTracking.track_exception(e)
-        ServiceResponse.error(message: 'Failed to create workload ref')
+        ServiceResponse.error(message: 'Failed to create workload ref', reason: :git_command_error)
       end
 
       private
 
       def create_internal_refs(source_ref, workload_ref)
         source_sha = @project.repository.commit(source_ref)&.sha
-        return ServiceResponse.error(message: 'Source ref not found') unless source_sha
+        return ServiceResponse.error(message: 'Source ref not found', reason: :source_ref_not_found) unless source_sha
 
         workload_ref_path = "refs/#{workload_ref}"
         if @project.repository.ref_exists?(workload_ref_path)
-          return ServiceResponse.error(message: 'Ref already exists')
+          return ServiceResponse.error(message: 'Ref already exists', reason: :ref_already_exists)
         end
 
         result = @project.repository.create_ref(source_sha, workload_ref_path)
-        return ServiceResponse.error(message: 'Error in git ref creation') unless result
+        return ServiceResponse.error(message: 'Error in git ref creation', reason: :ref_creation_failed) unless result
 
         ServiceResponse.success(payload: { ref: workload_ref_path })
       end

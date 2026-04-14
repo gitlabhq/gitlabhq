@@ -1,7 +1,14 @@
+# @feature_category: pipeline_composition
 #import "../fragments/catalog_resource.fragment.graphql"
+#import "../fragments/catalog_resource_version.fragment.graphql"
 
-query getCiCatalogResourceSharedData($fullPath: ID!) {
+query getCiCatalogResourceSharedData($fullPath: ID!, $version: String) {
   ciCatalogResource(fullPath: $fullPath) {
     ...CatalogResourceFields
+    versions(name: $version, first: 1) {
+      nodes {
+        ...CatalogResourceVersionFields
+      }
+    }
   }
 }

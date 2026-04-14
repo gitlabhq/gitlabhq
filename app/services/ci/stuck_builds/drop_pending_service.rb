@@ -16,10 +16,17 @@ module Ci
           failure_reason: :stuck_or_timeout_failure
         )
 
-        drop_stuck(
-          pending_builds(BUILD_PENDING_STUCK_TIMEOUT.ago),
-          failure_reason: :stuck_or_timeout_failure
-        )
+        if Feature.enabled?(:drop_stuck_builds_from_ci_pending_builds_queue, :instance)
+          drop_stuck_from_queue(
+            pending_builds_queue(BUILD_PENDING_STUCK_TIMEOUT.ago),
+            failure_reason: :stuck_or_timeout_failure
+          )
+        else
+          drop_stuck(
+            pending_builds(BUILD_PENDING_STUCK_TIMEOUT.ago),
+            failure_reason: :stuck_or_timeout_failure
+          )
+        end
       end
 
       private
@@ -34,6 +41,10 @@ module Ci
           .created_at_before(timeout)
           .updated_at_before(timeout)
           .order(created_at: :asc, project_id: :asc)
+      end
+
+      def pending_builds_queue(timeout)
+        Ci::PendingBuild.where(created_at: ...timeout)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

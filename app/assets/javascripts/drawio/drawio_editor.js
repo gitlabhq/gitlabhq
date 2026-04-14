@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { base64DecodeUnicode } from '~/lib/utils/text_utility';

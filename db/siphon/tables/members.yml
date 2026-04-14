@@ -1,0 +1,14 @@
+---
+table: members
+database: main
+ignored_columns:
+  - invite_token
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_members
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - member_namespace_id

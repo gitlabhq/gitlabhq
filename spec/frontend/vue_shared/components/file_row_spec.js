@@ -214,6 +214,26 @@ describe('File row component', () => {
 
       expect(findFileButton().exists()).toBe(false);
     });
+
+    it('applies alignment class when showTreeToggle is true', () => {
+      createComponent({ file: { isSkeleton: true, level: 0 }, level: 0, showTreeToggle: true });
+
+      expect(findFileRowContainer().classes()).toContain('before:!gl-left-[calc(0.75rem-0.5px)]');
+    });
+
+    it('does not apply alignment class when showTreeToggle is false', () => {
+      createComponent({ file: { isSkeleton: true, level: 0 }, level: 0, showTreeToggle: false });
+
+      expect(findFileRowContainer().classes()).not.toContain(
+        'before:!gl-left-[calc(0.75rem-0.5px)]',
+      );
+    });
+
+    it('sets --level style to file.level', () => {
+      createComponent({ file: { isSkeleton: true, level: 2 }, level: 0, showTreeToggle: true });
+
+      expect(findFileRowContainer().attributes('style')).toContain('--level: 2');
+    });
   });
 
   describe('rovingTabindex prop', () => {

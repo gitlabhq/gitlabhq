@@ -7,6 +7,10 @@ module Mutations
         graphql_name 'PersonalAccessTokenRotate'
         description 'Rotate a specified personal access token.'
 
+        authorize_granular_token permissions: :rotate_personal_access_token,
+          boundary: :user,
+          boundary_type: :user
+
         field :token, GraphQL::Types::String,
           null: true,
           description: 'Created personal access token.'

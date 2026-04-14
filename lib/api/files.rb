@@ -315,7 +315,7 @@ module API
         ]
         hidden true
       end
-      route_setting :authorization, skip_granular_token_authorization: true
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end
@@ -358,7 +358,7 @@ module API
         tags %w[files]
         hidden true
       end
-      route_setting :authorization, skip_granular_token_authorization: true
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       put ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end

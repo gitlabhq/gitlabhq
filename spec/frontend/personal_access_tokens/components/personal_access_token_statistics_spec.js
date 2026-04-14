@@ -1,5 +1,4 @@
 import { GlButton, GlCard, GlLoadingIcon } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/src/charts';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -30,12 +29,14 @@ describe('PersonalAccessTokenStatistics', () => {
 
     wrapper = shallowMountExtended(PersonalAccessTokenStatistics, {
       apolloProvider: mockApollo,
+      stubs: {
+        GlCard,
+      },
     });
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCards = () => wrapper.findAllComponents(GlCard);
-  const findSingleStats = () => wrapper.findAllComponents(GlSingleStat);
   const findFilterButtons = () => wrapper.findAllComponents(GlButton);
 
   beforeEach(() => {
@@ -84,25 +85,19 @@ describe('PersonalAccessTokenStatistics', () => {
 
     it('renders four statistic cards', () => {
       expect(findCards()).toHaveLength(4);
-      expect(findSingleStats()).toHaveLength(4);
     });
 
     it('displays correct statistics data', () => {
-      expect(findSingleStats().at(0).props()).toMatchObject({
-        title: 'Active tokens',
-        value: 5,
-      });
-      expect(findSingleStats().at(1).props()).toMatchObject({
-        title: 'Tokens expiring in 2 weeks',
-        value: 2,
-      });
-      expect(findSingleStats().at(2).props()).toMatchObject({
-        title: 'Revoked tokens',
-        value: 3,
-      });
-      expect(findSingleStats().at(3).props()).toMatchObject({
-        title: 'Expired tokens',
-        value: 1,
+      const expected = [
+        { title: 'Active tokens', value: 5 },
+        { title: 'Tokens expiring in 2 weeks', value: 2 },
+        { title: 'Revoked tokens', value: 3 },
+        { title: 'Expired tokens', value: 1 },
+      ];
+
+      findCards().wrappers.forEach((card, i) => {
+        expect(card.find('[data-testid="stat-title"]').text()).toBe(expected[i].title);
+        expect(card.find('[data-testid="stat-value"]').text()).toBe(String(expected[i].value));
       });
     });
 

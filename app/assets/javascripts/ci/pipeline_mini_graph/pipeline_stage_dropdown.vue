@@ -12,11 +12,8 @@ import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
-import { graphqlEtagStagePath } from '~/ci/pipeline_details/utils';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { PIPELINE_POLL_INTERVAL_DEFAULT, FAILED_STATUS } from '~/ci/constants';
+import { fetchPolicies } from '~/lib/graphql';
+import { FAILED_STATUS } from '~/ci/constants';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
 import stageJobsUpdatedSubscription from './graphql/subscriptions/stage_jobs_updated.subscription.graphql';
@@ -37,7 +34,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     isMergeTrain: {
       type: Boolean,
@@ -60,18 +56,7 @@ export default {
   },
   apollo: {
     stageJobs: {
-      context() {
-        if (this.useRealTime) {
-          return {
-            featureCategory: 'continuous_integration',
-          };
-        }
-
-        return {
-          ...getQueryHeaders(this.graphqlEtag),
-          featureCategory: 'continuous_integration',
-        };
-      },
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       query: getPipelineStageJobsQuery,
       variables() {
         return {
@@ -81,20 +66,11 @@ export default {
       skip() {
         return !this.isDropdownOpen;
       },
-      pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
       update(data) {
-        if (this.useRealTime) {
-          this.$apollo.queries.stageJobs.stopPolling();
-        }
         return data?.ciPipelineStage?.jobs?.nodes || [];
       },
       result({ data }) {
-        if (
-          this.useRealTime &&
-          this.isDropdownOpen &&
-          !this.isSubscribed &&
-          data?.ciPipelineStage
-        ) {
+        if (this.isDropdownOpen && !this.isSubscribed && data?.ciPipelineStage) {
           this.subscribeToJobUpdates();
         }
       },
@@ -116,9 +92,6 @@ export default {
     failedJobs() {
       return this.stageJobs.filter((job) => job.detailedStatus.group === FAILED_STATUS);
     },
-    graphqlEtag() {
-      return graphqlEtagStagePath('/api/graphql', getIdFromGraphQLId(this.stage.id));
-    },
     hasFailedJobs() {
       return Boolean(this.failedJobs.length);
     },
@@ -139,21 +112,13 @@ export default {
     searchVisible() {
       return !this.isLoading && this.stageJobs.length > searchItemsThreshold;
     },
-    useRealTime() {
-      return this.glFeatures?.pipelineMiniGraphSubscription;
-    },
   },
   watch: {
     isDropdownOpen(isOpen) {
-      if (this.useRealTime && !isOpen) {
+      if (!isOpen) {
         this.unsubscribeFromJobUpdates();
       }
     },
-  },
-  mounted() {
-    if (!this.useRealTime) {
-      toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
-    }
   },
   beforeDestroy() {
     this.unsubscribeFromJobUpdates();
@@ -161,16 +126,11 @@ export default {
   methods: {
     onShowDropdown() {
       this.isDropdownOpen = true;
-      // used for tracking in the pipeline table
       this.$emit('mini-graph-stage-click');
-      if (!this.useRealTime) {
-        this.$apollo.queries.stageJobs.startPolling(PIPELINE_POLL_INTERVAL_DEFAULT);
-      }
     },
     onHideDropdown() {
       this.isDropdownOpen = false;
       this.search = '';
-      this.$apollo.queries.stageJobs.stopPolling();
     },
     subscribeToJobUpdates() {
       if (!this.stage.id || this.isSubscribed) return;

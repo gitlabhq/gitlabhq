@@ -2,7 +2,7 @@ import { GlDisclosureDropdown, GlEmptyState } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/dashboard/queries/get_issues_counts.query.graphql';

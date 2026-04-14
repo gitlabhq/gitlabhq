@@ -84,4 +84,10 @@ module SessionsHelper
       is_remember_me_enabled: remember_me_enabled?
     }.to_json
   end
+
+  def registration_path_params(invite_email)
+    { invite_email: invite_email }
+  end
 end
+
+SessionsHelper.prepend_mod

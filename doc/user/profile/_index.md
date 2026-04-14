@@ -471,7 +471,7 @@ To connect a sign-in service to use for signing in to GitLab:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **Account**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. Locate the **Service sign-in** section.
 1. Under the **Connected Accounts** section, select the button that corresponds with the service you want to sign in
    with.
@@ -483,7 +483,7 @@ To disconnect a sign-in service used for signing in to GitLab:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **Account**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. Locate the **Service sign-in** section.
 1. Under the **Connected Accounts** section, select **Disconnect** next to the button that corresponds with the service
    you no longer want to sign in with.

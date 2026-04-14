@@ -1,4 +1,4 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlBreadcrumb } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperTopbar from '~/super_sidebar/components/super_topbar.vue';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
@@ -13,6 +13,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { defaultOrganization as mockCurrentOrganization } from 'jest/organizations/mock_data';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
+import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import { sidebarData as mockSidebarData } from '../mock_data';
 
 describe('SuperTopbar', () => {
@@ -36,6 +37,8 @@ describe('SuperTopbar', () => {
   const findUserCounts = () => wrapper.findComponent(UserCounts);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
   const findPromoMenu = () => wrapper.findComponent(PromoMenu);
+  const findBreadcrumbComponent = () => wrapper.findComponent(GlBreadcrumb);
+  const findBreadcrumbSlot = () => wrapper.find('#js-super-topbar-breadcrumbs-slot');
 
   const createComponent = (props = {}, provideOverrides = {}) => {
     wrapper = shallowMountExtended(SuperTopbar, {
@@ -132,6 +135,41 @@ describe('SuperTopbar', () => {
           });
         },
       );
+    });
+
+    describe('Breadcrumbs', () => {
+      const mockBreadcrumbItems = [{ text: 'Project', href: '/project' }];
+
+      beforeEach(() => {
+        staticBreadcrumbs.items = mockBreadcrumbItems;
+      });
+
+      afterEach(() => {
+        staticBreadcrumbs.items = [];
+        staticBreadcrumbs.hasInjectedBreadcrumbs = false;
+      });
+
+      it('does not render breadcrumbs when pageBreadcrumbsInTopBar feature flag is disabled', () => {
+        createComponent();
+
+        expect(findBreadcrumbComponent().exists()).toBe(false);
+        expect(findBreadcrumbSlot().exists()).toBe(false);
+      });
+
+      it('renders breadcrumbs when pageBreadcrumbsInTopBar feature flag is enabled', () => {
+        createComponent({}, { glFeatures: { pageBreadcrumbsInTopBar: true } });
+
+        expect(findBreadcrumbComponent().exists()).toBe(true);
+        expect(findBreadcrumbComponent().props('items')).toEqual(mockBreadcrumbItems);
+        expect(findBreadcrumbSlot().exists()).toBe(true);
+      });
+
+      it('hides static GlBreadcrumb when hasInjectedBreadcrumbs is true', () => {
+        createComponent({}, { glFeatures: { pageBreadcrumbsInTopBar: true } });
+        staticBreadcrumbs.hasInjectedBreadcrumbs = true;
+
+        expect(wrapper.find('nav.gl-breadcrumbs').exists()).toBe(false);
+      });
     });
 
     describe('Search', () => {

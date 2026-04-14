@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlFormTextarea } from '@gitlab/ui';
-import { cloneDeep, isNumber, uniqueId } from 'lodash';
+import { cloneDeep, isNumber, uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

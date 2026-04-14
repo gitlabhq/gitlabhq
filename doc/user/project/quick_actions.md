@@ -336,10 +336,11 @@ Mark the item as blocked by other items.
 - Epic
 - Incident
 - Issue
+- Merge request
 
 **Parameters**:
 
-- `<item1> <item2>`: One or more items that block this item. The value should be in the format of `#item`, `group/project#item`, or the full URL.
+- `<item1> <item2>`: One or more items that block this item. The value should be in the format of `#item`, `group/project#item`, or the full URL. For merge requests, use `!merge_request`, `group/project!merge_request`, or the merge request URL.
 
 **Examples**:
 
@@ -359,6 +360,12 @@ Mark the item as blocked by other items.
 
   ```plaintext
   /blocked_by https://gitlab.com/group/project/-/work_items/123
+  ```
+
+- Mark a merge request as blocked by another merge request:
+
+  ```plaintext
+  /blocked_by !456
   ```
 
 **Additional details**:
@@ -381,10 +388,11 @@ Mark the item as blocking other items.
 - Epic
 - Incident
 - Issue
+- Merge request
 
 **Parameters**:
 
-- `<item1> <item2>`: One or more items that this item blocks. The value should be in the format of `#item`, `group/project#item`, or the full URL.
+- `<item1> <item2>`: One or more items that this item blocks. The value should be in the format of `#item`, `group/project#item`, or the full URL. For merge requests, use `!merge_request`, `group/project!merge_request`, or the merge request URL.
 
 **Examples**:
 
@@ -404,6 +412,12 @@ Mark the item as blocking other items.
 
   ```plaintext
   /blocks https://gitlab.com/group/project/-/work_items/123
+  ```
+
+- Mark a merge request as blocking another merge request:
+
+  ```plaintext
+  /blocks !456
   ```
 
 **Additional details**:
@@ -2415,13 +2429,14 @@ Remove a link to another item.
 - Epic
 - Incident
 - Issue
+- Merge request
 - Task
 - Objective
 - Key Result
 
 **Parameters**:
 
-- `<item>`: The item to unlink. The value should be in the format of `#item`, `group/project#item`, or the full URL.
+- `<item>`: The item to unlink. The value should be in the format of `#item`, `group/project#item`, or the full URL. For merge requests, use `!merge_request`, `group/project!merge_request`, or the merge request URL.
 
 **Examples**:
 
@@ -2435,6 +2450,12 @@ Remove a link to another item.
 
   ```plaintext
   /unlink https://gitlab.com/group/project/-/work_items/123
+  ```
+
+- Remove a blocking relationship between merge requests:
+
+  ```plaintext
+  /unlink !456
   ```
 
 **Additional details**:

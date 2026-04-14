@@ -69,7 +69,7 @@ describe('Pipelines Nav Controls', () => {
     it('should emit postAction event when reset runner cache button is clicked', () => {
       findClearCacheButton().vm.$emit('click');
 
-      expect(wrapper.emitted('resetRunnersCache')).toEqual([['foo']]);
+      expect(wrapper.emitted('reset-runners-cache')).toEqual([['foo']]);
     });
   });
 });

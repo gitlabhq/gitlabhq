@@ -59,9 +59,10 @@ module Gitlab
         return if user_already_member?
         return unless can_add_members?
 
-        @importable.members.destroy_all # rubocop: disable Cop/DestroyAll
-
         relation_class.create!(user: @user, access_level: importer_access_level, source_id: @importable.id, importing: true)
+      rescue ActiveRecord::RecordInvalid => e
+        # Handle duplicate member validation error during retry scenarios
+        log_member_addition_failure({ 'user_id' => @user.id, 'access_level' => importer_access_level }, [e.message])
       rescue StandardError => e
         raise e, "Error adding importer user to #{@importable.class} members. #{e.message}"
       end

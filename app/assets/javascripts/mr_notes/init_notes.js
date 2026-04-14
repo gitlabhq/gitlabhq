@@ -45,6 +45,7 @@ export default () => {
       newCommentTemplatePaths: JSON.parse(notesDataset.newCommentTemplatePaths),
       mrFilter: true,
       newCustomEmojiPath: notesDataset.newCustomEmojiPath,
+      navigateToDiffNote: (discussion) => window.mrTabs?.navigateToDiffNote(discussion),
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

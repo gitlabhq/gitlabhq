@@ -413,3 +413,7 @@ You can disable this behavior for all projects on GitLab Self-Managed with the
 
 You can disable this behavior for all projects on GitLab Self-Managed in the
 [instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
+
+## Related topics
+
+- [Pass environment variables between jobs with dotenv report artifacts](../variables/dotenv_variables.md)

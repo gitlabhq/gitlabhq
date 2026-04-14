@@ -74,7 +74,7 @@ describe('DiffGutterAvatars', () => {
     });
 
     it('should emit toggleDiscussions event on avatars click', async () => {
-      findUserAvatars().at(0).trigger('click');
+      findUserAvatars().at(0).element.parentElement.click();
 
       await nextTick();
       expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();

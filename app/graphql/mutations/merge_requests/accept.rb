@@ -82,18 +82,22 @@ module Mutations
       end
 
       def validate(merge_request, merge_service, merge_params)
-        skipped_checks = merge_request.skipped_auto_merge_checks(
-          auto_merge_strategy: merge_params[:auto_merge_strategy]
-        )
-
         if merge_request.auto_merge_enabled?
           ALREADY_SCHEDULED
-        elsif !merge_request.mergeable?(**skipped_checks)
+        elsif !mergeable_for_strategy?(merge_request, merge_params[:auto_merge_strategy])
           NOT_MERGEABLE
         elsif !merge_service.hooks_validation_pass?(merge_request)
           HOOKS_VALIDATION_ERROR
         elsif merge_params[:sha] != merge_request.diff_head_sha
           SHA_MISMATCH
+        end
+      end
+
+      def mergeable_for_strategy?(merge_request, strategy)
+        if strategy.present?
+          merge_request.auto_merge_eligible?(strategy: strategy)
+        else
+          merge_request.mergeable?
         end
       end
     end

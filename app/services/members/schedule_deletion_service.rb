@@ -4,10 +4,11 @@ module Members
   class ScheduleDeletionService
     include BaseServiceUtility
 
-    def initialize(root_namespace, user_id, scheduled_by)
+    def initialize(root_namespace, user_id, scheduled_by, ip_address = nil)
       @root_namespace = root_namespace
       @user_id = user_id
       @scheduled_by = scheduled_by
+      @ip_address = ip_address
     end
 
     def execute
@@ -19,13 +20,14 @@ module Members
 
     private
 
-    attr_reader :root_namespace, :user_id, :scheduled_by
+    attr_reader :root_namespace, :user_id, :scheduled_by, :ip_address
 
     def schedule_deletion
       schedule = Members::DeletionSchedule.new(
         namespace: root_namespace,
         user_id: user_id,
-        scheduled_by: scheduled_by
+        scheduled_by: scheduled_by,
+        ip_address: ip_address
       )
 
       return error(schedule.errors.full_messages) unless schedule.save

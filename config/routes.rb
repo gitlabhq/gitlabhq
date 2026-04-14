@@ -87,7 +87,7 @@ InitializerConnections.warn_if_database_connection do
       match '/oauth/token' => 'oauth/tokens#create', via: :options
       match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
 
-      match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options
+      match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options, as: :jira_connect_oauth_application_id_options
       match '/-/jira_connect/subscriptions(.:format)' => 'jira_connect/subscriptions#index', via: :options
       match '/-/jira_connect/subscriptions/:id' => 'jira_connect/subscriptions#delete', via: :options
 
@@ -134,7 +134,8 @@ InitializerConnections.warn_if_database_connection do
         end
 
         # sandbox
-        get '/sandbox/mermaid' => 'sandbox#mermaid'
+        get '/sandbox/mermaid_v10' => 'sandbox#mermaid_v10'
+        get '/sandbox/mermaid_v11' => 'sandbox#mermaid_v11'
         get '/sandbox/swagger' => 'sandbox#swagger'
 
         get '/:model/:model_id/uploads/:secret/:filename',
@@ -186,6 +187,9 @@ InitializerConnections.warn_if_database_connection do
           get '/oauth_redirect', to: 'ide#oauth_redirect'
 
           scope path: 'project/:project_id', as: :project, constraints: { project_id: Gitlab::PathRegex.full_namespace_route_regex } do
+            # Format: /-/ide/project/:project_id/-/*path
+            get '/-/*path', to: 'ide#index'
+
             %w[edit tree blob].each do |action|
               get "/#{action}", to: 'ide#index'
               get "/#{action}/*branch/-/*path", to: 'ide#index'
@@ -245,7 +249,7 @@ InitializerConnections.warn_if_database_connection do
           end
         end
 
-        resources :sent_notifications, only: [], constraints: { id: /[A-Za-z0-9\-_]{1,32}/ } do
+        resources :sent_notifications, only: [], constraints: { id: /[0-9a-z\-]{1,44}/ } do
           member do
             match :unsubscribe, via: [:get, :post]
           end

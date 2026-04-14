@@ -7,9 +7,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   include ::TokenAuthenticatableMatchers
 
   let_it_be(:organization, freeze: true) { create_default(:organization) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:other_project) { create(:project, group: group) }
+  let_it_be(:other_organization, freeze: true) { create(:organization) }
+  let_it_be(:group, freeze: true) { create(:group) }
+  let_it_be(:project, freeze: true) { create(:project, group: group) }
+  let_it_be(:other_project, freeze: true) { create(:project, group: group) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:creator).class_name('User').optional }
@@ -152,7 +153,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe 'validation' do
+  describe 'validations' do
     it { is_expected.to validate_length_of(:name).is_at_most(256) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { is_expected.to validate_presence_of(:access_level) }
@@ -172,6 +173,65 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           expect(runner).to be_invalid
           expect(runner.errors.full_messages).to contain_exactly('Runner cannot have organization_id assigned')
         end
+      end
+    end
+
+    describe '#organization_id_matches_owner' do
+      shared_examples 'when owner does not exist' do
+        before do
+          runner.runner_namespaces.delete_all
+          runner.runner_projects.delete_all
+        end
+
+        it 'does not validate matching organization_id' do
+          expect(runner.owner).to be_nil
+          expect(runner).to be_invalid
+          expect(runner.errors[:organization_id]).to be_empty
+        end
+      end
+
+      shared_examples 'when organization_id matches owner organization' do
+        it { is_expected.to be_valid }
+
+        it_behaves_like 'when owner does not exist'
+      end
+
+      shared_examples 'when organization_id does not match owner organization' do
+        let(:organization_id) { other_organization.id }
+
+        it 'is invalid' do
+          expect(runner).to be_invalid
+          expect(runner.errors[:organization_id]).to contain_exactly('must match the organization of the parent group/project')
+        end
+
+        it_behaves_like 'when owner does not exist'
+      end
+
+      context 'when runner is instance type' do
+        subject(:runner) { build(:ci_runner, :instance_type) }
+
+        it 'does not validate matching organization_id' do
+          expect(runner).not_to receive(:organization_id_matches_owner)
+          expect(runner).to be_valid
+        end
+      end
+
+      context 'when runner is group type' do
+        let(:organization_id) { group.organization_id }
+
+        subject(:runner) { build(:ci_runner, :group, groups: [group], organization_id: organization_id) }
+
+        it_behaves_like 'when organization_id matches owner organization'
+        it_behaves_like 'when organization_id does not match owner organization'
+      end
+
+      context 'when runner is project type' do
+        let(:organization_id) { project.organization_id }
+
+        subject(:runner) { build(:ci_runner, :project, projects: [project], organization_id: organization_id) }
+
+        it_behaves_like 'when organization_id matches owner organization'
+        it_behaves_like 'when organization_id does not match owner organization'
       end
     end
 
@@ -389,7 +449,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#only_for' do
-    let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
 
     subject { runner.only_for?(project) }
 
@@ -437,8 +497,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with project runner' do
-      let_it_be_with_refind(:owner_project) { create(:project, group: group) }
-      let_it_be_with_reload(:fallback_owner_project) { create(:project, group: group) }
+      let_it_be(:owner_project, freeze: true) { create(:project, group: group) }
+      let_it_be(:fallback_owner_project, freeze: true) { create(:project, group: group) }
 
       let(:associated_projects) { [owner_project, fallback_owner_project] }
       let(:runner) { create(:ci_runner, :project, projects: associated_projects) }
@@ -609,10 +669,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   describe '#matches_build?' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline, freeze: true) { create(:ci_pipeline) }
     let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:build_with_aa_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['aa']) }
-    let_it_be(:build_with_bb_tag) { create(:ci_build, pipeline: pipeline, tag_list: ['bb']) }
+    let_it_be(:build_with_aa_tag, freeze: true) { create(:ci_build, pipeline: pipeline, tag_list: ['aa']) }
+    let_it_be(:build_with_bb_tag, freeze: true) { create(:ci_build, pipeline: pipeline, tag_list: ['bb']) }
     let_it_be(:runner_project) { build.project }
     let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [runner_project]) }
 
@@ -996,7 +1056,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe 'Project-related queries' do
-    let_it_be(:projects) { create_list(:project, 2, group: group) }
+    let_it_be(:projects, freeze: true) { create_list(:project, 2, group: group) }
 
     describe '#owner' do
       let!(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
@@ -1169,7 +1229,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.search' do
-    let_it_be(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
+    let_it_be(:runner, freeze: true) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
     it 'returns runners with a matching token' do
       expect(described_class.search(runner.token)).to eq([runner])
@@ -1197,7 +1257,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#pick_build!' do
-    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:runner, freeze: true) { create(:ci_runner) }
 
     let(:build) { FactoryBot.build(:ci_build) }
 
@@ -1377,38 +1437,38 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
   describe 'Group-related queries' do
     # Groups
-    let_it_be(:top_level_group) { create(:group) }
-    let_it_be(:child_group) { create(:group, parent: top_level_group) }
-    let_it_be(:child_group2) { create(:group, parent: top_level_group) }
-    let_it_be(:other_top_level_group) { create(:group) }
+    let_it_be(:top_level_group, freeze: true) { create(:group) }
+    let_it_be(:child_group, freeze: true) { create(:group, parent: top_level_group) }
+    let_it_be(:child_group2, freeze: true) { create(:group, parent: top_level_group) }
+    let_it_be(:other_top_level_group, freeze: true) { create(:group) }
 
     # Projects
-    let_it_be(:top_level_group_project) { create(:project, group: top_level_group) }
-    let_it_be(:child_group_project) { create(:project, group: child_group) }
-    let_it_be(:other_top_level_group_project) { create(:project, group: other_top_level_group) }
+    let_it_be(:top_level_group_project, freeze: true) { create(:project, group: top_level_group) }
+    let_it_be(:child_group_project, freeze: true) { create(:project, group: child_group) }
+    let_it_be(:other_top_level_group_project, freeze: true) { create(:project, group: other_top_level_group) }
 
     # Runners
-    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:top_level_group_runner) { create(:ci_runner, :group, groups: [top_level_group]) }
-    let_it_be(:child_group_runner) { create(:ci_runner, :group, groups: [child_group]) }
-    let_it_be(:child_group2_runner) { create(:ci_runner, :group, groups: [child_group2]) }
-    let_it_be(:other_top_level_group_runner) do
+    let_it_be(:instance_runner, freeze: true) { create(:ci_runner, :instance) }
+    let_it_be(:top_level_group_runner, freeze: true) { create(:ci_runner, :group, groups: [top_level_group]) }
+    let_it_be(:child_group_runner, freeze: true) { create(:ci_runner, :group, groups: [child_group]) }
+    let_it_be(:child_group2_runner, freeze: true) { create(:ci_runner, :group, groups: [child_group2]) }
+    let_it_be(:other_top_level_group_runner, freeze: true) do
       create(:ci_runner, :group, groups: [other_top_level_group])
     end
 
-    let_it_be(:top_level_group_project_runner) do
+    let_it_be(:top_level_group_project_runner, freeze: true) do
       create(:ci_runner, :project, projects: [top_level_group_project])
     end
 
-    let_it_be(:child_group_project_runner) do
+    let_it_be(:child_group_project_runner, freeze: true) do
       create(:ci_runner, :project, projects: [child_group_project])
     end
 
-    let_it_be(:other_top_level_group_project_runner) do
+    let_it_be(:other_top_level_group_project_runner, freeze: true) do
       create(:ci_runner, :project, projects: [other_top_level_group_project])
     end
 
-    let_it_be(:shared_top_level_group_project_runner) do
+    let_it_be(:shared_top_level_group_project_runner, freeze: true) do
       create(:ci_runner, :project, projects: [top_level_group_project, child_group_project])
     end
 
@@ -1574,7 +1634,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     subject(:short_sha) { runner.short_sha }
 
     context 'when registered via command-line' do
-      let_it_be(:runner) { create(:ci_runner) }
+      let_it_be(:runner, freeze: true) { create(:ci_runner) }
 
       specify { expect(runner.token).to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
@@ -1584,7 +1644,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with custom instance prefix' do
-      let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be_with_refind(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
       let_it_be(:instance_prefix) { 'instanceprefix' }
 
       before do
@@ -1623,7 +1683,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'when creating new runner via UI' do
-      let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+      let_it_be(:runner, freeze: true) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       specify { expect(runner.token).not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
@@ -1638,7 +1698,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.find_by_token' do
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
     let_it_be(:token) { runner.token }
 
     context 'with partition pruning enabled' do
@@ -1689,8 +1749,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#token' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:creator) { create(:user) }
+    let_it_be(:user, freeze: true) { create(:user) }
+    let_it_be(:creator, freeze: true) { create(:user) }
     let(:attrs) { {} }
     let(:token_owner_record) do
       create(:ci_runner, runner_type: runner_type, registration_type: registration_type, creator: creator, **attrs)
@@ -1795,8 +1855,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
   describe '#token_expires_at', :freeze_time do
     let_it_be(:group_settings) { create(:namespace_settings, runner_token_expiration_interval: 6.days.to_i) }
-    let_it_be(:group_with_expiration) { create(:group, namespace_settings: group_settings) }
-    let_it_be(:existing_runner) { create(:ci_runner) }
+    let_it_be_with_refind(:group_with_expiration) { create(:group, namespace_settings: group_settings) }
+    let_it_be(:existing_runner, freeze: true) { create(:ci_runner) }
 
     shared_examples 'expiring token' do |interval:|
       it 'expires' do
@@ -1945,7 +2005,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context "with group's project runner token expiring" do
-      let_it_be(:project) { create(:project, group: group_with_expiration) }
+      let_it_be_with_refind(:project) { create(:project, group: group_with_expiration) }
 
       let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
@@ -1980,7 +2040,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     let(:system_xid) { 'r_system_id' }
 
     context 'with instance runner' do
-      let_it_be_with_refind(:runner) { create(:ci_runner) }
+      let_it_be(:runner, freeze: true) { create(:ci_runner) }
 
       it 'populates nil organization_id' do
         expect { ensure_manager }
@@ -1989,24 +2049,24 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
     end
 
-    shared_examples 'group or project runner initializing organization_id' do
+    context 'with group runner' do
+      let_it_be(:runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+
       it 'populates organization_id from runner' do
         expect { ensure_manager }
           .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
-            .from([]).to([runner.organization_id])
+          .from([]).to([runner.organization_id])
       end
     end
 
-    context 'with group runner' do
-      let_it_be_with_refind(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-      it_behaves_like 'group or project runner initializing organization_id'
-    end
-
     context 'with project runner' do
-      let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
 
-      it_behaves_like 'group or project runner initializing organization_id'
+      it 'populates organization_id from runner' do
+        expect { ensure_manager }
+          .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
+          .from([]).to([runner.organization_id])
+      end
     end
   end
 
@@ -2253,11 +2313,14 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe 'scopes' do
+    let_it_be(:admin, freeze: true) { create(:admin) }
+    let_it_be(:user2, freeze: true) { create(:user) }
+
     context 'for order_contacted_at scope' do
-      let_it_be(:runner_contacted_yesterday) { create(:ci_runner, contacted_at: 1.day.ago) }
-      let_it_be(:runner_contacted_today) { create(:ci_runner, contacted_at: Time.current) }
-      let_it_be(:runner_contacted_week_ago) { create(:ci_runner, contacted_at: 1.week.ago) }
-      let_it_be(:runner_never_contacted) { create_list(:ci_runner, 2, contacted_at: nil) }
+      let_it_be(:runner_contacted_yesterday, freeze: true) { create(:ci_runner, contacted_at: 1.day.ago) }
+      let_it_be(:runner_contacted_today, freeze: true) { create(:ci_runner, contacted_at: Time.current) }
+      let_it_be(:runner_contacted_week_ago, freeze: true) { create(:ci_runner, contacted_at: 1.week.ago) }
+      let_it_be(:runner_never_contacted, freeze: true) { create_list(:ci_runner, 2, contacted_at: nil) }
 
       describe '.order_contacted_at_asc' do
         subject { described_class.order_contacted_at_asc }
@@ -2298,13 +2361,13 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     describe '.belonging_to_parent_groups_of_project' do
-      let_it_be(:group1) { create(:group) }
-      let_it_be(:project1) { create(:project, group: group1) }
-      let_it_be(:runner1) { create(:ci_runner, :group, groups: [group1]) }
+      let_it_be_with_refind(:group1) { create(:group) }
+      let_it_be(:project1, freeze: true) { create(:project, group: group1) }
+      let_it_be(:runner1, freeze: true) { create(:ci_runner, :group, groups: [group1]) }
 
-      let_it_be(:group2) { create(:group) }
-      let_it_be(:project2) { create(:project, group: group2) }
-      let_it_be(:runner2) { create(:ci_runner, :group, groups: [group2]) }
+      let_it_be(:group2, freeze: true) { create(:group) }
+      let_it_be(:project2, freeze: true) { create(:project, group: group2) }
+      let_it_be(:runner2, freeze: true) { create(:ci_runner, :group, groups: [group2]) }
 
       let(:project_id) { project1.id }
 
@@ -2335,15 +2398,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     context 'with instance runners sharing enabled' do
       # group specific
-      let_it_be(:group) { create(:group, shared_runners_enabled: true) }
-      let_it_be(:project) { create(:project, group: group, shared_runners_enabled: true) }
-      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:group, freeze: true) { create(:group, shared_runners_enabled: true) }
+      let_it_be(:project, freeze: true) { create(:project, group: group, shared_runners_enabled: true) }
+      let_it_be(:group_runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
 
       # project specific
-      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:project_runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
 
       # globally shared
-      let_it_be(:shared_runner) { create(:ci_runner, :instance) }
+      let_it_be(:shared_runner, freeze: true) { create(:ci_runner, :instance) }
 
       describe '.owned_or_instance_wide' do
         subject { described_class.owned_or_instance_wide(project.id) }
@@ -2368,18 +2431,18 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with instance runners sharing disabled' do
-      # group specific
-      let_it_be(:group) { create(:group, shared_runners_enabled: false) }
-      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      # globally shared
+      let_it_be(:shared_runner, freeze: true) { create(:ci_runner, :instance) }
 
-      let(:group_runners_enabled) { true }
-      let_it_be(:project) { create(:project, group: group, shared_runners_enabled: false) }
+      # group specific
+      let_it_be(:group, freeze: true) { create(:group, shared_runners_enabled: false) }
+      let_it_be(:group_runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
 
       # project specific
+      let_it_be_with_refind(:project) { create(:project, group: group, shared_runners_enabled: false) }
       let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
-      # globally shared
-      let_it_be(:shared_runner) { create(:ci_runner, :instance) }
+      let(:group_runners_enabled) { true }
 
       before do
         project.update!(group_runners_enabled: group_runners_enabled)
@@ -2422,8 +2485,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '.active' do
       subject { described_class.active(active_value) }
 
-      let_it_be(:runner1) { create(:ci_runner, :instance, :paused) }
-      let_it_be(:runner2) { create(:ci_runner, :instance) }
+      let_it_be(:runner1, freeze: true) { create(:ci_runner, :instance, :paused) }
+      let_it_be(:runner2, freeze: true) { create(:ci_runner, :instance) }
 
       context 'with active_value set to false' do
         let(:active_value) { false }
@@ -2456,13 +2519,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     describe '.with_creator_id' do
-      let_it_be(:admin) { create(:admin) }
-      let_it_be(:user2) { create(:user) }
-
-      let_it_be(:user_runner1) { create(:ci_runner, creator: user2) }
-      let_it_be(:admin_runner1) { create(:ci_runner, creator: admin) }
-      let_it_be(:admin_runner2) { create(:ci_runner, creator: admin) }
-      let_it_be(:runner_without_creator) { create(:ci_runner, creator: nil) }
+      let_it_be(:user_runner1, freeze: true) { create(:ci_runner, creator: user2) }
+      let_it_be(:admin_runner1, freeze: true) { create(:ci_runner, creator: admin) }
+      let_it_be(:admin_runner2, freeze: true) { create(:ci_runner, creator: admin) }
+      let_it_be(:runner_without_creator, freeze: true) { create(:ci_runner, creator: nil) }
 
       subject { described_class.with_creator_id(admin.id.to_s) }
 
@@ -2470,11 +2530,9 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     describe '.created_by_admins' do
-      let_it_be(:admin) { create(:admin) }
-      let_it_be(:user2) { create(:user) }
-      let_it_be(:admin_runner) { create(:ci_runner, creator: admin) }
-      let_it_be(:other_runner) { create(:ci_runner, creator: user2) }
-      let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects, creator: admin) }
+      let_it_be(:admin_runner, freeze: true) { create(:ci_runner, creator: admin) }
+      let_it_be(:other_runner, freeze: true) { create(:ci_runner, creator: user2) }
+      let_it_be(:project_runner, freeze: true) { create(:ci_runner, :project, :without_projects, creator: admin) }
 
       subject { described_class.created_by_admins }
 
@@ -2484,9 +2542,9 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '.with_version_prefix' do
       subject { described_class.with_version_prefix('15.11.') }
 
-      let_it_be(:runner1) { create(:ci_runner) }
-      let_it_be(:runner2) { create(:ci_runner) }
-      let_it_be(:runner3) { create(:ci_runner) }
+      let_it_be(:runner1, freeze: true) { create(:ci_runner) }
+      let_it_be(:runner2, freeze: true) { create(:ci_runner) }
+      let_it_be(:runner3, freeze: true) { create(:ci_runner) }
 
       before_all do
         create(:ci_runner_machine, runner: runner1, version: '15.11.0')
@@ -2530,21 +2588,23 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     describe '.assignable_for' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:another_project) { other_project }
-      let_it_be(:unlocked_project_runner) { create(:ci_runner, :project, projects: [project]) }
-      let_it_be(:locked_project_runner) { create(:ci_runner, :project, locked: true, projects: [project]) }
-      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+      let_it_be(:group, freeze: true) { create(:group) }
+      let_it_be(:another_project, freeze: true) { other_project }
+      let_it_be(:unlocked_project_runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:locked_project_runner, freeze: true) { create(:ci_runner, :project, locked: true, projects: [project]) }
+      let_it_be(:group_runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:instance_runner, freeze: true) { create(:ci_runner, :instance) }
+
+      subject { described_class.assignable_for(target_project) }
 
       context 'with already assigned project' do
-        subject { described_class.assignable_for(project) }
+        let(:target_project) { project }
 
         it { is_expected.to be_empty }
       end
 
       context 'with a different project' do
-        subject { described_class.assignable_for(another_project) }
+        let(:target_project) { another_project }
 
         it { is_expected.to include(unlocked_project_runner) }
         it { is_expected.not_to include(group_runner) }
@@ -2553,12 +2613,11 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       end
 
       context 'with different organization' do
-        let_it_be(:other_org) { create(:organization) }
-        let_it_be(:other_org_group) { create(:group, organization: other_org) }
-        let_it_be(:other_org_project) { create(:project, organization: other_org, group: other_org_group) }
-        let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+        let_it_be(:other_org_group, freeze: true) { create(:group, organization: other_organization) }
+        let_it_be(:other_org_project, freeze: true) { create(:project, organization: other_organization, group: other_org_group) }
+        let_it_be(:other_org_runner, freeze: true) { create(:ci_runner, :project, projects: [other_org_project]) }
 
-        subject { described_class.assignable_for(other_project) }
+        let(:target_project) { other_project }
 
         it { is_expected.to include(unlocked_project_runner) }
         it { is_expected.not_to include(other_org_runner) }
@@ -2566,12 +2625,11 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     describe '.order_by' do
-      let_it_be(:runner1) { create(:ci_runner, created_at: 1.year.ago, contacted_at: 1.year.ago) }
-      let_it_be(:runner2) { create(:ci_runner, created_at: 1.month.ago, contacted_at: 1.month.ago) }
-
-      before do
-        runner1.update!(token_expires_at: 1.year.from_now)
+      let_it_be(:runner1, freeze: true) do
+        create(:ci_runner, created_at: 1.year.ago, contacted_at: 1.year.ago, token_expires_at: 1.year.from_now)
       end
+
+      let_it_be(:runner2, freeze: true) { create(:ci_runner, created_at: 1.month.ago, contacted_at: 1.month.ago) }
 
       it 'supports ordering by the contact date' do
         runners = described_class.order_by('contacted_asc')
@@ -2600,10 +2658,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '.with_upgrade_status' do
       subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
 
-      let_it_be(:runner_14_0_0) { create(:ci_runner) }
-      let_it_be(:runner_14_1_0_and_14_0_0) { create(:ci_runner) }
-      let_it_be(:runner_14_1_0) { create(:ci_runner) }
-      let_it_be(:runner_14_1_1) { create(:ci_runner) }
+      let_it_be(:runner_14_0_0, freeze: true) { create(:ci_runner) }
+      let_it_be(:runner_14_1_0_and_14_0_0, freeze: true) { create(:ci_runner) }
+      let_it_be(:runner_14_1_0, freeze: true) { create(:ci_runner) }
+      let_it_be(:runner_14_1_1, freeze: true) { create(:ci_runner) }
 
       before_all do
         create(:ci_runner_machine, runner: runner_14_1_0_and_14_0_0, version: '14.0.0')
@@ -2674,9 +2732,9 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         unfreeze_time
       end
 
-      let_it_be(:online_runner) { create(:ci_runner, :instance, :almost_offline) }
-      let_it_be(:offline_runner) { create(:ci_runner, :instance, :offline) }
-      let_it_be(:never_contacted_runner) { create(:ci_runner, :instance, :unregistered) }
+      let_it_be(:online_runner, freeze: true) { create(:ci_runner, :instance, :almost_offline) }
+      let_it_be(:offline_runner, freeze: true) { create(:ci_runner, :instance, :offline) }
+      let_it_be(:never_contacted_runner, freeze: true) { create(:ci_runner, :instance, :unregistered) }
 
       describe '.online' do
         subject(:runners) { described_class.online }
@@ -2705,8 +2763,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       describe '.stale' do
         subject { described_class.stale }
 
-        let!(:stale_runner1) { create(:ci_runner, :unregistered, :stale) }
-        let!(:stale_runner2) { create(:ci_runner, :stale) }
+        let_it_be(:stale_runner1, freeze: true) { create(:ci_runner, :unregistered, :stale) }
+        let_it_be(:stale_runner2, freeze: true) { create(:ci_runner, :stale) }
 
         it 'returns stale runners' do
           is_expected.to contain_exactly(stale_runner1, stale_runner2)
@@ -2719,9 +2777,9 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '.with_runner_type' do
       subject { described_class.with_runner_type(runner_type) }
 
-      let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects) }
+      let_it_be(:instance_runner, freeze: true) { create(:ci_runner, :instance) }
+      let_it_be(:group_runner, freeze: true) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:project_runner, freeze: true) { create(:ci_runner, :project, :without_projects) }
 
       context 'with instance_type' do
         let(:runner_type) { 'instance_type' }

@@ -761,6 +761,31 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       end
     end
 
+    context 'with password authentication and rate limiting', :request_store do
+      let_it_be(:password) { 'a-valid-password-123' }
+      let_it_be(:password_user) { create(:user, password: password) }
+      let(:password_headers) do
+        encoded = Base64.strict_encode64("#{password_user.username}:#{password}")
+        WorkhorseHelpers
+          .workhorse_internal_api_request_header
+          .merge('HTTP_AUTHORIZATION' => "Basic #{encoded}")
+      end
+
+      before do
+        settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
+        settings_to_set[:throttle_authenticated_git_http_enabled] = true
+        stub_application_setting(settings_to_set)
+      end
+
+      it 'calls bcrypt only once per request even with rate limiting enabled' do
+        expect(Devise::Encryptor).to receive(:compare).once.and_call_original
+
+        get git_info_refs_path, headers: password_headers
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when rate limit is disabled' do
       before do
         settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period

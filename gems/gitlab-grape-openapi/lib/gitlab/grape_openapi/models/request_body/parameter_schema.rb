@@ -7,77 +7,83 @@ module Gitlab
         class ParameterSchema
           include Converters::CoercerResolver
           include Concerns::Serializable
+          include Concerns::LimitResolver
 
-          attr_reader :route
-
-          def initialize(route:)
+          def initialize(route:, key:, param_options:)
             @route = route
+            @key = key
+            @param_options = param_options
+            @validations = validations_for(key.to_sym)
           end
 
-          def build(key, param_options)
-            validations = validations_for(key.to_sym)
-            built_schema = build_raw_type_schema(param_options, validations)
+          def build
+            built_schema = build_raw_type_schema
 
             unless built_schema
               object_type = Converters::TypeResolver.resolve_type(param_options[:type]) || 'string'
               object_format = Converters::TypeResolver.resolve_format(nil, param_options[:type])
-              built_schema = build_resolved_schema(object_type, object_format, param_options, validations)
+              built_schema = build_resolved_schema(object_type, object_format)
             end
 
-            apply_allow_blank(built_schema, param_options)
+            apply_allow_blank(built_schema)
+            apply_limit!(built_schema, validations)
             built_schema
           end
 
+          private
+
+          attr_reader :route, :key, :param_options, :validations
+
           # Handles schema building for types that cannot safely be passed through TypeResolver
-          def build_raw_type_schema(param_options, validations)
+          def build_raw_type_schema
             type_str = param_options[:type].to_s
             mapping = coercer_mapping_for(validations)
 
             if mapping
               # Handle coerced types(e.g., coerce_with: option used)
-              build_coerced_schema_with_description(mapping, param_options)
+              build_coerced_schema_with_description(mapping)
             elsif type_str.start_with?('[') && type_str.exclude?(',')
               # Handle array types like [String] (single type in brackets)
-              build_simple_array_from_bracket_notation(param_options)
+              build_simple_array_from_bracket_notation
             elsif type_str.include?('API::Validations::Types::WorkhorseFile')
               # Handle file types (e.g., API::Validations::Types::WorkhorseFile)
-              build_file_schema(param_options)
+              build_file_schema
             elsif type_str.start_with?('[')
               # Handle union types (e.g., [String, Integer])
-              build_union_type_schema(param_options)
+              build_union_type_schema
             end
           end
 
           # Handles schema building for types that have been resolved through TypeResolver
-          def build_resolved_schema(object_type, object_format, param_options, validations)
+          def build_resolved_schema(object_type, object_format)
             if param_options[:values].is_a?(Range)
               # Handle range values
-              build_range_schema(object_type, param_options)
+              build_range_schema(object_type)
             elsif param_options[:values]
               # Handle enum/values
-              build_enum_schema(object_type, param_options)
+              build_enum_schema(object_type)
             elsif param_options[:type] == 'Array' && param_options[:params]
               # Handle array types with nested params
-              build_nested_array_schema(param_options)
+              build_nested_array_schema
             elsif object_type.include?('[')
               # Handle array types (simple, like Array[String])
-              build_array_schema(param_options)
+              build_array_schema
             elsif param_options[:type] == 'Hash' && param_options[:params]
               # Handle Hash types with nested params
-              build_nested_hash_schema(param_options)
+              build_nested_hash_schema
             else
               # Build basic schema
-              build_basic_schema(object_type, object_format, param_options, validations)
+              build_basic_schema(object_type, object_format)
             end
           end
 
-          def build_coerced_schema_with_description(mapping, param_options)
+          def build_coerced_schema_with_description(mapping)
             schema = build_coerced_schema(mapping)
             schema[:description] = param_options[:desc] if param_options[:desc]
             schema
           end
 
-          def build_simple_array_from_bracket_notation(param_options)
+          def build_simple_array_from_bracket_notation
             # Handle types like [String] or [Integer]
             item_type = param_options[:type].to_s.delete('[').delete(']')
             schema = { type: 'array', items: { type: Converters::TypeResolver.resolve_type(item_type) } }
@@ -85,18 +91,18 @@ module Gitlab
             schema
           end
 
-          def build_file_schema(param_options)
+          def build_file_schema
             schema = { type: 'string', format: 'binary' }
             schema[:description] = param_options[:desc] if param_options[:desc]
             schema
           end
 
-          def build_union_type_schema(param_options)
+          def build_union_type_schema
             types = param_options[:type][1..-2].split(", ")
             { oneOf: types.map { |type| Converters::TypeResolver.resolve_union_member(type) } }
           end
 
-          def build_range_schema(object_type, param_options)
+          def build_range_schema(object_type)
             range = param_options[:values]
             schema = { type: object_type }
             schema[:minimum] = range.begin if range.begin
@@ -109,7 +115,7 @@ module Gitlab
             schema
           end
 
-          def build_enum_schema(object_type, param_options)
+          def build_enum_schema(object_type)
             schema = { type: object_type }
             schema[:enum] = param_options[:values] unless param_options[:values].is_a?(Proc)
             if param_options[:default] && serializable?(param_options[:default])
@@ -120,14 +126,14 @@ module Gitlab
             schema
           end
 
-          def build_array_schema(param_options)
+          def build_array_schema
             item_type = param_options[:type].delete('[').delete(']').downcase
             schema = { type: 'array', items: { type: Converters::TypeResolver.resolve_type(item_type) } }
             schema[:description] = param_options[:desc] if param_options[:desc]
             schema
           end
 
-          def build_nested_array_schema(param_options)
+          def build_nested_array_schema
             schema = { type: 'array' }
             schema[:description] = param_options[:desc] if param_options[:desc]
 
@@ -138,7 +144,9 @@ module Gitlab
               required_params = []
 
               nested_params.each do |nested_key, nested_options|
-                properties[nested_key.to_s] = build(nested_key, nested_options)
+                properties[nested_key.to_s] = self.class.new(
+                  route: route, key: nested_key, param_options: nested_options
+                ).build
                 required_params << nested_key.to_s if nested_options[:required]
               end
 
@@ -157,7 +165,7 @@ module Gitlab
             schema
           end
 
-          def build_nested_hash_schema(param_options)
+          def build_nested_hash_schema
             schema = { type: 'object' }
             schema[:description] = param_options[:desc] if param_options[:desc]
 
@@ -168,7 +176,9 @@ module Gitlab
               required_params = []
 
               nested_params.each do |nested_key, nested_options|
-                properties[nested_key.to_s] = build(nested_key, nested_options)
+                properties[nested_key.to_s] = self.class.new(
+                  route: route, key: nested_key, param_options: nested_options
+                ).build
                 required_params << nested_key.to_s if nested_options[:required]
               end
 
@@ -179,7 +189,7 @@ module Gitlab
             schema
           end
 
-          def build_basic_schema(object_type, object_format, param_options, validations)
+          def build_basic_schema(object_type, object_format)
             schema = { type: object_type }
             schema[:format] = object_format if object_format
             if param_options[:default] && serializable?(param_options[:default])
@@ -211,9 +221,7 @@ module Gitlab
               &.select { |v| v[:attributes].include?(attribute) }
           end
 
-          private
-
-          def apply_allow_blank(schema, param_options)
+          def apply_allow_blank(schema)
             if param_options[:allow_blank] == false || (param_options[:required] && param_options[:values])
               schema[:minLength] = 1 if schema[:type] == 'string'
             else

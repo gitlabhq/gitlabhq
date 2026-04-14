@@ -4,7 +4,6 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: License scanning of CycloneDX files
 ---
-
 {{< details >}}
 
 - Tier: Ultimate
@@ -14,7 +13,7 @@ title: License scanning of CycloneDX files
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab.com [with two flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 - The legacy license compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 - GitLab 17.5 introduced support for using a CycloneDX report artifact as a source of
@@ -336,6 +335,11 @@ To remove the unneeded data:
    PackageMetadata::PackageVersionLicense.delete_all
    PackageMetadata::PackageVersion.delete_all
    ```
+
+### Vulnerability scanning produces no results for a CycloneDX SBOM
+
+If your CycloneDX file is scanned for licenses but vulnerability scanning produces no results, see
+[Vulnerability scanning produces no results for custom or merged CycloneDX SBOMs](../../application_security/dependency_scanning/troubleshooting_dependency_scanning.md#vulnerability-scanning-produces-no-results-for-custom-or-merged-cyclonedx-sboms).
 
 ### Dependency licenses are unknown
 

@@ -3,20 +3,21 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-} from '~/groups_projects/constants';
-import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
-import {
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
-} from '~/projects/filtered_search_and_sort/constants';
+} from '~/groups_projects/constants';
+import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import projectCountsQuery from '../graphql/queries/project_counts.query.graphql';
-import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '../constants';
+import {
+  PROJECT_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
+  FILTERED_SEARCH_TERM_KEY,
+  FILTERED_SEARCH_NAMESPACE,
+} from '../constants';
 
 export default {
   PROJECT_DASHBOARD_TABS,
@@ -80,6 +81,6 @@ export default {
     :event-tracking="$options.eventTracking"
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
-    user-preferences-sort-key="projectsSort"
+    sort-storage-key="projects"
   />
 </template>

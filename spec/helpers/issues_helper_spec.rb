@@ -10,13 +10,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   describe '#award_user_list' do
     it 'returns a comma-separated list of the first X users' do
       user = build_stubbed(:user, name: 'Joe')
@@ -390,32 +383,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         end
 
         it { is_expected.to be_truthy }
-      end
-    end
-  end
-
-  describe "#work_items_page_title" do
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    context "when the work_items_consolidated_list_user feature flag is disabled" do
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: false)
-      end
-
-      it "returns 'Issues' as the page title" do
-        expect(helper.work_items_page_title).to eq('Issues')
-      end
-    end
-
-    context "when the work_items_consolidated_list_user feature flag is enabled" do
-      before do
-        stub_feature_flags(work_items_consolidated_list_user: true)
-      end
-
-      it "returns 'Work items' as the page title" do
-        expect(helper.work_items_page_title).to eq('Work items')
       end
     end
   end

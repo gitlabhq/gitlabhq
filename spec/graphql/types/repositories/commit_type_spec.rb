@@ -15,7 +15,7 @@ RSpec.describe GitlabSchema.types['Commit'], feature_category: :source_code_mana
       :description, :description_html, :message, :title_html, :authored_date,
       :author_name, :author_email, :author_gravatar, :author, :diffs, :web_url,
       :web_path, :pipelines, :signature_html, :signature, :committer_name,
-      :committer_email, :committed_date, :name
+      :committer_email, :committed_date, :name, :tags
     )
   end
 

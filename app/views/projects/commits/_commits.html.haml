@@ -4,6 +4,9 @@
 - ref = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - is_commits_page = local_assigns.fetch(:is_commits_page, false)
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
+- from_ref = local_assigns.fetch(:from_ref) { merge_request&.target_branch }
+- to_ref = local_assigns.fetch(:to_ref) { merge_request&.source_branch }
+- signature_path = signatures_namespace_project_compare_index_path(project_id: project, namespace_id: project.namespace, from: from_ref, to: to_ref)
 
 - commits = @commits&.map { |commit| commit.present(current_user: current_user) }
 - context_commits = @context_commits&.map { |commit| commit.present(current_user: current_user) }
@@ -14,7 +17,7 @@
     %span.day{ class: "!gl-font-bold" }= l(day, format: '%b %d, %Y')
 
   %li.gl-border-t{ data: { day: day } }
-    %ul.content-list.commit-list.flex-list
+    %ul.content-list.commit-list.flex-list.js-signature-container{ data: { 'signatures-path' => signature_path } }
       = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request, is_commits_page: is_commits_page }
 
 - if context_commits.present?

@@ -1,0 +1,26 @@
+{
+  "allOf": [
+    {
+      "$ref": "./issue.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "ISSUE",
+            "TASK",
+            "EPIC",
+            "INCIDENT",
+            "TEST_CASE",
+            "REQUIREMENT",
+            "OBJECTIVE",
+            "KEY_RESULT",
+            "TICKET"
+          ]
+        }
+      }
+    }
+  ]
+}

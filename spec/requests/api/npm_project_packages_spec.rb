@@ -368,18 +368,6 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
     subject(:request) { put url, headers: headers, as: :json }
 
-    it_behaves_like 'authorizing granular token permissions', :authorize_npm_package do
-      let(:boundary_object) { project }
-      let(:request) do
-        put api("/projects/#{project.id}/packages/npm/#{encoded_package_name}/authorize", personal_access_token: pat),
-          headers: workhorse_headers, as: :json
-      end
-
-      before do
-        project.add_developer(user)
-      end
-    end
-
     context 'with workhorse headers' do
       let(:headers) { super().merge(workhorse_headers) }
 

@@ -98,6 +98,9 @@ describe('BoardContent', () => {
                 :onStateUpdated="() => {}"/>
             </div>`,
         }),
+        EpicsSwimlanes: stubComponent(EpicsSwimlanes, {
+          template: '<div><slot name="create-list-button" /><slot /></div>',
+        }),
       },
     });
   };
@@ -229,6 +232,43 @@ describe('BoardContent', () => {
     it('hides other columns on mobile viewports', () => {
       findBoardColumns().wrappers.forEach((column) => {
         expect(column.classes()).toEqual(['!gl-hidden', '@sm/panel:!gl-inline-block']);
+      });
+    });
+
+    describe('scrolling form into view', () => {
+      let scrollIntoViewMock;
+
+      beforeEach(() => {
+        scrollIntoViewMock = jest.fn();
+        Element.prototype.scrollIntoView = scrollIntoViewMock;
+      });
+
+      afterEach(() => {
+        delete Element.prototype.scrollIntoView;
+      });
+
+      it('scrolls the form into view when transition completes', async () => {
+        await waitForPromises();
+
+        wrapper.vm.afterFormEnters();
+
+        expect(scrollIntoViewMock).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          inline: 'end',
+          block: 'nearest',
+        });
+      });
+
+      it('scrolls the form into view via watcher', async () => {
+        createComponent({
+          props: { addColumnFormVisible: false, isSwimlanesOn: true },
+        });
+        await waitForPromises();
+
+        await wrapper.setProps({ addColumnFormVisible: true });
+        await nextTick();
+
+        expect(scrollIntoViewMock).toHaveBeenCalled();
       });
     });
   });

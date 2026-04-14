@@ -1157,6 +1157,14 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     end
   end
 
+  describe '.rubygems_gemspec_file_name_regex' do
+    subject { described_class.rubygems_gemspec_file_name_regex }
+
+    it { is_expected.to match('my-gem-1.0.0.gemspec.rz') }
+    it { is_expected.to match('gem_name-2.3.4.gemspec.rz') }
+    it { is_expected.not_to match('my-gem-1.0.0.gem') }
+  end
+
   describe '.ml_model_file_name_regex' do
     subject { described_class.ml_model_file_name_regex }
 

@@ -9,6 +9,10 @@ module Mutations
 
         authorize :revoke_personal_access_token
 
+        authorize_granular_token permissions: :revoke_personal_access_token,
+          boundary: :user,
+          boundary_type: :user
+
         argument :id, ::Types::GlobalIDType[::PersonalAccessToken],
           required: true,
           description: 'Global ID of the personal access token that will be revoked.'

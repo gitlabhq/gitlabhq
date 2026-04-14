@@ -49,14 +49,6 @@ RSpec.describe Ci::PipelineVariableItem, feature_category: :continuous_integrati
     it { expect(variable.raw).to be(false) }
   end
 
-  describe '#secret_value' do
-    let(:attrs) { { key: key, secret_value: 'secret_value' } }
-
-    it 'is an alias for value for both reading and writing' do
-      expect(variable.secret_value).to eq(variable.value)
-    end
-  end
-
   describe '#raw?' do
     where(:raw) { [true, false] }
 

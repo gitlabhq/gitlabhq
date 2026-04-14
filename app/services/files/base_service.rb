@@ -9,7 +9,7 @@ module Files
 
       if current_user.present?
         git_user = Gitlab::Git::User.from_gitlab(
-          Gitlab::Auth::Identity.invert_composite_identity(current_user)
+          Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
         )
       end
 

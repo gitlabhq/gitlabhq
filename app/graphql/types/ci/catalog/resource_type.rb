@@ -97,3 +97,5 @@ module Types
     end
   end
 end
+
+Types::Ci::Catalog::ResourceType.prepend_mod_with('Types::Ci::Catalog::ResourceType')

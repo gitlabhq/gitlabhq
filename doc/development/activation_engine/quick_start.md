@@ -5,28 +5,37 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Quick start for activation engine tracking
 ---
 
-To instrument your code with the activation engine, use the
-`Activation::Metric` model directly. No event definitions or YAML
-configuration files are required.
+The activation engine uses
+[internal events](../internal_analytics/internal_event_instrumentation/_index.md)
+to record activation metrics. Events are routed to the activation engine
+through YAML-based `extra_trackers` configuration. You do not call the
+`Activation::Metric` model directly from application code.
 
 ## Record a metric
 
-Call `Activation::Metric.track` from any service, worker, or controller.
-The method is gated behind the `activation_tracking` feature flag and
-is a no-op when the flag is disabled.
+Call `Gitlab::InternalEvents.track_event` with an internal event whose
+YAML definition includes an `extra_trackers` entry for
+`Gitlab::Tracking::ActivationTracking`.
 
 ```ruby
-Activation::Metric.track(:merged_mr, user: user, namespace: project.namespace)
+Gitlab::InternalEvents.track_event('merged_mr', user: user, project: project)
 ```
 
-- `metric` (required): A symbol matching an entry in the `Activation::Metric` enum.
-- `user:` (required): The user who completed the action.
-- `namespace:` (optional): The namespace context. Subgroups are automatically
-  resolved to the root namespace.
+The corresponding event definition at `ee/config/events/merged_mr.yml`
+wires the event to activation tracking:
 
-The method uses `safe_find_or_create_by!` internally. If a record already
-exists for the same user, namespace, and metric combination, the existing
-record is returned without creating a duplicate.
+```yaml
+action: merged_mr
+internal_events: true
+extra_trackers:
+  - tracking_class: Gitlab::Tracking::ActivationTracking
+```
+
+The `Gitlab::Tracking::ActivationTracking` adapter receives the event and delegates to
+`Activation::Metric.track`. The call is a no-op when:
+
+- The `activation_tracking` feature flag is disabled.
+- A record already exists for the same user, namespace, and metric combination.
 
 ## Check if a metric is completed
 
@@ -65,12 +74,19 @@ pagination is handled by `.connection_type`.
    }
    ```
 
-1. Optional. Create a feature flag to toggle tracking for the new metric
-   independently of the global `activation_tracking` flag. Check the flag
-   at the call site before calling `Activation::Metric.track`.
+1. Create or update an event definition YAML in `ee/config/events/` with
+   the `extra_trackers` entry for `Gitlab::Tracking::ActivationTracking`. The event `action`
+   must match the enum key:
 
-1. Call `Activation::Metric.track(:new_metric, user: user)` from the
-   appropriate location in the codebase.
+   ```yaml
+   action: new_metric
+   internal_events: true
+   extra_trackers:
+     - tracking_class: Gitlab::Tracking::ActivationTracking
+   ```
+
+1. Ensure application code calls `Gitlab::InternalEvents.track_event`
+   for the corresponding event at the appropriate location.
 
 ## Feature flag
 

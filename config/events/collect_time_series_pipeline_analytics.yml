@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   property:
     description: "Time series period (for example: day, week, or month)"
-product_group: runner
+product_group: runner_core
 product_categories:
 - fleet_visibility
 milestone: '17.9'

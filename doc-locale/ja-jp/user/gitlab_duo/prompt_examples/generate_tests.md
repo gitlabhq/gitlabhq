@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: 既存の関数とクラスの包括的なテストを生成します。
 title: 既存のコードのテストを生成する
 ---
@@ -9,8 +9,8 @@ title: 既存のコードのテストを生成する
 既存の関数またはクラスに対して包括的なテストカバレッジを作成する必要がある場合は、以下のガイドラインに従ってください。
 
 - 時間の目安: 10～20分
-- レベル: 初級
-- 前提要件: IDEでコードファイルを開き、GitLab Duoチャットを利用できるようにし、テスト対象の既存コードを用意します
+- レベル: 初心者
+- 前提条件: IDEでコードファイルを開き、GitLab Duo Chatを利用できるようにし、テスト対象の既存コードを用意します
 
 ## 課題 {#the-challenge}
 
@@ -18,11 +18,11 @@ title: 既存のコードのテストを生成する
 
 ## アプローチ {#the-approach}
 
-GitLab Duoチャットとコード提案を使用して、コードを選択し、テストを生成し、カバレッジを絞り込みます。
+GitLab Duo Chatとコード提案を使用して、コードを選択し、テストを生成し、カバレッジを絞り込みます。
 
 ### ステップ1: 生成 {#step-1-generate}
 
-テストする関数またはクラスを選択し、GitLab Duoチャットを使用してテストを生成します。
+テストする関数またはクラスを選択し、GitLab Duo Chatを使用してテストを生成します。
 
 ```plaintext
 Generate tests for the selected [function_name/ClassName] by using [test_framework]:
@@ -68,9 +68,9 @@ Focus on making tests maintainable and clear.
 
 ## ヒント {#tips}
 
-- より良い結果を得るには、ファイル全体ではなく、特定の関数またはクラスを選択してください。
-- テストフレームワーク（Jest、pytest、RSpecなど）について具体的に記述してください。
-- 学習中の場合は、チャットにテストケースの背後にある理由を説明するように依頼してください。
+- より良い結果を得るには、ファイル全体ではなく、特定の関数またはクラスを選択します。
+- テストフレームワーク（Jest、pytest、RSpecなど）について具体的に記述します。
+- 学習中の場合は、テストケースの背後にある理由を説明するようにChatに依頼します。
 - コード提案を使用して、同様のテストパターンをすばやく追加します。
 - 徹底的なカバレッジのために、肯定的および否定的なテストケースの両方をリクエストします。
 

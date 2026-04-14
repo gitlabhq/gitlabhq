@@ -724,6 +724,13 @@ export const savedViewResponseFactory = ({ limit, subscribed, savedViews = null 
         savedViews: {
           __typename: 'SavedViewConnection',
           nodes: savedViews ?? (subscribed ? singleSavedView : unsubscribedSavedView),
+          pageInfo: {
+            __typename: 'PageInfo',
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: null,
+            endCursor: null,
+          },
         },
       },
     },

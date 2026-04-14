@@ -1,0 +1,7 @@
+# @feature_category: vulnerability_management
+mutation securityRefsUntrack($input: SecurityRefsUntrackInput!) {
+  securityRefsUntrack(input: $input) {
+    untrackedRefIds
+    errors
+  }
+}

@@ -41,7 +41,7 @@ This API has limitations related to epics, merge requests, and bulk push events:
 
 ## List all events
 
-Lists all events for the currently authenticated user.
+Lists all events for the authenticated user.
 Does not return events associated with epics or merge requests. Returns bulk push events with
 limited commit details.
 
@@ -125,9 +125,9 @@ Example response:
 ]
 ```
 
-## Get contribution events for a user
+## Retrieve contribution events for a user
 
-Gets the contribution events for a specified user.
+Retrieves the contribution events for a specified user.
 Does not return events associated with epics or merge requests. Returns bulk push events with
 limited commit details.
 

@@ -24,7 +24,8 @@ const (
 	keyFile  = "../../testdata/localhost.key"
 )
 
-func mockRedisServer(t *testing.T, connectReceived *atomic.Value) string {
+func mockRedisServer(t *testing.T) (string, *atomic.Value) {
+	connectReceived := &atomic.Value{}
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 
 	require.NoError(t, err)
@@ -37,7 +38,7 @@ func mockRedisServer(t *testing.T, connectReceived *atomic.Value) string {
 		conn.Write([]byte("OK\n"))
 	}()
 
-	return ln.Addr().String()
+	return ln.Addr().String(), connectReceived
 }
 
 func TestConfigureNoConfig(t *testing.T) {
@@ -91,8 +92,7 @@ func TestConfigureValidConfigX(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.scheme, func(t *testing.T) {
-			connectReceived := atomic.Value{}
-			a := mockRedisServer(t, &connectReceived)
+			a, connectReceived := mockRedisServer(t)
 
 			var u string
 			if tc.username != "" || tc.urlPassword != "" {
@@ -138,8 +138,7 @@ func TestConnectToSentinel(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.scheme, func(t *testing.T) {
-			connectReceived := atomic.Value{}
-			a := mockRedisServer(t, &connectReceived)
+			a, connectReceived := mockRedisServer(t)
 
 			addrs := []string{tc.scheme + "://" + a}
 			var sentinelUrls []config.TomlURL
@@ -547,8 +546,7 @@ func TestConfigureRedisWithTLS(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.description, func(t *testing.T) {
-			connectReceived := atomic.Value{}
-			a := mockRedisServer(t, &connectReceived)
+			a, _ := mockRedisServer(t)
 
 			parsedURL := helper.URLMustParse(tc.scheme + "://" + a)
 			redisCfg := &config.RedisConfig{
@@ -795,7 +793,7 @@ func TestConfigureSentinelWithRedisTLS(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.description, func(t *testing.T) {
-			a := mockRedisServer(t, &atomic.Value{})
+			a, _ := mockRedisServer(t)
 
 			scheme := "redis://"
 			if tc.sentinelTLSCfg != nil {

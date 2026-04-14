@@ -1,4 +1,4 @@
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { RenderBalancer } from '~/streaming/render_balancer';
 import {
   BALANCE_RATE,

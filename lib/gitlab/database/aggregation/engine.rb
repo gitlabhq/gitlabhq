@@ -27,11 +27,23 @@ module Gitlab
             Class.new(self).tap { |klass| klass.class_eval(&block) }
           end
 
+          def sql(...)
+            Arel.sql(...)
+          end
+
+          def transient(name, &expression)
+            transients[name] = expression
+          end
+
+          def transients
+            @transients ||= {}
+          end
+
           def filters(&block)
             @filters ||= []
             return @filters unless block
 
-            @filters += DefinitionsCollector.new(filters_mapping).collect(&block)
+            @filters += DefinitionsCollector.new(filters_mapping, transients: transients).collect(&block)
 
             guard_definitions_uniqueness!(filters)
 
@@ -43,7 +55,7 @@ module Gitlab
 
             return @dimensions unless block
 
-            @dimensions += DefinitionsCollector.new(dimensions_mapping).collect(&block)
+            @dimensions += DefinitionsCollector.new(dimensions_mapping, transients: transients).collect(&block)
 
             guard_definitions_uniqueness!(dimensions + metrics)
 
@@ -54,7 +66,7 @@ module Gitlab
             @metrics ||= []
             return @metrics unless block
 
-            @metrics += DefinitionsCollector.new(metrics_mapping).collect(&block)
+            @metrics += DefinitionsCollector.new(metrics_mapping, transients: transients).collect(&block)
 
             guard_definitions_uniqueness!(dimensions + metrics)
 

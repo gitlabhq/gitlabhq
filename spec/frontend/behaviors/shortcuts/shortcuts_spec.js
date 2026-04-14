@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { Mousetrap } from '~/lib/mousetrap';
 import { waitForElement } from '~/lib/utils/dom_utils';

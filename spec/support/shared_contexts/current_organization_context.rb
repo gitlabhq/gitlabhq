@@ -51,8 +51,12 @@ RSpec.configure do |rspec|
   # This ensures Current.organization is always set, preventing issues where
   # controllers or services rely on organization context.
   rspec.include_context 'with current_organization setting', type: :controller
-  rspec.include_context 'with current_organization setting', type: :request
   rspec.include_context 'with current_organization setting', type: :graphql
+
+  # Auto-tag GraphQL request specs for organization context inclusion
+  rspec.define_derived_metadata(type: :request) do |metadata|
+    metadata[:with_current_organization] = true if metadata[:file_path]&.include?('spec/requests/api/graphql/')
+  end
 
   # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true

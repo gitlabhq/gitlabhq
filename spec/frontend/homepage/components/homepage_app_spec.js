@@ -7,7 +7,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import HomepageApp from '~/homepage/components/homepage_app.vue';
 import PickUpWidget from '~/homepage/components/pick_up_widget.vue';
-import FeedbackWidget from '~/homepage/components/feedback_widget.vue';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
@@ -43,14 +42,10 @@ describe('HomepageApp', () => {
     'The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.';
   const MOCK_ASSIGNED_MERGE_REQUESTS_TEXT = 'Assigned to you';
   const MOCK_ASSIGNED_WORK_ITEMS_PATH = '/work/items/assigned/to/you/path';
-  const MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT =
-    'The number of issues is not available. Please refresh the page to try again, or visit the issue list.';
   const MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT_PLANNING_VIEW =
     'The number of work items is not available. Please refresh the page to try again, or visit the work items list.';
   const MOCK_ASSIGNED_WORK_ITEMS_TEXT = 'Assigned to you';
   const MOCK_AUTHORED_WORK_ITEMS_PATH = '/work/items/authored/to/you/path';
-  const MOCK_AUTHORED_WORK_ITEMS_ERROR_TEXT =
-    'The number of issues is not available. Please refresh the page to try again, or visit the issue list.';
   const MOCK_AUTHORED_WORK_ITEMS_TEXT = 'Authored by you';
   const MOCK_ACTIVITY_PATH = '/activity/path';
   const MOCK_DUO_CODE_REVIEW_BOT_USERNAME = 'GitLabDuo';
@@ -64,13 +59,11 @@ describe('HomepageApp', () => {
   const findAuthoredWorkItemsWidget = () => wrapper.findByTestId('authored-work-items-widget');
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findPickUpWidget = () => wrapper.findComponent(PickUpWidget);
-  const findFeedbackWidget = () => wrapper.findComponent(FeedbackWidget);
 
   function createWrapper(props = {}) {
     wrapper = shallowMountExtended(HomepageApp, {
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
-        workItemPlanningViewEnabled: false,
       },
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
@@ -79,7 +72,6 @@ describe('HomepageApp', () => {
         authoredWorkItemsPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
         activityPath: MOCK_ACTIVITY_PATH,
         lastPushEvent,
-        showFeedbackWidget: true,
         ...props,
       },
     });
@@ -98,7 +90,6 @@ describe('HomepageApp', () => {
       workItemsDataWithItems,
     ),
     assignedWorkItemsCount = 5,
-    workItemPlanningViewEnabled = false,
   } = {}) {
     userCounts.assigned_issues = assignedWorkItemsCount;
 
@@ -110,7 +101,6 @@ describe('HomepageApp', () => {
       apolloProvider: mockApollo,
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
-        workItemPlanningViewEnabled,
       },
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
@@ -119,7 +109,6 @@ describe('HomepageApp', () => {
         authoredWorkItemsPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
         activityPath: MOCK_ACTIVITY_PATH,
         lastPushEvent,
-        showFeedbackWidget: true,
       },
       stubs: {
         GlSprintf,
@@ -179,16 +168,16 @@ describe('HomepageApp', () => {
       await waitForPromises();
 
       expect(findAssignedWorkItemsWidget().props()).toEqual({
-        errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT,
+        errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT_PLANNING_VIEW,
         hasError: false,
-        cardText: 'Issues',
+        cardText: 'Work items',
         linkText: MOCK_ASSIGNED_WORK_ITEMS_TEXT,
         path: MOCK_ASSIGNED_WORK_ITEMS_PATH,
         userItems: {
           ...workItemsDataWithItems.data.currentUser.assigned,
           count: 5,
         },
-        iconName: 'work-item-issue',
+        iconName: 'work-items',
       });
     });
 
@@ -196,13 +185,13 @@ describe('HomepageApp', () => {
       await waitForPromises();
 
       expect(findAuthoredWorkItemsWidget().props()).toEqual({
-        errorText: MOCK_AUTHORED_WORK_ITEMS_ERROR_TEXT,
+        errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT_PLANNING_VIEW,
         hasError: false,
-        cardText: 'Issues',
+        cardText: 'Work items',
         linkText: MOCK_AUTHORED_WORK_ITEMS_TEXT,
         path: MOCK_AUTHORED_WORK_ITEMS_PATH,
         userItems: workItemsDataWithItems.data.currentUser.authored,
-        iconName: 'work-item-issue',
+        iconName: 'work-items',
       });
     });
 
@@ -229,33 +218,6 @@ describe('HomepageApp', () => {
           userItems: null,
         }),
       );
-    });
-
-    describe('when workItemPlanningViewEnabled is true', () => {
-      beforeEach(async () => {
-        createApolloWrapper({ workItemPlanningViewEnabled: true });
-        await waitForPromises();
-      });
-
-      it('passes correct work items props to the assigned work items widget', () => {
-        expect(findAssignedWorkItemsWidget().props()).toEqual(
-          expect.objectContaining({
-            cardText: 'Work items',
-            iconName: 'work-items',
-            errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT_PLANNING_VIEW,
-          }),
-        );
-      });
-
-      it('passes correct work items props to the authored work items widget', () => {
-        expect(findAuthoredWorkItemsWidget().props()).toEqual(
-          expect.objectContaining({
-            cardText: 'Work items',
-            iconName: 'work-items',
-            errorText: MOCK_ASSIGNED_WORK_ITEMS_ERROR_TEXT_PLANNING_VIEW,
-          }),
-        );
-      });
     });
 
     describe('query errors', () => {
@@ -408,10 +370,6 @@ describe('HomepageApp', () => {
     });
   });
 
-  it('renders the `FeedbackWidget` component', () => {
-    expect(findFeedbackWidget().exists()).toBe(true);
-  });
-
   it('passes the correct props to the `PickUpWidget` component', () => {
     expect(findPickUpWidget().props()).toEqual({
       lastPushEvent,
@@ -445,14 +403,6 @@ describe('HomepageApp', () => {
       createWrapper({ lastPushEvent: { ...lastPushEvent, show_widget: false } });
 
       expect(findPickUpWidget().exists()).toBe(true);
-    });
-  });
-
-  describe('when showFeedbackWidget is false', () => {
-    it('does not show the feedback widget', () => {
-      createWrapper({ showFeedbackWidget: false });
-
-      expect(findFeedbackWidget().exists()).toBe(false);
     });
   });
 });

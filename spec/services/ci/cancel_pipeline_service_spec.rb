@@ -216,9 +216,14 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
           extra_update_queries = 5 # transition ... => :canceled, queue pop
           extra_generic_commit_status_validation_queries = 2 # name_uniqueness_across_types
+          extra_savepoint_operations = 6
 
-          expect(control2.count)
-            .to be <= (control1.count + extra_update_queries + extra_generic_commit_status_validation_queries)
+          expected_count = control1.count +
+            extra_update_queries +
+            extra_generic_commit_status_validation_queries +
+            extra_savepoint_operations
+
+          expect(control2.count).to be <= expected_count
         end
       end
     end

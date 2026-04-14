@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormInput, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { s__, __ } from '~/locale';

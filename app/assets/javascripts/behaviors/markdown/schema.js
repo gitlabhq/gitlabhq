@@ -1,4 +1,4 @@
-import { flatMap } from 'lodash';
+import { flatMap } from 'lodash-es';
 import { Editor } from '@tiptap/vue-2';
 import OrderedMap from 'orderedmap';
 import { Schema } from '@tiptap/pm/model';

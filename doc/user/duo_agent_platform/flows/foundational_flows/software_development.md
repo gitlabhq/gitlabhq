@@ -80,7 +80,7 @@ To use the flow:
 1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The flow is aware of all files available to Git in the project branch.
-   - You can provide additional [context](../../context.md#gitlab-duo-chat-agentic)
+   - You can provide additional [context](../../context.md#gitlab-duo-agentic-chat)
      for your chat.
    - The flow cannot access external sources or the web.
    - For example:

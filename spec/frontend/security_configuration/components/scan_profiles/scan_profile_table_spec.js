@@ -47,7 +47,7 @@ describe('ScanProfileTable', () => {
         expect.arrayContaining([
           expect.objectContaining({ key: 'scanType', label: 'Scanner' }),
           expect.objectContaining({ key: 'name', label: 'Profile' }),
-          expect.objectContaining({ key: 'status', label: 'Status' }),
+          expect.objectContaining({ key: 'status', label: 'Scanner health' }),
           expect.objectContaining({ key: 'lastScan', label: 'Last scan' }),
           expect.objectContaining({ key: 'actions', label: '' }),
         ]),
@@ -61,6 +61,11 @@ describe('ScanProfileTable', () => {
     it('renders scanner type from promo item', () => {
       expect(wrapper.text()).toContain('SD');
       expect(wrapper.text()).toContain('Secret Detection');
+    });
+
+    it('renders Dependency Scanning scanner type', () => {
+      expect(wrapper.text()).toContain('DS');
+      expect(wrapper.text()).toContain('Dependency Scanning');
     });
 
     it('renders "No profile applied"', () => {

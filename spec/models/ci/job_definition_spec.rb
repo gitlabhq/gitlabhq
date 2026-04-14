@@ -189,17 +189,19 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
         end
       end
 
+      context 'when config is nil' do
+        let(:config) { nil }
+
+        it 'is invalid' do
+          expect(job_definition).not_to be_valid
+          expect(job_definition.errors[:config]).to include('value at root is not an object')
+        end
+      end
+
       context 'with invalid config structure' do
         let(:config) { 'invalid' }
 
         it 'is invalid' do
-          expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-            class: described_class.name,
-            message: 'Invalid config schema detected',
-            job_definition_checksum: job_definition.checksum,
-            project_id: job_definition.project_id,
-            schema_errors: ['value at root is not an object']
-          )
           expect(job_definition).not_to be_valid
           expect(job_definition.errors[:config]).to include('value at root is not an object')
         end
@@ -208,13 +210,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { unknown_property: 'random value' } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: ['object property at `/unknown_property` is a disallowed additional property']
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'object property at `/unknown_property` is a disallowed additional property')
@@ -246,16 +241,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
             end
 
             it 'is invalid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'object property at `/options/release/assets/links/0/unknown_prop` ' \
-                    'is a disallowed additional property'
-                ]
-              )
               expect(job_definition).not_to be_valid
               expect(job_definition.errors[:config]).to include(
                 'object property at `/options/release/assets/links/0/unknown_prop` is a disallowed additional property')
@@ -267,16 +252,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { id_tokens: { TEST_JWT_TOKEN: { id_token: { aud: nil } } } } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: [
-                'object property at `/id_tokens/TEST_JWT_TOKEN/id_token` is a disallowed additional property',
-                'object at `/id_tokens/TEST_JWT_TOKEN` is missing required properties: aud'
-              ]
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'object property at `/id_tokens/TEST_JWT_TOKEN/id_token` is a disallowed additional property',
@@ -288,13 +263,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { interruptible: {} } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: ['value at `/interruptible` is not a boolean']
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'value at `/interruptible` is not a boolean')
@@ -305,15 +273,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { run_steps: {} } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: [
-                'value at `/run_steps` is not an array'
-              ]
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'value at `/run_steps` is not an array')
@@ -324,15 +283,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { secrets: { DATABASE_PASSWORD: { vault: {} } } } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: [
-                'object at `/secrets/DATABASE_PASSWORD/vault` is missing required properties: path, field, engine'
-              ]
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'object at `/secrets/DATABASE_PASSWORD/vault` is missing required properties: path, field, engine')
@@ -343,15 +293,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { tag_list: 'one-tag' } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: [
-                'value at `/tag_list` is not an array'
-              ]
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'value at `/tag_list` is not an array')
@@ -362,15 +303,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           let(:config) { { yaml_variables: 'invalid' } }
 
           it 'is invalid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: [
-                'value at `/yaml_variables` is not one of the types: ["array", "null"]'
-              ]
-            )
             expect(job_definition).not_to be_valid
             expect(job_definition.errors[:config]).to include(
               'value at `/yaml_variables` is not one of the types: ["array", "null"]')
@@ -380,168 +312,9 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
             let(:config) { { yaml_variables: [{ key: "RAILS_ENV", unknown_property: true }] } }
 
             it 'is invalid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'object property at `/yaml_variables/0/unknown_property` is a disallowed additional property'
-                ]
-              )
               expect(job_definition).not_to be_valid
               expect(job_definition.errors[:config]).to include(
                 'object property at `/yaml_variables/0/unknown_property` is a disallowed additional property')
-            end
-          end
-        end
-
-        context 'when env is production' do
-          before do
-            allow(Rails.env).to receive(:production?).and_return(true)
-          end
-
-          it 'logs the validation errors but behaves like valid' do
-            expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-              class: described_class.name,
-              message: 'Invalid config schema detected',
-              job_definition_checksum: job_definition.checksum,
-              project_id: job_definition.project_id,
-              schema_errors: ['value at root is not an object']
-            )
-            expect(job_definition).to be_valid
-          end
-
-          context 'with invalid config properties' do
-            let(:config) { { unknown_property: 'random value' } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: ['object property at `/unknown_property` is a disallowed additional property']
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid id_tokens' do
-            let(:config) { { id_tokens: { TEST_JWT_TOKEN: { id_token: { aud: nil } } } } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'object property at `/id_tokens/TEST_JWT_TOKEN/id_token` is a disallowed additional property',
-                  'object at `/id_tokens/TEST_JWT_TOKEN` is missing required properties: aud'
-                ]
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid interruptible' do
-            let(:config) { { interruptible: {} } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: ['value at `/interruptible` is not a boolean']
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid run_steps' do
-            let(:config) { { run_steps: {} } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'value at `/run_steps` is not an array'
-                ]
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid secrets' do
-            let(:config) { { secrets: { DATABASE_PASSWORD: { vault: {} } } } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'object at `/secrets/DATABASE_PASSWORD/vault` is missing required properties: path, field, engine'
-                ]
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid tag_list' do
-            let(:config) { { tag_list: 'one-tag' } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'value at `/tag_list` is not an array'
-                ]
-              )
-              expect(job_definition).to be_valid
-            end
-          end
-
-          context 'with invalid yaml_variables' do
-            let(:config) { { yaml_variables: 'invalid' } }
-
-            it 'logs the validation errors but behaves like valid' do
-              expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                class: described_class.name,
-                message: 'Invalid config schema detected',
-                job_definition_checksum: job_definition.checksum,
-                project_id: job_definition.project_id,
-                schema_errors: [
-                  'value at `/yaml_variables` is not one of the types: ["array", "null"]'
-                ]
-              )
-              expect(job_definition).to be_valid
-            end
-
-            context 'for invalid item' do
-              let(:config) { { yaml_variables: [{ key: "RAILS_ENV", unknown_property: true }] } }
-
-              it 'logs the validation errors but behaves like valid' do
-                expect(Gitlab::AppJsonLogger).to receive(:warn).with(
-                  class: described_class.name,
-                  message: 'Invalid config schema detected',
-                  job_definition_checksum: job_definition.checksum,
-                  project_id: job_definition.project_id,
-                  schema_errors: [
-                    'object property at `/yaml_variables/0/unknown_property` is a disallowed additional property'
-                  ]
-                )
-                expect(job_definition).to be_valid
-              end
             end
           end
         end

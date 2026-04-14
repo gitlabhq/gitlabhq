@@ -28,14 +28,16 @@ GitLab provides syntax highlighting for files through two complementary systems:
 The paths here use the [`.gitattributes` interface](https://git-scm.com/docs/gitattributes) in Git.
 
 > [!note]
-> The [Web IDE](../../web_ide/_index.md) and [Snippets](../../../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
-> for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
-> library for syntax highlighting.
+> The [Web IDE](../../web_ide/_index.md) and [snippets](../../../snippets.md) use
+> the [Monaco Editor](https://microsoft.github.io/monaco-editor/) for text editing,
+> which internally uses the [Monarch library](https://microsoft.github.io/monaco-editor/monarch.html)
+> for syntax highlighting.
 
 ## Override syntax highlighting for a file type
 
 > [!note]
-> The Web IDE [does not support `.gitattribute` files](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
+> The Web IDE does not support `.gitattributes` files.
+> For more information, see [epic 18651](https://gitlab.com/groups/gitlab-org/-/work_items/18651).
 
 To override syntax highlighting for a file type:
 

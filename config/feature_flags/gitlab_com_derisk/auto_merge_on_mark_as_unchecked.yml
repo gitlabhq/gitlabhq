@@ -1,0 +1,10 @@
+---
+name: auto_merge_on_mark_as_unchecked
+description: Re-enqueue AutoMergeProcessWorker when MRs with auto-merge enabled are marked as unchecked
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594868
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229042
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594893
+milestone: '18.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

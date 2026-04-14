@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Backup::Cli::Services::GitalyBackup do
       it 'starts the gitaly-backup process with the correct arguments' do
         backup_repos_path = '/path/to/backup/repos'
         backup_id = 'abc123'
-        expected_args = ['create', '-path', backup_repos_path, '-layout', 'manifest', '-id', backup_id]
+        expected_args = ['create', '-path', backup_repos_path, '-id', backup_id]
         expect(Open3).to receive(:popen2).with(instance_of(Hash), instance_of(String), *expected_args)
 
         gitaly_backup.start(:create, backup_repos_path, backup_id: backup_id)
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Backup::Cli::Services::GitalyBackup do
         backup_repos_path = '/path/to/backup/repos'
         backup_id = 'abc123'
         remove_all_repositories = %w[repo1 repo2]
-        expected_args = ['restore', '-path', backup_repos_path, '-layout', 'manifest', '-remove-all-repositories',
+        expected_args = ['restore', '-path', backup_repos_path, '-remove-all-repositories',
           'repo1,repo2', '-id', backup_id]
         expect(Open3).to receive(:popen2).with(instance_of(Hash), instance_of(String), *expected_args)
 

@@ -51,34 +51,39 @@ module Authz
     }.freeze
 
     PRELOAD_ASSOCIATIONS = {
-      issue: [{ project: [:namespace, :project_feature, :group] }, :author, :work_item_type],
-      merge_request: [{ target_project: [:namespace, :project_feature, :group] }, :author],
-      project: [:namespace, :project_feature, :group],
-      milestone: [{ project: [:namespace, :project_feature] }, :group],
+      issue: [:namespace, :assignees, { project: [:namespace, :project_feature, :group, :organization] }, :author,
+        :work_item_type],
+      merge_request: [{ target_project: [:namespace, :project_feature, :group, :organization] }, :author],
+      project: [:namespace, :project_feature, :group, :organization],
+      milestone: [{ project: [:namespace, :project_feature, :group, :organization] }, :group],
       snippet: [{ project: [:namespace, :project_feature] }, :author],
       user: [],
       group: [:parent, :organization],
-      work_item: [:author, :work_item_type, { project: [:namespace, :project_feature, :group] },
-        { namespace: :route }]
+      work_item: [:namespace, :assignees, :author, :work_item_type,
+        { project: [:namespace, :project_feature, :group, :organization] }]
     }.freeze
 
     def self.supported_types
       RESOURCE_CLASSES.keys.map(&:to_s)
     end
 
-    def initialize(user:, resources_by_type:, source:, logger: nil)
+    def initialize(user:, resources_by_type:, source:, logger: nil, metrics_observer: nil)
       raise ArgumentError, 'user is required' if user.nil?
 
       @user = user
       @resources_by_type = resources_by_type
       @source = source
       @logger = logger
+      @metrics_observer = metrics_observer
     end
 
     def execute
       return {} if resources_by_type.empty?
 
+      start = ::Gitlab::Metrics::System.monotonic_time
+
       loaded_resources_by_type = load_all_resources
+      preseed_authorization_caches(loaded_resources_by_type)
 
       results = DeclarativePolicy.user_scope do
         resources_by_type.each_with_object({}) do |(type, config), authorization_results|
@@ -91,14 +96,46 @@ module Authz
         end
       end
 
-      log_redacted_results(results)
+      duration = ::Gitlab::Metrics::System.monotonic_time - start
+      observe_redaction_metrics(results, duration)
 
       results
     end
 
     private
 
-    attr_reader :user, :resources_by_type, :source, :logger
+    attr_reader :user, :resources_by_type, :source, :logger, :metrics_observer
+
+    def preseed_authorization_caches(loaded_resources_by_type)
+      projects, groups = collect_policy_subjects(loaded_resources_by_type)
+
+      ::Preloaders::ProjectPolicyPreloader.new(projects, user).execute if projects.any?
+      ::Preloaders::GroupPolicyPreloader.new(groups, user).execute if groups.any?
+    end
+
+    def collect_policy_subjects(loaded_resources_by_type)
+      projects = []
+      groups = []
+
+      loaded_resources_by_type.each do |type, resources|
+        resources.each_value do |resource|
+          case type
+          when :project then projects << resource
+          when :merge_request then projects << resource.target_project if resource.target_project.is_a?(::Project)
+          when :group then groups << resource
+          else
+            projects << resource.project if resource.respond_to?(:project) && resource.project.is_a?(::Project)
+            groups << resource.group if resource.respond_to?(:group) && resource.group.is_a?(::Group)
+          end
+        end
+      end
+
+      projects.uniq!(&:id)
+      projects.each { |p| groups << p.group if p.group.is_a?(::Group) }
+      groups.uniq!(&:id)
+
+      [projects, groups]
+    end
 
     def load_all_resources
       resources_by_type.each_with_object({}) do |(type, config), loaded|
@@ -142,6 +179,16 @@ module Authz
       return false unless DeclarativePolicy.has_policy?(resource)
 
       Ability.allowed?(user, ability.to_sym, resource)
+    end
+
+    def observe_redaction_metrics(results, duration)
+      if metrics_observer
+        total = results.values.sum(&:size)
+        filtered = results.values.sum { |r| r.count { |_, v| !v } }
+        metrics_observer.call(total: total, filtered: filtered, duration: duration)
+      end
+
+      log_redacted_results(results)
     end
 
     def log_redacted_results(results)

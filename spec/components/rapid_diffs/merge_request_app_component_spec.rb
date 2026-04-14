@@ -8,6 +8,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:diff_file_endpoint) { '/diff_file' }
   let(:mr_path) { '/group/project/-/merge_requests/1' }
+  let(:project_path) { 'group/project' }
   let(:merge_request) { build_stubbed(:merge_request) }
   let(:code_review_enabled) { false }
   let(:discussions_endpoint) { '/discussions' }
@@ -19,6 +20,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:markdown_docs_path) { '/markdown_docs' }
   let(:report_abuse_path) { '/report_abuse' }
   let(:versions) { { 'source_versions' => [], 'target_versions' => [] } }
+  let(:suggestions_help_path) { '/help/suggestions' }
+  let(:default_suggestion_commit_message) { 'Apply suggestion' }
 
   let(:presenter) do
     instance_double(
@@ -38,7 +41,11 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       environment: nil,
       resource: merge_request,
       mr_path: mr_path,
-      versions: versions
+      project_path: project_path,
+      versions: versions,
+      suggestions_help_path: suggestions_help_path,
+      default_suggestion_commit_message: default_suggestion_commit_message,
+      linked_file: nil
     )
   end
 
@@ -57,6 +64,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       presenter,
       extra_app_data: {
         mr_path: mr_path,
+        project_path: project_path,
         code_review_enabled: false,
         user_permissions: user_permissions,
         discussions_endpoint: discussions_endpoint,
@@ -66,6 +74,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
         sign_in_path: sign_in_path,
         report_abuse_path: report_abuse_path,
         markdown_docs_path: markdown_docs_path,
+        suggestions_help_path: suggestions_help_path,
+        default_suggestion_commit_message: default_suggestion_commit_message,
         versions: versions
       }
     )
@@ -102,7 +112,9 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     it 'includes startup_js for FOUC prevention when code review is enabled' do
       render_component
 
-      expect(component.helpers.content_for?(:startup_js)).to be(true)
+      startup_js = component.helpers.content_for(:startup_js)
+      expect(startup_js).to be_present
+      expect(startup_js).to include('const linkedFileCodeReviewId = null')
     end
 
     context 'when code review is disabled' do
@@ -112,6 +124,21 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
         render_component
 
         expect(component.helpers.content_for?(:startup_js)).to be(false)
+      end
+    end
+
+    context 'when viewing a linked file' do
+      let(:linked_file) { instance_double(Gitlab::Diff::File, code_review_id: 'linked-file-id') }
+
+      before do
+        allow(presenter).to receive(:linked_file).and_return(linked_file)
+      end
+
+      it 'excludes the linked file from FOUC prevention' do
+        render_component
+
+        startup_js = component.helpers.content_for(:startup_js)
+        expect(startup_js).to include('linked-file-id')
       end
     end
   end

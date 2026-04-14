@@ -2,7 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController, type: :request, feature_category: :system_access do
+RSpec.describe RegistrationsController, :with_current_organization, type: :request, feature_category: :system_access do
+  describe '#new' do
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it 'redirects to sign in page' do
+        get new_user_registration_path
+
+        expect(response).to redirect_to(new_user_session_path)
+        msg = _('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
+        expect(flash[:alert]).to eq(msg)
+      end
+    end
+  end
+
   describe '#create' do
     let_it_be(:user_attrs) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
     let(:expected_context) do
@@ -13,6 +29,20 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
 
     it_behaves_like 'Base action controller'
     it_behaves_like 'set_current_context'
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it 'redirects to sign in page' do
+        request
+
+        expect(response).to redirect_to(new_user_session_path)
+        msg = _('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
+        expect(flash[:alert]).to eq(msg)
+      end
+    end
 
     context 'when email confirmation is required' do
       before do

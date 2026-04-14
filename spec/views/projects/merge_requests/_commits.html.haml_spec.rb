@@ -2,13 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_need_inline do
+RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_need_inline,
+  feature_category: :source_code_management do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
   let(:user) { create(:user) }
   let(:target_project) { create(:project, :public, :repository) }
-  let(:source_project) { fork_project(target_project, user, repository: true) }
+  let(:source_project) do
+    fork_project(target_project, user, repository: true)
+  end
 
   let(:merge_request) do
     create(:merge_request, :simple,
@@ -29,7 +32,8 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
     render
 
     commit = merge_request.commits.first # HEAD
-    href = diffs_project_merge_request_path(target_project, merge_request, commit_id: commit)
+    href = diffs_project_merge_request_path(target_project,
+      merge_request, commit_id: commit)
 
     expect(rendered).to have_link(href: href)
   end
@@ -41,7 +45,9 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
   end
 
   context 'when MR has no commits' do
-    let(:merge_request) { create(:merge_request, source_project: create(:project, :custom_repo)) }
+    let(:merge_request) do
+      create(:merge_request, source_project: create(:project, :custom_repo))
+    end
 
     it 'renders empty state' do
       assign(:context_commits, [])

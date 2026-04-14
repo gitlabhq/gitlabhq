@@ -222,6 +222,65 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
     end
   end
 
+  describe '.send_changed_paths' do
+    let(:requests) do
+      [
+        Gitaly::FindChangedPathsRequest::Request.new(
+          tree_request: Gitaly::FindChangedPathsRequest::Request::TreeRequest.new(
+            left_tree_revision: 'from-sha',
+            right_tree_revision: 'to-sha'
+          )
+        )
+      ]
+    end
+
+    subject { described_class.send_changed_paths(repository, requests) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-changed-paths")
+      expect(params).to eq({
+        'GitalyServer' => {
+          'call_metadata' => features,
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'FindChangedPathsRequest' => Gitaly::FindChangedPathsRequest.new(
+          repository: repository.gitaly_repository,
+          requests: requests
+        ).to_json
+      }.deep_stringify_keys)
+    end
+  end
+
+  describe '.send_list_blobs' do
+    let(:revisions) { ['to-sha', '--not', 'from-sha'] }
+
+    subject { described_class.send_list_blobs(repository, revisions, bytes_limit: 1_048_576) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-list-blobs")
+      expect(params).to eq({
+        'GitalyServer' => {
+          'call_metadata' => features,
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'ListBlobsRequest' => Gitaly::ListBlobsRequest.new(
+          repository: repository.gitaly_repository,
+          revisions: revisions,
+          bytes_limit: 1_048_576,
+          with_paths: true
+        ).to_json
+      }.deep_stringify_keys)
+    end
+  end
+
   describe '#verify_api_request!' do
     let(:header_key) { described_class::INTERNAL_API_REQUEST_HEADER }
     let(:payload) { { 'iss' => 'gitlab-workhorse' } }

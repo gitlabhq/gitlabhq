@@ -8,7 +8,7 @@ import {
   GlAvatar,
   GlSprintf,
 } from '@gitlab/ui';
-import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash';
+import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash-es';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { createAlert } from '~/alert';
 import { __, s__, n__ } from '~/locale';

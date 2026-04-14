@@ -46,7 +46,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, 
     dashboard_count = find('.gl-tabs-nav li a.active')
     expect(dashboard_count).to have_content(count)
 
-    expect(page).to have_link('Assigned issues')
+    expect(page).to have_link('Assigned work items')
   end
 
   def expect_merge_request_count(count)

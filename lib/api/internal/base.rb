@@ -178,6 +178,7 @@ module API
         #
         # /internal/allowed
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post "/allowed", feature_category: :source_code_management do
           # It was moved to a separate method so that EE can alter its behaviour more
           # easily.
@@ -189,6 +190,7 @@ module API
         #
         # /internal/lfs_authenticate
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post "/lfs_authenticate", feature_category: :source_code_management, urgency: :high do
           not_found! unless container&.lfs_enabled?
 
@@ -209,6 +211,7 @@ module API
         #
         # /internal/authorized_keys
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         get '/authorized_keys', feature_category: :source_code_management, urgency: :high do
           fingerprint = Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint_sha256
 
@@ -224,12 +227,14 @@ module API
         #
         # /internal/discover
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         get '/discover', feature_category: :system_access do
           present actor.user, with: Entities::UserSafe
         end
 
         # /internal/check
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         get '/check', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
           {
             api_version: API.version,
@@ -241,6 +246,7 @@ module API
 
         # /internal/two_factor_recovery_codes
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/two_factor_recovery_codes', feature_category: :system_access do
           status 200
 
@@ -272,6 +278,7 @@ module API
 
         # /internal/personal_access_token
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/personal_access_token', feature_category: :system_access do
           status 200
 
@@ -324,6 +331,7 @@ module API
 
         # /internal/pre_receive
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/pre_receive', feature_category: :source_code_management do
           status 200
 
@@ -334,6 +342,7 @@ module API
 
         # /internal/post_receive
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/post_receive', feature_category: :source_code_management do
           status 200
 
@@ -350,6 +359,7 @@ module API
         #
         # /internal/two_factor_config
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/two_factor_config', feature_category: :system_access do
           status 200
 
@@ -374,6 +384,7 @@ module API
 
         # /internal/two_factor_push_otp_check
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/two_factor_push_otp_check', feature_category: :system_access do
           status 200
 
@@ -382,6 +393,7 @@ module API
 
         # /internal/two_factor_manual_otp_check
         #
+        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
         post '/two_factor_manual_otp_check', feature_category: :system_access do
           status 200
 

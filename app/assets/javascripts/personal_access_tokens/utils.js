@@ -1,7 +1,8 @@
-import { map, groupBy, uniqBy } from 'lodash';
+import { map, groupBy } from 'lodash-es';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
-import { convertToSnakeCase } from '~/lib/utils/text_utility';
+import { convertToSnakeCase, humanize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import {
   OPERATORS_AFTER,
@@ -231,39 +232,61 @@ export function convertSortToQueryParams(sort) {
 }
 
 /**
- * Groups permissions by category and resources
- * Organizes an array of permission objects into a nested structure grouped by category and resource
- * @param {Array} permissions - Array of permission objects, each with a resource and category
- * @param {string} permissions[].resource - The resource name (e.g., 'issues', 'merge_requests')
- * @param {string} permissions[].category - The permission category (e.g., 'read', 'write', 'admin')
- * @returns {Object} Nested object with categories as keys, containing resources and their permissions
+ * Groups a flat list of permissions by category and resource, with actions nested under each resource.
+ *
+ * @param {Array} permissions
+ * @returns {Array}
+ *
  * @example
  * const permissions = [
- *   { name: 'create_issue', action: 'create', resource: 'issue', resourceName: 'Issue', resourceDescription: 'Grants the ability to create issues', category: 'projects', categoryName: 'Projects' },
+ *   { name: 'read_runner', action: 'read', resource: 'runner', resourceName: 'Runner', resourceDescription: 'Grants the ability to read runners', category: 'ci_cd', categoryName: 'CI/CD' },
  * ];
- * // Returns: [
+ * // Returns:
+ * // [
  * //   {
- * //     key: 'projects',
- * //     name: 'Projects',
+ * //     key: 'ci_cd',
+ * //     name: 'CI/CD',
  * //     resources: [
- * //       { key: 'issue', name: 'Issue', description: 'Grants the ability to create issues' }
+ * //       {
+ * //         key: 'runner',
+ * //         name: 'Runner',
+ * //         description: 'Grants the ability to read runners',
+ * //         actions: [
+ * //           { value: 'read_runner', text: 'read' }
+ * //         ]
+ * //       }
  * //     ]
  * //   }
  * // ]
  */
 export function groupPermissionsByResourceAndCategory(permissions) {
-  const grouped = groupBy(permissions, 'category');
+  const groupedByCategory = groupBy(permissions, 'category');
 
-  return map(grouped, (items, category) => ({
+  return map(groupedByCategory, (items, category) => ({
     key: category,
     name: items[0]?.categoryName,
-    resources: uniqBy(
-      items.map((permission) => ({
-        key: permission.resource,
-        name: permission.resourceName,
-        description: permission.resourceDescription,
+    resources: map(groupBy(items, 'resource'), (resourceItems, resource) => ({
+      key: resource,
+      name: resourceItems[0]?.resourceName,
+      description: resourceItems[0]?.resourceDescription,
+      actions: resourceItems.map((permission) => ({
+        key: permission.name,
+        name: humanize(permission.action),
       })),
-      'key',
-    ),
+    })),
   }));
+}
+
+/**
+ * Builds the URL to redirect to the granular token creation form pre-populated
+ * from an existing token. The form fetches the source token's full scope data
+ * server-side using the ID, so no scope data is encoded in the URL.
+ * @param {Object} token - The token to duplicate (must have an `id` field)
+ * @param {string} granularNewUrl - The base URL for the granular token creation form
+ * @returns {string} URL with source_token_id query parameter
+ */
+export function buildDuplicateUrl(token, granularNewUrl) {
+  const params = new URLSearchParams({ source_token_id: getIdFromGraphQLId(token.id) });
+  const separator = granularNewUrl.includes('?') ? '&' : '?';
+  return `${granularNewUrl}${separator}${params}`;
 }

@@ -36,7 +36,8 @@ GitLabとGitLab RunnerのLinuxパッケージは、<https://packages.gitlab.com>
 
 1. 設定ファイルの最後に、`apt`ソースファイルのURL形式でミラーするリポジトリを指定します。
 
-   > [!note] GitLabとGitLab Runnerでは、リポジトリの構造が異なります。
+   > [!note]
+   > GitLabとGitLab Runnerでは、リポジトリの構造が異なります。
    >
    > ### GitLab {#gitlab}
    >
@@ -80,7 +81,8 @@ GitLabとGitLab RunnerのLinuxパッケージは、<https://packages.gitlab.com>
 
 `rpm`リポジトリのローカルミラーは、`reposync`（パッケージをダウンロードするため）および`createrepo`（メタデータを生成するため）を使用して作成できます。
 
-> [!note] `reposync`は、ミラーするリポジトリがシステムにインストールされていることを想定しています。ミラーするリポジトリの[インストールドキュメント](package/_index.md#supported-platforms)に従ってください。
+> [!note]
+> `reposync`は、ミラーするリポジトリがシステムにインストールされていることを想定しています。ミラーするリポジトリの[インストールドキュメント](package/_index.md#supported-platforms)に従ってください。
 >
 > リポジトリIDを見つけるには、次のコマンドで利用可能なリポジトリを一覧表示します:
 >

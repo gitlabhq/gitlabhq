@@ -1,19 +1,20 @@
 ---
 table_name: uploads
 classes:
-- Upload
+  - Upload
 feature_categories:
-- code_review_workflow
-- design_management
-- importers
-- portfolio_management
-- groups_and_projects
-- source_code_management
-- team_planning
-description: For tracking blob metadata. Single table inheritance is used to relate
-  this table to many other tables.
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd284058deee483bf0009f8179b792bc
-milestone: '9.0'
-gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+  - code_review_workflow
+  - design_management
+  - importers
+  - portfolio_management
+  - groups_and_projects
+  - source_code_management
+  - team_planning
+description: Partitioned table for tracking blob metadata. Single table inheritance
+  is used to relate this table to many other tables. Partitioned by model_type.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+milestone: '17.11'
+gitlab_schema: gitlab_main_cell_local
+notes: Each partition of this table is sharded and contains a constraint on the appropriate
+  columns
 table_size: large

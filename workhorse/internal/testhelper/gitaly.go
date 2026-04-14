@@ -50,6 +50,19 @@ var (
 
 	// GitalyGetSnapshotResponseMock represents mock data for Gitaly's GetSnapshotResponse.
 	GitalyGetSnapshotResponseMock = strings.Repeat("Mock Gitaly GetSnapshotResponse data", 100000)
+	// GitalyFindChangedPathsResponseMock represents mock changed paths for Gitaly's FindChangedPathsResponse.
+	GitalyFindChangedPathsResponseMock = []*gitalypb.ChangedPaths{
+		{Path: []byte("file1.txt"), Status: gitalypb.ChangedPaths_ADDED, OldMode: 0, NewMode: 0o100644},
+		{Path: []byte("dir/file2.txt"), Status: gitalypb.ChangedPaths_MODIFIED, OldMode: 0o100644, NewMode: 0o100644},
+		{Path: []byte("deleted.txt"), Status: gitalypb.ChangedPaths_DELETED, OldMode: 0o100644, NewMode: 0},
+	}
+	// GitalyListBlobsResponseMock represents mock blobs for Gitaly's ListBlobsResponse.
+	GitalyListBlobsResponseMock = &gitalypb.ListBlobsResponse{
+		Blobs: []*gitalypb.ListBlobsResponse_Blob{
+			{Oid: "abc123", Size: 5, Data: []byte("hello"), Path: []byte("file1.txt")},
+			{Oid: "def456", Size: 5, Data: []byte("world"), Path: []byte("file2.txt")},
+		},
+	}
 
 	// GitalyReceivePackResponseMock represents mock data for Gitaly's ReceivePackResponse.
 	GitalyReceivePackResponseMock []byte
@@ -380,6 +393,40 @@ func (s *GitalyTestServer) finalError() error {
 	}
 
 	return nil
+}
+
+// FindChangedPaths is a method on GitalyTestServer that handles the FindChangedPaths RPC call.
+func (s *GitalyTestServer) FindChangedPaths(in *gitalypb.FindChangedPathsRequest, stream gitalypb.DiffService_FindChangedPathsServer) error {
+	s.Add(1)
+	defer s.Done()
+
+	if err := validateRepository(in.GetRepository()); err != nil {
+		return err
+	}
+
+	if err := stream.Send(&gitalypb.FindChangedPathsResponse{
+		Paths: GitalyFindChangedPathsResponseMock,
+	}); err != nil {
+		return err
+	}
+
+	return s.finalError()
+}
+
+// ListBlobs is a method on GitalyTestServer that handles the ListBlobs RPC call.
+func (s *GitalyTestServer) ListBlobs(in *gitalypb.ListBlobsRequest, stream gitalypb.BlobService_ListBlobsServer) error {
+	s.Add(1)
+	defer s.Done()
+
+	if err := validateRepository(in.GetRepository()); err != nil {
+		return err
+	}
+
+	if err := stream.Send(GitalyListBlobsResponseMock); err != nil {
+		return err
+	}
+
+	return s.finalError()
 }
 
 func validateRepository(repo *gitalypb.Repository) error {

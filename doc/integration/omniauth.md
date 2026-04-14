@@ -269,8 +269,8 @@ provider like Google.
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
-1. In the **Connected Accounts** section, select the OmniAuth provider, such as Google.
+1. In the left sidebar, select **Access** > **Password and authentication**.
+1. In the **Service sign-in** section, select the OmniAuth provider, such as Google.
 1. You are redirected to the provider. After you authorize GitLab,
    you are redirected back to GitLab.
 
@@ -581,7 +581,7 @@ then override the icon in one of two ways:
 - **Provide a custom image path**:
 
   1. If you are hosting the image outside of your GitLab server domain, ensure
-     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration/#content-security-policy)
+     your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration/#set-a-content-security-policy)
      are configured to allow access to the image file.
   1. Depending on your method of installing GitLab, add a custom `icon` parameter
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)

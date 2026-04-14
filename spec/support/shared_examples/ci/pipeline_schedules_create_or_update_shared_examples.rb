@@ -41,7 +41,7 @@ RSpec.shared_examples 'pipeline schedules checking variables permission' do
 
   context 'when sending variables' do
     let(:variables_attributes) do
-      [{ key: 'VAR2', secret_value: 'secret 2' }]
+      [{ key: 'VAR2', value: 'secret 2' }]
     end
 
     shared_examples 'success response with variables' do

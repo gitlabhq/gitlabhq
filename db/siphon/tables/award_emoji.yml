@@ -1,0 +1,25 @@
+---
+table: award_emoji
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_award_emoji
+    priority: 100
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - namespace_id
+        - organization_id
+    refresh_on_change:
+      - target_stream_identifier: merge_requests
+        target_keys:
+          - id
+        source_keys:
+          - awardable_id
+      - target_stream_identifier: issues
+        target_keys:
+          - id
+        source_keys:
+          - awardable_id

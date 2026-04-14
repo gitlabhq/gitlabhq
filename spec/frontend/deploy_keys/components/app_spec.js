@@ -131,7 +131,7 @@ describe('Deploy keys app component', () => {
     });
 
     it('triggers changing the scope on click', async () => {
-      await findNavigationTabs().vm.$emit('onChangeTab', scope);
+      await findNavigationTabs().vm.$emit('on-change-tab', scope);
 
       expect(scopeMutationMock).toHaveBeenCalledWith(
         expect.anything(),
@@ -155,7 +155,7 @@ describe('Deploy keys app component', () => {
 
     scopeMutationMock.mockRejectedValue(error);
     await mountComponent();
-    await findNavigationTabs().vm.$emit('onChangeTab', scope);
+    await findNavigationTabs().vm.$emit('on-change-tab', scope);
     await waitForPromises();
 
     expect(captureException).toHaveBeenCalledWith(error, { tags: { deployKeyScope: scope } });
@@ -341,7 +341,7 @@ describe('Deploy keys app component', () => {
 
     it('clears search value when tab changes', async () => {
       await findFilteredSearch().vm.$emit('submit', [{ type: 'title', value: { data: 'test' } }]);
-      await findNavigationTabs().vm.$emit('onChangeTab', 'enabled');
+      await findNavigationTabs().vm.$emit('on-change-tab', 'enabled');
       expect(findFilteredSearch().props('value')).toEqual([
         { id: expect.anything(), type: 'filtered-search-term', value: { data: '' } },
       ]);

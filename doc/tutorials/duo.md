@@ -8,7 +8,7 @@ title: 'Tutorials: GitLab Duo'
 
 Use AI-native features in GitLab to enhance your workflows across the software development lifecycle.
 
-## Ask GitLab Duo Chat (agentic)
+## Ask GitLab Duo Agentic Chat
 
 Chat interactively and get immediate feedback.
 

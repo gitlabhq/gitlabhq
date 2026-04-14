@@ -3,7 +3,9 @@ package duoworkflow
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -11,10 +13,17 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"google.golang.org/protobuf/proto"
+)
+
+var (
+	errResponseBodySizeLimitExceeded = errors.New("response body exceeded size limit")
+	errRequestAborted                = errors.New("request aborted")
 )
 
 // ActionResponseBodyLimit is the maximum size of response body that can be received.
@@ -31,24 +40,27 @@ type runHTTPActionHandler struct {
 }
 
 type nullResponseWriter struct {
-	header http.Header
-	status int
-	body   bytes.Buffer
-	logger *log.Builder
+	header       http.Header
+	status       int
+	body         bytes.Buffer
+	logger       *log.Builder
+	sizeLimitHit bool
 }
 
 func (w *nullResponseWriter) Write(p []byte) (int, error) {
 	available := ActionResponseBodyLimit - w.body.Len()
 	if available <= 0 {
+		w.sizeLimitHit = true
 		w.logger.WithFields(log.Fields{
 			"current_size":    w.body.Len(),
 			"limit":           ActionResponseBodyLimit,
 			"attempted_write": len(p),
 		}).Error("nullResponseWriter: response body limit exceeded, dropping data")
-		return 0, nil
+		return 0, io.ErrShortWrite
 	}
 
 	if len(p) > available {
+		w.sizeLimitHit = true
 		// Write only what fits within the limit
 		w.logger.WithFields(log.Fields{
 			"requested_bytes": len(p),
@@ -57,7 +69,7 @@ func (w *nullResponseWriter) Write(p []byte) (int, error) {
 			"limit":           ActionResponseBodyLimit,
 		}).Error("nullResponseWriter: partial write due to size limit")
 		n, _ := w.body.Write(p[:available])
-		return n, nil
+		return n, io.ErrShortWrite
 	}
 
 	return w.body.Write(p)
@@ -82,10 +94,12 @@ func serveHTTPSafe(h http.Handler, w http.ResponseWriter, r *http.Request) (err 
 	defer func() {
 		if p := recover(); p != nil {
 			if p == http.ErrAbortHandler {
-				if ctxErr := r.Context().Err(); ctxErr != nil {
-					err = fmt.Errorf("serveHTTPSafe: request aborted with context error: %w", ctxErr)
+				if nrw, ok := w.(*nullResponseWriter); ok && nrw.sizeLimitHit {
+					err = fmt.Errorf("%w (%d bytes)", errResponseBodySizeLimitExceeded, ActionResponseBodyLimit)
+				} else if ctxErr := r.Context().Err(); ctxErr != nil {
+					err = fmt.Errorf("%w: %w", errRequestAborted, ctxErr)
 				} else {
-					err = fmt.Errorf("serveHTTPSafe: request aborted")
+					err = errRequestAborted
 				}
 			} else {
 				panic(p)
@@ -97,36 +111,9 @@ func serveHTTPSafe(h http.Handler, w http.ResponseWriter, r *http.Request) (err 
 }
 
 func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, error) {
-	action := a.action.GetRunHTTPRequest()
-
-	var bodyBuffer bytes.Buffer
-	if action.Body != nil {
-		bodyBuffer.WriteString(*action.Body)
-	}
-
-	actionURL, err := url.Parse(action.Path)
+	req, err := a.buildRequest(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	reqURL := a.rails.URL.ResolveReference(actionURL).String()
-	req, err := http.NewRequestWithContext(ctx, action.Method, reqURL, &bodyBuffer)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", a.token))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Agent-Flow-via-GitLab-Workhorse")
-
-	if clientIP, _, splitHostErr := net.SplitHostPort(a.originalReq.RemoteAddr); splitHostErr == nil {
-		// If we aren't the first proxy retain prior X-Forwarded-For information as a comma+space separated list and fold multiple headers into one.
-		var header string
-		if prior, ok := a.originalReq.Header["X-Forwarded-For"]; ok {
-			header = strings.Join(prior, ", ") + ", " + clientIP
-		} else {
-			header = clientIP
-		}
-		req.Header.Set("X-Forwarded-For", header)
 	}
 
 	logger := log.WithContextFields(a.originalReq.Context(), log.Fields{
@@ -179,4 +166,47 @@ func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err err
 	}
 
 	return ce
+}
+
+func (a *runHTTPActionHandler) buildRequest(ctx context.Context) (*http.Request, error) {
+	action := a.action.GetRunHTTPRequest()
+
+	var bodyBuffer bytes.Buffer
+	if action.Body != nil {
+		bodyBuffer.WriteString(*action.Body)
+	}
+
+	actionURL, err := url.Parse(action.Path)
+	if err != nil {
+		return nil, err
+	}
+
+	reqURL := a.rails.URL.ResolveReference(actionURL).String()
+	req, err := http.NewRequestWithContext(ctx, action.Method, reqURL, &bodyBuffer)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", a.token))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "Agent-Flow-via-GitLab-Workhorse")
+
+	tokenString, err := secret.JWTTokenString(secret.DefaultClaims)
+	if err != nil {
+		return nil, fmt.Errorf("buildRequest: failed to generate JWT token: %w", err)
+	}
+	req.Header.Set("Gitlab-Workhorse", version.GetApplicationVersion())
+	req.Header.Set(secret.RequestHeader, tokenString)
+
+	if clientIP, _, splitHostErr := net.SplitHostPort(a.originalReq.RemoteAddr); splitHostErr == nil {
+		// If we aren't the first proxy retain prior X-Forwarded-For information as a comma+space separated list and fold multiple headers into one.
+		var header string
+		if prior, ok := a.originalReq.Header["X-Forwarded-For"]; ok {
+			header = strings.Join(prior, ", ") + ", " + clientIP
+		} else {
+			header = clientIP
+		}
+		req.Header.Set("X-Forwarded-For", header)
+	}
+
+	return req, nil
 }

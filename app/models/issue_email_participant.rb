@@ -7,6 +7,7 @@ class IssueEmailParticipant < ApplicationRecord
   include EachBatch
 
   belongs_to :issue
+  belongs_to :namespace
 
   validates :email, uniqueness: { scope: [:issue_id], case_sensitive: false }
   validates :issue, presence: true

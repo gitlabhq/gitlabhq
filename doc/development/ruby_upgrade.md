@@ -10,7 +10,7 @@ security updates and new Ruby APIs. When upgrading Ruby across GitLab, we should
 so in a way that:
 
 - Is least disruptive to contributors.
-- Optimizes for GitLab SaaS availability.
+- Optimizes for GitLab.com availability.
 - Maintains Ruby version parity across all parts of GitLab.
 
 Before making changes to Ruby versions, read through this document carefully and entirely to get a high-level
@@ -54,9 +54,9 @@ Before any upgrade, consider all audiences and targets, ordered by how immediate
    Instead, they use the Ruby installed in the Docker container they execute in, which is defined in `.gitlab-ci.yml`.
    The container images used in these jobs are maintained in the [`gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images) repository.
    When we merge an update to an image, CI/CD jobs are affected as soon as the [image is built](https://gitlab.com/gitlab-org/gitlab-build-images/#pushing-a-rebuild-image).
-1. **GitLab SaaS**. GitLab.com is deployed from customized Helm charts that use Docker images from [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG).
+1. **GitLab.com**. GitLab.com is deployed from customized Helm charts that use Docker images from [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG).
    Just like CI/CD, `.ruby-version` is meaningless in this environment. Instead, those Docker images must be patched to upgrade Ruby.
-   GitLab SaaS is affected with the next deployment.
+   GitLab.com is affected with the next deployment.
 1. **GitLab Self-Managed.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
    Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
    GitLab Self-Managed customers are affected as soon as they upgrade to the release containing this change.
@@ -187,7 +187,7 @@ there should be a grace period (1 week at minimum) during which developers can
 install the new Ruby on their machines. For GDK and `asdf` users this should happen automatically
 via `gdk update`.
 
-This pause is a good time to assess the risk of this upgrade for GitLab SaaS.
+This pause is a good time to assess the risk of this upgrade for GitLab.com.
 For Ruby upgrades that are high risk, such as major version upgrades, it is recommended to
 coordinate the changes with the infrastructure team through a [change management request](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/).
 Create this issue early to give everyone enough time to schedule and prepare changes.
@@ -239,24 +239,13 @@ for how to proceed.
 
 There are several tools that ease the upgrade process.
 
-### Deprecation Toolkit
-
-A common problem with Ruby upgrades is that deprecation warnings turn into errors. This means that every single
-deprecation warning must be resolved before making the switch. To avoid new warnings from making it into the
-main application branch, we use [`DeprecationToolkitEnv`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/deprecation_toolkit_env.rb).
-This module observes deprecation warnings emitted from spec runs and turns them into test failures. This prevents
-developers from checking in new code that would fail under a new Ruby.
-
-Sometimes it cannot be avoided to introduce new warnings, for example when a Ruby gem we use emits these warnings
-and we have no control over it. In these cases, add silences, like [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68865) did.
-
 ### Deprecation Logger
 
 We also log Ruby and Rails deprecation warnings to a dedicated log file, `log/deprecation_json.log`
 (see [GitLab Developers Guide to Logging](logging.md) for where to find GitLab log files),
-which can provide clues when there is code that is not adequately covered by tests and hence would slip past `DeprecationToolkitEnv`.
+which can provide clues when there is code that is not adequately covered by tests.
 
-For GitLab SaaS, GitLab team members can inspect these log events in Kibana
+For GitLab.com, GitLab team members can inspect these log events in Kibana
 (`https://log.gprd.gitlab.net/goto/f7cebf1ff05038d901ba2c45925c7e01`).
 
 ## Recommendations

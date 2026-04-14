@@ -3,7 +3,7 @@ stage: AI-powered
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Advanced search
-description: "Use advanced search to find code, commits, issues, and merge requests across your entire GitLab instance."
+description: "Use advanced search to find code, commits, work items, and merge requests across your entire GitLab instance."
 ---
 
 {{< details >}}
@@ -28,8 +28,7 @@ Advanced search works in:
 - Code
 - Comments
 - Commits
-- Epics
-- Issues
+- Work items
 - Merge requests
 - Milestones
 - Projects
@@ -73,8 +72,7 @@ The following scopes are available for advanced search:
 | Code                        | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Comments                    | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Commits                     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Epics                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
-| Issues <sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Work items <sup>3</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Milestones <sup>4</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
@@ -87,7 +85,7 @@ The following scopes are available for advanced search:
    On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
    An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
 1. On GitLab.com, global search is not enabled for code, commits, and wikis.
-1. When you search issues and merge requests, results
+1. When you search work items and merge requests, results
    include comments that match your search term.
 1. Advanced search returns only project milestones because group milestones are not indexed
    in Elasticsearch. For more information, see

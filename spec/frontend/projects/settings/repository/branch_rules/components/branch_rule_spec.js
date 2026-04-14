@@ -13,6 +13,7 @@ import {
   branchRulePropsMock,
   branchRuleWithoutDetailsPropsMock,
   squashOptionMockResponse,
+  accessLevelsWithDeployKeyMockResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -159,6 +160,21 @@ describe('Branch rule', () => {
         .join(' ');
 
       expect(detailsText).not.toContain('Allowed to merge:');
+    });
+
+    it('renders push access levels with deploy key instead of Maintainers', async () => {
+      await createComponent({
+        branchProtection: {
+          ...branchRulePropsMock.branchProtection,
+          pushAccessLevels: {
+            edges: accessLevelsWithDeployKeyMockResponse,
+          },
+        },
+      });
+
+      const detailsText = findProtectionDetailsListItems().wrappers.map((item) => item.text());
+
+      expect(detailsText).toContain('Allowed to push and merge: No one, 1 deploy key');
     });
 
     it('renders merge access levels text with roles and deploy keys', async () => {

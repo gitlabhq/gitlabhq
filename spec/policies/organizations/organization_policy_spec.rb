@@ -31,10 +31,18 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
 
     context 'when admin mode is enabled', :enable_admin_mode do
       it { is_expected.to be_allowed(:admin_organization) }
-      it { is_expected.to be_allowed(:access_organization_admin_area) }
       it { is_expected.to be_allowed(:create_group) }
       it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_allowed(:read_organization_user) }
+      it { expect_allowed(:access_organization_admin_area) }
+
+      context 'when org_admin_area feature flag is disabled' do
+        before do
+          stub_feature_flags(org_admin_area: false)
+        end
+
+        it { is_expected.to be_disallowed(:access_organization_admin_area) }
+      end
     end
 
     context 'when admin mode is disabled' do
@@ -59,10 +67,10 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     end
 
     it { is_expected.to be_disallowed(:admin_organization) }
-    it { is_expected.to be_disallowed(:access_organization_admin_area) }
     it { is_expected.to be_allowed(:create_group) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { expect_disallowed(:access_organization_admin_area) }
   end
 
   context 'when the user is an owner of the organization' do
@@ -74,15 +82,22 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:create_group) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_organization_user) }
+    it { expect_allowed(:access_organization_admin_area) }
 
-    it { is_expected.to be_allowed(:access_organization_admin_area) }
+    context 'when org_admin_area feature flag is disabled' do
+      before do
+        stub_feature_flags(org_admin_area: false)
+      end
+
+      it { expect_disallowed(:access_organization_admin_area) }
+    end
   end
 
   context 'when the user is not part of the organization' do
     it { is_expected.to be_disallowed(:admin_organization) }
-    it { is_expected.to be_disallowed(:access_organization_admin_area) }
     it { is_expected.to be_disallowed(:create_group) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { expect_disallowed(:access_organization_admin_area) }
 
     context 'when the organization is private' do
       it { is_expected.to be_disallowed(:read_organization) }

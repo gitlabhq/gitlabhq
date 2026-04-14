@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Serverless::DomainEntity do
+RSpec.describe Serverless::DomainEntity, feature_category: :deployment_management do
   describe '#as_json' do
-    let(:domain) { create(:pages_domain, :instance_serverless) }
+    let(:domain) { build_stubbed(:pages_domain, :instance_serverless) }
 
     subject { described_class.new(domain).as_json }
 

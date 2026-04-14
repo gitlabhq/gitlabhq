@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'gitlab/rspec/stub_env'
 require_relative '../../../scripts/click_house/schema_validator'
 
 RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
@@ -10,6 +11,55 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     before do
       # Suppress puts output during tests
       allow($stdout).to receive(:puts)
+    end
+
+    context 'when skip validation label is present' do
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'backend,pipeline:skip-check-clickhouse-schema,database')
+      end
+
+      it 'returns true without running migrations' do
+        expect(described_class).not_to receive(:system)
+        expect(described_class.validate!).to be true
+      end
+
+      it 'prints skip message' do
+        expect($stdout).to receive(:puts).with(
+          "\e[32mLabel pipeline:skip-check-clickhouse-schema is present, skipping schema validation\e[0m"
+        )
+
+        described_class.validate!
+      end
+    end
+
+    context 'when skip validation label is not present' do
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'backend,database')
+        allow(described_class).to receive(:execute_git_diff).and_return('')
+      end
+
+      it 'proceeds with validation' do
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
+
+        described_class.validate!
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is not set' do
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', nil)
+        allow(described_class).to receive(:execute_git_diff).and_return('')
+      end
+
+      it 'proceeds with validation' do
+        expect(described_class).to receive(:system)
+          .with('bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main')
+          .and_return(true)
+
+        described_class.validate!
+      end
     end
 
     context 'when migration fails' do
@@ -97,13 +147,19 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
             expect(described_class.validate!).to be false
           end
 
-          it 'prints change detection messages' do
+          it 'prints change detection messages with skip label hint' do
             expect($stdout).to receive(:puts).with('Running ClickHouse migrations...')
             expect($stdout).to receive(:puts).with('Checking for schema changes...')
             expect($stdout).to receive(:puts).with('Schema has uncommitted changes after migration')
             expect($stdout).to receive(:puts).with("Changes detected in: #{schema_filename}")
             expect($stdout).to receive(:puts).with('Diff output:')
             expect($stdout).to receive(:puts).with(schema_diff)
+            expect($stdout).to receive(:puts).with(
+              "Please investigate. Apply the 'pipeline:skip-check-clickhouse-schema' label to skip this check " \
+                "if needed. If you are unsure why this job is failing for your MR, then please refer to this page: " \
+                "https://docs.gitlab.com/development/database/clickhouse/reviewer_guidelines.html" \
+                "#ensuring-database-schema-consistency"
+            )
 
             described_class.validate!
           end
@@ -237,9 +293,51 @@ RSpec.describe ClickHouse::SchemaValidator, feature_category: :database do
     end
   end
 
+  describe '.skip_validation?' do
+    subject(:skip_validation) { described_class.skip_validation? }
+
+    before do
+      stub_env('CI_MERGE_REQUEST_LABELS', labels)
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS contains the skip label' do
+      let(:labels) { 'backend,pipeline:skip-check-clickhouse-schema,database' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS does not contain the skip label' do
+      let(:labels) { 'backend,database' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is empty' do
+      let(:labels) { '' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is not set' do
+      let(:labels) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS contains a partial match' do
+      let(:labels) { 'pipeline:skip-check-clickhouse-schema-other' }
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe 'constants' do
     it 'defines the correct schema filename' do
       expect(described_class::SCHEMA_FILENAME).to eq('db/click_house/main.sql')
+    end
+
+    it 'defines the correct skip validation label' do
+      expect(described_class::SKIP_VALIDATION_LABEL).to eq('pipeline:skip-check-clickhouse-schema')
     end
   end
 

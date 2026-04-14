@@ -71,6 +71,10 @@ module Gitlab
 
       def process_batch(batch)
         batch.each do |parent_record|
+          # Skip records not imported from GitHub to avoid making API calls for
+          # locally-created records whose IIDs don't correspond to GitHub numbers.
+          next unless parent_record.imported_from_github?
+
           # The page keyset needs to be scoped by parent_record to avoid skipping
           # pages of notes from already imported parent_record.
           page_keyset = Gitlab::Import::PageKeyset.new(project, page_keyset_id(parent_record), ::Import::SOURCE_GITHUB)

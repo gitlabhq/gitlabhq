@@ -139,7 +139,7 @@ module ActiveContext
     end
 
     def partition
-      "#{partition_name}#{ActiveContext.adapter.separator}#{partition_number}"
+      "#{partition_name}#{ActiveContext.separator}#{partition_number}"
     end
   end
 end

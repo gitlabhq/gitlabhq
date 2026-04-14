@@ -148,7 +148,8 @@ Special labels:
 - `pipeline::expedited` -- skip most jobs
 - `pipeline:run-all-rspec` -- force all RSpec jobs
 - `pipeline:run-all-jest` -- force all Jest jobs
-- `pipeline:run-as-if-foss` -- run FOSS compatibility
+- `pipeline:run-as-if-foss` -- run full FOSS compatibility
+- `pipeline:as-if-foss-run-predictive` -- run FOSS compatibility with predictive tests only
 - `pipeline:run-search-tests` -- run Elasticsearch/OpenSearch tests
 - `pipeline:run-praefect-with-db` -- run Praefect DB tests
 - `pipeline:update-cache` -- force cache updates

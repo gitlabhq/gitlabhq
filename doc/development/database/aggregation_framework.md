@@ -78,7 +78,7 @@ Calculates the average value using `AVG()`.
 | `name` | Symbol | Yes | Column name to average. Identifier becomes `:mean_{name}` |
 | `type` | Symbol | No | Data type. Default: `:float` |
 | `expression` | Proc | No | Custom Arel expression instead of column |
-| `scope_proc` | Proc | No | Modifies the ActiveRecord scope (e.g., for JOINs) |
+| `scope_proc` | Proc | No | Modifies the ActiveRecord scope (for example for JOINs) |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
@@ -91,7 +91,7 @@ Groups results by a column value.
 | `name` | Symbol | Yes | Column name or identifier |
 | `type` | Symbol | Yes | Data type (`:string`, `:integer`, `:datetime`, etc.) |
 | `expression` | Proc | No | Custom Arel expression instead of column |
-| `scope_proc` | Proc | No | Modifies the ActiveRecord scope (e.g., for JOINs) |
+| `scope_proc` | Proc | No | Modifies the ActiveRecord scope (for example for JOINs) |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
@@ -308,6 +308,7 @@ Groups results by a column value.
 | `expression` | Proc | No | Custom expression instead of column |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
+| `association` | Boolean | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Defaults to `false`. |
 
 #### `date_bucket` dimension
 
@@ -351,6 +352,43 @@ Filters rows by value range using `BETWEEN`. Supports filtering on regular colum
 | `expression` | Proc | No | Custom expression instead of column |
 | `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
 | `description` | String | No | Human-readable description |
+
+## Transient columns
+
+Transient columns are named SQL expression aliases you define once and
+reference across `dimensions`, `metrics`, and `filters` blocks. They are
+not projected in the final query result. Use transient columns to
+eliminate duplication of complex SQL expressions.
+
+### Define a transient column
+
+Call `transient` at the class level with a name and a block that returns
+an Arel expression. Define transient columns before you reference them.
+
+```ruby
+transient(:duration) do
+  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+end
+
+transient(:is_finished) { sql('anyIfMerge(finished_event_at) IS NOT NULL') }
+```
+
+### Reference a transient column
+
+Inside `dimensions`, `metrics`, or `filters` blocks, call
+`transient(:name)` to insert the stored expression. Pass the return
+value anywhere a lambda expression is accepted: as a positional
+argument or as a keyword argument value.
+
+```ruby
+metrics do
+  mean :duration, :float, transient(:duration),
+    description: 'Average session duration in seconds'
+
+  count :finished, if: transient(:is_finished),
+    description: 'Number of finished sessions'
+end
+```
 
 ## Using the Framework
 

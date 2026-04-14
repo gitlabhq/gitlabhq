@@ -10,7 +10,7 @@ import { allRunnersData } from '../mock_data';
 const mockRunner = allRunnersData.data.runners.nodes[0];
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('RunnerDeleteDisclosureDropdownItem', () => {
   let wrapper;

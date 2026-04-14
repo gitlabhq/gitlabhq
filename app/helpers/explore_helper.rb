@@ -53,7 +53,9 @@ module ExploreHelper
   def explore_groups_app_data
     {
       endpoint: explore_groups_path(format: :json),
-      initial_sort: group_project_list_sort_by,
+      # TODO: Replace with `group_project_list_sort_by` after we fix the performance issue with the date columns
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/588691
+      initial_sort: 'id_desc',
       base_path: explore_groups_path
     }
   end

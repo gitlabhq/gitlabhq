@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     onClickResetCache() {
-      this.$emit('resetRunnersCache', this.resetCachePath);
+      this.$emit('reset-runners-cache', this.resetCachePath);
     },
   },
 };

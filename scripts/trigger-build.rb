@@ -611,24 +611,39 @@ module Trigger
     end
 
     #
-    # Remove a remote environment in the docs-gitlab-com project.
+    # Stop a remote environment in the docs-gitlab-com project.
     #
     def cleanup!
-      environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
-      return unless environment
+      puts "=> Looking for downstream environment '#{downstream_environment}' in project '#{downstream_project_path}'"
 
-      environment = com_gitlab_client.stop_environment(downstream_project_path, environment.id)
-      if environment.state == 'stopped'
-        puts "=> Downstream environment '#{downstream_environment}' stopped."
+      environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
+
+      unless environment
+        puts "=> No environment found matching '#{downstream_environment}'. Nothing to clean up."
+        return
+      end
+
+      puts "=> Found environment: id=#{environment.id}, state=#{environment.state}"
+
+      begin
+        environment = com_gitlab_client.stop_environment(downstream_project_path, environment.id)
+      rescue Gitlab::Error::ResponseError => e
+        puts "=> Failed to stop downstream environment '#{downstream_environment}': #{e.message}"
+        exit 1
+      end
+
+      if %w[stopped stopping].include?(environment.state)
+        puts "=> Downstream environment '#{downstream_environment}' (id=#{environment.id}) stopped."
       else
-        puts "=> Downstream environment '#{downstream_environment}' failed to stop."
+        puts "=> Downstream environment '#{downstream_environment}' (id=#{environment.id}) failed to stop. State: #{environment.state}"
+        exit 1
       end
     end
 
     private
 
     def downstream_environment
-      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
+      "review/mr-#{review_slug}"
     end
 
     def review_slug
@@ -671,6 +686,10 @@ module Trigger
         'charts'
       when 'gitlab-org/cloud-native/gitlab-operator'
         'operator'
+      when 'gitlab-org/cli'
+        'cli'
+      when 'gitlab-org/orbit/knowledge-graph'
+        'orbit'
       when 'gitlab-org/gitlab-environment-toolkit'
         'get'
       end

@@ -1,6 +1,6 @@
 import { ApolloLink, Observable } from '@apollo/client/core';
 import { parse } from 'graphql';
-import { isEqual, pickBy } from 'lodash';
+import { isEqual, pickBy } from 'lodash-es';
 
 /**
  * Remove undefined values from object

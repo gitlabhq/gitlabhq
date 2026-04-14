@@ -38,6 +38,7 @@ module API
 
         use :pagination
       end
+      route_setting :authorization, permissions: :read_label, boundary_type: :project
       get ':id/labels' do
         get_labels(user_project, Entities::ProjectLabel, declared_params)
       end
@@ -51,6 +52,7 @@ module API
         optional :include_ancestor_groups, type: Boolean, default: true,
           desc: 'Include ancestor groups'
       end
+      route_setting :authorization, permissions: :read_label, boundary_type: :project
       get ':id/labels/:name' do
         get_label(user_project, Entities::ProjectLabel, declared_params)
       end
@@ -63,6 +65,7 @@ module API
         use :label_create_params
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
       end
+      route_setting :authorization, permissions: :create_label, boundary_type: :project
       post ':id/labels' do
         create_label(user_project, Entities::ProjectLabel)
       end
@@ -78,6 +81,7 @@ module API
         use :project_label_update_params
         exactly_one_of :label_id, :name
       end
+      route_setting :authorization, permissions: :update_label, boundary_type: :project
       put ':id/labels' do
         update_label(user_project, Entities::ProjectLabel)
       end
@@ -92,6 +96,7 @@ module API
         optional :name, type: String, desc: 'The name of the label to be deleted'
         exactly_one_of :label_id, :name
       end
+      route_setting :authorization, permissions: :delete_label, boundary_type: :project
       delete ':id/labels' do
         delete_label(user_project)
       end
@@ -104,6 +109,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the label to be promoted'
       end
+      route_setting :authorization, permissions: :promote_label, boundary_type: :project
       put ':id/labels/promote' do
         promote_label(user_project)
       end
@@ -117,6 +123,7 @@ module API
         requires :name, type: String, desc: 'The name or id of the label to be updated'
         use :project_label_update_params
       end
+      route_setting :authorization, permissions: :update_label, boundary_type: :project
       put ':id/labels/:name' do
         update_label(user_project, Entities::ProjectLabel)
       end
@@ -129,6 +136,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name or id of the label to be deleted'
       end
+      route_setting :authorization, permissions: :delete_label, boundary_type: :project
       delete ':id/labels/:name' do
         delete_label(user_project)
       end
@@ -141,6 +149,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name or id of the label to be promoted'
       end
+      route_setting :authorization, permissions: :promote_label, boundary_type: :project
       put ':id/labels/:name/promote' do
         promote_label(user_project)
       end

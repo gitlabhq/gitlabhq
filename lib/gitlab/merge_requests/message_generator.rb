@@ -34,6 +34,25 @@ module Gitlab
         )
       end
 
+      def new_mr_title(template)
+        return unless template.present?
+
+        result = replace_placeholders(
+          template,
+          allowed_placeholders: ALLOWED_NEW_MR_TITLE_PLACEHOLDERS
+        )
+        # Title must be single-line; take only the first line if placeholders
+        # expanded to multi-line content (e.g. %{first_commit} with a body).
+        result.lines.first&.strip.presence
+      end
+
+      def self.humanize_branch_name(branch_name)
+        branch_name.to_s
+          .tr('_-', ' ')
+          .lstrip
+          .humanize
+      end
+
       private
 
       attr_reader :merge_request, :current_user
@@ -88,6 +107,9 @@ module Gitlab
         'merge_request_author' => ->(merge_request, _, _) {
           "#{merge_request.author&.name} <#{merge_request.author&.commit_email_or_default}>"
         },
+        'title_from_branch' => ->(merge_request, _, _) {
+          MessageGenerator.humanize_branch_name(merge_request.source_branch)
+        },
         'all_commits' => ->(merge_request, _, _) do
           merge_request
             .recent_commits(load_from_gitaly: true)
@@ -117,6 +139,14 @@ module Gitlab
         first_multiline_commit_description
         co_authored_by
         all_commits
+      ].freeze
+
+      ALLOWED_NEW_MR_TITLE_PLACEHOLDERS = %w[
+        source_branch
+        target_branch
+        title_from_branch
+        first_commit
+        first_multiline_commit
       ].freeze
 
       PLACEHOLDERS_COMBINED_REGEX = /%{(#{Regexp.union(PLACEHOLDERS.keys)})}/

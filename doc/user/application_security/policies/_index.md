@@ -320,25 +320,22 @@ A green checkmark in the first column indicates that the policy is enabled and e
 
 ## Policy editor
 
+The policy editor has two modes:
+
+- Rule mode: Construct and preview policy rules using rule blocks and related controls.
+- YAML mode: Enter a policy definition in YAML format. Suitable for expert users and cases that
+  the rule mode doesn't support.
+
+You can switch between rule mode and YAML mode at any time. If your YAML has errors or
+unsupported data, rule mode turns off automatically. Fix the YAML first to use rule mode again.
+
 Use the policy editor to create, edit, and delete policies:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Policies**.
-   - To create a new policy, select **New policy** which is located in the **Policies** page's header.
-     You can then select which type of policy to create.
+   - To create a new policy, select **New policy** in the **Policies** page header,
+     then select the policy type.
    - To edit an existing policy, select **Edit policy** in the selected policy drawer.
-
-   The policy editor has two modes:
-
-   Rule mode
-   : Construct and preview policy rules using rule blocks and related controls.
-
-   YAML mode
-   : Enter a policy definition in YAML format. Suitable for expert users and cases that the rule
-   mode doesn't support.
-
-   You can switch between rule mode and YAML mode at any time. If your YAML has errors or
-   unsupported data, rule mode turns off automatically. Fix the YAML first to use rule mode again.
 
 1. Select **Configure with a merge request** to save and apply the changes.
 
@@ -348,6 +345,40 @@ Use the policy editor to create, edit, and delete policies:
 
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
+
+### Standard and advanced editor layouts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450705) in GitLab 17.8.
+
+{{< /history >}}
+
+The policy editor has two layouts that determine how rule mode and YAML mode are presented:
+
+- Standard editor: Displays rule mode and YAML mode as separate tabs.
+  Select a tab to switch between views.
+  When in rule mode, a read-only YAML preview appears in the sidebar.
+- Advanced editor: Displays rule mode and YAML mode side by side in a resizable split view.
+  Changes in one panel are reflected in the other in real time. You can:
+
+  - Drag the divider to resize the panels.
+  - Collapse either panel to focus on one view.
+  - To reset the panel sizes, select the divider twice.
+
+Your preferred panel size is saved across sessions.
+
+To switch between the standard and advanced editor layouts:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Secure** > **Policies**.
+   - To create a new policy, select **New policy** in the **Policies** page header,
+     then select the policy type.
+   - To edit an existing policy, select **Edit policy** in the selected policy drawer.
+
+1. At the top of the policy editor, select **Enable advanced editor** or **Enable standard editor**.
+
+Your preference is saved to your user account and persists across sessions.
 
 ### Annotate IDs in `policy.yml`
 

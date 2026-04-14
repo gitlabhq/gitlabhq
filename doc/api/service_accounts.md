@@ -15,15 +15,13 @@ description: GitLab service accounts API manages service accounts at instance or
 
 {{< history >}}
 
-- Service accounts on the Free tier [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225913) in GitLab 18.10
-  [with a flag](../administration/feature_flags/_index.md) named `service_accounts_available_on_free_or_unlicensed`. Disabled by default.
-- Service accounts on the Free tier [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/591930) in GitLab 18.10.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225913) on Free tier in GitLab 18.10
+  [with a flag](../administration/feature_flags/_index.md) named `service_accounts_available_on_free_or_unlicensed`.
+  Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227910) on Free tier in GitLab 18.11.
+  Feature flag `service_accounts_available_on_free_or_unlicensed` removed.
 
 {{< /history >}}
-
-> [!flag]
-> On GitLab Self-Managed, the availability of service accounts on the Free
-> tier is controlled by a feature flag. For more information, see the history.
 
 Use this API to interact with [service accounts](../user/profile/service_accounts.md).
 
@@ -33,7 +31,8 @@ The number of service accounts you can create depends on your subscription and o
 - On GitLab Free, limits vary by offering:
   - For GitLab.com, you can create up to 100 service accounts for each top-level group.
     This includes service accounts created in subgroups or projects.
-  - For GitLab Self-Managed, you cannot create service accounts.
+  - For GitLab Self-Managed, you can create up to 100 service accounts per instance.
+    This includes all service accounts regardless of how they are provisioned (instance, group, or project level).
 
 You can also interact with service accounts through the [users API](users.md).
 
@@ -191,6 +190,7 @@ Example response:
 {{< history >}}
 
 - Subgroup service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585513) in GitLab 18.10 [with a feature flag](../administration/feature_flags/_index.md) named `allow_subgroups_to_create_service_accounts`. Disabled by default.
+- Subgroup service accounts [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225485/) in GitLab 18.11. Feature flag `allow_subgroups_to_create_service_accounts` removed.
 
 {{< /history >}}
 
@@ -575,6 +575,7 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585509) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `allow_projects_to_create_service_accounts`. Disabled by default.
+- Project service accounts [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225485/) in GitLab 18.11. Feature flag `allow_projects_to_create_service_accounts` removed.
 
 {{< /history >}}
 

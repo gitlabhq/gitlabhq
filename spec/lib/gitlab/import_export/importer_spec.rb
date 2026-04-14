@@ -128,6 +128,24 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
       end
     end
 
+    describe 'IID pre-allocation' do
+      before do
+        allow(subject).to receive(:import_file).and_return(true)
+        allow(subject).to receive(:check_version!).and_return(true)
+        allow(subject).to receive(:restorers).and_return(double(all?: true))
+        allow(subject).to receive(:overwrite_project).and_return(true)
+      end
+
+      it 'calls IidPreallocator.from_file with the project and max_iids.json path' do
+        expect(Gitlab::Import::IidPreallocator).to receive(:from_file).with(
+          project,
+          File.join(shared.export_path, 'max_iids.json')
+        )
+
+        subject.execute
+      end
+    end
+
     context 'when import fails' do
       let(:error_message) { 'foo' }
 

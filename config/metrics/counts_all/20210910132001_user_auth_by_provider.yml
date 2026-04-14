@@ -2,6 +2,8 @@
 key_path: usage_activity_by_stage.manage.user_auth_by_provider
 description: Number of unique user logins using two factor authentication for available providers
 product_group: authentication
+product_categories:
+- system_access
 value_type: object
 status: active
 milestone: "14.3"

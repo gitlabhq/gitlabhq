@@ -534,14 +534,59 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
     end
 
     context 'with negated parent_ids' do
-      let(:filter_data) { { not: { parent_ids: ['gid://gitlab/WorkItem/1', 'gid://gitlab/WorkItem/2'] } } }
+      let(:filter_data) { { not: { parent_ids: %w[gid://gitlab/WorkItem/1 gid://gitlab/WorkItem/2] } } }
 
       it 'normalizes negated parent_ids' do
         result = service.execute
 
         expect(result).to be_success
         expect(result.payload.dig(:not,
-          :parent_ids)).to match_array(['gid://gitlab/WorkItem/1', 'gid://gitlab/WorkItem/2'])
+          :parent_ids)).to match_array(%w[gid://gitlab/WorkItem/1 gid://gitlab/WorkItem/2])
+      end
+    end
+
+    context 'with work_item_type_ids' do
+      let(:filter_data) { { work_item_type_ids: %w[1 2 3] } }
+
+      it 'converts values to integers' do
+        result = service.execute
+
+        expect(result).to be_success
+        expect(result.payload[:work_item_type_ids]).to eq([1, 2, 3])
+      end
+
+      context 'with negated work_item_type_ids' do
+        let(:filter_data) { { not: { work_item_type_ids: %w[4 5] } } }
+
+        it 'converts negated values to integers' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload.dig(:not, :work_item_type_ids)).to eq([4, 5])
+        end
+      end
+
+      context 'with both positive and negated work_item_type_ids' do
+        let(:filter_data) { { work_item_type_ids: %w[1], not: { work_item_type_ids: %w[2] } } }
+
+        it 'converts both to integers' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:work_item_type_ids]).to eq([1])
+          expect(result.payload.dig(:not, :work_item_type_ids)).to eq([2])
+        end
+      end
+
+      context 'when values are already integers' do
+        let(:filter_data) { { work_item_type_ids: [1, 2] } }
+
+        it 'preserves integer values' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:work_item_type_ids]).to eq([1, 2])
+        end
       end
     end
   end

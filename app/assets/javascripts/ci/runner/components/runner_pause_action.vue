@@ -1,7 +1,7 @@
 <script>
 import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import { createAlert } from '~/alert';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
@@ -72,7 +72,7 @@ export default normalizeRender({
       const { message } = error;
 
       createAlert({ message });
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
   },
   render() {

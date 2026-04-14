@@ -23,6 +23,9 @@ module Gitlab
           extra = extra.merge(inline_extra)
         end
 
+        formatted = Feature.logged_states_for_log
+        extra = extra.merge(feature_flag_states: formatted) unless formatted.empty?
+
         sanitize_request_parameters(extra)
       end
 

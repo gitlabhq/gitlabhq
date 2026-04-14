@@ -1,0 +1,9 @@
+---
+name: offline_transfer_imports
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588517
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226988
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593820
+milestone: '18.11'
+group: group::import
+type: wip
+default_enabled: false

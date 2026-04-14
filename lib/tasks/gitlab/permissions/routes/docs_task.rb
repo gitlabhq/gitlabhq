@@ -7,6 +7,7 @@ module Tasks
         class DocsTask
           REQUEST_METHOD_SORT_ORDER = { GET: 0, POST: 1, PATCH: 2, PUT: 3, HEAD: 4, DELETE: 5 }.freeze
           BOUNDARY_SORT_ORDER = { project: 0, group: 1, user: 2, instance: 3 }.freeze
+          REASON_LABELS = SkipReasons::REASON_LABELS
 
           def initialize
             all_routes = ::API::API.endpoints.flat_map(&:routes)
@@ -52,7 +53,21 @@ module Tasks
           end
 
           def skipped_endpoints
-            sorted = skipped_routes.sort_by do |r|
+            non_public = deduplicate_routes(skipped_routes.reject { |r| route_reason(r) == :public_endpoint })
+            sorted = non_public.sort_by do |r|
+              [route_path(r), REQUEST_METHOD_SORT_ORDER[r.request_method.to_sym]]
+            end
+
+            build_table(%w[Method Path Reason]) do
+              sorted.map do |r|
+                markdown_row(["`#{r.request_method}`", "`#{route_path(r)}`", reason_label(route_reason(r))])
+              end
+            end
+          end
+
+          def public_endpoints
+            public_routes = deduplicate_routes(skipped_routes.select { |r| route_reason(r) == :public_endpoint })
+            sorted = public_routes.sort_by do |r|
               [route_path(r), REQUEST_METHOD_SORT_ORDER[r.request_method.to_sym]]
             end
 
@@ -118,6 +133,19 @@ module Tasks
               route.settings.dig(:authorization, :boundary_type),
               Array(route.settings.dig(:authorization, :boundaries)).pluck(:boundary_type)
             ].flatten.compact_blank.uniq
+          end
+
+          def deduplicate_routes(routes)
+            routes.uniq { |r| [r.request_method, route_path(r)] }
+          end
+
+          def route_reason(route)
+            value = route.settings.dig(:authorization, :skip_granular_token_authorization)
+            value if value.is_a?(Symbol)
+          end
+
+          def reason_label(reason)
+            REASON_LABELS[reason] || reason.to_s.humanize
           end
 
           def route_path(route)

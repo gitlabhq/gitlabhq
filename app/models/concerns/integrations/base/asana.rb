@@ -21,7 +21,7 @@ module Integrations
         def help
           build_help_page_url(
             'user/project/integrations/asana.md',
-            s_('Add commit messages as comments to Asana tasks.')
+            _('Add commit messages as comments to Asana tasks.')
           )
         end
 
@@ -39,7 +39,7 @@ module Integrations
         end
 
         def restrict_to_branch_description
-          s_('Comma-separated list of branches to be automatically inspected. ' \
+          _('Comma-separated list of branches to be automatically inspected. ' \
             'Leave blank to include all branches.')
         end
 
@@ -49,7 +49,7 @@ module Integrations
         end
 
         def api_key_description
-          s_('User API token. The user must have access to the task. ' \
+          _('User API token. The user must have access to the task. ' \
             'All comments are attributed to this user.')
         end
       end

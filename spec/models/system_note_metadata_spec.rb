@@ -6,6 +6,7 @@ RSpec.describe SystemNoteMetadata, feature_category: :team_planning do
   describe 'associations' do
     it { is_expected.to belong_to(:note) }
     it { is_expected.to belong_to(:description_version) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validation' do

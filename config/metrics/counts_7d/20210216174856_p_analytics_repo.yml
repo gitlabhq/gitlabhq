@@ -3,6 +3,8 @@ data_category: optional
 key_path: analytics_unique_visits.p_analytics_repo
 description: Unique visitors to /:group/:project/-/graphs/master/charts
 product_group: optimize
+product_categories:
+- product_analytics
 value_type: number
 status: active
 time_frame: 7d

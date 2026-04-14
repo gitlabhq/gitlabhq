@@ -10,6 +10,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { initMrMoreDropdown } from '~/mr_more_dropdown';
 import { pinia } from '~/pinia/instance';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
+import { initRapidDiffsToggle } from '~/rapid_diffs/app/init_rapid_diffs_toggle';
 import initShow from './init_merge_request_show';
 import getStateQuery from './queries/get_state.query.graphql';
 
@@ -133,6 +134,7 @@ export function initMrPage(createRapidDiffsApp) {
   });
 
   requestIdleCallback(() => {
+    initRapidDiffsToggle();
     initSidebarBundle();
     initMrStickyHeader();
     initReviewDrawer();

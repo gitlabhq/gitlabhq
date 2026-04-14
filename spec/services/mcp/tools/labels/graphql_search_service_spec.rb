@@ -30,6 +30,16 @@ RSpec.describe Mcp::Tools::Labels::GraphqlSearchService, feature_category: :mcp_
     it 'has correct description' do
       expect(service.description).to eq('Search labels in a GitLab project or group')
     end
+
+    it 'has readOnlyHint annotation' do
+      annotations = service.annotations
+      expect(annotations[:readOnlyHint]).to be(true)
+    end
+
+    it 'has destructiveHint: false annotation' do
+      annotations = service.annotations
+      expect(annotations[:destructiveHint]).to be(false)
+    end
   end
 
   describe 'input schema' do

@@ -114,6 +114,10 @@ const restrictedImportsPatterns = {
     group: ['react', 'react-dom/*'],
     message: 'We do not allow usage of React in our codebase except for the graphql_explorer',
   },
+  lodash: {
+    group: ['lodash', 'lodash/*'],
+    message: 'Use lodash-es instead of lodash',
+  },
 };
 
 const restrictedImportsAll = {
@@ -177,6 +181,49 @@ const baseNoRestrictedSyntax = [
   },
 ];
 
+const specNoRestrictedSyntax = [
+  ...baseNoRestrictedSyntax,
+  {
+    selector: 'CallExpression[callee.object.name=/(wrapper|vm)/][callee.property.name="setData"]',
+    message: 'Avoid using "setData" on VTU wrapper',
+  },
+  {
+    selector: "Identifier[name='setImmediate']",
+    message:
+      'Prefer explicit waitForPromises (or equivalent), or jest.runAllTimers (or equivalent) to vague setImmediate calls.',
+  },
+  {
+    selector:
+      "CallExpression[arguments.length=1][arguments.0.type='Literal'] CallExpression[callee.property.name='toBe'] CallExpression[callee.property.name='attributes'][arguments.length=1][arguments.0.value='disabled']",
+    message:
+      'Avoid asserting disabled attribute exact value, because Vue.js 2 and Vue.js 3 renders it differently. Use toBeDefined / toBeUndefined instead',
+  },
+  {
+    selector:
+      "MemberExpression[object.object.name='Vue'][object.property.name='config'][property.name='errorHandler']",
+    message:
+      'Use setErrorHandler/resetVueErrorHandler from helpers/set_vue_error_handler.js instead.',
+  },
+  {
+    selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
+    message:
+      "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
+  },
+];
+
+const specRestrictedImportsPaths = [
+  restrictedImportsPaths.axios,
+  restrictedImportsPaths.mousetrap,
+  restrictedImportsPaths.sentry,
+  restrictedImportsPaths.vuex,
+  {
+    name: '~/locale',
+    importNames: ['__', 's__'],
+    message:
+      'Do not externalize strings in specs: https://docs.gitlab.com/development/i18n/externalization.html#test-files-jest',
+  },
+];
+
 export default [
   {
     ignores: [
@@ -193,6 +240,9 @@ export default [
       'storybook/public',
       'spec/fixtures/**/*.graphql',
       'ee/frontend_islands/',
+      'app/assets/javascripts/lib/utils/path_helpers/*.js',
+      'ee/app/assets/javascripts/lib/utils/path_helpers/*.js',
+      'spec/frontend/scripts/infection_scanner/fixtures/**',
     ],
   },
   ...compat.extends(...extendConfigs),
@@ -455,6 +505,8 @@ export default [
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
+      'local-rules/no-web-url': 'error',
+      'local-rules/vue-no-web-url': 'error',
     },
   },
   /** Overrides for EE files to be allowed to import from EE */
@@ -523,77 +575,20 @@ export default [
       '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
       'require-await': 'error',
       'import/no-dynamic-require': 'off',
       'no-import-assign': 'off',
 
       'no-restricted-syntax': [
         'error',
-        {
-          selector:
-            'CallExpression[callee.object.name=/(wrapper|vm)/][callee.property.name="setData"]',
-          message: 'Avoid using "setData" on VTU wrapper',
-        },
+        ...specNoRestrictedSyntax,
         {
           selector:
             "MemberExpression[object.type!='ThisExpression'][property.type='Identifier'][property.name='$nextTick']",
           message:
             'Using $nextTick from a component instance is discouraged. Import nextTick directly from the Vue package.',
-        },
-        {
-          selector: "Identifier[name='setImmediate']",
-          message:
-            'Prefer explicit waitForPromises (or equivalent), or jest.runAllTimers (or equivalent) to vague setImmediate calls.',
-        },
-        {
-          selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
-          message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.',
-        },
-        {
-          selector:
-            "CallExpression[arguments.length=1][arguments.0.type='Literal'] CallExpression[callee.property.name='toBe'] CallExpression[callee.property.name='attributes'][arguments.length=1][arguments.0.value='disabled']",
-          message:
-            'Avoid asserting disabled attribute exact value, because Vue.js 2 and Vue.js 3 renders it differently. Use toBeDefined / toBeUndefined instead',
-        },
-        {
-          selector:
-            "MemberExpression[object.object.name='Vue'][object.property.name='config'][property.name='errorHandler']",
-          message:
-            'Use setErrorHandler/resetVueErrorHandler from helpers/set_vue_error_handler.js instead.',
-        },
-        {
-          selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
-        },
-        {
-          selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
-        },
-        {
-          selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
-        },
-        {
-          selector:
-            'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-          message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL` in `~/constants`',
-        },
-        {
-          selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
         },
       ],
 
@@ -621,20 +616,9 @@ export default [
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            restrictedImportsPaths.axios,
-            restrictedImportsPaths.mousetrap,
-            restrictedImportsPaths.sentry,
-            restrictedImportsPaths.vuex,
-            {
-              name: '~/locale',
-              importNames: ['__', 's__'],
-              message:
-                'Do not externalize strings in specs: https://docs.gitlab.com/development/i18n/externalization.html#test-files-jest',
-            },
-          ],
+          paths: specRestrictedImportsPaths,
 
-          patterns: [restrictedImportsPatterns.gitlabUiDist],
+          patterns: [restrictedImportsPatterns.gitlabUiDist, restrictedImportsPatterns.lodash],
         },
       ],
     },
@@ -654,12 +638,26 @@ export default [
       '@gitlab/require-i18n-strings': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
       'import/extensions': 'off',
       'import/no-extraneous-dependencies': 'off',
       'import/no-commonjs': 'off',
       'import/no-nodejs-modules': 'off',
       'filenames/match-regex': 'off',
       'no-console': 'off',
+      'import/no-unresolved': [
+        'error',
+        {
+          ignore: [
+            // False positive: eslint-plugin-import doesn't read `exports` field.
+            // See https://github.com/import-js/eslint-plugin-import/issues/1810
+            '^vite$',
+            '^lightningcss$',
+            '^vite-plugin-ruby$',
+          ],
+        },
+      ],
     },
   },
   {
@@ -670,6 +668,8 @@ export default [
       '@gitlab/require-i18n-strings': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
       'import/no-unresolved': [
         'error',
         // The test fixtures are dynamically generated in CI during
@@ -735,6 +735,8 @@ export default [
       '@gitlab/require-i18n-strings': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
     },
   },
 
@@ -753,6 +755,8 @@ export default [
       '@gitlab/vue-require-i18n-strings': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
     },
   },
 
@@ -770,6 +774,8 @@ export default [
       'filenames/match-regex': 'off',
       'no-console': 'off',
       'import/no-unresolved': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
     },
   },
 
@@ -809,6 +815,76 @@ export default [
     },
   },
 
+  {
+    files: ['spec/frontend/msw_integration/**/*.js'],
+
+    rules: {
+      ...jestConfig.rules,
+      '@gitlab/require-i18n-strings': 'off',
+      '@gitlab/no-hardcoded-urls': 'off',
+      'jest/no-standalone-expect': 'off',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            ...specRestrictedImportsPaths,
+            {
+              name: 'helpers/wait_for_promises',
+              message: 'Use waitFor from @testing-library/dom instead.',
+            },
+            {
+              name: 'helpers/vue_test_utils_helper',
+              importNames: ['mountExtended', 'shallowMountExtended'],
+              message:
+                'Use mount from @vue/test-utils instead. After mounting, use native DOM APIs for interactions and assertions.',
+            },
+            {
+              name: '@vue/test-utils',
+              importNames: ['createWrapper'],
+              message:
+                'Do not wrap DOM elements in VTU wrappers. Use native DOM APIs (querySelector, click, getAttribute) instead.',
+            },
+          ],
+          patterns: [
+            restrictedImportsPatterns.gitlabUiDist,
+            {
+              group: ['vue'],
+              importNames: ['nextTick'],
+              message: 'Use waitFor from @testing-library/dom instead of nextTick.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        ...specNoRestrictedSyntax,
+        {
+          selector: 'MemberExpression[property.name="nextTick"]',
+          message: 'Use waitFor from @testing-library/dom instead of nextTick.',
+        },
+        {
+          selector: 'MemberExpression[property.name="$nextTick"]',
+          message: 'Use waitFor from @testing-library/dom instead of $nextTick.',
+        },
+        {
+          selector: 'MemberExpression[property.name="__vue__"]',
+          message: 'Do not access Vue internals on DOM elements. Use native DOM APIs instead.',
+        },
+        {
+          selector: 'CallExpression[callee.property.name="findComponent"]',
+          message:
+            'Do not use findComponent. Use querySelector with a data-testid or role attribute instead.',
+        },
+        {
+          selector:
+            'CallExpression[callee.object.property.name="vm"][callee.property.name="$emit"]',
+          message:
+            'Do not emit events on component instances. Trigger the user interaction that causes the event instead.',
+        },
+      ],
+    },
+  },
+
   /*
   contracts specs are a little different, as they are not "normal" jest specs.
 
@@ -832,6 +908,8 @@ export default [
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
       'no-restricted-imports': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
     },
   },
 
@@ -861,6 +939,8 @@ export default [
       '@gitlab/require-i18n-strings': 'off',
       '@gitlab/no-hardcoded-urls': 'off',
       '@gitlab/vue-no-hardcoded-urls': 'off',
+      'local-rules/no-web-url': 'off',
+      'local-rules/vue-no-web-url': 'off',
       // Console logging is expected in k6 tests
       'no-console': 'off',
       // Allow unnamed functions in k6 tests
@@ -869,6 +949,22 @@ export default [
       'no-undef': 'off',
     },
   },
+
+  // web worker rules
+  {
+    files: ['app/assets/javascripts/**/*_worker.js', 'ee/app/assets/javascripts/**/*_worker.js'],
+
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+      },
+    },
+
+    rules: {
+      'no-restricted-globals': 'off',
+    },
+  },
+
   ...jhConfigs,
   ...Object.values(REVEAL_ESLINT_TODO ? {} : todoLists),
 ];

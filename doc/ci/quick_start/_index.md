@@ -83,9 +83,9 @@ To create a `.gitlab-ci.yml` file in your project:
 1. In the left sidebar, select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
    If you're not sure, leave `master` or `main`.
-   Then select the plus icon ({{< icon name="plus" >}}) and **New file**:
+   Then, in the upper-right corner, select the plus icon ({{< icon name="plus" >}}) and **New file**:
 
-   ![The new file button to create a file in the current folder.](img/new_file_v13_6.png)
+   ![The new file button to create a file in the current folder.](img/new_file_v18_11.png)
 
 1. For the **Filename**, type `.gitlab-ci.yml` and in the larger window,
    paste this sample code:
@@ -131,15 +131,15 @@ Now take a look at your pipeline and the jobs within.
 
 1. Go to **Build** > **Pipelines**. A pipeline with three stages should be displayed:
 
-   ![The pipeline list shows a running pipeline with 3 stages](img/three_stages_v13_6.png)
+   ![The pipeline list shows a running pipeline with 3 stages](img/three_stages_v18_11.png)
 
-1. View a visual representation of your pipeline by selecting the pipeline ID:
+1. View a visual representation of your pipeline by selecting the pipeline ID (`#676` in this example):
 
-   ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v17_9.png)
+   ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v18_11.png)
 
 1. View details of a job by selecting the job name. For example, `deploy-prod`:
 
-   ![The job details page shows the current status, timing information, and the output of logs.](img/job_details_v13_6.png)
+   ![The job details page shows the current status, timing information, and the output of the job log.](img/job_details_v18_11.png)
 
 You have successfully created your first CI/CD pipeline in GitLab. Congratulations!
 
@@ -178,13 +178,3 @@ Migrate from:
 - [GitHub Actions](../migration/github_actions.md)
 - [Jenkins](../migration/jenkins.md)
 - [TeamCity](../migration/teamcity.md)
-
-Watch:
-
-- <i class="fa-youtube-play" aria-hidden="true"></i>&nbsp;[First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s).
-  This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project,
-  running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities
-  and offers more exercises for asynchronous practice.
-- <i class="fa-youtube-play" aria-hidden="true"></i>&nbsp;[Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).
-  This workshop uses the Web IDE to quickly get going with building source code using CI/CD,
-  and run unit tests.

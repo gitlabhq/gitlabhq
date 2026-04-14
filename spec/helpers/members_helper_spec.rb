@@ -44,13 +44,4 @@ RSpec.describe MembersHelper do
       end
     end
   end
-
-  describe '#leave_confirmation_message' do
-    let(:project) { build_stubbed(:project) }
-    let(:group) { build_stubbed(:group) }
-    let(:user) { build_stubbed(:user) }
-
-    it { expect(leave_confirmation_message(project)).to eq "Are you sure you want to leave the \"#{project.full_name}\" project?" }
-    it { expect(leave_confirmation_message(group)).to eq "Are you sure you want to leave the \"#{group.name}\" group?" }
-  end
 end

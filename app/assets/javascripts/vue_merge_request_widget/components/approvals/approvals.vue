@@ -198,9 +198,13 @@ export default {
         this.$root.$emit(BV_SHOW_MODAL, this.modalId);
         return;
       }
+      const { hasDrafts } = useBatchComments();
+
       this.updateApproval(
         () =>
-          this.service.approveMergeRequest({ publish_review: true }).then(() => this.clearDrafts()),
+          this.service
+            .approveMergeRequest({ publish_review: hasDrafts })
+            .then(() => this.clearDrafts()),
         () =>
           this.alerts.push(
             createAlert({
@@ -210,8 +214,12 @@ export default {
       );
     },
     approveWithAuth(data) {
+      const { hasDrafts } = useBatchComments();
       this.updateApproval(
-        () => this.service.approveMergeRequestWithAuth(data).then(() => this.clearDrafts()),
+        () =>
+          this.service
+            .approveMergeRequestWithAuth({ approval_password: data, publish_review: hasDrafts })
+            .then(() => this.clearDrafts()),
         (error) => {
           if (error?.response?.status === HTTP_STATUS_UNAUTHORIZED) {
             this.hasApprovalAuthError = true;

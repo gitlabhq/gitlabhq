@@ -393,6 +393,14 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             expect(path.project).to eq(project)
           end
         end
+
+        context 'when project does not exist' do
+          let(:address) { "acme.com/non-existent/project/component@1.0.0" }
+
+          it 'returns nil' do
+            expect(path.sha).to be_nil
+          end
+        end
       end
     end
   end
@@ -406,6 +414,16 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       let(:address) { "acme.com/#{project_path}/secret-detection@0.1.0" }
 
       it { is_expected.to eq '0.1.0' }
+
+      context 'when ci_optimize_component_instance_path is disabled' do
+        before do
+          stub_feature_flags(ci_optimize_component_instance_path: false)
+        end
+
+        it 'uses legacy fetch_catalog_version path' do
+          expect(matched_version).to eq '0.1.0'
+        end
+      end
     end
 
     context 'when using a partial semantic version' do
@@ -432,6 +450,12 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       before do
         catalog_resource.destroy!
       end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when project does not exist' do
+      let(:address) { "acme.com/non-existent/project/component@1.0.0" }
 
       it { is_expected.to be_nil }
     end
@@ -572,5 +596,88 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     subject(:fqdn_prefix) { described_class.fqdn_prefix }
 
     it { is_expected.to eq("#{server_fqdn}/") }
+  end
+
+  describe 'SafeRequestStore caching', :request_store do
+    include_context 'with catalog resource project with components'
+
+    let(:address) { "acme.com/#{project_path}/secret-detection@0.1.0" }
+
+    describe '#project' do
+      it 'caches the project lookup in SafeRequestStore' do
+        path1 = described_class.new(address: address)
+        path2 = described_class.new(address: address)
+
+        expect(Project).to receive(:find_by_full_path).once.and_call_original
+
+        path1.project
+        path2.project
+      end
+    end
+
+    describe '#sha' do
+      it 'caches the sha lookup in SafeRequestStore' do
+        path1 = described_class.new(address: address)
+        path2 = described_class.new(address: address)
+
+        path1.sha
+        expect(path1).not_to receive(:sha_by_released_tag)
+        expect(path1).not_to receive(:sha_by_ref)
+
+        path2.sha
+      end
+    end
+
+    describe '#fetch_content!' do
+      it 'caches the access check in SafeRequestStore' do
+        path1 = described_class.new(address: address)
+        path2 = described_class.new(address: address)
+
+        expect(Ability).to receive(:allowed?).with(user, :download_code, project).once.and_return(true)
+
+        path1.fetch_content!(current_user: user)
+        path2.fetch_content!(current_user: user)
+      end
+    end
+
+    context 'when ci_optimize_component_instance_path feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_optimize_component_instance_path: false)
+      end
+
+      describe '#project' do
+        it 'does not use SafeRequestStore caching' do
+          path1 = described_class.new(address: address)
+          path2 = described_class.new(address: address)
+
+          expect(Project).to receive(:find_by_full_path).twice.and_call_original
+
+          path1.project
+          path2.project
+        end
+      end
+
+      describe '#sha' do
+        it 'uses legacy_find_version_sha without SafeRequestStore caching' do
+          path1 = described_class.new(address: address)
+
+          expect(path1).to receive(:legacy_find_version_sha).and_call_original
+
+          path1.sha
+        end
+      end
+
+      describe '#fetch_content!' do
+        it 'does not cache the access check in SafeRequestStore' do
+          path1 = described_class.new(address: address)
+          path2 = described_class.new(address: address)
+
+          expect(Ability).to receive(:allowed?).with(user, :download_code, project).twice.and_return(true)
+
+          path1.fetch_content!(current_user: user)
+          path2.fetch_content!(current_user: user)
+        end
+      end
+    end
   end
 end

@@ -212,6 +212,13 @@ module Types
       null: true,
       description: 'Namespace settings for the namespace.'
 
+    field :can_push_initial_commit,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Whether the current user can push the initial commit to the default branch ' \
+        'of new projects in the namespace.',
+      experiment: { milestone: '18.11' }
+
     field :web_url,
       GraphQL::Types::String,
       null: true,
@@ -249,6 +256,12 @@ module Types
 
     def timelog_categories
       object.timelog_categories if Feature.enabled?(:timelog_categories)
+    end
+
+    def can_push_initial_commit
+      return false unless context[:current_user]
+
+      object.can_push_initial_commit?(context[:current_user])
     end
 
     def cross_project_pipeline_available?

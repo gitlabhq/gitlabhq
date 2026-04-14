@@ -69,7 +69,7 @@ RSpec.describe Projects::ProtectedBranchesController, feature_category: :source_
 
       with_them do
         it 'creates a protected branch' do
-          expect { subject }.to change(ProtectedBranch, :count).by(1)
+          expect { subject }.to change { ProtectedBranch.count }.by(1)
           expect(response).to have_gitlab_http_status(response_status)
         end
       end

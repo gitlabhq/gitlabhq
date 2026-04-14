@@ -4,6 +4,15 @@ import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_wid
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import SmartInterval from '~/smart_interval';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
+import { s__ } from '~/locale';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
+
+const PIPELINE_STATE = {
+  loading: 'LOADING',
+  noPipeline: 'NO_PIPELINE',
+  running: 'RUNNING',
+  complete: 'COMPLETE',
+};
 
 // 5s → 10s → 20s → 40s → 80s → 120s → repeats 120s until done
 const MR_POLLING_SETTINGS = {
@@ -16,6 +25,7 @@ export default {
   name: 'MergeRequestReportsApp',
   components: {
     GlLoadingIcon,
+    StatusIcon,
     SecurityScansProvider: () =>
       import('ee_component/merge_requests/reports/components/security_scans_provider.vue'),
     SecurityNavItem: () => import('~/merge_requests/reports/components/security_nav_item.vue'),
@@ -32,6 +42,25 @@ export default {
     return {
       mr: null,
     };
+  },
+  computed: {
+    pipelineState() {
+      if (!this.mr) return PIPELINE_STATE.loading;
+      if (!this.mr.pipelineIid) return PIPELINE_STATE.noPipeline;
+      if (this.mr.isPipelineActive) return PIPELINE_STATE.running;
+      return PIPELINE_STATE.complete;
+    },
+    statusMessage() {
+      if (this.pipelineState === PIPELINE_STATE.running) {
+        return s__('MrReports|Waiting for pipeline to complete.');
+      }
+      if (this.pipelineState === PIPELINE_STATE.noPipeline) {
+        return s__(
+          'MrReports|No pipelines started yet. Results will appear when a pipeline completes.',
+        );
+      }
+      return '';
+    },
   },
   created() {
     if (
@@ -51,14 +80,14 @@ export default {
   },
   methods: {
     initMrPolling() {
-      if (!this.mr.isPipelineActive) return;
+      if (this.pipelineState === PIPELINE_STATE.complete) return;
 
       this.mrPollingInterval = new SmartInterval({
         callback: () =>
           MRWidgetService.fetchInitialData()
             .then(({ data }) => {
               this.mr.setData({ ...window.gl.mrWidgetData, ...data });
-              if (!this.mr.isPipelineActive) {
+              if (this.pipelineState === PIPELINE_STATE.complete) {
                 this.mrPollingInterval.destroy();
               }
             })
@@ -68,6 +97,7 @@ export default {
       });
     },
   },
+  PIPELINE_STATE,
 };
 </script>
 
@@ -80,20 +110,36 @@ export default {
       class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 @md/panel:gl-border-r @md/panel:gl-border-0 @md/panel:gl-pr-5"
     >
       <nav>
-        <security-scans-provider v-if="mr" :mr="mr">
-          <security-nav-item />
-        </security-scans-provider>
-        <license-compliance-provider v-if="mr" :mr="mr">
-          <license-compliance-nav-item />
-        </license-compliance-provider>
-        <code-quality-provider v-if="mr" :mr="mr">
-          <code-quality-nav-item />
-        </code-quality-provider>
+        <template v-if="pipelineState === $options.PIPELINE_STATE.complete">
+          <security-scans-provider :mr="mr">
+            <security-nav-item />
+          </security-scans-provider>
+          <license-compliance-provider :mr="mr">
+            <license-compliance-nav-item />
+          </license-compliance-provider>
+          <code-quality-provider :mr="mr">
+            <code-quality-nav-item />
+          </code-quality-provider>
+        </template>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">
-      <router-view v-if="mr" :mr="mr" />
-      <gl-loading-icon v-else size="lg" />
+      <template v-if="pipelineState === $options.PIPELINE_STATE.complete">
+        <keep-alive>
+          <router-view :mr="mr" />
+        </keep-alive>
+      </template>
+      <div
+        v-show="statusMessage"
+        class="gl-flex gl-px-5 gl-py-4"
+        role="status"
+        aria-live="polite"
+        data-testid="status-message"
+      >
+        <status-icon v-if="pipelineState === $options.PIPELINE_STATE.running" :is-loading="true" />
+        <span>{{ statusMessage }}</span>
+      </div>
+      <gl-loading-icon v-if="pipelineState === $options.PIPELINE_STATE.loading" size="lg" />
     </section>
   </div>
 </template>

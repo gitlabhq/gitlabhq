@@ -1,5 +1,5 @@
 <script>
-import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { __ } from '~/locale';
 import discussionToggleResolveMutation from '../graphql/discussion_toggle_resolve.mutation.graphql';

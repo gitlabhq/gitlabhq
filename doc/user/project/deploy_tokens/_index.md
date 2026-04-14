@@ -61,8 +61,8 @@ A deploy token's scope determines the actions it can perform.
 | `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
 | `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/_index.md). |
 | `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/_index.md). You need both read and write access to push images. |
-| `read_virtual_registry`  | If a project is private and authorization is required, grants read-only (pull) access to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
-| `write_virtual_registry` | If a project is private and authorization is required, grants read (pull), write (push), and delete access to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
+| `read_virtual_registry`  | Grants read-only (pull) access to container images through the group-level Dependency Proxy and virtual registry. Does not grant direct access to the project’s container registry. Available only when the Dependency Proxy is enabled. |
+| `write_virtual_registry` | Grants write access to the group-level Dependency Proxy cache and implicitly permits pulls through that cache. Does not grant push or delete access to the project’s container registry. Available only when the Dependency Proxy is enabled. |
 | `read_package_registry`  | Read-only access to the project's package registry.                                                          |
 | `write_package_registry` | Write access to the project's package registry.                                                              |
 
@@ -253,9 +253,9 @@ nuget push mypkg.nupkg -Source GitLab
 ## Pull images from the dependency proxy
 
 You can use a deploy token to pull images from the dependency proxy.
-
 Prerequisites:
 
-- A deploy token with `read_registry` and `write_registry` scopes.
+- For Dependency Proxy: `read_registry` and `write_registry` scopes.
+- For the virtual registry: `read_virtual_registry` and `write_virtual_registry` scopes.
 
 Follow the dependency proxy [authentication instructions](../../packages/dependency_proxy/_index.md).

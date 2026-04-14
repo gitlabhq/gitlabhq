@@ -1,5 +1,5 @@
 import { GlAlert } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import Vue from 'vue';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { s__, sprintf } from '~/locale';

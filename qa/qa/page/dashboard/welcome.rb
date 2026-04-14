@@ -14,12 +14,15 @@ module QA
           element 'homepage-greeting-header'
         end
 
-        def has_welcome_title?(text)
+        def has_welcome_title?(admin = false)
           # Support both old and new homepage flows
-          # Old flow checks for specific text (e.g., "Welcome to GitLab")
-          # New flow checks for the greeting header element and "Today's highlights"
-          has_element?('welcome-title-content', text: text) ||
-            (has_element?('homepage-greeting-header') && has_text?(text))
+          # Old flow: admin users see "Welcome to GitLab" in the zero-projects state
+          # New flow: non-admin users see the greeting header with a rotating greeting message
+          if admin
+            has_element?('welcome-title-content', text: "Welcome to GitLab")
+          else
+            has_element?('homepage-greeting-header') && has_element?('greeting-message')
+          end
         end
 
         def self.path

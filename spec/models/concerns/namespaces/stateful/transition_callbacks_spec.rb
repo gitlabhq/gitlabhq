@@ -65,6 +65,30 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
     end
   end
 
+  describe '#set_deletion_error_data' do
+    before do
+      namespace.update!(state: :deletion_in_progress)
+    end
+
+    it 'sets deletion_error when provided in transition args' do
+      namespace.reschedule_deletion!(transition_user: user, deletion_error: 'Test error message')
+
+      expect(namespace.reload.deletion_error).to eq('Test error message')
+    end
+
+    it 'does not set deletion_error when not provided' do
+      namespace.reschedule_deletion!(transition_user: user)
+
+      expect(namespace.reload.deletion_error).to be_nil
+    end
+
+    it 'does not set deletion_error when provided as empty string' do
+      namespace.reschedule_deletion!(transition_user: user, deletion_error: '')
+
+      expect(namespace.reload.deletion_error).to be_nil
+    end
+  end
+
   describe '#clear_deletion_schedule_data' do
     where(:initial_state) { %i[deletion_scheduled deletion_in_progress] }
 
@@ -72,10 +96,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
       before do
         namespace.update!(state: initial_state)
         namespace.update!(deletion_scheduled_at: 1.day.ago)
-        namespace.state_metadata.merge!(
-          deletion_scheduled_at: 1.day.ago.as_json,
-          deletion_scheduled_by_user_id: user.id
-        )
+        namespace.state_metadata[:deletion_scheduled_by_user_id] = user.id
         namespace.namespace_details.save!
       end
 
@@ -85,8 +106,66 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
         namespace.reload
 
         expect(namespace.deletion_scheduled_at).to be_nil
-        expect(namespace.state_metadata['deletion_scheduled_at']).to be_nil
         expect(namespace.state_metadata['deletion_scheduled_by_user_id']).to be_nil
+      end
+    end
+  end
+
+  describe '#set_transfer_schedule_data', :freeze_time do
+    where(:initial_state) { %i[ancestor_inherited archived] }
+
+    with_them do
+      before do
+        namespace.update!(state: initial_state)
+      end
+
+      it 'sets transfer schedule data on successful transition' do
+        namespace.schedule_transfer!(transition_user: user)
+
+        namespace.reload
+        metadata = namespace.state_metadata
+
+        expect(metadata['transfer_scheduled_at']).to eq(Time.current.as_json)
+        expect(metadata['transfer_scheduled_by_user_id']).to eq(user.id)
+      end
+    end
+  end
+
+  describe '#clear_transfer_data' do
+    where(:initial_state, :event) do
+      :transfer_scheduled   | :cancel_transfer
+      :transfer_in_progress | :cancel_transfer
+      :transfer_in_progress | :complete_transfer
+    end
+
+    with_them do
+      before do
+        namespace.update!(state: initial_state)
+        namespace.state_metadata.merge!(
+          transfer_scheduled_at: 1.day.ago.as_json,
+          transfer_scheduled_by_user_id: user.id,
+          transfer_initiated_at: 1.day.ago.as_json,
+          transfer_initiated_by_user_id: user.id,
+          transfer_target_parent_id: 123,
+          transfer_attempt_count: 1,
+          transfer_last_error: 'some error'
+        )
+        namespace.namespace_details.save!
+      end
+
+      it 'clears all transfer data on successful transition' do
+        namespace.public_send(:"#{event}!", transition_user: user)
+
+        namespace.reload
+        metadata = namespace.state_metadata
+
+        expect(metadata['transfer_scheduled_at']).to be_nil
+        expect(metadata['transfer_scheduled_by_user_id']).to be_nil
+        expect(metadata['transfer_initiated_at']).to be_nil
+        expect(metadata['transfer_initiated_by_user_id']).to be_nil
+        expect(metadata['transfer_target_parent_id']).to be_nil
+        expect(metadata['transfer_attempt_count']).to be_nil
+        expect(metadata['transfer_last_error']).to be_nil
       end
     end
   end

@@ -1,6 +1,6 @@
 <script>
 import { GlFormInputGroup, GlFormInput, GlInputGroupText } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 import { getGroupPathAvailability } from '~/rest_api';
 import { __ } from '~/locale';

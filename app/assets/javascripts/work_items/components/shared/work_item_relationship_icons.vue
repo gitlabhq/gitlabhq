@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
-import { LINKED_CATEGORIES_MAP, NAME_TO_TEXT_MAP, STATE_OPEN } from '../../constants';
+import { LINKED_CATEGORIES_MAP, STATE_OPEN } from '../../constants';
 import workItemLinkedItemsSlimQuery from '../../graphql/work_items_linked_items_slim.query.graphql';
 import { findLinkedItemsWidget } from '../../utils';
 import WorkItemRelationshipPopover from './work_item_relationship_popover.vue';
@@ -89,7 +89,7 @@ export default {
         ),
         { itemCount: this.blockedByCount },
       );
-      return sprintf(message, { workItemType: NAME_TO_TEXT_MAP[this.workItemType] });
+      return sprintf(message, { workItemType: this.workItemType });
     },
     blocksLabel() {
       const message = sprintf(
@@ -100,7 +100,7 @@ export default {
         ),
         { itemCount: this.blockingCount },
       );
-      return sprintf(message, { workItemType: NAME_TO_TEXT_MAP[this.workItemType] });
+      return sprintf(message, { workItemType: this.workItemType });
     },
     blockedByItems() {
       return this.childItemLinkedItems.filter(

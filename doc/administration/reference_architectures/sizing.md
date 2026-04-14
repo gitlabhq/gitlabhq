@@ -57,7 +57,7 @@ If migrating from other platforms, the following PromQL queries cannot be applie
 However, the general assessment methodology remains valid:
 
 1. Estimate the nearest reference architecture based on expected workload.
-1. Identify anticipated additional workloads.
+1. Identify anticipated [additional workloads](_index.md#additional-workloads).
 1. Assess number of large repositories
 1. Incorporate growth projections.
 1. Select a reference architecture with

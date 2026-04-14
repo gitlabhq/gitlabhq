@@ -8,7 +8,7 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash-es';
 
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';

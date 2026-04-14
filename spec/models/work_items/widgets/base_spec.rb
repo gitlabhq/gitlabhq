@@ -18,7 +18,9 @@ RSpec.describe WorkItems::Widgets::Base do
   end
 
   describe '#widget_definition' do
-    let(:widget_definition) { build(:widget_definition) }
+    let(:widget_definition) do
+      build(:work_item_system_defined_widget_definition, widget_type: 'description')
+    end
 
     subject { described_class.new(work_item, widget_definition: widget_definition).widget_definition }
 

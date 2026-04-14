@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+// eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';

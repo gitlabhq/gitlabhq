@@ -16,10 +16,10 @@ title: Design management (deprecated)
 
 > [!warning]
 > This feature was [deprecated](../../../update/deprecations.md#design-management-deprecated) in GitLab 18.6
-> and is planned for removal in 19.0.
+> and is planned for removal in 20.0.
 > This change is a breaking change.
-> In GitLab 19.0 and later, users are no longer able to upload new designs.
-> Existing designs remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed.
+> In GitLab 20.0 and later, users are no longer able to upload new designs.
+> Existing designs remain available in read-only mode until GitLab 21.0, giving users time to save their designs as needed.
 > GitLab is exploring alternatives that better integrate with the tools designers already use.
 
 <!--- end_remove -->

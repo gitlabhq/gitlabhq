@@ -3,7 +3,7 @@
   extends:
     - .default-retry
 
-.rails-production-server-boot:
+rails-boot:
   extends:
     - .preflight-job-base
     - .default-before_script
@@ -14,11 +14,8 @@
   needs:
     - job: cache:ruby-gems
       optional: true
-  artifacts:
-    expire_in: 7d
-    when: always
-    paths:
-      - log/
+  script:
+    - bin/rails boot --environment=production
 
 ruby_syntax:
   extends:

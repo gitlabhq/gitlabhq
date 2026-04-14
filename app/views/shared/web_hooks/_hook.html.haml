@@ -11,7 +11,7 @@
         = hook.url
 
         - if hook.rate_limited?
-          = gl_badge_tag(_('Webhooks|Rate limited'), variant: :danger)
+          = gl_badge_tag(s_('Webhooks|Rate limited'), variant: :danger)
         - elsif hook.permanently_disabled?
           = gl_badge_tag(s_('Webhooks|Disabled'), variant: :danger)
         - elsif hook.temporarily_disabled?

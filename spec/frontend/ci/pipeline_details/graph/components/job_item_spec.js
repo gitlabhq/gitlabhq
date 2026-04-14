@@ -458,6 +458,21 @@ describe('pipeline graph job item', () => {
           expect(findModal().exists()).toBe(exists);
         },
       );
+
+      it('displays quotes in custom message correctly', async () => {
+        const triggerJobWithConfirmationMessage = JSON.parse(JSON.stringify(triggerManualJob));
+        triggerJobWithConfirmationMessage.status.action.confirmationMessage =
+          "This is a custom message with 'quotes'.";
+        createWrapper({
+          props: {
+            job: triggerJobWithConfirmationMessage,
+          },
+        });
+        await findActionComponent().trigger('click');
+
+        expect(findModal().text()).toContain("This is a custom message with 'quotes'.");
+        expect(findModal().text()).not.toContain('&#39;');
+      });
     });
 
     describe('when showing the modal', () => {

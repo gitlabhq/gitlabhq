@@ -64,7 +64,8 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
             pwa_description: "This is GitLab as PWA",
             member_guidelines: "Please read before adding members.",
             new_project_guidelines: "Please read the FAQs for help.",
-            profile_image_guidelines: "Custom profile image guidelines"
+            profile_image_guidelines: "Custom profile image guidelines",
+            site_name: "GitLab Test Instance"
           }
 
           expect(json_response).to be_an Hash
@@ -85,6 +86,7 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
           expect(json_response['pwa_name']).to eq('GitLab PWA Test')
           expect(json_response['pwa_short_name']).to eq('GitLab PWA')
           expect(json_response['pwa_description']).to eq('This is GitLab as PWA')
+          expect(json_response['site_name']).to eq('GitLab Test Instance')
         end
       end
 

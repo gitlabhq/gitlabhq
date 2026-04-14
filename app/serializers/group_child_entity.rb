@@ -21,6 +21,10 @@ class GroupChildEntity < Grape::Entity
     can_archive?
   end
 
+  expose :can_transfer do |_instance|
+    can_transfer?
+  end
+
   expose :edit_path do |instance|
     # We know `type` will be one either `project` or `group`.
     # The `edit_polymorphic_path` helper would try to call the path helper
@@ -137,33 +141,27 @@ class GroupChildEntity < Grape::Entity
   end
 
   def can_edit?
-    return false unless request.respond_to?(:current_user)
+    ability = project? ? :admin_project : :admin_group
 
-    if project?
-      # Avoid checking rights for each project, as it might be expensive if the
-      # user cannot read cross project.
-      can?(request.current_user, :read_cross_project) &&
-        can?(request.current_user, :admin_project, object)
-    else
-      can?(request.current_user, :admin_group, object)
-    end
+    cross_project_ability_allowed?(ability)
   end
 
   def can_archive?
-    return false unless request.try(:current_user)
-
     ability = project? ? :archive_project : :archive_group
-    can?(request.current_user, ability, object)
+
+    cross_project_ability_allowed?(ability)
+  end
+
+  def can_transfer?
+    ability = project? ? :change_namespace : :change_group
+
+    cross_project_ability_allowed?(ability)
   end
 
   def can_remove?
-    return false unless request.try(:current_user)
+    ability = project? ? :remove_project : :remove_group
 
-    if project?
-      can?(request.current_user, :remove_project, object)
-    else
-      can?(request.current_user, :admin_group, object)
-    end
+    cross_project_ability_allowed?(ability)
   end
 
   def can_leave?
@@ -173,6 +171,20 @@ class GroupChildEntity < Grape::Entity
       request.current_user.can_leave_project?(object)
     else
       request.current_user.can_leave_group?(object)
+    end
+  end
+
+  def cross_project_ability_allowed?(ability)
+    return false unless request.respond_to?(:current_user)
+
+    if project?
+      # Avoid checking rights for each project, as it might be expensive if the
+      # user cannot read cross project. Cross project access is prevent when external
+      # authorization is enabled
+      can?(request.current_user, :read_cross_project) &&
+        can?(request.current_user, ability, object)
+    else
+      can?(request.current_user, ability, object)
     end
   end
 

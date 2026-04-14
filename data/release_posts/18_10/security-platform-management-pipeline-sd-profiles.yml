@@ -1,0 +1,29 @@
+---
+features:
+  secondary:
+  - name: "Pipeline secret detection in security configuration profiles"
+    available_in: [ultimate]
+    documentation_link: 'https://docs.gitlab.com/user/application_security/configuration/security_configuration_profiles/'
+    gitlab_com: true
+    self_managed: true
+    gitlab_dedicated: true
+    gitlab_dedicated_for_government: true
+    add_ons: []
+    reporter: m-omokoh
+    stage: security_risk_management
+    categories:
+    - 'Vulnerability Management'
+    epic_url:
+    - 'https://gitlab.com/groups/gitlab-org/-/work_items/19802'
+    description: |
+      In GitLab 18.9, we introduced security configuration profiles with the **Secret Detection - Default** profile, starting with push protection. You use the profile to apply standardized secret scanning across hundreds of projects without touching a single CI/CD configuration file.
+
+      The **Secret Detection - Default** profile now also covers pipeline-based scanning, providing a unified control surface for secret detection across your entire development workflow.
+
+      The profile activates three scan triggers:
+
+      - **Push Protection**: Scans all Git push events and blocks pushes where secrets are detected, preventing secrets from ever entering your codebase.
+      - **Merge Request Pipelines**: Automatically runs a scan each time new commits are pushed to a branch with an open merge request. Results only include new vulnerabilities introduced by the merge request.
+      - **Branch Pipelines (default only)**: Runs automatically when changes are merged or pushed to the default branch, providing a complete view of your default branch's secret detection posture.
+
+      Applying the profile requires no YAML configuration. The profile can be applied to a group to propagate coverage across all projects in the group, or to individual projects for more granular control.

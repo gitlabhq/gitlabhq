@@ -4,16 +4,28 @@ require 'spec_helper'
 
 RSpec.describe DashboardController, feature_category: :system_access do
   context 'token authentication' do
-    before do
-      stub_feature_flags(work_item_planning_view: false)
+    context 'for issues atom' do
+      let(:user) { create(:user) }
+      let(:token) { create(:personal_access_token, user: user) }
+
+      it 'redirects to work items dashboard' do
+        get issues_dashboard_url(:atom, assignee_username: user.username),
+          params: { private_token: token.token }
+
+        expect(response).to have_gitlab_http_status(:moved_permanently)
+      end
     end
 
-    it_behaves_like 'authenticates sessionless user for the request spec', 'issues atom', public_resource: false do
-      let(:url) { issues_dashboard_url(:atom, assignee_username: user.username) }
-    end
+    context 'for issues_calendar ics' do
+      let(:user) { create(:user) }
+      let(:token) { create(:personal_access_token, user: user) }
 
-    it_behaves_like 'authenticates sessionless user for the request spec', 'issues_calendar ics', public_resource: false do
-      let(:url) { issues_dashboard_url(:ics, assignee_username: user.username) }
+      it 'redirects to work items dashboard' do
+        get issues_dashboard_url(:ics, assignee_username: user.username),
+          params: { private_token: token.token }
+
+        expect(response).to have_gitlab_http_status(:moved_permanently)
+      end
     end
 
     it_behaves_like 'authenticates sessionless user for the request spec', 'work_items atom', public_resource: false do

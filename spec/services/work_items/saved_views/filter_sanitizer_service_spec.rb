@@ -549,6 +549,124 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
       end
     end
 
+    describe 'work_item_type_ids validation' do
+      let_it_be(:issue_type) { ::WorkItems::TypesFramework::Provider.new(group).find_by_base_type(:issue) }
+      let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new(group).find_by_base_type(:task) }
+
+      let(:provider) { instance_double(::WorkItems::TypesFramework::Provider) }
+
+      before do
+        allow(::WorkItems::TypesFramework::Provider).to receive(:new).with(group).and_return(provider)
+      end
+
+      def expected_gid(type)
+        Gitlab::GlobalId.as_global_id(type.id, model_name: 'WorkItems::Type').to_s
+      end
+
+      context 'with valid work item type IDs' do
+        let(:filter_data) { { work_item_type_ids: [issue_type.id, task_type.id] } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([issue_type.id, task_type.id]).and_return([issue_type, task_type])
+        end
+
+        it 'converts IDs to global IDs' do
+          expected_gids = [expected_gid(issue_type), expected_gid(task_type)]
+
+          expect(result.payload[:filters][:work_item_type_ids]).to match_array(expected_gids)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with some missing work item type IDs' do
+        let(:filter_data) { { work_item_type_ids: [issue_type.id, non_existing_record_id] } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([issue_type.id, non_existing_record_id]).and_return([issue_type])
+        end
+
+        it 'returns found types and warning for missing' do
+          expect(result.payload[:filters][:work_item_type_ids]).to eq([expected_gid(issue_type)])
+          expect(result.payload[:warnings]).to contain_exactly(
+            { field: :work_item_type_ids, message: '1 work item type(s) not found' }
+          )
+        end
+      end
+
+      context 'with all missing work item type IDs' do
+        let(:filter_data) { { work_item_type_ids: [non_existing_record_id] } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([non_existing_record_id]).and_return([])
+        end
+
+        it 'returns no types and warning' do
+          expect(result.payload[:filters][:work_item_type_ids]).to be_nil
+          expect(result.payload[:warnings]).to contain_exactly(
+            { field: :work_item_type_ids, message: '1 work item type(s) not found' }
+          )
+        end
+      end
+
+      context 'with negated work item type IDs' do
+        let(:filter_data) { { not: { work_item_type_ids: [issue_type.id] } } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([issue_type.id]).and_return([issue_type])
+        end
+
+        it 'converts negated IDs to global IDs' do
+          expect(result.payload[:filters][:not][:work_item_type_ids]).to eq([expected_gid(issue_type)])
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with negated missing work item type IDs' do
+        let(:filter_data) { { not: { work_item_type_ids: [non_existing_record_id] } } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([non_existing_record_id]).and_return([])
+        end
+
+        it 'returns warning for missing negated types' do
+          expect(result.payload[:filters].fetch(:not, {})).not_to have_key(:work_item_type_ids)
+          expect(result.payload[:warnings]).to contain_exactly(
+            { field: :not_work_item_type_ids, message: '1 work item type(s) not found' }
+          )
+        end
+      end
+
+      context 'with negated mixed valid and missing work item type IDs' do
+        let(:filter_data) { { not: { work_item_type_ids: [issue_type.id, non_existing_record_id] } } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([issue_type.id, non_existing_record_id]).and_return([issue_type])
+        end
+
+        it 'returns found types and warning for missing' do
+          expect(result.payload[:filters][:not][:work_item_type_ids]).to eq([expected_gid(issue_type)])
+          expect(result.payload[:warnings]).to contain_exactly(
+            { field: :not_work_item_type_ids, message: '1 work item type(s) not found' }
+          )
+        end
+      end
+
+      context 'with both positive and negated work item type IDs' do
+        let(:filter_data) { { work_item_type_ids: [issue_type.id], not: { work_item_type_ids: [task_type.id] } } }
+
+        before do
+          allow(provider).to receive(:by_ids).with([issue_type.id]).and_return([issue_type])
+          allow(provider).to receive(:by_ids).with([task_type.id]).and_return([task_type])
+        end
+
+        it 'processes both positive and negated filters' do
+          expect(result.payload[:filters][:work_item_type_ids]).to eq([expected_gid(issue_type)])
+          expect(result.payload[:filters][:not][:work_item_type_ids]).to eq([expected_gid(task_type)])
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+    end
+
     describe 'error handling' do
       let_it_be(:assignee1) { create(:user) }
 

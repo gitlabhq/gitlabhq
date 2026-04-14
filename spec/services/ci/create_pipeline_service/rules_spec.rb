@@ -621,7 +621,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
 
           let(:variables_attributes) do
-            [{ key: 'var', secret_value: 'SOME_VAR' }]
+            [{ key: 'var', value: 'SOME_VAR' }]
           end
 
           it 'creates a pipeline with overridden needs' do
@@ -1583,7 +1583,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with matches' do
         let(:variables_attributes) do
-          [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAR' }]
+          [{ key: 'SOME_VARIABLE', value: 'SOME_VAR' }]
         end
 
         it 'creates a pipeline' do
@@ -1622,7 +1622,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
       context 'with matches' do
         let(:variables_attributes) do
-          [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAR' }]
+          [{ key: 'SOME_VARIABLE', value: 'SOME_VAR' }]
         end
 
         it 'creates a pipeline' do
@@ -1767,7 +1767,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       let(:ref) { 'refs/heads/feature' }
 
       let(:variables_attributes) do
-        [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' }]
+        [{ key: 'SOME_VARIABLE', value: 'SOME_VAL' }]
       end
 
       let(:response) do

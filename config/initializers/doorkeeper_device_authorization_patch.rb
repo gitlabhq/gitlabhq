@@ -8,9 +8,14 @@
 
 if defined?(Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceAuthorizationRequest)
   Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceAuthorizationRequest.class_eval do
+    validate :device_code_enabled, error: Doorkeeper::Errors::AccessDenied
     validate :scopes_match_configured, error: Doorkeeper::Errors::InvalidScope
 
     private
+
+    def validate_device_code_enabled
+      client.application.device_code_enabled?
+    end
 
     def validate_scopes_match_configured
       return false if scopes.blank?

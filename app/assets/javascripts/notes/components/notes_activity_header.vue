@@ -1,7 +1,6 @@
 <script>
 import { DUO_CHAT_QUICK_ACTION_SUMMARIZE, DUO_CHAT_AGENT_PLANNER } from '~/ai/constants';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import DiscussionFilter from './discussion_filter.vue';
@@ -12,11 +11,9 @@ export default {
     TimelineToggle: () => import('./timeline_toggle.vue'),
     DiscussionFilter,
     DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
-    AiSummarizeNotes: () =>
-      import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
     MrDiscussionFilter: () => import('./mr_discussion_filter.vue'),
   },
-  mixins: [glFeatureFlagsMixin(), glAbilitiesMixin(), glLicensedFeaturesMixin()],
+  mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
   inject: {
     showTimelineViewToggle: {
       default: false,
@@ -53,9 +50,6 @@ export default {
         this.glLicensedFeatures.summarizeComments
       );
     },
-    useDuoQuickAction() {
-      return this.glFeatures.duoQuickAction;
-    },
   },
   buttonOptions: { size: 'small' },
   classicQuickAction: DUO_CHAT_QUICK_ACTION_SUMMARIZE,
@@ -72,23 +66,15 @@ export default {
   >
     <h2 class="gl-heading-2 gl-m-0">{{ __('Activity') }}</h2>
     <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 @sm/panel:gl-mt-0 @sm/panel:gl-w-auto">
-      <template v-if="showAiActions">
-        <duo-chat-quick-action
-          v-if="useDuoQuickAction"
-          :button-text="s__('AISummary|View summary')"
-          :resource-id="resourceGlobalId"
-          :tracking-info="summarizeTracking"
-          :classic-quick-action="$options.classicQuickAction"
-          :command="$options.summarizeCommand"
-          :button-options="$options.buttonOptions"
-        />
-        <ai-summarize-notes
-          v-else
-          size="small"
-          :resource-global-id="resourceGlobalId"
-          :work-item-type="noteableType"
-        />
-      </template>
+      <duo-chat-quick-action
+        v-if="showAiActions"
+        :button-text="s__('AISummary|View summary')"
+        :resource-id="resourceGlobalId"
+        :tracking-info="summarizeTracking"
+        :classic-quick-action="$options.classicQuickAction"
+        :command="$options.summarizeCommand"
+        :button-options="$options.buttonOptions"
+      />
       <timeline-toggle v-if="showTimelineViewToggle" />
       <mr-discussion-filter v-if="mrFilter" />
       <discussion-filter v-else :filters="notesFilters" :selected-value="notesFilterValue" />

@@ -1,4 +1,4 @@
-import { GlAlert, GlLink } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink } from '@gitlab/ui';
 import IndexLayout from './index_layout.vue';
 
 const Template = (args, { argTypes }) => ({
@@ -18,7 +18,7 @@ Default.args = {
 };
 
 export const WithSlots = (args, { argTypes }) => ({
-  components: { IndexLayout, GlLink },
+  components: { IndexLayout, GlButton, GlLink },
   props: Object.keys(argTypes),
   template: `
     <index-layout v-bind="$props">
@@ -28,6 +28,10 @@ export const WithSlots = (args, { argTypes }) => ({
       <template #description>
         Custom <i>description</i> information with Markup.
         <gl-link>Learn more.</gl-link>
+      </template>
+      <template #actions>
+        <gl-button variant="confirm">Primary action</gl-button>
+        <gl-button>Secondary action</gl-button>
       </template>
       <p>Index layout default slot.</p>
     </index-layout>
@@ -60,7 +64,25 @@ WithAlerts.args = {
   description: 'This is a page description',
 };
 
+export const PageHeadingSrOnly = Template.bind({});
+PageHeadingSrOnly.args = {
+  heading: 'Page Title present for screen readers but not visible to sighted users',
+  pageHeadingSrOnly: true,
+};
+
 export default {
   component: IndexLayout,
   title: 'vue_shared/index_layout',
+  argTypes: {
+    heading: {
+      control: 'text',
+    },
+    description: {
+      control: 'text',
+    },
+    pageHeadingSrOnly: {
+      control: 'boolean',
+      description: 'Visually hide with gl-sr-only class',
+    },
+  },
 };

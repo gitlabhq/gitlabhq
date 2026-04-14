@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlCard, GlLoadingIcon } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { s__, sprintf } from '~/locale';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -15,7 +14,6 @@ export default {
     GlLoadingIcon,
     GlButton,
     GlCard,
-    GlSingleStat,
   },
   emits: ['filter'],
   data() {
@@ -111,7 +109,11 @@ export default {
 
     <div v-else class="gl-my-5 gl-grid gl-gap-4 @sm/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-4">
       <gl-card v-for="statistic in statisticsCards" :key="statistic.title">
-        <gl-single-stat class="!gl-p-0" :title="statistic.title" :value="statistic.value" />
+        <template #header>
+          <h2 data-testid="stat-title">{{ statistic.title }}</h2>
+        </template>
+
+        <p class="gl-heading-1 gl-mb-0" data-testid="stat-value">{{ statistic.value }}</p>
         <gl-button
           class="gl-mt-3"
           :title="tooltipTitle(statistic)"

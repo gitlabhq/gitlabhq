@@ -97,10 +97,11 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
     context 'when the user is not allowed to import projects' do
       let!(:group) { create(:group, developers: user) }
 
-      it 'returns 404' do
+      it 'returns 403' do
         get new_import_gitlab_project_path, params: { namespace_id: group.id }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.body).to match(/You do not have permission to import into this namespace/)
       end
     end
   end

@@ -1,4 +1,4 @@
-import { isEmpty, isString, isObject } from 'lodash';
+import { isEmpty, isString, isObject } from 'lodash-es';
 import { sprintf, __ } from '~/locale';
 
 const DEFAULT_ERROR = {

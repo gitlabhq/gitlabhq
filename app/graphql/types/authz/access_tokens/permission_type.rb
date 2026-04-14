@@ -9,49 +9,64 @@ module Types
 
         description 'Permission that belongs to a granular scope.'
 
+        SCOPES = [:api, :read_api, :ai_workflows].freeze
+
+        def self.authorization_scopes
+          SCOPES
+        end
+
         field :name,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Name of the permission.'
 
         field :description,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Description of the permission.'
 
         field :action,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Action of the permission.'
 
         field :resource,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Resource of the permission.'
 
         field :resource_name,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Display name of the resource.'
 
         field :resource_description, # rubocop: disable GraphQL/ExtractType -- no value for now
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Description of the resource.'
 
         field :category,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Permission category.'
 
         field :category_name,
           GraphQL::Types::String,
           null: false,
+          scopes: SCOPES,
           description: 'Display name of the permission category.'
 
         field :boundaries,
           [Types::Authz::AccessTokens::BoundaryEnum],
           null: false,
+          scopes: SCOPES,
           description: 'List of resource types that the permission can be applied to.'
       end
       # rubocop:enable Graphql/AuthorizeTypes

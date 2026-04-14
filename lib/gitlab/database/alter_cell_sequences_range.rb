@@ -32,14 +32,14 @@ module Gitlab
                 START #{minval} RESTART #{minval} MINVALUE #{minval} MAXVALUE #{maxval}
               SQL
             else
-              # Legacy cell: sequence is already past minval, only set boundaries
+              # Legacy cell: sequence is already past minval, only set max value
               logger.info(
-                "Sequence #{sequence.seq_name} already >= minval, skipping RESTART"
+                "Sequence #{sequence.seq_name} already >= minval, skipping RESTART and MINVALUE"
               )
 
               alter_sequence_query = <<~SQL
                 ALTER SEQUENCE #{sequence.seq_name}
-                MINVALUE #{minval} MAXVALUE #{maxval}
+                MAXVALUE #{maxval}
               SQL
             end
 
@@ -91,9 +91,9 @@ module Gitlab
                     EXECUTE FORMAT('ALTER SEQUENCE %I START %s RESTART %s MINVALUE %s MAXVALUE %s',
                       sequence_name, #{minval}, #{minval}, #{minval}, #{maxval});
                   ELSE
-                    -- Legacy cell: sequence is already past minval, only set boundaries
-                    EXECUTE FORMAT('ALTER SEQUENCE %I MINVALUE %s MAXVALUE %s',
-                      sequence_name, #{minval}, #{maxval});
+                    -- Legacy cell: sequence is already past minval, only set max value
+                    EXECUTE FORMAT('ALTER SEQUENCE %I MAXVALUE %s',
+                      sequence_name, #{maxval});
                   END IF;
                 END IF;
               END IF;

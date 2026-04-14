@@ -1,5 +1,5 @@
 import Vue, { ref } from 'vue';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import UsersCache from './lib/utils/users_cache';
 import UserPopover from './vue_shared/components/user_popover/user_popover.vue';
 import { USER_POPOVER_DELAY } from './vue_shared/components/user_popover/constants';

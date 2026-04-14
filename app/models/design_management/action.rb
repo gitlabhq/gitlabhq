@@ -12,6 +12,7 @@ module DesignManagement
 
     belongs_to :design, class_name: "DesignManagement::Design", inverse_of: :actions
     belongs_to :version, class_name: "DesignManagement::Version", inverse_of: :actions
+    belongs_to :namespace
 
     enum :event, { creation: 0, modification: 1, deletion: 2 }
 

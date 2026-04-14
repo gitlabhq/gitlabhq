@@ -205,6 +205,7 @@ module Users
         :name,
         :note,
         :user_detail_organization,
+        :company,
         :password,
         :password_automatically_set,
         :password_expires_at,

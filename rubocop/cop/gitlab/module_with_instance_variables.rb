@@ -4,12 +4,12 @@ module RuboCop
   module Cop
     module Gitlab
       class ModuleWithInstanceVariables < RuboCop::Cop::Base
-        MSG = <<~EOL
+        MSG = <<~TEXT
           Do not use instance variables in a module. Please read this
           for the rationale behind it:
 
           https://docs.gitlab.com/ee/development/module_with_instance_variables.html
-        EOL
+        TEXT
 
         def on_module(node)
           check_method_definition(node)

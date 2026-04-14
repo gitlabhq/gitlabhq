@@ -1,6 +1,6 @@
 <script>
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@gitlab/ui';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty } from 'lodash-es';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { memberName, searchUsers } from '../utils/member_utils';

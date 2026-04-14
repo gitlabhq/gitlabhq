@@ -25,7 +25,7 @@ For more help with API automation, you can also use the [GitLab community forum 
 
 ## API requirements
 
-To automate storage management, your GitLab.com SaaS or GitLab Self-Managed instance must have access to the [GitLab REST API](../api/api_resources.md).
+To automate storage management, your GitLab.com or GitLab Self-Managed instance must have access to the [GitLab REST API](../api/api_resources.md).
 
 ### API authentication scope
 
@@ -1289,7 +1289,7 @@ included-job30:
 The example group [`container-package-gen-group`](https://gitlab.com/gitlab-da/playground/container-package-gen-group) provides projects that:
 
 - Use a base image in Dockerfile to build a new image.
-- Include the `Docker.gitlab-ci.yml` template to build images on GitLab.com SaaS.
+- Include the `Docker.gitlab-ci.yml` template to build images on GitLab.com.
 - Configure pipeline schedules to generate new images daily.
 
 Example projects available to fork:

@@ -30,6 +30,7 @@ module Gitlab
       instrument_global_search_api(payload)
       instrument_ldap(payload)
       instrument_exclusive_lock(payload)
+      instrument_gvl(payload)
     end
 
     def instrument_gitaly(payload)
@@ -155,6 +156,17 @@ module Gitlab
       return if duration == 0
 
       payload.merge!(::Gitlab::Instrumentation::Middleware::PathTraversalCheck.payload)
+    end
+
+    def instrument_gvl(payload)
+      context = Gitlab::RequestContext.instance
+      return unless context.gvl_local_timer_start && context.gvl_global_timer_start
+      return unless GVLTools::LocalTimer.enabled? && GVLTools::GlobalTimer.enabled?
+
+      payload[:gvl_thread_wait_s] =
+        (GVLTools::LocalTimer.monotonic_time - context.gvl_local_timer_start) / 1_000_000_000.0
+      payload[:gvl_process_wait_s] =
+        (GVLTools::GlobalTimer.monotonic_time - context.gvl_global_timer_start) / 1_000_000_000.0
     end
 
     # Returns the total queuing duration for a Sidekiq job in seconds, as a float, if the

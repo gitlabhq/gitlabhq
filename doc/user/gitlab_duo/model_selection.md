@@ -36,7 +36,7 @@ The following table lists the default model for each GitLab Duo feature.
 | Merge Commit Message Generation | Claude Sonnet 4 Vertex|
 | Merge Request Summary | Claude Sonnet 4 Vertex |
 | Code Review Summary | Claude Sonnet 4 Vertex |
-| Code Review | Claude Sonnet 4 Vertex |
+| Code Review | Claude Sonnet 4.6 Vertex |
 | **Other GitLab Duo features** | |
 | Vulnerability Explanation | Claude Sonnet 4.5 Vertex |
 | Vulnerability Resolution | Claude Sonnet 4.5 |
@@ -60,7 +60,7 @@ The following tables list the models you can select for each feature.
 | Codestral 25.08 Vertex | {{< no >}} | {{< yes >}} |
 | Gemini 2.5 Flash Vertex | {{< yes >}} | {{< no >}} |
 
-### GitLab Duo Chat (non-agentic)
+### GitLab Duo Non-Agentic Chat
 
 | Model | General Chat | Code Explanation | Test Generation | Refactor Code | Fix Code | Root Cause Analysis |
 |------------|--------------|------------------|-----------------|---------------|----------|---------------------|
@@ -139,7 +139,7 @@ If you have selected a specific model for a GitLab Duo AI-native feature, and th
 
 When using a GitLab Duo feature with a selected model, you might get an error that states that you have not selected a default GitLab Duo namespace. For example, on:
 
-- GitLab Duo Code Suggestions, you might get `Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`
+- GitLab Duo Code Suggestions, you might get `Error 422: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
 - GitLab Duo Chat, you might get `Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`
 
 This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.

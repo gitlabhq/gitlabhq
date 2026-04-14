@@ -50,7 +50,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/workers/projects/refresh_build_artifacts_size_statistics_worker.rb'
     - 'app/workers/prune_old_events_worker.rb'
     - 'config/initializers/active_record_transaction_observer.rb'
-    - 'config/initializers/carrierwave_s3_encryption_headers_patch.rb'
     - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/groups/billings_controller.rb'
     - 'ee/app/graphql/resolvers/ai/code_suggestions_access_resolver.rb'

@@ -72,6 +72,52 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.reload).to be_preparing
       end
 
+      describe 'preloading branch existence before the transaction' do
+        context 'when validate_merge_request_branch_existence feature flag is enabled' do
+          before do
+            stub_feature_flags(validate_merge_request_branch_existence: project)
+          end
+
+          it 'calls source_branch_exists? and target_branch_exists? before save' do
+            expect_next_instance_of(MergeRequest) do |instance|
+              expect(instance).to receive(:source_branch_exists?).at_least(:once).and_call_original.ordered
+              expect(instance).to receive(:target_branch_exists?).at_least(:once).and_call_original.ordered
+              expect(instance).to receive(:save).twice.and_call_original.ordered
+            end
+
+            service.execute
+          end
+
+          context 'when branches do not exist' do
+            let(:opts) do
+              {
+                title: 'Awesome merge_request',
+                description: 'please fix',
+                source_branch: 'non-existent-source',
+                target_branch: 'non-existent-target',
+                force_remove_source_branch: '1'
+              }
+            end
+
+            it 'does not raise an error during preloading' do
+              expect { service.execute }.not_to raise_error
+            end
+          end
+        end
+
+        context 'when validate_merge_request_branch_existence feature flag is disabled' do
+          before do
+            stub_feature_flags(validate_merge_request_branch_existence: false)
+          end
+
+          it 'skips preloading branch existence' do
+            merge_request = service.execute
+
+            expect(merge_request).to be_persisted
+          end
+        end
+      end
+
       describe 'checking for spam' do
         it 'checks for spam' do
           expect_next_instance_of(MergeRequest) do |instance|

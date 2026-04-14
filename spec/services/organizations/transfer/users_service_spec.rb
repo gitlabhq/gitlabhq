@@ -463,6 +463,70 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         end
       end
 
+      context 'for granular scopes' do
+        let_it_be_with_refind(:token1) do
+          create(:personal_access_token, user: user1, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:token2) do
+          create(:personal_access_token, user: user2, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:non_group_token) do
+          create(:personal_access_token, user: non_group_user, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:granular_scope1) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_refind(:granular_scope2) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_refind(:non_group_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_refind(:join_record1) do
+          create(:personal_access_token_granular_scope,
+            personal_access_token: token1, granular_scope: granular_scope1, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:join_record2) do
+          create(:personal_access_token_granular_scope,
+            personal_access_token: token2, granular_scope: granular_scope2, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:non_group_join_record) do
+          create(:personal_access_token_granular_scope,
+            personal_access_token: non_group_token, granular_scope: non_group_granular_scope,
+            organization: old_organization)
+        end
+
+        it 'updates organization_id for granular scopes of transferred users' do
+          service.execute
+
+          expect(granular_scope1.reload.organization_id).to eq(new_organization.id)
+          expect(granular_scope2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for join table records of transferred users' do
+          service.execute
+
+          expect(join_record1.reload.organization_id).to eq(new_organization.id)
+          expect(join_record2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update granular scopes for users not in the group' do
+          expect { service.execute }.not_to change { non_group_granular_scope.reload.organization_id }
+        end
+
+        it 'does not update join table records for users not in the group' do
+          expect { service.execute }.not_to change { non_group_join_record.reload.organization_id }
+        end
+      end
+
       context 'for notes on personal snippets' do
         let_it_be(:personal_snippet) { create(:personal_snippet, author: user1, organization: old_organization) }
         let_it_be(:other_user) { create(:user, organization: create(:organization)) }
@@ -585,6 +649,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
 
         let(:ee_migratable_models) do
           [
+            "Ai::Catalog::ItemStar",
             "Ai::Catalog::ItemVersion",
             "Ai::Catalog::McpServer",
             "Ai::Catalog::McpServersUser",
@@ -610,10 +675,14 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'GitlabSubscriptions::SeatAssignment',
               'GitlabSubscriptions::UserAddOnAssignment',
               'Authz::AdminRole',
+              'Authz::GranularScope',
+              'Authz::PersonalAccessTokenGranularScope',
               'MemberRole',
               'Ai::Catalog::ItemConsumer',
               'ProjectSnippet',
-              'Snippet'
+              'Snippet',
+              'ImportFailure',
+              'Clusters::Cluster'
             ]
           end
 

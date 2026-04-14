@@ -23,106 +23,91 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
       create(:redmine_integration, project: project, inherit_from_id: instance_integration.id)
     end
 
-    # TODO: Un-nest shared_examples when removing the `optimize_propagate_integration_projects` feature flag
-    shared_examples 'it propagates integrations' do
-      context 'with inherited integration' do
-        let(:integration) { inherited_integration }
+    context 'with inherited integration' do
+      let(:integration) { inherited_integration }
 
-        it 'calls to PropagateIntegrationProjectWorker' do
-          expect(PropagateIntegrationInheritWorker).to receive(:perform_async)
-            .with(instance_integration.id, inherited_integration.id, inherited_integration.id)
+      it 'calls to PropagateIntegrationProjectWorker' do
+        expect(PropagateIntegrationInheritWorker).to receive(:perform_async)
+          .with(instance_integration.id, inherited_integration.id, inherited_integration.id)
 
-          described_class.new(instance_integration).execute
-        end
+        described_class.new(instance_integration).execute
       end
+    end
+
+    context 'with a project without integration' do
+      let_it_be(:another_project) { create(:project) }
+
+      it 'calls to PropagateIntegrationProjectWorker' do
+        expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
+          .with(instance_integration.id, another_project.id, another_project.id)
+
+        described_class.new(instance_integration).execute
+      end
+    end
+
+    context 'with a group without integration' do
+      it 'calls to PropagateIntegrationProjectWorker' do
+        expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
+          .with(instance_integration.id, group.id, group.id)
+
+        described_class.new(instance_integration).execute
+      end
+    end
+
+    context 'for a group-level integration' do
+      let_it_be(:group_integration) { create(:jira_integration, :group, group: group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
 
       context 'with a project without integration' do
-        let_it_be(:another_project) { create(:project) }
+        let_it_be(:another_project) { create(:project, group: group) }
 
         it 'calls to PropagateIntegrationProjectWorker' do
           expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
-            .with(instance_integration.id, another_project.id, another_project.id)
+            .with(group_integration.id, another_project.id, another_project.id)
 
-          described_class.new(instance_integration).execute
+          described_class.new(group_integration).execute
         end
       end
 
-      context 'with a group without integration' do
-        it 'calls to PropagateIntegrationProjectWorker' do
+      context 'with a subgroup without integration' do
+        it 'calls to PropagateIntegrationGroupWorker' do
           expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
-            .with(instance_integration.id, group.id, group.id)
+            .with(group_integration.id, subgroup.id, subgroup.id)
 
-          described_class.new(instance_integration).execute
+          described_class.new(group_integration).execute
         end
       end
 
-      context 'for a group-level integration' do
-        let_it_be(:group_integration) { create(:jira_integration, :group, group: group) }
-        let_it_be(:subgroup) { create(:group, parent: group) }
-
-        context 'with a project without integration' do
-          let_it_be(:another_project) { create(:project, group: group) }
-
-          it 'calls to PropagateIntegrationProjectWorker' do
-            expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
-              .with(group_integration.id, another_project.id, another_project.id)
-
-            described_class.new(group_integration).execute
-          end
-        end
-
-        context 'with a subgroup without integration' do
-          it 'calls to PropagateIntegrationGroupWorker' do
-            expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
-              .with(group_integration.id, subgroup.id, subgroup.id)
-
-            described_class.new(group_integration).execute
-          end
-        end
-
-        context 'and the integration is instance specific' do
-          let_it_be(:group_integration) { create(:beyond_identity_integration, :group, group: group, instance: false) }
-
-          context 'with a subgroup with integration' do
-            let_it_be(:subgroup_integration) do
-              create(:beyond_identity_integration, :group,
-                group: subgroup,
-                inherit_from_id: group_integration.id,
-                instance: false)
-            end
-
-            it 'calls to PropagateIntegrationInheritDescendantWorker' do
-              expect(Integrations::PropagateIntegrationDescendantWorker).to receive(:perform_async)
-                .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
-
-              described_class.new(group_integration).execute
-            end
-          end
-        end
+      context 'and the integration is instance specific' do
+        let_it_be(:group_integration) { create(:beyond_identity_integration, :group, group: group, instance: false) }
 
         context 'with a subgroup with integration' do
-          let_it_be(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
+          let_it_be(:subgroup_integration) do
+            create(:beyond_identity_integration, :group,
+              group: subgroup,
+              inherit_from_id: group_integration.id,
+              instance: false)
+          end
 
           it 'calls to PropagateIntegrationInheritDescendantWorker' do
-            expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)
+            expect(Integrations::PropagateIntegrationDescendantWorker).to receive(:perform_async)
               .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
 
             described_class.new(group_integration).execute
           end
         end
       end
-    end
 
-    # TODO: Delete when removing the `optimize_propagate_integration_projects` feature flag
-    it_behaves_like 'it propagates integrations'
+      context 'with a subgroup with integration' do
+        let_it_be(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
 
-    # TODO: Delete when removing the `optimize_propagate_integration_projects` feature flag
-    context 'when optimize_propagate_integration_projects feature flag is disabled' do
-      before do
-        stub_feature_flags(optimize_propagate_integration_projects: false)
+        it 'calls to PropagateIntegrationInheritDescendantWorker' do
+          expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)
+            .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
+
+          described_class.new(group_integration).execute
+        end
       end
-
-      it_behaves_like 'it propagates integrations'
     end
   end
 end

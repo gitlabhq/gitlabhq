@@ -239,6 +239,16 @@ RSpec.shared_examples 'wiki controller actions' do
         end
       end
 
+      context 'recently viewed wiki pages tracking' do
+        it 'logs the wiki page view for the current user' do
+          expect_next_instance_of(::Gitlab::Search::RecentWikiPages) do |service|
+            expect(service).to receive(:log_view).with(an_instance_of(WikiPage::Meta))
+          end
+
+          request
+        end
+      end
+
       context 'when page content encoding is invalid' do
         it 'sets flash error' do
           allow(controller).to receive(:valid_encoding?).and_return(false)

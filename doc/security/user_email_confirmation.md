@@ -22,7 +22,7 @@ Prerequisites:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions** and look for the **Email confirmation settings** options.
+1. Expand **New user account restrictions** and look for the **Email confirmation settings** options.
 
 ## Confirmation token expiry
 

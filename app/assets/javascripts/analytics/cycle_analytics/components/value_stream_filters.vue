@@ -70,6 +70,7 @@ export default {
       default: null,
     },
   },
+  emits: ['selectProject', 'setDateRange', 'setPredefinedDateRange'],
   computed: {
     projectsQueryParams() {
       return {

@@ -16,7 +16,7 @@ During placeholder user reassignment, you might encounter the following issues.
 
 ## Source user reassignment failed
 
-There is currently no way to retry reassignment for source users with `failed` status in the UI. See [issue 589632](https://gitlab.com/gitlab-org/gitlab/-/issues/589632).
+There is no way to retry reassignment for source users with `failed` status in the UI. See [issue 589632](https://gitlab.com/gitlab-org/gitlab/-/issues/589632).
 
 However, you can manually retry failed source users in the [Rails console](../../../administration/operations/rails_console.md):
 
@@ -42,7 +42,7 @@ Placeholder users are deleted after successfully reassigning user contributions.
 
 Users reassigning placeholder users in GitLab 18.5 and earlier are more likely to encounter this scenario. When this happens, the message `Unable to delete placeholder user because it is still referenced in other tables` appears in [`importer.log`](../../../administration/logs/_index.md#importerlog) tied to the placeholder user's ID.
 
-There are two approaches to deleting these users:
+To delete these users, you can either:
 
 - [Delete the placeholder user as an administrator](../../profile/account/delete_account.md#delete-users-and-user-contributions). This approach is best when you're confident any remaining placeholder user contributions can be deleted.
 - Upgrade the GitLab instance to GitLab 18.6 or later and retry placeholder reassignment for the placeholder user in the Rails console. This approach is best when reassignment completed on GitLab 18.5 or earlier and you're unsure about what placeholder user contributions remain.

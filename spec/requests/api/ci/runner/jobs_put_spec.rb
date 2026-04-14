@@ -336,6 +336,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         it 'logs the job failure' do
+          # TODO: remove this expectation once the following issue is resolved
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/594564
+          expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including(
+            class: "Ci::Runners::PartitionedTokenFinder"
+          )).at_least(:once)
           expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including(
             job_id: job.id,
             job_user_id: job.user_id,
@@ -346,6 +351,48 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           travel_to(3.hours.from_now) do
             update_job(job.id, jwt_token, state: 'success')
           end
+        end
+
+        shared_examples_for 'forbidden without persistence' do
+          it 'returns 403 Forbidden and logs without raising' do
+            # TODO: remove this expectation once the following issue is resolved
+            # https://gitlab.com/gitlab-org/gitlab/-/work_items/594564
+            expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including(
+              class: "Ci::Runners::PartitionedTokenFinder"
+            )).at_least(:once)
+            expect(Gitlab::AppLogger).to(
+              receive(:info).with(
+                a_hash_including(
+                  message: "Job forbidden due to expired JWT"
+                )
+              )
+            )
+
+            travel_to(3.hours.from_now) do
+              expect { update_job(job.id, jwt_token, state: 'success') }
+                .not_to raise_error
+            end
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when the job is already in a failed state' do
+          before do
+            job.drop!(:job_execution_server_timeout)
+          end
+
+          it_behaves_like 'forbidden without persistence'
+        end
+
+        context 'when the job was already transitioned by another process (StaleObjectError)' do
+          before do
+            allow_next_found_instance_of(Ci::Build) do |build|
+              allow(build).to receive(:drop).and_raise(ActiveRecord::StaleObjectError)
+            end
+          end
+
+          it_behaves_like 'forbidden without persistence'
         end
       end
 

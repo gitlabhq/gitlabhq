@@ -310,7 +310,7 @@ unnecessary when using `gl-icon`.
 
 <svg role="img" alt="" />
 
-<gl-icon name="epic" />
+<gl-icon name="work-item-epic" />
 ```
 
 ## When to use ARIA

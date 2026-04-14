@@ -117,7 +117,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 - リクエスタも招待グループのメンバーである。
 - リクエスタが共有グループまたは共有プロジェクトのメンバーである。
 
-> [!note]招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
+> [!note]
+> 招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
 
 この関数は、ページネーションパラメータ`page`および`per_page`を受け取り、ユーザーのリストを制限します。
 
@@ -277,7 +278,8 @@ curl --request PUT --header "Content-Type: application/json" \
 
 祖先グループを通じて継承または招待されたメンバーを含む、プロジェクトのメンバーを取得します。詳細については、対応する[すべての継承メンバーをリストするためのエンドポイント](#list-all-members-of-a-project-including-inherited-and-invited-members)を参照してください。
 
-> [!note]招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
+> [!note]
+> 招待されたグループのメンバーは、共有グループまたはプロジェクトで共有メンバーシップを持っています。つまり、リクエスタが共有グループまたは共有プロジェクトのメンバーであるが、招待プライベートグループのメンバーではない場合、このエンドポイントを使用すると、リクエスタは、招待プライベートグループのメンバーを含む、すべての共有グループまたは共有プロジェクトのメンバーを取得できます。
 
 ```plaintext
 GET /projects/:id/members/all/:user_id
@@ -371,7 +373,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-> [!note] [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
+> [!note]
+> [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
 
 **請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 
@@ -456,7 +459,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-> [!note] [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
+> [!note]
+> [ロールのプロモートに対する管理者承認](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions)が有効になっている場合、既存のユーザーを請求対象ロールにプロモートするメンバーシップリクエストには、管理者承認が必要です。
 
 **請求対象でないプロモーションの管理**を有効にするには、最初に`enable_member_promotion_management`アプリケーション設定を有効にする必要があります。
 

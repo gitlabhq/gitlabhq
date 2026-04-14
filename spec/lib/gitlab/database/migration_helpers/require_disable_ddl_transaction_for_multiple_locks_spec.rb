@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionForMultipleLocks,
   query_analyzers: false, feature_category: :database do
-  let_it_be(:multiple_locks_migration_module) do
+  let(:multiple_locks_migration_module) do
     Module.new do
       include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
     end
   end
 
-  let_it_be(:multiple_locks_on_single_table_migration_module) do
+  let(:multiple_locks_on_single_table_migration_module) do
     Module.new do
       def up
         create_table :taggings do |t|
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
     end
   end
 
-  let_it_be(:multiple_locks_single_statement_migration_module) do
+  let(:multiple_locks_single_statement_migration_module) do
     Module.new do
       def up
         # Simulate an operation that locks multiple tables
@@ -174,6 +174,79 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
 
         it 'does not raise an error' do
           expect { migrate_up }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when the transaction has already failed', :delete do
+      # _test_lock_table_a is locked first; the fiber holds it to simulate contention.
+      # _test_lock_table_b is locked second to trigger multi-table lock detection on retry.
+      let(:migration) do
+        migration_base_klass.extend(Module.new do
+          def up
+            transaction do
+              execute "LOCK TABLE _test_lock_table_a IN ACCESS EXCLUSIVE MODE"
+              execute "LOCK TABLE _test_lock_table_b IN ACCESS EXCLUSIVE MODE"
+            end
+          end
+
+          def down; end
+        end)
+      end
+
+      let(:lock_fiber) do
+        Fiber.new do
+          conn = ActiveRecord::Base.connection_pool.checkout
+          conn.transaction do
+            conn.execute("LOCK TABLE _test_lock_table_a IN ACCESS EXCLUSIVE MODE")
+            Fiber.yield
+          end
+          ActiveRecord::Base.connection_pool.checkin(conn)
+        end
+      end
+
+      before do
+        migration.connection.execute("CREATE TABLE _test_lock_table_a (id bigserial PRIMARY KEY)")
+        migration.connection.execute("CREATE TABLE _test_lock_table_b (id bigserial PRIMARY KEY)")
+        lock_fiber.resume # Start the transaction and lock the table
+        migration.connection.execute("SET lock_timeout = '100ms'") # Set short timeout so the migration fails quickly
+      end
+
+      after do
+        lock_fiber.resume if lock_fiber.alive?
+        migration.connection.execute("RESET lock_timeout")
+        migration.connection.execute("DROP TABLE IF EXISTS _test_lock_table_a")
+        migration.connection.execute("DROP TABLE IF EXISTS _test_lock_table_b")
+      end
+
+      it 'does not call check_current_locks and raises ActiveRecord::LockWaitTimeout' do
+        expect_next_instance_of(migration) do |instance|
+          expect(instance).not_to receive(:check_current_locks)
+        end
+
+        # ActiveRecord translates PG::LockNotAvailable to this error
+        expect { migrate_up }.to raise_error(ActiveRecord::LockWaitTimeout)
+      end
+
+      context 'when retried via WithLockRetries' do
+        let(:retry_lock) { Gitlab::Database::WithLockRetries.new(connection: migration.connection) }
+
+        it 'retries and calls check_current_locks on the next attempts' do
+          # Release the fiber lock during the sleep between retries so the next attempts can proceed
+          allow(retry_lock).to receive(:sleep) { lock_fiber.resume if lock_fiber.alive? }
+          expect(migration).to receive(:migrate).with(:up).at_least(:twice).and_call_original
+
+          # 1st attempt: transaction fails, check_current_locks skipped
+          expect_next_instance_of(migration) do |instance|
+            expect(instance).not_to receive(:check_current_locks)
+          end
+
+          # 2nd attempt (retry): transaction succeeds, check_current_locks should run
+          expect_next_instance_of(migration) do |instance|
+            expect(instance).to receive(:check_current_locks).at_least(:once).and_call_original
+          end
+
+          expect { retry_lock.run { migration.migrate(:up) } }.to raise_error(/This migration locks multiple tables/)
         end
       end
     end

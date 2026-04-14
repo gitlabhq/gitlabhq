@@ -8,17 +8,12 @@ module Admin
       skip_before_action :authenticate_admin!, unless: :can_access_instance_admin_area?
       skip_before_action :enforce_step_up_authentication, unless: :can_access_instance_admin_area?
 
-      before_action :check_organization_admin_area_feature_flag!
-      before_action :authorize_access_organization_admin_area!, unless: :can_access_instance_admin_area?
+      before_action :authorize_access_organization_admin_area!
 
       private
 
-      def check_organization_admin_area_feature_flag!
-        render_404 unless Feature.enabled?(:org_admin_area, ::Current.organization)
-      end
-
       def authorize_access_organization_admin_area!
-        access_denied! unless current_user&.can_access_organization_admin_area?(::Current.organization)
+        access_denied! unless current_user&.can?(:access_organization_admin_area, ::Current.organization)
       end
 
       def can_access_instance_admin_area?

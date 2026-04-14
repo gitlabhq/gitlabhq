@@ -1,13 +1,11 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { hasScrolled, markAsScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NewLineDiscussionForm from './new_line_discussion_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
-
-// we only need to scroll to the note once, this value would be shared across all instances of the component
-// we don't need it to be reactive so we can just use the module closure to store it
-let scrolledToNote = false;
+import DraftNote from './draft_note.vue';
 
 export default {
   name: 'DiffLineDiscussions',
@@ -16,16 +14,22 @@ export default {
     NoteSignedOutWidget,
     NewLineDiscussionForm,
     DiffDiscussions,
+    DraftNote,
   },
   inject: {
-    userPermissions: {
-      type: Object,
-    },
+    userPermissions: { type: Object },
+    filePaths: { default: null },
+    linkedFileData: { default: null },
   },
   props: {
     discussions: {
       type: Array,
       required: true,
+    },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   emits: ['start-thread', 'highlight', 'clear-highlight'],
@@ -35,6 +39,12 @@ export default {
     };
   },
   computed: {
+    regularDiscussions() {
+      return this.discussions.filter((discussion) => !discussion.isDraft);
+    },
+    draftDiscussions() {
+      return this.discussions.filter((discussion) => discussion.isDraft);
+    },
     hasForm() {
       return this.discussions.some((discussion) => discussion.isForm);
     },
@@ -44,12 +54,21 @@ export default {
   },
   methods: {
     scrollToNoteFragment() {
-      if (!window.location.hash.startsWith('#note_') || scrolledToNote) return;
-      const target = document.querySelector(`a[href="${window.location.hash}"]`);
+      if (hasScrolled() || !window.location.hash.startsWith('#note_')) return;
+      if (this.linkedFileData) {
+        if (!this.filePaths) return;
+        if (
+          this.linkedFileData.old_path !== this.filePaths.oldPath ||
+          this.linkedFileData.new_path !== this.filePaths.newPath
+        )
+          return;
+      }
+      const noteId = window.location.hash.substring(1);
+      const target = document.querySelector(`a[href$="#${noteId}"]`);
       if (!target) return;
       // :target pseudo class applies to the note only if we click the link since the note is rendered client-side
       target.click();
-      scrolledToNote = true;
+      markAsScrolled();
     },
     lineRange(discussion) {
       const { position } = discussion;
@@ -72,7 +91,7 @@ export default {
 <template>
   <div class="rd-diff-line-discussions-list">
     <div
-      v-for="(discussion, index) in discussions"
+      v-for="(discussion, index) in regularDiscussions"
       :key="index"
       :class="{ 'gl-border-t': index > 0 }"
       @mouseenter="onMouseenter(discussion)"
@@ -82,11 +101,27 @@ export default {
       <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
       <diff-discussions v-else :discussions="[discussion]" />
     </div>
-    <div v-if="!hasForm" class="gl-border-t gl-flex gl-border-t-subtle gl-px-5 gl-py-4">
+    <div
+      v-if="!hasForm && !collapsed"
+      class="gl-border-t gl-flex gl-border-t-subtle gl-px-4 gl-py-4"
+    >
       <note-signed-out-widget v-if="!isLoggedIn" />
       <gl-button v-else-if="userPermissions.can_create_note" @click="$emit('start-thread')">
         {{ __('Start another thread') }}
       </gl-button>
+    </div>
+    <div
+      v-for="(discussion, index) in draftDiscussions"
+      :key="discussion.id"
+      @mouseenter="onMouseenter(discussion)"
+      @mouseleave="onMouseleave"
+    >
+      <draft-note
+        :class="{
+          'gl-rounded-[var(--content-border-radius)]': index === draftDiscussions.length - 1,
+        }"
+        :draft="discussion.draft"
+      />
     </div>
   </div>
 </template>

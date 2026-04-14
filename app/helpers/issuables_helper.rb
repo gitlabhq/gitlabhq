@@ -104,6 +104,8 @@ module IssuablesHelper
       updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
+      isIncidentManagement: issuable.work_item_type&.incident_management? || false,
+      isServiceDesk: issuable.work_item_type&.service_desk? || issuable.try(:from_service_desk?) || false,
       issuableRef: issuable.to_reference,
       imported: issuable.imported?,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
@@ -168,6 +170,7 @@ module IssuablesHelper
       end
 
     {
+      allow_scoped_labels: project.licensed_feature_available?(:scoped_labels).to_s,
       field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
       full_path: project.full_path,
       initial_labels: initial_labels.to_json,

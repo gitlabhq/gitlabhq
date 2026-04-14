@@ -21,6 +21,7 @@ describe('utils', () => {
             'enableMemberPromotionManagement',
             'ldapSyncConfigured',
             'samlScimConfigured',
+            'contractOveragesAllowed',
           ],
         }),
       ).toEqual(mockData);

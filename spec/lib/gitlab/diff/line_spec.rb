@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Diff::Line do
   end
 
   describe '#id' do
-    let(:file_hash) { '1234567890' }
+    let(:file_hash) { '123456789' }
 
     subject(:id) { line.id(file_hash) }
 
@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Diff::Line do
         )
       end
 
-      it { is_expected.to eq("line_#{file_hash[0..8]}_A#{line.new_pos}") }
+      it { is_expected.to eq("line_#{file_hash}_A#{line.new_pos}") }
     end
 
     context 'with unchanged line' do
@@ -206,7 +206,7 @@ RSpec.describe Gitlab::Diff::Line do
         )
       end
 
-      it { is_expected.to eq("line_#{file_hash[0..8]}_#{line.old_pos}") }
+      it { is_expected.to eq("line_#{file_hash}_#{line.old_pos}") }
     end
 
     context 'with removed line' do
@@ -223,7 +223,7 @@ RSpec.describe Gitlab::Diff::Line do
         )
       end
 
-      it { is_expected.to eq("line_#{file_hash[0..8]}_#{line.old_pos}") }
+      it { is_expected.to eq("line_#{file_hash}_#{line.old_pos}") }
     end
   end
 end

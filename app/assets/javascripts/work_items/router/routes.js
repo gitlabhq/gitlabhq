@@ -1,5 +1,5 @@
 import { getParameterByName } from '~/lib/utils/url_utility';
-import PlanningView from '../pages/planning_view.vue';
+import PlanningView from 'ee_else_ce/work_items/pages/planning_view.vue';
 import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';

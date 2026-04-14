@@ -420,7 +420,7 @@ Filters for the `dora_chart` visualization.
 
 {{< history >}}
 
-- Code Suggestions, Chat (non-agentic), and Root Cause Analysis usage metrics [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/589605) to display absolute user counts instead of percentage rates in GitLab 18.10.
+- Code Suggestions, Non-Agentic Chat, and Root Cause Analysis usage metrics [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/589605) to display absolute user counts instead of percentage rates in GitLab 18.10.
 
 {{< /history >}}
 
@@ -450,7 +450,7 @@ along with their descriptions and the name of the drill-down report where they a
 | Feature usage                     | Number of contributors who used any GitLab Duo feature.                                                              |  | `duo_used_count` |
 | Code Suggestions usage            | Number of users who used Code Suggestions.                                                                           |  | `code_suggestions_users_count` |
 | Code Suggestions acceptance rate  | Code Suggestions accepted out of total Code Suggestions generated.                                                   |  | `code_suggestions_acceptance_rate` |
-| Chat (non-agentic) usage          | Number of users who used Chat (non-agentic).                                                                     |  | `duo_chat_users_count` |
+| Non-Agentic Chat usage          | Number of users who used Non-Agentic Chat.                                                                     |  | `duo_chat_users_count` |
 | Root Cause Analysis usage         | Number of users who used Root Cause Analysis.                                                                        |  | `duo_rca_users_count` |
 
 ## Metrics with Jira

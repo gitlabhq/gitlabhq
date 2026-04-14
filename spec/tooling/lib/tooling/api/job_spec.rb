@@ -70,7 +70,7 @@ RSpec.describe Tooling::API::Job, feature_category: :tooling do
         LOG
       end
 
-      it do
+      it 'returns all failed specs' do
         is_expected.to match_array(
           %w[spec/bar_spec.rb spec/bo_spec.rb spec/foo_spec.rb spec/ro_spec.rb spec/sham_spec.rb]
         )

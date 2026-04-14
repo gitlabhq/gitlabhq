@@ -11,7 +11,7 @@ module Gitlab
       # - `boundary: 'user'` or `boundary: 'instance'` - For standalone resources without project/group boundaries
       class BoundaryExtractor
         STANDALONE_BOUNDARIES = %w[user instance].freeze
-        VALID_BOUNDARY_ACCESSOR_METHODS = %w[project group itself].freeze
+        VALID_BOUNDARY_ACCESSOR_METHODS = %w[project group itself owner].freeze
 
         def initialize(object:, arguments:, context:, directive:)
           @object = object
@@ -106,6 +106,7 @@ module Gitlab
           return obj if obj.is_a?(::Project) || obj.is_a?(::Group)
           return obj.project if obj.respond_to?(:project)
           return obj.group if obj.respond_to?(:group)
+          return obj.owner if obj.respond_to?(:owner)
 
           nil
         end

@@ -4,29 +4,8 @@ module Authz
   class Role
     BASE_PATH = 'config/authz/roles'
 
-    SCOPES = %i[project group].freeze
-
-    def initialize(role_data)
-      @role_data = role_data
-    end
-
-    # Returns all project permissions for this role including permissions
-    # from inherited roles.
-    def project_permissions
-      @project_permissions ||= resolve_permissions(:project, Set.new)
-    end
-
-    # Returns all group permissions for this role including permissions
-    # from inherited roles.
-    def group_permissions
-      @group_permissions ||= resolve_permissions(:group, Set.new)
-    end
-
-    # Returns all permissions (project + group) for this role including
-    # permissions from inherited roles.
-    def permissions
-      @permissions ||= (project_permissions + group_permissions).uniq
-    end
+    RESOURCE_SCOPES = %i[project group].freeze
+    VALID_SCOPES = (%i[all] + RESOURCE_SCOPES).freeze
 
     class << self
       def get(role_name)
@@ -54,7 +33,7 @@ module Authz
         role_data = YAML.safe_load_file(path).deep_symbolize_keys
         role_data[:inherits_from] = Array(role_data[:inherits_from]).map(&:to_sym)
 
-        SCOPES.each do |scope|
+        RESOURCE_SCOPES.each do |scope|
           role_data[scope] ||= {}
           role_data[scope][:raw_permissions] = Array(role_data[scope][:raw_permissions]).map(&:to_sym)
           role_data[scope][:permissions] = Array(role_data[scope][:permissions]).map(&:to_sym)
@@ -64,42 +43,81 @@ module Authz
       end
     end
 
+    def initialize(role_data)
+      @role_data = role_data
+    end
+
+    # Returns all permissions (project + group) for this role including
+    # permissions from inherited roles. This can be limited to project or group
+    # permissions by supplying the optional scope argument
+    def permissions(scope)
+      raise ArgumentError, "Invalid scope: #{scope}" if VALID_SCOPES.exclude?(scope)
+
+      return project_permissions if scope == :project
+      return group_permissions if scope == :group
+
+      @all_permissions ||= project_permissions | group_permissions
+    end
+
     # Returns only the permissions directly defined in this role's YAML file
     # for the given scope. Does not include permissions inherited from other roles.
     def direct_permissions(scope)
-      assignable = expand_assignable_permissions(scope)
+      raise ArgumentError, "Invalid scope: #{scope}" if VALID_SCOPES.exclude?(scope)
 
-      (raw_permissions(scope) + assignable).uniq
+      return direct_project_permissions if scope == :project
+      return direct_group_permissions if scope == :group
+
+      @all_direct_permissions ||= direct_project_permissions | direct_group_permissions
     end
 
     protected
 
     def resolve_permissions(scope, evaluated_roles)
-      return [] if evaluated_roles.include?(@role_data[:name])
+      return Set.new if evaluated_roles.include?(@role_data[:name])
 
       evaluated_roles.add(@role_data[:name])
 
-      inherited = @role_data[:inherits_from].flat_map do |parent_name|
-        self.class.get(parent_name).resolve_permissions(scope, evaluated_roles)
+      inherited = @role_data[:inherits_from].each_with_object(Set.new) do |parent_name, set|
+        set.merge(self.class.get(parent_name).resolve_permissions(scope, evaluated_roles))
       end
 
-      (inherited + direct_permissions(scope)).uniq
+      inherited | direct_permissions(scope)
     end
 
     private
 
     def raw_permissions(scope)
-      @role_data.dig(scope, :raw_permissions) || []
+      Set.new(@role_data.dig(scope, :raw_permissions))
     end
 
     def assignable_permissions(scope)
-      @role_data.dig(scope, :permissions) || []
+      Set.new(@role_data.dig(scope, :permissions))
     end
 
     def expand_assignable_permissions(scope)
-      assignable_permissions(scope).flat_map do |name|
-        Authz::PermissionGroups::Assignable.get(name).permissions
+      assignable_permissions(scope).each_with_object(Set.new) do |name, set|
+        set.merge(Authz::PermissionGroups::Assignable.get(name).permissions)
       end
+    end
+
+    # Returns all project permissions for this role including permissions
+    # from inherited roles.
+    def project_permissions
+      @project_permissions ||= resolve_permissions(:project, Set.new)
+    end
+
+    # Returns all group permissions for this role including permissions
+    # from inherited roles.
+    def group_permissions
+      @group_permissions ||= resolve_permissions(:group, Set.new)
+    end
+
+    def direct_project_permissions
+      @direct_project_permissions ||= raw_permissions(:project) | expand_assignable_permissions(:project)
+    end
+
+    def direct_group_permissions
+      @direct_group_permissions ||= raw_permissions(:group) | expand_assignable_permissions(:group)
     end
   end
 end

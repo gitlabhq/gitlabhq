@@ -7,7 +7,7 @@ import {
   GlButtonGroup,
   GlButton,
   GlIcon,
-  GlPagination,
+  GlKeysetPagination,
   GlPopover,
   GlFormCheckbox,
   GlTooltipDirective,
@@ -37,11 +37,7 @@ import {
   I18N_SIZE,
   I18N_CREATED,
   I18N_ARTIFACTS_COUNT,
-  INITIAL_CURRENT_PAGE,
-  INITIAL_PREVIOUS_PAGE_CURSOR,
-  INITIAL_NEXT_PAGE_CURSOR,
   JOBS_PER_PAGE,
-  INITIAL_LAST_PAGE_SIZE,
   I18N_BULK_DELETE_ERROR,
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
@@ -53,14 +49,6 @@ import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
 import BulkDeleteModal from './bulk_delete_modal.vue';
 import ArtifactsTableRowDetails from './artifacts_table_row_details.vue';
 
-const INITIAL_PAGINATION_STATE = {
-  currentPage: INITIAL_CURRENT_PAGE,
-  prevPageCursor: INITIAL_PREVIOUS_PAGE_CURSOR,
-  nextPageCursor: INITIAL_NEXT_PAGE_CURSOR,
-  firstPageSize: JOBS_PER_PAGE,
-  lastPageSize: INITIAL_LAST_PAGE_SIZE,
-};
-
 export default {
   name: 'JobArtifactsTable',
   components: {
@@ -71,7 +59,7 @@ export default {
     GlButtonGroup,
     GlButton,
     GlIcon,
-    GlPagination,
+    GlKeysetPagination,
     GlPopover,
     GlFormCheckbox,
     GlAnimatedChevronRightDownIcon,
@@ -126,36 +114,34 @@ export default {
   data() {
     return {
       jobArtifacts: [],
-      pageInfo: {},
       expandedJobs: [],
       selectedArtifacts: [],
-      pagination: INITIAL_PAGINATION_STATE,
       isBulkDeleteModalVisible: false,
       jobArtifactsToDelete: [],
       isBulkDeleting: false,
-      page: INITIAL_CURRENT_PAGE,
+      pageInfo: {},
+      prevPageCursor: '',
+      nextPageCursor: '',
     };
   },
   computed: {
     queryVariables() {
-      return {
+      const vars = {
         projectPath: this.projectPath,
-        firstPageSize: this.pagination.firstPageSize,
-        lastPageSize: this.pagination.lastPageSize,
-        prevPageCursor: this.pagination.prevPageCursor,
-        nextPageCursor: this.pagination.nextPageCursor,
       };
+
+      if (this.prevPageCursor) {
+        vars.prevPageCursor = this.prevPageCursor;
+        vars.lastPageSize = JOBS_PER_PAGE;
+      } else {
+        vars.nextPageCursor = this.nextPageCursor;
+        vars.firstPageSize = JOBS_PER_PAGE;
+      }
+
+      return vars;
     },
     showPagination() {
-      const { hasNextPage, hasPreviousPage } = this.pageInfo;
-
-      return hasNextPage || hasPreviousPage;
-    },
-    prevPage() {
-      return Number(this.pageInfo.hasPreviousPage);
-    },
-    nextPage() {
-      return Number(this.pageInfo.hasNextPage);
+      return Boolean(this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
     },
     fields() {
       if (this.canBulkDestroyArtifacts) {
@@ -213,7 +199,8 @@ export default {
   },
   methods: {
     updateQueryParamsFromUrl() {
-      this.page = Number(getParameterByName('page')) || INITIAL_CURRENT_PAGE;
+      this.prevPageCursor = getParameterByName('prev') || '';
+      this.nextPageCursor = getParameterByName('next') || '';
     },
     refetchArtifacts() {
       this.$apollo.queries.jobArtifacts.refetch();
@@ -225,29 +212,22 @@ export default {
       const id = getIdFromGraphQLId(item.pipeline.id);
       return `#${id}`;
     },
-    handlePageChange(page) {
-      this.page = page;
-
+    handleNextPage() {
+      const { endCursor } = this.pageInfo;
+      this.prevPageCursor = '';
+      this.nextPageCursor = endCursor;
       updateHistory({
-        url: setUrlParams({ page }),
+        url: setUrlParams({ next: endCursor, prev: null }),
       });
-      const { startCursor, endCursor } = this.pageInfo;
-
-      if (page > this.pagination.currentPage) {
-        this.pagination = {
-          ...INITIAL_PAGINATION_STATE,
-          nextPageCursor: endCursor,
-          currentPage: page,
-        };
-      } else {
-        this.pagination = {
-          lastPageSize: JOBS_PER_PAGE,
-          firstPageSize: null,
-          prevPageCursor: startCursor,
-          currentPage: page,
-        };
-      }
-
+      scrollToElement(this.$el);
+    },
+    handlePreviousPage() {
+      const { startCursor } = this.pageInfo;
+      this.prevPageCursor = startCursor;
+      this.nextPageCursor = '';
+      updateHistory({
+        url: setUrlParams({ prev: startCursor, next: null }),
+      });
       scrollToElement(this.$el);
     },
     // eslint-disable-next-line max-params
@@ -616,14 +596,12 @@ export default {
         />
       </template>
     </gl-table>
-    <gl-pagination
+    <gl-keyset-pagination
       v-if="showPagination"
-      :value="pagination.currentPage"
-      :prev-page="prevPage"
-      :next-page="nextPage"
-      align="center"
-      class="gl-mt-6"
-      @input="handlePageChange"
+      v-bind="pageInfo"
+      class="gl-flex gl-justify-center"
+      @prev="handlePreviousPage"
+      @next="handleNextPage"
     />
   </div>
 </template>

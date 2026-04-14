@@ -89,7 +89,6 @@ describe('diffs/components/app', () => {
       propsData: {
         shouldShow: true,
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
-        endpointCodequality: '',
         sastReportAvailable: false,
         projectPath: 'namespace/project',
         currentUser: {},

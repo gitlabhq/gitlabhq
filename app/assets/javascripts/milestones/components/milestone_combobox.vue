@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce, isEqual } from 'lodash';
+import { debounce, isEqual } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__, __, sprintf } from '~/locale';

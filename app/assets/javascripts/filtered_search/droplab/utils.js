@@ -1,4 +1,4 @@
-import { template as _template } from 'lodash';
+import { template as _template } from 'lodash-es';
 import { DATA_TRIGGER, DATA_DROPDOWN, TEMPLATE_REGEX } from './constants';
 
 const utils = {

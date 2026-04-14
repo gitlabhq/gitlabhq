@@ -55,7 +55,7 @@ Lists all runners available to the user.
 Prerequisites:
 
 - For group runners, you must have the Owner role in the owner namespace.
-- For project runners, you must have the Maintainer or Owner role in a project assigned to the runner.
+- For project runners, you must have the Security Manager, Maintainer or Owner role in a project assigned to the runner.
 
 ```plaintext
 GET /runners
@@ -76,7 +76,8 @@ GET /runners?tag_list=tag1,tag2
 | `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners"
 ```
 
 > [!warning]
@@ -163,8 +164,9 @@ GET /runners/all?tag_list=tag1,tag2
 | `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
-```
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/all"
 
 > [!warning]
 > Deprecations:
@@ -254,7 +256,7 @@ Prerequisites:
 
 - User access: You must have one of the following:
   - For group runners: The Maintainer or Owner role in the owner namespace.
-  - For project runners: The Maintainer or Owner role in the project that owns the runner.
+  - For project runners: The Security Manager, Maintainer or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 - An access token with the `manage_runner` scope and the appropriate role.
 
@@ -267,7 +269,8 @@ GET /runners/:id
 | `id`      | integer | yes      | The ID of a runner |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 > [!warning]
@@ -360,8 +363,11 @@ Prerequisites:
 | `maintenance_note` | string  | no       | Free-form maintenance notes for the runner (1024 characters) |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
-     --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6" \
+     --form "description=test-1-20150125-test" \
+     --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 > [!warning]
@@ -445,14 +451,18 @@ PUT --form "active=false" /runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "paused=true"  "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "paused=true"  \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 
 # --or--
 
 # Deprecated: removal planned in 16.0
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "active=false"  \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 > [!warning]
@@ -478,7 +488,8 @@ GET /runners/:id/jobs
 | `sort`      | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). If `sort` is specified, `order_by` must be specified as well |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
 ```
 
 Example response:
@@ -563,7 +574,8 @@ GET /runners/:id/managers
 | `id`      | integer | yes      | The ID of a runner |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/managers"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/managers"
 ```
 
 Example response:
@@ -627,7 +639,8 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
 > [!warning]
@@ -701,7 +714,9 @@ POST /projects/:id/runners
 | `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" \
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners" \
      --form "runner_id=9"
 ```
 
@@ -754,7 +769,9 @@ DELETE /projects/:id/runners/:runner_id
 | `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners/9"
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
 
 ## List all of a group's runners
@@ -797,7 +814,8 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 >   Use the `paused` attribute instead.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
 > [!warning]
@@ -888,7 +906,8 @@ POST /runners
 | `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters) |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners" \
+curl --request POST \
+     --url "https://gitlab.example.com/api/v4/runners" \
      --form "token=<registration_token>" --form "description=test-1-20150125-test" \
      --form "tag_list=ruby,mysql,tag1,tag2"
 ```
@@ -940,7 +959,9 @@ DELETE /runners/:id
 | `id`      | integer | yes      | The ID of a runner. The ID is visible in the UI under **Settings** > **CI/CD**. Expand **Runners**, and below **Remove Runner** is an ID preceded by the pound sign, for example, `#6`. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 ### Delete a runner by authentication token
@@ -956,7 +977,8 @@ DELETE /runners
 | `token`   | string | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
-curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
+curl --request DELETE \
+     --url "https://gitlab.example.com/api/v4/runners" \
      --form "token=<authentication_token>"
 ```
 
@@ -980,7 +1002,8 @@ POST /runners/verify
 | `system_id` | string | no       | The runner's system identifier. This attribute is required if the `token` starts with `glrt-`. |
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
+curl --request POST \
+     --url "https://gitlab.example.com/api/v4/runners/verify" \
      --form "token=<authentication_token>"
 ```
 
@@ -1020,8 +1043,9 @@ POST /runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/reset_registration_token"
 ```
 
 ## Reset project's runner registration token
@@ -1042,8 +1066,9 @@ POST /projects/:id/runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
 ```
 
 ## Reset group's runner registration token
@@ -1064,8 +1089,9 @@ POST /groups/:id/runners/reset_registration_token
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/groups/9/runners/reset_registration_token"
 ```
 
 ## Reset runner's authentication token by using the runner ID
@@ -1090,8 +1116,9 @@ POST /runners/:id/reset_authentication_token
 | `id`      | integer | yes      | The ID of a runner |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/runners/1/reset_authentication_token"
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runners/1/reset_authentication_token"
 ```
 
 Example response:
@@ -1116,8 +1143,9 @@ POST /runners/reset_authentication_token
 | `token`   | string | yes      | The authentication token of the runner |
 
 ```shell
-curl --request POST --form "token=<current token>" \
-     "https://gitlab.example.com/api/v4/runners/reset_authentication_token"
+curl --request POST \
+     --form "token=<current token>" \
+     --url "https://gitlab.example.com/api/v4/runners/reset_authentication_token"
 ```
 
 Example response:
@@ -1149,7 +1177,7 @@ GET /runners/router/discovery
 
 ```shell
 curl --header "Runner-Token: <runner_authentication_token>" \
-     "https://gitlab.example.com/api/v4/runners/router/discovery"
+     --url "https://gitlab.example.com/api/v4/runners/router/discovery"
 ```
 
 Response:

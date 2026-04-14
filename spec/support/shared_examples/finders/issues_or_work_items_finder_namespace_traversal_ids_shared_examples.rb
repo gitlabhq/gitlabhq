@@ -62,14 +62,6 @@ RSpec.shared_examples 'issues or work items finder with namespace_traversal_ids 
     it_behaves_like 'generates query without namespace_traversal_id filtering'
   end
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(use_namespace_traversal_ids_for_work_items_finder: false)
-    end
-
-    it_behaves_like 'generates query without namespace_traversal_id filtering'
-  end
-
   context 'when include param is false' do
     let(:params) { { group_id: group } }
 

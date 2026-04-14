@@ -9,6 +9,7 @@ module WorkItems
       belongs_to :namespace
       belongs_to :author, foreign_key: :created_by_id, optional: true, inverse_of: :created_saved_views,
         class_name: 'User'
+      belongs_to :updated_by, optional: true, class_name: 'User'
 
       has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', inverse_of: :saved_view
       has_many :subscribed_users, through: :user_saved_views, source: :user

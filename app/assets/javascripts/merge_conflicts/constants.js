@@ -1,4 +1,4 @@
-import { unescape } from 'lodash';
+import { unescape } from 'lodash-es';
 import { s__, sprintf } from '~/locale';
 import { sanitize } from '~/lib/dompurify';
 

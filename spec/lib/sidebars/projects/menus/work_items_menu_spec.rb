@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navigation do
-  let(:project) { build(:project) }
-  let(:user) { project.first_owner }
+  let_it_be(:project) { create(:project) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for authorization
+  let_it_be(:user) { project.first_owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
 
   subject(:menu) { described_class.new(context) }
@@ -125,20 +125,13 @@ RSpec.describe Sidebars::Projects::Menus::WorkItemsMenu, feature_category: :navi
     end
 
     describe 'when user is logged in' do
-      it 'does not show the badge when the work_item_planning_view flag is disabled' do
-        allow(project).to receive(:work_items_consolidated_list_enabled?).with(user).and_return(false)
-        expect(menu.send(:show_work_items_badge?)).to be(false)
-      end
-
       it 'does not show the badge when user has dismissed the callout' do
-        allow(project).to receive(:work_items_consolidated_list_enabled?).with(user).and_return(true)
         allow(user).to receive(:dismissed_callout?).with(feature_name: 'work_items_nav_badge').and_return(true)
         expect(menu.send(:show_work_items_badge?)).to be(false)
       end
 
-      describe 'when the work_item_planning_view flag is enabled and callout not dismissed' do
+      describe 'when the callout is not dismissed' do
         before do
-          allow(project).to receive(:work_items_consolidated_list_enabled?).with(user).and_return(true)
           allow(user).to receive(:dismissed_callout?).with(feature_name: 'work_items_nav_badge').and_return(false)
         end
 

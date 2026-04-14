@@ -66,6 +66,18 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
     end
   end
 
+  context 'when repository is not a project repository' do
+    let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+    let(:project) { nil }
+    let(:repository) { personal_snippet.repository }
+
+    it 'does not trigger RefCacheUpdateService' do
+      expect(Gitlab::Repositories::RefCacheUpdateService).not_to receive(:new)
+
+      subject
+    end
+  end
+
   shared_examples 'post_receive_service actions' do
     it 'enqueues a PostReceiveWorker worker job with gitaly_context' do
       expect(Repositories::PostReceiveWorker).to receive(:perform_async)
@@ -132,6 +144,29 @@ RSpec.describe PostReceiveService, feature_category: :source_code_management do
       MESSAGE
 
       expect(subject).to include(build_basic_message(message))
+    end
+
+    it 'triggers reference cache update' do
+      expect_next_instance_of(Gitlab::Repositories::RefCacheUpdateService, repository, a_kind_of(Gitlab::Git::Changes)) do |instance|
+        expect(instance).to receive(:execute)
+      end
+
+      subject
+    end
+
+    context 'when rebuildable ref cache update fails' do
+      it 'tracks the exception and does not raise an error' do
+        expect_next_instance_of(Gitlab::Repositories::RefCacheUpdateService) do |instance|
+          expect(instance).to receive(:execute).and_raise(StandardError, 'Redis connection failed')
+        end
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(StandardError),
+          project_id: project.id
+        )
+
+        expect { subject }.not_to raise_error
+      end
     end
 
     context 'when printing_merge_request_link_enabled is false' do

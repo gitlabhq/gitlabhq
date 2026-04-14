@@ -7,7 +7,7 @@ import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
-import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import { ASC, DESC } from '~/notes/constants';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
@@ -376,7 +376,7 @@ export default {
 <template>
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
-    <work-item-comment-locked v-else-if="showLockedBanner" :work-item-type="workItemType" />
+    <work-item-comment-locked v-else-if="showLockedBanner" />
     <div v-else-if="!isProjectArchived" :class="timelineEntryInnerClass">
       <div :class="timelineContentClass">
         <gl-alert

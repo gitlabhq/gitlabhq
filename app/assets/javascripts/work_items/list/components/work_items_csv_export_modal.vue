@@ -2,7 +2,6 @@
 import { GlModal, GlSprintf, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, n__, s__, sprintf, formatNumber } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemsCsvExportMutation from '../graphql/work_items_csv_export.mutation.graphql';
 
 export default {
@@ -13,8 +12,6 @@ export default {
   i18n: {
     workItemExportTitle: s__('WorkItem|Export work items'),
     workItemErrorMessage: s__('WorkItem|An error occurred while exporting work items.'),
-    issueExportTitle: s__('WorkItem|Export issues'),
-    issueErrorMessage: s__('WorkItem|An error occurred while exporting issues.'),
     exportText: s__(
       'WorkItem|The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment.',
     ),
@@ -24,7 +21,6 @@ export default {
     GlSprintf,
     GlIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     userExportEmail: {
       default: '',
@@ -51,14 +47,9 @@ export default {
     };
   },
   computed: {
-    isPlanningViewsEnabled() {
-      return this.glFeatures.workItemPlanningView;
-    },
     actionPrimary() {
       return {
-        text: this.isPlanningViewsEnabled
-          ? this.$options.i18n.workItemExportTitle
-          : this.$options.i18n.issueExportTitle,
+        text: this.$options.i18n.workItemExportTitle,
         attributes: {
           variant: 'confirm',
           loading: this.isExporting,
@@ -69,26 +60,12 @@ export default {
       };
     },
     workItemCountText() {
-      return this.isPlanningViewsEnabled
-        ? sprintf(
-            n__('%{count} work item selected', '%{count} work items selected', this.workItemCount),
-            {
-              count: formatNumber(this.workItemCount),
-            },
-          )
-        : sprintf(n__('%{count} issue selected', '%{count} issues selected', this.workItemCount), {
-            count: formatNumber(this.workItemCount),
-          });
-    },
-    modalTitle() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemExportTitle
-        : this.$options.i18n.issueExportTitle;
-    },
-    exportErrorMessage() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemErrorMessage
-        : this.$options.i18n.issueErrorMessage;
+      return sprintf(
+        n__('%{count} work item selected', '%{count} work items selected', this.workItemCount),
+        {
+          count: formatNumber(this.workItemCount),
+        },
+      );
     },
   },
   methods: {
@@ -116,7 +93,7 @@ export default {
         }
       } catch (error) {
         createAlert({
-          message: this.exportErrorMessage,
+          message: this.$options.i18n.workItemErrorMessage,
         });
       } finally {
         this.isExporting = false;
@@ -133,7 +110,7 @@ export default {
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     body-class="!gl-p-0"
-    :title="modalTitle"
+    :title="$options.i18n.workItemExportTitle"
     data-testid="export-work-items-modal"
     @primary="exportWorkItems"
   >

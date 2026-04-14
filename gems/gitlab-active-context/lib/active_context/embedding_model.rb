@@ -14,12 +14,12 @@ module ActiveContext
       @llm_params = llm_params
     end
 
-    def generate_embeddings(content, unit_primitive: nil, user: nil)
+    def generate_embeddings(content, user: nil)
       log_embeddings_generation do
         contents = content.is_a?(Array) ? content : [content].compact
 
         embedding_llm = validate_respond_to_execute(
-          build_embedding_llm(contents, unit_primitive, user)
+          build_embedding_llm(contents, user)
         )
         embedding_llm.execute
       end
@@ -27,8 +27,8 @@ module ActiveContext
 
     private
 
-    def build_embedding_llm(contents, unit_primitive, user)
-      llm_class.new(contents, unit_primitive: unit_primitive, user: user, **llm_params)
+    def build_embedding_llm(contents, user)
+      llm_class.new(contents, user: user, **llm_params)
     rescue StandardError => e
       raise(LlmClassError, "Error initializing #{llm_class}: #{e.class} - #{e.message}")
     end

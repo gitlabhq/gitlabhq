@@ -25,7 +25,7 @@ export default {
       type: String,
       required: true,
     },
-    groupIssuesPath: {
+    groupWorkItemsPath: {
       type: String,
       required: true,
     },
@@ -46,7 +46,7 @@ export default {
       },
       error(error) {
         createAlert({
-          message: __('Something went wrong trying to load issue contacts.'),
+          message: __('Something went wrong trying to load work item contacts.'),
           error,
           captureError: true,
         });
@@ -93,9 +93,9 @@ export default {
         Boolean,
       );
     },
-    getIssuesPath(contactId) {
+    getWorkItemsPath(contactId) {
       const id = getIdFromGraphQLId(contactId);
-      return `${this.groupIssuesPath}?crm_contact_id=${id}`;
+      return `${this.groupWorkItemsPath}?crm_contact_id=${id}`;
     },
   },
 };
@@ -120,7 +120,7 @@ export default {
         :key="index"
         class="gl-pr-2"
       >
-        <gl-link :id="`contact_${index}`" :href="getIssuesPath(contact.id)"
+        <gl-link :id="`contact_${index}`" :href="getWorkItemsPath(contact.id)"
           >{{ contact.firstName }} {{ contact.lastName }}{{ divider(index) }}</gl-link
         >
         <gl-popover

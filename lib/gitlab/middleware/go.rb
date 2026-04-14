@@ -165,8 +165,12 @@ module Gitlab
         login, password = user_name_and_password(request)
         auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, request: request)
 
-        auth_result.success? &&
-          auth_result.authentication_abilities_include?(:read_project) &&
+        return false unless auth_result.success?
+
+        return false unless auth_result.authentication_abilities_include?(:download_code) ||
+          auth_result.authentication_abilities_include?(:read_project)
+
+        auth_result.can_perform_action_on_project?(:download_code, project) ||
           auth_result.can_perform_action_on_project?(:read_project, project)
       end
 

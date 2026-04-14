@@ -385,7 +385,6 @@ describe('WorkItemRelationships', () => {
 
     describe('localStorage persistence', () => {
       beforeEach(() => {
-        useLocalStorageSpy();
         jest.spyOn(utils, 'saveHiddenMetadataKeysToLocalStorage');
       });
 

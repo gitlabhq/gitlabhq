@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlDisclosureDropdownItem,
   GlIcon,
   GlLoadingIcon,
   GlToggle,
@@ -32,7 +31,6 @@ export default {
   },
   components: {
     GlButton,
-    GlDisclosureDropdownItem,
     GlIcon,
     GlLoadingIcon,
     GlToggle,
@@ -52,11 +50,6 @@ export default {
     issuableType: {
       required: true,
       type: String,
-    },
-    showInDropdown: {
-      required: false,
-      type: Boolean,
-      default: true,
     },
   },
   data() {
@@ -137,11 +130,11 @@ export default {
     canSubscribe() {
       return this.emailsDisabled || !this.isLoggedIn;
     },
-    isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
     isMergeRequest() {
       return this.issuableType === 'merge_request';
+    },
+    isIconButton() {
+      return this.isMergeRequest || this.glFeatures.notificationsTodosButtons;
     },
   },
   methods: {
@@ -205,29 +198,16 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-item
-    v-if="showInDropdown && !isNotificationsTodosButtons"
-    data-testid="notification-toggle"
-    @action="toggleSubscribed"
-  >
-    <template #list-item>
-      <gl-toggle
-        :value="subscribed"
-        :label="__('Notifications')"
-        class="merge-request-notification-toggle"
-        label-position="left"
-      />
-    </template>
-  </gl-disclosure-dropdown-item>
-  <div v-else-if="isNotificationsTodosButtons" :class="{ 'inline-block': !isMergeRequest }">
+  <div v-if="isIconButton" :class="{ 'inline-block': !isMergeRequest }">
     <gl-button
       ref="tooltip"
       v-gl-tooltip.hover.top
       category="secondary"
       data-testid="subscribe-button"
-      class="hide-collapsed"
+      class="hide-collapsed btn-icon !gl-align-top"
       :title="notificationTooltip"
-      :class="{ 'gl-ml-2': isIssuable, 'btn-icon': isNotificationsTodosButtons }"
+      :disabled="isLoading"
+      :class="{ 'gl-ml-2': isIssuable }"
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon

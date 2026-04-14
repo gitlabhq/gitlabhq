@@ -128,20 +128,20 @@ commit graph generated using this merge method:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
-  accTitle: Diagram of a merge commit
-  accDescr: Shows the flow of commits when a branch merges with a merge commit.
+  accTitle: Diagram of a merge commit with semi-linear history
+  accDescr: Shows the flow of commits when a branch merges with a merge commit and semi-linear history.
   commit id: "Init"
   branch mr-branch-1
-  commit
-  commit
+  commit id: "B"
+  commit id: "C"
   checkout main
   merge mr-branch-1
   branch mr-branch-2
-  commit
-  commit
+  commit id: "D"
+  commit id: "E"
   checkout main
   merge mr-branch-2
-  commit
+  commit id: "F"
   branch squash-mr
   commit id: "Squashed commits"
   checkout main

@@ -156,7 +156,7 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
     it 'appends extra metadata to the payload' do
       payload = generator.generate(exception, extra)
 
-      expect(payload[:extra]).to eql(
+      expect(payload[:extra]).to include(
         some_other_info: 'info',
         issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/-/issues/1'
       )
@@ -170,11 +170,35 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
 
       payload = generator.generate(exception, extra)
 
-      expect(payload[:extra]).to eql(
+      expect(payload[:extra]).to include(
         some_other_info: 'another_info',
         issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/-/issues/1',
         mr_url: 'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1'
       )
+    end
+
+    context 'when feature flags were checked during the request' do
+      before do
+        allow(Feature).to receive(:logged_states_for_log).and_return(['my_flag:1', 'other_flag:0'])
+      end
+
+      it 'includes feature_flag_states in extra payload' do
+        payload = generator.generate(exception, extra)
+
+        expect(payload[:extra][:feature_flag_states]).to contain_exactly('my_flag:1', 'other_flag:0')
+      end
+    end
+
+    context 'when logged_states_for_log returns empty' do
+      before do
+        allow(Feature).to receive(:logged_states_for_log).and_return([])
+      end
+
+      it 'does not add feature_flag_states to extra payload' do
+        payload = generator.generate(exception, extra)
+
+        expect(payload[:extra]).not_to have_key(:feature_flag_states)
+      end
     end
 
     it 'filters sensitive extra info' do
@@ -186,7 +210,7 @@ RSpec.describe Gitlab::ErrorTracking::ContextPayloadGenerator do
 
       payload = generator.generate(exception, extra)
 
-      expect(payload[:extra]).to eql(
+      expect(payload[:extra]).to include(
         some_other_info: 'info',
         issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/-/issues/1',
         mr_url: 'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1',

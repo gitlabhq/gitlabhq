@@ -67,8 +67,12 @@ module ExtractsPath
     false
   end
 
+  def path_present?
+    @path && !@path.empty?
+  end
+
   def rectify_format!
-    return if @commit || @path.present?
+    return if @commit || path_present?
 
     bare_ref, format = extract_ref_and_format(@id)
     return unless format

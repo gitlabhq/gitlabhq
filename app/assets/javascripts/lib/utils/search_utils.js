@@ -1,4 +1,4 @@
-import { pick, has } from 'lodash';
+import { pick, has } from 'lodash-es';
 
 /**
  * @param source

@@ -1,5 +1,6 @@
 <script>
 import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actions.vue';
+import BlameHeader from './blame_header.vue';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants';
@@ -7,6 +8,7 @@ import TableOfContents from './table_contents.vue';
 
 export default {
   components: {
+    BlameHeader,
     ViewerSwitcher,
     DefaultActions,
     BlobFilepath,
@@ -62,6 +64,11 @@ export default {
       required: false,
       default: true,
     },
+    showBlameInfo: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['viewer-changed', 'copy'],
   data() {
@@ -89,8 +96,10 @@ export default {
 };
 </script>
 <template>
-  <div class="js-file-title file-title-flex-parent">
-    <div class="gl-mb-3 gl-flex gl-gap-3 @md/panel:gl-mb-0">
+  <div
+    class="js-file-title file-title-flex-parent gl-flex-wrap gl-justify-between gl-gap-3 gl-px-4 gl-py-3 @xl/panel:gl-flex-nowrap"
+  >
+    <div class="gl-flex gl-gap-3 @xl/panel:gl-mb-0">
       <blob-filepath
         :blob="blob"
         :show-path="showPath"
@@ -103,7 +112,8 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="file-actions gl-flex gl-flex-wrap gl-gap-3">
+    <div class="file-actions gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+      <blame-header v-if="showBlameInfo" />
       <viewer-switcher
         v-if="!hideViewerSwitcher"
         v-model="viewer"

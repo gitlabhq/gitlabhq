@@ -41,7 +41,7 @@ export function PageEntrypointsPlugin() {
     config() {
       return {
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             input: inputOptions,
           },
         },

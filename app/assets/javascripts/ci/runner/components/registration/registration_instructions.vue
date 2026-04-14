@@ -7,6 +7,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import {
   CREATION_STATE_FINISHED,
@@ -17,7 +18,6 @@ import {
   GOOGLE_CLOUD_PLATFORM,
   GOOGLE_KUBERNETES_ENGINE,
 } from '../../constants';
-import { captureException } from '../../sentry_utils';
 
 import GoogleCloudRegistrationInstructions from './google_cloud_registration_instructions.vue';
 import GkeRegistrationInstructions from './gke_registration_instructions.vue';
@@ -89,7 +89,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
       pollInterval() {
         if (this.isRunnerRegistered) {

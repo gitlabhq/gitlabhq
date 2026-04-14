@@ -1,0 +1,13 @@
+---
+table: security_findings
+database: sec
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_security_findings
+    dedup_by:
+      - id
+      - partition_number
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - project_id

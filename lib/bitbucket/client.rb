@@ -72,7 +72,16 @@ module Bitbucket
 
     def last_issue(repo)
       parsed_response = connection.get("/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL")
+      return unless parsed_response['values']&.first
+
       Bitbucket::Representation::Issue.new(parsed_response['values'].first)
+    end
+
+    def last_pull_request(repo)
+      parsed_response = connection.get("/repositories/#{repo}/pullrequests?pagelen=1&sort=-created_on&state=ALL")
+      return unless parsed_response['values']&.first
+
+      Bitbucket::Representation::PullRequest.new(parsed_response['values'].first)
     end
 
     def issues(repo, options = {})

@@ -168,11 +168,6 @@ module Ci
     end
     # rubocop: enable Metrics/CyclomaticComplexity
 
-    # This will be removed with ci_remove_ensure_stage_service
-    def update_legacy_status
-      set_status(latest_stage_status.to_s)
-    end
-
     def groups
       @groups ||= Ci::Group.fabricate(project, self)
     end
@@ -215,11 +210,6 @@ module Ci
 
     def play_manual(current_user)
       Ci::PlayManualStageWorker.perform_async(id, current_user.id)
-    end
-
-    # This will be removed with ci_remove_ensure_stage_service
-    def latest_stage_status
-      statuses.latest.composite_status || 'skipped'
     end
 
     def ordered_latest_statuses

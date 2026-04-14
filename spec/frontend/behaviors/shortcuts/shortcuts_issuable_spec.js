@@ -8,6 +8,7 @@ import {
   ISSUE_MR_CHANGE_ASSIGNEE,
   ISSUE_MR_CHANGE_MILESTONE,
   MR_COPY_SOURCE_BRANCH_NAME,
+  WORK_ITEM_TOGGLE_SIDEBAR,
 } from '~/behaviors/shortcuts/keybindings';
 import Sidebar from '~/right_sidebar';
 
@@ -59,6 +60,14 @@ describe('ShortcutsIssuable', () => {
     const clickSpy = jest.spyOn(document.querySelector('.js-issuable-edit'), 'click');
     init();
     Mousetrap.trigger(ISSUABLE_EDIT_DESCRIPTION.defaultKeys[0]);
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('clicks the sidebar toggle button on toggle sidebar shortcut', () => {
+    setHTMLFixture('<button class="js-sidebar-toggle"></button>');
+    const clickSpy = jest.spyOn(document.querySelector('.js-sidebar-toggle'), 'click');
+    init();
+    Mousetrap.trigger(WORK_ITEM_TOGGLE_SIDEBAR.defaultKeys[0]);
     expect(clickSpy).toHaveBeenCalled();
   });
 

@@ -9,9 +9,6 @@ end
 
 require './spec/deprecation_warnings'
 
-require './spec/deprecation_toolkit_env'
-DeprecationToolkitEnv.configure!
-
 require './spec/knapsack_env'
 KnapsackEnv.configure!
 
@@ -335,11 +332,6 @@ RSpec.configure do |config|
       # Enable explicitly in tests that need it.
       stub_feature_flags(autoflow_enabled: false)
 
-      # Short lived feature flag to enable user-based rollout to internal users before main feature flag
-      # `work_item_planning_view` is rolled out. `work_item_planning_view` is disabled for specific specs, so stubbing
-      # out `work_items_consolidated_list_user` is an easy work around.
-      stub_feature_flags(work_items_consolidated_list_user: false)
-
       stub_feature_flags(merge_widget_stop_polling: false)
 
       # This feature has global impact and most tests aren't ready for it yet
@@ -359,11 +351,6 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
       stub_feature_flags(work_item_features_field: false)
 
-      # When `dap_onboarding_empty_states` is enabled, the Duo Chat panel is expanded for free users.
-      # This might cause elements to be laid out differently in the main panel due to container
-      # queries, which in turn can cause some specs to fail.
-      # Due to time constraints, we'll need to address those in follow-ups.
-      stub_feature_flags(dap_onboarding_empty_states: false)
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
     else
@@ -623,9 +610,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
-# Prevent Rugged from picking up local developer gitconfig.
-Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init

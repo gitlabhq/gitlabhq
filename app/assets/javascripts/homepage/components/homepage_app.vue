@@ -8,7 +8,6 @@ import {
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
-import { WORK_ITEMS_ICON, WORK_ITEM_ISSUE_ICON } from '~/homepage/constants';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_MERGE_REQUESTS,
@@ -25,7 +24,6 @@ import ActivityWidget from './activity_widget.vue';
 import QuickAccessWidget from './quick_access_widget.vue';
 import TodosWidget from './todos_widget.vue';
 import PickUpWidget from './pick_up_widget.vue';
-import FeedbackWidget from './feedback_widget.vue';
 import BaseWidget from './base_widget.vue';
 
 export default {
@@ -35,12 +33,11 @@ export default {
     TodosWidget,
     QuickAccessWidget,
     PickUpWidget,
-    FeedbackWidget,
     UserItemsCountWidget,
     BaseWidget,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['duoCodeReviewBotUsername', 'workItemPlanningViewEnabled'],
+  inject: ['duoCodeReviewBotUsername'],
   props: {
     reviewRequestedPath: {
       type: String,
@@ -66,10 +63,6 @@ export default {
       type: Object,
       required: false,
       default: null,
-    },
-    showFeedbackWidget: {
-      type: Boolean,
-      required: true,
     },
   },
   data() {
@@ -135,23 +128,6 @@ export default {
     authoredWorkItemsData() {
       return this.workItemsMetadata?.authored;
     },
-    workItemsCardTitle() {
-      return this.workItemPlanningViewEnabled
-        ? s__('HomePageWorkItemsWidget|Work items')
-        : s__('HomePageWorkItemsWidget|Issues');
-    },
-    workItemsCardIcon() {
-      return this.workItemPlanningViewEnabled ? WORK_ITEMS_ICON : WORK_ITEM_ISSUE_ICON;
-    },
-    workItemsErrorText() {
-      return this.workItemPlanningViewEnabled
-        ? s__(
-            'HomePageWorkItemsWidget|The number of work items is not available. Please refresh the page to try again, or visit the work items list.',
-          )
-        : s__(
-            'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
-          );
-    },
   },
   created() {
     createUserCountsManager();
@@ -200,6 +176,10 @@ export default {
     mergeRequestsErrorText: s__(
       'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
     ),
+    workItemsCardTitle: s__('HomePageWorkItemsWidget|Work items'),
+    workItemsErrorText: s__(
+      'HomePageWorkItemsWidget|The number of work items is not available. Please refresh the page to try again, or visit the work items list.',
+    ),
   },
 };
 </script>
@@ -239,23 +219,23 @@ export default {
           <user-items-count-widget
             data-testid="assigned-work-items-widget"
             :has-error="workItemsHaveError"
-            :error-text="workItemsErrorText"
-            :card-text="workItemsCardTitle"
+            :error-text="$options.i18n.workItemsErrorText"
+            :card-text="$options.i18n.workItemsCardTitle"
             :link-text="s__('HomePageWorkItemsWidget|Assigned to you')"
             :path="assignedWorkItemsPath"
             :user-items="assignedWorkItemsData"
-            :icon-name="workItemsCardIcon"
+            icon-name="work-items"
             @click-link="handleAssignedWorkItemsClick"
           />
           <user-items-count-widget
             data-testid="authored-work-items-widget"
             :has-error="workItemsHaveError"
-            :error-text="workItemsErrorText"
-            :card-text="workItemsCardTitle"
+            :error-text="$options.i18n.workItemsErrorText"
+            :card-text="$options.i18n.workItemsCardTitle"
             :link-text="s__('HomePageWorkItemsWidget|Authored by you')"
             :path="authoredWorkItemsPath"
             :user-items="authoredWorkItemsData"
-            :icon-name="workItemsCardIcon"
+            icon-name="work-items"
             @click-link="handleAuthoredWorkItemsClick"
           />
         </base-widget>
@@ -265,7 +245,6 @@ export default {
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
         <quick-access-widget />
-        <feedback-widget v-if="showFeedbackWidget" />
       </aside>
     </div>
   </div>

@@ -4,8 +4,6 @@
 export default {
   files: [
     'app/assets/javascripts/feature_flags/components/feature_flags.vue',
-    'ee/app/assets/javascripts/admin/subscriptions/show/components/subscription_activation_form.vue',
-    'ee/app/assets/javascripts/ai/duo_self_hosted/self_hosted_models/components/self_hosted_models_table.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/standards_adherence_report/standards_adherence_table_v2.vue',
     'ee/app/assets/javascripts/insights/components/insights_page.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_form.vue',

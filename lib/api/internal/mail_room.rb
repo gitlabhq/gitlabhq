@@ -32,6 +32,7 @@ module API
             requires :mailbox_type, type: String,
               desc: 'The destination mailbox type configuration. Must either be incoming_email or service_desk_email'
           end
+          route_setting :authorization, skip_granular_token_authorization: :mailroom_token_auth
           post "/*mailbox_type" do
             worker = Gitlab::MailRoom.worker_for(params[:mailbox_type])
             raw = Gitlab::EncodingHelper.encode_utf8(request.body.read)

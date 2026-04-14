@@ -10,7 +10,7 @@ module Integrations
         title: -> { s_('Integrations|SSL verification') },
         checkbox_label: -> { s_('Integrations|Enable SSL verification') },
         help: -> { s_('Integrations|Clear if using a self-signed certificate.') },
-        description: -> { s_('Enable SSL verification. Defaults to `true` (enabled).') }
+        description: -> { _('Enable SSL verification. Defaults to `true` (enabled).') }
     end
 
     def initialize_properties

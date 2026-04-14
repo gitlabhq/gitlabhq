@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/admin/abuse_reports/components/abuse_reports_filtered_search_bar.vue',
     'app/assets/javascripts/alerts_settings/components/alerts_settings_wrapper.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/base.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
@@ -39,7 +38,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_schedules/components/pipeline_schedules_form.vue',
     'app/assets/javascripts/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue',
     'app/assets/javascripts/ci/pipelines_page/components/pipeline_status_badge.vue',
-    'app/assets/javascripts/ci/pipelines_page/pipelines_app.vue',
     'app/assets/javascripts/ci/runner/admin_register_runner/admin_register_runner_app.vue',
     'app/assets/javascripts/ci/runner/admin_runners/admin_runners_app.vue',
     'app/assets/javascripts/ci/runner/components/cells/runner_actions_cell.vue',

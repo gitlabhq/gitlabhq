@@ -20,6 +20,10 @@ module Gitlab
           # If a user creates a new merge request while the import is in progress, GitLab can assign an IID
           # to this merge request that already exists for a GitHub Pull Request.
           # The workaround is to allocate IIDs before starting the importer.
+          #
+          # TODO: Remove once enough time has passed that no imports started on the old
+          # ImportRepositoryWorker code (without MR IID pre-allocation) could still be in progress.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/595861
           allocate_merge_requests_internal_id!(project, client)
 
           waiter = Importer::PullRequestsImporter

@@ -13,7 +13,15 @@ export const findDefaultOption = (options) => {
   return item ? item.key : null;
 };
 
-export const olderThanTranslationGenerator = (variable) => n__('%d day', '%d days', variable);
+const DAYS_PER_YEAR = 365;
+
+export const olderThanTranslationGenerator = (variable) => {
+  if (variable >= DAYS_PER_YEAR && variable % DAYS_PER_YEAR === 0) {
+    const years = variable / DAYS_PER_YEAR;
+    return n__('%d year', '%d years', years);
+  }
+  return n__('%d day', '%d days', variable);
+};
 
 export const keepNTranslationGenerator = (variable) =>
   n__('%d tag per image name', '%d tags per image name', variable);

@@ -8,7 +8,7 @@ import {
   GlIcon,
   GlHoverLoadDirective,
 } from '@gitlab/ui';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { buildURLwithRefType, joinPaths } from '~/lib/utils/url_utility';

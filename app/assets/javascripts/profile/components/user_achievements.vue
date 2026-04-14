@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlBadge, GlPopover, GlSprintf } from '@gitlab/ui';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';

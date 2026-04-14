@@ -27,8 +27,9 @@ class LabelPresenter < Gitlab::View::Presenter::Delegated
   def filter_path(type: :issue)
     case context_subject
     when Group
+      route = type == :work_item ? "group_work_items_path" : "#{type.to_s.pluralize}_group_path"
       send( # rubocop:disable GitlabSecurity/PublicSend
-        "#{type.to_s.pluralize}_group_path",
+        route,
         context_subject,
         label_name: [label.name]
       )

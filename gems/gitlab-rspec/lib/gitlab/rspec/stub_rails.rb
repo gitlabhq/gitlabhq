@@ -20,7 +20,7 @@ module StubRails
       TZInfo::DataSource.get
     rescue TZInfo::DataSourceNotFound => e
       raise e.exception "tzinfo-data is not present. " \
-                        "Please add gem 'tzinfo-data' to your Gemfile and run bundle install"
+        "Please add gem 'tzinfo-data' to your Gemfile and run bundle install"
     end
     Time.zone_default = Time.find_zone!(Rails.application.config.time_zone)
 

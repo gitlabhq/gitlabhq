@@ -231,6 +231,31 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractor, feature_category: :per
 
         it_behaves_like 'returns nil'
       end
+
+      context 'when object has an owner method' do
+        # runners are an example of an object associated with a project or group via their owner
+        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+        let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+        let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+
+        context 'when owner returns a project' do
+          let(:arguments) { { resource_id: project_runner.to_global_id } }
+
+          it_behaves_like 'extracts project boundary'
+        end
+
+        context 'when owner returns a group' do
+          let(:arguments) { { resource_id: group_runner.to_global_id } }
+
+          it_behaves_like 'extracts group boundary'
+        end
+
+        context 'when owner returns neither a project nor a group' do
+          let(:arguments) { { resource_id: instance_runner.to_global_id } }
+
+          it_behaves_like 'returns nil'
+        end
+      end
     end
   end
 end

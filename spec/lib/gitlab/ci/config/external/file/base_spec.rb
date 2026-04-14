@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
 
       let(:variables) do
         Gitlab::Ci::Variables::Collection.new(
-          [{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file_name', 'masked' => true }]
+          [{ key: 'GITLAB_TOKEN', value: 'secret_file_name', masked: true }]
         )
       end
 

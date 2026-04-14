@@ -129,7 +129,7 @@ RSpec.shared_examples 'sets Security Configuration Profiles permissions for the 
         stub_licensed_features(security_scan_profiles: licensed)
       end
 
-      it { is_expected.to(allowed ? be_allowed(permission) : be_disallowed(permission)) }
+      it { allowed ? expect_allowed(permission) : expect_disallowed(permission) }
     end
 
     describe 'with custom role' do
@@ -177,7 +177,7 @@ RSpec.shared_examples 'sets Security Configuration Profiles permissions for the 
         enable_admin_mode!(current_user) if role == :admin
       end
 
-      it { is_expected.to(allowed ? be_allowed(policy) : be_disallowed(policy)) }
+      it { allowed ? expect_allowed(policy) : expect_disallowed(policy) }
     end
 
     describe 'with custom role' do

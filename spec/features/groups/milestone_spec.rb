@@ -51,7 +51,13 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
 
       click_button 'Create milestone'
 
-      expect(find('.start_date')).to have_content(Date.today.at_beginning_of_month.strftime('%b %-d, %Y'))
+      wait_for_all_requests
+
+      expand_right_sidebar
+
+      page.within('.right-sidebar.right-sidebar-expanded') do
+        expect(find('.start_date')).to have_content(Date.today.at_beginning_of_month.strftime('%b %-d, %Y'))
+      end
     end
 
     it 'description input support autocomplete' do
@@ -224,5 +230,16 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
         end
       end
     end
+  end
+
+  private
+
+  def expand_right_sidebar
+    return unless page.has_css?('.right-sidebar.right-sidebar-collapsed', wait: 1) # rubocop: disable RSpec/AvoidConditionalStatements -- We need this to support both FOSS and EE runs of this spec
+
+    page.within('.right-sidebar.right-sidebar-collapsed') do
+      find('.js-sidebar-expand').click
+    end
+    expect(page).to have_selector('.right-sidebar .js-sidebar-collapse')
   end
 end

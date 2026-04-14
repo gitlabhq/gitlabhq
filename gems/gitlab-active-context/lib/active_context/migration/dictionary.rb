@@ -16,6 +16,10 @@ module ActiveContext
           @instance ||= new
         end
 
+        def reset!
+          @instance = nil
+        end
+
         delegate :migrations, to: :instance
       end
 

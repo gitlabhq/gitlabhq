@@ -3,6 +3,8 @@ data_category: optional
 key_path: product_usage_data_enabled
 description: Whether product usage data is enabled
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: boolean
 status: active
 time_frame: none

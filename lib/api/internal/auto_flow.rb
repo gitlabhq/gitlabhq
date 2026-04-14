@@ -18,6 +18,7 @@ module API
           params do
             requires :id, type: String, desc: 'ID or full path of the project'
           end
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           get '/repository_info', feature_category: :deployment_management, urgency: :low do
             project = find_project(params[:id])
 

@@ -9,7 +9,7 @@ Work items introduce a flexible model that standardizes and extends issue tracki
 With work items, you can define different types that can be customized with various widgets to meet
 specific needs - whether you're tracking bugs, incidents, test cases, or other units of work.
 This architectural documentation covers the development details and implementation strategies for
-work items and work item types.
+work items and work item types. For a rough outline of the work ahead, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
 
 ## Challenges
 
@@ -99,50 +99,137 @@ to `work_item_types` will involve creating the set of WITs for all root-level gr
 > At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
 > We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
 
-## Introducing `work_item_types` table
+## Work item types architecture
 
-For example, suppose there are three root-level groups with IDs: `11`, `12`, and `13`. Also,
-assume the following base types: `issue: 0`, `incident: 1`, `test_case: 2`.
+GitLab uses a flexible types system supporting both system-defined and custom work item types. This architecture was designed to meet the requirements of the [Cells initiative](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/), enabling efficient type lookups without cross-cell database queries. For architectural background, see the [configurable work item types design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/configurable_work_item_types/).
 
-The respective `work_item_types` records:
+### System-defined types
 
-| `namespace_id` | `base_type` | `title`   |
-| -------------- | ----------- | --------- |
-| 11             | 0           | Issue     |
-| 11             | 1           | Incident  |
-| 11             | 2           | Test Case |
-| 12             | 0           | Issue     |
-| 12             | 1           | Incident  |
-| 12             | 2           | Test Case |
-| 13             | 0           | Issue     |
-| 13             | 1           | Incident  |
-| 13             | 2           | Test Case |
+System-defined types are predefined work item types built into GitLab. These types are defined in code as Ruby modules and loaded into memory at startup.
 
-What we will do to achieve this:
+**Available types:**
 
-1. Add a `work_item_type_id` column to the `issues` table.
-1. Ensure we write to both `issues#issue_type` and `issues#work_item_type_id` columns for
-   new or updated issues.
-1. Backfill the `work_item_type_id` column to point to the `work_item_types#id` corresponding
-   to issue's project top-level groups. For example:
+| Type | ID | Base Type | Availability | Notes |
+|------|-----|-----------|--------------|-------|
+| Issue | 1 | `issue` | CE + EE | |
+| Incident | 2 | `incident` | CE + EE | Transitioning to full WIT |
+| Test Case | 3 | `test_case` | EE only | Transitioning to full WIT |
+| Requirement | 4 | `requirement` | EE only | Transitioning to full WIT |
+| Task | 5 | `task` | CE + EE | |
+| Objective | 6 | `objective` | EE only | [Planned for removal](https://gitlab.com/gitlab-org/gitlab/-/work_items/592637) |
+| Key Result | 7 | `key_result` | EE only | [Planned for removal](https://gitlab.com/gitlab-org/gitlab/-/work_items/592637) |
+| Epic | 8 | `epic` | EE only | |
+| Ticket | 9 | `ticket` | CE + EE | |
 
-   ```ruby
-   issue.project.root_group.work_item_types.where(base_type: issue.issue_type).first.id.
-   ```
+**Implementation details:**
 
-1. After `issues#work_item_type_id` is populated, we can switch our queries from
-   using `issue_type` to using `work_item_type_id`.
+- Model: `WorkItems::TypesFramework::SystemDefined::Type`
+- Location: `app/models/work_items/types_framework/system_defined/`
+- Each type has a definition module in `definitions/` (for example, `definitions/issue.rb`)
+- Uses [`ActiveRecord::FixedItemsModel`](fixed_items_model.md) to provide an ActiveRecord-like API without database queries
 
-To introduce a new WIT there are two options:
+**Type definition example:**
 
-- Follow the first step of the above process. We will still need to run a migration
-  that adds a new WIT for all root-level groups to make the WIT available to
-  all users. Besides a long-running migration, we'll need to
-  insert several million records to `work_item_types`. This might be unwanted for users
-  that do not want or need additional WITs in their workflow.
-- Create an opt-in flow, so that the record in `work_item_types` for specific root-level group
-  is created only when a customer opts in. However, this implies a lower discoverability
-  of the newly introduced work item type.
+```ruby
+module WorkItems::TypesFramework::SystemDefined::Definitions::Issue
+  def self.configuration
+    { id: 1, name: 'Issue', base_type: 'issue', icon_name: 'work-item-issue' }
+  end
+
+  def self.widgets
+    %w[assignees description labels milestone notes ...]
+  end
+
+  def self.supports_move_action?
+    true
+  end
+end
+```
+
+### Custom work item types
+
+Custom types allow organizations and namespaces to create work item types tailored to their workflows. This feature is planned for delivery in Q1 FY27.
+
+Custom types can be created in two ways:
+
+1. **Brand new custom types** - Create an entirely new type (for example, "Pizza") that behaves like a system-defined type but represents a unique concept. The type behaves like Issue by default but has its own identity.
+1. **Converted types** - Create a custom type by converting an existing system-defined type. The custom type references the original system-defined type and only stores the properties that differ (name, icon, archive status). All other behavior and widgets are inherited from the referenced system-defined type.
+
+**Implementation details:**
+
+- Model: `WorkItems::TypesFramework::Custom::Type`
+- Table: `work_item_custom_types`
+- Scope:
+  - **Self-Managed:** Organization level (long-term target scope)
+  - **SaaS (GitLab.com):** Root group level (interim solution until organization-level features are available)
+- Limit: Per parent scope, stored in `WorkItems::TypesFramework::Custom::Type::MAX_TYPE_PER_PARENT`
+
+> [!note]
+> On GitLab.com, custom types are scoped to root groups because all root groups currently belong to the same organization. Once organization-level features are fully available on SaaS, custom types will move to organization scope to match Self-Managed.
+
+**Converted types:**
+
+When converting a system-defined type, the custom type references its origin and inherits behavior while allowing specific customizations.
+
+**Customizable properties:**
+
+- `name` - Custom display name (maximum 48 characters)
+- `icon_name` - Custom icon selection
+- `archived` - Archive status
+
+**Inherited properties:**
+
+- Widget configuration (future: customizable per type)
+- Base type behavior
+- Hierarchy restrictions
+
+**Example:**
+
+An organization converts the system-defined "Issue" type to create a custom "Bug" type:
+
+- Inherits all Issue widgets and behavior
+- Overrides name to "Bug"
+- Optionally uses different icon
+- References Issue type via `converted_from_system_defined_type_identifier` column
+
+### Provider interface
+
+The `WorkItems::TypesFramework::Provider` class is the single entry point for accessing work item types. All code should use Provider rather than directly accessing type classes.
+
+**Namespace context:**
+
+Passing a namespace to the Provider is crucial because it determines which types are available:
+
+- **Without namespace:** Returns only system-defined types (9 global types)
+- **With namespace:** Returns system-defined types plus any custom types (converted or brand new) defined for:
+  - **Self-Managed:** The namespace's organization
+  - **SaaS (GitLab.com):** The root group containing the namespace
+
+The Provider caches types in the request store for fast lookups within a single request, avoiding repeated queries for custom types.
+
+**Usage:**
+
+```ruby
+# Initialize with namespace context
+provider = WorkItems::TypesFramework::Provider.new(namespace)
+
+# Fetch types
+provider.all                           # All available types
+provider.filtered_types                # Types available to namespace
+provider.find_by_base_type(:issue)     # Find by base type
+provider.find_by_id(1)                 # Find by ID
+provider.default_issue_type            # Get default issue type
+```
+
+**Related files:**
+
+- Provider: [`types_framework/provider.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/work_items/types_framework/provider.rb)
+- System types: [`types_framework/system_defined/type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/work_items/types_framework/system_defined/type.rb)
+- Custom types: [`types_framework/custom/type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/work_items/types_framework/custom/type.rb)
+
+### Historical context
+
+Before GitLab 18.1, work item types were stored in the `work_item_types` database table. This approach was replaced with the current system-defined types architecture to support the [Cells initiative](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
 ## Work item type widgets
 
@@ -188,192 +275,41 @@ define these various types in a very flexible manner. Having GitLab use
 this system first (without introducing customer customization) allows us to
 better build out the initial system.
 
-Work item's `base_type` is used to define static mapping of what
-widgets are available for each type (current status), this definition should be
-rather stored in a database table. The exact structure of the WIT widgets metadata
-is [still to be defined](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
-`base_type` was added to help convert other types of resources (requirements
-and incidents) into work items. Eventually (when these resources become regular
-work items), `base_type` will be removed.
+The `base_type` attribute identifies a work item's fundamental type classification (issue, epic, task, and so on). This attribute determines the default widget configuration and behavior.
 
-Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
-types. If a new work item type is absolutely necessary, reach out to a
-member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
+Custom work item types delegate to a system-defined type's `base_type`, inheriting widget configuration and behavior. Future iterations will support custom widget selection for custom types.
 
-## Creating a new work item type in the database
+## Add a system-defined work item type
 
-We have completed the removal of the `issue_type` column from the issues table, in favor of using the new
-`work_item_types` table as described in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536)).
+To add a new system-defined work item type to GitLab:
 
-After the introduction of the `work_item_types` table, we added more `work_item_types`, and we want to make it
-easier for other teams to do so. To introduce a new `work_item_type`, you must:
+1. **Create a definition module** in `app/models/work_items/types_framework/system_defined/definitions/` that defines the type configuration, widgets, and behavior.
 
-1. Write a database migration to create a new record in the `work_item_types` table.
-1. Update `Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter`.
+1. **Include the definition** in `WorkItems::TypesFramework::SystemDefined::Type` so it's loaded at application startup.
 
-The following MRs demonstrate how to introduce new `work_item_types`:
+1. **Add to visibility constants** - Add the base type to frontend and backend constants that control where the type appears in the UI and APIs.
 
-- [MR example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127482)
-- [MR example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127917)
+For specific implementation details, reach out to the Plan Project Management team in `#g_project-management` on Slack.
 
-### Write a database migration
+> [!warning]
+> The following example MRs use the legacy database-backed approach and may not reflect the current implementation. For up-to-date guidance on adding system-defined types, contact the Plan Project Management team in [#g_project-management](https://gitlab.slack.com/archives/g_project-management) on Slack.
 
-First, write a database migration that creates the new record in the `work_item_types` table.
+**Historical reference MRs:**
 
-Keep the following in mind when you write your migration:
+- [MR example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127482) (legacy approach)
+- [MR example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127917) (legacy approach)
 
-- **Important**: Exclude new type from existing APIs.
-  - We probably want to exclude newly created work items of this type from showing
-    up in existing features (like issue lists) until we fully release a feature. For this reason,
-    we have to add a new type to
-    [this exclude list](https://gitlab.com/gitlab-org/gitlab/-/blob/a0a52dd05b5d3c6ca820b672f9c0626840d2429b/app/models/work_items/type.rb#L84),
-    unless it is expected that users can create new issues and work items with the new type as soon as the migration
-    is executed.
-- Use a regular migration, not a post-deploy.
-  - We believe it would be beneficial to use
-    [regular migrations](migration_style_guide.md#choose-an-appropriate-migration-type)
-    to add new work item types instead of a
-    [post deploy migration](database/post_deployment_migrations.md).
-    This way, follow-up MRs that depend on the type being created can assume it exists right away,
-    instead of having to wait for the next release.
+### Define type relationships
 
-    **Important**: Because we use a regular migration, we need to make sure it does two things:
+Type relationship definitions (such as which types can have children, and which types can be linked to other types) are defined in the type module itself. All configuration is in one place and defined in code.
 
-    1. Don't exceed the [time guidelines](migration_style_guide.md#how-long-a-migration-should-take) of regular migrations.
-    1. Make sure the migration is [backwards-compatible](multi_version_compatibility.md).
-       This means that deployed code should continue to work even if the MR that introduced this migration is
-       rolled back and the migration is not.
-- Migrations should avoid failures.
-  - We expect data related to `work_item_types` to be in a certain state when running the migration that will create a new
-    type. At the moment, we write migrations that check the data and don't fail in the event we find
-    it in an inconsistent state. There's a discussion about how much we can rely on the state of data based on seeds and
-    migrations in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423483). We can only
-    have a successful pipeline if we write the migration so it doesn't fail if data exists in an inconsistent
-    state. We probably need to update some of the database jobs in order to change this.
-- Add widget definitions for the new type.
-  - The migration adds the new work item type as well as the widget definitions that are required for each work item.
-    The widgets you choose depend on the feature the new work item supports, but there are some that probably
-    all new work items need, like `Description`.
-  - In one of the example MRs we also insert records in the `work_item_hierarchy_restrictions` table. This is only
-    necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
-    work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
-    type. By default a cross-hierarchy (cross group or project) relationship is disabled when creating new restrictions but
-    it can be enabled by specifying a value for `cross_hierarchy_enabled`. Due to the restrictions being cached for the work item type, it's also
-    required to call `clear_reactive_cache!` on the associated work item types.
-- Optional. Create linked item restrictions.
-  - Similarly to the `Hierarchy` widget, the `Linked items` widget also supports rules defining which work item types can be
-    linked to other types. A restriction can specify if the source type can be related to or blocking a target type. Current restrictions:
+When you create a new system-defined type, include these definitions in your type module:
 
-    | Type       | Can be related to                        | Can block                                | Can be blocked by                        |
-    |------------|------------------------------------------|------------------------------------------|------------------------------------------|
-    | Epic       | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
-    | Issue      | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
-    | Task       | Epic, issue, task, objective, key result | Epic, issue, task, objective, key result | Epic, issue, task                        |
-    | Objective  | Epic, issue, task, objective, key result | Objective, key result                    | Epic, issue, task, objective, key result |
-    | Key result | Epic, issue, task, objective, key result | Objective, key result                    | Epic, issue, task, objective, key result |
+- **Widget configuration** - Which widgets are available for this type.
+- **Hierarchy restrictions** - Which types can be parents or children of this type, and maximum nesting depth.
+- **Linked item restrictions** - Which types this type can be related to or blocked by.
 
-- Use shared examples for migrations specs.
-
-  There are different shared examples you should use for the different migration types (new work item type, new widget definition, etc) in
-  [`add_work_item_widget_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/14c0a4df57a562a7c2dd4baed98f26d208a2e6ce/spec/support/shared_examples/migrations/add_work_item_widget_shared_examples.rb).
-
-#### Example of adding a ticket work item
-
-The `Ticket` work item type already exists in the database, but we'll use it as an example migration.
-Note that for a new type you need to use a new name and ENUM value.
-
-```ruby
-class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
-
-  ISSUE_ENUM_VALUE = 0
-  # Enum value comes from the model where the enum is defined in
-  # https://gitlab.com/gitlab-org/gitlab/-/blob/1253f12abddb69cd1418c9e13e289d828b489f36/app/models/work_items/type.rb#L30.
-  # A new work item type should simply pick the next integer value.
-  TICKET_ENUM_VALUE = 8
-  TICKET_NAME = 'Ticket'
-  # Widget definitions also have an enum defined in
-  # https://gitlab.com/gitlab-org/gitlab/-/blob/1253f12abddb69cd1418c9e13e289d828b489f36/app/models/work_items/widget_definition.rb#L17.
-  # We need to provide both the enum and name as we plan to support custom widget names in the future.
-  TICKET_WIDGETS = {
-    'Assignees' => 0,
-    'Description' => 1,
-    'Hierarchy' => 2,
-    'Labels' => 3,
-    'Milestone' => 4,
-    'Notes' => 5,
-    'Start and due date' => 6,
-    'Health status' => 7,
-    'Weight' => 8,
-    'Iteration' => 9,
-    'Notifications' => 14,
-    'Current user todos' => 15,
-    'Award emoji' => 16
-  }.freeze
-
-  class MigrationWorkItemType < MigrationRecord
-    self.table_name = 'work_item_types'
-  end
-
-  class MigrationWidgetDefinition < MigrationRecord
-    self.table_name = 'work_item_widget_definitions'
-  end
-
-  def up
-    existing_ticket_work_item_type = MigrationWorkItemType.find_by(base_type: TICKET_ENUM_VALUE, namespace_id: nil)
-
-    return say('Ticket work item type record exists, skipping creation') if existing_ticket_work_item_type
-
-    new_ticket_work_item_type = MigrationWorkItemType.create(
-      name: TICKET_NAME,
-      namespace_id: nil,
-      base_type: TICKET_ENUM_VALUE,
-      icon_name: 'work-item-issue'
-    )
-
-    return say('Ticket work item type create record failed, skipping creation') if new_ticket_work_item_type.new_record?
-
-    widgets = TICKET_WIDGETS.map do |widget_name, widget_enum_value|
-      {
-        work_item_type_id: new_ticket_work_item_type.id,
-        name: widget_name,
-        widget_type: widget_enum_value
-      }
-    end
-
-    MigrationWidgetDefinition.upsert_all(
-      widgets,
-      unique_by: :index_work_item_widget_definitions_on_default_witype_and_name
-    )
-
-    issue_type = MigrationWorkItemType.find_by(base_type: ISSUE_ENUM_VALUE, namespace_id: nil)
-    return say('Issue work item type not found, skipping hierarchy restrictions creation') unless issue_type
-
-  end
-
-  def down
-    # There's the remote possibility that issues could already be
-    # using this issue type, with a tight foreign constraint.
-    # Therefore we will not attempt to remove any data.
-  end
-end
-```
-
-### Update `Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter`
-
-The [`BaseTypeImporter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database_importers/work_items/base_type_importer.rb)
-is where we can clearly visualize the structure of the types we have and what widgets are associated with each of them.
-`BaseTypeImporter` is the single source of truth for fresh GitLab installs and also our test suite. This should always
-reflect what we change with migrations.
-
-**Important**: This importer should be updated whenever the corresponding database table is modified.
-
-## Custom work item types
-
-With the WIT widget metadata and the workflow around mapping WIT to specific
-widgets, we will be able to expose custom WITs to the users. Users will be able
-to create their own WITs and customize them with widgets from the predefined pool.
+For the current relationship rules, see the individual type definition modules in `app/models/work_items/types_framework/system_defined/definitions/`.
 
 ## Custom widgets
 
@@ -415,11 +351,6 @@ To avoid disrupting workflows for users who are already using epics, we will int
 called `Feature` that will provide feature parity with epics at the project-level. Having that combined with progress
 on [Consolidate Groups and Projects](https://gitlab.com/gitlab-org/architecture/tasks/-/issues/7) front will help us
 provide a smooth migration path of epics to WIT with minimal disruption to user workflow.
-
-## Work item, work item type, and widgets roadmap
-
-We will move towards work items, work item types, and custom widgets (CW) in an iterative process.
-For a rough outline of the work ahead of us, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
 
 ## Work item instrumentation
 

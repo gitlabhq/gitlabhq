@@ -160,7 +160,7 @@ For more information, see the documentation on:
 
 - [User statistics](../administration/admin_area.md#users-statistics).
 - [License usage](../administration/license_usage.md).
-- [Managing users and subscription seats](manage_users_and_seats.md#manage-users-and-subscription-seats).
+- [Managing users and subscription seats](manage_seats.md).
 
 ## Upgrade subscription tier
 
@@ -239,7 +239,7 @@ When a subscription is set to auto-renew, it renews automatically at midnight UT
 You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
 
 Seat counts do not decrease automatically at renewal time. If you have more billable users than your current subscription quantity at renewal time, your seat count increases automatically to match the current number of users in your
-[group](manage_users_and_seats.md#view-seat-usage) or [instance](../administration/moderate_users.md#view-users).
+[group](manage_seats.md#view-seat-usage) or [instance](../administration/moderate_users.md#view-users).
 To avoid unexpectedly renewing your subscription for more seats, learn how to [renew for fewer seats](#renew-for-fewer-seats).
 
 Subscriptions purchased through the Customers Portal are set to auto-renew by default,
@@ -275,14 +275,14 @@ To manually renew your subscription:
 
    > [!note]
    > Make sure this number is equal to, or greater than
-   > the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
+   > the number of [billable users](manage_seats.md#billable-users) in the system at the time of renewal.
 
 1. Optional. For GitLab Self-Managed, if the maximum number of users in your instance exceeded the number
    you were licensed for in the previous subscription term, the
    [overage](quarterly_reconciliation.md) is due when you renew.
 
    In the **Users over license** text box, enter the number of
-   [users over subscription](manage_users_and_seats.md#users-over-subscription-limit) for the user overage incurred.
+   [users over subscription](manage_seats.md#users-over-subscription-limit) for the user overage incurred.
 1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
 1. Optional. If upgrading the subscription tier, select the desired option.
 1. Review your renewal details and select **Renew subscription** to complete the
@@ -299,7 +299,7 @@ Subscription renewals with fewer seats must have or exceed the current number of
 
 Before you renew your subscription:
 
-- For GitLab.com, [reduce the number of billable users](manage_users_and_seats.md#remove-users-from-subscription)
+- For GitLab.com, [reduce the number of billable users](manage_seats.md#remove-users-from-subscription)
   if it exceeds the number of seats you want to renew for.
 - For GitLab Self-Managed, [block inactive or unwanted users](../administration/moderate_users.md#block-a-user).
 
@@ -342,6 +342,8 @@ For example, if a subscription is valid from January 1, 2024 until January 1, 20
 
 - It expires at 11:59:59 PM UTC December 31, 2024.
 - It is considered expired from 12:00:00 AM UTC January 1, 2025.
+
+If your subscription has expired, you can still renew it manually within 15 days after the expiration date. After 15 days, the manual renewal option is no longer available and you must purchase a new subscription to restore access to paid features.
 
 ### For GitLab.com
 
@@ -443,8 +445,8 @@ Customers Portal:
   - Company name
   - Licensee name
   - Licensee email
-- Historical [maximum user count](manage_users_and_seats.md#self-managed-billing-and-usage)
-- [Billable users count](manage_users_and_seats.md#billable-users)
+- Historical [maximum user count](manage_seats.md#self-managed-billing-and-usage)
+- [Billable users count](manage_seats.md#billable-users)
 - GitLab version
 - Hostname
 - Instance ID
@@ -496,7 +498,7 @@ To change the group linked to a GitLab.com subscription:
    - If the subscription is not linked to a group, select **Link subscription to a group**.
    - If the subscription is already linked to a group, select **Subscription actions** ({{< icon name="ellipsis_v" >}}) > **Change linked group**.
 1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
-1. If the [total number of users](manage_users_and_seats.md#view-seat-usage) in your group exceeds the number of seats in your subscription,
+1. If the [total number of users](manage_seats.md#view-seat-usage) in your group exceeds the number of seats in your subscription,
    you are prompted to pay for the additional users. Subscription charges are calculated based on
    the total number of users in a group, including its subgroups and nested projects.
 
@@ -530,3 +532,4 @@ You cannot transfer:
 - A subscription with compute minutes which is already linked to a namespace.
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
 - A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
+- A subscription purchased using a discount code.

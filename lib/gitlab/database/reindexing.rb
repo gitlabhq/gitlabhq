@@ -27,12 +27,11 @@ module Gitlab
 
           Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
-          # Hack: Before we do actual reindexing work, create async indexes
           if Feature.disabled?(:disallow_database_ddl_feature_flags, type: :ops) && Feature.enabled?(:database_async_index_creation, type: :ops)
+            # Hack: Before we do actual reindexing work, create async indexes
             Gitlab::Database::AsyncIndexes.create_pending_indexes!
+            Gitlab::Database::AsyncIndexes.drop_pending_indexes!
           end
-
-          Gitlab::Database::AsyncIndexes.drop_pending_indexes!
 
           if Feature.disabled?(:disallow_database_ddl_feature_flags, type: :ops) && Feature.enabled?(:database_async_foreign_key_validation, type: :ops)
             Gitlab::Database::AsyncConstraints.validate_pending_entries!

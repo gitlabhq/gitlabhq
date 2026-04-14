@@ -31,6 +31,7 @@ describe('NewProjectUrlSelect component', () => {
             name: 'Flight JS',
             visibility: 'public',
             webUrl: 'http://127.0.0.1:3000/flightjs',
+            canPushInitialCommit: false,
           },
           {
             id: 'gid://gitlab/Group/28',
@@ -38,6 +39,7 @@ describe('NewProjectUrlSelect component', () => {
             name: 'H5BP',
             visibility: 'public',
             webUrl: 'http://127.0.0.1:3000/h5bp',
+            canPushInitialCommit: true,
           },
           {
             id: 'gid://gitlab/Group/30',
@@ -45,6 +47,7 @@ describe('NewProjectUrlSelect component', () => {
             name: 'H5BP Subgroup',
             visibility: 'private',
             webUrl: 'http://127.0.0.1:3000/h5bp/subgroup',
+            canPushInitialCommit: true,
           },
         ],
       },
@@ -54,6 +57,7 @@ describe('NewProjectUrlSelect component', () => {
         name: 'Root',
         visibility: 'private',
         webUrl: 'http://127.0.0.1:3000/root',
+        canPushInitialCommit: true,
       },
     },
   };
@@ -340,6 +344,32 @@ describe('NewProjectUrlSelect component', () => {
       name: namespace.name,
       visibility: namespace.visibility,
       showPath: namespace.webUrl,
+    });
+  });
+
+  it('emits `update-readme-checkbox` with canPushInitialCommit when a group namespace is selected', async () => {
+    wrapper = mountComponent({ mountFn: mountExtended });
+
+    const spy = jest.spyOn(eventHub, '$emit');
+
+    await showDropdown();
+    await clickGroupNamespaceDropdownItem();
+
+    expect(spy).toHaveBeenCalledWith('update-readme-checkbox', {
+      canPushInitialCommit: data.currentUser.groups.nodes[0].canPushInitialCommit,
+    });
+  });
+
+  it('emits `update-readme-checkbox` with canPushInitialCommit when a user namespace is selected', async () => {
+    wrapper = mountComponent({ mountFn: mountExtended });
+
+    const spy = jest.spyOn(eventHub, '$emit');
+
+    await showDropdown();
+    await clickUserNamespaceDropdownItem();
+
+    expect(spy).toHaveBeenCalledWith('update-readme-checkbox', {
+      canPushInitialCommit: data.currentUser.namespace.canPushInitialCommit,
     });
   });
 

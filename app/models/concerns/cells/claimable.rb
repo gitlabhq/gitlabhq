@@ -19,6 +19,7 @@ module Cells
       class_attribute :cells_claims_subject_key, instance_accessor: false
       class_attribute :cells_claims_source_type, instance_accessor: false
       class_attribute :cells_claims_attributes, instance_accessor: false, default: {}.freeze
+      class_attribute :_cells_claims_scope_block, instance_accessor: false
     end
 
     class_methods do
@@ -30,13 +31,39 @@ module Cells
             .const_get("RAILS_TABLE_#{table_name.upcase}", false)
       end
 
-      def cells_claims_attribute(name, type:, feature_flag: nil)
+      def cells_claims_scope(&block)
+        if block
+          self._cells_claims_scope_block = block
+          return
+        end
+
+        if _cells_claims_scope_block
+          instance_exec(&_cells_claims_scope_block)
+        else
+          all
+        end
+      end
+
+      def cells_claims_attribute(name, type:, feature_flag: nil, **options)
+        if options.key?(:if) && !options[:if].nil? && !options[:if].is_a?(Proc)
+          raise ArgumentError,
+            "cells_claims_attribute :#{name} `if:` must be a Proc/lambda or nil, got: #{options[:if].class}"
+        end
+
         self.cells_claims_attributes = cells_claims_attributes
-          .merge(name => { type: type, feature_flag: feature_flag })
+          .merge(name => { type: type, feature_flag: feature_flag, if: options[:if] })
           .freeze
 
         register_as_model_with_claims
       end
+
+      # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against feature flag name dynamically
+      def cells_claims_enabled_for_attribute?(attribute_config)
+        return true if attribute_config[:feature_flag].nil?
+
+        Feature.enabled?(attribute_config[:feature_flag], :current_request)
+      end
+      # rubocop:enable Gitlab/FeatureFlagKeyDynamic
     end
 
     mattr_reader :models_with_claims, default: Set.new
@@ -60,9 +87,20 @@ module Cells
 
     # Returns an array of metadata for all claim attributes
     def cells_claims_metadata
-      self.class.cells_claims_attributes.map do |attribute, config|
+      self.class.cells_claims_attributes.filter_map do |attribute, config|
+        next unless cells_claims_attribute_claimable?(config)
+
         cells_claims_metadata_for(config[:type], self[attribute])
       end
+    end
+
+    # Returns the claim metadata for a specific attribute, or nil if not claimable
+    def cells_claims_metadata_for_attribute(attr_name)
+      config = self.class.cells_claims_attributes[attr_name]
+      return unless config
+      return unless cells_claims_attribute_claimable?(config)
+
+      cells_claims_metadata_for(config[:type], self[attr_name])
     end
 
     private
@@ -73,20 +111,18 @@ module Cells
       end
     end
 
-    # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against feature flag name dynamically
-    def cells_claims_enabled_for_attribute?(attribute_config)
-      return true if attribute_config[:feature_flag].nil?
+    def cells_claims_attribute_claimable?(config)
+      return true unless config[:if]
 
-      Feature.enabled?(attribute_config[:feature_flag], :current_request)
+      config[:if].call(self)
     end
-    # rubocop:enable Gitlab/FeatureFlagKeyDynamic
 
     def cells_claims_save_changes
       transaction_record = ::Cells::TransactionRecord.current_transaction(connection)
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
-        next unless cells_claims_enabled_for_attribute?(config)
+        next unless self.class.cells_claims_enabled_for_attribute?(config)
         next unless saved_change_to_attribute?(attribute)
 
         was, is = saved_change_to_attribute(attribute)
@@ -96,7 +132,7 @@ module Cells
             cells_claims_metadata_for(config[:type], was))
         end
 
-        if is
+        if is && cells_claims_attribute_claimable?(config)
           transaction_record.create_record(
             cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
         end
@@ -108,7 +144,7 @@ module Cells
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
-        next unless cells_claims_enabled_for_attribute?(config)
+        next unless self.class.cells_claims_enabled_for_attribute?(config)
 
         transaction_record.destroy_record(
           cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded

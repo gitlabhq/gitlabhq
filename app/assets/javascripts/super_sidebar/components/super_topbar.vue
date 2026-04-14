@@ -1,10 +1,18 @@
 <script>
-import { GlBadge, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlBreadcrumb,
+  GlButton,
+  GlIcon,
+  GlModalDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
+import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
@@ -17,9 +25,11 @@ export default {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   NEXT_LABEL: 'Next',
   SEARCH_MODAL_ID,
+  staticBreadcrumbs,
   components: {
     GlBadge,
     GlButton,
+    GlBreadcrumb,
     GlIcon,
     BrandLogo,
     SuperSidebarToggle,
@@ -137,6 +147,24 @@ export default {
       />
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" class="gl-hidden md:gl-block" />
+
+      <div
+        v-if="glFeatures.pageBreadcrumbsInTopBar"
+        id="js-vue-page-breadcrumbs-wrapper"
+        class="gl-grow"
+        data-testid="breadcrumb-links"
+      >
+        <gl-breadcrumb
+          v-if="!$options.staticBreadcrumbs.hasInjectedBreadcrumbs"
+          class="gl-grow"
+          :items="$options.staticBreadcrumbs.items"
+        />
+
+        <div
+          id="js-super-topbar-breadcrumbs-slot"
+          :class="{ 'gl-grow': $options.staticBreadcrumbs.hasInjectedBreadcrumbs }"
+        ></div>
+      </div>
     </div>
 
     <gl-button

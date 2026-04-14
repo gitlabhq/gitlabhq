@@ -337,7 +337,7 @@ export default {
 <template>
   <div
     ref="header"
-    class="js-file-title file-title file-title-flex-parent"
+    class="js-file-title file-title file-title-flex-parent @md/panel:gl-flex-nowrap"
     data-testid="file-title-container"
     :data-qa-file-name="filePath"
     @click.self="handleToggleFile"
@@ -470,7 +470,8 @@ export default {
           right
           toggle-class="btn-icon js-diff-more-actions"
           data-testid="options-dropdown-button"
-          :text-sr-only="$options.i18n.optionsDropdownTitle"
+          :toggle-text="$options.i18n.optionsDropdownTitle"
+          text-sr-only
         >
           <gl-disclosure-dropdown-item ref="viewButton" :item="viewFileDropdownItem" />
           <template v-if="showEditButton">

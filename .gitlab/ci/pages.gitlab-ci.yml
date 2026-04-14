@@ -1,8 +1,11 @@
-.compress-public: &compress-public
-  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec gzip -f -k {} \;
-  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec brotli -f -k {} \;
+# This CI job is responsible for the contents of development
+# support web site at https://gitlab-org.gitlab.io/
 
-pages:
+.compress-pages: &compress-pages
+  - find "$PAGES_DIR" -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec gzip -f -k {} \;
+  - find "$PAGES_DIR" -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec brotli -f -k {} \;
+
+upload-pages:
   extends:
     - .default-retry
     - .pages:rules
@@ -17,24 +20,31 @@ pages:
     - "update-tests-metadata"
     - "generate-frontend-fixtures-mapping"
     - "rubocop:docs-site"
+  variables:
+    PAGES_DIR: "public-pages"
   before_script:
     - apt-get update && apt-get -y install brotli gzip
   script:
-    - mv public/ .public/
-    - mkdir public/
-    - mkdir -p public/$(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$FLAKY_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH") public/$(dirname "$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH") public/$(dirname "$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH")
-    - mv coverage/ public/coverage-ruby/ || true
-    - mv coverage-frontend/ public/coverage-frontend/ || true
-    - mv rubocop/docs-hugo/public/ public/rubocop-docs/ || true
-    - mv storybook/public public/storybook || true
-    - cp .public/assets/application-*.css public/application.css || true
-    - mv $KNAPSACK_RSPEC_SUITE_REPORT_PATH public/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || true
-    - mv $FLAKY_RSPEC_SUITE_REPORT_PATH public/$FLAKY_RSPEC_SUITE_REPORT_PATH || true
-    - mv $GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH.gz public/$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH.gz || true
-    - mv $GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH.gz public/$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH.gz || true
-    - mv $GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH public/$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH || true
-    - *compress-public
-  artifacts:
-    paths:
-      - public
+    - mkdir "$PAGES_DIR"
+    - cp public/assets/application-*.css $PAGES_DIR/application.css || true
+    - mv coverage/ $PAGES_DIR/coverage-ruby/ || true
+    - mv coverage-frontend/ $PAGES_DIR/coverage-frontend/ || true
+    - mv rubocop/docs-hugo/public/ $PAGES_DIR/rubocop-docs/ || true
+    - mv storybook/public $PAGES_DIR/storybook || true
+    - |
+      (cd "$PAGES_DIR" && mkdir -p \
+        $(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") \
+        $(dirname "$FLAKY_RSPEC_SUITE_REPORT_PATH") \
+        $(dirname "$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH") \
+        $(dirname "$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH") \
+        $(dirname "$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH")
+      )
+    - mv $KNAPSACK_RSPEC_SUITE_REPORT_PATH $PAGES_DIR/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || true
+    - mv $FLAKY_RSPEC_SUITE_REPORT_PATH $PAGES_DIR/$FLAKY_RSPEC_SUITE_REPORT_PATH || true
+    - mv $GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH.gz $PAGES_DIR/$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH.gz || true
+    - mv $GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH.gz $PAGES_DIR/$GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH.gz || true
+    - mv $GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH $PAGES_DIR/$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH || true
+    - *compress-pages
+  pages:
+    publish: $PAGES_DIR
     expire_in: 31d

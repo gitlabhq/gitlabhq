@@ -24,7 +24,7 @@ module Tooling
     to be under a feature flag, please add the label ~"#{FEATURE_FLAG_SKIPPED_LABEL}", and
     add a short comment about why we skipped the feature flag.
 
-    For guidance on when to use a feature flag, please see the [documentation](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
+    For guidance on when to use a feature flag, please see the [documentation](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
     WARNING_MESSAGE
 
     def initialize(context:, added_files:, modified_files:, helper:)

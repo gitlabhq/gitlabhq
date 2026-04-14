@@ -45,7 +45,7 @@ describe('Customer relations organizations root app', () => {
         canReadCrmContact,
         groupContactsPath: '/contacts',
         groupFullPath: 'flightjs',
-        groupIssuesPath: '/issues',
+        groupWorkItemsPath: '/work_items',
         textQuery,
       },
       apolloProvider: fakeApollo,
@@ -69,7 +69,7 @@ describe('Customer relations organizations root app', () => {
       trackViewsOptions: { category: 'Customer Relations', action: 'view_organizations_list' },
       i18n: {
         emptyText: 'No organizations found',
-        issuesButtonLabel: 'View issues',
+        issuesButtonLabel: 'View work items',
         editButtonLabel: 'Edit',
         title: 'Customer relations organizations',
         newOrganization: 'New organization',

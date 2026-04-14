@@ -1,5 +1,5 @@
+import Vue, { defineComponent, h } from 'vue';
 import { createWrapper } from '@vue/test-utils';
-import { defineComponent, h } from 'vue';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
@@ -107,6 +107,51 @@ describe('Breadcrumbs utils', () => {
 
       it('passes all breadrumbs it to the component', () => {
         expect(findMockComponent().props('allStaticBreadcrumbs')).toEqual(staticBreadcrumbs.items);
+      });
+    });
+
+    describe('when pageBreadcrumbsInTopBar feature flag is enabled', () => {
+      const topbarBreadcrumbsHTML = `
+          <header class="super-topbar js-super-topbar">
+            <div id="js-super-topbar-breadcrumbs-slot"></div>
+          </header>
+        `;
+
+      beforeEach(() => {
+        window.gon = { features: { pageBreadcrumbsInTopBar: true } };
+      });
+
+      afterEach(() => {
+        staticBreadcrumbs.hasInjectedBreadcrumbs = false;
+      });
+
+      describe('when the topbar slot is not present', () => {
+        it('returns false', () => {
+          expect(injectVueAppBreadcrumbs(mockRouter, MockComponent)).toBe(false);
+        });
+      });
+
+      describe('when the topbar slot is present', () => {
+        beforeEach(() => {
+          setHTMLFixture(topbarBreadcrumbsHTML);
+        });
+
+        it('sets staticBreadcrumbs.hasInjectedBreadcrumbs to true', () => {
+          injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider);
+
+          expect(staticBreadcrumbs.hasInjectedBreadcrumbs).toBe(true);
+        });
+
+        it('mounts the component at the topbar slot', async () => {
+          const app = injectVueAppBreadcrumbs(mockRouter, MockComponent, mockApolloProvider);
+          const slot = document.querySelector('#js-super-topbar-breadcrumbs-slot');
+
+          expect(app.$el).toBeInstanceOf(HTMLElement);
+
+          await Vue.nextTick();
+
+          expect(slot.querySelector('[data-testid="mock-component"]')).not.toBeNull();
+        });
       });
     });
   });

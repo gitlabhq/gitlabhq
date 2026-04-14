@@ -15,6 +15,7 @@ describe('IndexLayout', () => {
   const findPageHeading = () => wrapper.findComponent(PageHeading);
   const findHeading = () => wrapper.find('[data-testid="page-heading"]');
   const findDescription = () => wrapper.find('[data-testid="page-heading-description"]');
+  const findActions = () => wrapper.find('[data-testid="page-heading-actions"]');
   const findAlerts = () => wrapper.find('[data-testid="index-layout-alerts"]');
   const findContent = () => wrapper.find('[data-testid="index-layout-content"]');
 
@@ -48,6 +49,30 @@ describe('IndexLayout', () => {
         createComponent({ heading: 'Test Heading' });
         expect(findDescription().exists()).toBe(false);
       });
+    });
+
+    describe('actions', () => {
+      it('renders actions when slot provided', () => {
+        createComponent({ heading: 'Test Heading' }, { actions: 'Test action' });
+        expect(findActions().exists()).toBe(true);
+      });
+
+      it('does not render when no actions slot is provided', () => {
+        createComponent({ heading: 'Test Heading' });
+        expect(findActions().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('pageHeadingSrOnly', () => {
+    it('does not apply gl-sr-only class by default', () => {
+      createComponent({ heading: 'Test Heading' });
+      expect(findPageHeading().classes()).not.toContain('gl-sr-only');
+    });
+
+    it('applies gl-sr-only class when pageHeadingSrOnly is true', () => {
+      createComponent({ heading: 'Test Heading', pageHeadingSrOnly: true });
+      expect(findPageHeading().classes()).toContain('gl-sr-only');
     });
   });
 

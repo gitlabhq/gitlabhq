@@ -39,15 +39,16 @@ Multi-container scanning supports:
 - Images from private registries (with authentication configured)
 - Multi-architecture images
 
-## Enable multi-container scanning
+## Turn on multi-container scanning
 
 Prerequisites:
 
+- The Developer, Maintainer, or Owner role for the project.
 - GitLab Runner with Docker executor.
 - A `.gitlab-multi-image.yml` configuration file in your repository root.
 - At least one container image to scan.
 
-To enable multi-container scanning:
+To turn on multi-container scanning:
 
 1. Create a `.gitlab-multi-image.yml` file in your repository root:
 
@@ -201,7 +202,13 @@ variables:
 
 ## View scan results
 
-After the pipeline completes:
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+- Multi-container scanning turned on for the project.
+- A pipeline has completed with container scanning results.
+
+To view scan results:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Go to your merge request or pipeline details page.

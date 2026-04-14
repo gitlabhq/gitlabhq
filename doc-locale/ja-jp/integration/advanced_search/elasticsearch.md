@@ -353,7 +353,8 @@ PREFIX=/usr sudo -E make install
 
 インストール後、必ず[Elasticsearchを有効](#enable-advanced-search)にしてください。
 
-> [!note]インデックス作成中に`Permission denied - /home/git/gitlab-elasticsearch-indexer/`のようなエラーが表示される場合は、`gitlab.yml`ファイルの`production -> elasticsearch -> indexer_path`設定を`/usr/local/bin/gitlab-elasticsearch-indexer`に設定する必要があるかもしれません。これはバイナリがインストールされているパスです。
+> [!note]
+> インデックス作成中に`Permission denied - /home/git/gitlab-elasticsearch-indexer/`のようなエラーが表示される場合は、`gitlab.yml`ファイルの`production -> elasticsearch -> indexer_path`設定を`/usr/local/bin/gitlab-elasticsearch-indexer`に設定する必要があるかもしれません。これはバイナリがインストールされているパスです。
 
 ### インデックス作成エラーを表示する {#view-indexing-errors}
 
@@ -377,7 +378,8 @@ PREFIX=/usr sudo -E make install
 1. （オプション）[インデックス作成状態を確認します](#check-indexing-status)。
 1. インデックス作成が完了したら、**高度な検索による検索**チェックボックスを選択し、次に**変更を保存**を選択します。
 
-> [!note] Elasticsearchが有効になっている間にElasticsearchクラスターがダウンしている場合、インスタンスが変更をインデックスするためのジョブをキューに入れますが、有効なElasticsearchクラスターを見つけられないため、イシューなどのドキュメントを更新する際に問題が発生する可能性があります。
+> [!note]
+> Elasticsearchが有効になっている間にElasticsearchクラスターがダウンしている場合、インスタンスが変更をインデックスするためのジョブをキューに入れますが、有効なElasticsearchクラスターを見つけられないため、イシューなどのドキュメントを更新する際に問題が発生する可能性があります。
 
 リポジトリデータが50 GBを超えるGitLabインスタンスの場合は、[大規模インスタンスにインデックスを効率的に作成する](#index-large-instances-efficiently)を参照してください。
 
@@ -540,7 +542,8 @@ GitLabで高度検索によるコード検索を有効にするには:
 
 {{< /history >}}
 
-> [!flag] この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 **インデックスを作成するネームスペースとプロジェクトデータの量を制限する**チェックボックスをオンにすると、インデックスを作成するネームスペースとプロジェクトを指定できます。ネームスペースがグループの場合、それらのサブグループ内のサブグループとプロジェクトにもインデックスが作成されます。
 
@@ -1059,7 +1062,8 @@ GitLab.comとGitLab Dedicatedでは、検索以外の機能をサポートする
 
    インデックス作成時間が20％短縮されることが予想されます。インデックス作成が完了したら、`refresh_interval`と`number_of_replicas`を目的の値に戻すことができます。
 
-   > [!note]この手順はオプションですが、大規模なインデックス作成操作を大幅に高速化するのに役立つ場合があります。
+   > [!note]
+   > この手順はオプションですが、大規模なインデックス作成操作を大幅に高速化するのに役立つ場合があります。
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \

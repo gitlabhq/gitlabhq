@@ -26,13 +26,33 @@ RSpec.describe Gitlab::Git::RefResolver, feature_category: :source_code_manageme
     context 'when ref is a merge request ref' do
       let(:origin_ref) { 'refs/merge-requests/123/merge' }
 
+      before do
+        repository.create_ref(repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to eq('refs/merge-requests/123/merge') }
+    end
+
+    context 'when ref is a merge request ref that does not exist' do
+      let(:origin_ref) { 'refs/merge-requests/999/merge' }
+
+      it { is_expected.to be_nil }
     end
 
     context 'when ref is a workload ref' do
       let(:origin_ref) { 'refs/workloads/abc123' }
 
+      before do
+        repository.create_ref(repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to eq('refs/workloads/abc123') }
+    end
+
+    context 'when ref is a workload ref that does not exist' do
+      let(:origin_ref) { 'refs/workloads/nonexistent' }
+
+      it { is_expected.to be_nil }
     end
 
     context 'when ref is a short branch name' do
@@ -217,13 +237,27 @@ RSpec.describe Gitlab::Git::RefResolver, feature_category: :source_code_manageme
     context 'when ref is a merge request ref' do
       let(:origin_ref) { 'refs/merge-requests/123/merge' }
 
+      before do
+        repository.create_ref(repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to be(true) }
     end
 
     context 'when ref is a merge request head ref' do
       let(:origin_ref) { 'refs/merge-requests/123/head' }
 
+      before do
+        repository.create_ref(repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to be(true) }
+    end
+
+    context 'when ref is a merge request ref that does not exist' do
+      let(:origin_ref) { 'refs/merge-requests/999/merge' }
+
+      it { is_expected.to be(false) }
     end
 
     context 'when ref is a branch' do
@@ -245,7 +279,17 @@ RSpec.describe Gitlab::Git::RefResolver, feature_category: :source_code_manageme
     context 'when ref is a workload ref' do
       let(:origin_ref) { 'refs/workloads/abc123' }
 
+      before do
+        repository.create_ref(repository.root_ref_sha, origin_ref)
+      end
+
       it { is_expected.to be(true) }
+    end
+
+    context 'when ref is a workload ref that does not exist' do
+      let(:origin_ref) { 'refs/workloads/nonexistent' }
+
+      it { is_expected.to be(false) }
     end
 
     context 'when ref is a branch' do

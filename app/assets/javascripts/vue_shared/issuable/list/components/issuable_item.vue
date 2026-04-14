@@ -16,6 +16,7 @@ import { isExternal, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -53,6 +54,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [timeagoMixin, glFeatureFlagMixin()],
   inject: {
@@ -293,7 +295,7 @@ export default {
     useWorkItemTemplate() {
       if (this.isGroup) return false;
 
-      return !this.useIssueView;
+      return !this.workItemConfig?.useIssueView;
     },
     hiddenIssuableTitle() {
       if (this.isMergeRequest) {
@@ -472,7 +474,7 @@ export default {
               @mouseover="prefetchWorkItem(issuableIid)"
               @mouseout="clearPrefetching"
             >
-              {{ issuable.title }}
+              <span v-safe-html="issuable.titleHtml"></span>
               <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
             </gl-link>
           </template>
@@ -490,7 +492,7 @@ export default {
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
         </gl-link>
-        <slot v-if="hasSlotContents('title-icons')" name="title-icons"></slot>
+        <slot name="title-icons"></slot>
         <span
           v-if="taskStatus"
           class="task-status gl-ml-2 gl-hidden gl-text-sm @sm/panel:!gl-inline-block"

@@ -62,12 +62,22 @@ Data usage: The diff of changes between the source branch's head and the target 
 GitLab Duo can review your merge request for potential errors and provide feedback on alignment to
 standards.
 
-When you request a review from `@GitLabDuo`, one of the following features runs:
+When you request a review from GitLab Duo, it automatically runs one of two code review features
+based on your add-on:
 
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md):
-  The GitLab Duo Agent Platform feature. Uses GitLab Credits.
-- [GitLab Duo Code Review](../../gitlab_duo/code_review_classic.md):
-  The GitLab Duo feature. Available to users with the GitLab Duo Pro or Enterprise add-on.
+| Detail                | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
+|-----------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| Reviewer | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
+| Type                  | Agentic                                                                              | Non-agentic                                               |
+| Add-on                | None required. Uses GitLab Credits.                                                  | GitLab Duo Enterprise                                     |
+| Context awareness     | Enhanced understanding of repository structure and cross-file dependencies           | Focused on the merge request and the file diffs within it. |
+| Analysis              | Multi-step agentic reasoning                                                         | Single-pass                                               |
+| Session creation     | {{< yes >}}                                                                          | {{< no >}}                                                |
+| Automatic reviews     | {{< yes >}}                                                                          | {{< yes >}}                                               |
+| Custom instructions   | {{< yes >}}                                                                          | {{< yes >}}                                               |
+| Custom comments       | {{< yes >}}                                                                          | {{< yes >}}                                               |
+
+### Determine which review feature runs
 
 The review feature that runs depends on the add-on of the user that starts the GitLab Duo review:
 
@@ -85,18 +95,6 @@ the review.
 ![Merge request activity feed showing a review session started by GitLab Duo.](img/gitlab_duo_code_review_flow_session_v18_10.png)
 
 After the review completes, you can also look for a Code Review Flow session in [sessions for your project](../../duo_agent_platform/sessions/_index.md#view-sessions-for-your-project).
-
-### How the review features compare
-
-While you interact with both review features the same way, Code Review Flow offers enhanced
-capabilities compared to GitLab Duo Code Review:
-
-- Improved context awareness: Better understanding of repository structure and cross-file
-  dependencies.
-- Agentic capabilities: Multi-step reasoning for more thorough analysis.
-- Modern architecture: Built on the scalable GitLab Duo Agent Platform.
-
-Both features support automatic reviews, custom instructions, and custom comments.
 
 ## Summarize a code review
 

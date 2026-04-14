@@ -108,7 +108,9 @@ class Event < ApplicationRecord
   end
   scope :for_action, ->(action) { where(action: action) }
   scope :created_between, ->(start_time, end_time) { where(created_at: start_time..end_time) }
-  scope :count_by_dates, ->(date_interval) { group("DATE(created_at + #{date_interval})").count }
+  scope :count_by_dates_in_timezone, ->(timezone) {
+    group(Arel.sql("DATE(created_at AT TIME ZONE #{connection.quote(timezone)})")).count
+  }
 
   scope :contributions, -> do
     contribution_actions = [actions[:pushed], actions[:commented]]
@@ -506,10 +508,6 @@ class Event < ApplicationRecord
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
-  end
-
-  def recent_repository_update?
-    project.last_repository_updated_at > REPOSITORY_UPDATED_AT_INTERVAL.ago
   end
 
   def set_last_repository_updated_at

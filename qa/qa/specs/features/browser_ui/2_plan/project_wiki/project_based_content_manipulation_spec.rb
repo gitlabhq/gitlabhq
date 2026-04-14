@@ -17,6 +17,10 @@ module QA
       end
 
       it 'by manipulating content on the page',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41032',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347810' do
         wiki.visit!
 
@@ -37,6 +41,10 @@ module QA
       end
 
       it 'by manipulating content on the page with spaces',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41031',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442390' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"

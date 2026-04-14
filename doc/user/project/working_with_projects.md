@@ -360,9 +360,8 @@ Prerequisites:
 To delete a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete**.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Delete**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 This action adds a background job to mark a project for deletion. On GitLab.com, the project is deleted after 30 days. On GitLab Self-Managed,
@@ -399,10 +398,9 @@ Prerequisites:
 To permanently delete a project scheduled for deletion:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete permanently**.
-1. On the confirmation dialog, enter the project name and select **Confirm**.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Delete permanently**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 This action deletes the project and all related resources, including issues and merge requests.
 
@@ -422,9 +420,8 @@ Prerequisites:
 To restore a project pending deletion:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Advanced**.
-1. In the **Restore project** section, select **Restore project**.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Restore**.
 
 ## Archive a project
 
@@ -452,9 +449,8 @@ Prerequisites:
 To archive a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Advanced**.
-1. In the **Archive project** section, select **Archive**.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Archive**.
 
 To archive a project from the **Your work** list view directly:
 
@@ -486,13 +482,9 @@ Prerequisites:
 
 To unarchive a project:
 
-1. Find the archived project.
-   1. In the top bar, select **Search or go to**.
-   1. From the dropdown, select **View all my projects**.
-   1. In the **Inactive** tab, select your project.
-1. In the left sidebar, select **Settings** > **General**.
-1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive**.
+1. In the top bar, select **Search or go to** and find your project.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Unarchive**.
 
 To unarchive a project from the **Your work** list view directly:
 

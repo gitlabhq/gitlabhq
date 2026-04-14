@@ -153,9 +153,19 @@ To avoid downtime while rotating the Gitaly token, you can temporarily disable a
 
 #### Configure authentication
 
+{{< history >}}
+
+- Support for `token_file` [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/7083) in GitLab 18.11.
+
+{{< /history >}}
+
 Gitaly and GitLab use two shared secrets for authentication:
 
-- _Gitaly token_: used to authenticate gRPC requests to Gitaly.
+- _Gitaly token_: used to authenticate gRPC requests to Gitaly. You can specify the Gitaly token directly
+  in GitLab configuration or in a token file. Using a token file is more secure and better suited to containerized
+  environments because it avoids rendering secrets into the configuration at startup time. The token file must:
+  - Contain only the token string. Whitespace is trimmed automatically.
+  - Have file permissions `0600` or `0400`.
 - _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API.
 
 {{< tabs >}}
@@ -164,15 +174,31 @@ Gitaly and GitLab use two shared secrets for authentication:
 
 1. To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
-   ```ruby
-   gitaly['configuration'] = {
-      # ...
-      auth: {
+   - When using a token file:
+
+     ```ruby
+     gitaly['configuration'] = {
         # ...
-        token: 'abc123secret',
-      },
-   }
-   ```
+        auth: {
+          # ...
+          token_file: '/etc/gitlab/gitaly_token',
+        },
+     }
+     ```
+
+   - When specifying the token directly:
+
+     ```ruby
+     gitaly['configuration'] = {
+        # ...
+        auth: {
+          # ...
+          token: 'abc123secret',
+        },
+     }
+     ```
+
+   `token` and `token_file` are mutually exclusive.
 
 1. Configure the _GitLab Shell token_ in one of two ways:
 
@@ -234,10 +260,21 @@ Gitaly and GitLab use two shared secrets for authentication:
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. On the Gitaly servers, edit `/home/git/gitaly/config.toml`:
 
-   ```toml
-   [auth]
-   token = 'abc123secret'
-   ```
+   - When using a token file:
+
+     ```toml
+     [auth]
+     token_file = '/etc/gitaly/token'
+     ```
+
+   - When specifying the token directly:
+
+     ```toml
+     [auth]
+     token = 'abc123secret'
+     ```
+
+   `token` and `token_file` are mutually exclusive.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
@@ -796,6 +833,9 @@ To update to a new Gitaly authentication token, on each Gitaly client and Gitaly
       },
    }
    ```
+
+   If you are using `token_file`, update the contents of the referenced file with the new token.
+   No configuration change is needed. The token file is read on startup.
 
 1. Restart Gitaly:
 

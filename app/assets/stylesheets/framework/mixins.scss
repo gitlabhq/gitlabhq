@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use 'sass:map';
 @import '@gitlab/ui/src/scss/variables';
 
@@ -380,11 +381,11 @@
 
   // Diff is side by side
   .notes-content.parallel & {
-    $breakpoint-keys: map-keys($grid-breakpoints);
-    $current-index: index($breakpoint-keys, $breakpoint-name);
+    $breakpoint-keys: map.keys($grid-breakpoints);
+    $current-index: list.index($breakpoint-keys, $breakpoint-name);
 
-    @if $current-index < length($breakpoint-keys) {
-      $parallel-breakpoint: nth($breakpoint-keys, $current-index + 1);
+    @if $current-index < list.length($breakpoint-keys) {
+      $parallel-breakpoint: list.nth($breakpoint-keys, $current-index + 1);
 
       @include gl-container-width-down($parallel-breakpoint) { @content; }
     }

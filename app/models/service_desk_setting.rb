@@ -8,9 +8,14 @@ class ServiceDeskSetting < ApplicationRecord
 
   attribute :custom_email_enabled, default: false
 
+  cells_claims_scope do
+    where.not(custom_email: nil)
+  end
+
   cells_claims_attribute :custom_email,
     type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
-    feature_flag: :cells_claims_service_desk_settings
+    feature_flag: :cells_claims_service_desk_settings,
+    if: ->(record) { record.custom_email.present? }
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 
   belongs_to :project

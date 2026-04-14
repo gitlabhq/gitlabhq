@@ -13,7 +13,7 @@ title: GitLab Functions
 
 {{< /details >}}
 
-GitLab Functions are reusable units of CI/CD job logic that replace the `script` in a GitLab CI/CD job.
+GitLab Functions provides reusable units of CI/CD job logic that replace the `script` in a GitLab CI/CD job.
 
 > [!note]
 > GitLab Functions is an experimental feature in active development and is subject to breaking changes.
@@ -22,7 +22,7 @@ GitLab Functions are reusable units of CI/CD job logic that replace the `script`
 ## Why functions
 
 When pipelines grow, `script` blocks become hard to maintain. Logic is duplicated across
-jobs, jobs fetch scripts are fetched from external sources at runtime, and small changes require
+jobs, scripts are fetched from external sources at runtime, and small changes require
 updates in many places. GitLab Functions are designed to address these problems.
 
 Advantages of functions include:
@@ -93,7 +93,7 @@ build_and_release:
 
 Each job declares what should happen through steps. The functions themselves contain the implementation.
 
-## GitLab Function glossary
+## GitLab Functions glossary
 
 This glossary provides definitions for terms related to GitLab Functions.
 
@@ -152,7 +152,7 @@ Components and functions use different expression syntax because they are evalua
 - `$[[ ]]` expressions evaluate during pipeline creation, before any jobs run. Use this syntax for
   [CI/CD inputs](../inputs/_index.md) and component inputs.
 - `${{ }}` expressions evaluate during job execution, just before each step runs. Use this syntax for
-  function inputs, environment variables, and values that depends on runtime state.
+  function inputs, environment variables, and values that depend on runtime state.
 
 Both syntaxes can appear in a CI/CD Component YAML configuration file:
 
@@ -219,8 +219,8 @@ Name must consist only of alphanumeric characters and underscores, and cannot st
 #### Invoke a function
 
 A step can invoke a function by providing the [function reference](#function-reference) with the `func` keyword. Pass
-inputs to the function with the `inputs` keyword, and override environment values with the `env` keyword. [Expressions](#expressions)
-can be used in the value of `func`, and both keys and values of `inputs` and `env`.
+inputs to the function with the `inputs` keyword, and override environment values with the `env` keyword.
+Use [expressions](#expressions) in the `func` value and in the keys and values of `inputs` and `env`.
 
 Functions run in the `CI_PROJECT_DIR` directory unless the invoked function overrides the work directory.
 
@@ -274,6 +274,9 @@ supported but deprecated.
 To load a function from an OCI repository, supply the registry, repository, and version (tag).
 This method is the recommended way to distribute and consume functions.
 
+Function OCI images support multiple platforms. The step runner downloads the image that matches the running platform.
+If no match is found, the step fails.
+
 ```yaml
 # prints 'Hi from GitLab Functions'
 my-job:
@@ -297,8 +300,8 @@ my-job:
 ```
 
 To authenticate to private OCI repositories, set the `DOCKER_AUTH_CONFIG` environment variable with a value
-in a Docker config file format. For a working example of authentication as a function, see
-[Docker auth function](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth).
+in Docker config file format. For a working example of authentication as a function, see the
+[Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth) function.
 
 #### Load from the file system
 
@@ -339,7 +342,7 @@ For example:
 #### Load from a Git repository (deprecated)
 
 > [!warning]
-> GitLab plans to remove the load functions from Git repositories in a future release.
+> GitLab plans to remove support for loading functions from Git repositories in a future release.
 > Load functions from an OCI repository instead.
 
 To load a function from a Git repository, supply the URL and revision (commit, branch, or tag)
@@ -474,7 +477,7 @@ run:
     func: ./test              # BUILD_TARGET is not available here
 ```
 
-[Expressions](#expressions) can be used in both the keys and values of `env`.
+Use [expressions](#expressions) in the keys and values of `env`.
 
 #### Exported environment variables
 
@@ -504,6 +507,12 @@ from highest to lowest:
 1. Exported by a previously run step
 1. Set by the runner
 1. Set by the OS process environment
+
+## Create your own function
+
+To create a function, see [create a GitLab Function](create.md).
+
+For example functions, see [GitLab Functions examples](examples.md).
 
 ## Troubleshooting
 

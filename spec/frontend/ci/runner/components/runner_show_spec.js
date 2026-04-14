@@ -10,7 +10,7 @@ import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
 import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
@@ -23,7 +23,7 @@ import { runnerData } from '../mock_data';
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/local_storage_alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 
@@ -107,10 +107,7 @@ describe('RunnerShow', () => {
     expect(createAlert).toHaveBeenCalledWith({
       message: 'Something went wrong while fetching runner data.',
     });
-    expect(captureException).toHaveBeenCalledWith({
-      error,
-      component: 'RunnerShow',
-    });
+    expect(captureException).toHaveBeenCalledWith(error);
   });
 
   it('does not redirect when runnersPath is not provided', async () => {

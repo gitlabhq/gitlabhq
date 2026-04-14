@@ -6,11 +6,7 @@ import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
 import { findLinkedItemsWidget } from '../../utils';
-import {
-  LINK_ITEM_FORM_HEADER_LABEL,
-  LINKED_ITEM_TYPE_VALUE,
-  MAX_WORK_ITEMS,
-} from '../../constants';
+import { LINKED_ITEM_TYPE_VALUE, MAX_WORK_ITEMS } from '../../constants';
 
 export default {
   components: {
@@ -38,11 +34,6 @@ export default {
       default: null,
     },
     workItemFullPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    workItemType: {
       type: String,
       required: false,
       default: null,
@@ -83,9 +74,6 @@ export default {
     };
   },
   computed: {
-    linkItemFormHeaderLabel() {
-      return LINK_ITEM_FORM_HEADER_LABEL[this.workItemType];
-    },
     workItemsToAddInvalidMessage() {
       return this.$options.i18n.addChildErrorMessage;
     },
@@ -185,7 +173,7 @@ export default {
     </gl-alert>
     <template v-if="hasBlockedWorkItemsFeature">
       <gl-form-group
-        :label="linkItemFormHeaderLabel"
+        :label="s__('WorkItem|The current item')"
         label-for="linked-item-type-radio"
         label-class="label-bold"
         class="gl-mb-3"

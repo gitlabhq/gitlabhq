@@ -22,7 +22,6 @@ RSpec.describe 'User explores projects', :js, feature_category: :user_profile do
 
         describe "sidebar" do
           it 'shows the "Explore" sidebar' do
-            has_testid?('super-sidebar')
             within_testid('super-sidebar') do
               expect(page).to have_css('#super-sidebar-context-header', text: 'Explore')
             end

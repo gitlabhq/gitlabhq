@@ -23,7 +23,7 @@ RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker, f
     end
 
     shared_examples 'expiry notification is not required to be sent for the token' do
-      it do
+      it 'does not call access_token_expired' do
         expect_next_instance_of(NotificationService) do |notification_service|
           expect(notification_service).not_to receive(:access_token_expired).with(token.user, [token.name])
         end

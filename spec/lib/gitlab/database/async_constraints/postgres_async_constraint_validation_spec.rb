@@ -7,18 +7,53 @@ RSpec.describe Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValida
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
   describe 'validations' do
-    let_it_be(:constraint_validation) { create(:postgres_async_constraint_validation) }
+    subject(:model) { build(:postgres_async_constraint_validation) }
+
+    let(:table_name_limit) { described_class::MAX_TABLE_NAME_LENGTH }
     let(:identifier_limit) { described_class::MAX_IDENTIFIER_LENGTH }
     let(:last_error_limit) { described_class::MAX_LAST_ERROR_LENGTH }
-
-    subject { constraint_validation }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:table_name) }
     it { is_expected.to validate_length_of(:name).is_at_most(identifier_limit) }
     it { is_expected.to validate_presence_of(:table_name) }
-    it { is_expected.to validate_length_of(:table_name).is_at_most(identifier_limit) }
+    it { is_expected.to validate_length_of(:table_name).is_at_most(table_name_limit) }
     it { is_expected.to validate_length_of(:last_error).is_at_most(last_error_limit) }
+
+    shared_examples 'table_name is invalid' do
+      before do
+        model.table_name = table_name
+      end
+
+      it 'is invalid' do
+        expect(model).to be_invalid
+        expect(model.errors).to have_key(:table_name)
+      end
+    end
+
+    context 'when passing a long schema name' do
+      let(:table_name) { "#{'schema_name' * 10}.table_name" }
+
+      it_behaves_like 'table_name is invalid'
+    end
+
+    context 'when passing a long table name' do
+      let(:table_name) { "schema_name.#{'table_name' * 10}" }
+
+      it_behaves_like 'table_name is invalid'
+    end
+
+    context 'when passing a long table name and schema name' do
+      let(:table_name) { "#{'schema_name' * 10}.#{'table_name' * 10}" }
+
+      it_behaves_like 'table_name is invalid'
+    end
+
+    context 'when invalid table name is given' do
+      let(:table_name) { 'a.b.c' }
+
+      it_behaves_like 'table_name is invalid'
+    end
   end
 
   describe 'scopes' do

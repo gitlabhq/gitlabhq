@@ -31,10 +31,11 @@ if you suspect this is the issue.
 
 In VS Code, you can troubleshoot some issues by viewing debugging logs.
 
-1. Open local debugging logs:
-   - On macOS: <kbd>Command</kbd>+<kbd>,</kbd>
-   - On Windows and Linux: <kbd>Control</kbd>+<kbd>,</kbd>
-1. Search for the setting **GitLab: Debug** and enable it.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **Other**.
+1. Under **GitLab: Debug**, select the checkbox to turn on debug mode.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.
    1. In the output panel at the bottom, in the upper-right corner,
@@ -108,8 +109,11 @@ To resolve this issue, you can:
 To configure the default namespace:
 
 1. [Determine the namespace your project is in](../namespace/_index.md#determine-which-type-of-namespace-youre-in).
-1. In VS Code, select **File** > **Preferences** > **Settings**.
-1. Search for **GitLab** > **Duo Agent Platform: Default Namespace** and enter your namespace.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Agent Platform: Default Namespace**, enter your namespace.
 
 ### Project not in a group namespace
 
@@ -122,7 +126,7 @@ If necessary, you can
 
 ## IDE commands fail or run indefinitely
 
-When using GitLab Duo Chat (agentic) or the Software Development flow in your IDE,
+When using GitLab Duo Agentic Chat or the Software Development Flow in your IDE,
 GitLab Duo can get stuck in a loop or have difficulty running commands.
 
 This issue can occur when you are using shell themes or integrations, like `Oh My ZSH!` or `powerlevel10k`.

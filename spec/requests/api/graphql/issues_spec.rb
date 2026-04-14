@@ -156,20 +156,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     it_behaves_like 'query that requires at least one filter'
   end
 
-  context 'when filtering by workItemTypeIds' do
-    let_it_be(:task) { create(:issue, :task, project: project_a) }
-
-    let(:all_query_params) { { workItemTypeIds: [task.work_item_type.to_global_id.to_s] } }
-
-    it 'returns issues matching the type GID' do
-      post_query
-
-      issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
-
-      expect(issue_ids).to contain_exactly(task.to_gid.to_s)
-    end
-  end
-
   context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5996' do
     # All new specs should be added to the shared example if the change also
     # affects the `issues` query at the root level of the API.

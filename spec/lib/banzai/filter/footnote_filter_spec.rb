@@ -56,7 +56,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
     let(:identifier) { link_node[:id].delete_prefix('fnref-1-') }
 
     it 'properly adds the necessary ids and classes' do
-      expect(doc.to_html).to eq filtered_footnote.strip
+      expect(doc.to_html).to eq_html filtered_footnote.strip
     end
 
     context 'when GITLAB_TEST_FOOTNOTE_ID is set' do
@@ -68,7 +68,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :markdown do
       end
 
       it 'uses the test footnote ID instead of a random number' do
-        expect(doc.to_html).to eq filtered_footnote.strip
+        expect(doc.to_html).to eq_html filtered_footnote.strip
       end
     end
   end

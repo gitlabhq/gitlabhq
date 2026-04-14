@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import Vue from 'vue';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';

@@ -1,0 +1,10 @@
+---
+name: ci_optimize_component_instance_path
+description: Optimize component calls
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/584405
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227483
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594518
+milestone: '18.11'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

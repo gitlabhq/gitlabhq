@@ -3,13 +3,9 @@
 module RapidDiffs
   module Viewers
     module Text
-      class InlineViewComponent < ViewerComponent
+      class InlineViewComponent < TextViewComponent
         def self.viewer_name
           'text_inline'
-        end
-
-        def virtual_rendering_params
-          { total_rows: total_rows, rows_visibility: rows_visibility }
         end
 
         private
@@ -23,11 +19,7 @@ module RapidDiffs
         end
 
         def total_rows
-          @diff_file.viewer_hunks.sum { |hunk| (hunk.header ? 1 : 0) + hunk.lines.count }
-        end
-
-        def rows_visibility
-          total_rows >= Gitlab::Diff::File::ROWS_CONTENT_VISIBILITY_THRESHOLD ? 'auto' : nil
+          @diff_file.viewer_hunks.sum { |hunk| (hunk.header ? 1 : 0) + hunk.lines.to_a.size }
         end
       end
     end

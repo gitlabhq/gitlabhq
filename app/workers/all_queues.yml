@@ -446,6 +446,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:cells_schedule_claims_verification
+  :worker_name: Cells::ScheduleClaimsVerificationWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:cells_stale_requests_cleanup_cron
   :worker_name: Cells::StaleRequestsCleanupCronWorker
   :feature_category: :cell
@@ -2494,6 +2504,16 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :package_cleanup
+- :name: package_repositories:packages_cargo_extraction
+  :worker_name: Packages::Cargo::ExtractionWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_conan_process_package_file
   :worker_name: Packages::Conan::ProcessPackageFileWorker
   :feature_category: :package_registry
@@ -2669,6 +2689,16 @@
   :feature_category: :code_testing
   :has_external_dependencies: false
   :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_background
+- :name: pipeline_background:ci_expire_pipeline_cache
+  :worker_name: Ci::ExpirePipelineCacheWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -3026,16 +3056,6 @@
   :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 5
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :pipeline_processing
-- :name: pipeline_processing:stage_update
-  :worker_name: StageUpdateWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :high
@@ -3668,6 +3688,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: cells_claims_verification
+  :worker_name: Cells::ClaimsVerificationWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :integrations
@@ -3803,7 +3833,7 @@
   :queue_namespace:
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
-  :feature_category: :mobile_devops
+  :feature_category: :secrets_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3824,6 +3854,16 @@
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :fleet_visibility
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: ci_runners_transfer_organization
+  :worker_name: Ci::Runners::TransferOrganizationWorker
+  :feature_category: :runner_core
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4444,7 +4484,7 @@
   :queue_namespace:
 - :name: integrations_irker
   :worker_name: Integrations::IrkerWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

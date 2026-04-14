@@ -163,8 +163,10 @@ describe('PersonalAccessTokensTable', () => {
       expect(findActionDropdowns()).toHaveLength(2);
     });
 
-    it('does not show rotate & revoke for inactive tokens', () => {
-      expect(findActionItems(0)).toHaveLength(3);
+    it('shows duplicate for granular tokens and rotate/revoke for active tokens', () => {
+      // mockTokens[0] is granular and active: view details + duplicate + rotate + revoke
+      expect(findActionItems(0)).toHaveLength(4);
+      // mockTokens[1] is non-granular and inactive: view details only
       expect(findActionItems(1)).toHaveLength(1);
     });
 
@@ -185,13 +187,23 @@ describe('PersonalAccessTokensTable', () => {
         expect(findActionItems(1).at(0).text()).toBe('View details');
       });
 
+      it('includes duplicate action for granular token', () => {
+        expect(findActionItems(0).at(1).text()).toBe('Duplicate');
+      });
+
+      it('does not include duplicate action for non-granular token', () => {
+        // mockTokens[1] is non-granular, only has View details
+        expect(findActionItems(1).at(0).text()).toBe('View details');
+        expect(findActionItems(1)).toHaveLength(1);
+      });
+
       it('includes rotate action', () => {
-        expect(findActionItems(0).at(1).text()).toBe('Rotate');
+        expect(findActionItems(0).at(2).text()).toBe('Rotate');
       });
 
       it('includes revoke action', () => {
-        expect(findActionItems(0).at(2).text()).toBe('Revoke');
-        expect(findActionItems(0).at(2).props('variant')).toBe('danger');
+        expect(findActionItems(0).at(3).text()).toBe('Revoke');
+        expect(findActionItems(0).at(3).props('variant')).toBe('danger');
       });
 
       it('emits `select` event when view details is clicked', () => {
@@ -201,15 +213,22 @@ describe('PersonalAccessTokensTable', () => {
         expect(wrapper.emitted('select')[0]).toEqual([mockTokens[0]]);
       });
 
-      it('emits `rotate` event when rotate is clicked', () => {
+      it('emits `duplicate` event when duplicate is clicked', () => {
         findActionItems(0).at(1).vm.$emit('action');
+
+        expect(wrapper.emitted('duplicate')).toHaveLength(1);
+        expect(wrapper.emitted('duplicate')[0]).toEqual([mockTokens[0]]);
+      });
+
+      it('emits `rotate` event when rotate is clicked', () => {
+        findActionItems(0).at(2).vm.$emit('action');
 
         expect(wrapper.emitted('rotate')).toHaveLength(1);
         expect(wrapper.emitted('rotate')[0]).toEqual([mockTokens[0]]);
       });
 
       it('emits `revoke` event when revoke is clicked', () => {
-        findActionItems(0).at(2).vm.$emit('action');
+        findActionItems(0).at(3).vm.$emit('action');
 
         expect(wrapper.emitted('revoke')).toHaveLength(1);
         expect(wrapper.emitted('revoke')[0]).toEqual([mockTokens[0]]);

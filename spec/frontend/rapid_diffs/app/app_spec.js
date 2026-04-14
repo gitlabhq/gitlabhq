@@ -126,11 +126,11 @@ describe('Rapid Diffs App Facade', () => {
     );
   });
 
-  it('inits lazy app', () => {
+  it('inits lazy app via streamInitialDiffs', () => {
     // eslint-disable-next-line vue/one-component-per-file
     createApp({ lazy: true });
     app.init();
-    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload', true);
+    expect(useDiffsList().streamInitialDiffs).toHaveBeenCalledWith('/reload');
   });
 
   it('reacts to files loading', () => {

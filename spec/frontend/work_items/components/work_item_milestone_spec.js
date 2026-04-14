@@ -202,8 +202,8 @@ describe('WorkItemMilestone component', () => {
   describe('Error handlers', () => {
     it.each`
       errorType          | expectedErrorMessage                                                 | mockValue                              | resolveFunction
-      ${'graphql error'} | ${'Something went wrong while updating the task. Please try again.'} | ${updateWorkItemMutationErrorResponse} | ${'mockResolvedValue'}
-      ${'network error'} | ${'Something went wrong while updating the task. Please try again.'} | ${new Error()}                         | ${'mockRejectedValue'}
+      ${'graphql error'} | ${'Something went wrong while updating the Task. Please try again.'} | ${updateWorkItemMutationErrorResponse} | ${'mockResolvedValue'}
+      ${'network error'} | ${'Something went wrong while updating the Task. Please try again.'} | ${new Error()}                         | ${'mockRejectedValue'}
     `(
       'emits an error when there is a $errorType',
       async ({ mockValue, expectedErrorMessage, resolveFunction }) => {

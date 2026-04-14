@@ -25,6 +25,8 @@ GitLab Duo Vulnerability Resolution helps you automatically resolve security vul
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
+Fo more information, see [how to enable all GitLab Duo features](../../gitlab_duo/turn_on_off.md).
+
 ## Use AI assistance responsibly
 
 As with all AI-based systems, we can't guarantee that the large language model produces correct results every time.
@@ -32,16 +34,6 @@ You should always review the proposed change before merging it. When reviewing, 
 
 - Your application's existing functionality is preserved.
 - The vulnerability is resolved in accordance with your organization's standards.
-
-## Prerequisites
-
-- You must be a member of the project.
-- The vulnerability must be a SAST finding from a supported analyzer:
-  - Any [GitLab-supported analyzer](../sast/analyzers.md).
-  - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
-- The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
-
-Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_on_off.md).
 
 ## Supported vulnerabilities for Vulnerability Resolution
 
@@ -114,25 +106,19 @@ The following data is shared with third-party AI APIs:
 
 ## Workflows
 
-Vulnerablilty Resolution is available in different workflows. You can:
+Vulnerability Resolution is available in the following workflows:
 
-- Resolve existing vulnerabilities from the Vulnerability Report.
+- Resolve existing vulnerabilities from the vulnerability report.
 - Resolve vulnerabilities in the context of a merge request.
 
-### Resolve an existing vulnerability from the Vulnerability Report
+### Resolve a vulnerability from the vulnerability report
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
-- Changed to beta in GitLab 17.3.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-
-{{< /history >}}
-
-#### Find vulnerabilities that support Vulnerability Resolution
-
-{{< history >}}
-
+- Resolve a vulnerability from the vulnerability report:
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+  - Changed to beta in GitLab 17.3.
+  - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Vulnerability Resolution activity icon:
   - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15036) in GitLab 17.5 with a flag named [`vulnerability_report_vr_badge`](https://gitlab.com/gitlab-org/gitlab/-/issues/486549). Disabled by default.
   - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171718) in GitLab 17.6.
@@ -140,7 +126,15 @@ Vulnerablilty Resolution is available in different workflows. You can:
 
 {{< /history >}}
 
-To resolve a vulnerability:
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- The vulnerability must be a SAST finding from a supported analyzer:
+  - Any [GitLab-supported analyzer](../sast/analyzers.md).
+  - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
+- The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
+
+To resolve a vulnerability from the vulnerability report:
 
 1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
@@ -150,20 +144,21 @@ To resolve a vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-
-#### Resolve the selected vulnerability
-
-After you've selected a vulnerability that supports resolution:
-
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
+1. In the upper-right corner, select **Resolve with AI**.
+   > [!warning]
+   > If this project is a public project be aware that creating an MR will publicly expose the
+   > vulnerability and offered resolution. To create the MR privately,
+   > [create a private fork](../../project/merge_requests/confidential.md), then repeat this
+   > process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
-1. After the pipeline is complete, on the [pipeline security tab](../detect/security_scanning_results.md), confirm that the vulnerability no longer appears.
-1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
+1. After the pipeline is complete, on the
+   [pipeline security tab](../detect/security_scanning_results.md), confirm that the vulnerability no
+   longer appears.
+1. On the vulnerability report,
+   [manually update the vulnerability](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
 
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.
-
-Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
 
 ### Resolve a vulnerability in a merge request
 
@@ -178,6 +173,14 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 You can use GitLab Duo Vulnerability Resolution in a merge request to fix vulnerabilities before they're merged.
 Vulnerability Resolution automatically creates a merge request suggestion comment that resolves the vulnerability finding.
 
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- The vulnerability must be a SAST finding from a supported analyzer:
+  - Any [GitLab-supported analyzer](../sast/analyzers.md).
+  - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
+- The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
+
 To resolve a vulnerability finding:
 
 1. In the left sidebar, select **Search or go to** and find your project.
@@ -187,9 +190,8 @@ To resolve a vulnerability finding:
 1. Select the supported findings to open the security finding dialog.
 1. In the lower-right corner, select **Resolve with AI**.
 
-A comment containing the AI remediation suggestions is opened in the merge request. Review the suggested changes, then apply the merge request suggestion according to your standard workflow.
-
-Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
+   A comment containing the AI remediation suggestions is opened in the merge request.
+1. Review the suggested changes, then apply the merge request suggestion according to your standard workflow.
 
 ## Troubleshooting
 

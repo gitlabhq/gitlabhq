@@ -54,8 +54,7 @@ and usage details:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
-1. Select **Manage authentication**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. In the **Passkey sign-in** section, view your passkeys.
 
 ## Add a passkey
@@ -74,8 +73,7 @@ To add a passkey:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
-1. Select **Manage authentication**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. In the **Passkey sign-in** section, select **Add passkey**.
 1. Follow the prompts on your device or browser.
 1. Enter your current password to confirm your identity.
@@ -122,8 +120,7 @@ To delete a passkey:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
-1. Select **Manage authentication**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. In the **Passkey sign-in** section, find the passkey you want to delete.
 1. Next to the passkey, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, confirm the deletion.

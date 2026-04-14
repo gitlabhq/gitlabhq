@@ -27,15 +27,24 @@ title: Code Suggestions
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 - [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187397) support for Qwen2.5 code completion model in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
+- Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
+
+> [!note]
+> Code Suggestions is available for:
+>
+> - GitLab Duo Agent Platform. Billing is [usage-based](../../../subscriptions/gitlab_credits.md).
+> - GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q. Billing is based on your add-on.
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -49,7 +58,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 To use Code Suggestions:
 
 - If you have GitLab Duo Core, [turn on IDE features](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
-- [Set up Code Suggestions](set_up.md).
+- [Set up Code Suggestions](../../project/repository/code_suggestions/set_up.md).
 
 > [!note]
 > GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results,
@@ -59,7 +68,7 @@ To use Code Suggestions:
 
 To use Code Suggestions:
 
-1. Open your Git project in a [supported IDE](supported_extensions.md#supported-editor-extensions).
+1. Open your Git project in a [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
 1. Add the project as a remote of your local repository using
    [`git remote add`](../../../topics/git/commands.md#git-remote-add).
 1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
@@ -127,7 +136,7 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
-- Review and adjust the context available to Code Suggestions.
+- Review and adjust the [context available to Code Suggestions](../../project/repository/code_suggestions/context.md#change-what-code-suggestions-uses-for-context).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -143,28 +152,16 @@ To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../gitlab_duo/use_cases.md).
 
-## Truncation of file content
+## Available language models
 
-Because of LLM limits and performance reasons, the content of the currently
-opened file is truncated:
+Different language models can be the source for Code Suggestions.
 
-- For code completion: to 32,000 tokens (roughly 128,000 characters).
-- For code generation: to 80,000 tokens (roughly 320,000 characters).
-
-Content above the cursor is prioritized over content below the cursor. The content
-above the cursor is truncated from the left side, and content below the cursor
-is truncated from the right side. These numbers represent the maximum input context
-size for Code Suggestions.
-
-Support for increasing the code generation limit is proposed in [issue 585841](https://gitlab.com/gitlab-org/gitlab/-/issues/585841).
-
-## Output length
-
-Because of LLM limits and for performance reasons, the output of Code Suggestions
-is limited:
-
-- For code completion: to 64 tokens (roughly 256 characters).
-- For code generation: to 2048 tokens (roughly 7168 characters).
+- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
+- On GitLab Self-Managed, two options exist:
+  - GitLab can [host the models and connects to them through the cloud-based AI Gateway](../../project/repository/code_suggestions/set_up.md).
+  - Your organization can use [self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md),
+    which means you host the AI Gateway and language models. You can use GitLab-managed models,
+    other supported language models, or bring your own compatible model.
 
 ## Accuracy of results
 
@@ -179,135 +176,12 @@ However, Code Suggestions might generate suggestions that are:
 
 When using Code Suggestions, code review best practices still apply.
 
-## Available language models
+## Related topics
 
-Different language models can be the source for Code Suggestions.
-
-- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
-- On GitLab Self-Managed, two options exist:
-  - GitLab can [host the models and connects to them through the cloud-based AI Gateway](set_up.md).
-  - Your organization can [use GitLab Duo Self-Hosted](../../../administration/gitlab_duo_self_hosted/_index.md),
-    which means you host the AI Gateway and language models. You can use GitLab-managed models,
-    other supported language models, or to bring your own compatible model.
-
-## How the prompt is built
-
-To learn about the code that builds the prompt, see these files:
-
-- Code generation:
-  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
-  in the `gitlab` repository.
-- Code completion:
-  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
-  in the `modelops` repository.
-
-## Prompt caching
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535651) in GitLab 18.0.
-
-{{< /history >}}
-
-Prompt caching is enabled by default on all Fireworks-hosted models to improve
-Code Suggestions latency.
-
-When prompt caching is enabled, code completion prompt data is temporarily stored
-in memory by the model vendor.
-
-Prompt caching significantly improves latency by avoiding the re-processing of
-cached prompt and input data. The cached data is never logged to any persistent storage.
-
-### Turn off prompt caching
-
-You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
-
-Prerequisites:
-
-- Administrator access for GitLab Self-Managed.
-
-On GitLab.com:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Disable the **Prompt caching** toggle.
-1. Select **Save changes**.
-
-On GitLab Self-Managed:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
-1. Select **Save changes**.
-
-## Response time
-
-Code Suggestions is powered by a generative AI model.
-
-- For code completion, suggestions are usually low latency and take less than one second.
-- For code generation, algorithms or large code blocks might take more than five seconds to generate.
-
-Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
-
-### Streaming
-
-Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
-perceived faster response times.
-Other supported IDEs will return the generated code in a single block.
-
-Streaming is not enabled for code completion.
-
-### Direct and indirect connections
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `code_suggestions_direct_access`. Disabled by default.
-
-{{< /history >}}
-
-By default, code completion requests are sent from the IDE directly to the AI Gateway to minimize the latency.
-For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
-possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
-code completion requests are sent indirectly through the GitLab Self-Managed instance, which in turn sends the requests
-to the AI Gateway. This might result in your requests having higher latency.
-
-#### Configure direct or indirect connections
-
-Prerequisites:
-
-- You must be an administrator for the GitLab Self-Managed instance.
-
-{{< tabs >}}
-
-{{< tab title="In 17.4 and later" >}}
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **GitLab Duo features**.
-1. Under **Connection method**, choose an option:
-   - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through GitLab Self-Managed**.
-1. Select **Save changes**.
-
-{{< /tab >}}
-
-{{< tab title="In 17.3 and earlier" >}}
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **AI-native features**.
-1. Choose an option:
-   - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.
-   - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-## Feedback
-
-Provide feedback about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).
+- [Supported extensions and languages](../../project/repository/code_suggestions/supported_extensions.md)
+- [Code Suggestions limitations](../../project/repository/code_suggestions/_index.md#limitations)
+- [Prompt caching](../../project/repository/code_suggestions/_index.md#prompt-caching)
+- [Direct and indirect connections](../../project/repository/code_suggestions/_index.md#direct-and-indirect-connections)
+- [Code Suggestions contextual awareness](../../project/repository/code_suggestions/context.md)
+- [Troubleshooting Code Suggestions](../../project/repository/code_suggestions/troubleshooting.md)
+- [Repository X-Ray](../../project/repository/code_suggestions/repository_xray.md)

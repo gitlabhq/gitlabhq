@@ -13,13 +13,6 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
   let(:first_updated_issuable) { issuables.order_updated_asc.first }
   let(:last_updated_issuable) { issuables.order_updated_desc.first }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   context 'for merge requests' do
     include MergeRequestHelpers
 
@@ -139,42 +132,6 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
 
         it 'is "created date"' do
           visit_issues project
-
-          expect(page).to have_button 'Created date'
-          expect(first_issue).to include(last_created_issuable.title)
-          expect(last_issue).to include(first_created_issuable.title)
-        end
-      end
-
-      context 'in the "issues / open" tab', :js do
-        let(:issuable_type) { :issue }
-
-        it 'is "created date"' do
-          visit_issues_with_state(project, 'opened')
-
-          expect(page).to have_button 'Created date'
-          expect(first_issue).to include(last_created_issuable.title)
-          expect(last_issue).to include(first_created_issuable.title)
-        end
-      end
-
-      context 'in the "issues / closed" tab', :js do
-        let(:issuable_type) { :closed_issue }
-
-        it 'is "updated date"' do
-          visit_issues_with_state(project, 'closed')
-
-          expect(page).to have_button 'Updated date'
-          expect(first_issue).to include(last_updated_issuable.title)
-          expect(last_issue).to include(first_updated_issuable.title)
-        end
-      end
-
-      context 'in the "issues / all" tab', :js do
-        let(:issuable_type) { :issue }
-
-        it 'is "created date"' do
-          visit_issues_with_state(project, 'all')
 
           expect(page).to have_button 'Created date'
           expect(first_issue).to include(last_created_issuable.title)

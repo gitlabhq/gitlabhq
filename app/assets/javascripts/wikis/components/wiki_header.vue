@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlIcon,
   GlModalDirective,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -17,6 +18,7 @@ import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 import RestoreVersionModal from './restore_version_modal.vue';
+import WikiStickyHeader from './wiki_sticky_header.vue';
 
 export default {
   components: {
@@ -25,10 +27,12 @@ export default {
     GlIcon,
     GlLink,
     GlSprintf,
+    GlIntersectionObserver,
     WikiMoreDropdown,
     TimeAgo,
     PageHeading,
     RestoreVersionModal,
+    WikiStickyHeader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -62,6 +66,7 @@ export default {
     return {
       changingSubState: false,
       wikiPage: {},
+      isStickyHeaderShowing: false,
     };
   },
   computed: {
@@ -99,11 +104,11 @@ export default {
       return {
         text: this.wikiPage?.subscribed ? __('Notifications On') : __('Notifications Off'),
         icon: this.wikiPage?.subscribed ? 'notifications' : 'notifications-off',
-        action: this.toggleSubscribe,
-        extraAttrs: {
-          'data-testid': 'page-subscribe-button',
-        },
       };
+    },
+    isStickyHeaderVisible() {
+      // hide sticky when in editing path, title changes and Edit button is irrelevant , also hide when restore version button is shown as it appears in the same place and Edit button is hidden
+      return this.isStickyHeaderShowing && !this.isEditingPath && !this.showRestoreVersionButton;
     },
   },
   mounted() {
@@ -115,13 +120,19 @@ export default {
     document.removeEventListener('keyup', this.onKeyUp);
   },
   methods: {
+    hideStickyHeader() {
+      this.isStickyHeaderShowing = false;
+    },
+    showStickyHeader() {
+      this.isStickyHeaderShowing = true;
+    },
     onKeyUp(event) {
       const { tagName, isContentEditable } = event.currentTarget.activeElement;
 
       if (/input|textarea/i.test(tagName) || isContentEditable) return false;
 
       if (event.key === 'e') {
-        this.$emit('is-editing', true);
+        this.setEditingMode();
       }
 
       return false;
@@ -193,81 +204,91 @@ export default {
 </script>
 
 <template>
-  <div
-    class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 gl-px-3 !gl-pt-0"
-  >
-    <page-heading class="gl-w-full">
-      <template #heading>
-        <wiki-sidebar-toggle
-          action="open"
-          class="gl-mr-2"
-          :class="{
-            '@lg/panel:gl-hidden': glFeatures.wikiFloatingSidebarToggle,
-          }"
-        />
-        <span>
-          {{ pageHeadingComputed }}
-        </span>
-      </template>
-      <template v-if="!isEditingPath" #actions>
-        <gl-button
-          v-if="showCreateFromTemplateButton"
-          v-gl-tooltip.html
-          :title="$options.i18n.createFromTemplateTitle"
-          data-testid="wiki-create-from-template-button"
-          :href="createFromTemplateUrl"
-        >
-          {{ $options.i18n.createFromTemplate }}
-        </gl-button>
+  <div>
+    <div id="top"></div>
+    <gl-intersection-observer @appear="hideStickyHeader" @disappear="showStickyHeader">
+      <div
+        class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 gl-px-3 !gl-pt-0"
+      >
+        <page-heading class="gl-w-full">
+          <template #heading>
+            <wiki-sidebar-toggle action="open" class="gl-mr-2 @lg/panel:gl-hidden" />
+            <span>{{ pageHeadingComputed }}</span>
+          </template>
 
-        <gl-button
-          v-if="showRestoreVersionButton"
-          v-gl-modal="$options.modal.restoreVersionModalId"
-          data-testid="wiki-restore-version-button"
-        >
-          {{ $options.i18n.restoreText }}
-        </gl-button>
+          <template v-if="!isEditingPath" #actions>
+            <gl-button
+              v-if="showCreateFromTemplateButton"
+              v-gl-tooltip.html
+              :title="$options.i18n.createFromTemplateTitle"
+              data-testid="wiki-create-from-template-button"
+              :href="createFromTemplateUrl"
+            >
+              {{ $options.i18n.createFromTemplate }}
+            </gl-button>
 
-        <restore-version-modal :modal-id="$options.modal.restoreVersionModalId" />
+            <gl-button
+              v-if="showRestoreVersionButton"
+              v-gl-modal="$options.modal.restoreVersionModalId"
+              data-testid="wiki-restore-version-button"
+            >
+              {{ $options.i18n.restoreText }}
+            </gl-button>
 
-        <gl-button
-          v-if="showEditButton"
-          v-gl-tooltip.html
-          :title="editTooltip"
-          data-testid="wiki-edit-button"
-          @click="setEditingMode"
-        >
-          {{ $options.i18n.edit }}
-        </gl-button>
-        <gl-button
-          v-gl-tooltip.html
-          class="btn-icon"
-          :disabled="!wikiPage.id"
-          :title="subscribeItem.text"
-          data-testid="wiki-subscribe-button"
-          @click="toggleSubscribe"
-        >
-          <gl-icon
-            :name="subscribeItem.icon"
-            :class="{ '!gl-text-status-info': wikiPage.subscribed }"
-          />
-        </gl-button>
-        <wiki-more-dropdown />
-      </template>
-      <template v-if="lastVersion" #description>
-        <div class="wiki-last-version gl-leading-20" data-testid="wiki-page-last-version">
-          <gl-sprintf :message="$options.i18n.lastEdited">
-            <template #author>
-              <gl-link :href="authorUrl" class="gl-font-bold gl-text-default">{{
-                pageVersion.author_name
-              }}</gl-link>
-            </template>
-            <template #timeago>
-              <time-ago :time="pageVersion.authored_date" target="wiki-last-version" />
-            </template>
-          </gl-sprintf>
-        </div>
-      </template>
-    </page-heading>
+            <restore-version-modal :modal-id="$options.modal.restoreVersionModalId" />
+
+            <gl-button
+              v-if="showEditButton"
+              v-gl-tooltip.html
+              :title="editTooltip"
+              data-testid="wiki-edit-button"
+              @click="setEditingMode"
+            >
+              {{ $options.i18n.edit }}
+            </gl-button>
+
+            <gl-button
+              v-gl-tooltip.html
+              class="btn-icon"
+              :disabled="!wikiPage.id"
+              :title="subscribeItem.text"
+              data-testid="wiki-subscribe-button"
+              @click="toggleSubscribe"
+            >
+              <gl-icon
+                :name="subscribeItem.icon"
+                :class="{ '!gl-text-status-info': wikiPage.subscribed }"
+              />
+            </gl-button>
+
+            <wiki-more-dropdown />
+          </template>
+
+          <template v-if="lastVersion" #description>
+            <div class="wiki-last-version gl-leading-20" data-testid="wiki-page-last-version">
+              <gl-sprintf :message="$options.i18n.lastEdited">
+                <template #author>
+                  <gl-link :href="authorUrl" class="gl-font-bold gl-text-default">{{
+                    pageVersion.author_name
+                  }}</gl-link>
+                </template>
+                <template #timeago>
+                  <time-ago :time="pageVersion.authored_date" target="wiki-last-version" />
+                </template>
+              </gl-sprintf>
+            </div>
+          </template>
+        </page-heading>
+      </div>
+    </gl-intersection-observer>
+
+    <wiki-sticky-header
+      :is-sticky-header-showing="isStickyHeaderVisible"
+      :page-heading="pageHeadingComputed"
+      :show-edit-button="Boolean(showEditButton)"
+      :wiki-page="wikiPage"
+      @edit="setEditingMode"
+      @toggle-subscribe="toggleSubscribe"
+    />
   </div>
 </template>

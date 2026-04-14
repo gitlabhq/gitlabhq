@@ -12,7 +12,7 @@ module Terraform
     self.locking_column = :activerecord_lock_version
 
     belongs_to :project
-    belongs_to :locked_by_user, class_name: 'User'
+    belongs_to :locked_by_user, class_name: 'User', optional: true
 
     has_many :versions,
       class_name: 'Terraform::StateVersion',

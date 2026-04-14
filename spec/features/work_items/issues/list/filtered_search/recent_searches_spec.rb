@@ -13,18 +13,13 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   let(:project_1_local_storage_key) { "#{project_1.full_path}-issue-recent-searches" }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     # Visit any fast-loading page so we can clear local storage without a DOM exception
     visit '/404'
     remove_recent_searches
   end
 
   it 'searching adds to recent searches' do
-    visit project_issues_path(project_1)
+    visit project_work_items_path(project_1)
 
     submit_then_clear_search 'foo'
     submit_then_clear_search 'bar'
@@ -35,8 +30,8 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   end
 
   it 'visiting URL with search params adds to recent searches' do
-    visit project_issues_path(project_1, label_name: 'foo', search: 'bar')
-    visit project_issues_path(project_1, label_name: 'qux', search: 'garply')
+    visit project_work_items_path(project_1, label_name: 'foo', search: 'bar')
+    visit project_work_items_path(project_1, label_name: 'qux', search: 'garply')
 
     click_button 'Toggle search history'
 
@@ -47,7 +42,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   it 'saved recent searches are restored last on the list' do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"saved1"}}],[{"type":"filtered-search-term","value":{"data":"saved2"}}]]')
 
-    visit project_issues_path(project_1, search: 'foo')
+    visit project_work_items_path(project_1, search: 'foo')
     click_button 'Toggle search history'
 
     expect_recent_searches_history_item 'foo'
@@ -56,12 +51,12 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   end
 
   it 'searches are scoped to projects' do
-    visit project_issues_path(project_1)
+    visit project_work_items_path(project_1)
 
     submit_then_clear_search 'foo'
     submit_then_clear_search 'bar'
 
-    visit project_issues_path(project_2)
+    visit project_work_items_path(project_2)
 
     submit_then_clear_search 'more'
     submit_then_clear_search 'things'
@@ -73,7 +68,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
   it 'clicking item fills search input' do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"foo"}}],[{"type":"filtered-search-term","value":{"data":"bar"}}]]')
-    visit project_issues_path(project_1)
+    visit project_work_items_path(project_1)
 
     click_button 'Toggle search history'
     click_button 'foo'
@@ -83,7 +78,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
   it 'clear recent searches button, clears recent searches' do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"foo"}}]]')
-    visit project_issues_path(project_1)
+    visit project_work_items_path(project_1)
 
     click_button 'Toggle search history'
 
@@ -97,7 +92,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
   it 'shows flash error when failed to parse saved history' do
     set_recent_searches(project_1_local_storage_key, 'fail')
-    visit project_issues_path(project_1)
+    visit project_work_items_path(project_1)
 
     expect(page).to have_text 'An error occurred while parsing recent searches'
   end

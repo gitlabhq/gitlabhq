@@ -7,8 +7,8 @@ fragment WorkItemTypesConfigurationBase on WorkItemType {
   canUserCreateItems
   iconName
   isConfigurable
-  isFilterableBoardView @gl_introduced(version: "18.10.0")
-  isFilterableListView @gl_introduced(version: "18.10.0")
+  isFilterableBoardView
+  isFilterableListView
   isGroupWorkItemType
   isIncidentManagement
   isServiceDesk

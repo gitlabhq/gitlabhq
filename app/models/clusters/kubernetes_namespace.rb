@@ -11,6 +11,9 @@ module Clusters
     belongs_to :cluster, class_name: 'Clusters::Cluster'
     belongs_to :project, class_name: '::Project'
     belongs_to :environment, optional: true
+    belongs_to :organization, class_name: 'Organizations::Organization', optional: true
+    belongs_to :group, optional: true
+    belongs_to :sharding_project, class_name: '::Project', optional: true
     has_one :platform_kubernetes, through: :cluster
 
     validates :namespace, presence: true

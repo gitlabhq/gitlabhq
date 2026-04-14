@@ -1,4 +1,4 @@
-import { keyBy } from 'lodash';
+import { keyBy } from 'lodash-es';
 import { s__, __ } from '~/locale';
 
 export const RESOURCE_DEPLOYMENTS = { value: 'DEPLOYMENTS', text: s__('JobToken|Deployments') };

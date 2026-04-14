@@ -30,7 +30,7 @@ Prerequisites:
 
 ## List all feature flag user lists for a project
 
-Gets all feature flag user lists for the requested project.
+Lists all feature flag user lists for a specified project.
 
 ```plaintext
 GET /projects/:id/feature_flags_user_lists
@@ -76,7 +76,7 @@ Example response:
 
 ## Create a feature flag user list
 
-Creates a feature flag user list.
+Creates a feature flag user list in a specified project.
 
 ```plaintext
 POST /projects/:id/feature_flags_user_lists
@@ -115,9 +115,9 @@ Example response:
 }
 ```
 
-## Get a feature flag user list
+## Retrieve a feature flag user list
 
-Gets a feature flag user list.
+Retrieves the specified feature flag user list.
 
 ```plaintext
 GET /projects/:id/feature_flags_user_lists/:iid
@@ -152,7 +152,7 @@ Example response:
 
 ## Update a feature flag user list
 
-Updates a feature flag user list.
+Updates a specified feature flag user list.
 
 ```plaintext
 PUT /projects/:id/feature_flags_user_lists/:iid
@@ -193,7 +193,7 @@ Example response:
 
 ## Delete feature flag user list
 
-Deletes a feature flag user list.
+Deletes a specified feature flag user list.
 
 ```plaintext
 DELETE /projects/:id/feature_flags_user_lists/:iid

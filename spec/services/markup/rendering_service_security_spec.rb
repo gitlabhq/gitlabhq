@@ -290,7 +290,7 @@ RSpec.describe Markup::RenderingService, feature_category: :markdown do
         # https://orgmode.org/worg/org-contrib/babel/intro.html#source-code-blocks
         input = '#+BEGIN_SRC ruby :var data=/etc/hosts'
         output = render(input, file_name, context)
-        expect(output).to eq("<pre lang=\"ruby\">\n</pre>\n")
+        expect(output).to eq_html("<pre lang=\"ruby\">\n</pre>\n")
       end
 
       it 'does not allow reading arbitrary files via ditaa blocks' do

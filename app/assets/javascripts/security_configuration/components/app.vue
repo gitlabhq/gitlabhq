@@ -11,10 +11,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { logError } from '~/lib/logger';
-import { captureException } from '~/sentry/sentry_browser_wrapper';
 import ScanProfileConfiguration from 'ee_else_ce/security_configuration/components/scan_profiles/scan_profile_configuration.vue';
-import projectMergeRequestsEnabledQuery from '../graphql/project_merge_requests_enabled.query.graphql';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -111,31 +108,16 @@ export default {
       type: Boolean,
       required: true,
     },
-  },
-  apollo: {
     mergeRequestsEnabled: {
-      query: projectMergeRequestsEnabledQuery,
-      variables() {
-        return {
-          projectFullPath: this.projectFullPath,
-        };
-      },
-      update: (data) => data.project?.mergeRequestsEnabled ?? true,
-      skip() {
-        return !this.projectFullPath;
-      },
-      error(error) {
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        logError('Failed to fetch merge requests enabled status', error);
-        captureException(error);
-      },
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
-      mergeRequestsEnabled: true,
     };
   },
   computed: {

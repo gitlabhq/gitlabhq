@@ -50,6 +50,9 @@ export default {
         });
       },
       error(error) {
+        if (error.message?.includes('Global search is not enabled for this scope')) {
+          return;
+        }
         Sentry.captureException(error);
       },
     },

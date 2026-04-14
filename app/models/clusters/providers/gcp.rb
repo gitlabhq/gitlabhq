@@ -9,6 +9,9 @@ module Clusters
       self.table_name = 'cluster_providers_gcp'
 
       belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Clusters::Cluster'
+      belongs_to :organization, class_name: 'Organizations::Organization', optional: true
+      belongs_to :group, optional: true
+      belongs_to :project, optional: true
 
       attribute :zone, default: 'us-central1-a'
       attribute :num_nodes, default: 3

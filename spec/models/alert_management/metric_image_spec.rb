@@ -7,6 +7,7 @@ RSpec.describe AlertManagement::MetricImage do
 
   describe 'associations' do
     it { is_expected.to belong_to(:alert) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do

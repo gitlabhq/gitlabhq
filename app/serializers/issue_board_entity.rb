@@ -60,7 +60,7 @@ class IssueBoardEntity < Grape::Entity
     as: :type,
     format_with: :upcase,
     documentation: { type: "String",
-                     desc: "One of #{::WorkItems::TypesFramework::Provider.new.unfiltered_base_types_for_issue_type}" }
+                     desc: "One of #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues}" }
 end
 
 IssueBoardEntity.prepend_mod_with('IssueBoardEntity')

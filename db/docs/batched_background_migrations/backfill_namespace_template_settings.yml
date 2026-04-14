@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillNamespaceTemplateSettings
+description: Backfill namespace_template_settings for existing namespaces
+feature_category: groups_and_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228722
+milestone: '18.11'
+queued_migration_version: 20260324183700
+finalized_by:

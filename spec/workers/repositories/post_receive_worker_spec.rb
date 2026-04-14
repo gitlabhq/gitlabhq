@@ -598,4 +598,20 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
 
     it_behaves_like 'an idempotent worker'
   end
+
+  context 'with an unknown repo type' do
+    let(:repo_type) do
+      instance_double(Gitlab::Repositories::RepoType, wiki?: false, project?: false, snippet?: false, design?: false)
+    end
+
+    before do
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, project, repo_type])
+    end
+
+    it 'does not call geo_log_update_event' do
+      expect(worker).not_to receive(:geo_log_update_event)
+
+      perform
+    end
+  end
 end

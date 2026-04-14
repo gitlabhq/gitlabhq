@@ -108,7 +108,7 @@ export default {
     shouldPreloadBlame: {
       handler(shouldPreload) {
         if (!shouldPreload) return;
-        this.requestBlameInfo(this.renderedChunks[0]);
+        this.requestBlameInfoForRenderedChunks();
       },
     },
     showBlame: {
@@ -121,13 +121,12 @@ export default {
             if (!this.loadingChunks.includes(chunkIndex)) this.loadingChunks.push(chunkIndex);
           });
           await this.updateChunkOffsets(this.renderedChunks);
+          this.requestBlameInfoForRenderedChunks();
         } else {
           this.isBlameLoading = false;
           this.loadingChunks = [];
           this.blameData = [];
         }
-
-        this.requestBlameInfo(this.renderedChunks[0]);
       },
       immediate: true,
     },
@@ -168,6 +167,15 @@ export default {
     this.processPendingChunks.cancel?.();
   },
   methods: {
+    requestBlameInfoForRenderedChunks() {
+      this.renderedChunks.forEach(async (chunkIndex) => {
+        const chunk = this.chunks[chunkIndex];
+        if (chunk && !hasBlameDataForChunk(this.blameData, chunk)) {
+          await this.requestBlameInfo(chunkIndex);
+          this.loadingChunks = this.loadingChunks.filter((id) => id !== chunkIndex);
+        }
+      });
+    },
     async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
       if (this.renderedChunks.includes(chunkIndex)) return;
 

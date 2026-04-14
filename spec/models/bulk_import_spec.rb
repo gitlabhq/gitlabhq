@@ -24,7 +24,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     it { is_expected.to validate_presence_of(:source_type) }
     it { is_expected.to validate_presence_of(:status) }
 
-    it { is_expected.to define_enum_for(:source_type).with_values(%i[gitlab]) }
+    it { is_expected.to define_enum_for(:source_type).with_values(%i[gitlab offline_export]) }
   end
 
   describe 'scopes' do

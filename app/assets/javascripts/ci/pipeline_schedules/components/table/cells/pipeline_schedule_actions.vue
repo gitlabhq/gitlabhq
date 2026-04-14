@@ -11,6 +11,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'PipelineScheduleActions',
   i18n,
   components: {
     GlButton,

@@ -452,8 +452,15 @@ export const workItemWithEpicParentQueryResponse = {
           hasChildren: true,
           parent: {
             id: 'gid://gitlab/WorkItem/3',
+            iid: '130',
             title: 'Work Item Epic',
+            confidential: false,
             webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/130',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'gitlab-org',
+              __typename: 'Group',
+            },
             __typename: 'WorkItem',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/6',
@@ -785,8 +792,73 @@ export const mockParent = {
       id: 'gid://gitlab/WorkItems::Type/1',
       name: 'Issue',
       iconName: 'work-item-issue',
+      __typename: 'WorkItemType',
     },
+    __typename: 'WorkItem',
   },
+};
+
+export const mockParentWorkItem = {
+  id: 'gid://gitlab/WorkItem/100',
+  iid: '100',
+  title: 'Parent Work Item',
+  confidential: false,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/100',
+  reference: 'gitlab-org/gitlab-test#100',
+  namespace: {
+    id: 'gid://gitlab/Group/1',
+    fullPath: 'gitlab-org/gitlab-test',
+    __typename: 'Project',
+  },
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Issue',
+    iconName: 'work-item-issue',
+    __typename: 'WorkItemType',
+  },
+  __typename: 'WorkItem',
+};
+
+export const mockParentIssue = {
+  id: 'gid://gitlab/WorkItem/515',
+  iid: '515',
+  title: 'Parent Work Item',
+  confidential: false,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/515',
+  reference: 'test-project-path#515',
+  namespace: {
+    id: 'gid://gitlab/Project/1',
+    fullPath: 'test-project-path',
+    __typename: 'Project',
+  },
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Issue',
+    iconName: 'work-item-issue',
+    __typename: 'WorkItemType',
+  },
+  __typename: 'WorkItem',
+};
+
+export const mockParentObjective = {
+  id: 'gid://gitlab/WorkItem/515',
+  iid: '515',
+  title: 'Parent Objective',
+  confidential: false,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/515',
+  reference: 'test-project-path#515',
+  namespace: {
+    id: 'gid://gitlab/Project/1',
+    fullPath: 'test-project-path',
+    __typename: 'Project',
+  },
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'work-item-objective',
+    __typename: 'WorkItemType',
+  },
+  __typename: 'WorkItem',
 };
 
 export const mockParticipantWidget = {
@@ -1791,6 +1863,41 @@ export const customFieldsWidgetResponseFactory = (customFieldValues = null) => {
   };
 };
 
+export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => ({
+  __typename: 'WorkItemFeatures',
+  description: {
+    description: '',
+    descriptionHtml: '',
+    lastEditedAt: null,
+    lastEditedBy: null,
+    taskCompletionStatus: null,
+  },
+  assignees: {
+    allowsMultipleAssignees: true,
+    assignees: { nodes: [], __typename: 'UserCoreConnection' },
+  },
+  awardEmoji: { upvotes: 0, downvotes: 0 },
+  milestone: { milestone: null },
+  startAndDueDate: { startDate: null, dueDate: null, rollUp: false, isFixed: false },
+  timeTracking: { humanReadableAttributes: { timeEstimate: '' } },
+  notes: { discussionLocked, __typename: 'WorkItemWidgetNotes' },
+  development: { closingMergeRequests: { count: 0 } },
+  hierarchy: { parent: null },
+  healthStatus: { healthStatus: null },
+  weight: { weight: null },
+  linkedItems: { blockedByCount: 0, blockingCount: 0 },
+  iteration: { iteration: null },
+  crmContacts: {
+    contactsAvailable: false,
+    contacts: {
+      nodes: [],
+      __typename: 'CustomerRelationsContactConnection',
+    },
+    __typename: 'WorkItemWidgetCrmContacts',
+  },
+  status: null,
+});
+
 export const workItemResponseFactory = ({
   iid = '1',
   id = 'gid://gitlab/WorkItem/1',
@@ -1851,7 +1958,6 @@ export const workItemResponseFactory = ({
   blockedByCount = mockEmptyLinkedItems.blockedByCount,
   blockingCount = mockEmptyLinkedItems.blockingCount,
   color = '#1068bf',
-  editableWeightWidget = true,
   hasParent = false,
   healthStatus = 'onTrack',
   rolledUpHealthStatus = [],
@@ -1873,6 +1979,7 @@ export const workItemResponseFactory = ({
   hidden = false,
   imported = false,
   archived = false,
+  features = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1975,11 +2082,6 @@ export const workItemResponseFactory = ({
               weight,
               rolledUpWeight,
               rolledUpCompletedWeight,
-              widgetDefinition: {
-                editable: editableWeightWidget,
-                rollUp: !editableWeightWidget,
-                __typename: 'WorkItemWidgetDefinitionWeight',
-              },
               __typename: 'WorkItemWidgetWeight',
             }
           : { type: 'MOCK TYPE' },
@@ -2253,6 +2355,7 @@ export const workItemResponseFactory = ({
             }
           : { type: 'MOCK TYPE' },
       ],
+      ...(features && { features: { ...mockWorkItemFeaturesData(), ...features } }),
     },
   },
 });
@@ -2312,6 +2415,7 @@ export const createWorkItemMutationResponse = {
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: '2022-08-08T12:32:54Z',
         closedAt: null,
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         userDiscussionsCount: 0,
@@ -2627,7 +2731,16 @@ export const confidentialWorkItemTask = {
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
-  widgets: [workItemObjectiveMetadataWidgets.LINKED_ITEMS],
+  widgets: [
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+    {
+      type: 'HIERARCHY',
+      hasChildren: false,
+      rolledUpCountsByType: [],
+      parent: mockParentIssue,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
   __typename: 'WorkItem',
 };
 
@@ -2653,7 +2766,16 @@ export const closedWorkItemTask = {
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: '2022-08-12T13:07:52Z',
   webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
-  widgets: [workItemObjectiveMetadataWidgets.LINKED_ITEMS],
+  widgets: [
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+    {
+      type: 'HIERARCHY',
+      hasChildren: false,
+      rolledUpCountsByType: [],
+      parent: mockParentIssue,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
   __typename: 'WorkItem',
 };
 
@@ -2687,6 +2809,7 @@ export const workItemTask = {
       type: 'HIERARCHY',
       hasChildren: false,
       rolledUpCountsByType: [],
+      parent: mockParentIssue,
       __typename: 'WorkItemWidgetHierarchy',
     },
   ],
@@ -2807,6 +2930,7 @@ export const childrenWorkItemsObjectives = [
         type: 'HIERARCHY',
         hasChildren: false,
         rolledUpCountsByType: [],
+        parent: mockParentObjective,
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -2834,6 +2958,7 @@ export const childrenWorkItemsObjectives = [
         type: 'HIERARCHY',
         hasChildren: false,
         rolledUpCountsByType: [],
+        parent: mockParentObjective,
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -3148,7 +3273,7 @@ export const mockHierarchyChildren = [
     },
     namespace: {
       __typename: 'Project',
-      id: '1',
+      id: '2',
       fullPath: 'test-objective-project-path',
       name: 'Project name',
     },
@@ -3164,6 +3289,25 @@ export const mockHierarchyChildren = [
         type: 'HIERARCHY',
         hasChildren: true,
         rolledUpCountsByType: [],
+        parent: {
+          id: 'gid://gitlab/WorkItem/2',
+          iid: '2',
+          title: 'New title',
+          confidential: false,
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
+          namespace: {
+            id: '1',
+            fullPath: 'test-project-path',
+            __typename: 'Project',
+          },
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/2411',
+            name: 'Objective',
+            iconName: 'work-item-objective',
+            __typename: 'WorkItemType',
+          },
+          __typename: 'WorkItem',
+        },
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -3456,7 +3600,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
                 },
                 namespace: {
                   __typename: 'Project',
-                  id: '1',
+                  id: '2',
                   fullPath: 'test-objective-project-path',
                   name: 'Project name',
                 },
@@ -3472,6 +3616,25 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
                     type: 'HIERARCHY',
                     hasChildren: true,
                     rolledUpCountsByType: [],
+                    parent: {
+                      id: 'gid://gitlab/WorkItem/2',
+                      iid: '2',
+                      title: 'New title',
+                      confidential: false,
+                      webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
+                      namespace: {
+                        id: '1',
+                        fullPath: 'test-project-path',
+                        __typename: 'Project',
+                      },
+                      workItemType: {
+                        id: 'gid://gitlab/WorkItems::Type/2411',
+                        name: 'Objective',
+                        iconName: 'work-item-objective',
+                        __typename: 'WorkItemType',
+                      },
+                      __typename: 'WorkItem',
+                    },
                     __typename: 'WorkItemWidgetHierarchy',
                   },
                 ],
@@ -4202,6 +4365,21 @@ export const mockAncestorWidgetResponse = {
                       hasParent: true,
                       parent: {
                         id: 'gid://gitlab/WorkItem/663',
+                        iid: '663',
+                        title: 'Parent',
+                        confidential: false,
+                        webUrl: '/path/to/work_item',
+                        namespace: {
+                          id: 'gid://gitlab/Project/1',
+                          fullPath: 'test-project-path',
+                          __typename: 'Project',
+                        },
+                        workItemType: {
+                          id: 'gid://gitlab/WorkItems::Type/1',
+                          name: 'Issue',
+                          iconName: 'work-item-issue',
+                          __typename: 'WorkItemType',
+                        },
                         __typename: 'WorkItem',
                       },
                       __typename: 'WorkItemWidgetHierarchy',
@@ -5813,6 +5991,7 @@ export const workItemsQueryResponse = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
+            titleHtml: 'a group level work item',
             updatedAt: '',
             webUrl: 'web/url',
             userDiscussionsCount: 0,
@@ -5868,6 +6047,7 @@ export const workItemsQueryResponse = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
+            titleHtml: 'a group level work item',
             updatedAt: '',
             webUrl: 'web/url',
             userDiscussionsCount: 0,
@@ -5945,6 +6125,7 @@ export const workItemsWithSubChildQueryResponse = {
             reference: 'javascriptjs/js#103',
             state: 'OPEN',
             title: 'a group level work item 103',
+            titleHtml: 'a group level work item 103',
             updatedAt: '',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
@@ -5955,6 +6136,22 @@ export const workItemsWithSubChildQueryResponse = {
                 hasChildren: false,
                 parent: {
                   id: 'gid://gitlab/WorkItem/102',
+                  iid: '102',
+                  title: 'a group level work item 102',
+                  confidential: false,
+                  webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/34',
+                  namespace: {
+                    id: 'full-path-epic-id',
+                    fullPath: 'full-path',
+                    __typename: 'Group',
+                  },
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/5',
+                    name: 'Issue',
+                    iconName: 'work-item-issue',
+                    __typename: 'WorkItemType',
+                  },
+                  __typename: 'WorkItem',
                 },
                 hasParent: true,
                 rolledUpCountsByType: [],
@@ -5994,6 +6191,7 @@ export const workItemsWithSubChildQueryResponse = {
             reference: 'javascriptjs/js#102',
             state: 'OPEN',
             title: 'a group level work item 102',
+            titleHtml: 'a group level work item 102',
             updatedAt: '',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/34',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/34',
@@ -6004,6 +6202,22 @@ export const workItemsWithSubChildQueryResponse = {
                 hasChildren: false,
                 parent: {
                   id: 'gid://gitlab/WorkItem/1',
+                  iid: '1',
+                  title: 'Parent work item',
+                  confidential: false,
+                  webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/1',
+                  namespace: {
+                    id: 'parent-work-item-ns-1',
+                    fullPath: 'full-path',
+                    __typename: 'Group',
+                  },
+                  workItemType: {
+                    id: 'gid://gitlab/WorkItems::Type/5',
+                    name: 'Issue',
+                    iconName: 'work-item-issue',
+                    __typename: 'WorkItemType',
+                  },
+                  __typename: 'WorkItem',
                 },
                 hasParent: true,
                 rolledUpCountsByType: [],
@@ -6064,7 +6278,8 @@ export const workItemsQueryResponseNoLabels = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
-            updatedAt: '',
+            titleHtml: 'a group level work item',
+            updatedAt: '2020-01-24T12:34:56Z',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
             userDiscussionsCount: 0,
@@ -6107,7 +6322,8 @@ export const workItemsQueryResponseNoLabels = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
-            updatedAt: '',
+            titleHtml: 'a group level work item',
+            updatedAt: '2020-01-23T10:34:56Z',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
             userDiscussionsCount: 0,
@@ -6171,7 +6387,8 @@ export const workItemsQueryResponseNoAssignees = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
-            updatedAt: '',
+            titleHtml: 'a group level work item',
+            updatedAt: '2020-01-24T12:34:56Z',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/2',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/2',
             userDiscussionsCount: 0,
@@ -6224,7 +6441,8 @@ export const workItemsQueryResponseNoAssignees = {
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',
-            updatedAt: '',
+            titleHtml: 'a group level work item',
+            updatedAt: '2020-01-23T10:34:56Z',
             webPath: '/toolbox/gitlab-smoke-tests/-/issues/3',
             webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/3',
             userDiscussionsCount: 0,
@@ -6284,7 +6502,8 @@ export const combinedQueryResultExample = [
     reference: 'javascriptjs/js#23',
     state: 'OPEN',
     title: 'a group level work item',
-    updatedAt: '',
+    titleHtml: 'a group level work item',
+    updatedAt: '2020-01-24T12:34:56Z',
     webPath: '/toolbox/gitlab-smoke-tests/-/issues/32',
     webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/32',
     userDiscussionsCount: 0,
@@ -6344,7 +6563,8 @@ export const combinedQueryResultExample = [
     reference: 'javascriptjs/js#23',
     state: 'OPEN',
     title: 'a group level work item',
-    updatedAt: '',
+    titleHtml: 'a group level work item',
+    updatedAt: '2020-01-23T10:34:56Z',
     webPath: '/toolbox/gitlab-smoke-tests/-/issues/33',
     webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests/-/issues/33',
     userDiscussionsCount: 0,
@@ -6555,11 +6775,6 @@ export const namespaceProjectsList = {
             avatarUrl: null,
             nameWithNamespace: 'Group A / Example project A',
             fullPath: 'group-a/example-project-a',
-            namespace: {
-              id: 'gid://gitlab/Group/1',
-              name: 'Group A',
-              __typename: 'Namespace',
-            },
             __typename: 'Project',
           },
           {
@@ -6568,11 +6783,6 @@ export const namespaceProjectsList = {
             avatarUrl: null,
             nameWithNamespace: 'Group A / Example project B',
             fullPath: 'group-a/example-project-b',
-            namespace: {
-              id: 'gid://gitlab/Group/1',
-              name: 'Group A',
-              __typename: 'Namespace',
-            },
             __typename: 'Project',
           },
           {
@@ -6581,11 +6791,6 @@ export const namespaceProjectsList = {
             avatarUrl: null,
             nameWithNamespace: 'Group A / Example project C',
             fullPath: 'group-a/example-project-c',
-            namespace: {
-              id: 'gid://gitlab/Group/1',
-              name: 'Group A',
-              __typename: 'Namespace',
-            },
             __typename: 'Project',
           },
         ],
@@ -6695,7 +6900,7 @@ export const namespaceGroupsList = {
       id: 'gid://gitlab/Group/33',
       name: 'Group A',
       avatarUrl: 'http://example.com/avatar-url',
-      path: 'group-a',
+      fullName: 'Group A',
       fullPath: 'group-a',
       descendantGroups: {
         nodes: [
@@ -6703,7 +6908,7 @@ export const namespaceGroupsList = {
             id: 'gid://gitlab/Group/99',
             name: 'Group B',
             avatarUrl: null,
-            path: 'group-b',
+            fullName: 'Group A / Group B',
             fullPath: 'group-a/group-b',
             __typename: 'Group',
           },
@@ -6711,7 +6916,7 @@ export const namespaceGroupsList = {
             id: 'gid://gitlab/Group/97',
             name: 'Group C',
             avatarUrl: null,
-            path: 'group-c',
+            fullName: 'Group A / Group C',
             fullPath: 'group-a/group-c',
             __typename: 'Group',
           },
@@ -6941,11 +7146,6 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
             weight: 2,
             rolledUpWeight: 0,
             rolledUpCompletedWeight: 0,
-            widgetDefinition: {
-              editable: true,
-              rollUp: false,
-              __typename: 'WorkItemWidgetDefinitionWeight',
-            },
             __typename: 'WorkItemWidgetWeight',
           },
           {
@@ -6965,6 +7165,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
 export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
   const base = createWorkItemQueryResponse(widgets);
   base.data.namespace.workItem.features = {
+    ...mockWorkItemFeaturesData(),
     description: {
       description: '',
       descriptionHtml: '',
@@ -6980,38 +7181,6 @@ export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
         __typename: 'TaskCompletionStatus',
       },
     },
-    assignees: {
-      allowsMultipleAssignees: true,
-      assignees: {
-        nodes: [],
-        __typename: 'UserCoreConnection',
-      },
-    },
-    awardEmoji: {
-      upvotes: 0,
-      downvotes: 0,
-    },
-    milestone: {
-      milestone: null,
-    },
-    startAndDueDate: {
-      startDate: null,
-      dueDate: null,
-    },
-    timeTracking: {
-      humanReadableAttributes: {
-        timeEstimate: '',
-      },
-    },
-    development: {
-      closingMergeRequests: {
-        count: 0,
-      },
-    },
-    hierarchy: {
-      parent: null,
-    },
-    __typename: 'WorkItemFeatures',
   };
   return base;
 };
@@ -7580,7 +7749,6 @@ export const mockCreateWorkItemDraftData = {
           weight: 5,
           rolledUpWeight: null,
           rolledUpCompletedWeight: null,
-          widgetDefinition: { editable: false, rollUp: true },
         },
         {
           __typename: 'WorkItemWidgetStartAndDueDate',
@@ -7751,8 +7919,6 @@ export const mockNewWorkItemCache = {
     {
       __typename: 'WorkItemWidgetDefinitionWeight',
       type: 'WEIGHT',
-      editable: false,
-      rollUp: true,
     },
     {
       __typename: 'WorkItemWidgetDefinitionCustomFields',
@@ -7798,7 +7964,6 @@ export const restoredDraftDataWidgets = [
     weight: 5,
     rolledUpWeight: null,
     rolledUpCompletedWeight: null,
-    widgetDefinition: { editable: false, rollUp: true },
     __typename: 'WorkItemWidgetWeight',
   },
   {
@@ -7892,10 +8057,6 @@ export const restoredDraftDataWidgetsEmpty = [
     weight: null,
     rolledUpWeight: null,
     rolledUpCompletedWeight: null,
-    widgetDefinition: {
-      editable: false,
-      rollUp: true,
-    },
     __typename: 'WorkItemWidgetWeight',
   },
   {
@@ -8151,8 +8312,6 @@ export const namespaceWorkItemTypesQueryResponse = {
               },
               {
                 type: 'WEIGHT',
-                editable: false,
-                rollUp: true,
                 __typename: 'WorkItemWidgetDefinitionWeight',
               },
             ],
@@ -8401,8 +8560,6 @@ export const namespaceWorkItemTypesQueryResponse = {
               },
               {
                 type: 'WEIGHT',
-                editable: true,
-                rollUp: false,
                 __typename: 'WorkItemWidgetDefinitionWeight',
               },
               {
@@ -8877,8 +9034,6 @@ export const namespaceWorkItemTypesQueryResponse = {
               },
               {
                 type: 'WEIGHT',
-                editable: true,
-                rollUp: false,
                 __typename: 'WorkItemWidgetDefinitionWeight',
               },
               {
@@ -9124,8 +9279,6 @@ export const namespaceWorkItemTypesQueryResponse = {
               },
               {
                 type: 'WEIGHT',
-                editable: true,
-                rollUp: false,
                 __typename: 'WorkItemWidgetDefinitionWeight',
               },
             ],
@@ -9384,8 +9537,6 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
               },
               {
                 type: 'WEIGHT',
-                editable: true,
-                rollUp: false,
                 __typename: 'WorkItemWidgetDefinitionWeight',
               },
             ],
@@ -9810,6 +9961,7 @@ export const mockMetadataQueryResponse = {
     namespace: {
       __typename: 'Group',
       id: 'gid://gitlab/Group/15',
+      name: 'Test',
       subscribedSavedViewLimit: 5,
       availableFeatures: {
         __typename: 'AvailableFeatures',
@@ -10858,6 +11010,7 @@ export const workItemsQueryResponseWithFeatures = {
             id: 'gid://gitlab/WorkItem/1',
             iid: '1',
             title: 'Test item 1',
+            titleHtml: 'Test item 1',
             state: 'OPEN',
             createdAt: '2022-08-03T12:41:54Z',
             updatedAt: '2022-08-08T12:32:54Z',
@@ -10956,6 +11109,7 @@ export const workItemsQueryResponseWithFeatures = {
             id: 'gid://gitlab/WorkItem/2',
             iid: '2',
             title: 'Test item 2',
+            titleHtml: 'Test item 2',
             state: 'CLOSED',
             createdAt: '2022-08-03T12:41:54Z',
             updatedAt: '2022-08-08T12:32:54Z',

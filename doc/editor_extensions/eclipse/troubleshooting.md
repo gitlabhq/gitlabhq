@@ -9,6 +9,7 @@ title: Troubleshooting Eclipse
 {{< details >}}
 
 - Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -41,39 +42,43 @@ The Workspace log file, named `.log` is located in the directory `<your-eclipse-
 
 To enable GitLab Language Server debug logs:
 
-1. In your IDE, select **Eclipse** > **Settings**.
-1. In the left sidebar, select **GitLab**.
+1. In your IDE, open preferences:
+   - For macOS, select **Eclipse** > **Settings**.
+   - For Windows or Linux, select **Window** > **Preferences**.
+1. In the left sidebar, select **GitLab Duo**.
 1. In **Language Server Log Level**, enter `debug`.
 1. Select **Apply and Close**.
 
 The debug logs are available in the `language_server.log` file. To view this file, either:
 
-- Go to the directory `/Users/<user>/eclipse/<eclipse-version>/Eclipse.app/Contents/MacOS/.gitlab_plugin`, replacing `<user>` and `<eclipse-version>` with the appropriate values.
-- Open the [Error logs](#review-the-error-log). Search for the log `Language server logs saved to: <file>.` where `<file>` is the absolute path to the `language_server.log` file.
+- Go to the following directory, replacing `<user>` and `<eclipse-version>` with the appropriate
+  values:
+  - For macOS: `/Users/<user>/eclipse-workspace/.metadata/.plugins/com.gitlab.eclipse.gitlab-eclipse-plugin`
+  - For Windows: `<drive>:\Users\<user>\eclipse-workspace\.metadata\.plugins\com.gitlab.eclipse.gitlab-eclipse-plugin`
+  - For Linux: `/home/<user>/eclipse-workspace/.metadata/.plugins/com.gitlab.eclipse.gitlab-eclipse-plugin`
+- Open the **Error Log**. Search for the log `Language server logs saved to: <file>.` where `<file>` is
+  the absolute path to the `language_server.log` file.
 
 ## Required information for support
 
 When creating a support request, provide the following information:
 
 1. Your current GitLab for Eclipse plugin version.
-   1. Open the `About Eclipse IDE` dialog.
-      - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
-      - On MacOS, in your IDE, select **Eclipse** > **About Eclipse IDE**.
-
-   1. On the dialog, select **Installation details**.
+   1. Open the `About Eclipse` dialog in your IDE.
+      - For macOS, select **Eclipse** > **About Eclipse**.
+      - For Windows or Linux, select **Help** > **About Eclipse IDE**.
+   1. Select **Installation details**.
    1. Locate **GitLab for Eclipse** and copy the **Version** value.
-
 1. Your Eclipse version.
-   1. Open the `About Eclipse IDE` dialog.
-      - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
-      - On MacOS, in your IDE, select **Eclipse** > **About Eclipse IDE**.
-
+   1. Open the `About Eclipse` dialog in your IDE.
+      - For macOS, select **Eclipse** > **About Eclipse**.
+      - For Windows or Linux, select **Help** > **About Eclipse IDE**.
 1. Your operating system.
 1. Are you using a GitLab.com, GitLab Self-Managed, or GitLab Dedicated instance?
 1. Are you using a proxy?
 1. Are you using a self-signed certificate?
-1. The [workspace logs](#locate-the-workspace-log-file).
-1. The [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
+1. The workspace logs.
+1. The Language Server debug logs.
 1. If applicable, a video or a screenshot of the issue.
 1. If applicable, the steps to reproduce the issue.
 1. If applicable, the attempted steps to resolve the issue.
@@ -92,9 +97,9 @@ To do this:
 1. Select **GitLab Language Server** to expand the section.
 1. Select **HTTP Agent Options** to expand it.
 1. Either:
-   - Select an option **Pass CA certificate from Duo to the Language Server**.
-   - In **Certificate authority (CA)**, specify the path to your `.pem` file with CA certificates.
-1. Restart your IDE.
+   - Under **Language Server**, for **CA certificate**, select **Browse** and choose your `.pem` file with CA certificates.
+   - Under **Connection**, select the **Ignore Certificate Errors** checkbox.
+1. Select **Apply and Close**.
 
 ### Ignore certificate errors
 
@@ -120,9 +125,11 @@ Prerequisites:
 To do this:
 
 1. Refer to Eclipse documentation on SSL certificates.
-1. Go to your IDE's top menu bar and select **Settings**.
-1. In the left sidebar, select **Tools** > **GitLab Duo**.
-1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
-1. Enable the **Ignore certificate errors** option.
-1. Select **Verify setup**.
-1. Select **OK** or **Save**.
+1. In your IDE, open preferences:
+   - For macOS, select **Eclipse** > **Settings**.
+   - For Windows or Linux, select **Window** > **Preferences**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Confirm your default browser trusts the **URL to GitLab instance** value.
+1. Select the **Ignore certificate errors** checkbox.
+1. Select **Verify Setup**.
+1. Select **Apply and Close**.

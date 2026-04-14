@@ -17,7 +17,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
       expect(page).to have_css('.gl-badge', text: 'Open')
 
       within_testid(selector) do
-        click_button 'Close issue'
+        click_button 'Close Issue'
       end
 
       expect(page).to have_css('.gl-badge', text: 'Closed')
@@ -29,7 +29,7 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
       expect(page).to have_css('.gl-badge', text: 'Closed')
 
       within_testid(selector) do
-        click_button 'Reopen issue'
+        click_button 'Reopen Issue'
       end
 
       expect(page).to have_css('.gl-badge', text: 'Open')

@@ -1,0 +1,6 @@
+---
+name: read_branch_rule
+description: |-
+  Grants the ability to view branch rules for a project. Branch
+  rules define protections and policies for branches, such as
+  who can push or merge.

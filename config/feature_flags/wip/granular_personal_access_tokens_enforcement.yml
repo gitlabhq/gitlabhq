@@ -1,0 +1,10 @@
+---
+name: granular_personal_access_tokens_enforcement
+description: Allows administrators to set a date to enforce granular personal access tokens. When enforced, users can only create fine-grained personal access token after the specified enforcement date. Existing legacy personal access tokens can still be used.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20180
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228015
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594831
+milestone: '18.11'
+group: group::authorization
+type: wip
+default_enabled: false

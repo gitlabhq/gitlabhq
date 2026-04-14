@@ -2,6 +2,7 @@ import * as urlUtility from '~/lib/utils/url_utility';
 import * as localStorageAlert from '~/lib/utils/local_storage_alert';
 import { VARIANT_INFO } from '~/alert';
 import {
+  getUrlToExistingMergeRequest,
   buildBlobViewPath,
   redirectToExistingMergeRequest,
   redirectToCreateMergeRequest,
@@ -23,6 +24,7 @@ describe('blobEditRedirectUtils', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    window.gon = {};
   });
 
   describe('buildBlobViewPath', () => {
@@ -46,6 +48,44 @@ describe('blobEditRedirectUtils', () => {
       expect(result).toBe(
         'https://gitlab.com/group/subgroup/project/-/blob/main/app/models/user.rb',
       );
+    });
+
+    it('prepends relative_url_root when configured', () => {
+      window.gon = { relative_url_root: '/gitlab' };
+
+      const result = buildBlobViewPath(baseUrl, {
+        targetPath: '/namespace/project',
+        branch: 'feature-branch',
+        filePath: 'src/file.js',
+      });
+
+      expect(result).toBe(
+        'https://gitlab.com/gitlab/namespace/project/-/blob/feature-branch/src/file.js',
+      );
+    });
+  });
+
+  describe('getUrlToExistingMergeRequest', () => {
+    it('returns the url to the existing merge request', () => {
+      const url = getUrlToExistingMergeRequest({
+        url: 'https://gitlab.com/namespace/project/-/blob/main/file.js?from_merge_request_iid=42',
+        projectPath: '/namespace/project',
+        fromMergeRequestIid: '42',
+      });
+
+      expect(url).toBe('https://gitlab.com/namespace/project/-/merge_requests/42');
+    });
+
+    it('prepends relative_url_root when configured', () => {
+      window.gon = { relative_url_root: '/gitlab' };
+
+      const url = getUrlToExistingMergeRequest({
+        url: 'https://gitlab.com/namespace/project/-/blob/main/file.js?from_merge_request_iid=42',
+        projectPath: '/namespace/project',
+        fromMergeRequestIid: '42',
+      });
+
+      expect(url).toBe('https://gitlab.com/gitlab/namespace/project/-/merge_requests/42');
     });
   });
 
@@ -119,6 +159,22 @@ describe('blobEditRedirectUtils', () => {
       expect(calledUrl).toContain('merge_request%5Bsource_branch%5D=my-feature');
       expect(calledUrl).toContain('merge_request%5Btarget_project_id%5D=100');
       expect(calledUrl).toContain('merge_request%5Btarget_branch%5D=develop');
+    });
+
+    it('prepends relative_url_root when configured', () => {
+      window.gon = { relative_url_root: '/gitlab' };
+
+      redirectToForkMergeRequest({
+        url: 'https://gitlab.com/user/forked-project/-/blob/main/file.js',
+        forkProjectPath: '/user/forked-project',
+        sourceBranch: 'patch-1',
+        upstreamProjectId: '123',
+        targetBranch: 'main',
+      });
+
+      const calledUrl = urlUtility.visitUrl.mock.calls[0][0];
+
+      expect(calledUrl).toContain('/gitlab/user/forked-project/-/merge_requests/new');
     });
   });
 
@@ -223,6 +279,30 @@ describe('blobEditRedirectUtils', () => {
       });
 
       expect(successMessageFn).toHaveBeenCalledWith(true, false);
+    });
+
+    it('prepends relative_url_root when configured', () => {
+      window.gon = { relative_url_root: '/gitlab' };
+
+      redirectToBlobWithAlert({
+        url: 'https://gitlab.com/namespace/project/-/blob/main/old-file.js',
+        resultingBranch: 'feature-branch',
+        responseData: { file_path: 'new-file.js' },
+        formData: { file_path: 'new-file.js', create_merge_request: false },
+        isNewBranch: true,
+        targetProjectPath: '/namespace/project',
+        successMessageFn,
+      });
+
+      const expectedUrl =
+        'https://gitlab.com/gitlab/namespace/project/-/blob/feature-branch/new-file.js';
+
+      expect(urlUtility.visitUrl).toHaveBeenCalledWith(expectedUrl);
+      expect(localStorageAlert.saveAlertToLocalStorage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messageLinks: { changesLink: expectedUrl },
+        }),
+      );
     });
   });
 });

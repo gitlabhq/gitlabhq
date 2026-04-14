@@ -12,6 +12,7 @@ const createComponent = ({
   labelsFetchPath = '/gitlab-org/gitlab-shell/-/labels.json',
   labelsManagePath = '/gitlab-org/gitlab-shell/-/labels',
   issuableType = TYPE_TEST_CASE,
+  allowScopedLabels = false,
 } = {}) => {
   return shallowMountExtended(IssuableForm, {
     propsData: {
@@ -20,6 +21,7 @@ const createComponent = ({
       labelsFetchPath,
       labelsManagePath,
       issuableType,
+      allowScopedLabels,
     },
     slots: {
       actions: `
@@ -117,7 +119,7 @@ describe('IssuableForm', () => {
         allowLabelEdit: true,
         allowLabelCreate: true,
         allowMultiselect: true,
-        allowScopedLabels: true,
+        allowScopedLabels: false,
         labelsFetchPath: wrapper.vm.labelsFetchPath,
         labelsManagePath: wrapper.vm.labelsManagePath,
         selectedLabels: wrapper.vm.issuableMeta.selectedLabels,
@@ -126,6 +128,13 @@ describe('IssuableForm', () => {
         footerManageLabelTitle: 'Manage project labels',
         variant: 'embedded',
       });
+    });
+
+    it('renders labels select with scoped labels when allowScopedLabels is true', () => {
+      wrapper = createComponent({ allowScopedLabels: true });
+      const labelsSelectEl = wrapper.findByTestId('issuable-labels');
+
+      expect(labelsSelectEl.findComponent(LabelsSelect).props('allowScopedLabels')).toBe(true);
     });
 
     it('renders contents for slot "actions"', () => {

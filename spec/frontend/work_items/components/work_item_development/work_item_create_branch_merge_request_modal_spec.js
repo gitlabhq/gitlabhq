@@ -246,7 +246,7 @@ describe('CreateBranchMergeRequestModal', () => {
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'Failed to create a branch for this issue. Please try again.',
+          message: 'Failed to create a branch for this Issue. Please try again.',
         });
       });
     });

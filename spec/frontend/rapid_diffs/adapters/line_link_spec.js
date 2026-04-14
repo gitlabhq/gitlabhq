@@ -5,6 +5,10 @@ import { preventScrollToFragment } from '~/lib/utils/scroll_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/lib/utils/scroll_utils');
+jest.mock('~/rapid_diffs/utils/scroll_to_linked_fragment', () => ({
+  hasScrolled: jest.fn(() => false),
+  markAsScrolled: jest.fn(),
+}));
 
 describe('lineLinkAdapter', () => {
   const getComponent = () => document.querySelector('diff-file');
@@ -20,24 +24,26 @@ describe('lineLinkAdapter', () => {
       ...fileData,
     };
     document.body.innerHTML = `
-      <diff-file id="abc" data-file-data='${JSON.stringify(defaultFileData)}'>
-        <div id="wrapper">
-          <div data-file-body>
-            <table>
-              <tbody>
-                <tr id="line_abc_20">
-                  <td data-position="old">
-                    <a data-line-number="20" href="#line_abc_20"></a>
-                  </td>
-                  <td data-position="new">
-                    <a data-line-number="21" href="#line_abc_20"></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div data-rapid-diffs>
+        <diff-file id="abc" data-file-data='${JSON.stringify(defaultFileData)}'>
+          <div id="wrapper">
+            <div data-file-body>
+              <table>
+                <tbody>
+                  <tr id="line_abc_20">
+                    <td data-position="old">
+                      <a data-line-number="20" href="#line_abc_20"></a>
+                    </td>
+                    <td data-position="new">
+                      <a data-line-number="21" href="#line_abc_20"></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </diff-file>
+        </diff-file>
+      </div>
     `;
     getComponent().mount({
       adapterConfig: { [viewer]: [lineLinkAdapter] },
@@ -83,6 +89,7 @@ describe('lineLinkAdapter', () => {
     document.addEventListener(
       'click',
       (event) => {
+        event.preventDefault();
         clickEvent = event;
       },
       { once: true },

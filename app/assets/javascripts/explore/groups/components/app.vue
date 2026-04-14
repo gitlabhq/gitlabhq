@@ -1,9 +1,9 @@
 <script>
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
+  EXPLORE_GROUPS_TABS,
   FILTERED_SEARCH_NAMESPACE,
   FILTERED_SEARCH_TERM_KEY,
-  EXPLORE_GROUPS_TABS,
   SORT_OPTION_CREATED,
   SORT_OPTION_UPDATED,
 } from '~/explore/groups/constants';

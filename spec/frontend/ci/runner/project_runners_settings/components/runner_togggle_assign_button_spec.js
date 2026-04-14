@@ -10,11 +10,11 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
 import runnerAssignToProjectMutation from '~/ci/runner/graphql/list/runner_assign_to_project.mutation.graphql';
 import runnerUnassignFromProjectMutation from '~/ci/runner/graphql/list/runner_unassign_from_project.mutation.graphql';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 Vue.use(VueApollo);
 
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 describe('RunnerToggleAssignButton', () => {

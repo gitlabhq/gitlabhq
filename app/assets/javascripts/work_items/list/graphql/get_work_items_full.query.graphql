@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "./work_item_widgets.fragment.graphql"
-#import "ee_else_ce/work_items/list/graphql/work_item_features.fragment.graphql"
+#import "ee_else_ce/work_items/list/graphql/work_items_list_features.fragment.graphql"
 
 # @feature_category: portfolio_management
 query getWorkItemsFull(
@@ -112,10 +112,11 @@ query getWorkItemsFull(
         reference(full: true)
         state
         title
+        titleHtml
         updatedAt
         userDiscussionsCount
         webUrl
-        webPath @gl_introduced(version: "18.6.0-pre")
+        webPath
         widgets(
           onlyTypes: [
             ASSIGNEES
@@ -132,7 +133,7 @@ query getWorkItemsFull(
           ...WorkItemWidgets
         }
         features @include(if: $useWorkItemFeatures) {
-          ...WorkItemFeatures
+          ...WorkItemsListFeatures
         }
         workItemType {
           id

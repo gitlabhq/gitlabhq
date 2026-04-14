@@ -9,6 +9,9 @@ module Gitlab
       SEARCH_TERM_LIMIT = 64
       MIN_TERM_LENGTH = 2
       BOOLEAN_PARAMS = %i[confidential exclude_forks include_archived].freeze
+      LEGACY_SCOPE_MAP = {
+        'issues' => 'work_items'
+      }.freeze
 
       # Generic validation
       validates :query_string, length: { maximum: SEARCH_CHAR_LIMIT }
@@ -71,6 +74,10 @@ module Gitlab
 
       private
 
+      def legacy_scope_map
+        LEGACY_SCOPE_MAP
+      end
+
       def detect_abuse?
         @detect_abuse
       end
@@ -91,9 +98,21 @@ module Gitlab
 
       def process_params(params)
         processed_params = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
+        processed_params = convert_legacy_scope(processed_params)
         processed_params = convert_all_boolean_params(processed_params)
         processed_params = convert_type_to_ids(processed_params)
         convert_not_params(processed_params)
+      end
+
+      def convert_legacy_scope(params)
+        return params unless params[:scope].present?
+        # Skip conversion for API requests to maintain backward compatibility
+        return params if params[:skip_legacy_scope_conversion]
+
+        legacy_scope = params[:scope].to_s
+        return params.merge(scope: legacy_scope_map[legacy_scope]) if legacy_scope_map.key?(legacy_scope)
+
+        params
       end
 
       def convert_not_params(params)
@@ -119,10 +138,15 @@ module Gitlab
         return params unless params[:type].present?
 
         provider = ::WorkItems::TypesFramework::Provider.new
-        params[:work_item_type_ids] = provider.ids_by_base_types(Array(params[:type]))
+        # Downcase type names to support case-insensitive filtering
+        # (e.g., "TASK", "Task", and "task" should all work)
+        normalized_types = Array(params[:type]).map { |type| type.to_s.downcase }
+        params[:work_item_type_ids] = provider.ids_by_base_types(normalized_types)
         params.delete(:type)
         params
       end
     end
   end
 end
+
+Gitlab::Search::Params.prepend_mod

@@ -599,6 +599,101 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
     end
   end
 
+  describe 'preseed_authorization_caches', :request_store do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_in_group) { create(:project, group: group) }
+    let_it_be(:issue_in_group) { create(:issue, project: project_in_group) }
+    let(:resources_by_type) { { 'issue' => { 'ids' => [issue_in_group.id], 'ability' => 'read_issue' } } }
+    let(:service) { described_class.new(user: user, resources_by_type: resources_by_type, source: 'test') }
+
+    it 'calls ProjectPolicyPreloader for collected projects' do
+      expect(Preloaders::ProjectPolicyPreloader).to receive(:new)
+        .with([project_in_group], user).and_call_original
+      service.execute
+    end
+
+    it 'calls GroupPolicyPreloader for collected groups' do
+      expect(Preloaders::GroupPolicyPreloader).to receive(:new)
+        .with(array_including(group), user).and_call_original
+      service.execute
+    end
+
+    it 'runs the full preseed flow without errors' do
+      result = service.execute
+      expect(result['issue']).to have_key(issue_in_group.id)
+    end
+
+    context 'with merge requests' do
+      let_it_be(:mr) { create(:merge_request, source_project: project_in_group) }
+      let(:resources_by_type) do
+        { 'merge_request' => { 'ids' => [mr.id], 'ability' => 'read_merge_request' } }
+      end
+
+      it 'collects target_project for preloading' do
+        expect(Preloaders::ProjectPolicyPreloader).to receive(:new)
+          .with([mr.target_project], user).and_call_original
+        service.execute
+      end
+
+      it 'skips target_project when it is nil' do
+        allow_any_instance_of(MergeRequest).to receive(:target_project).and_return(nil) # rubocop:disable RSpec/AnyInstanceOf -- testing nil guard
+        expect(Preloaders::ProjectPolicyPreloader).not_to receive(:new)
+        service.execute
+      end
+    end
+
+    context 'with group resources' do
+      let(:resources_by_type) { { 'group' => { 'ids' => [group.id], 'ability' => 'read_group' } } }
+
+      it 'collects groups directly for preloading' do
+        expect(Preloaders::GroupPolicyPreloader).to receive(:new)
+          .with(array_including(group), user).and_call_original
+        service.execute
+      end
+    end
+
+    context 'with mixed types sharing the same project' do
+      let_it_be(:issue2) { create(:issue, project: project_in_group) }
+      let(:resources_by_type) do
+        {
+          'issue' => { 'ids' => [issue_in_group.id, issue2.id], 'ability' => 'read_issue' },
+          'project' => { 'ids' => [project_in_group.id], 'ability' => 'read_project' }
+        }
+      end
+
+      it 'deduplicates projects before preloading' do
+        expect(Preloaders::ProjectPolicyPreloader).to receive(:new) do |projects, _user|
+          expect(projects.map(&:id).uniq.size).to eq(projects.size)
+        end.and_call_original
+        service.execute
+      end
+    end
+
+    context 'with user-only resources (no project or group)' do
+      let_it_be(:some_user) { create(:user) }
+      let(:resources_by_type) { { 'user' => { 'ids' => [some_user.id], 'ability' => 'read_user' } } }
+
+      it 'skips preloaders when no projects or groups are found' do
+        expect(Preloaders::ProjectPolicyPreloader).not_to receive(:new)
+        expect(Preloaders::GroupPolicyPreloader).not_to receive(:new)
+        service.execute
+      end
+    end
+
+    context 'with milestone in a group project' do
+      let_it_be(:milestone) { create(:milestone, project: project_in_group) }
+      let(:resources_by_type) do
+        { 'milestone' => { 'ids' => [milestone.id], 'ability' => 'read_milestone' } }
+      end
+
+      it 'collects the milestone project for preloading' do
+        expect(Preloaders::ProjectPolicyPreloader).to receive(:new)
+          .with(array_including(project_in_group), user).and_call_original
+        service.execute
+      end
+    end
+  end
+
   describe 'performance optimization' do
     let_it_be(:issues) { create_list(:issue, 3, project: public_project) }
     let(:resources_by_type) { { 'issue' => { 'ids' => issues.map(&:id), 'ability' => 'read_issue' } } }
@@ -616,7 +711,8 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
 
       expect do
         new_service.execute
-      end.not_to exceed_query_limit(10)
+        # Base queries (load + policy) + preseed queries (project auth, group preloader, SAML)
+      end.not_to exceed_query_limit(16)
     end
 
     it 'preloads nested associations to avoid N+1 in policies' do
@@ -625,6 +721,38 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
       expect(described_class::PRELOAD_ASSOCIATIONS[:issue]).to include(
         a_hash_including(project: array_including(:namespace, :project_feature))
       )
+    end
+  end
+
+  describe 'metrics_observer injection' do
+    let_it_be(:accessible_issue) { create(:issue, project: public_project) }
+    let_it_be(:inaccessible_issue) { create(:issue, project: private_project) }
+    let(:resources_by_type) do
+      { 'issue' => { 'ids' => [accessible_issue.id, inaccessible_issue.id], 'ability' => 'read_issue' } }
+    end
+
+    it 'calls the observer with total, filtered, and duration' do
+      observed = {}
+      observer = ->(total:, filtered:, duration:) {
+        observed = { total: total, filtered: filtered, duration: duration }
+      }
+      service = described_class.new(
+        user: user, resources_by_type: resources_by_type, source: 'test', metrics_observer: observer
+      )
+
+      service.execute
+
+      expect(observed[:total]).to eq(2)
+      expect(observed[:filtered]).to eq(1)
+      expect(observed[:duration]).to be_a(Float).and(be >= 0)
+    end
+
+    it 'does not fail when no observer is provided' do
+      service = described_class.new(
+        user: user, resources_by_type: resources_by_type, source: 'test'
+      )
+
+      expect { service.execute }.not_to raise_error
     end
   end
 end

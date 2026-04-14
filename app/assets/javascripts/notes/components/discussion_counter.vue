@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
-import { throttle } from 'lodash-es';
 import { __, n__ } from '~/locale';
 import {
   keysFor,
@@ -21,6 +20,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
+  name: 'DiscussionCounter',
   i18n: {
     allThreadsResolved: __('All threads resolved!'),
     threadOptions: __('Thread options'),
@@ -49,12 +49,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      jumpNext: throttle(this.jumpToNextDiscussion, 500),
-      jumpPrevious: throttle(this.jumpToPreviousDiscussion, 500),
-    };
   },
   computed: {
     ...mapState(useNotes, [
@@ -205,7 +199,7 @@ export default {
             data-track-property="click_previous_unresolved_thread_top"
             icon="chevron-lg-up"
             category="tertiary"
-            @click="jumpPrevious"
+            @click="jumpToPreviousDiscussion"
           />
           <gl-button
             v-gl-tooltip.html="nextUnresolvedDiscussionTooltip"
@@ -217,7 +211,7 @@ export default {
             data-track-property="click_next_unresolved_thread_top"
             icon="chevron-lg-down"
             category="tertiary"
-            @click="jumpNext"
+            @click="jumpToNextDiscussion"
           />
           <gl-disclosure-dropdown
             v-gl-tooltip

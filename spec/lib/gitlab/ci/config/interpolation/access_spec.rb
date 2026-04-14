@@ -241,20 +241,4 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
       )
     end
   end
-
-  context 'when ci_inputs_array_index_operator feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_inputs_array_index_operator: false)
-    end
-
-    context 'when using array index syntax' do
-      let(:ctx) { { inputs: { my_array: %w[first second] } } }
-      let(:access) { 'inputs.my_array[0]' }
-
-      it 'treats brackets as part of the key name and returns an error' do
-        expect(subject).not_to be_valid
-        expect(subject.errors.first).to include('unknown interpolation provided')
-      end
-    end
-  end
 end

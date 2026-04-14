@@ -72,4 +72,9 @@ fragment PipelineDetails on Pipeline {
   hasManualActions
   hasScheduledActions
   failedJobsCount
+  pipelineSchedule {
+    id
+    description
+    editPath
+  }
 }

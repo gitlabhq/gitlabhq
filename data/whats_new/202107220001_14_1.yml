@@ -5,27 +5,27 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/devops_adoption/
+  documentation_link: https://docs.gitlab.com/user/group/devops_adoption/
   image_url: https://about.gitlab.com/images/14_1/progressbar.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Track use of security scanning across multiple teams
   description: |
    Track which groups across your organization have enabled SAST and DAST scanning. This is helpful for verifying compliance with organizational requirements, responding to audit requests, and tracking progress on company initiatives to make applications more secure. To track adoption, go to the **Sec** tab in DevOps Adoption either at the group level or instance level.
-   To see groups that have enabled fuzz testing and dependency scanning, use [the DevOps API](https://docs.gitlab.com/ee/api/graphql/reference/#devopsadoptionsnapshot). Fuzz testing and dependency scanning will be added to the DevOps Adoption UI in an upcoming release.
+   To see groups that have enabled fuzz testing and dependency scanning, use [the DevOps API](https://docs.gitlab.com/api/graphql/reference/#devopsadoptionsnapshot). Fuzz testing and dependency scanning will be added to the DevOps Adoption UI in an upcoming release.
   stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/devops_adoption
+  documentation_link: https://docs.gitlab.com/user/group/devops_adoption
   image_url: https://about.gitlab.com/images/14_1/scanadoption.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Create and apply patches in VS Code
   description: |
    When reviewing a merge request (MR) it can be helpful to make suggestions to many of the changed files. This is often done by creating a patch file with the suggestions and sharing it with others. The problem is that this requires several manual steps like running Git commands and uploading the patch file somewhere others can download it.
 
-   With [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) [v3.26.0](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#3260-2021-07-13) for VS Code you can now create and apply patches directly in your editor. The new `GitLab: Create snippet patch` command creates a patch with the changes in your editor and uploads that patch as a [GitLab snippet](https://docs.gitlab.com/ee/user/snippets.html).
+   With [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) [v3.26.0](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#3260-2021-07-13) for VS Code you can now create and apply patches directly in your editor. The new `GitLab: Create snippet patch` command creates a patch with the changes in your editor and uploads that patch as a [GitLab snippet](https://docs.gitlab.com/user/snippets/).
 
    Anyone can search for patches in the project's snippets and apply them directly in VS Code with the `GitLab: Apply snippet patch` command. The applied changes can then be committed to the MR.
 
@@ -37,46 +37,46 @@
   documentation_link: 'https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md#create-and-apply-snippet-patch'
   image_url: https://img.youtube.com/vi/QQxpLoKJULQ/hqdefault.jpg
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Code coverage merge request approval rule
   description: |
-   To keep code test coverage high, you need to ensure that merge requests to your codebase never decrease test coverage. Previously, the only way to enforce this was to [require approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/#required-approvals) from users who would check for test coverage decreases as part of their reviews.
+   To keep code test coverage high, you need to ensure that merge requests to your codebase never decrease test coverage. Previously, the only way to enforce this was to [require approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/#required-approvals) from users who would check for test coverage decreases as part of their reviews.
 
    Now you can enforce this organizational policy with the new Coverage check approval rule. This is a simple way to ensure merge requests that would decrease test coverage cannot be merged.
   stage: Verify
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/testing/code_coverage.html#coverage-check-approval-rule'
+  documentation_link: 'https://docs.gitlab.com/ci/testing/code_coverage/#coverage-check-approval-rule'
   image_url: https://about.gitlab.com/images/14_1/coverage-mr-approval-rule.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Registration Features
   description: |
-   [Registration Features](https://docs.gitlab.com/ee/development/service_ping/#registration-features-program) introduces the ability for free, self-managed users running GitLab EE to access paid features by registering with GitLab and sharing activity data via [Service Ping](https://docs.gitlab.com/ee/development/service_ping/#what-is-service-ping). The first feature introduced is [email from GitLab](https://docs.gitlab.com/ee/tools/email.html), enabling instance administrators to email users within their instance.
+   [Registration Features](https://docs.gitlab.com/development/service_ping/#registration-features-program) introduces the ability for free, self-managed users running GitLab EE to access paid features by registering with GitLab and sharing activity data via [Service Ping](https://docs.gitlab.com/development/service_ping/#what-is-service-ping). The first feature introduced is [email from GitLab](https://docs.gitlab.com/tools/email/), enabling instance administrators to email users within their instance.
   stage: Growth
   self-managed: true
   gitlab-com: false
   available_in: [Free]
-  documentation_link: 'https://docs.gitlab.com/ee/development/service_ping/#registration-features-program'
+  documentation_link: 'https://docs.gitlab.com/development/service_ping/#registration-features-program'
   image_url: https://about.gitlab.com/images/14_1/registration-features.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Build, publish, and share Helm charts
   description: |
    Helm defines a [chart](https://helm.sh/docs/intro/using_helm/#three-big-concepts) as a Helm package that contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. For organizations that create and manage their own Helm charts, it's important to have a central repository to collect and share them.
 
-   GitLab already supports a variety of other [package manager formats](https://docs.gitlab.com/ee/user/packages/). Why not also support Helm? That's what community member and [MVP from the 14.0 milestone](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#mvp) [Mathieu Parent](https://gitlab.com/sathieu) asked several months ago before breaking ground on the new GitLab Helm chart registry. The collaboration between the community and GitLab is part of our [dual flywheel strategy](https://about.gitlab.com/company/strategy/#dual-flywheels) and one of the reasons we love working at GitLab. Chapeau Mathieu!
+   GitLab already supports a variety of other [package manager formats](https://docs.gitlab.com/user/packages/). Why not also support Helm? That's what community member and [MVP from the 14.0 milestone](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#mvp) [Mathieu Parent](https://gitlab.com/sathieu) asked several months ago before breaking ground on the new GitLab Helm chart registry. The collaboration between the community and GitLab is part of our [dual flywheel strategy](https://about.gitlab.com/company/strategy/#dual-flywheels) and one of the reasons we love working at GitLab. Chapeau Mathieu!
 
-   Now you can use your GitLab project to publish and share packaged Helm charts. Simply add your project as a remote, authenticating with a personal access, deploy, or CI/CD job token. Once that's done you can use the Helm client or GitLab CI/CD to manage your Helm charts. You can also download the charts using the [API](https://docs.gitlab.com/ee/api/packages.html#get-a-project-package) or the [user interface](https://docs.gitlab.com/ee/user/packages/package_registry/#download-a-package).
+   Now you can use your GitLab project to publish and share packaged Helm charts. Simply add your project as a remote, authenticating with a personal access, deploy, or CI/CD job token. Once that's done you can use the Helm client or GitLab CI/CD to manage your Helm charts. You can also download the charts using the [API](https://docs.gitlab.com/api/packages/#get-a-project-package) or the [user interface](https://docs.gitlab.com/user/packages/package_registry/#download-a-package).
   stage: Package
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/helm_repository/
+  documentation_link: https://docs.gitlab.com/user/packages/helm_repository/
   image_url: https://img.youtube.com/vi/B6K373-pAgw/hqdefault.jpg
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Escalation Policies
   description: |
    Being on-call is a stressful, 24/7 job. It's possible to miss a notification despite your best efforts and intentions. Teams that maintain critical systems can't afford to miss alerts for outages or service disruptions. Escalation policies are a safety net for these situations. Escalation policies contain time-boxed steps that automatically page a responder in the next escalation step if the responder in the step before didn't respond. To protect your company from missed critical alerts, create an escalation policy in the GitLab project where you manage on-call schedules.
@@ -86,15 +86,15 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/operations/incident_management/escalation_policies.html
+  documentation_link: https://docs.gitlab.com/operations/incident_management/escalation_policies/
   image_url: https://img.youtube.com/vi/-1MuKzWJXKQ/hqdefault.jpg
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: CI/CD workflow for Kubernetes clusters
   description: |
    Until now, connecting Kubernetes clusters to GitLab CI/CD required you to open up your clusters towards GitLab. Some organizations do not encourage opening up their firewall externally due to security concerns.
 
-   GitLab now ships with a CI/CD functionality that connects runners with your Kubernetes cluster by using the [GitLab agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/). This enables versatile GitOps workflows where the deployment logic can be coded in the pipeline.
+   GitLab now ships with a CI/CD functionality that connects runners with your Kubernetes cluster by using the [GitLab agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/). This enables versatile GitOps workflows where the deployment logic can be coded in the pipeline.
 
    You and your team can safely use your preferred tool to run the deployment itself using `kubectl`, `helm`, `kpt`, `tanka`, or anything else without security concerns.
 
@@ -105,10 +105,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html
+  documentation_link: https://docs.gitlab.com/user/clusters/agent/ci_cd_workflow/
   image_url: https://img.youtube.com/vi/eXxM4ScqiJs/hqdefault.jpg
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: External status checks for merge requests
   description: |
    You can now contact an external API to perform a status check in a merge request. This is a great way to integrate GitLab with third-party systems that:
@@ -122,10 +122,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/status_checks/
   image_url: https://about.gitlab.com/images/14_1/status-checks-pending.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"
 - name: Pronouns viewable in user profile snapshot
   description: |
    You can now see pronouns on the snapshot view of a user profile when you hover over someone's name on an issue or merge request. This helps users better respond to comments using the correct pronouns without needing to navigate to the user's profile.
@@ -133,7 +133,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/profile/#add-your-gender-pronouns'
+  documentation_link: 'https://docs.gitlab.com/user/profile/#add-your-gender-pronouns'
   image_url: https://about.gitlab.com/images/14_1/pronouns.png
   published_at: 2021-07-22
-  release: 14.1
+  release: "14.1"

@@ -22,7 +22,7 @@ This document gives a high-level overview of how to develop features using Click
    clickhouse:
      bin: "/opt/homebrew/bin/clickhouse"
      enabled: true
-     # these are optional if we have more then one GDK:
+     # these are optional if we have more than one GDK:
      # http_port: 8123
      # interserver_http_port: 9009
      # tcp_port: 9001
@@ -243,7 +243,8 @@ GROUP BY name
 ORDER BY ratio DESC;
 ```
 
-**Note:** Don't over-optimize. While higher compression levels (like ZSTD 10+) save disk space, they increase CPU overhead during both writes and reads. Stick to the defaults unless the storage gains are significant.
+> [!note]
+> Don't over-optimize. While higher compression levels (like ZSTD 10+) save disk space, they increase CPU overhead during both writes and reads. Stick to the defaults unless the storage gains are significant.
 
 ## Writing database queries
 

@@ -290,18 +290,6 @@ module ProjectsHelper
       current_user.require_extra_setup_for_git_auth?
   end
 
-  def show_auto_devops_implicitly_enabled_banner?(project, user)
-    return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
-
-    cookies[:"hide_auto_devops_implicitly_enabled_banner_#{project.id}"].blank?
-  end
-
-  def show_mobile_devops_project_promo?(project)
-    return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
-
-    cookies[:"hide_mobile_devops_promo_#{project.id}"].blank?
-  end
-
   def no_password_message
     set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_user_settings_password_path }
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: user_settings_personal_access_tokens_path }
@@ -367,9 +355,7 @@ module ProjectsHelper
   end
 
   def explore_projects_tab?
-    current_page?(explore_projects_path) ||
-      current_page?(trending_explore_projects_path) ||
-      current_page?(starred_explore_projects_path)
+    current_page?(explore_projects_path) || current_page?(trending_explore_projects_path)
   end
 
   def show_count?(disabled: false, compact_mode: false)
@@ -389,10 +375,6 @@ module ProjectsHelper
       organization_slug: setting.organization_slug,
       slug: setting.project_slug
     }.to_json
-  end
-
-  def directory?
-    @path.present?
   end
 
   def external_classification_label_help_message
@@ -509,7 +491,6 @@ module ProjectsHelper
       forks_count: project.forks_count,
       new_fork_url: new_project_fork_path(project),
       project_forks_url: project_forks_path(project),
-      project_full_path: project.full_path,
       user_fork_url: user_fork_url
     }
   end
@@ -543,7 +524,7 @@ module ProjectsHelper
 
   def home_panel_data_attributes
     project = @project.is_a?(ProjectPresenter) ? @project.project : @project
-    dropdown_attributes = groups_projects_more_actions_dropdown_data(project) || {}
+    dropdown_attributes = project_more_action_data(project)
     fork_button_attributes = fork_button_data_attributes(project) || {}
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
@@ -559,7 +540,8 @@ module ProjectsHelper
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
-      project_visibility_level: Gitlab::VisibilityLevel.string_level(project.visibility_level)
+      project_visibility_level: Gitlab::VisibilityLevel.string_level(project.visibility_level),
+      project_full_path: project.full_path
     }.merge(
       dropdown_attributes,
       fork_button_attributes,
@@ -642,7 +624,7 @@ module ProjectsHelper
   end
 
   def can_view_branch_rules?
-    can?(current_user, :maintainer_access, @project)
+    can?(current_user, :read_branch_rule, @project)
   end
 
   def can_push_code?
@@ -753,11 +735,7 @@ module ProjectsHelper
   private
 
   def issues_help_page_path(project)
-    if project.work_items_consolidated_list_enabled?(current_user)
-      help_page_path('user/work_items/_index.md')
-    else
-      help_page_path('user/project/issues/_index.md')
-    end
+    help_page_path('user/work_items/_index.md')
   end
 
   def can_admin_project_clusters?(project)
@@ -784,6 +762,10 @@ module ProjectsHelper
     return false unless project.repository.branch_exists?(ref)
 
     ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(ref)
+  end
+
+  def can_push_initial_commit_to_namespace?(namespace)
+    namespace.can_push_initial_commit?(current_user)
   end
 
   # This function is here to solve rubocop error of line too long.
@@ -942,8 +924,7 @@ module ProjectsHelper
 
   def can_show_last_commit_in_list?(project)
     can?(current_user, :read_cross_project) &&
-      can?(current_user, :read_commit_status, project) &&
-      project.commit
+      can?(current_user, :read_commit_status, project)
   end
 
   def pages_https_only_disabled?
@@ -979,13 +960,6 @@ module ProjectsHelper
       feature_flags
       terraform
     ]
-  end
-
-  def user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
-    Ability.allowed?(user, :admin_project, project) &&
-      project.has_auto_devops_implicitly_enabled? &&
-      project.builds_enabled? &&
-      !project.has_ci_config_file?
   end
 
   def show_visibility_confirm_modal?(project)
@@ -1049,6 +1023,18 @@ module ProjectsHelper
     strong_memoize(:delete_dormant_projects_setting) do
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
+  end
+
+  def project_more_action_data(project)
+    request = project.requesters.with_user(current_user).first
+
+    {
+      can_request_access: can?(current_user, :request_access, project).to_s,
+      can_withdraw_access_request: can?(current_user, :withdraw_member_access_request, request).to_s,
+      request_access_path: request_access_project_project_members_path(project),
+      withdraw_access_request_path: leave_project_project_members_path(project),
+      dashboard_path: dashboard_projects_path
+    }
   end
 end
 

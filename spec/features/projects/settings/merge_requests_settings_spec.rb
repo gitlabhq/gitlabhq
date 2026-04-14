@@ -265,6 +265,23 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
         expect(find('.js-fast-forward-container')).to have_selector('.js-automatic-rebase-setting')
       end
 
+      it 'displays a Beta badge next to the checkbox label' do
+        choose('project_merge_method_ff')
+
+        within('.js-automatic-rebase-setting') do
+          expect(page).to have_content('Beta')
+        end
+      end
+
+      it 'displays help text with a documentation link' do
+        choose('project_merge_method_ff')
+
+        within('.js-automatic-rebase-setting') do
+          expect(page).to have_content('Automatically rebases the source branch onto the target branch before merging.')
+          expect(page).to have_link('How does automatic rebase work?')
+        end
+      end
+
       it 'hides checkbox when merge commit method is selected' do
         choose('project_merge_method_merge')
 

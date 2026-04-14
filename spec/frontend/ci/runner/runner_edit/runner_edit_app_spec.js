@@ -10,13 +10,13 @@ import RunnerHeader from '~/ci/runner/components/runner_header.vue';
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import runnerFormQuery from '~/ci/runner/graphql/edit/runner_form.query.graphql';
 import RunnerEditApp from '~/ci/runner/runner_edit/runner_edit_app.vue';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { I18N_STATUS_NEVER_CONTACTED, I18N_INSTANCE_TYPE } from '~/ci/runner/constants';
 
 import { runnerFormData } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockRunner = runnerFormData.data.runner;
 const mockRunnerGraphqlId = mockRunner.id;
@@ -101,10 +101,7 @@ describe('RunnerEditApp', () => {
     });
 
     it('error is reported to sentry', () => {
-      expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Error!'),
-        component: 'RunnerEditApp',
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error('Error!'));
     });
 
     it('error is shown to the user', () => {

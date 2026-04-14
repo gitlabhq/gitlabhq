@@ -41,7 +41,7 @@ GitLab supports the following work item types:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11918) in GitLab 18.7 [with a flag](../../administration/feature_flags/_index.md) named `work_item_planning_view`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/520452) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/520452) in GitLab 18.10. Feature flag `work_item_planning_view` removed.
 
 {{< /history >}}
 
@@ -80,9 +80,6 @@ To filter the work items list:
 - Filtering by description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536876) in GitLab 18.3.
 
 {{< /history >}}
-
-<!-- When the feature flag work_item_planning_view is removed, move more information from
-managing_issues.md#filter-the-list-of-issues here -->
 
 These filters are available for work items:
 
@@ -134,9 +131,6 @@ To access filters you've used recently, on the left side of the filter bar, sele
 
 {{< /history >}}
 
-<!-- When the feature flag work_item_planning_view is removed, move information from
-sorting_issue_lists.md to this page and redirect here -->
-
 Sort the list of work items by the following:
 
 - Created date
@@ -145,6 +139,7 @@ Sort the list of work items by the following:
 - Due date
 - Title
 - Status
+- Weight
 
 To change the sorting criteria:
 

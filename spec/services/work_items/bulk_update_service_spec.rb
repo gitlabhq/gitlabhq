@@ -142,7 +142,7 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
                 work_item_ids: multiple_items.map(&:id),
                 attributes: { state: :closed }
               ).execute
-            end.not_to exceed_query_limit(control).with_threshold(28)
+            end.not_to exceed_query_limit(control).with_threshold(26)
           end
         end
 

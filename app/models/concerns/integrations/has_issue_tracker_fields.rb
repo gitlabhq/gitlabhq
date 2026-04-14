@@ -10,23 +10,24 @@ module Integrations
       field :project_url,
         required: true,
         title: -> { _('Project URL') },
-        description: -> { s_('URL of the project.') },
+        description: -> { _('URL of the project.') },
         help: -> { s_('IssueTracker|URL of the project in the external issue tracker.') }
 
       field :issues_url,
         required: true,
         title: -> { s_('IssueTracker|Issue URL') },
-        description: -> { s_('URL of the issue.') },
+        description: -> { _('URL of the issue.') },
         help: -> do
-          format(ERB::Util.html_escape(
-            s_('IssueTracker|URL to view an issue in the external issue tracker. Must contain %{colon_id}.')
-          ), colon_id: '<code>:id</code>'.html_safe)
+          safe_format(
+            s_('IssueTracker|URL to view an issue in the external issue tracker. Must contain %{colon_id}.'),
+            colon_id: '<code>:id</code>'.html_safe
+          )
         end
 
       field :new_issue_url,
         required: true,
         title: -> { s_('IssueTracker|New issue URL') },
-        description: -> { s_('URL of the new issue.') },
+        description: -> { _('URL of the new issue.') },
         help: -> { s_('IssueTracker|URL to create an issue in the external issue tracker.') }
     end
   end

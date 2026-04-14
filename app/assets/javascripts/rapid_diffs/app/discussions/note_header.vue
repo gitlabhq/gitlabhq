@@ -4,6 +4,7 @@ import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { withLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
 import NoteAuthor from './note_author.vue';
 
 export default {
@@ -19,6 +20,11 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  inject: {
+    filePaths: {
+      default: null,
+    },
   },
   props: {
     showAvatar: {
@@ -66,18 +72,30 @@ export default {
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
+    resolvedNoteId() {
+      if (!this.noteId) return null;
+      let { noteId } = this;
+      if (isGid(noteId)) noteId = getIdFromGraphQLId(noteId);
+      return noteId;
+    },
+    noteFragment() {
+      if (!this.resolvedNoteId) return null;
+      return `note_${this.resolvedNoteId}`;
+    },
     noteTimestampLink() {
       if (this.noteUrl) return this.noteUrl;
 
-      if (this.noteId) {
-        let { noteId } = this;
+      if (!this.noteFragment) return undefined;
 
-        if (isGid(noteId)) noteId = getIdFromGraphQLId(noteId);
-
-        return `#note_${noteId}`;
+      if (this.filePaths) {
+        return withLinkedFileUrlParams(window.location.href, {
+          oldPath: this.filePaths.oldPath,
+          newPath: this.filePaths.newPath,
+          hash: this.noteFragment,
+        }).toString();
       }
 
-      return undefined;
+      return `#${this.noteFragment}`;
     },
     internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
@@ -120,6 +138,7 @@ export default {
         />
         <time-ago-tooltip v-else :time="createdAt" tooltip-placement="bottom" />
       </template>
+      <slot name="badge"></slot>
       <imported-badge v-if="isImported" />
       <gl-badge
         v-if="isInternalNote"

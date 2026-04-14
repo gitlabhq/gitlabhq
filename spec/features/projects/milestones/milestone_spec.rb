@@ -8,8 +8,35 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   let(:milestone) { create(:milestone, project: project) }
   let(:active_tab_selector) { '[role="tab"][aria-selected="true"]' }
 
-  def toggle_sidebar
-    find('.milestone-sidebar .gutter-toggle').click
+  # Visits the milestone page and ensures the sidebar is in the desired state.
+  #
+  # The right sidebar may be auto-collapsed by JS after page load (either by
+  # `initRightSidebar` in main.js or by the `sidebarToggleClicked` handler
+  # being triggered during initialization). We wait up to 1s for any such
+  # auto-collapse to occur, then force the sidebar into the desired state via
+  # JavaScript so assertions run against a known, stable layout.
+  def visit_milestone(collapsed: false)
+    visit project_milestone_path(project, milestone)
+
+    # Wait up to 1s to detect any post-load auto-collapse (initRightSidebar
+    # fires after ~300ms). This also serves as synchronisation before we force
+    # the final state below.
+    page.has_css?('aside.right-sidebar.right-sidebar-collapsed', wait: 1)
+
+    # Force the sidebar into the desired state regardless of what JS did.
+    execute_script(<<~JS)
+      const sidebar = document.querySelector('aside.right-sidebar');
+      const layoutPage = document.querySelector('.layout-page');
+      const isCollapsed = #{collapsed};
+      if (sidebar) {
+        sidebar.classList.toggle('right-sidebar-collapsed', isCollapsed);
+        sidebar.classList.toggle('right-sidebar-expanded', !isCollapsed);
+      }
+      if (layoutPage) {
+        layoutPage.classList.toggle('right-sidebar-collapsed', isCollapsed);
+        layoutPage.classList.toggle('right-sidebar-expanded', !isCollapsed);
+      }
+    JS
   end
 
   def sidebar_release_block
@@ -26,11 +53,7 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
 
   context 'when project has enabled issues' do
     before do
-      visit project_milestone_path(project, milestone)
-
-      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
-        find('.milestone-sidebar .js-sidebar-expand').click
-      end
+      visit_milestone
     end
 
     it 'shows work items tab' do
@@ -65,7 +88,7 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
 
     with_them do
       before do
-        visit project_milestone_path(project, milestone)
+        visit_milestone
         click_link(tab_text, href: href)
       end
 
@@ -88,7 +111,7 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
       create(:issue, project: project, milestone: milestone)
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
-      visit project_milestone_path(project, milestone)
+      visit_milestone
     end
 
     it 'does not show any work items under the work items tab' do
@@ -114,15 +137,10 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   end
 
   context 'when project has an issue' do
-    before do
-      create(:issue, project: project, milestone: milestone)
-
-      visit project_milestone_path(project, milestone)
-    end
-
     describe 'the collapsed sidebar' do
       before do
-        toggle_sidebar
+        create(:issue, project: project, milestone: milestone)
+        visit_milestone(collapsed: true)
       end
 
       it 'shows the total MR and issue counts' do
@@ -137,21 +155,9 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   end
 
   context 'when the milestone is not associated with a release' do
-    before do
-      visit project_milestone_path(project, milestone)
-
-      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
-        find('.milestone-sidebar .js-sidebar-expand').click
-      end
-    end
-
-    it 'shows "None" in the "Releases" section' do
-      expect(sidebar_release_block).to have_content 'Releases None'
-    end
-
-    describe 'when the sidebar is collapsed' do
+    context 'with the sidebar collapsed' do
       before do
-        toggle_sidebar
+        visit_milestone(collapsed: true)
       end
 
       it 'shows "0" in the "Releases" section' do
@@ -162,26 +168,26 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
         expect(sidebar_release_block_collapsed_icon['title']).to eq 'Releases'
       end
     end
+
+    context 'with the sidebar expanded' do
+      before do
+        visit_milestone
+      end
+
+      it 'shows "None" in the "Releases" section' do
+        expect(sidebar_release_block).to have_content 'Releases None'
+      end
+    end
   end
 
   context 'when the milestone is associated with one release' do
     before do
       create(:release, project: project, name: 'Version 5', milestones: [milestone])
-
-      visit project_milestone_path(project, milestone)
-
-      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
-        find('.milestone-sidebar .js-sidebar-expand').click
-      end
     end
 
-    it 'shows "Version 5" in the "Release" section' do
-      expect(sidebar_release_block).to have_content 'Release Version 5'
-    end
-
-    describe 'when the sidebar is collapsed' do
+    context 'with the sidebar collapsed' do
       before do
-        toggle_sidebar
+        visit_milestone(collapsed: true)
       end
 
       it 'shows "1" in the "Releases" section' do
@@ -192,6 +198,16 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
         expect(sidebar_release_block_collapsed_icon['title']).to eq '1 release'
       end
     end
+
+    context 'with the sidebar expanded' do
+      before do
+        visit_milestone
+      end
+
+      it 'shows "Version 5" in the "Release" section' do
+        expect(sidebar_release_block).to have_content 'Release Version 5'
+      end
+    end
   end
 
   context 'when the milestone is associated with multiple releases' do
@@ -200,21 +216,11 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
         released_at = Time.zone.parse('2019-10-04') + num.months
         create(:release, project: project, name: "Version #{num}", milestones: [milestone], released_at: released_at)
       end
-
-      visit project_milestone_path(project, milestone)
-
-      if page.has_css?('.milestone-sidebar .js-sidebar-expand', wait: 0)
-        find('.milestone-sidebar .js-sidebar-expand').click
-      end
     end
 
-    it 'shows a shortened list of releases in the "Releases" section' do
-      expect(sidebar_release_block).to have_content 'Releases Version 10 • Version 9 • Version 8 • 3 more releases'
-    end
-
-    describe 'when the sidebar is collapsed' do
+    context 'with the sidebar collapsed' do
       before do
-        toggle_sidebar
+        visit_milestone(collapsed: true)
       end
 
       it 'shows "6" in the "Releases" section' do
@@ -223,6 +229,16 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
 
       it 'has a tooltip that reads "6 releases"' do
         expect(sidebar_release_block_collapsed_icon['title']).to eq '6 releases'
+      end
+    end
+
+    context 'with the sidebar expanded' do
+      before do
+        visit_milestone
+      end
+
+      it 'shows a shortened list of releases in the "Releases" section' do
+        expect(sidebar_release_block).to have_content 'Releases Version 10 • Version 9 • Version 8 • 3 more releases'
       end
     end
   end

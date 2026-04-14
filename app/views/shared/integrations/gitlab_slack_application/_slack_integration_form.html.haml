@@ -25,7 +25,7 @@
             = render Pajamas::ButtonComponent.new(href: edit_project_settings_slack_path(integration.parent)) do
               = _('Edit')
           .destroy-button-container{ inherited ? { title: s_('SlackIntegration|GitLab for Slack app configured on the group or instance level and can only be modified there.'), data: { toggle: 'tooltip' } } : {} }
-            = render Pajamas::ButtonComponent.new(method: :delete, category: 'secondary', variant: "danger", href: slack_integration_destroy_path(integration.parent), icon: 'remove', disabled: inherited, button_options: { aria: { label: s_('Remove') }, **destroy_button_modal})
+            = render Pajamas::ButtonComponent.new(method: :delete, category: 'secondary', variant: "danger", href: slack_integration_destroy_path(integration.parent), icon: 'remove', disabled: inherited, button_options: { aria: { label: _('Remove') }, **destroy_button_modal})
   .gl-my-5
     = render Pajamas::ButtonComponent.new(href: add_to_slack_link(integration.parent, slack_app_id), disabled: inherited, button_options: { data: { testid: 'install-slack-app-button' } }) do
       = s_('SlackIntegration|Reinstall GitLab for Slack app…')

@@ -38,30 +38,36 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
           expect(result.payload[:identifier]).to eq(:need_rebase)
         end
 
-        context 'when the feature flag rebase_on_merge_automatic is true' do
+        context 'when automatic rebase is available' do
           before do
-            stub_feature_flags(rebase_on_merge_automatic: true)
+            allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(true)
           end
 
-          context 'when automatic_rebase_enabled is true' do
-            before do
-              allow(project.project_setting).to receive(:automatic_rebase_enabled).and_return(true)
-            end
-
+          # When automatic rebase is available, the check is always inactive
+          # regardless of rebase state because rebasing is handled automatically at merge time.
+          context 'when the merge request should be rebased' do
             it 'returns a check result with inactive status' do
               expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
             end
           end
 
-          context 'when automatic_rebase_enabled is false' do
-            before do
-              allow(project.project_setting).to receive(:automatic_rebase_enabled).and_return(false)
-            end
+          context 'when the merge request should not be rebased' do
+            let(:should_be_rebased) { false }
 
-            it 'returns a check result with status failed' do
-              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-              expect(result.payload[:identifier]).to eq(:need_rebase)
+            it 'returns a check result with inactive status' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
             end
+          end
+        end
+
+        context 'when automatic rebase is not available' do
+          before do
+            allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(false)
+          end
+
+          it 'returns a check result with status failed' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+            expect(result.payload[:identifier]).to eq(:need_rebase)
           end
         end
       end

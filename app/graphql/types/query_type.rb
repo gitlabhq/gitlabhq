@@ -87,7 +87,10 @@ module Types
     field :group, Types::GroupType,
       null: true,
       resolver: Resolvers::GroupResolver,
-      description: "Find a group."
+      description: "Find a group.",
+      directives: granular_scope_directive(
+        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group
+      )
     field :groups, Types::GroupType.connection_type,
       null: true,
       resolver: Resolvers::GroupsResolver,
@@ -144,12 +147,18 @@ module Types
       null: true,
       resolver: Resolvers::Organizations::OrganizationResolver,
       description: "Find an organization.",
-      experiment: { milestone: '16.4' }
+      experiment: { milestone: '16.4' },
+      directives: granular_scope_directive(
+        permissions: :read_organization, boundary: :instance, boundary_type: :instance
+      )
     field :organizations, Types::Organizations::OrganizationType.connection_type,
       null: true,
       resolver: Resolvers::Organizations::OrganizationsResolver,
       description: "List organizations.",
-      experiment: { milestone: '16.8' }
+      experiment: { milestone: '16.8' },
+      directives: granular_scope_directive(
+        permissions: :read_organization, boundary: :instance, boundary_type: :instance
+      )
     field :package,
       description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
       resolver: Resolvers::PackageDetailsResolver
@@ -157,7 +166,10 @@ module Types
       null: true,
       resolver: Resolvers::ProjectResolver,
       description: "Find a project.",
-      scopes: [:api, :read_api, :ai_workflows]
+      scopes: [:api, :read_api, :ai_workflows],
+      directives: granular_scope_directive(
+        permissions: :read_project, boundary_argument: :full_path, boundary_type: :project
+      )
     field :projects,
       null: true,
       resolver: Resolvers::ProjectsResolver,
@@ -168,7 +180,15 @@ module Types
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
-      description: "Find a runner."
+      description: "Find a runner.",
+      directives: granular_scope_directive(
+        permissions: :read_runner,
+        boundaries: [
+          { boundary: :owner, boundary_type: :project },
+          { boundary: :owner, boundary_type: :group },
+          { boundary: :instance, boundary_type: :instance }
+        ]
+      )
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
       deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }
     field :runner_setup, resolver: Resolvers::Ci::RunnerSetupResolver,
@@ -177,7 +197,10 @@ module Types
       null: true,
       resolver: Resolvers::Ci::RunnersResolver,
       description: "Get all runners in the GitLab instance (project and shared). " \
-        "Access is restricted to users with administrator access."
+        "Access is restricted to users with administrator access.",
+      directives: granular_scope_directive(
+        permissions: :read_runner, boundary: :instance, boundary_type: :instance
+      )
     field :snippets,
       Types::SnippetType.connection_type,
       null: true,
@@ -271,13 +294,15 @@ module Types
     field :feature_flag_enabled, GraphQL::Types::Boolean,
       null: false,
       deprecated: { reason: 'Replaced with metadata.featureFlags', milestone: '17.4' },
-      description: 'Check if a feature flag is enabled',
+      description: 'Check if a feature flag is enabled. ' \
+        'External API consumers should read the [feature flag guidance for external API consumers](https://docs.gitlab.com/development/feature_flags/#do-not-use-feature-flags-in-external-api-consumers) before using this field.',
       resolver: Resolvers::FeatureFlagResolver
 
     field :access_token_permissions,
       [Types::Authz::AccessTokens::PermissionType],
       null: false,
       experiment: { milestone: '18.6' },
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'List of permissions for fine-grained access tokens',
       resolver: Resolvers::Authz::AccessTokens::PermissionsResolver
 

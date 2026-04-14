@@ -13,7 +13,7 @@ deprecated_notes_spec.js is the spec for the legacy, jQuery notes application. I
 import { GlSkeletonLoader } from '@gitlab/ui';
 import Autosize from 'autosize';
 import $ from 'jquery';
-import { escape, uniqueId } from 'lodash';
+import { escape, uniqueId } from 'lodash-es';
 import Vue from 'vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -122,6 +122,11 @@ export default class Notes {
 
     if ($anchor) {
       this.loadLazyDiff({ currentTarget: $anchor });
+    }
+
+    const notesList = document.getElementById('notes-list');
+    if (notesList) {
+      renderGFM(notesList);
     }
   }
 
@@ -394,7 +399,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    localTimeAgo($note[0].querySelectorAll('.js-timeago'), false);
+    localTimeAgo($note.find('.js-timeago').get(), false);
 
     this.taskList.init();
 
@@ -759,11 +764,11 @@ export default class Notes {
 
     $noteAvatar.append($targetNoteBadge);
     this.revertNoteEditForm($targetNote);
-    renderGFM(Notes.getNodeToRender($noteEntityEl));
     // Find the note's `li` element by ID and replace it with the updated HTML
     const $note_li = $(`.note-row-${noteEntity.id}`);
 
     $note_li.replaceWith($noteEntityEl);
+    renderGFM(Notes.getNodeToRender($noteEntityEl));
     this.setupNewNote($noteEntityEl);
   }
 
@@ -834,6 +839,7 @@ export default class Notes {
     if (this.updatedNotesTrackingMap[noteId]) {
       const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
       $note.replaceWith($newNote);
+      renderGFM(Notes.getNodeToRender($newNote));
       this.setupNewNote($newNote);
       // Now that we have taken care of the update, clear it out
       delete this.updatedNotesTrackingMap[noteId];
@@ -1439,12 +1445,12 @@ export default class Notes {
     const $note = $(noteHtml);
 
     $note.addClass('fade-in-full');
-    renderGFM(Notes.getNodeToRender($note));
     if ($notesList.find('.discussion-reply-holder').length) {
       $notesList.children('.timeline-entry').last().after($note);
     } else {
       $notesList.append($note);
     }
+    renderGFM(Notes.getNodeToRender($note));
     return $note;
   }
 
@@ -1452,8 +1458,8 @@ export default class Notes {
     const $updatedNote = $(noteHtml);
 
     $updatedNote.addClass('fade-in');
-    renderGFM(Notes.getNodeToRender($updatedNote));
     $note.replaceWith($updatedNote);
+    renderGFM(Notes.getNodeToRender($updatedNote));
     return $updatedNote;
   }
 

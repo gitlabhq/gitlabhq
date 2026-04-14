@@ -37,10 +37,10 @@ Quick reference showing what you create in each step:
 |------|-----------|----------|----------|---------|
 | 2 | Planning document | (mental notes) | — | Permission names identified |
 | 3 | Raw permission YAML | `config/authz/permissions/<resource>/<action>.yml` | 1 per permission | `config/authz/permissions/job/read.yml` |
-| 3 | Raw permission resource metadata | `config/authz/permissions/<resource>/_metadata.yml` | 1 per resource | `config/authz/permissions/job/_metadata.yml` |
+| 3 | Raw permission resource metadata | `config/authz/permissions/<resource>/.metadata.yml` | 1 per resource | `config/authz/permissions/job/.metadata.yml` |
 | 4 | Assignable permission YAML | `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml` | 1 per group | `config/authz/permission_groups/assignable_permissions/ci_cd/job/run.yml` |
-| 4 (optional) | Category metadata | `config/authz/permission_groups/assignable_permissions/<category>/_metadata.yml` | 0 or 1 per category | `config/authz/permission_groups/assignable_permissions/ci_cd/_metadata.yml` |
-| 4 | Resource metadata | `config/authz/permission_groups/assignable_permissions/<category>/<resource>/_metadata.yml` | 1 per resource | `config/authz/permission_groups/assignable_permissions/ci_cd/job/_metadata.yml` |
+| 4 (optional) | Category metadata | `config/authz/permission_groups/assignable_permissions/<category>/.metadata.yml` | 0 or 1 per category | `config/authz/permission_groups/assignable_permissions/ci_cd/.metadata.yml` |
+| 4 | Resource metadata | `config/authz/permission_groups/assignable_permissions/<category>/<resource>/.metadata.yml` | 1 per resource | `config/authz/permission_groups/assignable_permissions/ci_cd/job/.metadata.yml` |
 | 5 | Grape decorators | Modify `lib/api/<resource>.rb` | 1 per endpoint | Added `route_setting :authorization` |
 | 6 | RSpec tests | Modify `spec/requests/api/<resource>_spec.rb` | 1 per endpoint | Added `it_behaves_like 'authorizing...'` |
 

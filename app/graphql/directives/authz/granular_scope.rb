@@ -3,6 +3,8 @@
 module Directives
   module Authz
     class GranularScope < GraphQL::Schema::Directive
+      repeatable true
+
       argument :permissions, [GraphQL::Types::String],
         description: 'Granular scope permissions required to access the field or type.'
 

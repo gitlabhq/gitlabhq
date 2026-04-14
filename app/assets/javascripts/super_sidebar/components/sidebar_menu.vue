@@ -94,7 +94,8 @@ export default {
         return result;
       },
       error(error) {
-        Sentry.captureException(error);
+        // Override gon.feature_category as this code loads on all pages
+        Sentry.captureException(error, { tags: { feature_category: 'navigation' } });
       },
     },
   },
@@ -219,7 +220,8 @@ export default {
           this.changedPinnedItemIds.ids = response.data;
         })
         .catch((e) => {
-          Sentry.captureException(e);
+          // Override gon.feature_category as this code loads on all pages
+          Sentry.captureException(e, { tags: { feature_category: 'navigation' } });
         });
     },
     isSection(navItem) {

@@ -10,8 +10,9 @@ class SentNotification < ApplicationRecord
   REPLY_KEY_BYTE_SIZE = 16
   INTEGER_CONVERT_BASE = 36
   BASE36_REGEX = /[0-9a-z]/
-  # Email reply key is in the form: <base36-partition-id>-<base36-reply-key>
-  PARTITIONED_REPLY_KEY_REGEX = /(?<partition>#{BASE36_REGEX}{1,4})-(?<reply_key>#{BASE36_REGEX}{25})/
+  NAMESPACE_REGEX = /(?:-(?<namespace_id>#{BASE36_REGEX}{1,13}))?/
+  # Email reply key is in the form: <base36-partition-id>-<base36-reply-key>-<base36-namespace-id>
+  PARTITIONED_REPLY_KEY_REGEX = /(?<partition>#{BASE36_REGEX}{1,4})-(?<reply_key>#{BASE36_REGEX}{25})#{NAMESPACE_REGEX}/
   LEGACY_REPLY_KEY_REGEX = /(?<legacy_key>[a-f\d]{32})/
   FULL_REPLY_KEY_REGEX = /(?:(#{LEGACY_REPLY_KEY_REGEX})|(#{PARTITIONED_REPLY_KEY_REGEX}))/
   PARTITION_DURATION = 2.months
@@ -75,8 +76,9 @@ class SentNotification < ApplicationRecord
       return unless matches
 
       result = if matches[:reply_key]
+                 decoded_partition = matches[:partition].to_i(INTEGER_CONVERT_BASE)
                  partition_result = where(
-                   partition: matches[:partition], reply_key: matches[:reply_key]
+                   partition: decoded_partition, reply_key: matches[:reply_key]
                  ).to_a
 
                  if partition_result.any?
@@ -172,8 +174,9 @@ class SentNotification < ApplicationRecord
     return reply_key unless persisted?
 
     encoded_partition = partition.to_s(INTEGER_CONVERT_BASE)
+    encoded_namespace_id = namespace_id.to_s(INTEGER_CONVERT_BASE)
 
-    "#{encoded_partition}-#{reply_key}"
+    "#{encoded_partition}-#{reply_key}-#{encoded_namespace_id}"
   end
 
   private

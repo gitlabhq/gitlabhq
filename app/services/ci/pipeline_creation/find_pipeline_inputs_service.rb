@@ -47,11 +47,7 @@ module Ci
           return error_response(s_('Pipelines|The branch or tag does not exist'))
         end
 
-        if Feature.enabled?(:ci_pipeline_inputs_reactive_cache, project)
-          with_reactive_cache(sha) { |result| result }
-        else
-          fetch_inputs(sha)
-        end
+        with_reactive_cache(sha) { |result| result }
       end
 
       def calculate_reactive_cache(sha)

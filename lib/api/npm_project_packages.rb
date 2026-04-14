@@ -109,7 +109,7 @@ module API
         hidden true
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-      route_setting :authorization, permissions: :authorize_npm_package, boundary_type: :project,
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization,
         job_token_policies: :admin_packages
       put ':package_name/authorize', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
         authorize_upload!(project)

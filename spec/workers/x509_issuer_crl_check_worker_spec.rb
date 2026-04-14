@@ -10,7 +10,7 @@ RSpec.describe X509IssuerCrlCheckWorker, feature_category: :source_code_manageme
   let(:revoked_x509_signed_commit) { project.commit_by(oid: 'ed775cc81e5477df30c2abba7b6fdbb5d0baadae') }
 
   describe '#perform' do
-    context 'valid crl' do
+    context 'when CRL is valid' do
       before do
         stub_request(:get, "http://ch.siemens.com/pki?ZZZZZZA6.crl")
           .to_return(status: 200, body: File.read('spec/fixtures/x509/ZZZZZZA6.crl'), headers: {})
@@ -33,7 +33,7 @@ RSpec.describe X509IssuerCrlCheckWorker, feature_category: :source_code_manageme
       end
     end
 
-    context 'invalid crl' do
+    context 'when CRL is invalid' do
       before do
         stub_request(:get, "http://ch.siemens.com/pki?ZZZZZZA6.crl")
           .to_return(status: 200, body: "trash", headers: {})
@@ -51,7 +51,7 @@ RSpec.describe X509IssuerCrlCheckWorker, feature_category: :source_code_manageme
       end
     end
 
-    context 'not found crl' do
+    context 'when CRL is not found' do
       before do
         stub_request(:get, "http://ch.siemens.com/pki?ZZZZZZA6.crl")
           .to_return(status: 404, body: "not found", headers: {})
@@ -69,7 +69,7 @@ RSpec.describe X509IssuerCrlCheckWorker, feature_category: :source_code_manageme
       end
     end
 
-    context 'unreachable crl' do
+    context 'when CRL is unreachable' do
       before do
         stub_request(:get, "http://ch.siemens.com/pki?ZZZZZZA6.crl")
           .to_raise(SocketError.new('Some HTTP error'))

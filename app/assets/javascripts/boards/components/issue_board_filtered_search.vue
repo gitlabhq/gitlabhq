@@ -8,7 +8,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import issueBoardFilters from 'ee_else_ce/boards/issue_board_filters';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   OPERATORS_IS_NOT,
   OPERATORS_IS,
@@ -34,13 +34,8 @@ import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
+import WorkItemTypeToken from '~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TICKET,
-} from '~/work_items/constants';
 
 export default {
   components: { BoardFilteredSearch },
@@ -65,29 +60,6 @@ export default {
   computed: {
     tokensCE() {
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
-
-      const typeOptions = [
-        { icon: 'work-item-issue', value: WORK_ITEM_TYPE_ENUM_ISSUE, title: s__('WorkItem|Issue') },
-        {
-          icon: 'work-item-incident',
-          value: WORK_ITEM_TYPE_ENUM_INCIDENT,
-          title: s__('WorkItem|Incident'),
-        },
-      ];
-
-      if (this.glFeatures.workItemTasksOnBoards) {
-        typeOptions.push({
-          icon: 'work-item-task',
-          value: WORK_ITEM_TYPE_ENUM_TASK,
-          title: s__('WorkItem|Task'),
-        });
-      }
-
-      typeOptions.push({
-        icon: 'work-item-ticket',
-        value: WORK_ITEM_TYPE_ENUM_TICKET,
-        title: s__('WorkItem|Ticket'),
-      });
 
       const tokens = [
         {
@@ -176,12 +148,13 @@ export default {
           fullPath: this.fullPath,
         },
         {
-          icon: 'work-item-issue',
-          title: TOKEN_TITLE_TYPE,
           type: TOKEN_TYPE_TYPE,
-          token: GlFilteredSearchToken,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'work-item-issue',
           unique: true,
-          options: typeOptions,
+          token: WorkItemTypeToken,
+          fullPath: this.fullPath,
+          isFilterableBoardView: true,
         },
         {
           type: TOKEN_TYPE_RELEASE,

@@ -5,10 +5,23 @@ module Search
   # Provides a single source of truth for scope definitions, availability,
   # and validation logic
   class Scopes
-    # Scope definitions with metadata (CE scopes only)
+    # API-only scopes for backward compatibility
+    # These scopes are maintained for API backward compatibility but are being
+    # phased out in favor of newer scopes (e.g., 'issues' -> 'work_items')
+    API_ONLY_SCOPES = {
+      issues: {
+        availability: {
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
+        }
+      }
+    }.freeze
+
+    # Scope definitions with metadata
     # Format: { scope_key => { label:, sort:, availability: } }
     # availability maps context (:global, :group, :project) to supported search types
-    # EE scopes are defined in ee/lib/ee/search/scopes.rb
+    # EE adds enhanced search types (zoekt, advanced) in ee/lib/ee/search/scopes.rb
     SCOPE_DEFINITIONS = {
       projects: {
         label: -> { _('Projects') },
@@ -27,19 +40,9 @@ module Search
           project: %i[zoekt advanced basic]
         }
       },
-      # sort: 3 is reserved for EE scopes (epics/work_items)
       work_items: {
         label: -> { _('Work items') },
         sort: 3,
-        availability: {
-          global: %i[advanced basic],
-          group: %i[advanced basic],
-          project: %i[advanced basic]
-        }
-      },
-      issues: {
-        label: -> { _('Issues') },
-        sort: 4,
         availability: {
           global: %i[advanced basic],
           group: %i[advanced basic],
@@ -110,11 +113,11 @@ module Search
       }
     }.freeze
 
-    # Map of scopes to their required application setting for global search (CE scopes)
-    # EE scopes are added in ee/lib/ee/search/scopes.rb
+    # Map of scopes to their required application setting for global search
+    # EE settings are added in ee/lib/ee/search/scopes.rb
     GLOBAL_SEARCH_SETTING_MAP = {
-      'issues' => :global_search_issues_enabled?,
-      'work_items' => :global_search_issues_enabled?,
+      'issues' => :global_search_work_items_enabled?, # API backward compatibility
+      'work_items' => :global_search_work_items_enabled?,
       'merge_requests' => :global_search_merge_requests_enabled?,
       'snippet_titles' => :global_search_snippet_titles_enabled?,
       'users' => :global_search_users_enabled?
@@ -143,8 +146,10 @@ module Search
       end
 
       # Returns the scope definitions (can be overridden in EE)
-      def scope_definitions
-        SCOPE_DEFINITIONS
+      # @param include_api_only [Boolean] Whether to include API-only backward compatibility scopes
+      # @return [Hash] Scope definitions hash
+      def scope_definitions(include_api_only: true)
+        include_api_only ? SCOPE_DEFINITIONS.merge(API_ONLY_SCOPES) : SCOPE_DEFINITIONS
       end
 
       private

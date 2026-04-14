@@ -3,25 +3,19 @@ stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Remediate
-description: Root cause determination and analysis.
+description: Fix or eliminate the root cause of a vulnerability.
 ---
 
 Remediation is the fourth phase of the vulnerability management lifecycle: detect, triage, analyze,
 remediate.
 
-Remediation is the process of finding the root cause of a vulnerability and fixing the root cause,
-reducing the risks, or both. Use information contained in each vulnerability's
-[details page](../vulnerabilities/_index.md) to help you understand the nature of the vulnerability
-and remediate it.
+Remediation is the process of fixing or eliminating the root cause of a vulnerability. Use
+information contained in each vulnerability's [details page](../vulnerabilities/_index.md) to help
+you understand the nature of the vulnerability and remediate it.
 
-The objective of the remediation phase is to either resolve or dismiss a vulnerability. A
-vulnerability is resolved when either you've remediated the root cause or it's no longer present. A
-vulnerability is dismissed when you've decided that no further effort is justified.
-
-<i class="fa-youtube-play" aria-hidden="true"></i>
+<i class="fa-youtube-play"></i>
 For a walkthrough of how GitLab Duo can help you analyze and remediate a vulnerability, see
 [Use GitLab Duo to remediate an SQL injection](https://youtu.be/EJXAIzXNAWQ?si=IDKtApBH1j5JwdUY).
-<!-- Video published on 2023-07-08 -->
 
 ## Scope
 
@@ -35,50 +29,83 @@ filter criteria in the vulnerability report:
 ## Document the vulnerability
 
 If you've not already,
-[create an issue](../vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability)
-to document your investigation and remediation work. This documentation provides a reference point
-if you discover a similar vulnerability, or if the same vulnerability is detected again.
+[create an issue](../vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability) to
+document your investigation and remediation work. Use these steps if this vulnerability recurs
+or you find similar vulnerabilities.
 
-## Remediate the vulnerability
+## Choose an outcome
 
-Use the information gathered in the analysis phase to help guide you to remediate the vulnerability.
-It's important to understand the root cause of the vulnerability so that remediation is
-effective.
+After analyzing a vulnerability, you must decide whether to remediate it or dismiss it. Use your
+organization's risk management framework to guide your decision. The guidance here is generic. Adapt
+it to your organization's risk profile.
 
-For some vulnerabilities detected by SAST, GitLab can:
+If available, use the
+[Security Analyst Agent](../../duo_agent_platform/agents/foundational_agents/security_analyst_agent.md)
+to accelerate vulnerability remediation. The agent triages, assesses, and
+remediates security findings by providing insights, risk assessments, and remediation guidance.
 
-- [Explain the vulnerability](../analyze/duo.md) by using GitLab Duo Chat.
-- Resolve the vulnerability by using:
-  - [Non-agentic vulnerability resolution](duo.md)
-  - [Agentic vulnerability resolution](../vulnerabilities/agentic_vulnerability_resolution.md)
-- Provide the complete data path from input to the vulnerable line of code, if you're using
-  GitLab Advanced SAST.
+Remediate a vulnerability when:
 
-When the root cause of a vulnerability is remediated, resolve the vulnerability.
+- The vulnerability poses a genuine security risk in your environment.
+- The root cause can be fixed or mitigated.
+- The effort required is justified by the risk level.
 
-To do this:
-
-1. Change the vulnerability's status to **Resolved**.
-1. Document in the issue created for the vulnerability how it was remediated, then close the issue.
-
-   If a resolved vulnerability is reintroduced and detected again, its record is reinstated and its
-   status set to **Needs triage**.
-
-## Dismiss the vulnerability
-
-At any point during the remediation phase you might decide to dismiss the vulnerability, possibly
-because you have decided:
+Dismiss a vulnerability when:
 
 - The estimated cost of remediation effort is too high.
 - The vulnerability poses little to no risk.
 - The vulnerability's risk has already been mitigated.
 - The vulnerability is not valid in your environment.
 
-When you dismiss the vulnerability:
+## Remediate a vulnerability
 
-1. Provide a brief comment that states why you've dismissed it.
-1. Change the vulnerability's status to **Dismissed**.
-1. If you created an issue for the vulnerability, add a comment noting that you dismissed the
-   vulnerability, then close the issue.
+Use the information gathered in the analysis phase to help guide you to remediate the vulnerability.
+It's important to understand the root cause of the vulnerability so that remediation is
+effective.
 
-   A dismissed vulnerability is ignored if it's detected in subsequent scans.
+Change the status of a vulnerability to **Resolved** when you have remediated it. This status change
+creates a record of when and how the vulnerability was addressed, which is important for compliance
+and security reviews. If the same vulnerability is detected again in future scans, GitLab
+automatically reinstates the record and sets its status back to **Needs triage**, alerting you to a
+regression.
+
+Prerequisites:
+
+- The Security Manager, Maintainer or Owner role for the project.
+
+To change a vulnerability's status to resolved:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Secure** > **Vulnerability report**.
+1. Find the vulnerability in the vulnerability report.
+1. Select the vulnerability's description.
+1. Select **Edit vulnerability** > **Change status**.
+1. From the **Status** dropdown list, select **Resolved**.
+1. Optional. In the **Comment** input box, explain why you've marked the vulnerability as resolved.
+1. Select **Change status**.
+1. If you created an issue for the vulnerability, document how it was remediated, then close the
+   issue.
+
+## Dismiss a vulnerability
+
+Change the status of a vulnerability to **Dismissed** when you've decided that remediation is not
+justified. This status change creates a record of when and how the vulnerability was addressed,
+which is important for compliance and security reviews. A dismissed vulnerability is ignored if it's
+detected in subsequent scans.
+
+Prerequisites:
+
+- The Security Manager, Maintainer or Owner role for the project.
+
+To dismiss a vulnerability:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Secure** > **Vulnerability report**.
+1. Find the vulnerability in the vulnerability report.
+1. Select the vulnerability's description.
+1. Select **Edit vulnerability** > **Change status**.
+1. From the **Status** dropdown list, select a dismissal reason.
+1. In the **Comment** input box, explain why you've dismissed the vulnerability.
+1. Select **Change status**.
+1. If you created an issue for the vulnerability, document why you've dismissed it, then close the
+   issue.

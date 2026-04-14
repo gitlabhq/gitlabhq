@@ -391,7 +391,11 @@ Dynatrace can cause the `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks` r
 to take several seconds to start up and shut down. `gitaly-hooks` is executed twice when users
 push, which causes a significant delay.
 
-If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
+Dynatrace appears to instrument binaries by loading an `.so` file dynamically, which contributes to the poor
+performance of relatively short-lived `gitaly-hooks` processes.
+
+If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace. You might need to completely remove
+Dynatrace from the system that Gitaly is running on to prevent the `.so` file from being loaded.
 
 ## `gitaly check` fails with `401` status code
 

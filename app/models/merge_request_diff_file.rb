@@ -65,7 +65,7 @@ class MergeRequestDiffFile < ApplicationRecord
   end
 
   def deduplicate_new_path
-    return unless project_id && Feature.enabled?(:deduplicate_new_path_value, Project.find(project_id))
+    return unless project_id
 
     self.new_path = nil if new_path == old_path
   end

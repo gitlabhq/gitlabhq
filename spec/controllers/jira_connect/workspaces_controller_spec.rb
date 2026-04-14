@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::WorkspacesController, feature_category: :integrations do
-  let_it_be(:installation) { create(:jira_connect_installation) }
+RSpec.describe JiraConnect::WorkspacesController, :with_current_organization, feature_category: :integrations do
+  let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
   let_it_be(:group) { create(:group) }
 
   before do

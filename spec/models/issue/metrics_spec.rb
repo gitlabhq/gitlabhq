@@ -2,10 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Issue::Metrics do
+RSpec.describe Issue::Metrics, feature_category: :team_planning do
   let(:project) { create(:project) }
 
   subject { create(:issue, project: project) }
+
+  describe 'associations' do
+    subject { create(:issue, project: project).metrics }
+
+    it { is_expected.to belong_to(:namespace) }
+  end
 
   describe '.for_issues' do
     subject(:scope) { described_class.for_issues([issue1, issue2]) }

@@ -18,7 +18,19 @@ module API
         authorize!(:destroy_protected_branch, protected_branch)
       end
 
+      params :optional_params_ce do
+        optional :allowed_to_push, type: Array[JSON],
+          desc: 'Array of deploy keys allowed to push to protected branches' do
+          optional :deploy_key_id, type: Integer, desc: 'ID of a deploy key'
+        end
+      end
+
       params :optional_params_ee do
+      end
+
+      params :optional_params do
+        use :optional_params_ce
+        use :optional_params_ee
       end
     end
   end

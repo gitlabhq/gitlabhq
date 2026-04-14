@@ -1,4 +1,4 @@
-import { countBy, debounce } from 'lodash';
+import { countBy, debounce } from 'lodash-es';
 import { __ } from '~/locale';
 import {
   getBaseURL,
@@ -27,11 +27,15 @@ import { unrestrictedPages } from './constants';
 // </pre>
 //
 
-const SANDBOX_FRAME_PATH = '/-/sandbox/mermaid';
+const SANDBOX_FRAME_PATH_V10 = '/-/sandbox/mermaid_v10';
+const SANDBOX_FRAME_PATH_V11 = '/-/sandbox/mermaid_v11';
+
 // This is an arbitrary number; Can be iterated upon when suitable.
 export const MAX_CHAR_LIMIT = 2000;
+
 // Max # of mermaid blocks that can be rendered in a page.
 export const MAX_MERMAID_BLOCK_LIMIT = 50;
+
 // Max # of `&` allowed in Chaining of links syntax
 const MAX_CHAINING_OF_LINKS_LIMIT = 30;
 
@@ -73,7 +77,9 @@ function fixElementSource(el) {
 }
 
 export function getSandboxFrameSrc() {
-  const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
+  const useMermaidV11 = gon?.features?.useMermaidV11;
+  const framePath = useMermaidV11 ? SANDBOX_FRAME_PATH_V11 : SANDBOX_FRAME_PATH_V10;
+  const path = joinPaths(gon.relative_url_root || '', framePath);
   let absoluteUrl = relativePathToAbsolute(path, getBaseURL());
   if (darkModeEnabled()) {
     absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, { url: absoluteUrl });
@@ -244,17 +250,15 @@ export default function renderMermaid(els) {
 
   renderMermaids(visibleMermaids);
 
-  hiddenMermaids.forEach((el) => {
-    el.closest('details')?.addEventListener(
-      'toggle',
-      ({ target: details }) => {
-        if (details.open) {
-          renderMermaids([...details.querySelectorAll('.js-render-mermaid')]);
-        }
+  if (hiddenMermaids.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        visible.forEach((entry) => observer.unobserve(entry.target));
+        renderMermaids(visible.map((entry) => entry.target));
       },
-      {
-        once: true,
-      },
+      { threshold: 0 },
     );
-  });
+    hiddenMermaids.forEach((el) => observer.observe(el));
+  }
 }

@@ -1,0 +1,13 @@
+---
+table_name: user_upload_states
+description: Separate table for User Upload verification states
+introduced_by_url:
+milestone: '18.11'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::UserUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo

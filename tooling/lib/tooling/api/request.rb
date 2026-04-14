@@ -2,7 +2,7 @@
 
 require 'rails'
 require 'net/http'
-require_relative '../../../../lib/gitlab/utils/link_header_parser'
+require 'gitlab/utils/link_header_parser'
 
 module Tooling
   module API

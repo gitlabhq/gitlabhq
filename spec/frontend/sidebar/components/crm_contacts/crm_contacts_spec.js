@@ -37,7 +37,7 @@ describe('Issue crm contacts component', () => {
       [issueCrmContactsSubscription, subscriptionHandler],
     ]);
     wrapper = shallowMountExtended(CrmContacts, {
-      propsData: { issueId: '123', groupIssuesPath: '/groups/flightjs/-/issues' },
+      propsData: { issueId: '123', groupWorkItemsPath: '/groups/flightjs/-/work_items' },
       apolloProvider: fakeApollo,
     });
   };
@@ -75,12 +75,12 @@ describe('Issue crm contacts component', () => {
 
     expect(wrapper.find('#contact_0').text()).toContain('Someone Important');
     expect(wrapper.find('#contact_0').attributes('href')).toBe(
-      '/groups/flightjs/-/issues?crm_contact_id=1',
+      '/groups/flightjs/-/work_items?crm_contact_id=1',
     );
     expect(wrapper.find('#contact_container_0').text()).toContain('si@gitlab.com');
     expect(wrapper.find('#contact_1').text()).toContain('Marty McFly');
     expect(wrapper.find('#contact_1').attributes('href')).toBe(
-      '/groups/flightjs/-/issues?crm_contact_id=5',
+      '/groups/flightjs/-/work_items?crm_contact_id=5',
     );
   });
 
@@ -103,7 +103,7 @@ describe('Issue crm contacts component', () => {
       expect(wrapper.find('#contact_container_0').text()).toContain(property);
     });
     expect(wrapper.find('#contact_0').attributes('href')).toBe(
-      '/groups/flightjs/-/issues?crm_contact_id=13',
+      '/groups/flightjs/-/work_items?crm_contact_id=13',
     );
   });
 });

@@ -282,6 +282,32 @@ local GitLab Rails instance, bypassing the external URL:
    sudo gitlab-ctl restart gitlab-pages
    ```
 
+## GitLab Pages requests redirect to the sign-in page instead of loading Pages content
+
+In some cases, GitLab Pages appears to be configured correctly, but requests never reach the Pages daemon.
+Instead, users are repeatedly redirected to the GitLab sign-in page, even with the correct credentials and permissions.
+
+This behavior can occur if the main GitLab instance and GitLab Pages are not part of the same NGINX listen group.
+
+If you set `nginx['listen_addresses']` to a specific IP address, then you must have a matching `pages_nginx['listen_addresses']` value.
+
+To resolve this issue, ensure that both the main GitLab instance and GitLab Pages are configured with identical `listen_addresses` values so they belong to the same listen group:
+
+1. Edit `/etc/gitlab/gitlab.rb` and ensure both the main GitLab instance and GitLab Pages have matching `listen_addresses`, for example:
+
+   ```ruby
+   nginx['listen_addresses']       = ['10.74.12.5']
+   pages_nginx['listen_addresses'] = ['10.74.12.5']
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+With both components listening on the same IP address, NGINX can correctly evaluate the `server_name` and route requests to GitLab Pages instead of redirecting to the sign-in page.
+
 ## Failed to connect to the internal GitLab API
 
 If you see the following error:

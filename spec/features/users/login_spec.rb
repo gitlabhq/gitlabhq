@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions, :aggregate_failures, feature_category: :system_access do
+RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions, :aggregate_failures, feature_category: :system_access, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/40373' do
   include TermsHelper
   include UserLoginHelper
   include SessionHelpers

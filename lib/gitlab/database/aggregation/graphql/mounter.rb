@@ -14,6 +14,7 @@ module Gitlab
               description: opts[:description],
               null: true,
               resolver_method: :object,
+              authorize: opts[:authorize],
               resolver: Resolvers::Analytics::Aggregation::EngineResolver.build(engine, **opts, &block)
           end
         end

@@ -19,12 +19,13 @@ module Enums
           filtered_by_rules: 26,
           filtered_by_workflow_rules: 27,
           composite_identity_forbidden: 28,
-          pipeline_ref_creation_failure: 29
+          pipeline_ref_creation_failure: 29,
+          filtered_by_no_pipeline: 30
         }
       end
 
       def self.persistable_failure_reasons
-        failure_reasons.except(:filtered_by_rules, :filtered_by_workflow_rules)
+        failure_reasons.except(:filtered_by_rules, :filtered_by_workflow_rules, :filtered_by_no_pipeline)
       end
 
       def self.persistable_failure_reason?(reason)
@@ -53,7 +54,8 @@ module Enums
           security_orchestration_policy: 15,
           container_registry_push: 16,
           duo_workflow: 17,
-          pipeline_execution_policy_schedule: 18
+          pipeline_execution_policy_schedule: 18,
+          dependency_management_security_update: 19
         }
       end
 
@@ -77,7 +79,8 @@ module Enums
           :security_orchestration_policy,
           :container_registry_push,
           :duo_workflow,
-          :pipeline_execution_policy_schedule
+          :pipeline_execution_policy_schedule,
+          :dependency_management_security_update
         )
       end
 
@@ -91,7 +94,8 @@ module Enums
       # do not need access most of the kinds of CI variables.
       def self.workload_sources
         dangling_sources.slice(
-          :duo_workflow
+          :duo_workflow,
+          :dependency_management_security_update
         )
       end
 

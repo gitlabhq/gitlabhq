@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { n__, s__, sprintf } from '~/locale';
 

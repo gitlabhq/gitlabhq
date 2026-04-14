@@ -1,5 +1,5 @@
 import { parseDocument, Document } from 'yaml';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineWizardStep from '~/pipeline_wizard/components/step.vue';

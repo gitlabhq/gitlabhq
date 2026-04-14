@@ -12,10 +12,16 @@ module Types
         null: true,
         description: 'Number of open issues of the namespace.'
 
-      field :open_merge_requests_count, # rubocop:disable GraphQL/ExtractType -- no need to extract these into a field named "open"
+      field :open_merge_requests_count,
         GraphQL::Types::Int,
         null: true,
         description: 'Number of open merge requests of the namespace.'
+
+      field :open_work_items_count, # rubocop:disable GraphQL/ExtractType -- Follows existing pattern for open_issues_count and open_merge_requests_count
+        GraphQL::Types::Int,
+        null: true,
+        experiment: { milestone: '18.11' },
+        description: 'Number of open work items in the namespace (limited to 10,000).'
 
       def open_issues_count
         case namespace
@@ -39,7 +45,10 @@ module Types
         ::Groups::OpenIssuesCountService.new(namespace, context[:current_user], fast_timeout: true).count
       rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout to prevent this count from slowing down the rest of the request
         Gitlab::ErrorTracking.log_exception(e, group_id: namespace.id, query: 'group_sidebar_issues_count')
+        nil
+      end
 
+      def open_work_items_count
         nil
       end
     end

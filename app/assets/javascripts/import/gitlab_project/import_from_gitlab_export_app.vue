@@ -6,7 +6,7 @@ import {
   GlAnimatedUploadIcon,
   GlMultiStepFormTemplate,
 } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';

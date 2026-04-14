@@ -1247,7 +1247,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:ignored_views) { double(ActiveRecord::Relation, pluck: ['pg_stat_statements']) }
 
     before do
-      allow(Gitlab::Database::PgDepend).to receive(:using_connection).and_yield
       allow(Gitlab::Database::PgDepend).to receive(:from_pg_extension).with('VIEW').and_return(ignored_views)
     end
 
@@ -1261,6 +1260,9 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
         allow(connection).to receive(:tables).and_return(tables)
         allow(connection).to receive(:views).and_return(views)
+
+        allow(Backup::DatabaseConnection).to receive(:new).with('main')
+          .and_return(instance_double(Backup::DatabaseConnection, connection: connection))
       end
 
       it 'drops all objects for the database', :aggregate_failures do
@@ -1287,6 +1289,20 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           allow(main_model.connection).to receive(:quote_table_name).with(name).and_return("\"#{name}\"")
           allow(ci_model.connection).to receive(:quote_table_name).with(name).and_return("\"#{name}\"")
         end
+
+        allow(Backup::DatabaseConnection).to receive(:new).with('main')
+          .and_return(instance_double(Backup::DatabaseConnection, connection: main_model.connection))
+        allow(Backup::DatabaseConnection).to receive(:new).with('ci')
+          .and_return(instance_double(Backup::DatabaseConnection, connection: ci_model.connection))
+      end
+
+      it 'does not use PgDepend.using_connection to avoid SharedModel connection conflicts' do
+        expect(Gitlab::Database::PgDepend).not_to receive(:using_connection)
+
+        allow(main_model.connection).to receive(:execute).and_return(nil)
+        allow(ci_model.connection).to receive(:execute).and_return(nil)
+
+        run_rake_task('gitlab:db:drop_tables')
       end
 
       it 'drops all objects for all databases', :aggregate_failures do

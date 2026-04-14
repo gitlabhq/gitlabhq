@@ -176,6 +176,9 @@ class CurrentStatus < ApplicationRecord
 end
 ```
 
+For a complete guide to implementing fixed items models, see
+[Fixed items model](../fixed_items_model.md).
+
 Examples of hard-coding static data include:
 
 - [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)

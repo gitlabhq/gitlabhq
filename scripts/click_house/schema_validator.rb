@@ -3,8 +3,14 @@
 module ClickHouse
   class SchemaValidator
     SCHEMA_FILENAME = "db/click_house/main.sql" # Only supporting main schema, for now
+    SKIP_VALIDATION_LABEL = 'pipeline:skip-check-clickhouse-schema'
 
     def self.validate!
+      if skip_validation?
+        puts "\e[32mLabel #{SKIP_VALIDATION_LABEL} is present, skipping schema validation\e[0m"
+        return true
+      end
+
       puts "Running ClickHouse migrations..."
       migration_success = system("bundle exec rake gitlab:clickhouse:migrate:main gitlab:clickhouse:schema:dump:main")
 
@@ -32,6 +38,9 @@ module ClickHouse
         puts "Changes detected in: #{SCHEMA_FILENAME}"
         puts "Diff output:"
         puts `git diff -- #{SCHEMA_FILENAME}`
+        puts "Please investigate. Apply the '#{SKIP_VALIDATION_LABEL}' label to skip this check if needed. " \
+          "If you are unsure why this job is failing for your MR, then please refer to this page: " \
+          "https://docs.gitlab.com/development/database/clickhouse/reviewer_guidelines.html#ensuring-database-schema-consistency"
       end
 
       schema_is_clean
@@ -44,6 +53,10 @@ module ClickHouse
 
     def self.git_command_successful?
       $?.success?
+    end
+
+    def self.skip_validation?
+      ENV.fetch('CI_MERGE_REQUEST_LABELS', '').split(',').include?(SKIP_VALIDATION_LABEL)
     end
   end
 end

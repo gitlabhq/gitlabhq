@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::EmailsOnPush, feature_category: :integrations do
+RSpec.describe Integrations::EmailsOnPush, feature_category: :source_code_management do
   it_behaves_like Integrations::Base::EmailsOnPush
 
   describe '#execute' do

@@ -1,0 +1,6 @@
+---
+name: _read_own_workspace
+description: Private permission that gates read access to workspaces owned by the
+  current user within a project. The workspace policy combines this permission
+  with an ownership check to enable the public read_workspace permission. Must
+  not be checked directly at enforcement points.

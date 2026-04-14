@@ -28,6 +28,7 @@
         %tr
           %th Name
           %th Size
+          %th.gl-w-8{ 'aria-label': _('Actions') }
       = render partial: 'tree_directory', collection: @entry.directories(parent: true), as: :directory
       = render partial: 'tree_file', collection: @entry.files, as: :file
 

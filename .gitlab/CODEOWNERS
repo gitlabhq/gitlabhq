@@ -2,9 +2,80 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/user/project/codeowners/reference/#add-a-group-as-a-code-owner
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
+# Required by compliance. At least one maintainer who is not the author must approve.
+# The `*` line is a fallback.
+# Whenever possible, we want changes to be reviewed and approved by team members
+# that have appropriate competence to validate the change
+[Maintainers] @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
+*
+
+# Backend
+*.rb @gitlab-org/maintainers/rails-backend
+*.rake @gitlab-org/maintainers/rails-backend
+*.builder @gitlab-org/maintainers/rails-backend
+*.erb @gitlab-org/maintainers/rails-backend
+Gemfile @gitlab-org/maintainers/rails-backend
+Gemfile.lock @gitlab-org/maintainers/rails-backend
+Gemfile.checksum @gitlab-org/maintainers/rails-backend
+Gemfile.next @gitlab-org/maintainers/rails-backend
+Gemfile.next.lock @gitlab-org/maintainers/rails-backend
+Gemfile.next.checksum @gitlab-org/maintainers/rails-backend
+Rakefile @gitlab-org/maintainers/rails-backend
+# By default Backend owns these directories.
+# Further lines in this [Maintainers] section may override these.
+/.rubocop/ @gitlab-org/maintainers/rails-backend
+/.rubocop_todo/ @gitlab-org/maintainers/rails-backend
+/app/ @gitlab-org/maintainers/rails-backend
+/bin/ @gitlab-org/maintainers/rails-backend
+/config/ @gitlab-org/maintainers/rails-backend
+/ee/ @gitlab-org/maintainers/rails-backend
+/gems/ @gitlab-org/maintainers/rails-backend
+/generator_templates/ @gitlab-org/maintainers/rails-backend
+/haml_lint/ @gitlab-org/maintainers/rails-backend
+/keeps/ @gitlab-org/maintainers/rails-backend
+/lib/ @gitlab-org/maintainers/rails-backend
+/log/ @gitlab-org/maintainers/rails-backend
+/metrics_server/ @gitlab-org/maintainers/rails-backend
+/rubocop/ @gitlab-org/maintainers/rails-backend
+/shared/ @gitlab-org/maintainers/rails-backend
+/spec/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers
+/qa/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers
+/sidekiq_cluster/ @gitlab-org/maintainers/rails-backend
+/tmp/ @gitlab-org/maintainers/rails-backend
+/vendor/ @gitlab-org/maintainers/rails-backend
+/locale/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+
+# HAML markup is considered ~frontend code.
+# However, Ruby code in HAML templates is considered ~backend code
+*.haml @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+/public/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+/app/views/**/*.erb @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+/ee/app/views/**/*.erb @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend
+
+# Frontend
+*.scss @gitlab-org/maintainers/frontend
+*.js @gitlab-org/maintainers/frontend
+*.graphql @gitlab-org/maintainers/frontend
+/storybook/ @gitlab-org/maintainers/frontend
+# Overrides above BE directory assignments
+/app/assets/ @gitlab-org/maintainers/frontend
+/ee/app/assets/ @gitlab-org/maintainers/frontend
+/ee/frontend_islands/ @gitlab-org/maintainers/frontend
+/spec/frontend/ @gitlab-org/maintainers/frontend
+/ee/spec/frontend/ @gitlab-org/maintainers/frontend
+/spec/frontend_integration/ @gitlab-org/maintainers/frontend
+/ee/spec/frontend_integration/ @gitlab-org/maintainers/frontend
+
+# Database
+/db/ @gitlab-org/maintainers/database
+/ee/db/ @gitlab-org/maintainers/database
+/db/click_house/ @gitlab-org/maintainers/clickhouse
+/ee/db/click_house/ @gitlab-org/maintainers/clickhouse
+/db/siphon/ @gitlab-org/maintainers/clickhouse
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
+
+/*_VERSION @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Allows release tooling and Gitaly team members to update the Gitaly Version
 /GITALY_SERVER_VERSION @project_278964_bot_e2e6cca5e3b0076fdecec369cccb9e18 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
@@ -27,6 +98,7 @@
 !/doc/**/*.jpg
 !/doc/**/*.png
 !/doc/**/*.svg
+!/doc/api/openapi/**/*.yaml
 !/data/**/*.yml
 
 ## Technical writing files that do not need `*` rule approval,
@@ -52,27 +124,6 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 ^[Source code editing]
 .solargraph.yml.example @igor.drozdov
 
-^[Backend] @gitlab-org/maintainers/rails-backend
-*.rb
-*.rake
-.rubocop_todo/
-Gemfile
-Gemfile.lock
-Gemfile.checksum
-Gemfile.next
-Gemfile.next.lock
-Gemfile.next.checksum
-
-^[Frontend] @gitlab-org/maintainers/frontend
-*.scss
-*.js
-/app/assets/
-/ee/app/assets/
-/spec/frontend/
-/ee/spec/frontend/
-/spec/frontend_integration/
-/ee/spec/frontend_integration/
-
 ^[Frontend dependency patches] @markrian @xanf @thutterer
 /patches/
 
@@ -81,8 +132,6 @@ Gemfile.next.checksum
 /scripts/data_seeder/
 
 [Clickhouse] @gitlab-org/maintainers/clickhouse
-/db/click_house/
-/ee/db/click_house/
 /**/click_house/
 
 ## We list db/ subfolders explicitly as we don't want to match Clickhouse files
@@ -177,9 +226,6 @@ Dangerfile
 /rubocop/
 /spec/rubocop/
 /spec/rubocop*
-
-^[End-to-end] @gl-dx
-/qa/
 
 ^[Unused method linting script] @kerrizor @splattael
 /.gitlab/lint/unused_methods/
@@ -482,7 +528,7 @@ Dangerfile
 /ee/app/assets/javascripts/metrics/
 /ee/app/assets/javascripts/tracing/
 
-[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers
+[Analytics Instrumentation] @gitlab-org/analytics-section/analytics-instrumentation/engineers @gitlab-org/analytics-section/analytics-instrumentation/external-reviewers
 /ee/lib/gitlab/usage_data_counters/
 /ee/lib/ee/gitlab/usage_data.rb
 /lib/gitlab/usage_data.rb
@@ -1667,6 +1713,8 @@ lib/gitlab/checks/
 ^[Security reports]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/security-risk-management/security-insights/backend
+/ee/lib/gitlab/security/parsers/ @gitlab-org/security-risk-management/security-insights/backend
+/ee/spec/lib/gitlab/security/parsers/ @gitlab-org/security-risk-management/security-insights/backend
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/dynamic-analysis
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/security-risk-management/security-insights/backend
@@ -1956,6 +2004,8 @@ ee/app/workers/ai/repository_xray/
 /doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
 /doc/**/geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
+/ee/lib/gitlab/geo.rb @gitlab-org/geo-team/geo-backend
+/ee/spec/lib/gitlab/geo_spec.rb @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend
 
@@ -1977,6 +2027,7 @@ frontend/**/geo_* @zcuddy
 
 [API Team]
 /gems/gitlab-grape-openapi/**/*.rb @cfeick @mwoolf @vwolanyk @abignotti
+/rubocop/cop/api/config/api_entity_exposure_baseline.yml @cfeick @mwoolf @vwolanyk @abignotti
 
 [Source Code Backend] @gitlab-com/create-team/source-code/backend
 # Repositories & Git Core

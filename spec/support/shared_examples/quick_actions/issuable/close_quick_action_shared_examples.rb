@@ -21,7 +21,12 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
     it "creates the #{issuable_type} and interprets close quick action accordingly" do
       fill_in "Title", with: 'bug 345'
       fill_in "Description", with: "bug description\n/close"
-      click_button "Create #{issuable_type}".humanize
+
+      if issuable_type == :merge_request
+        click_button "Create #{issuable_type}".humanize
+      else
+        click_button "Create #{issuable_type.to_s.capitalize}"
+      end
 
       issuable = project.public_send(issuable_type.to_s.pluralize).first
 

@@ -90,7 +90,8 @@ POST /groups/:id/-/virtual_registries/container/registries
 | `name` | 文字列 | はい | 仮想レジストリの名前。 |
 | `description` | 文字列 | いいえ | 仮想レジストリの説明。 |
 
-> [!note]グループごとに最大5つの仮想レジストリを作成できます。
+> [!note]
+> グループごとに最大5つの仮想レジストリを作成できます。
 
 リクエスト例: 
 
@@ -172,7 +173,8 @@ PATCH /virtual_registries/container/registries/:id
 | `description` | 文字列 | いいえ | 仮想レジストリの説明。 |
 | `name` | 文字列 | いいえ | 仮想レジストリの名前。 |
 
-> [!note]リクエストには、オプションのパラメータ（`name`または`description`）の少なくとも1つを指定する必要があります。
+> [!note]
+> リクエストには、オプションのパラメータ（`name`または`description`）の少なくとも1つを指定する必要があります。
 
 リクエスト例: 
 
@@ -590,7 +592,8 @@ POST /virtual_registries/container/registry_upstreams
 | `registry_id` | 整数 | はい | コンテナ仮想レジストリのID。 |
 | `upstream_id` | 整数 | はい | コンテナアップストリームレジストリのID。 |
 
-> [!note]各仮想レジストリには最大5つのアップストリームレジストリを関連付けることができます。
+> [!note]
+> 各仮想レジストリには最大5つのアップストリームレジストリを関連付けることができます。
 
 リクエスト例: 
 

@@ -30,6 +30,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['canSetPipelineVariables'],
   props: {
     modalId: {
       type: String,
@@ -42,6 +43,11 @@ export default {
     isManualJob: {
       type: Boolean,
       required: true,
+    },
+    hasInputs: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     confirmationMessage: {
       type: String,
@@ -66,6 +72,9 @@ export default {
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
+    showRetryWithModifiedValues() {
+      return (this.isManualJob && this.canSetPipelineVariables) || this.hasInputs;
+    },
   },
   methods: {
     async retryManualJob() {
@@ -131,6 +140,7 @@ export default {
     />
 
     <gl-disclosure-dropdown
+      v-if="showRetryWithModifiedValues"
       category="primary"
       variant="confirm"
       placement="bottom-end"

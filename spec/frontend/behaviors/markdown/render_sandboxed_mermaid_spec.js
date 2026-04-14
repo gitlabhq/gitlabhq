@@ -1,5 +1,6 @@
 import { createWrapper } from '@vue/test-utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import renderMermaid, {
   MAX_CHAR_LIMIT,
   MAX_MERMAID_BLOCK_LIMIT,
@@ -28,6 +29,7 @@ describe('Mermaid diagrams renderer', () => {
 
   beforeEach(() => {
     document.body.dataset.page = '';
+    window.gon = { features: {} };
     jest.clearAllMocks();
   });
 
@@ -52,19 +54,30 @@ describe('Mermaid diagrams renderer', () => {
     });
   });
 
-  describe('within a details element', () => {
-    beforeEach(() => {
-      setHTMLFixture('<details><pre><code class="js-render-mermaid"></code></pre></details>');
-      renderDiagrams();
-    });
+  describe('within a hidden parent', () => {
+    const { trigger: triggerIntersection } = useMockIntersectionObserver();
 
-    it('does not render the diagram on load', () => {
+    it.each`
+      description                | fixture
+      ${'a details element'}     | ${'<details><pre><code class="js-render-mermaid">graph LR</code></pre></details>'}
+      ${'a display:none parent'} | ${'<div style="display: none"><pre><code class="js-render-mermaid">graph LR</code></pre></div>'}
+    `('does not render the diagram on load within $description', ({ fixture }) => {
+      setHTMLFixture(fixture);
+      renderDiagrams();
+
       expect(findMermaidIframes()).toHaveLength(0);
     });
 
-    it('render the diagram when the details element is opened', () => {
-      document.querySelector('details').setAttribute('open', true);
-      document.querySelector('details').dispatchEvent(new Event('toggle'));
+    it.each`
+      description                | fixture
+      ${'a details element'}     | ${'<details><pre><code class="js-render-mermaid">graph LR</code></pre></details>'}
+      ${'a display:none parent'} | ${'<div style="display: none"><pre><code class="js-render-mermaid">graph LR</code></pre></div>'}
+    `('renders the diagram when the element becomes visible within $description', ({ fixture }) => {
+      setHTMLFixture(fixture);
+      renderDiagrams();
+
+      const el = document.querySelector('.js-render-mermaid');
+      triggerIntersection(el, { entry: { isIntersecting: true } });
       jest.runAllTimers();
 
       expect(findMermaidIframes()).toHaveLength(1);
@@ -150,6 +163,29 @@ describe('Mermaid diagrams renderer', () => {
 
       expect(findMermaidIframes()).toHaveLength(0);
     });
+  });
+
+  describe('mermaid v11 feature flag', () => {
+    beforeEach(() => {
+      setHTMLFixture(
+        '<div class="gl-relative markdown-code-block js-markdown-code"><pre><code class="js-render-mermaid">graph LR</code></pre></div>',
+      );
+    });
+
+    it.each`
+      useMermaidV11 | iframeSrcContains
+      ${false}      | ${'/-/sandbox/mermaid_v10'}
+      ${true}       | ${'/-/sandbox/mermaid_v11'}
+    `(
+      'uses a sandbox path containing $iframeSrcContains when useMermaidV11 is set to $useMermaidV11',
+      ({ useMermaidV11, iframeSrcContains }) => {
+        window.gon.features.useMermaidV11 = useMermaidV11;
+        renderDiagrams();
+
+        const iframe = findMermaidIframes()[0];
+        expect(iframe.src).toContain(iframeSrcContains);
+      },
+    );
   });
 
   describe('resize handling', () => {

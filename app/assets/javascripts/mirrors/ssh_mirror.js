@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';

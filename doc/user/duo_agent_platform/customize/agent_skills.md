@@ -15,7 +15,8 @@ title: Agent Skills
 {{< history >}}
 
 - Support for workspace-level Agent Skills [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2951) in GitLab 18.10.
-- Support for workspace-level Agent Skills added in GitLab for VS Code 6.71.4.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.71.4) in GitLab for VS Code 6.71.4.
+  - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.73.0) in GitLab Duo CLI 8.73.0.
 
 {{< /history >}}
 
@@ -51,8 +52,9 @@ You can also manually direct GitLab Duo to use a skill by name, file path, or sl
 ### Prerequisites
 
 - Meet the [Agent Platform prerequisites](../_index.md#prerequisites).
-- For GitLab Duo Chat in your local environment, install and configure
-  [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4 or later.
+- For GitLab Duo Chat in your local environment, install and configure one of the following:
+  - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.71.4 or later.
+  - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.73.0 or later.
 - For custom flows, update the flow's configuration file to access the `workspace_agent_skills`
   context passed from the executor:
 

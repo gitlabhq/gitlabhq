@@ -19,4 +19,4 @@
   .params-discussion-to-resolve
     = @merge_request_to_resolve_discussions_of ? link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve) : nil
 
-#js-work-items{ data: work_item_views_only_data(@project, current_user) }
+#js-work-items{ data: work_item_views_only_data(@project) }

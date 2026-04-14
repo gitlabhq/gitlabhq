@@ -1,0 +1,10 @@
+---
+name: page_breadcrumbs_in_top_bar
+description: 
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/591946
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227876
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593703
+milestone: '18.11'
+group: group::design system
+type: beta
+default_enabled: false

@@ -63,8 +63,25 @@ module Import
         @options.to_h.merge!(klass: self.class.name).to_json
       end
 
-      def ensure_export_ready!(current_user)
-        raise StrategyError unless project.export_file_exists?(current_user)
+      def ensure_export_ready!(current_user, max_retries: 5, base_delay: 1)
+        retries = 0
+
+        loop do
+          if retries > 0
+            Project.uncached do
+              project.association(:import_export_uploads).reset
+            end
+          end
+
+          return if project.export_file_exists?(current_user)
+
+          retries += 1
+          raise StrategyError if retries > max_retries
+
+          delay = base_delay * (2**(retries - 1))
+          log_info({ message: "Export file not ready, retrying", retry_count: retries, backoff_seconds: delay })
+          sleep(delay)
+        end
       end
 
       def ensure_lock_files_path!

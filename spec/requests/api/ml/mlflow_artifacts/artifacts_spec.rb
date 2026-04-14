@@ -53,6 +53,14 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
         expect(json_response['files'].first['is_dir']).to eq(false)
         expect(json_response['files'].first['file_size']).to eq(package_file.size)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_ml_flow_artifact do
+        let(:boundary_object) { project }
+        let(:user) { current_user }
+        let(:request) do
+          get api(route, personal_access_token: pat), params: params
+        end
+      end
     end
 
     context 'when the user has access and checks for an directory' do
@@ -119,6 +127,14 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
         is_expected.to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Disposition']).to match("attachment; filename=\"#{package_file.file_name}\"")
         expect(response.headers['X-Sendfile']).to eq(package_file.file.path)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_ml_flow_artifact do
+        let(:boundary_object) { project }
+        let(:user) { current_user }
+        let(:request) do
+          get api(route, personal_access_token: pat), params: params
+        end
       end
     end
 

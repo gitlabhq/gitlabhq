@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
         expect(table_names).not_to be_empty, "YAML has a non-zero tables defined"
 
         # expect to not have duplicates
-        expect(table_names).to contain_exactly(*table_names.uniq)
+        expect(table_names).to match_array(table_names.uniq)
       end
 
       it 'does not have duplicate column definitions' do
@@ -142,7 +142,7 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
         end
 
         # expect to not have duplicates
-        expect(all_definitions).to contain_exactly(*all_definitions.uniq)
+        expect(all_definitions).to match_array(all_definitions.uniq)
       end
     end
 
@@ -314,13 +314,9 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
   end
 
   describe 'Loose Foreign Key sharding key coverage' do
-    # Cell-local schemas don't need sharding keys
-    let(:cell_local_schemas) { %i[gitlab_main_cell_local gitlab_ci_cell_local] }
-
     # PENDING: Remove tables from this list as sharding keys are added
     let(:pending_exceptions) do
       %w[
-        application_settings
         merge_request_diff_commits
         p_ci_pipeline_artifact_states
         packages_nuget_symbol_states
@@ -333,7 +329,7 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
     let(:tables_requiring_sharding_keys) do
       definitions.flat_map { |definition| [definition.to_table, definition.from_table] }
                  .uniq
-                 .reject { |table| cell_local_table?(table) }
+                 .reject { |table| exempt_from_sharding_key?(table) }
                  .sort
     end
 
@@ -354,9 +350,9 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       MSG
     end
 
-    def cell_local_table?(name)
+    def exempt_from_sharding_key?(name)
       schema = Gitlab::Database::GitlabSchema.table_schema(name)
-      cell_local_schemas.include?(schema)
+      !Gitlab::Database::GitlabSchema.require_sharding_key?(schema)
     end
 
     def has_sharding_key?(table_name)

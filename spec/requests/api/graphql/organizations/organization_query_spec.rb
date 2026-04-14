@@ -34,6 +34,12 @@ RSpec.describe 'getting organization information', feature_category: :organizati
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_organization do
+    let(:boundary_object) { :instance }
+    let(:organization_fields) { 'id path' }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   context 'when the user does not have access to the organization' do
     let(:current_user) { create(:user) }
 
@@ -118,6 +124,25 @@ RSpec.describe 'getting organization information', feature_category: :organizati
             }
           }
         FIELDS
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL',
+        [:read_organization, :read_organization_user, :read_badge] do
+        let(:boundary_object) { :instance }
+        let(:organization_fields) do
+          <<~FIELDS
+            organizationUsers {
+              nodes {
+                badges {
+                  text
+                  variant
+                }
+              }
+            }
+          FIELDS
+        end
+
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
       end
 
       it 'returns correct organization user fields' do

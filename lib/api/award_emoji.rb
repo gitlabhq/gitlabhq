@@ -132,3 +132,5 @@ module API
     end
   end
 end
+
+API::AwardEmoji.prepend_mod_with('API::AwardEmoji')

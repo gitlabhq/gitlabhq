@@ -7,4 +7,5 @@ require 'spec_helper'
 RSpec.describe 'Work item API parity', feature_category: :team_planning, unless: Gitlab.ee? do
   it_behaves_like 'work item API field parity'
   it_behaves_like 'work item API filter parity'
+  it_behaves_like 'work item API create parity'
 end

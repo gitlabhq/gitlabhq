@@ -5,4 +5,4 @@
         %th= title
   %tbody.rd-text-view-content.code.code-syntax-highlight-theme
     - @diff_file.viewer_hunks.each do |hunk|
-      = render RapidDiffs::Viewers::Text::InlineHunkComponent.new(diff_hunk: hunk, file_hash: @diff_file.file_hash, file_path: @diff_file.file_path)
+      = render RapidDiffs::Viewers::Text::InlineHunkComponent.new(diff_hunk: hunk, file_hash: @diff_file.short_file_hash)

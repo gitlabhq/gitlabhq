@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: :static_application_security_testing do
+  include Security::CiConfiguration::CiYmlHelpers
+
   subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content).generate }
 
   let(:params) { {} }
@@ -13,14 +15,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: 
 
       context 'sast iac has not been included' do
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           - security
@@ -61,14 +57,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: 
 
       context 'iac-sast has been included' do
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           variables:
@@ -111,14 +101,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: 
         end
 
         let(:expected_yml) do
-          <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+          <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - build
           - test
@@ -153,14 +137,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: 
     context 'autodevops disabled' do
       let(:auto_devops_enabled) { false }
       let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+        <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           stages:
           - test
           include:
@@ -177,14 +155,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: 
     context 'with autodevops enabled' do
       let(:auto_devops_enabled) { true }
       let(:expected_yml) do
-        <<-CI_YML.strip_heredoc
-          # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
-          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-          # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
+        <<~CI_YML.strip_heredoc
+          #{Security::CiConfiguration::CiYmlHelpers::SECURITY_TEMPLATE_COMMENTS.chomp}
           include:
           - template: Auto-DevOps.gitlab-ci.yml
         CI_YML

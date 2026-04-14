@@ -118,6 +118,7 @@ export const mockPipelinesData = {
             },
             hasManualActions: false,
             hasScheduledActions: false,
+            pipelineSchedule: null,
             __typename: 'Pipeline',
           },
           {
@@ -234,6 +235,7 @@ export const mockPipelinesData = {
             },
             hasManualActions: false,
             hasScheduledActions: false,
+            pipelineSchedule: null,
             __typename: 'Pipeline',
           },
         ],
@@ -495,6 +497,7 @@ export const mockBatchResponse = {
             },
             hasManualActions: true,
             hasScheduledActions: false,
+            pipelineSchedule: null,
             failedJobsCount: 0,
             __typename: 'Pipeline',
             downstream: {
@@ -693,6 +696,7 @@ export const mockPipelineWithDownstream = {
             },
             hasManualActions: true,
             hasScheduledActions: false,
+            pipelineSchedule: null,
           },
         ],
         pageInfo: {
@@ -827,6 +831,7 @@ export const mockPipelineWithUpstream = {
             },
             hasManualActions: false,
             hasScheduledActions: false,
+            pipelineSchedule: null,
             failedJobsCount: 0,
           },
         ],
@@ -957,6 +962,7 @@ export const mockSinglePipelineResponse = {
         },
         hasManualActions: false,
         hasScheduledActions: false,
+        pipelineSchedule: null,
         failedJobsCount: 0,
         __typename: 'Pipeline',
         downstream: {
@@ -1111,5 +1117,6 @@ export const mockBranchPipeline = {
   project: { __typename: 'Project', id: 'gid://gitlab/Project/19', fullPath: 'root/ci-project' },
   hasManualActions: true,
   hasScheduledActions: false,
+  pipelineSchedule: null,
   failedJobsCount: 1,
 };

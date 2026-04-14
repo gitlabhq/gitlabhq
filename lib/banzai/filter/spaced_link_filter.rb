@@ -75,7 +75,7 @@ module Banzai
         html = Banzai::Filter::MarkdownFilter.call(transform_markdown(match), context)
 
         # link is wrapped in a <p>, so strip that off
-        p_node = Nokogiri::HTML.fragment(html).at_css('p')
+        p_node = Nokogiri::HTML5.fragment(html).at_css('p')
         p_node ? p_node.children.to_html : html
       end
 

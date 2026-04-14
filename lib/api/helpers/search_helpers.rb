@@ -5,25 +5,31 @@ module API
     module SearchHelpers
       def self.global_search_scopes
         # This is a separate method so that EE can redefine it.
-        %w[projects issues merge_requests milestones snippet_titles users]
+        %w[projects issues work_items merge_requests milestones snippet_titles users]
       end
 
       def self.group_search_scopes
         # This is a separate method so that EE can redefine it.
-        %w[projects issues merge_requests milestones users]
+        %w[projects issues work_items merge_requests milestones users]
       end
 
       def self.project_search_scopes
         # This is a separate method so that EE can redefine it.
-        %w[issues merge_requests milestones notes wiki_blobs commits blobs users]
+        %w[issues work_items merge_requests milestones notes wiki_blobs commits blobs users]
       end
 
       def self.search_states
         %w[all opened closed merged]
       end
 
+      def self.work_item_type_filter_desc
+        # This is a separate method so that EE can redefine it.
+        'Filter work items by type. Only applies to work_items scope. ' \
+          'Available types: issue, task, incident, ticket.'
+      end
+
       def self.search_param_keys
-        %i[scope search state confidential num_context_lines search_type include_archived page per_page order_by sort]
+        %i[scope search state confidential search_type include_archived page per_page order_by sort type]
       end
 
       def self.gitlab_search_mcp_params

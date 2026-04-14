@@ -356,11 +356,13 @@ configuration in your VPC, similar to the KAS and registry configuration.
 
 To enable Pages through your private network:
 
-1. In your AWS console, create a private hosted zone for `<your_instance_name>.gitlab-pages.site`
+1. In your AWS console, create a private hosted zone for `<tenant_name>.gitlab-dedicated.site`
    and associate it with the VPC that contains your private link connection.
 1. After you create the private hosted zone, add the following DNS records:
    1. Create an apex `A` alias record for the VPC endpoint.
-   1. Create a wildcard `CNAME` for `*.<your_instance_name>.gitlab-pages.site` that points to `<your_instance_name>.gitlab-pages.site`.
+   1. Create a wildcard `CNAME` for `*.<tenant_name>.gitlab-dedicated.site` that points to `<tenant_name>.gitlab-dedicated.site`.
+
+The tenant name is available on the **Overview** page in Switchboard, in the **Tenant overview** section.
 
 #### Troubleshooting
 

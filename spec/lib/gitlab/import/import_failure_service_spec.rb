@@ -39,7 +39,8 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
           metrics: '_metrics_',
           external_identifiers: { id: 1 },
           message: 'custom message',
-          extra_attributes: { jid: 'abc123' }
+          extra_attributes: { jid: 'abc123' },
+          capture_exception: true
         }
       end
 
@@ -171,6 +172,17 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)
           .with(exception, hash_including(jid: 'abc123'))
+
+        service.execute
+      end
+    end
+
+    context 'when capture_exception is false' do
+      subject(:service) { described_class.new(**arguments.merge(capture_exception: false)) }
+
+      it 'logs the error but does not track the exception in Sentry' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+        expect(::Import::Framework::Logger).to receive(:error)
 
         service.execute
       end

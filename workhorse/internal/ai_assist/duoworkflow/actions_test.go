@@ -12,8 +12,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
@@ -48,12 +49,15 @@ func createBackendHandler(client *http.Client) http.Handler {
 }
 
 func TestRunHttpActionHandler_Execute(t *testing.T) {
+	testhelper.ConfigureSecret()
+
 	t.Run("successful request with body", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/api/projects/123", r.URL.Path)
 			assert.Equal(t, "Bearer test-token", r.Header.Get("Authorization"))
 			assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 			assert.Equal(t, "Agent-Flow-via-GitLab-Workhorse", r.Header.Get("User-Agent"))
+			assert.NotEmpty(t, r.Header.Get("Gitlab-Workhorse-Api-Request"))
 			assert.Equal(t, "192.0.2.1", r.Header.Get("X-Forwarded-For"))
 			assert.Equal(t, "POST", r.Method)
 			w.WriteHeader(http.StatusCreated)
@@ -325,6 +329,23 @@ func TestServeHTTPSafe(t *testing.T) {
 		require.ErrorIs(t, err, context.Canceled)
 	})
 
+	t.Run("recovers ErrAbortHandler with size limit hit and returns error", func(t *testing.T) {
+		handler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+			panic(http.ErrAbortHandler)
+		})
+
+		req, err := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+		require.NoError(t, err)
+
+		nrw := &nullResponseWriter{
+			sizeLimitHit: true,
+		}
+
+		err = serveHTTPSafe(handler, nrw, req)
+
+		require.EqualError(t, err, "response body exceeded size limit (4190208 bytes)")
+	})
+
 	t.Run("recovers ErrAbortHandler with non-canceled context and returns error", func(t *testing.T) {
 		handler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			panic(http.ErrAbortHandler)
@@ -335,7 +356,7 @@ func TestServeHTTPSafe(t *testing.T) {
 
 		err = serveHTTPSafe(handler, httptest.NewRecorder(), req)
 
-		require.EqualError(t, err, "serveHTTPSafe: request aborted")
+		require.EqualError(t, err, "request aborted")
 	})
 
 	t.Run("re-panics on unexpected panics", func(t *testing.T) {

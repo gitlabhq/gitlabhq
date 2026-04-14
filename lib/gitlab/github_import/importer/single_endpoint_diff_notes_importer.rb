@@ -38,7 +38,7 @@ module Gitlab
         private
 
         def parent_collection
-          project.merge_requests.where.not(iid: already_imported_parents) # rubocop: disable CodeReuse/ActiveRecord
+          project.merge_requests.where.not(iid: already_imported_parents) # rubocop: disable CodeReuse/ActiveRecord -- lightweight scoped query
         end
 
         def page_keyset_id(merge_request)

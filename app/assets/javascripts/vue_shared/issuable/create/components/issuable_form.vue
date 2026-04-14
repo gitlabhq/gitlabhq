@@ -17,6 +17,11 @@ export default {
     LabelsSelect,
   },
   props: {
+    allowScopedLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     descriptionPreviewPath: {
       type: String,
       required: true,
@@ -113,7 +118,7 @@ export default {
             :allow-label-edit="true"
             :allow-label-create="true"
             :allow-multiselect="true"
-            :allow-scoped-labels="true"
+            :allow-scoped-labels="allowScopedLabels"
             :labels-fetch-path="labelsFetchPath"
             :labels-manage-path="labelsManagePath"
             :selected-labels="issuableMeta.selectedLabels"

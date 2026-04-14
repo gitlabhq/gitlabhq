@@ -36,6 +36,7 @@ describe('ManageViaMr component', () => {
     featureName = 'SAST',
     featureType = 'sast',
     isFeatureConfigured = false,
+    canUserConfigure = true,
     variant = undefined,
     category = undefined,
     ...options
@@ -50,6 +51,7 @@ describe('ManageViaMr component', () => {
             name: featureName,
             type: featureType,
             configured: isFeatureConfigured,
+            canUserConfigure,
           },
           variant,
           category,
@@ -106,8 +108,9 @@ describe('ManageViaMr component', () => {
       });
 
       describe('when feature is not configured', () => {
+        const apolloProvider = createMockApolloProvider(mutation, successHandler);
+
         beforeEach(() => {
-          const apolloProvider = createMockApolloProvider(mutation, successHandler);
           createComponent({ apolloProvider, featureName, featureType, isFeatureConfigured: false });
         });
 
@@ -120,6 +123,23 @@ describe('ManageViaMr component', () => {
 
           expect(successHandler).toHaveBeenCalledTimes(1);
           expect(successHandler).toHaveBeenCalledWith(mutationVariables);
+        });
+
+        describe('when user cannot configure', () => {
+          beforeEach(() => {
+            createComponent({
+              apolloProvider,
+              featureName,
+              featureType,
+              isFeatureConfigured: false,
+              canUserConfigure: false,
+            });
+          });
+
+          it('does render a disabled button', () => {
+            expect(findButton().exists()).toBe(true);
+            expect(findButton().props('disabled')).toBe(true);
+          });
         });
       });
 

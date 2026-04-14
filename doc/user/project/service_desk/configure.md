@@ -153,7 +153,7 @@ Instance administrators can add a header, footer or additional text to the GitLa
 them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant.md` or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
-For more information, see [System header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
+For more information, see [system header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
 
 ## Use a custom template for Service Desk tickets
 
@@ -182,7 +182,7 @@ To use a custom description template with Service Desk:
 ## Support Bot user
 
 Behind the scenes, Service Desk works by the special Support Bot user creating tickets.
-This user isn't a [billable user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users),
+This user isn't a [billable user](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users),
 so it does not count toward the license limit count.
 
 In GitLab 16.0 and earlier, comments generated from Service Desk emails show `GitLab Support Bot`
@@ -286,7 +286,7 @@ For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
 This feature is in [beta](../../../policy/development_stages_support.md#beta).
 A beta feature is not production-ready, but is unlikely to change drastically
 before it's released. We encourage users to try beta features and provide feedback
-in [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416637).
+in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416637).
 
 ### Prerequisites
 
@@ -314,13 +314,21 @@ The custom email address you want to use must meet all of the following requirem
 
 Configure and verify a custom email address when you want to send Service Desk emails using your own email address.
 
+> [!warning]
+> When you set up email forwarding, use the address in the
+> **Service Desk email address to forward emails to** field in the custom email form
+> (the `incoming+...` address). Do not forward to the alias address (`contact-project+...`)
+> at the top of the Service Desk settings page. Forwarding to the alias
+> address causes `Incorrect forwarding target` verification failures.
+
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk** and find the **Configure a custom email address** section.
-1. Note the presented Service Desk address of this project, and with your email provider
-   (for example, Gmail), set up email forwarding from the custom email address to the
-   Service Desk address.
-1. Back in GitLab, complete the fields.
+1. Copy the email address from the **Service Desk email address to forward emails to** field.
+   This is the `incoming+...` address that you must use as the forwarding target.
+1. In your email provider (for example, Gmail or Microsoft 365), set up email forwarding
+   from your custom email address to the address you copied in the previous step.
+1. Back in GitLab, complete the remaining fields.
 1. Select **Save & test connection**.
 
 The configuration has been saved and the verification of the custom email address is triggered.
@@ -486,7 +494,7 @@ In GitLab:
 
 In Google Workspace:
 
-1. Sign in to the custom email account and open the [Forwarding and POP/IMAP](https://mail.google.com/mail/u/0/#settings/fwdandpop) settings page.
+1. Sign in to the custom email account and open the [**Forwarding and POP/IMAP**](https://mail.google.com/mail/u/0/#settings/fwdandpop) settings.
 1. Select **Add a forwarding address**.
 1. Enter the Service Desk address from the custom email form.
 1. Select **Next**.
@@ -818,7 +826,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the Service Desk email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-service-desk-emails).
+see [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-service-desk-emails).
 
 {{< /tab >}}
 

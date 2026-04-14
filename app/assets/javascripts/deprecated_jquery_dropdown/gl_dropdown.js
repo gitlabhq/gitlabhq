@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import $ from 'jquery';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { isObject } from '~/lib/utils/type_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { GitLabDropdownFilter } from './gl_dropdown_filter';

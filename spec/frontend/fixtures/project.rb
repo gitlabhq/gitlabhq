@@ -47,5 +47,21 @@ RSpec.describe 'Project (GraphQL fixtures)', feature_category: :groups_and_proje
         end
       end
     end
+
+    describe 'project by path' do
+      project_by_path_query_path = 'graphql_shared/queries/get_project_by_path.graphql'
+
+      let(:query) { get_graphql_query_as_string(project_by_path_query_path) }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it "graphql/#{project_by_path_query_path}.json" do
+        post_graphql(query, current_user: current_user, variables: { fullPath: project.full_path })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 end

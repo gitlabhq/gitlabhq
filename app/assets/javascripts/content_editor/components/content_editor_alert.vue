@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import EditorStateObserver from './editor_state_observer.vue';
 
 export default {
+  name: 'ContentEditorAlert',
   components: {
     GlAlert,
     EditorStateObserver,

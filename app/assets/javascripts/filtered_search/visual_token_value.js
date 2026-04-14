@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { USER_TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 import * as Emoji from '~/emoji';
 import FilteredSearchContainer from '~/filtered_search/container';

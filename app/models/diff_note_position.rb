@@ -4,6 +4,7 @@ class DiffNotePosition < ApplicationRecord
   include Notes::WithAssociatedNote
 
   belongs_to :note
+  belongs_to :namespace
   attr_accessor :line_range
 
   enum :diff_content_type, {

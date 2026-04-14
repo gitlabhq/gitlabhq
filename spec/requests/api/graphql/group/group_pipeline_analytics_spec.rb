@@ -62,4 +62,87 @@ RSpec.describe 'Query.group.pipelineAnalytics', :aggregate_failures, :click_hous
   end
 
   it_behaves_like 'pipeline analytics graphql query', :group
+
+  describe 'subgroupFullPaths argument' do
+    let_it_be(:sub_group2, freeze: true) { create(:group, parent: group) }
+    let_it_be(:project_in_sub_group2, freeze: true) { create(:project, group: sub_group2) }
+
+    let(:user) { reporter }
+    let(:fields) { query_graphql_field(:aggregate, {}, 'all: count') }
+
+    let(:pipelines) do
+      [
+        build_stubbed(:ci_pipeline, :success, project: project, ref: 'main', source: :push,
+          created_at: 1.day.ago,
+          started_at: 1.day.ago, duration: 30.minutes),
+        build_stubbed(:ci_pipeline, :failed, project: project_in_sub_group2, ref: 'main', source: :push,
+          created_at: 2.days.ago,
+          started_at: 2.days.ago, duration: 1.hour)
+      ]
+    end
+
+    before do
+      insert_ci_pipelines_to_click_house(pipelines)
+    end
+
+    context 'when filtering by a specific subgroup' do
+      let(:query) do
+        graphql_query_for(
+          :group, { full_path: group.full_path },
+          query_graphql_field(
+            :pipeline_analytics, { subgroup_full_paths: [sub_group.full_path] },
+            fields)
+        )
+      end
+
+      it 'returns analytics only for the specified subgroup' do
+        perform_request
+
+        expect_graphql_errors_to_be_empty
+        aggregate = graphql_data_at(:group, :pipelineAnalytics, :aggregate)
+        expect(aggregate).to eq('all' => '1')
+      end
+    end
+
+    context 'when filtering by multiple subgroups' do
+      let(:query) do
+        graphql_query_for(
+          :group, { full_path: group.full_path },
+          query_graphql_field(
+            :pipeline_analytics, { subgroup_full_paths: [sub_group.full_path, sub_group2.full_path] },
+            fields)
+        )
+      end
+
+      it 'returns analytics for all specified subgroups' do
+        perform_request
+
+        expect_graphql_errors_to_be_empty
+        aggregate = graphql_data_at(:group, :pipelineAnalytics, :aggregate)
+        expect(aggregate).to eq('all' => '2')
+      end
+    end
+
+    context 'when subgroupFullPaths exceeds the maximum limit' do
+      let(:query) do
+        max = Resolvers::Ci::PipelineAnalyticsResolver::MAX_SUBGROUP_PATHS
+        paths = Array.new(max + 1) { |i| "#{group.full_path}/sub#{i}" }
+
+        graphql_query_for(
+          :group, { full_path: group.full_path },
+          query_graphql_field(
+            :pipeline_analytics, { subgroup_full_paths: paths },
+            fields)
+        )
+      end
+
+      it 'returns a validation error' do
+        perform_request
+
+        expect(graphql_errors).to include(
+          a_hash_including('message' => match(/subgroupFullPaths is too long/))
+        )
+      end
+    end
+  end
 end

@@ -279,6 +279,10 @@ module Gitlab
       Regexp.union(semver_regex, /candidate_\d+/)
     end
 
+    def rubygems_gemspec_file_name_regex
+      @rubygems_gemspec_file_name_regex ||= %r{[^/]+\.gemspec\.rz}
+    end
+
     def ml_model_file_name_regex
       @ml_model_file_name_regex ||= %r{\A[A-Za-z0-9\.\_\-\+ ]+\z}
     end

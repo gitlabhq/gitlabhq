@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :system_access do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
@@ -40,7 +42,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         end
       end
 
-      context 'with credentials' do
+      context 'with basic auth credentials' do
         let(:username) { 'foo' }
         let(:password) { 'bar' }
         let(:request) { double(authorization: "Basic #{::Base64.strict_encode64("#{username}:#{password}")}") }
@@ -48,6 +50,24 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         it 'returns the credentials' do
           expect(subject.username).to eq(username)
           expect(subject.password).to eq(password)
+        end
+      end
+
+      context 'with bearer auth credentials' do
+        context 'with a plain token' do
+          let(:request) { double(authorization: "Bearer foo") }
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
+
+        context 'when the token decodes to a string containing a colon' do
+          let(:request) { double(authorization: "Bearer e68d6f1ee0a8da27bb71b2ddb54700aeb07546f58c06a3") }
+
+          it 'does not misidentify it as basic auth credentials' do
+            expect(subject).to be_nil
+          end
         end
       end
     end
@@ -85,11 +105,26 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
       end
 
       context 'with credentials' do
-        let(:password) { 'bar' }
-        let(:request) { double(headers: { "Authorization" => "Bearer #{password}" }) }
+        where(:description, :authorization_header, :expected_password) do
+          'Bearer credentials'             | "Bearer bar"                                     | 'bar'
+          'case-insensitive Bearer scheme' | "bearer bar"                                     | 'bar'
+          'Bearer with no token'           | "Bearer"                                         | nil
+          'Bearer with space and no token' | "Bearer "                                        | nil
+          'Basic auth credentials'         | "Basic #{::Base64.strict_encode64('user:pass')}" | nil
+          'Token credentials'              | "Token sometoken"                                | nil
+          'empty authorization header'     | ""                                               | nil
+        end
 
-        it 'returns the credentials' do
-          expect(subject.password).to eq(password)
+        with_them do
+          let(:request) { double(headers: { "Authorization" => authorization_header }) }
+
+          it "returns the expected result for #{params[:description]}" do
+            if expected_password
+              expect(subject.password).to eq(expected_password)
+            else
+              expect(subject).to be_nil
+            end
+          end
         end
       end
     end

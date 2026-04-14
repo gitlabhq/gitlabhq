@@ -1,7 +1,7 @@
-import { GlDisclosureDropdownItem, GlToggle } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlToggle } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -25,7 +25,7 @@ describe('Sidebar Subscriptions Widget', () => {
   let subscriptionMutationHandler;
 
   const findToggle = () => wrapper.findComponent(GlToggle);
-  const findDropdownToggleItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findSubscribeButton = () => wrapper.findByTestId('subscribe-button');
 
   const createComponent = ({
     subscriptionsQueryHandler = jest.fn().mockResolvedValue(issueSubscriptionsResponse()),
@@ -39,7 +39,7 @@ describe('Sidebar Subscriptions Widget', () => {
       [updateMergeRequestSubscriptionMutation, subscriptionMutationHandler],
     ]);
 
-    wrapper = shallowMount(SidebarSubscriptionWidget, {
+    wrapper = shallowMountExtended(SidebarSubscriptionWidget, {
       apolloProvider: fakeApollo,
       provide: {
         canUpdate: true,
@@ -97,14 +97,25 @@ describe('Sidebar Subscriptions Widget', () => {
   });
 
   describe('merge request', () => {
-    it('displays toast when mutation is successful', async () => {
-      createComponent({
-        issuableType: 'merge_request',
-        subscriptionsQueryHandler: jest.fn().mockResolvedValue(issueSubscriptionsResponse(true)),
-      });
+    it('renders as icon button', async () => {
+      createComponent({ issuableType: 'merge_request' });
       await waitForPromises();
 
-      await findDropdownToggleItem().vm.$emit('action');
+      expect(findSubscribeButton().exists()).toBe(true);
+      expect(findToggle().exists()).toBe(false);
+    });
+
+    it('is disabled while loading', () => {
+      createComponent({ issuableType: 'merge_request' });
+
+      expect(findSubscribeButton().attributes('disabled')).toBeDefined();
+    });
+
+    it('displays toast when mutation is successful', async () => {
+      createComponent({ issuableType: 'merge_request' });
+      await waitForPromises();
+
+      await findSubscribeButton().vm.$emit('click');
 
       await waitForPromises();
 

@@ -467,12 +467,23 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Make sure Geo push events are created. Usually it needs some change in the `app/workers/post_receive.rb` file. Example:
+- [ ] Make sure Geo push events are created by including the new repository type in the `Repository#log_geo_updated_event` method in the `ee/app/models/ee/repository.rb` file:
 
   ```ruby
-  def replicate_cool_widget_changes(cool_widget)
-    if ::Gitlab::Geo.primary?
-      cool_widget.geo_handle_after_update if cool_widget
+  def log_geo_updated_event
+    return unless ::Gitlab::Geo.primary?
+
+    case container
+    when Project, DesignManagement::Repository, CoolWidget # Add the widget class here
+      container.geo_handle_after_update
+    when ProjectWiki
+      project.wiki_repository&.geo_handle_after_update
+    when GroupWiki
+      group.group_wiki_repository&.geo_handle_after_update
+    when Snippet # personal and project
+      container.snippet_repository&.geo_handle_after_update
+    else
+      raise "Cannot log a Geo updated event for #{container.class}"
     end
   end
   ```

@@ -5,6 +5,7 @@ require 'email_spec'
 
 RSpec.describe Emails::Groups do
   include EmailSpec::Matchers
+  include_context 'gitlab email notification'
 
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Need associations
   let(:group) { create(:group) }
@@ -13,6 +14,42 @@ RSpec.describe Emails::Groups do
 
   before do
     group.add_owner(user)
+  end
+
+  describe '#group_was_transferred_email' do
+    let(:old_path_with_namespace) { 'old-parent/test-group' }
+
+    subject { Notify.group_was_transferred_email(group.id, user.id, old_path_with_namespace) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("#{group.name} | Group was transferred")
+      is_expected.to have_body_text(old_path_with_namespace)
+      is_expected.to have_body_text('was moved to another location.')
+      is_expected.to have_body_text(group.full_name)
+      is_expected.to have_body_text('Please update any bookmarks or links that reference the old group path.')
+    end
+
+    context 'when user no longer exists' do
+      subject { Notify.group_was_transferred_email(group.id, non_existing_record_id, old_path_with_namespace) }
+
+      it 'returns NullMail' do
+        expect(subject.message).to be_a_kind_of(ActionMailer::Base::NullMail)
+      end
+    end
+
+    context 'when group no longer exists' do
+      subject { Notify.group_was_transferred_email(non_existing_record_id, user.id, old_path_with_namespace) }
+
+      it 'returns NullMail' do
+        expect(subject.message).to be_a_kind_of(ActionMailer::Base::NullMail)
+      end
+    end
   end
 
   describe '#group_was_exported_email' do

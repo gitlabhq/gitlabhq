@@ -26,13 +26,6 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
       end
-
-      it_behaves_like 'authorizing granular token permissions', :authorize_markdown_upload do
-        let(:boundary_object) { project }
-        let(:request) do
-          post api(path, personal_access_token: pat), headers: headers
-        end
-      end
     end
 
     context 'with unauthorized user' do

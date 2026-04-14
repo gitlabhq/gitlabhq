@@ -42,6 +42,14 @@ RSpec.describe GroupTree, feature_category: :groups_and_projects do
 
         expect(assigns(:groups)).to contain_exactly(other_group)
       end
+
+      context 'with keyset pagination' do
+        it 'returns filtered groups' do
+          get :index, params: params.merge(pagination: 'keyset'), format: :json
+
+          expect(assigns(:groups)).to contain_exactly(other_group)
+        end
+      end
     end
 
     context 'for subgroups' do

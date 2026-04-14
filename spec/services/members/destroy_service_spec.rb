@@ -12,13 +12,13 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
     it 'raises ActiveRecord::RecordNotFound' do
-      expect { described_class.new(current_user).execute(member) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.new(member, current_user: current_user).execute }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(current_user).execute(member) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect { described_class.new(member, current_user: current_user).execute }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
@@ -30,15 +30,15 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
 
     it 'destroys the member' do
-      expect { described_class.new(current_user).execute(member, **opts) }.to change { member.source.members_and_requesters.count }.by(-1)
+      expect { described_class.new(member, current_user: current_user, **opts).execute }.to change { member.source.members_and_requesters.count }.by(-1)
     end
 
     it 'destroys member notification_settings' do
       if member_user.notification_settings.any?
-        expect { described_class.new(current_user).execute(member, **opts) }
+        expect { described_class.new(member, current_user: current_user, **opts).execute }
           .to change { member_user.notification_settings.count }.by(-1)
       else
-        expect { described_class.new(current_user).execute(member, **opts) }
+        expect { described_class.new(member, current_user: current_user, **opts).execute }
           .not_to change { member_user.notification_settings.count }
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
         expect(instance).to receive(:resolve_access_request_todos).with(member)
       end
 
-      described_class.new(current_user).execute(member, **opts)
+      described_class.new(member, current_user: current_user, **opts).execute
     end
 
     it 'triggers members destroyed event' do
@@ -57,11 +57,11 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
         .with(an_instance_of(Members::DestroyedEvent))
         .and_call_original
 
-      described_class.new(current_user).execute(member, **opts)
+      described_class.new(member, current_user: current_user, **opts).execute
     end
 
     it 'does not remove user from organization' do
-      expect { described_class.new(current_user).execute(member, **opts) }
+      expect { described_class.new(member, current_user: current_user, **opts).execute }
         .not_to change { member.source.organization.organization_users.count }
     end
   end
@@ -79,13 +79,13 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       expect(member_user.assigned_open_issues_count).to be(1)
       expect(member_user.todos_pending_count).to be(1)
 
-      service = described_class.new(current_user)
+      service = described_class.new(member, current_user: current_user, **opts)
 
       if opts[:unassign_issuables]
-        expect(service).to receive(:enqueue_unassign_issuables).with(member)
+        expect(service).to receive(:enqueue_unassign_issuables)
       end
 
-      service.execute(member, **opts)
+      service.execute
 
       expect(member_user.assigned_open_merge_requests_count).to be(0)
       expect(member_user.assigned_open_issues_count).to be(0)
@@ -105,7 +105,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       allow(Members::AccessDeniedMailer).to receive(:email).with(member: member).and_call_original
 
       expect do
-        described_class.new(current_user).execute(member, **opts)
+        described_class.new(member, current_user: current_user, **opts).execute
       end.to have_enqueued_mail(Members::AccessDeniedMailer, :email)
     end
   end
@@ -116,7 +116,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     context 'when current user is the member' do
       it 'does not call the access denied mailer' do
         expect do
-          described_class.new(current_user).execute(member, **opts)
+          described_class.new(member, current_user: current_user, **opts).execute
         end.not_to have_enqueued_mail(Members::AccessDeniedMailer, :email)
       end
     end
@@ -130,9 +130,9 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
 
     let(:timeout) { 1.minute }
-    let(:service_object) { described_class.new(current_user) }
+    let(:service_object) { described_class.new(member_to_delete, current_user: current_user, **opts) }
 
-    subject(:destroy_member) { service_object.execute(member_to_delete, **opts) }
+    subject(:destroy_member) { service_object.execute }
 
     context 'for group members' do
       before do
@@ -555,7 +555,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       end
 
       context 'with skipping of subresources' do
-        subject(:execute_service) { described_class.new(user).execute(@group_member, skip_subresources: true) }
+        subject(:execute_service) { described_class.new(@group_member, current_user: user, skip_subresources: true).execute }
 
         before do
           execute_service
@@ -599,7 +599,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
         context 'issuables', :sidekiq_inline do
           subject(:execute_service) do
-            described_class.new(user).execute(@group_member, skip_subresources: true, unassign_issuables: true)
+            described_class.new(@group_member, current_user: user, skip_subresources: true, unassign_issuables: true).execute
           end
 
           it 'removes assigned issuables, even in subresources' do
@@ -609,7 +609,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       end
 
       context 'without skipping of subresources' do
-        subject(:execute_service) { described_class.new(user).execute(@group_member, skip_subresources: false) }
+        subject(:execute_service) { described_class.new(@group_member, current_user: user, skip_subresources: false).execute }
 
         before do
           execute_service
@@ -655,7 +655,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
         context 'issuables', :sidekiq_inline do
           subject(:execute_service) do
-            described_class.new(user).execute(@group_member, skip_subresources: false, unassign_issuables: true)
+            described_class.new(@group_member, current_user: user, skip_subresources: false, unassign_issuables: true).execute
           end
 
           it 'removes assigned issuables' do
@@ -682,7 +682,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       context 'with skipping of subresources' do
         before do
-          described_class.new(user).execute(@group_member, skip_subresources: true)
+          described_class.new(@group_member, current_user: user, skip_subresources: true).execute
         end
 
         it 'does not remove group members invited by deleted user' do
@@ -704,7 +704,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       context 'without skipping of subresources' do
         before do
-          described_class.new(user).execute(@group_member, skip_subresources: false)
+          described_class.new(@group_member, current_user: user, skip_subresources: false).execute
         end
 
         it 'removes group members invited by deleted user' do
@@ -737,7 +737,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
       project_member = create(:project_member, :maintainer, user: member_user, project: project)
 
-      described_class.new(user).execute(project_member)
+      described_class.new(project_member, current_user: user).execute
     end
 
     it 'removes project members invited by deleted user' do
@@ -747,7 +747,8 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
   describe '#mark_as_recursive_call' do
     it 'marks the instance as recursive' do
-      service = described_class.new(current_user)
+      member = create(:group_member)
+      service = described_class.new(member, current_user: current_user)
       service.mark_as_recursive_call
 
       expect(service.send(:recursive_call?)).to eq(true)

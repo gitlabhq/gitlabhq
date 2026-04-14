@@ -8,6 +8,7 @@ import {
   COMPARE_OPTIONS,
   COMPARE_OPTIONS_INPUT_NAME,
 } from '~/projects/compare/constants';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -17,6 +18,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('CompareApp component', () => {
   let wrapper;
+  const findForm = () => wrapper.find('form');
   const findSourceRevisionCard = () => wrapper.findByTestId('sourceRevisionCard');
   const findTargetRevisionCard = () => wrapper.findByTestId('targetRevisionCard');
   const findPageTitle = () => wrapper.findByTestId('page-heading');
@@ -34,6 +36,7 @@ describe('CompareApp component', () => {
       stubs: {
         GlSprintf,
         GlFormRadioGroup,
+        IndexLayout,
         PageHeading,
       },
     });
@@ -69,8 +72,8 @@ describe('CompareApp component', () => {
   });
 
   it('contains the correct form attributes', () => {
-    expect(wrapper.attributes('action')).toBe(defaultProps.projectCompareIndexPath);
-    expect(wrapper.attributes('method')).toBe('POST');
+    expect(findForm().attributes('action')).toBe(defaultProps.projectCompareIndexPath);
+    expect(findForm().attributes('method')).toBe('POST');
   });
 
   it('has input with csrf token', () => {
@@ -168,7 +171,7 @@ describe('CompareApp component', () => {
     });
 
     it('correct input name', () => {
-      expect(findOptionsGroup().attributes('name')).toBe(COMPARE_OPTIONS_INPUT_NAME);
+      expect(findOptionsGroup().props('name')).toBe(COMPARE_OPTIONS_INPUT_NAME);
     });
 
     it('renders "only incoming changes" option', () => {

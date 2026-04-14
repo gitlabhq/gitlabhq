@@ -145,6 +145,7 @@ module API
               requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           put 'authorize' do
             authorize_workhorse!(
               subject: project_or_group,

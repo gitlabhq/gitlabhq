@@ -3,7 +3,7 @@
 module API
   module Entities
     class Todo < Grape::Entity
-      expose :id
+      expose :id, documentation: { type: 'Integer' }
       expose :project, using: Entities::ProjectIdentity, if: ->(todo, _) { todo.project_id }
       expose :group, using: ::API::Entities::NamespaceBasic, if: ->(todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic

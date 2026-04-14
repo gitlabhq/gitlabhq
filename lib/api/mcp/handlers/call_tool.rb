@@ -8,8 +8,9 @@ module API
           @manager = manager
         end
 
-        def invoke(request, params, current_user = nil)
+        def invoke(request, params, current_user = nil, tool_name_prefix: nil)
           tool_name = params[:name]
+          tool_name.delete_prefix!(tool_name_prefix) if tool_name_prefix.present?
           session_id = request[:id] || SecureRandom.uuid
 
           track_start_event(tool_name, session_id, current_user)

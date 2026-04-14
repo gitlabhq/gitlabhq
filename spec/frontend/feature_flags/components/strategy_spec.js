@@ -2,7 +2,7 @@ import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton, GlFormGroup } from '@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Api from '~/api';

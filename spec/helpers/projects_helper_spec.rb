@@ -608,12 +608,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(subject).to be_truthy
     end
 
-    it 'returns true when on the "Starred" tab under "Explore projects"' do
-      allow(@request).to receive(:path) { starred_explore_projects_path }
-
-      expect(subject).to be_truthy
-    end
-
     it 'returns false when on the "Your projects" tab' do
       allow(@request).to receive(:path) { dashboard_projects_path }
 
@@ -639,128 +633,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       it 'returns true if disabled flag is false' do
         expect(helper).to be_show_count
-      end
-    end
-  end
-
-  describe '#show_auto_devops_implicitly_enabled_banner?' do
-    using RSpec::Parameterized::TableSyntax
-
-    let_it_be_with_reload(:project_with_auto_devops) { create(:project, :repository, :auto_devops) }
-
-    let(:feature_visibilities) do
-      {
-        enabled: ProjectFeature::ENABLED,
-        disabled: ProjectFeature::DISABLED
-      }
-    end
-
-    where(:global_setting, :project_setting, :builds_visibility, :gitlab_ci_yml, :user_access, :result) do
-      # With ADO implicitly enabled scenarios
-      true | nil | :disabled | true  | :developer  | false
-      true | nil | :disabled | true  | :maintainer | false
-      true | nil | :disabled | true  | :owner      | false
-
-      true | nil | :disabled | false | :developer  | false
-      true | nil | :disabled | false | :maintainer | false
-      true | nil | :disabled | false | :owner      | false
-
-      true | nil | :enabled  | true  | :developer  | false
-      true | nil | :enabled  | true  | :maintainer | false
-      true | nil | :enabled  | true  | :owner      | false
-
-      true | nil | :enabled  | false | :developer  | false
-      true | nil | :enabled  | false | :maintainer | true
-      true | nil | :enabled  | false | :owner      | true
-
-      # With ADO enabled scenarios
-      true | true | :disabled | true  | :developer  | false
-      true | true | :disabled | true  | :maintainer | false
-      true | true | :disabled | true  | :owner      | false
-
-      true | true | :disabled | false | :developer  | false
-      true | true | :disabled | false | :maintainer | false
-      true | true | :disabled | false | :owner      | false
-
-      true | true | :enabled  | true  | :developer  | false
-      true | true | :enabled  | true  | :maintainer | false
-      true | true | :enabled  | true  | :owner      | false
-
-      true | true | :enabled  | false | :developer  | false
-      true | true | :enabled  | false | :maintainer | false
-      true | true | :enabled  | false | :owner      | false
-
-      # With ADO disabled scenarios
-      true | false | :disabled | true  | :developer  | false
-      true | false | :disabled | true  | :maintainer | false
-      true | false | :disabled | true  | :owner      | false
-
-      true | false | :disabled | false | :developer  | false
-      true | false | :disabled | false | :maintainer | false
-      true | false | :disabled | false | :owner      | false
-
-      true | false | :enabled  | true  | :developer  | false
-      true | false | :enabled  | true  | :maintainer | false
-      true | false | :enabled  | true  | :owner      | false
-
-      true | false | :enabled  | false | :developer  | false
-      true | false | :enabled  | false | :maintainer | false
-      true | false | :enabled  | false | :owner      | false
-    end
-
-    def grant_user_access(project, user, access)
-      case access
-      when :developer, :maintainer
-        project.add_member(user, access)
-      when :owner
-        project.namespace.update!(owner: user)
-      end
-    end
-
-    with_them do
-      let(:project) do
-        if project_setting.nil?
-          project_with_repo
-        else
-          project_with_auto_devops
-        end
-      end
-
-      before do
-        stub_application_setting(auto_devops_enabled: global_setting)
-
-        allow(project).to receive(:has_ci_config_file?).and_return(gitlab_ci_yml)
-
-        grant_user_access(project, user, user_access)
-        project.project_feature.update_attribute(:builds_access_level, feature_visibilities[builds_visibility])
-        project.auto_devops.update_attribute(:enabled, project_setting) unless project_setting.nil?
-      end
-
-      subject { helper.show_auto_devops_implicitly_enabled_banner?(project, user) }
-
-      it { is_expected.to eq(result) }
-    end
-  end
-
-  describe '#show_mobile_devops_project_promo?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:hide_cookie, :mobile_target_platform, :result) do
-      false | true | true
-      false | false | false
-      true | false | false
-      true | true | false
-    end
-
-    with_them do
-      before do
-        allow(Gitlab).to receive(:com?) { gitlab_com }
-        project.project_setting.target_platforms << 'ios' if mobile_target_platform
-        helper.request.cookies["hide_mobile_devops_promo_#{project.id}"] = true if hide_cookie
-      end
-
-      it 'resolves if mobile devops promo banner should be displayed' do
-        expect(helper.show_mobile_devops_project_promo?(project)).to eq result
       end
     end
   end
@@ -1011,24 +883,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(subject).to include(canAddCatalogResource: false)
     end
 
-    context 'when work_items_consolidated_list is disabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'includes issuesHelpPath pointing to the issues documentation' do
-        expect(subject).to include(issuesHelpPath: '/help/user/project/issues/_index.md')
-      end
-    end
-
-    context 'when work_items_consolidated_list is enabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
-
-      it 'includes issuesHelpPath pointing to work items documentation' do
-        expect(subject).to include(issuesHelpPath: '/help/user/work_items/_index.md')
-      end
+    it 'includes issuesHelpPath pointing to work items documentation' do
+      expect(subject).to include(issuesHelpPath: '/help/user/work_items/_index.md')
     end
   end
 
@@ -1137,14 +993,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     let_it_be(:project) { create(:project, :repository, :public) }
 
-    project_path = '/project/path'
     project_forks_path = '/project/forks'
     project_new_fork_path = '/project/new/fork'
     user_fork_url = '/user/fork'
 
     common_data_attributes = {
       forks_count: 4,
-      project_full_path: project_path,
       project_forks_url: project_forks_path,
       can_fork_project: "true",
       can_read_code: "true",
@@ -1176,7 +1030,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         allow(user).to receive(:has_groups_allowing_project_creation?).and_return(has_groups_allowing_project_creation)
 
         allow(project).to receive(:forks_count).and_return(4)
-        allow(project).to receive(:full_path).and_return(project_path)
 
         user_fork_path = user_fork_url if project_already_forked
         allow(helper).to receive(:namespace_project_path).with(user, anything).and_return(user_fork_path)
@@ -1281,7 +1134,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     with_them do
       before do
-        allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
+        allow(helper).to receive(:project_more_action_data).and_return({})
         allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
         allow(helper).to receive(:notification_data_attributes).and_return(nil)
         allow(helper).to receive(:star_count_data_attributes).and_return({})
@@ -1299,7 +1152,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           is_project_empty: is_empty_repo.to_s,
           project_id: project.id,
           project_name: project.name,
-          project_visibility_level: "private"
+          project_visibility_level: "private",
+          project_full_path: project.full_path
         }
       end
 
@@ -1326,6 +1180,48 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       subject { helper.home_panel_data_attributes }
 
       it { is_expected.to include({ is_project_marked_for_deletion: "true" }) }
+    end
+
+    describe 'dropdown attributes' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :public) }
+
+      before do
+        assign(:project, project)
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      subject(:result) { helper.home_panel_data_attributes }
+
+      it 'sets path attributes' do
+        expect(result).to include({
+          request_access_path: "/#{project.full_path}/-/project_members/request_access",
+          withdraw_access_request_path: "/#{project.full_path}/-/project_members/leave",
+          dashboard_path: '/dashboard/projects'
+        })
+      end
+
+      context 'when user can request access' do
+        specify { expect(result[:can_request_access]).to eq('true') }
+      end
+
+      context 'when user cannot request access' do
+        before do
+          project.update!(request_access_enabled: false)
+        end
+
+        specify { expect(result[:can_request_access]).to eq('false') }
+      end
+
+      context 'when user can withdraw access' do
+        let_it_be(:access_request) { create(:project_member, :guest, :access_request, project: project, user: user) }
+
+        specify { expect(result[:can_withdraw_access_request]).to eq('true') }
+      end
+
+      context 'when user cannot withdraw access' do
+        specify { expect(result[:can_withdraw_access_request]).to eq('false') }
+      end
     end
   end
 
@@ -2130,6 +2026,28 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when project and ancestor is not archived' do
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#can_show_last_commit_in_list?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.send(:can_show_last_commit_in_list?, project) }
+
+    where(:read_cross_project, :read_commit_status, :expected) do
+      true  | true  | true
+      false | true  | false
+      true  | false | false
+      false | false | false
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:can?).with(user, :read_cross_project).and_return(read_cross_project)
+        allow(helper).to receive(:can?).with(user, :read_commit_status, project).and_return(read_commit_status)
+      end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

@@ -1,0 +1,6 @@
+---
+name: create_pipeline_subscription
+description: |-
+  Grants the ability to create a pipeline subscription for a project.
+  Pipeline subscriptions allow a project to automatically trigger
+  a pipeline when a tag pipeline completes in another project.

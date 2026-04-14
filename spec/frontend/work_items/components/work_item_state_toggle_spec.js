@@ -103,12 +103,12 @@ describe('Work Item State toggle button component', () => {
   describe('work item State button text', () => {
     it.each`
       workItemState   | workItemType                      | buttonText
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Close task'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Reopen task'}
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Close objective'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Reopen objective'}
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Close key result'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Reopen key result'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Close Task'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Reopen Task'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Close Objective'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Reopen Objective'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Close Key Result'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Reopen Key Result'}
     `(
       'is "$buttonText" when "$workItemType" state is "$workItemState"',
       ({ workItemState, workItemType, buttonText }) => {
@@ -120,12 +120,12 @@ describe('Work Item State toggle button component', () => {
 
     it.each`
       workItemState   | workItemType                      | buttonText
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & close task'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & reopen task'}
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & close objective'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & reopen objective'}
-      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & close key result'}
-      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & reopen key result'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & close Task'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_TASK}       | ${'Comment & reopen Task'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & close Objective'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}  | ${'Comment & reopen Objective'}
+      ${STATE_OPEN}   | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & close Key Result'}
+      ${STATE_CLOSED} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${'Comment & reopen Key Result'}
     `(
       'is "$buttonText" when "$workItemType" state is "$workItemState" and hasComment is true',
       ({ workItemState, workItemType, buttonText }) => {
@@ -185,7 +185,7 @@ describe('Work Item State toggle button component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([
-        ['Something went wrong while updating the task. Please try again.'],
+        ['Something went wrong while updating the Task. Please try again.'],
       ]);
     });
 
@@ -237,13 +237,13 @@ describe('Work Item State toggle button component', () => {
 
     it('has title text', () => {
       expect(findBlockedByModal().attributes('title')).toBe(
-        'Are you sure you want to close this blocked task?',
+        'Are you sure you want to close this blocked Task?',
       );
     });
 
     it('has body text', () => {
       expect(findBlockedByModal().text()).toContain(
-        'This task is currently blocked by the following items:',
+        'This Task is currently blocked by the following items:',
       );
     });
 
@@ -291,13 +291,13 @@ describe('Work Item State toggle button component', () => {
 
     it('has title text', () => {
       expect(findOpenChildrenModal().attributes('title')).toBe(
-        'Are you sure you want to close this epic?',
+        'Are you sure you want to close this Epic?',
       );
     });
 
     it('has body text', () => {
       expect(findOpenChildrenModal().text()).toContain(
-        'This epic has open child items. If you close this epic, they will remain open.',
+        'This Epic has open child items. If you close this Epic, they will remain open.',
       );
     });
   });

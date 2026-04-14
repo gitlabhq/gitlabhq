@@ -7,10 +7,7 @@ import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import {
-  removeLinkedFileUrlParams,
-  withLinkedFileUrlParams,
-} from '~/rapid_diffs/utils/linked_file';
+import { withLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
 import FileBrowser from './file_browser.vue';
 import FileBrowserDrawer from './file_browser_drawer.vue';
 import FileBrowserDrawerToggle from './file_browser_drawer_toggle.vue';
@@ -21,7 +18,7 @@ function addFileLinks(diffFiles) {
       href: withLinkedFileUrlParams(new URL(window.location), {
         oldPath: diffFile.old_path,
         newPath: diffFile.new_path,
-        fileId: diffFile.file_hash,
+        hash: diffFile.file_hash,
       }).toString(),
     });
   });
@@ -67,35 +64,16 @@ const initToggle = (el) => {
   });
 };
 
-const initBrowserComponent = async (el, shouldSort, linkedFileData) => {
-  const linkedFilePath = linkedFileData?.old_path || linkedFileData?.new_path || null;
+const initBrowserComponent = async (el, shouldSort) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
     pinia,
-    data() {
-      return {
-        linkedFilePath,
-      };
-    },
-    mounted() {
-      let stop = () => {};
-      stop = useDiffsList(pinia).$onAction(({ name }) => {
-        if (name !== 'reloadDiffs') return;
-        this.linkedFilePath = undefined;
-        window.history.replaceState(
-          null,
-          undefined,
-          removeLinkedFileUrlParams(new URL(window.location)),
-        );
-        stop();
-      });
-    },
     render(h) {
       return h(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {
         props: {
           groupBlobsListItems: shouldSort,
-          linkedFilePath: this.linkedFilePath,
+          linkedFilePath: useDiffsList().linkedFilePath,
         },
         on: {
           clickFile(file) {
@@ -111,5 +89,5 @@ export async function initFileBrowser({ toggleTarget, browserTarget, appData }) 
   initToggle(toggleTarget);
   useFileBrowser().initTreeList();
   await loadFileBrowserData(appData.diffFilesEndpoint, appData.shouldSortMetadataFiles);
-  initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles, appData.linkedFileData);
+  initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles);
 }

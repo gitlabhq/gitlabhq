@@ -1,0 +1,21 @@
+# Permissions that are missing full `it_behaves_like 'authorizing granular token permissions'` test coverage.
+# One entry per permission name. Each route using the permission should have its own test.
+#
+# These permissions should have test coverage added over time.
+# Do not add new entries to this file -- instead, add tests for new permissions.
+create_vulnerability_note
+delete_badge
+delete_conan_package
+delete_vulnerability_note
+delete_work_item
+promote_label
+read_conan_package
+read_epic
+read_epic_issue
+read_milestone
+read_pages_access
+read_repository_file_blame
+read_vulnerability_note
+update_invitation
+update_vulnerability_note
+upload_conan_package

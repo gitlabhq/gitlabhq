@@ -125,12 +125,12 @@ export default {
       return this.pipeline?.name || '';
     },
     pipelineSecondaryLink() {
-      const { pipeline_schedule: pipelineSchedule } = this.pipeline || {};
+      const pipelineSchedule = this.pipeline?.pipelineSchedule || this.pipeline?.pipeline_schedule;
 
       if (pipelineSchedule) {
         return {
           text: pipelineSchedule.description,
-          href: pipelineSchedule.path,
+          href: pipelineSchedule.editPath || pipelineSchedule.path,
         };
       }
 

@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
-group: Code Creation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duoコードレビュー（従来）
+group: AI Coding
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLab Duoコードレビュー
 ---
 
 {{< details >}}
@@ -15,14 +15,14 @@ title: GitLab Duoコードレビュー（従来）
 
 {{< collapsible title="モデル情報" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [デフォルトLLM](model_selection.md#default-models)
 - [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
 {{< history >}}
 
-- GitLab 17.5で、[実験的機能](../../policy/development_stages_support.md#experiment)として、2つの機能フラグ[`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106)と[`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632)の背後で[導入](https://gitlab.com/groups/gitlab-org/-/epics/14825)されました。両方ともデフォルトで無効になっています。
+- GitLab 17.5で、[実験的機能](../../policy/development_stages_support.md#experiment)として、[導入](https://gitlab.com/groups/gitlab-org/-/epics/14825)されました。機能フラグ[`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106)と[`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632)の背後で動作しており、どちらもデフォルトでは無効になっています。
 - 機能フラグ[`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106)および[`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632)は、17.10のGitLab.com、GitLab Self-Managed、GitLab Dedicatedでデフォルトで有効になっています。
 - GitLab 17.10でベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/516234)されました。
 - GitLab 18.0でPremiumを含むように変更されました。
@@ -34,15 +34,16 @@ title: GitLab Duoコードレビュー（従来）
 
 {{< /history >}}
 
-マージリクエストをレビューする準備ができたら、GitLab Duoコードレビュー（クラシック）を使用して初期レビューを実行します: 
+> [!note]
+> お使いのアドオンによっては、代わりにCode Review Flowにアクセスできる場合があります。[2つの機能の比較説明](../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)をご覧ください。
+
+マージリクエストをレビューする準備ができたら、GitLab Duoコードレビューを使用して初期レビューを実行します: 
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択し、マージリクエストを検索します。
+1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択して、マージリクエストを見つけます。
 1. コメントボックスに、クイックアクション`/assign_reviewer @GitLabDuo`を入力するか、GitLab Duoをレビュアーとして割り当てます。
 
 <i class="fa-youtube-play" aria-hidden="true"></i> [概要を見る](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
-
-新しいエージェント型[Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review.md)について説明します。
 
 データ使用: この機能を使用すると、次のデータが大規模言語モデルに送信されます: 
 
@@ -61,13 +62,13 @@ title: GitLab Duoコードレビュー（従来）
 
 GitLab Duoとの対話は、マージリクエストの改善に取り組む際に、提案やフィードバックの向上に役立ちます。
 
-GitLab Duoに提供されたフィードバックは、他のマージリクエストのその後のレビューには影響しません。この機能を追加するリクエストがあります。[イシュー560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116)を参照してください。
+GitLab Duoに提供されたフィードバックは、他のマージリクエスト以後のレビューには影響しません。この機能を追加するリクエストがあります。[イシュー560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116)を参照してください。
 
 ## カスタムコードレビュー指示 {#custom-code-review-instructions}
 
 プロジェクト内で一貫性のある具体的なコードレビュー標準を確保するため、カスタムMRレビュー指示を作成できます。
 
-詳細については、[GitLab Duoのレビュー手順のカスタマイズ](../../user/gitlab_duo/customize_duo/review_instructions.md)を参照してください。
+詳細については、[GitLab Duoへのレビュー指示をカスタマイズする](customize_duo/review_instructions.md)を参照してください。
 
 ## プロジェクトのGitLab Duoによる自動レビュー {#automatic-reviews-from-gitlab-duo-for-a-project}
 
@@ -86,7 +87,7 @@ GitLab Duoの自動レビューにより、プロジェクト内のすべての�
 
 - プロジェクトの[メンテナーロール](../permissions.md)以上が必要です。
 
-`@GitLabDuo`がマージリクエストを自動的にレビューできるようにするには: 
+`@GitLabDuo`がマージリクエストを自動的にレビューできるようにするには、以下の手順に従います: 
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定** > **マージリクエスト**を選択します。
@@ -98,7 +99,7 @@ GitLab Duoの自動レビューにより、プロジェクト内のすべての�
 {{< history >}}
 
 - GitLab 18.4で`cascading_auto_duo_code_review_settings`[機能フラグ](../../administration/feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/554070)されました。デフォルトでは無効になっています。
-- 機能フラグ`cascading_auto_duo_code_review_settings`は、GitLab 18.7で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240)されました。
+- GitLab 18.7で機能フラグ`cascading_auto_duo_code_review_settings`が[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240)されました。
 
 {{< /history >}}
 
@@ -109,7 +110,7 @@ GitLab Duoの自動レビューにより、プロジェクト内のすべての�
 - グループの自動レビューをオンにするには、グループのオーナーロールが必要です。
 - すべてのプロジェクトで自動レビューをオンにするには、管理者である必要があります。
 
-グループの自動レビューを有効にするには: 
+グループの自動レビューを有効にするには、以下の手順に従います: 
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **設定** > **一般**を選択します。
@@ -117,7 +118,7 @@ GitLab Duoの自動レビューにより、プロジェクト内のすべての�
 1. **GitLab Duoコードレビュー**セクションで、**GitLab Duoによる自動レビューを有効にする**を選択します。
 1. **変更を保存**を選択します。
 
-すべてのプロジェクトで自動レビューを有効にするには: 
+すべてのプロジェクトで自動レビューを有効にするには、以下の手順に従います: 
 
 1. 右上隅で、**管理者**を選択します。
 1. **設定** > **一般**を選択します。
@@ -128,4 +129,4 @@ GitLab Duoの自動レビューにより、プロジェクト内のすべての�
 
 ## 関連トピック {#related-topics}
 
-- [マージリクエストにおけるGitLab Duo](../../user/project/merge_requests/duo_in_merge_requests.md)
+- [マージリクエストにおけるGitLab Duo](../project/merge_requests/duo_in_merge_requests.md)

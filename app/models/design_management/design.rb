@@ -22,6 +22,7 @@ module DesignManagement
 
     belongs_to :project, inverse_of: :designs
     belongs_to :issue
+    belongs_to :namespace
 
     has_many :actions
     has_many :versions, through: :actions, class_name: 'DesignManagement::Version', inverse_of: :designs

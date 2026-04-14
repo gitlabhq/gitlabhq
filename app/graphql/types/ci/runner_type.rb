@@ -9,6 +9,15 @@ module Types
       connection_type_class RunnerCountableConnectionType
 
       authorize :read_runner
+      authorize_granular_token(
+        permissions: :read_runner,
+        boundaries: [
+          { boundary: :owner, boundary_type: :project },
+          { boundary: :owner, boundary_type: :group },
+          { boundary: :instance, boundary_type: :instance }
+        ]
+      )
+
       present_using ::Ci::RunnerPresenter
       expose_permissions Types::PermissionTypes::Ci::Runner
 

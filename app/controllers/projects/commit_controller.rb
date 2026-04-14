@@ -11,6 +11,7 @@ class Projects::CommitController < Projects::ApplicationController
   include SourcegraphDecorator
   include RapidDiffs::Resource
   include RapidDiffs::DiscussionActions
+  include HandlesGitalyErrors
 
   # Authorize
   before_action :require_non_empty_project

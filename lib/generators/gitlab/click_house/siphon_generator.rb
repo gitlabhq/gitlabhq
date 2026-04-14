@@ -10,13 +10,14 @@ module Gitlab
 
       desc <<~DESC
         Generates a migration that creates a table for receiving replicated data (using Siphon)
-        from a matching PostgreSQL table.
+        from a matching PostgreSQL table, and a Siphon table configuration YAML.
 
         Example:
           rails generate gitlab:click_house:siphon PG_TABLE_NAME --with-traversal-path
 
         This will create:
           db/clickhouse/migrate/main/TIMESTAMP_create_siphon_PG_TABLE_NAME.rb
+          db/siphon/tables/PG_TABLE_NAME.yml
       DESC
 
       argument :table_name, type: :string, required: true, desc: "The PG table to be cloned"
@@ -79,7 +80,7 @@ module Gitlab
           '[]' # For arrays with empty as default
         },
         'now()' => ->(_) {
-          'now()'
+          "now64(6, 'UTC')"
         },
         /^\d+(\.\d+)?$/ => ->(default) {
           default # numeric default
@@ -109,6 +110,17 @@ module Gitlab
         template 'siphon_table.rb.template', migration_path
       end
 
+      def generate_siphon_yml
+        yml_path = "db/siphon/tables/#{table_name}.yml"
+
+        if File.exist?(Rails.root.join(yml_path))
+          say "Skipping #{yml_path}: file already exists", :yellow
+          return
+        end
+
+        create_file yml_path, siphon_yml_content
+      end
+
       private
 
       def clickhouse_table_name
@@ -118,7 +130,7 @@ module Gitlab
       def table_definition
         definitions = [
           *table_columns,
-          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1))",
+          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1))",
           "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))",
           *table_projection
         ].flatten.compact.join(",\n        ")
@@ -144,13 +156,11 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
       end
 
       def build_traversal_path_field
-        db_yml = Rails.root.join('db', 'docs', "#{table_name}.yml")
-        raise "Unknown PostgreSQL table, table definition is missing: #{db_yml}" unless File.exist?(db_yml)
+        if Array(db_docs_yml["sharding_key"]).empty?
+          raise "No sharding_key definition present for table '#{table_name}'"
+        end
 
-        table_yml = YAML.safe_load_file(db_yml)
-        raise "No sharding_key definition present for table '#{table_name}'" if Array(table_yml["sharding_key"]).empty?
-
-        conditions = table_yml["sharding_key"].map do |column, parent_table|
+        conditions = db_docs_yml["sharding_key"].map do |column, parent_table|
           null_to_zero = "coalesce(#{column}, 0)"
           dictionary = DICTIONARIES.fetch(parent_table)
           "#{null_to_zero} != 0, dictGetOrDefault('#{dictionary}', 'traversal_path', #{column}, '0/')"
@@ -158,6 +168,56 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
         conditions << "'0/'"
 
         "traversal_path String DEFAULT multiIf(#{conditions.join(', ')}) CODEC(ZSTD(3))"
+      end
+
+      def db_docs_yml
+        @db_docs_yml ||= begin
+          path = Rails.root.join('db', 'docs', "#{table_name}.yml")
+          raise "Table definition is missing: #{path}" unless File.exist?(path)
+
+          YAML.safe_load_file(path)
+        end
+      end
+
+      def siphon_yml_content
+        hash = { 'table' => table_name, 'database' => siphon_database }
+
+        cols = sensitive_columns
+        hash['ignored_columns'] = cols unless cols.empty?
+
+        target = {
+          'name' => 'clickhouse_main',
+          'target' => clickhouse_table_name,
+          'dedup_by_table' => table_name,
+          'dedup_by' => pg_primary_keys
+        }
+        target['reconcile'] = siphon_reconcile if hierarchy_denormalization?
+
+        hash['replication_targets'] = [target]
+        hash.to_yaml
+      end
+
+      def siphon_database
+        gitlab_schema = db_docs_yml['gitlab_schema']
+
+        Gitlab::Database.all_database_connections.find do |_name, cfg|
+          cfg.gitlab_schemas.include?(gitlab_schema.to_sym)
+        end.first
+      end
+
+      def sensitive_columns
+        pg_fields_metadata.filter_map do |field|
+          name = field['field_name']
+          name if name.include?('_token') || name.include?('_html') || name.include?('secret')
+        end
+      end
+
+      def siphon_reconcile
+        { 'column' => 'traversal_path', 'expression_key_columns' => sharding_key_columns }
+      end
+
+      def sharding_key_columns
+        Array(db_docs_yml['sharding_key']).map { |col, _| col }.sort
       end
 
       def primary_keys

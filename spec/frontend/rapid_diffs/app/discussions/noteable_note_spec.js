@@ -1,6 +1,5 @@
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
@@ -9,13 +8,9 @@ import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
 import TimelineEntryItem from '~/rapid_diffs/app/discussions/timeline_entry_item.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
-import {
-  HTTP_STATUS_GONE,
-  HTTP_STATUS_INTERNAL_SERVER_ERROR,
-  HTTP_STATUS_OK,
-} from '~/lib/utils/http_status';
+
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import axios from 'helpers/mocks/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -25,7 +20,7 @@ jest.mock('~/lib/utils/secret_detection');
 describe('NoteableNote', () => {
   let wrapper;
   let defaultProps;
-  let mockAdapter;
+  let store;
 
   const defaultProvisions = {
     endpoints: {
@@ -60,6 +55,7 @@ describe('NoteableNote', () => {
         path: '/note/path',
         noteable_id: 123,
         isEditing: false,
+        toggle_award_path: '/award',
       },
       customOptions,
     );
@@ -68,21 +64,25 @@ describe('NoteableNote', () => {
   const createComponent = (props = {}, provide = defaultProvisions) => {
     wrapper = shallowMount(NoteableNote, {
       propsData: merge(defaultProps, props),
-      provide,
+      provide: { store, ...provide },
     });
   };
 
   beforeEach(() => {
-    mockAdapter = new MockAdapter(axios);
     defaultProps = {
       note: createNote(),
+    };
+    store = {
+      saveNote: jest.fn().mockResolvedValue(),
+      destroyNote: jest.fn().mockResolvedValue(),
+      deleteNote: jest.fn(),
+      toggleAwardOnNote: jest.fn().mockResolvedValue(),
     };
     confirmAction.mockResolvedValue(true);
     detectAndConfirmSensitiveTokens.mockResolvedValue(true);
   });
 
   afterEach(() => {
-    mockAdapter.restore();
     confirmAction.mockClear();
     createAlert.mockClear();
     detectAndConfirmSensitiveTokens.mockClear();
@@ -152,10 +152,9 @@ describe('NoteableNote', () => {
   });
 
   describe('note deletion', () => {
-    it('confirms deletion, sends DELETE request, and emits noteDeleted on success', async () => {
-      mockAdapter.onDelete(defaultProps.note.path).reply(HTTP_STATUS_OK);
-
-      createComponent();
+    it('confirms deletion and calls store.destroyNote on success', async () => {
+      const note = createNote();
+      createComponent({ note });
       findNoteActions().vm.$emit('delete');
 
       expect(confirmAction).toHaveBeenCalledWith(
@@ -163,33 +162,31 @@ describe('NoteableNote', () => {
         expect.objectContaining({ primaryBtnText: 'Delete comment' }),
       );
 
-      await axios.waitForAll();
+      await waitForPromises();
 
-      expect(wrapper.emitted('noteDeleted')).toStrictEqual([[]]);
+      expect(store.destroyNote).toHaveBeenCalledWith(note);
     });
 
-    it('does not send request or emit if confirmation is cancelled', async () => {
+    it('does not call destroyNote if confirmation is cancelled', async () => {
       confirmAction.mockResolvedValueOnce(false);
-      mockAdapter.onDelete(defaultProps.note.path).reply(HTTP_STATUS_OK);
 
       createComponent();
       findNoteActions().vm.$emit('delete');
 
-      await axios.waitForAll();
+      await waitForPromises();
 
-      expect(wrapper.emitted('noteDeleted')).toBeUndefined();
+      expect(store.destroyNote).not.toHaveBeenCalled();
     });
 
     it('creates alert on deletion failure', async () => {
-      mockAdapter.onDelete(defaultProps.note.path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      store.destroyNote.mockRejectedValue(new Error('fail'));
 
       createComponent();
       findNoteActions().vm.$emit('delete');
 
-      await axios.waitForAll();
+      await waitForPromises();
 
       expect(createAlert).toHaveBeenCalled();
-      expect(wrapper.emitted('noteDeleted')).toBeUndefined();
     });
   });
 
@@ -203,42 +200,27 @@ describe('NoteableNote', () => {
       expect(spy).toHaveBeenCalledWith({ block: 'nearest' });
     });
 
-    it('sends PUT request and emits noteUpdated on NoteBody save-note call', async () => {
-      const updatedNote = createNote({ body: noteText });
-      mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_OK, { note: updatedNote });
-
-      createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')(noteText);
+    it('calls store.saveNote and emits cancelEditing on success', async () => {
+      const note = createNote({ isEditing: true });
+      createComponent({ note });
+      await findNoteBody().props('saveNote')(noteText);
 
       expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: noteText });
-
-      await axios.waitForAll();
-
+      expect(store.saveNote).toHaveBeenCalledWith(note, noteText);
       expect(wrapper.emitted('cancelEditing')).toStrictEqual([[]]);
-      expect(wrapper.emitted('noteUpdated')).toStrictEqual([[updatedNote]]);
     });
 
-    it('emits noteDeleted if server returns HTTP_STATUS_GONE', async () => {
-      mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_GONE);
+    it('shows alert on API failure', async () => {
+      store.saveNote.mockRejectedValue(new Error('fail'));
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')(noteText);
+      await findNoteBody().props('saveNote')(noteText);
 
-      await axios.waitForAll();
-
-      expect(wrapper.emitted('noteDeleted')).toStrictEqual([[]]);
-      expect(wrapper.emitted('noteUpdated')).toBeUndefined();
-    });
-
-    it('rethrows error on API failure', async () => {
-      mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-
-      createComponent({ note: createNote({ isEditing: true }) });
-
-      await expect(findNoteBody().props('saveNote')(noteText)).rejects.toThrow();
-      await axios.waitForAll();
-
-      expect(wrapper.emitted('noteUpdated')).toBeUndefined();
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: UPDATE_COMMENT_FORM.defaultError,
+        }),
+      );
     });
   });
 
@@ -281,24 +263,34 @@ describe('NoteableNote', () => {
   });
 
   it('handles award event on note body', async () => {
+    const note = createNote();
     const award = 'smile';
-    const awardPath = '/award';
-    const note = createNote({ toggle_award_path: awardPath });
-    mockAdapter.onPost(awardPath, { name: award }).reply(HTTP_STATUS_OK);
     createComponent({ note });
     await wrapper.findComponent(NoteBody).vm.$emit('award', award);
-    await axios.waitForAll();
-    expect(wrapper.emitted('toggleAward')).toStrictEqual([[award]]);
+    await waitForPromises();
+    expect(store.toggleAwardOnNote).toHaveBeenCalledWith(note, award);
   });
 
   it('handles award event on note actions', async () => {
+    const note = createNote();
     const award = 'smile';
-    const awardPath = '/award';
-    const note = createNote({ toggle_award_path: awardPath });
-    mockAdapter.onPost(awardPath, { name: award }).reply(HTTP_STATUS_OK);
     createComponent({ note });
     await wrapper.findComponent(NoteActions).vm.$emit('award', award);
-    await axios.waitForAll();
-    expect(wrapper.emitted('toggleAward')).toStrictEqual([[award]]);
+    await waitForPromises();
+    expect(store.toggleAwardOnNote).toHaveBeenCalledWith(note, award);
+  });
+
+  describe('draft notes', () => {
+    const createDraftNote = (overrides = {}) => createNote({ isDraft: true, ...overrides });
+
+    it('disables award emoji for draft notes', () => {
+      createComponent({ note: createDraftNote() });
+      expect(findNoteActions().props('canAwardEmoji')).toBe(false);
+    });
+
+    it('disables report as abuse for draft notes', () => {
+      createComponent({ note: createDraftNote() });
+      expect(findNoteActions().props('canReportAsAbuse')).toBe(false);
+    });
   });
 });

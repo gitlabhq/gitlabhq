@@ -3,6 +3,7 @@
 class Packages::BuildInfo < ApplicationRecord
   belongs_to :package, inverse_of: :build_infos
   belongs_to :pipeline, class_name: 'Ci::Pipeline'
+  belongs_to :project
 
   scope :pluck_pipeline_ids, -> { pluck(:pipeline_id) }
   scope :without_empty_pipelines, -> { where.not(pipeline_id: nil) }

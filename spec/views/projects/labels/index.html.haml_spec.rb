@@ -44,37 +44,20 @@ RSpec.describe 'projects/labels/index.html.haml', :aggregate_failures, feature_c
         assign(:labels, Label.where(project: project, archived: true).page(1))
 
         allow(view).to receive(:params).and_return({ archived: 'true' })
+
+        render
       end
 
-      context 'when labels_archive feature flag is enabled' do
-        before do
-          render
-        end
-
-        it 'hides the prioritized labels section' do
-          expect(rendered).to have_css('.prioritized-labels.gl-hidden')
-        end
-
-        it 'shows archived labels' do
-          expect(rendered).to have_text(archived_label.title)
-        end
-
-        it 'does not show active label' do
-          expect(rendered).not_to have_text(label.title)
-        end
+      it 'hides the prioritized labels section' do
+        expect(rendered).to have_css('.prioritized-labels.gl-hidden')
       end
 
-      context 'when labels_archive feature flag is disabled' do
-        before do
-          stub_feature_flags(labels_archive: false)
-          render
-        end
+      it 'shows archived labels' do
+        expect(rendered).to have_text(archived_label.title)
+      end
 
-        it 'still shows the prioritized labels section when feature flag is disabled' do
-          expect(rendered).to have_css('.prioritized-labels')
-          expect(rendered).not_to have_css('.prioritized-labels.gl-hidden')
-          expect(rendered).to have_text(prioritized_label.title)
-        end
+      it 'does not show active label' do
+        expect(rendered).not_to have_text(label.title)
       end
     end
   end
@@ -84,35 +67,16 @@ RSpec.describe 'projects/labels/index.html.haml', :aggregate_failures, feature_c
       assign(:prioritized_labels, Label.none)
       assign(:labels, Label.none)
       assign(:available_labels, Label.none)
+
+      render
     end
 
-    context 'with feature flag :labels_archive enabled' do
-      before do
-        render
-      end
-
-      it 'still shows the navigation bar' do
-        expect(rendered).to have_css('.top-area')
-      end
-
-      it 'shows the empty state' do
-        expect(rendered).to have_css('.gl-empty-state-content')
-      end
+    it 'still shows the navigation bar' do
+      expect(rendered).to have_css('.top-area')
     end
 
-    context 'with feature flag :labels_archive disabled' do
-      before do
-        stub_feature_flags(labels_archive: false)
-        render
-      end
-
-      it 'does not show the navigation bar' do
-        expect(rendered).not_to have_css('.top-area')
-      end
-
-      it 'shows the empty state' do
-        expect(rendered).to have_css('.gl-empty-state-content')
-      end
+    it 'shows the empty state' do
+      expect(rendered).to have_css('.gl-empty-state-content')
     end
   end
 

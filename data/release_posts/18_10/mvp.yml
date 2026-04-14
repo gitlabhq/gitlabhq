@@ -1,0 +1,18 @@
+mvp:
+  fullname: Harshith Sudar
+  gitlab: official.harshith1
+  description: |
+    Harshith is currently a Level 3 Contributor who has made impactful contributions improving community tooling and analytics, from triage automation and contributor recognition to [GitLab Duo](https://about.gitlab.com/gitlab-duo/) usage insights.
+
+    Harshith's contributions were first recognized by [Lee Tickett](https://gitlab.com/leetickett-gitlab), Fullstack Engineer in DevRel Engineering at GitLab, who nominated him. His work has strengthened how we support contributors behind the scenes through improvements to our automation and contributor-facing experiences. For example, he expanded our triage automation by [updating the `IssueSummary` processor in triage-ops to work with multiple projects](https://gitlab.com/gitlab-org/quality/triage-ops/-/merge_requests/3589), including [contributors.gitlab.com](https://contributors.gitlab.com), making it easier for us to keep more community projects consistently summarized and visible. He also helped recognize community-created content through the [new “Add content” button and flow](https://gitlab.com/gitlab-org/developer-relations/contributor-success/contributors-gitlab-com/-/merge_requests/1250), which lets contributors log blog posts, videos, and other content directly from their profile and get rewarded.
+
+    Harshith has also contributed to our analytics and GitLab Duo usage insights. Highlights include [refining how GitLab Duo usage is calculated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207511), improving how AI impact over time can be explored by [removing the 180-day default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218870), and [consolidating DORA metric date range constants](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216715), as well as enhancing analytics at scale with improvements like adding [infinite scroll for the Value Stream Analytics custom stage label picker](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207796). Together, these changes help teams better understand how GitLab is used in real projects.
+
+    In his own words:
+
+    > "One thing I've really enjoyed while contributing is how thoughtfully ideas are discussed within the community. It's encouraging to see suggestions explored collaboratively, like in the discussion around [MR !1288](https://gitlab.com/gitlab-org/developer-relations/contributor-success/contributors-gitlab-com/-/merge_requests/1288), which turned into a great learning experience.
+    > I'm really happy to be part of this community and look forward to making many more contributions in the future."
+
+    Thank you, Harshith, for your ongoing work to improve the GitLab codebase and contributor experience!
+
+    Want to connect with Harshith and learn more about his contributions? Visit Harshith's [GitLab profile](https://gitlab.com/official.harshith1) and his [LinkedIn profile](https://www.linkedin.com/in/harshith-s-a44169282/).

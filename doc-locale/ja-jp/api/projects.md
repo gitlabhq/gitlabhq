@@ -539,7 +539,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-> [!flag] `web_based_commit_signing_enabled`属性の可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+> [!flag]
+> `web_based_commit_signing_enabled`属性の可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
 認証済みユーザーがアクセス可能なインスタンス上のすべてのプロジェクトをリスト表示します。未認証のリクエストは、属性の限定されたサブセットを持つ公開プロジェクトのみを返します。
 
@@ -895,7 +896,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-> [!note] `last_activity_at`は、[プロジェクトアクティビティ](../user/project/working_with_projects.md#view-project-activity)および[プロジェクトイベント](events.md)に基づいて更新されます。データベースのパフォーマンスを最適化するため、このフィールドは1時間に1回のみ更新されます。最終更新から1時間以内に発生したイベントは、タイムスタンプを変更しません。その結果、`last_activity_at`は最大1時間最新ではない可能性があります。`updated_at`は、プロジェクトレコードがデータベースで変更されるたびに更新されます。
+> [!note]
+> `last_activity_at`は、[プロジェクトアクティビティ](../user/project/working_with_projects.md#view-project-activity)および[プロジェクトイベント](events.md)に基づいて更新されます。データベースのパフォーマンスを最適化するため、このフィールドは1時間に1回のみ更新されます。最終更新から1時間以内に発生したイベントは、タイムスタンプを変更しません。その結果、`last_activity_at`は最大1時間最新ではない可能性があります。`updated_at`は、プロジェクトレコードがデータベースで変更されるたびに更新されます。
 
 ### ユーザーのすべての個人プロジェクトをリスト表示 {#list-all-personal-projects-for-a-user}
 
@@ -2740,7 +2742,8 @@ curl --request POST \
 
 このエンドポイントは、以前に削除対象としてマークされたプロジェクトをすぐに削除することもできます。
 
-> [!warning] GitLab.comでは、プロジェクトが削除された後、そのデータは30日間保持され、永続的な削除は利用できません。GitLab.comでプロジェクトをすぐに削除する必要がある場合は、[サポートチケット](https://about.gitlab.com/support/)をオープンできます。
+> [!warning]
+> GitLab.comでは、プロジェクトが削除された後、そのデータは30日間保持され、永続的な削除は利用できません。GitLab.comでプロジェクトをすぐに削除する必要がある場合は、[サポートチケット](https://about.gitlab.com/support/)をオープンできます。
 
 ```plaintext
 DELETE /projects/:id

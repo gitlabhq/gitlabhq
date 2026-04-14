@@ -7,7 +7,6 @@ require_relative 'contract_pb'
 module DuoWorkflowService
   module DuoWorkflow
     class Service
-
       include ::GRPC::GenericService
 
       self.marshal_class_method = :encode

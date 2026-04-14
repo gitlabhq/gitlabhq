@@ -45,6 +45,14 @@ module Types
       experiment: { milestone: '18.3' },
       description: 'List all runners the current user manages.'
 
+    # We've declared this field here instead of `UserType` to prevent
+    # Unauthorized user to check if a user is an instance admin or not
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227397#note_3172922239
+    field :admin,
+      type: GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if the user is an instance administrator.'
+
     # Override id field to add ai_workflows scope
     field :id,
       type: Types::GlobalIDType[::User],

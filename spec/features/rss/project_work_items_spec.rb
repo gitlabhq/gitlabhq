@@ -21,10 +21,6 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
     let_it_be(:project) { create(:project) }
     let!(:work_item) { create(:work_item, author: user, project: project) }
 
-    before_all do
-      stub_feature_flags(work_item_planning_view: true)
-    end
-
     context 'when authenticated' do
       context 'with no referer' do
         it 'renders RSS feed' do
@@ -34,8 +30,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
           expect(response_headers['Content-Type']).to have_content('application/atom+xml')
           expect(body).to include('<?xml version="1.0" encoding="UTF-8"?>')
           expect(body).to include('<feed xmlns="http://www.w3.org/2005/Atom"')
-          expect(body).to include("<title>#{project.name} work items</title>")
-          expect(body).to include("<title>#{work_item.title}</title>")
+          expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+          expect(body).to have_selector('entry title', text: work_item.title)
         end
       end
 
@@ -47,8 +43,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
 
           expect(response_headers['Content-Type']).to have_content('application/atom+xml')
           expect(body).to include('<feed xmlns="http://www.w3.org/2005/Atom"')
-          expect(body).to include("<title>#{project.name} work items</title>")
-          expect(body).to include("<title>#{work_item.title}</title>")
+          expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+          expect(body).to have_selector('entry title', text: work_item.title)
         end
       end
     end
@@ -61,8 +57,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to include('<feed xmlns="http://www.w3.org/2005/Atom"')
-        expect(body).to include("<title>#{project.name} work items</title>")
-        expect(body).to include("<title>#{work_item.title}</title>")
+        expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+        expect(body).to have_selector('entry title', text: work_item.title)
       end
     end
 
@@ -72,8 +68,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to include('<feed xmlns="http://www.w3.org/2005/Atom"')
-        expect(body).to include("<title>#{project.name} work items</title>")
-        expect(body).to include("<title>#{work_item.title}</title>")
+        expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+        expect(body).to have_selector('entry title', text: work_item.title)
       end
     end
 
@@ -91,12 +87,12 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'renders work item fields' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include('<title>test work item title</title>')
-        expect(body).to include('<summary>test work item title</summary>')
-        expect(body).to include('<content>test work item desc</content>')
-        expect(body).to include("<title>#{project.name} work items</title>")
-        expect(body).to include('<work_item_type>Issue</work_item_type>')
-        expect(body).to include('<state>opened</state>')
+        expect(body).to have_selector('entry title[type="html"]', text: 'test work item title')
+        expect(body).to have_selector('entry summary', text: 'test work item title')
+        expect(body).to have_selector('entry content[type="html"]', text: 'test work item desc')
+        expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+        expect(body).to have_selector('entry work_item_type', text: 'Issue')
+        expect(body).to have_selector('entry state', text: 'opened')
       end
     end
 
@@ -122,9 +118,9 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'includes all work items' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include('<title>first work item</title>')
-        expect(body).to include('<title>second work item</title>')
-        expect(body.scan(/<entry>/).count).to eq(3)
+        expect(body).to have_selector('entry title', text: 'first work item')
+        expect(body).to have_selector('entry title', text: 'second work item')
+        expect(body).to have_selector('entry', count: 3)
       end
     end
 
@@ -142,8 +138,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'includes assignee information' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include("<name>#{assignee.name}</name>")
-        expect(body).to include("<email>#{assignee.public_email}</email>")
+        expect(body).to have_selector('entry assignee name', text: assignee.name)
+        expect(body).to have_selector('entry assignee email', text: assignee.public_email)
       end
     end
 
@@ -162,7 +158,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'includes label information' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include('<label>bug</label>')
+        expect(body).to have_selector('entry label', text: 'bug')
       end
     end
 
@@ -181,7 +177,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'includes milestone information' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include('<milestone>v1.0</milestone>')
+        expect(body).to have_selector('entry milestone', text: 'v1.0')
       end
     end
 
@@ -199,7 +195,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'includes due date' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to include("<due_date>#{Date.tomorrow}</due_date>")
+        expect(body).to have_selector('entry due_date', text: Date.tomorrow.to_s)
       end
     end
 
@@ -209,8 +205,8 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to include('<feed xmlns="http://www.w3.org/2005/Atom"')
-        expect(body).to include("<title>#{project.name} work items</title>")
-        expect(body).to include("<title>#{work_item.title}</title>")
+        expect(body).to have_selector('feed > title', text: "#{project.name} work items")
+        expect(body).to have_selector('entry title', text: work_item.title)
       end
     end
 

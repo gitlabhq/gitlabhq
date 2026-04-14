@@ -1,0 +1,32 @@
+# @feature_category: permissions
+query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!) {
+  user(id: $userId) {
+    id
+    personalAccessTokens(id: $id) {
+      nodes {
+        id
+        name
+        description
+        scopes {
+          ... on AccessTokenGranularScope {
+            access
+            namespace {
+              id
+              name
+              fullPath
+            }
+            project {
+              id
+              name
+              fullPath
+            }
+            permissions {
+              action
+              resource
+            }
+          }
+        }
+      }
+    }
+  }
+}

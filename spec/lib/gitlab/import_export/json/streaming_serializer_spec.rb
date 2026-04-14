@@ -557,46 +557,56 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         subject.serialize_relation({ user_contributions: { only: [:id, :public_email, :username, :name], include: [] } })
       end
     end
+  end
 
-    context 'when export_reduce_relation_batch_size` feature flag is enabled' do
-      before do
-        stub_feature_flags(export_reduce_relation_batch_size: true)
-      end
+  describe '#serialize_relation with excluded_relations' do
+    let(:include) { [{ issues: { include: [] } }, { merge_requests: { include: [] } }] }
+    let(:excluded_relations) { [] }
 
-      context 'when exported relation is included in SMALL_BATCH_RELATIONS' do
-        before do
-          stub_const("#{described_class}::SMALL_BATCH_RELATIONS", [:merge_requests])
-        end
+    subject(:serializer) do
+      described_class.new(
+        exportable,
+        relations_schema,
+        json_writer,
+        exportable_path: exportable_path,
+        logger: logger,
+        current_user: user,
+        excluded_relations: excluded_relations
+      )
+    end
 
-        it 'export relations using a smaller batch size' do
-          expect(exportable.merge_requests).to receive(:in_batches).with(of: described_class::SMALLER_BATCH_SIZE)
+    before do
+      allow(json_writer).to receive(:write_attributes).with(exportable_path, hash)
+      allow(json_writer).to receive(:write_relation_array)
+    end
 
-          subject.serialize_relation({ merge_requests: { include: [] } })
-        end
-      end
+    context 'when excluded_relations contains the relation key as a string' do
+      let(:excluded_relations) { ['merge_requests'] }
 
-      context 'when exported relation is not included in SMALL_BATCH_RELATIONS' do
-        before do
-          stub_const("#{described_class}::SMALL_BATCH_RELATIONS", [])
-        end
+      it 'does not call the writer for the excluded relation' do
+        serializer.execute
 
-        it 'export relations using the regular batch size' do
-          expect(exportable.merge_requests).to receive(:in_batches).with(of: described_class::BATCH_SIZE)
-
-          subject.serialize_relation({ merge_requests: { include: [] } })
-        end
+        expect(json_writer).not_to have_received(:write_relation_array).with(exportable_path, :merge_requests, anything)
       end
     end
 
-    context 'when export_reduce_relation_batch_size` feature flag is disabled' do
-      before do
-        stub_feature_flags(export_reduce_relation_batch_size: false)
+    context 'when excluded_relations contains the relation key as a symbol' do
+      let(:excluded_relations) { [:merge_requests] }
+
+      it 'does not call the writer for the excluded relation' do
+        serializer.execute
+
+        expect(json_writer).not_to have_received(:write_relation_array).with(exportable_path, :merge_requests, anything)
       end
+    end
 
-      it 'export relations using the regular batch size' do
-        expect(exportable.merge_requests).to receive(:in_batches).with(of: described_class::BATCH_SIZE)
+    context 'when excluded_relations is empty' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: exportable, target_project: exportable) }
 
-        subject.serialize_relation({ merge_requests: { include: [] } })
+      it 'does not skip any relations' do
+        serializer.execute
+
+        expect(json_writer).to have_received(:write_relation_array).with(exportable_path, :merge_requests, anything)
       end
     end
   end

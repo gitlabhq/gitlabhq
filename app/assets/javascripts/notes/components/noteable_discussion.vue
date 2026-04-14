@@ -19,7 +19,7 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import { createNoteErrorMessages } from '../utils';
+import { getNoteFormErrorMessages } from '../utils';
 import DiffDiscussionHeader from './diff_discussion_header.vue';
 import DiffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
@@ -311,7 +311,7 @@ export default {
         });
     },
     handleSaveError({ response }) {
-      const errorMessage = createNoteErrorMessages(response.data, response.status)[0];
+      const errorMessage = getNoteFormErrorMessages(response)[0];
 
       createAlert({
         message: errorMessage,

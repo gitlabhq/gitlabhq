@@ -241,6 +241,29 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                     expect_404_response(go)
                   end
                 end
+
+                context 'using a deploy token' do
+                  let(:deploy_token) { create(:deploy_token, projects: [project], read_repository: true, read_registry: false) }
+
+                  before do
+                    env['REMOTE_ADDR'] = '192.168.0.1'
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(deploy_token.username, deploy_token.token)
+                  end
+
+                  context 'with read_repository scope' do
+                    it 'returns the full project path' do
+                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                    end
+                  end
+
+                  context 'without read_repository scope' do
+                    let!(:deploy_token) { create(:deploy_token, projects: [project], read_repository: false, read_registry: true) }
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+                end
               end
             end
           end

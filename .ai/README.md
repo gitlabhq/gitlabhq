@@ -1,94 +1,52 @@
-# GitLab AI Prompts
+# GitLab AI Instructions
 
-This directory contains modular AI agent instructions for the GitLab project.
+This directory contains modular AI agent instruction files for the GitLab
+project. These files are referenced from `AGENTS.md` (and its identical copy
+`CLAUDE.md`) at the repository root via `.ai/...` paths.
 
-## Quick Start
+## How It Works
 
-To use these AI instructions with OpenCode, copy `opencode.example.json` to `opencode.json`:
+- **`AGENTS.md`** and **`CLAUDE.md`** at the repo root (and optionally at
+  subdirectory levels) are the entry points. They are identical in content —
+  `AGENTS.md` is the source of truth.
+- Each entry point references module files in `.ai/` via `.ai/<module>.md`.
+- The `.ai/*` pattern is gitignored, so you can add personal instruction files
+  here without them being committed. Committed modules were added with
+  `git add --force`. Files already tracked by git (force-added) will continue
+  to be tracked despite the gitignore pattern — only new untracked files you
+  create in `.ai/` are automatically ignored.
+
+## Adding Personal Instruction Files
+
+Create any `.md` file in `.ai/` — it will be gitignored automatically:
 
 ```shell
-cp opencode.example.json opencode.json
+# Example: add personal testing preferences
+echo "# My Testing Notes" > .ai/my-testing.md
 ```
 
-This configuration loads both `AGENTS.local.md` (if it exists) and `.ai/AGENTS.md`,
-giving you GitLab conventions with optional personal customizations.
+If you wish, you can create these files in a separate source-controlled project,
+and symlink them into this repo.
 
-## Customization
+## Committing New Shared Modules
 
-### Option A: Override file (simplest)
+To add a new shared module that all contributors benefit from:
 
-Create `AGENTS.local.md` in the project root to replace the default entirely:
+1. Create the file in `.ai/` (e.g., `.ai/new-module.md`)
+2. Force-add it: `git add --force .ai/new-module.md`
+3. Reference it from `AGENTS.md` and `CLAUDE.md` (keep them identical)
+4. Commit
 
-```shell
-# Create your local override
-cat > AGENTS.local.md <<EOF
-# My Custom Agent Instructions
+## Local Overrides
 
-Read .ai/git.md
-Read .ai/testing.md
-# Add only the modules you need
-EOF
-```
+Create `AGENTS.local.md` at any directory level for personal customizations.
+This file is explicitly referenced via `@AGENTS.local.md` in both `CLAUDE.md`
+and `AGENTS.md`. `CLAUDE.local.md` is also supported — Claude Code loads it
+natively by convention, not via an explicit reference in the instruction files.
+Both files can reference any additional gitignored files you have in `.ai/` or
+elsewhere.
 
-### Option B: Use all defaults
+The `AGENTS.local.md` is gitignored and will not be committed.
+It may also be symlinked from a local source-controlled repo.
 
-If you want all project defaults, your `AGENTS.local.md` can simply say:
-
-```markdown
-Read and follow all instructions in the .ai/ directory.
-```
-
-### Option C: Explicit prompting (maximum control)
-
-Ignore all auto-loaded files and manually specify in your prompt:
-
-```plaintext
-Read .ai/database.md and .ai/testing.md. Ignore all other .ai/ files.
-```
-
-## Available Modules
-
-| File | Description |
-|------|-------------|
-| `git.md` | Git workflow, commit conventions, branch naming, lefthook |
-| `merge-requests.md` | MR workflows, pipelines, chained MRs, rebasing |
-| `code-review.md` | Conventional comments, review best practices |
-| `database.md` | Migrations, multi-database, BBMs, structure.sql |
-| `testing.md` | RSpec, Jest, local testing, predictive tests |
-| `code-style.md` | Ruby, JavaScript, Rails conventions, linting |
-
-## File Loading Behavior
-
-The `opencode.example.json` configuration explicitly loads:
-
-```json
-"instructions": ["AGENTS.local.md", ".ai/AGENTS.md"]
-```
-
-This means:
-
-- **`AGENTS.local.md`** loads first (if it exists) - for your personal customizations
-- **`.ai/AGENTS.md`** loads second - providing project defaults
-- `AGENTS.local.md` is gitignored, so your customizations stay local
-- If `AGENTS.local.md` doesn't exist, you still get `.ai/AGENTS.md` defaults
-
-## Troubleshooting
-
-**Agent not reading files?**
-
-Make sure you have `opencode.json` configured (copy from `opencode.example.json`).
-
-If instructions still aren't loading:
-
-1. Check your `opencode.json` has the correct `instructions` array.
-1. Explicitly prompt: "Read .ai/database.md" to load specific modules.
-1. Verify the file paths are correct relative to the project root.
-
-**Too much context loaded?**
-
-Create a minimal `AGENTS.local.md` with only what you need for your current task.
-
-**Want to share a workflow?**
-
-Create a file in `.ai/workflows/` and document it here, but don't commit
-`AGENTS.local.md` itself (it's gitignored).
+See also: https://gitlab.com/gitlab-org/gitlab/-/work_items/594821

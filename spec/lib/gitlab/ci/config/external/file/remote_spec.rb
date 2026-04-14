@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
 
-  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
+  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret_file', masked: true }]) }
   let(:context_params) { { project: project, sha: project.commit.sha, user: user, variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { remote: location } }
@@ -537,6 +537,115 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
               rules: [{ exists: ['Dockerfile'] }] }
           ]
         )
+      end
+    end
+  end
+
+  describe '#content with HTTP timeout' do
+    subject(:content) do
+      remote_file.preload_content
+      remote_file.content
+    end
+
+    before do
+      stub_const('Gitlab::Ci::Config::HTTP_OPEN_TIMEOUT_SECONDS', 1)
+      stub_const('Gitlab::Ci::Config::HTTP_READ_TIMEOUT_SECONDS', 1)
+      stub_full_request(location).to_timeout
+    end
+
+    context 'when HTTP request times out' do
+      it 'returns nil content' do
+        expect(content).to be_nil
+      end
+
+      it 'adds timeout error message' do
+        content
+        expect(remote_file.errors).to include(
+          "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
+            "could not be fetched after 3 attempts because of a timeout error!"
+        )
+      end
+
+      it 'logs the timeout' do
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+          hash_including(
+            class: 'Gitlab::Ci::Config::External::File::Remote',
+            message: 'CI config HTTP request timed out',
+            project_id: project.id,
+            extra: hash_including(
+              open_timeout_s: 1,
+              read_timeout_s: 1
+            )
+          )
+        ).exactly(3).times
+
+        content
+      end
+    end
+
+    context 'when ci_config_http_timeout feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_config_http_timeout: false)
+      end
+
+      it 'does not log the timeout' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:warn).with(
+          hash_including(message: 'CI config HTTP request timed out')
+        )
+
+        content
+      end
+
+      it 'still returns nil content due to timeout' do
+        expect(content).to be_nil
+      end
+    end
+  end
+
+  describe '#content with execution time check' do
+    subject(:content) do
+      remote_file.preload_content
+      remote_file.content
+    end
+
+    context 'when ci_config_http_timeout feature flag is enabled' do
+      before do
+        stub_full_request(location).to_return(body: remote_file_content)
+      end
+
+      context 'when execution time has expired' do
+        before do
+          allow(context).to receive(:check_execution_time!)
+            .and_raise(Gitlab::Ci::Config::External::Context::TimeoutError, 'execution expired')
+        end
+
+        it 'raises TimeoutError' do
+          expect { content }.to raise_error(
+            Gitlab::Ci::Config::External::Context::TimeoutError,
+            'execution expired'
+          )
+        end
+      end
+
+      context 'when execution time has not expired' do
+        it 'calls check_execution_time! and returns content' do
+          expect(context).to receive(:check_execution_time!).and_call_original
+
+          expect(content).to eq(remote_file_content)
+        end
+      end
+    end
+
+    context 'when ci_config_http_timeout feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_config_http_timeout: false)
+        stub_full_request(location).to_return(body: remote_file_content)
+      end
+
+      it 'does not call check_execution_time!' do
+        expect(context).not_to receive(:check_execution_time!)
+
+        expect(content).to eq(remote_file_content)
       end
     end
   end

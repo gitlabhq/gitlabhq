@@ -256,8 +256,8 @@ To resolve this:
 1. Select **Settings** > **General**.
 1. Expand both of the following:
    - **Account and limit**.
-   - **Sign-up restrictions**.
-1. Check, for example, the **Default projects limit** or **Allowed domains for sign-ups**
+   - **New user account restrictions**.
+1. Check, for example, the **Default projects limit** or **Allowed domains for new user accounts**
    fields and ensure that a relevant value is configured.
 
 #### Debug LDAP user filter
@@ -451,7 +451,7 @@ To resolve this issue in GitLab 16.8 and later, you can invite service accounts 
 
 #### Administrator privileges not granted
 
-When [Administrator sync](ldap_synchronization.md#administrator-sync) has been configured
+When [you assign an admin role to an LDAP group](ldap_synchronization.md#assign-an-admin-role-to-an-ldap-group),
 but the configured users aren't granted the correct administrator privileges, confirm
 that the following conditions are true:
 
@@ -578,7 +578,7 @@ LDAP group lookups. The very last occurrence of this entry should indicate
 exactly which users GitLab believes should be added to the group.
 
 > [!note]
-> 10 is `Guest`, 20 is `Reporter`, 30 is `Developer`, 40 is `Maintainer`
+> 10 is `Guest`, 20 is `Reporter`, 25 is `Security Manager`, 30 is `Developer`, 40 is `Maintainer`
 > and 50 is `Owner`.
 
 ```shell
@@ -625,8 +625,8 @@ this line indicates the sync is finished:
 Finished syncing admin users for 'ldapmain' provider
 ```
 
-If [administrator sync](ldap_synchronization.md#administrator-sync) is not configured, you see a message
-stating as such:
+If you have not [assigned an admin role](ldap_synchronization.md#assign-an-admin-role-to-an-ldap-group),
+you see this message:
 
 ```shell
 No `admin_group` configured for 'ldapmain' provider. Skipping

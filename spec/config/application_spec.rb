@@ -32,6 +32,10 @@ RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:
           '/?selectedText=secret'                  | { 'selectedText' => filtered }
           '/?query=secret'                         | { 'query' => filtered }
           '/?message=secret'                       | { 'message' => filtered }
+          '/?login_challenge=secret'               | { 'login_challenge' => filtered }
+          '/?login_verifier=secret'                | { 'login_verifier' => filtered }
+          '/?consent_challenge=secret'             | { 'consent_challenge' => filtered }
+          '/?consent_verifier=secret'              | { 'consent_verifier' => filtered }
         end
 
         with_them do

@@ -294,4 +294,26 @@ describe('DiffLineNoteForm', () => {
       expect(createAlert).not.toHaveBeenCalled();
     });
   });
+
+  describe('commentLines', () => {
+    it('stops at a match line when end line_code is stale', () => {
+      const lines = diffFile.highlighted_diff_lines;
+      lines.push(
+        { line_code: null, type: 'match', old_line: null, new_line: null },
+        { line_code: 'next_hunk', type: null, old_line: 99, new_line: 99 },
+      );
+
+      const start = lines[0];
+      const end = { line_code: 'stale_code', old_line: null, new_line: 999 };
+
+      createComponent({
+        props: { line: lines[1], range: { start, end } },
+      });
+
+      const passedLines = findNoteForm().props('lines');
+      expect(passedLines.length).toBeGreaterThan(0);
+      expect(passedLines).not.toContainEqual(expect.objectContaining({ type: 'match' }));
+      expect(passedLines).not.toContainEqual(expect.objectContaining({ line_code: 'next_hunk' }));
+    });
+  });
 });

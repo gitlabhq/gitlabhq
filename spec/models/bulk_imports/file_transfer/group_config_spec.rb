@@ -33,6 +33,10 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
       expect(subject.portable_relations).to include('milestones', 'badges', 'boards', 'labels')
     end
 
+    it 'includes max_iids relation' do
+      expect(subject.portable_relations).to include('max_iids')
+    end
+
     it 'does not include skipped relations' do
       expect(subject.portable_relations).not_to include('members')
     end
@@ -98,6 +102,12 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
     context 'when relation is a file' do
       it 'returns FileExportService' do
         expect(subject.export_service_for('uploads')).to eq(BulkImports::FileExportService)
+      end
+    end
+
+    context 'when relation is max_iids' do
+      it 'returns MaxIidsExportService' do
+        expect(subject.export_service_for('max_iids')).to eq(Import::BulkImports::MaxIidsExportService)
       end
     end
 

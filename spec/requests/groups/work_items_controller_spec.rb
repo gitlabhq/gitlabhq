@@ -20,7 +20,6 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         get work_items_path
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
         expect(response.body).to have_pushed_frontend_feature_flags(useWorkItemUrl: true)
       end
 

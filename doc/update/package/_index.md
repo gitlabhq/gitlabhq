@@ -139,10 +139,10 @@ sudo dnf install gitlab-ce-<version>-ce.0.el9
 sudo dnf install gitlab-ce-<version>-ce.0.el8
 
 # GitLab Enterprise Edition (latest version)
-sudo dnf install gitlab-ee
+sudo dnf upgrade gitlab-ee
 
 # GitLab Community Edition (latest version)
-sudo dnf install gitlab-ce
+sudo dnf upgrade gitlab-ce
 ```
 
 {{< /tab >}}
@@ -157,10 +157,10 @@ sudo dnf install gitlab-ee-<version>-ee.0.amazon2023
 sudo dnf install gitlab-ce-<version>-ce.0.amazon2023
 
 # GitLab Enterprise Edition (latest version)
-sudo dnf install gitlab-ee
+sudo dnf upgrade gitlab-ee
 
 # GitLab Community Edition (latest version)
-sudo dnf install gitlab-ce
+sudo dnf upgrade gitlab-ce
 ```
 
 {{< /tab >}}

@@ -2,6 +2,7 @@ import { GlBadge, GlButton, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'helpers/test_constants';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
@@ -192,11 +193,11 @@ describe('IssuableHeader component', () => {
 
   describe('author', () => {
     it('renders link', () => {
-      createComponent();
+      createComponent({ author: { ...mockIssuable.author, webUrl: `${TEST_HOST}/root` } });
 
       expect(findAuthorLink().text()).toContain('Administrator');
       expect(findAuthorLink().attributes()).toMatchObject({
-        href: 'http://0.0.0.0:3000/root',
+        href: `${TEST_HOST}/root`,
         'data-user-id': '1',
       });
       expect(findAuthorLink().classes()).toContain('js-user-link');
@@ -207,6 +208,13 @@ describe('IssuableHeader component', () => {
         createComponent({ author: { webUrl: 'https://example.com/test-user' } });
 
         expect(findExternalLinkIcon().props('ariaLabel')).toBe('external link');
+      });
+
+      it('does not set js-user-link class or data-user-id attribute', () => {
+        createComponent({ author: { webUrl: 'https://example.com/test-user' } });
+
+        expect(findAuthorLink().classes()).not.toContain('js-user-link');
+        expect(findAuthorLink().attributes('data-user-id')).toBeUndefined();
       });
     });
   });

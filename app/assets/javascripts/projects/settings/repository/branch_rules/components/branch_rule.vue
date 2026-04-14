@@ -103,11 +103,15 @@ export default {
     };
   },
   computed: {
-    // needed to override EE component
+    // eslint-disable-next-line vue/no-unused-properties -- Used in EE override
     protectedFromPushBySecurityPolicy() {
       return false;
     },
-    // needed to override EE component
+    // Overridden in EE
+    isEnforcedByAnyPolicy() {
+      return false;
+    },
+    // Overridden in EE
     showPolicyBadge() {
       return false;
     },
@@ -194,11 +198,19 @@ export default {
   },
   methods: {
     getAccessLevels,
-    // needed to override EE component
+    // eslint-disable-next-line vue/no-unused-properties -- Used in EE override
     hasPushAccessLevelsText() {
       return false;
     },
-    // needed to override EE component
+    // Overridden in EE
+    isAffectedByPolicy() {
+      return false;
+    },
+    // Overridden in EE
+    isEnforcedForRow() {
+      return false;
+    },
+    // Overridden in EE
     disabledText() {
       return false;
     },
@@ -231,10 +243,7 @@ export default {
         <group-badge v-if="isGroupLevel" />
 
         <!-- eslint-disable-next-line vue/no-undef-components -- PolicyBadge is registered in EE via extends -->
-        <policy-badge
-          v-if="showPolicyBadge"
-          :is-protected-by-policy="protectedFromPushBySecurityPolicy"
-        />
+        <policy-badge v-if="showPolicyBadge" :is-protected-by-policy="isEnforcedByAnyPolicy" />
       </div>
 
       <div class="gl-flex gl-items-start gl-gap-2">
@@ -261,8 +270,8 @@ export default {
           <span :class="{ 'gl-text-disabled': disabledText(detail) }">{{ detail }}</span>
           <!-- eslint-disable-next-line vue/no-undef-components -- DisabledByPolicyPopover is registered in EE via extends -->
           <disabled-by-policy-popover
-            v-if="showPolicyBadge && hasPushAccessLevelsText(detail)"
-            :is-protected-by-policy="protectedFromPushBySecurityPolicy"
+            v-if="isAffectedByPolicy(detail)"
+            :is-protected-by-policy="isEnforcedForRow(detail)"
           />
         </div>
       </li>

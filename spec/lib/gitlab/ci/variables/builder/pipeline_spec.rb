@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_PIPELINE_SOURCE
           CI_PIPELINE_CREATED_AT
           CI_PIPELINE_NAME
+          CI_CONFIG_REF_URI
           CI_COMMIT_SHA
           CI_COMMIT_SHORT_SHA
           CI_COMMIT_BEFORE_SHA
@@ -161,6 +162,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_PIPELINE_SOURCE
           CI_PIPELINE_CREATED_AT
           CI_PIPELINE_NAME
+          CI_CONFIG_REF_URI
           CI_COMMIT_SHA
           CI_COMMIT_SHORT_SHA
           CI_COMMIT_BEFORE_SHA
@@ -545,6 +547,43 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
 
         it 'is not included' do
           expect(subject.to_hash).not_to have_key('CI_GITLAB_FIPS_MODE')
+        end
+      end
+    end
+
+    describe 'variable CI_CONFIG_REF_URI' do
+      it 'includes the fully qualified config ref URI for a branch pipeline' do
+        expected_uri = "#{Settings.build_server_fqdn}/#{project.full_path}" \
+          "//.gitlab-ci.yml@refs/heads/#{project.default_branch_or_main}"
+
+        expect(subject.to_hash).to include('CI_CONFIG_REF_URI' => expected_uri)
+      end
+
+      context 'when the project has a custom CI config path' do
+        before do
+          allow(pipeline.project).to receive(:ci_config_path_or_default).and_return('custom/path.yml')
+        end
+
+        it 'uses the custom config path in the URI' do
+          expect(subject.to_hash['CI_CONFIG_REF_URI']).to include('//custom/path.yml@')
+        end
+      end
+
+      context 'when the pipeline is for a tag' do
+        let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: 'test', tag: true) }
+
+        it 'uses the tag ref path' do
+          expect(subject.to_hash['CI_CONFIG_REF_URI']).to end_with('@refs/tags/test')
+        end
+      end
+
+      context 'when source_ref_path is nil' do
+        before do
+          allow(pipeline).to receive(:source_ref_path).and_return(nil)
+        end
+
+        it 'does not include CI_CONFIG_REF_URI' do
+          expect(subject.to_hash).not_to have_key('CI_CONFIG_REF_URI')
         end
       end
     end

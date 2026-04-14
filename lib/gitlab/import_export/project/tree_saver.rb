@@ -51,7 +51,8 @@ module Gitlab
             json_writer,
             exportable_path: "project",
             logger: @logger,
-            current_user: @current_user
+            current_user: @current_user,
+            excluded_relations: @params[:excluded_relations]
           )
 
           Retriable.retriable(on: Net::OpenTimeout, on_retry: on_retry) do

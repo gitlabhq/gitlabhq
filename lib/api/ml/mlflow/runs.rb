@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable API/LifecycleInDescription -- "experiment" is an MLflow domain concept, not a lifecycle term
+
 require 'mime/types'
 
 module API
@@ -32,6 +34,7 @@ module API
             optional :tags, type: Array, desc: 'Tags are stored, but not displayed'
             optional :run_name, type: String, desc: 'A name for this run'
           end
+          route_setting :authorization, permissions: :create_ml_flow_run, boundary_type: :project
           post 'create', urgency: :low do
             present candidate_repository.create!(experiment, params[:start_time], params[:tags], params[:run_name]),
               with: Entities::Ml::Mlflow::GetRun
@@ -46,6 +49,7 @@ module API
             requires :run_id, type: String, desc: 'UUID of the candidate.'
             optional :run_uuid, type: String, desc: 'This parameter is ignored'
           end
+          route_setting :authorization, permissions: :read_ml_flow_run, boundary_type: :project
           get 'get', urgency: :low do
             present candidate, with: Entities::Ml::Mlflow::GetRun
           end
@@ -75,6 +79,7 @@ module API
               type: String,
               desc: 'Token for pagination'
           end
+          route_setting :authorization, permissions: :read_ml_flow_run, boundary_type: :project
           post 'search', urgency: :low do
             params[:experiment_id] = params[:experiment_ids][0]
 
@@ -104,6 +109,7 @@ module API
                     "#{CANDIDATE_STATES}."
             optional :end_time, type: Integer, desc: 'Ending time of the run'
           end
+          route_setting :authorization, permissions: :update_ml_flow_run, boundary_type: :project
           post 'update', urgency: :low do
             candidate_repository.update(candidate, params[:status], params[:end_time])
 
@@ -124,6 +130,7 @@ module API
             requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
             optional :step, type: Integer, desc: 'Step at which the metric was recorded'
           end
+          route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project
           post 'log-metric', urgency: :low do
             candidate_repository.add_metric!(
               candidate,
@@ -150,6 +157,7 @@ module API
             requires :key, type: String, desc: 'Name for the parameter.'
             requires :value, type: String, desc: 'Value for the parameter.'
           end
+          route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project
           post 'log-parameter', urgency: :low do
             bad_request! unless candidate_repository.add_param!(candidate, params[:key], params[:value])
 
@@ -166,6 +174,7 @@ module API
             requires :key, type: String, desc: 'Name for the tag.'
             requires :value, type: String, desc: 'Value for the tag.'
           end
+          route_setting :authorization, permissions: :update_ml_flow_run, boundary_type: :project
           post 'set-tag', urgency: :low do
             bad_request! unless candidate_repository.add_tag!(candidate, params[:key], params[:value])
 
@@ -191,6 +200,7 @@ module API
               requires :value, type: String, desc: 'Value of the metric.'
             end
           end
+          route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project
           post 'log-batch', urgency: :low do
             candidate_repository.add_metrics(candidate, params[:metrics])
             candidate_repository.add_params(candidate, params[:params])
@@ -207,6 +217,7 @@ module API
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
           end
+          route_setting :authorization, permissions: :delete_ml_flow_run, boundary_type: :project
           post 'delete', urgency: :low do
             destroy = ::Ml::DestroyCandidateService.new(candidate, current_user).execute
             if destroy.success?
@@ -220,3 +231,4 @@ module API
     end
   end
 end
+# rubocop:enable API/LifecycleInDescription

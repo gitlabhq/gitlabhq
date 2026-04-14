@@ -2,7 +2,7 @@
   removal_milestone: "19.0"
   announcement_milestone: "18.7"
   breaking_change: true
-  window: 3
+  window: 1
   reporter: thiagocsf
   stage: Create
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/569345

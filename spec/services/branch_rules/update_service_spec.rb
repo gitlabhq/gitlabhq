@@ -153,6 +153,132 @@ RSpec.describe BranchRules::UpdateService, feature_category: :source_code_manage
           expect(protected_branch.push_access_levels.last.deploy_key_id).to eq(deploy_key_id)
         end
       end
+
+      context 'when access_levels are empty arrays' do
+        context 'when skip_empty_access_levels_in_branch_rules feature flag is enabled' do
+          before do
+            stub_feature_flags(skip_empty_access_levels_in_branch_rules: project)
+          end
+
+          context 'when push_access_levels is an empty array' do
+            let(:params) do
+              {
+                name: new_name,
+                branch_protection: {
+                  allow_force_push: allow_force_push,
+                  push_access_levels: [],
+                  merge_access_levels: merge_access_levels
+                }
+              }
+            end
+
+            it 'does not modify existing push access levels', :aggregate_failures do
+              original_push_levels = protected_branch.push_access_levels.to_a
+
+              expect(execute).to be_success
+
+              protected_branch.reload
+              expect(protected_branch.push_access_levels.count).to eq(original_push_levels.count)
+              expect(protected_branch.push_access_levels.first.access_level)
+                .to eq(original_push_levels.first.access_level)
+            end
+          end
+
+          context 'when merge_access_levels is an empty array' do
+            let(:params) do
+              {
+                name: new_name,
+                branch_protection: {
+                  allow_force_push: allow_force_push,
+                  push_access_levels: push_access_levels,
+                  merge_access_levels: []
+                }
+              }
+            end
+
+            it 'does not modify existing merge access levels', :aggregate_failures do
+              original_merge_levels = protected_branch.merge_access_levels.to_a
+
+              expect(execute).to be_success
+
+              protected_branch.reload
+              expect(protected_branch.merge_access_levels.count).to eq(original_merge_levels.count)
+              expect(protected_branch.merge_access_levels.first.access_level)
+                .to eq(original_merge_levels.first.access_level)
+            end
+          end
+
+          context 'when both access_levels are empty arrays' do
+            let(:params) do
+              {
+                name: new_name,
+                branch_protection: {
+                  allow_force_push: allow_force_push,
+                  push_access_levels: [],
+                  merge_access_levels: []
+                }
+              }
+            end
+
+            it 'does not modify any existing access levels', :aggregate_failures do
+              original_push_levels = protected_branch.push_access_levels.to_a
+              original_merge_levels = protected_branch.merge_access_levels.to_a
+
+              expect(execute).to be_success
+
+              protected_branch.reload
+              expect(protected_branch.push_access_levels.count).to eq(original_push_levels.count)
+              expect(protected_branch.merge_access_levels.count).to eq(original_merge_levels.count)
+            end
+          end
+        end
+
+        context 'when skip_empty_access_levels_in_branch_rules feature flag is disabled' do
+          before do
+            stub_feature_flags(skip_empty_access_levels_in_branch_rules: false)
+          end
+
+          context 'when push_access_levels is an empty array' do
+            let(:params) do
+              {
+                name: new_name,
+                branch_protection: {
+                  allow_force_push: allow_force_push,
+                  push_access_levels: [],
+                  merge_access_levels: merge_access_levels
+                }
+              }
+            end
+
+            it 'deletes all existing push access levels', :aggregate_failures do
+              expect(execute).to be_success
+
+              protected_branch.reload
+              expect(protected_branch.push_access_levels.count).to eq(0)
+            end
+          end
+
+          context 'when merge_access_levels is an empty array' do
+            let(:params) do
+              {
+                name: new_name,
+                branch_protection: {
+                  allow_force_push: allow_force_push,
+                  push_access_levels: push_access_levels,
+                  merge_access_levels: []
+                }
+              }
+            end
+
+            it 'deletes all existing merge access levels', :aggregate_failures do
+              expect(execute).to be_success
+
+              protected_branch.reload
+              expect(protected_branch.merge_access_levels.count).to eq(0)
+            end
+          end
+        end
+      end
     end
 
     context 'when branch_rule is a ProtectedBranch' do

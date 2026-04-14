@@ -145,3 +145,96 @@ If you experience slow secret operations:
 - Check OpenBao resource usage (CPU, memory)
 - Verify PostgreSQL backend performance
 - Check network latency between OpenBao and its PostgreSQL backend
+
+## Geo deployment
+
+OpenBao supports [Geo](../geo/_index.md) deployments. OpenBao is deployed on both the primary and
+secondary Geo sites, but only the primary site runs an active OpenBao node.
+
+### OpenBao behavior in Geo
+
+On the primary site, OpenBao runs as an active
+node connected to a writable PostgreSQL database. On the secondary site, OpenBao runs in standby mode,
+connected to a PostgreSQL read replica.
+
+PostgreSQL streaming replication carries all OpenBao data (secrets, policies, authentication
+configuration) from the primary to the secondary site automatically.
+
+Both GitLab instances (primary and secondary) connect to the primary OpenBao URL. The secondary
+OpenBao deployment remains in standby, and is promoted to active when the secondary
+PostgreSQL database becomes writable during a
+[Geo failover](../geo/disaster_recovery/_index.md#step-4-optional-promote-the-openbao-ha-cluster).
+
+On the secondary site, OpenBao logs `failed to acquire lock` and
+`cannot execute INSERT in a read-only transaction` errors. These errors are expected. OpenBao cannot
+acquire the HA leader lock on a read-only database.
+
+### Install OpenBao on a secondary site
+
+Prerequisites:
+
+- Geo must be configured. For more information, see [Set up Geo](../geo/setup/_index.md).
+- OpenBao must be installed and working on the primary site before you deploy it on the secondary.
+  For more information, see [Install OpenBao](#install-openbao).
+
+1. The secondary OpenBao must use the same unseal key as the primary to decrypt replicated data.
+   Copy the `gitlab-openbao-unseal` Kubernetes secret from the primary cluster to the secondary
+   cluster:
+
+   ```shell
+   kubectl --namespace gitlab get secret gitlab-openbao-unseal -o yaml
+   ```
+
+   Apply the exported secret to the secondary cluster. For more information, see
+   [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets).
+
+1. If you plan to update the DNS record of the primary domain to point to the secondary site during failover,
+   you might want to configure OpenBao accordingly ahead of time.
+   Configure the Helm chart and set the `url` and `jwt_audience` to the primary OpenBao URL:
+
+   ```yaml
+   global:
+     openbao:
+       enabled: true
+       url: https://openbao.<primary-domain>
+       jwt_audience: https://openbao.<primary-domain>
+   ```
+
+   For more information on chart configuration options,
+   see [Geo configuration](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration).
+
+1. Deploy the GitLab Helm chart on the secondary site. OpenBao pods start and remain in standby
+   mode. This is expected.
+
+1. On the secondary cluster, check that OpenBao pods are running:
+
+   ```shell
+   kubectl --namespace gitlab get pods -l app=openbao
+   ```
+
+   All pods should be in `Running` state. Secondary pods do not have the `openbao-active: "true"`
+   label. This is expected.
+
+1. Confirm that the active service has no endpoints on the secondary cluster:
+
+   ```shell
+   kubectl --namespace gitlab get endpoints gitlab-openbao-active
+   ```
+
+   Zero endpoints on the secondary is expected.
+
+1. Test the Secrets Manager by running a CI pipeline that uses a
+   [Secrets Manager variable](../../ci/secrets/secrets_manager/_index.md) on the secondary site.
+
+## Troubleshooting
+
+When working with the Secrets Manager, you might encounter the following issues.
+
+### Troubleshoot Geo deployments
+
+| Symptom | Cause | Resolution |
+|---------|-------|------------|
+| `cipher: message authentication failed` or `unknown key ID` in secondary OpenBao logs | Unseal key mismatch between primary and secondary | Copy `gitlab-openbao-unseal` from the primary cluster to the secondary cluster and restart OpenBao pods. |
+| `failed to acquire lock` in secondary OpenBao logs | OpenBao standby on read-only database | Expected behavior. No action required. |
+| `cannot execute INSERT in a read-only transaction` in secondary OpenBao logs | OpenBao attempting leader election on read replica | Expected behavior. No action required. |
+| JWT authentication fails after Geo failover | `jwt_audience` does not match `boundAudiences` in OpenBao | Set `jwt_audience` to the primary OpenBao URL on both sites. |

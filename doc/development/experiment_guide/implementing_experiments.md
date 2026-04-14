@@ -44,7 +44,7 @@ the client layer later.
 
 ### Prerequisites
 
-- [Enable SaaS mode](../ee_features.md#simulate-a-saas-instance) in your local development environment
+- [Enable GitLab.com mode](../ee_features.md#simulate-a-saas-instance) in your local development environment
 
 ### Running the experiment
 
@@ -80,14 +80,14 @@ the experiment would be assigned the _control_, 25% would be assigned the _red_
 variant, and 25% would be assigned the _blue_ variant:
 
 ```plaintext
-/chatops run feature set pill_color 50 --actors
+/chatops gitlab run feature set pill_color 50 --actors
 ```
 
 For an even distribution in this example, change the command to set it to 66% instead
 of 50.
 
 To immediately stop running an experiment, use the
-`/chatops run feature set pill_color false` command.
+`/chatops gitlab run feature set pill_color false` command.
 
 > [!warning]
 > We strongly recommend using the `--actors` flag when using the ChatOps commands,
@@ -382,3 +382,91 @@ export default {
 
 > [!note]
 > When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.
+
+## Experiment development best practices
+
+### Validate event structure locally before staging
+
+Event structure validation must happen during local development, not in staging or production.
+In staging and production, only verify that events are received in Snowplow as expected.
+
+Use [Snowplow Micro](../internal_analytics/internal_event_instrumentation/local_setup_and_debugging.md#snowplow-micro)
+to validate event structure locally:
+
+1. Set up Snowplow Micro in your local GDK environment.
+1. Trigger all tracking events through the experiment flow for each variant (control and candidate).
+1. Paste the raw Snowplow Micro output into the experiment rollout issue as proof of correct event structure.
+
+By the time an experiment reaches staging, the event structure should already be verified.
+Staging and production validation then focuses only on confirming that events flow through
+the pipeline and appear in Tableau dashboards.
+
+### Multi-page experiment
+
+If the experiment runs on many pages, you should verify it sticks to the same variant by visiting all pages with partial rollout:
+
+`Feature.enable_percentage_of_actors(:my_experiment, 50)`
+
+### Use `only_assigned` for secondary experiment blocks
+
+Experiment blocks that are not the entry point into an experiment should use the
+[`only_assigned`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/blob/master/README.md#progressive-rollout-with-only_assigned)
+option. This prevents users from entering an experiment flow mid-way through.
+
+For example, if an experiment starts on the registration page and continues through
+the welcome page, the welcome page experiment block should use `only_assigned: true`:
+
+```ruby
+experiment(:my_experiment, actor: current_user, only_assigned: true).track(:render_welcome)
+```
+
+Without `only_assigned`, a user who bypasses the registration page could still be
+assigned a variant on the welcome page, resulting in an inconsistent experience.
+
+### Manual testing on staging
+
+When you test experiments manually on staging, a 100% rollout removes the need to
+find candidate or control sessions. However, a full rollout also masks issues
+where a user enters or exits an experiment unexpectedly due to an exclusion bug or
+inconsistent context.
+
+To catch these issues, test at lower rollout percentages and verify that users
+remain in their assigned variant across the full experiment lifecycle.
+
+### Write feature specs for multi-page experiments
+
+Unit tests may not catch issues in experiments that span multiple experiment blocks
+because the experiment context (notably the user during registration) can change
+between blocks, which causes re-segmentation. Write feature specs that cover the
+full experiment lifespan for any experiment that spans multiple pages.
+
+Use the `:experiment_tracking` RSpec metadata to verify that tracking events fire
+and to confirm the expected number of segmentations. Pass `experiment_tracking: 1`
+for most experiments.
+
+> [!note]
+> The `experiment_tracking` metadata watches tracking events. During user creation,
+> you see an assignment both before (with the cookie value) and after creation
+> (with the user model). Pass `experiment_tracking: 2` in those cases.
+
+```ruby
+context 'when candidate experience', experiment_tracking: 1 do
+  before do
+    stub_feature_flags(my_experiment: true)
+    stub_application_setting_enum('email_confirmation_setting', 'hard')
+  end
+
+  it 'completes the experiment flow' do
+    # test contents
+
+    is_expected.to have_tracked_experiment(:my_experiment, [
+      :assignment,
+      :completed_trial_form,
+      :completed_identity_verification,
+      :render_welcome,
+      { action: :completed_group_project_creation, namespace: namespace },
+      :render_get_started
+    ])
+  end
+end
+```

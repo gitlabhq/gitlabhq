@@ -9,8 +9,9 @@ const PROJECT_MEMBER_PATH = '/api/:version/projects/:id/members/:user_id';
 const PROJECT_ALL_MEMBERS_PATH = '/api/:version/projects/:id/members/all';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
 const PROJECT_REPOSITORY_SIZE_PATH = '/api/:version/projects/:id/repository_size';
-const PROJECT_TRANSFER_LOCATIONS_PATH = 'api/:version/projects/:id/transfer_locations';
-const PROJECT_SHARE_LOCATIONS_PATH = 'api/:version/projects/:id/share_locations';
+const PROJECT_TRANSFER_LOCATIONS_PATH = '/api/:version/projects/:id/transfer_locations';
+const PROJECT_TRANSFER_PATH = '/api/:version/projects/:id/transfer';
+const PROJECT_SHARE_LOCATIONS_PATH = '/api/:version/projects/:id/share_locations';
 const PROJECT_UPLOADS_PATH = '/api/:version/projects/:id/uploads';
 const PROJECT_RESTORE_PATH = '/api/:version/projects/:id/restore';
 const PROJECT_ARCHIVE_PATH = '/api/:version/projects/:id/archive';
@@ -100,6 +101,12 @@ export const getTransferLocations = (projectId, params = {}) => {
   const defaultParams = { per_page: DEFAULT_PER_PAGE };
 
   return axios.get(url, { params: { ...defaultParams, ...params } });
+};
+
+export const transferProject = (projectId, destinationId) => {
+  const url = buildApiUrl(PROJECT_TRANSFER_PATH).replace(':id', projectId);
+
+  return axios.put(url, { namespace: destinationId });
 };
 
 export const getProjectMembers = (projectId, inherited = false) => {

@@ -17,7 +17,7 @@
       = render 'form_fields', f: f
 
       .form-group.gl-form-group
-        = f.submit s_('Save changes'), pajamas_button: true
+        = f.submit _('Save changes'), pajamas_button: true
 
 - if @settings.persisted?
   = render ::Layouts::SettingsBlockComponent.new(s_('Observability|Danger Zone'),

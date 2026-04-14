@@ -55,7 +55,7 @@ Rails.application.configure do
 
   config.action_mailer.preview_paths = [GitlabEdition.path_glob('app/mailers/previews')]
 
-  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: ENV['CI'].present?)
+  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: false)
 
   config.cache_store = :null_store
 

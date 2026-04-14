@@ -34,7 +34,7 @@ module Integrations
                       nil
                     end
 
-      return if mentionable.nil?
+      return if mentionable.nil? || hook_data.nil?
 
       Integrations::GroupMentionService.new(mentionable, hook_data: hook_data, is_confidential: is_confidential).execute
     end

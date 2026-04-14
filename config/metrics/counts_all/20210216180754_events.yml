@@ -3,6 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage.manage.events
 description: Number of distinct users who have generated a manage event
 product_group: analytics_instrumentation
+product_categories:
+- application_instrumentation
 value_type: number
 status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344100

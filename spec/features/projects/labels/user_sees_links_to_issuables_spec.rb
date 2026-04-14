@@ -15,24 +15,24 @@ RSpec.describe 'Projects > Labels > User sees links to issuables', feature_categ
   context 'with a project label' do
     let(:label) { create(:label, project: project, title: 'bug') }
 
-    context 'when merge requests and issues are enabled for the project' do
+    context 'when merge requests and work items are enabled for the project' do
       let(:project) { create(:project, :public) }
 
-      it 'shows links to MRs and issues' do
+      it 'shows links to MRs and work items' do
         page.within('.labels-container') do
           expect(page).to have_link('Merge requests')
-          expect(page).to have_link('Issues')
+          expect(page).to have_link('Work items')
         end
       end
     end
 
-    context 'when issues are disabled for the project' do
+    context 'when work items are disabled for the project' do
       let(:project) { create(:project, :public, issues_access_level: ProjectFeature::DISABLED) }
 
-      it 'shows links to MRs but not to issues' do
+      it 'shows links to MRs but not to work items' do
         page.within('.labels-container') do
           expect(page).to have_link('Merge requests')
-          expect(page).not_to have_link('Issues')
+          expect(page).not_to have_link('Work items')
         end
       end
     end
@@ -40,10 +40,10 @@ RSpec.describe 'Projects > Labels > User sees links to issuables', feature_categ
     context 'when merge requests are disabled for the project' do
       let(:project) { create(:project, :public, merge_requests_access_level: ProjectFeature::DISABLED) }
 
-      it 'shows links to issues but not to MRs' do
+      it 'shows links to work items but not to MRs' do
         page.within('.labels-container') do
           expect(page).not_to have_link('Merge requests')
-          expect(page).to have_link('Issues')
+          expect(page).to have_link('Work items')
         end
       end
     end
@@ -54,24 +54,24 @@ RSpec.describe 'Projects > Labels > User sees links to issuables', feature_categ
 
     let(:label) { create(:group_label, group: group, title: 'bug') }
 
-    context 'when merge requests and issues are enabled for the project' do
+    context 'when merge requests and work items are enabled for the project' do
       let(:project) { create(:project, :public, namespace: group) }
 
-      it 'shows links to MRs and issues' do
+      it 'shows links to MRs and work items' do
         page.within('.labels-container') do
           expect(page).to have_link('Merge requests')
-          expect(page).to have_link('Issues')
+          expect(page).to have_link('Work items')
         end
       end
     end
 
-    context 'when issues are disabled for the project' do
+    context 'when work items are disabled for the project' do
       let(:project) { create(:project, :public, namespace: group, issues_access_level: ProjectFeature::DISABLED) }
 
-      it 'shows links to MRs and issues' do
+      it 'shows links to MRs and work items' do
         page.within('.labels-container') do
           expect(page).to have_link('Merge requests')
-          expect(page).to have_link('Issues')
+          expect(page).to have_link('Work items')
         end
       end
     end
@@ -79,10 +79,10 @@ RSpec.describe 'Projects > Labels > User sees links to issuables', feature_categ
     context 'when merge requests are disabled for the project' do
       let(:project) { create(:project, :public, namespace: group, merge_requests_access_level: ProjectFeature::DISABLED) }
 
-      it 'shows links to MRs and issues' do
+      it 'shows links to MRs and work items' do
         page.within('.labels-container') do
           expect(page).to have_link('Merge requests')
-          expect(page).to have_link('Issues')
+          expect(page).to have_link('Work items')
         end
       end
     end

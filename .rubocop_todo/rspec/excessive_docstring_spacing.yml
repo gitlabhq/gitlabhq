@@ -19,7 +19,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'spec/requests/api/project_events_spec.rb'
     - 'spec/rubocop/cop/rspec/env_mocking_spec.rb'
     - 'spec/serializers/stage_entity_spec.rb'
-    - 'spec/services/bulk_imports/create_service_spec.rb'
     - 'spec/services/environments/stop_service_spec.rb'
     - 'spec/services/groups/nested_create_service_spec.rb'
     - 'spec/services/issues/update_service_spec.rb'

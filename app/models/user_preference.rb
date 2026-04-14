@@ -97,9 +97,9 @@ class UserPreference < ApplicationRecord
   class << self
     def time_display_formats
       {
-        s_('Time Display|System') => TIME_DISPLAY_FORMATS[:system],
-        s_('Time Display|12-hour: 2:34 PM') => TIME_DISPLAY_FORMATS[:non_iso_format],
-        s_('Time Display|24-hour: 14:34') => TIME_DISPLAY_FORMATS[:iso_format]
+        s_('TimeDisplay|System') => TIME_DISPLAY_FORMATS[:system],
+        s_('TimeDisplay|12-hour: 2:34 PM') => TIME_DISPLAY_FORMATS[:non_iso_format],
+        s_('TimeDisplay|24-hour: 14:34') => TIME_DISPLAY_FORMATS[:iso_format]
       }
     end
   end

@@ -45,16 +45,23 @@ module Mutations
           description: 'Inputs for the pipeline.',
           experiment: { milestone: '17.10' }
 
+        argument :merge_request_iid, GraphQL::Types::String,
+          required: false,
+          description: 'IID of the merge request to create pipeline for.'
+
         authorize :create_pipeline
 
-        def resolve(project_path:, ref:, async: false, variables: {}, inputs: [])
+        def resolve(project_path:, ref:, async: false, variables: {}, inputs: [], merge_request_iid: nil)
           project = authorized_find!(project_path)
+
+          merge_request = find_merge_request(project, merge_request_iid) if merge_request_iid
           creation_params = { ref: ref, variables_attributes: variables.map(&:to_h) }
 
           execute_options = EXECUTE_OPTIONS.merge(inputs: parse_inputs(inputs))
+          execute_options[:merge_request] = merge_request if merge_request
 
           service = ::Ci::CreatePipelineService.new(project, current_user, creation_params)
-          response = execute_service(service, source, async, execute_options)
+          response = execute_service(service, source(merge_request), async, execute_options)
 
           if response.success?
             if async
@@ -77,7 +84,8 @@ module Mutations
           end
         end
 
-        def source
+        def source(merge_request = nil)
+          return 'merge_request_event' if merge_request
           return 'web' if context.query.operation_name == INTERNAL_CREATE_OPERATION_NAME
 
           'api'
@@ -85,6 +93,10 @@ module Mutations
 
         def parse_inputs(inputs)
           inputs.to_h { |input| [input.name, input.value] }
+        end
+
+        def find_merge_request(project, iid)
+          project.merge_requests.find_by_iid!(iid)
         end
       end
     end

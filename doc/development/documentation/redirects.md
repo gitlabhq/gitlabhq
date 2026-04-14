@@ -14,12 +14,16 @@ Add a redirect to ensure:
 - Users see the new page and can update or delete their bookmark.
 - External sites can update their links, especially sites that have automation that
   checks for redirected links.
+- Translated documentation can always fall back to an existing file in the English content.
+- AI crawlers can still find relevant context for the subject.
 - The documentation site global navigation does not link to a missing page.
 
   The links in the global navigation are already tested in the `docs-gitlab-com` project.
 
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
+
+Do not redirect to another redirect.
 
 > [!note]
 > When you change the filename of a page, the Google Analytics are removed from the content audit
@@ -143,13 +147,6 @@ and the second argument is the path of the new file:
   bundle exec rake gitlab:docs:redirect
   ```
 
-## Redirecting a page created before the release
-
-If you create a new page and then rename it before it's added to a release on the 18th:
-
-Instead of following that procedure, ask a Technical Writer to manually add the redirect
-to [`redirects.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/redirects.yaml).
-
 ## Exceptions to creating a redirect
 
 In some cases you can skip adding the redirect and just delete the file. The page
@@ -160,3 +157,36 @@ of the following must be true:
   a GitLab Self-Managed release.
 - The page does not contain any content of value, like a placeholder page or a page
   with extremely low usage statistics.
+
+## Troubleshooting
+
+These sections contain solutions to problems you might encounter with documentation redirects.
+
+### Error: `Duplicate content path` after moving a page
+
+If you move a file into a directory of the same name, you might get a `Duplicate content path` error from Hugo.
+For example:
+
+- Source file: `doc/development/testing.md` (becomes the new redirect)
+- Target file: `doc/development/testing/_index.md`
+
+```shell
+WARN  Duplicate content path: "/development/testing" file: "gitlab/doc/development/testing.md"
+panic: Duplicate content path: "/development/testing" file: "gitlab/doc/development/testing.md"
+```
+
+This error happens because both the redirect file and the new file would publish
+to an identical URL path. In this example both files would need to be published to
+`https://docs.gitlab.com/testing/`, which is invalid.
+
+To avoid this issue, review the content of the source page and choose an alternative name
+for the new file or directory. Choosing a different directory name allows you to use `_index.md`
+for the filename. For example:
+
+- Source file: `doc/development/testing.md` (becomes the new redirect)
+- Target file: `doc/development/backend_testing/_index.md`
+
+### Error: `File <filepath> is invalidly renamed!` after moving a page
+
+This error can occur in CI/CD pipelines for the same reason as the `Duplicate content path` Hugo error. The solution
+to this error is the same as for the Hugo error.

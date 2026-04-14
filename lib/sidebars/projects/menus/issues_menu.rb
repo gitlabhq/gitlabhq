@@ -99,7 +99,7 @@ module Sidebars
 
         def boards_menu_item
           title = if context.is_super_sidebar
-                    multi_issue_boards? ? s_('Issue boards') : s_('Issue board')
+                    multi_issue_boards? ? _('Issue boards') : _('Issue board')
                   else
                     multi_issue_boards? ? s_('Boards|Boards') : s_('Boards|Board')
                   end

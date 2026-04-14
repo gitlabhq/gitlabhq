@@ -39,7 +39,8 @@ POST /geo_sites
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_sites" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://primary.example.com/api/v4/geo_sites" \
      --request POST \
      -d "name=himynameissomething" \
      -d "url=https://another-node.example.com/"
@@ -103,7 +104,8 @@ GET /geo_sites
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_sites"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://primary.example.com/api/v4/geo_sites"
 ```
 
 Example response:
@@ -172,7 +174,8 @@ GET /geo_sites/:id
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_sites/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://primary.example.com/api/v4/geo_sites/1"
 ```
 
 Example response:
@@ -325,7 +328,8 @@ GET /geo_sites/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_sites/status"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://primary.example.com/api/v4/geo_sites/status"
 ```
 
 Example response:
@@ -530,6 +534,54 @@ Example response:
     "project_uploads_verification_failed_count": null,
     "project_uploads_synced_in_percentage": "0.00%",
     "project_uploads_verified_in_percentage": "0.00%",
+    "group_uploads_count": 0,
+    "group_uploads_checksum_total_count": 0,
+    "group_uploads_checksummed_count": 0,
+    "group_uploads_checksum_failed_count": 0,
+    "group_uploads_synced_count": null,
+    "group_uploads_failed_count": null,
+    "group_uploads_registry_count": null,
+    "group_uploads_verification_total_count": null,
+    "group_uploads_verified_count": null,
+    "group_uploads_verification_failed_count": null,
+    "group_uploads_synced_in_percentage": "0.00%",
+    "group_uploads_verified_in_percentage": "0.00%",
+    "user_uploads_count": 0,
+    "user_uploads_checksum_total_count": 0,
+    "user_uploads_checksummed_count": 0,
+    "user_uploads_checksum_failed_count": 0,
+    "user_uploads_synced_count": null,
+    "user_uploads_failed_count": null,
+    "user_uploads_registry_count": null,
+    "user_uploads_verification_total_count": null,
+    "user_uploads_verified_count": null,
+    "user_uploads_verification_failed_count": null,
+    "user_uploads_synced_in_percentage": "0.00%",
+    "user_uploads_verified_in_percentage": "0.00%",
+    "design_management_action_uploads_count": 0,
+    "design_management_action_uploads_checksum_total_count": 0,
+    "design_management_action_uploads_checksummed_count": 0,
+    "design_management_action_uploads_checksum_failed_count": 0,
+    "design_management_action_uploads_synced_count": null,
+    "design_management_action_uploads_failed_count": null,
+    "design_management_action_uploads_registry_count": null,
+    "design_management_action_uploads_verification_total_count": null,
+    "design_management_action_uploads_verified_count": null,
+    "design_management_action_uploads_verification_failed_count": null,
+    "design_management_action_uploads_synced_in_percentage": "0.00%",
+    "design_management_action_uploads_verified_in_percentage": "0.00%",
+    "achievement_uploads_count": 0,
+    "achievement_uploads_checksum_total_count": 0,
+    "achievement_uploads_checksummed_count": 0,
+    "achievement_uploads_checksum_failed_count": 0,
+    "achievement_uploads_synced_count": null,
+    "achievement_uploads_failed_count": null,
+    "achievement_uploads_registry_count": null,
+    "achievement_uploads_verification_total_count": null,
+    "achievement_uploads_verified_count": null,
+    "achievement_uploads_verification_failed_count": null,
+    "achievement_uploads_synced_in_percentage": "0.00%",
+    "achievement_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": null,
     "git_push_event_count_weekly": null,
     "proxy_remote_requests_event_count_weekly": null,
@@ -795,6 +847,54 @@ Example response:
     "project_uploads_verification_failed_count": null,
     "project_uploads_synced_in_percentage": "0.00%",
     "project_uploads_verified_in_percentage": "0.00%",
+    "group_uploads_count": 0,
+    "group_uploads_checksum_total_count": 0,
+    "group_uploads_checksummed_count": 0,
+    "group_uploads_checksum_failed_count": 0,
+    "group_uploads_synced_count": null,
+    "group_uploads_failed_count": null,
+    "group_uploads_registry_count": null,
+    "group_uploads_verification_total_count": null,
+    "group_uploads_verified_count": null,
+    "group_uploads_verification_failed_count": null,
+    "group_uploads_synced_in_percentage": "0.00%",
+    "group_uploads_verified_in_percentage": "0.00%",
+    "user_uploads_count": 0,
+    "user_uploads_checksum_total_count": 0,
+    "user_uploads_checksummed_count": 0,
+    "user_uploads_checksum_failed_count": 0,
+    "user_uploads_synced_count": null,
+    "user_uploads_failed_count": null,
+    "user_uploads_registry_count": null,
+    "user_uploads_verification_total_count": null,
+    "user_uploads_verified_count": null,
+    "user_uploads_verification_failed_count": null,
+    "user_uploads_synced_in_percentage": "0.00%",
+    "user_uploads_verified_in_percentage": "0.00%",
+    "design_management_action_uploads_count": 0,
+    "design_management_action_uploads_checksum_total_count": 0,
+    "design_management_action_uploads_checksummed_count": 0,
+    "design_management_action_uploads_checksum_failed_count": 0,
+    "design_management_action_uploads_synced_count": null,
+    "design_management_action_uploads_failed_count": null,
+    "design_management_action_uploads_registry_count": null,
+    "design_management_action_uploads_verification_total_count": null,
+    "design_management_action_uploads_verified_count": null,
+    "design_management_action_uploads_verification_failed_count": null,
+    "design_management_action_uploads_synced_in_percentage": "0.00%",
+    "design_management_action_uploads_verified_in_percentage": "0.00%",
+    "achievement_uploads_count": 0,
+    "achievement_uploads_checksum_total_count": 0,
+    "achievement_uploads_checksummed_count": 0,
+    "achievement_uploads_checksum_failed_count": 0,
+    "achievement_uploads_synced_count": null,
+    "achievement_uploads_failed_count": null,
+    "achievement_uploads_registry_count": null,
+    "achievement_uploads_verification_total_count": null,
+    "achievement_uploads_verified_count": null,
+    "achievement_uploads_verification_failed_count": null,
+    "achievement_uploads_synced_in_percentage": "0.00%",
+    "achievement_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,
@@ -874,7 +974,8 @@ GET /geo_sites/:id/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/geo_sites/2/status"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://primary.example.com/api/v4/geo_sites/2/status"
 ```
 
 Example response:
@@ -1078,6 +1179,54 @@ Example response:
     "project_uploads_verification_failed_count": null,
     "project_uploads_synced_in_percentage": "0.00%",
     "project_uploads_verified_in_percentage": "0.00%",
+    "group_uploads_count": 0,
+    "group_uploads_checksum_total_count": 0,
+    "group_uploads_checksummed_count": 0,
+    "group_uploads_checksum_failed_count": 0,
+    "group_uploads_synced_count": null,
+    "group_uploads_failed_count": null,
+    "group_uploads_registry_count": null,
+    "group_uploads_verification_total_count": null,
+    "group_uploads_verified_count": null,
+    "group_uploads_verification_failed_count": null,
+    "group_uploads_synced_in_percentage": "0.00%",
+    "group_uploads_verified_in_percentage": "0.00%",
+    "user_uploads_count": 0,
+    "user_uploads_checksum_total_count": 0,
+    "user_uploads_checksummed_count": 0,
+    "user_uploads_checksum_failed_count": 0,
+    "user_uploads_synced_count": null,
+    "user_uploads_failed_count": null,
+    "user_uploads_registry_count": null,
+    "user_uploads_verification_total_count": null,
+    "user_uploads_verified_count": null,
+    "user_uploads_verification_failed_count": null,
+    "user_uploads_synced_in_percentage": "0.00%",
+    "user_uploads_verified_in_percentage": "0.00%",
+    "design_management_action_uploads_count": 0,
+    "design_management_action_uploads_checksum_total_count": 0,
+    "design_management_action_uploads_checksummed_count": 0,
+    "design_management_action_uploads_checksum_failed_count": 0,
+    "design_management_action_uploads_synced_count": null,
+    "design_management_action_uploads_failed_count": null,
+    "design_management_action_uploads_registry_count": null,
+    "design_management_action_uploads_verification_total_count": null,
+    "design_management_action_uploads_verified_count": null,
+    "design_management_action_uploads_verification_failed_count": null,
+    "design_management_action_uploads_synced_in_percentage": "0.00%",
+    "design_management_action_uploads_verified_in_percentage": "0.00%",
+    "achievement_uploads_count": 0,
+    "achievement_uploads_checksum_total_count": 0,
+    "achievement_uploads_checksummed_count": 0,
+    "achievement_uploads_checksum_failed_count": 0,
+    "achievement_uploads_synced_count": null,
+    "achievement_uploads_failed_count": null,
+    "achievement_uploads_registry_count": null,
+    "achievement_uploads_verification_total_count": null,
+    "achievement_uploads_verified_count": null,
+    "achievement_uploads_verification_failed_count": null,
+    "achievement_uploads_synced_in_percentage": "0.00%",
+    "achievement_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,

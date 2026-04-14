@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Chat (agentic)
+title: GitLab Duo Agentic Chat
 ---
 
 {{< details >}}
@@ -41,14 +41,14 @@ title: GitLab Duo Chat (agentic)
 
 {{< /history >}}
 
-GitLab Duo Chat (agentic) is an enhanced version of GitLab Duo Chat (non-agentic). This new Chat can autonomously
+GitLab Duo Agentic Chat is an enhanced version of GitLab Duo Non-Agentic Chat. This new Chat can autonomously
 perform actions on your behalf, to help you answer complex questions more comprehensively.
 
 While the non-agentic Chat answers questions based on a single context, the agentic Chat searches,
 retrieves, and combines information from multiple sources across your GitLab projects
 to provide more thorough and relevant answers.
 
-GitLab Duo Chat (agentic) can:
+Agentic Chat can:
 
 - Search projects to find relevant issues, merge requests, and other artifacts using keyword-based search (not semantic search).
 - Access files in your local project without manually specifying file paths.
@@ -92,13 +92,15 @@ Prerequisites:
 To use Chat in the GitLab UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
-   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
-   ({{< icon name="duo-chat" >}}).
+1. On the GitLab Duo sidebar, select either **Add new chat** ({{< icon name="pencil-square" >}})
+   or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+
+   If you have selected a new chat, from the dropdown list, select an agent.
+
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Under the chat text box, ensure the **Agentic** toggle is turned on.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
-   - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-chat-agentic) for your chat.
+   - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-agentic-chat) for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
    - Ask a follow-up question.
@@ -117,9 +119,11 @@ Prerequisites:
 
 Turn on GitLab Duo Chat:
 
-1. In VS Code, go to **Settings** > **Settings**.
-1. Search for `agent platform`.
-1. Under **GitLab** > **Duo Agent Platform: Enabled**, select the
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Agent Platform: Enabled**, select the
    **Enable GitLab Duo Agent Platform** checkbox.
 
 Then, to use GitLab Duo Chat:
@@ -133,7 +137,7 @@ Then, to use GitLab Duo Chat:
 
 Prerequisites:
 
-- [Install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
+- [Install and configure the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
 - Meet the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
 - Set a [default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
@@ -208,11 +212,13 @@ Your conversations synchronize across GitLab Duo Chat in the GitLab UI and your 
 
    - In the GitLab UI, you can do either of the following:
 
-     - On the GitLab Duo sidebar, select **New GitLab Duo Chat**
-       ({{< icon name="pencil-square" >}}).
-     - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+     - To create a new conversation with a specific agent:
+       1. On the GitLab Duo sidebar, select **Add new chat** ({{< icon name="pencil-square" >}}).
+       1. From the dropdown list, select an agent.
+     - To create a new conversation with the same agent as the existing conversation,
+       in the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
 
-     A new Chat conversation replaces the previous one.
+     A new Chat conversation replaces the existing one.
    - Under the Chat text box, ensure the **Agentic** toggle is turned on.
    - In your IDE, in the upper-right corner of the message box, select **New chat**
      ({{< icon name="plus" >}}).
@@ -334,7 +340,7 @@ Prerequisites:
 - In your project, [an agent from the AI Catalog must be enabled](../duo_agent_platform/agents/custom.md#enable-an-agent).
 - You must be a member of the project the agent is enabled in.
 - For VS Code, [install and configure the GitLab for VS Code extension](../../editor_extensions/visual_studio_code/setup.md) version 6.49.12 or later.
-- For a JetBrains IDE, [install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
+- For a JetBrains IDE, [install and configure the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md) version 3.22.0 or later.
 
 To select an agent:
 
@@ -360,8 +366,8 @@ After you create a conversation with an agent:
 
 {{< /history >}}
 
-Prompt caching is enabled by default, and only works when the selected GitLab Duo
-Chat (Agentic) model is from Anthropic or is an Anthropic model served through Vertex.
+Prompt caching is enabled by default, and only works when the selected Agentic
+Chat model is from Anthropic or is an Anthropic model served through Vertex.
 
 When prompt caching is enabled, chat prompt data is temporarily stored in memory
 by the model vendor.
@@ -371,7 +377,7 @@ re-processing of cached prompt and input data.
 
 ### Turn off prompt caching
 
-You can [turn off prompt caching](../duo_agent_platform/code_suggestions/_index.md#turn-off-prompt-caching)
+You can [turn off prompt caching](../project/repository/code_suggestions/_index.md#turn-off-prompt-caching)
 in the GitLab Duo settings, depending on the offering:
 
 - On GitLab.com, you can turn off caching for individual top-level groups.
@@ -381,11 +387,11 @@ This also turns off prompt caching for Code Suggestions.
 
 ## Chat feature comparison
 
-| Capability                                              | GitLab Duo Chat (non-agentic) |                                                         GitLab Duo Chat (agentic)                                                                                                          |
+| Capability                                              | GitLab Duo Non-Agentic Chat |                                                         GitLab Duo Agentic Chat                                                                                                           |
 | ------------                                            |------|                                                         -------------                                                                                                          |
 | Ask general programming questions |                       Yes  |                                                          Yes                                                                                                                   |
 | Get answers about an open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
-| Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. |        Yes. Provide the path of the file in your question.                                                                   |
+| Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. <sup>1</sup> |        Yes. Provide the path of the file in your question.                                                                   |
 | Autonomously search project contents |                    No |                                                            Yes                                                                                                                   |
 | Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. Note, it may overwrite changes that you have made manually and have not committed, yet.  |
 | Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
@@ -399,6 +405,10 @@ This also turns off prompt caching for Code Suggestions.
 | Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |
 | Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
 
+**Footnotes**:
+
+1. Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
+
 ## Troubleshooting
 
 When working with GitLab Duo Chat, you might encounter issues.
@@ -408,7 +418,7 @@ For information on resolving these issues, see [Troubleshooting](troubleshooting
 ## Feedback
 
 Your feedback is valuable in helping us improve this feature.
-Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
+Share your experience in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
 
 ## Related topics
 

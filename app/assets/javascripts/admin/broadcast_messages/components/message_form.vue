@@ -103,6 +103,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-add-form'],
   data() {
     return {
       loading: false,

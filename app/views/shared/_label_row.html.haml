@@ -1,5 +1,5 @@
 - subject_or_group_defined = defined?(@project) || defined?(@group)
-- show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
+- show_label_work_items_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
 - show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
 .label-name.gl-shrink-0.gl-mr-5.gl-mt-1
@@ -16,9 +16,9 @@
       - if label.lock_on_merge
         %li.gl-inline-flex.gl-self-start.gl-mt-1
           = render Pajamas::BadgeComponent.new(_('Lock on merge'), icon: 'lock', variant: :neutral)
-      - if show_label_issues_link
+      - if show_label_work_items_link
         %li.gl-inline-flex
-          = link_to_label(label) { _('Issues') }
+          = link_to_label(label, type: :work_item) { _('Work items') }
       - if show_label_merge_requests_link
         %li.gl-inline-flex
           = link_to_label(label, type: :merge_request) { _('Merge requests') }

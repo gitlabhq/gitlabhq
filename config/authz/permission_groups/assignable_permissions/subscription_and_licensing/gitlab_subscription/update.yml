@@ -1,0 +1,8 @@
+---
+name: update_gitlab_subscription
+description: Grants the ability to update GitLab subscriptions
+boundaries:
+  - group
+  - user
+permissions:
+  - update_gitlab_subscription

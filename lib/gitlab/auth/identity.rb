@@ -98,7 +98,7 @@ module Gitlab
         end
       end
 
-      def self.invert_composite_identity(current_user)
+      def self.resolve_composite_identity_actor(current_user)
         return unless current_user
 
         primary_user = Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(current_user.id)

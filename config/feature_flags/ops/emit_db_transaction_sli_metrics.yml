@@ -1,6 +1,6 @@
 ---
 name: emit_db_transaction_sli_metrics
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3166
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/3166
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147101
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456667
 milestone: '17.0'

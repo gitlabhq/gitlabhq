@@ -41,12 +41,12 @@
   - c.with_body do
     = render 'diff_limits'
 
-= render ::Layouts::SettingsBlockComponent.new(_('Sign-up restrictions'),
+= render ::Layouts::SettingsBlockComponent.new(_('New user account restrictions'),
   id: 'js-signup-settings',
   testid: 'sign-up-restrictions-settings-content',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = _('Configure the way a user creates a new account.')
+    = _('Configure restrictions for new user accounts.')
   - c.with_body do
     = render 'signup'
 

@@ -1,15 +1,15 @@
 ---
 - name: Use HashiCorp Vault secrets in CI jobs
   description: |
-    In GitLab 12.10, GitLab introduced functionality for GitLab Runner to fetch and inject secrets into CI jobs. GitLab is now expanding the [JWT Vault Authentication method](https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/) by building a new `secrets` syntax in the `.gitlab-ci.yml` file. This makes it easier for you to configure and use HashiCorp Vault with GitLab.
+    In GitLab 12.10, GitLab introduced functionality for GitLab Runner to fetch and inject secrets into CI jobs. GitLab is now expanding the [JWT Vault Authentication method](https://docs.gitlab.com/ci/examples/authenticating-with-hashicorp-vault/) by building a new `secrets` syntax in the `.gitlab-ci.yml` file. This makes it easier for you to configure and use HashiCorp Vault with GitLab.
   stage: Release
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/secrets
+  documentation_link: https://docs.gitlab.com/ci/secrets
   image_url: https://about.gitlab.com/images/13_4/vault_ci.png
   published_at: 2020-09-22
-  release: 13.4
+  release: "13.4"
 - name: Introducing the GitLab Kubernetes Agent
   description: |
     The GitLab Kubernetes integration has long enabled deployment to Kubernetes clusters without manual setup. Many users have enjoyed the ease-of-use, while others have run into some challenges. The current integration requires your cluster to be open to the Internet for GitLab to access it.
@@ -23,10 +23,10 @@
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent
+  documentation_link: https://docs.gitlab.com/user/clusters/agent
   image_url: https://about.gitlab.com/images/13_4/gitops-header.png
   published_at: 2020-09-22
-  release: 13.4
+  release: "13.4"
 - name: Grant users deployment permissions without code access
   description: |
     If your team needs to maintain separation of duties between team members who own development, and team members who own deployments, the permissions paradigm in GitLab has made this challenging.
@@ -36,10 +36,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/environments/protected_environments.html#environment-access-by-group-membership
+  documentation_link: https://docs.gitlab.com/ci/environments/protected_environments/#environment-access-by-group-membership
   image_url: https://about.gitlab.com/images/13_4/deployer-role.png
   published_at: 2020-09-22
-  release: 13.4
+  release: "13.4"
 - name: Security Center
   description: |
     We've made a foundational change to security visibility and management in GitLab. The Instance Security Dashboard has been transformed into a Security Center. The biggest change is introducing a new menu structure. Rather than a single page, you can now find a Security Dashboard, Vulnerability Report, and Settings area.
@@ -51,10 +51,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/security_dashboard/#instance-security-center
+  documentation_link: https://docs.gitlab.com/user/application_security/security_dashboard/#instance-security-center
   image_url: https://about.gitlab.com/images/13_4/instance_vulnerability_report.png
   published_at: 2020-09-22
-  release: 13.4
+  release: "13.4"
 - name: Quick navigation using the Search bar
   description: |
     When navigating through GitLab, sometimes you just want to go to a specific project and not a search result page. Using the Global search bar, you can now quickly jump to recent issues, groups, projects, settings, and help topics.
@@ -64,7 +64,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/search/#autocomplete-suggestions
+  documentation_link: https://docs.gitlab.com/user/search/#autocomplete-suggestions
   image_url: https://about.gitlab.com/images/13_4/enablement_global_search.gif
   published_at: 2020-09-22
-  release: 13.4
+  release: "13.4"

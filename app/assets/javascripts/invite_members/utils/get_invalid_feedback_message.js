@@ -1,4 +1,4 @@
-import { unescape } from 'lodash';
+import { unescape } from 'lodash-es';
 import { sanitize } from '~/lib/dompurify';
 import { INVALID_FEEDBACK_MESSAGE_DEFAULT } from '../constants';
 import { responseMessageFromError } from './response_message_parser';

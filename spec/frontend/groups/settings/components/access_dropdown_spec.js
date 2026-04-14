@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlDropdownSectionHeader, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getSubGroups, getUsers } from '~/groups/settings/api/access_dropdown_api';

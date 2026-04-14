@@ -44,14 +44,6 @@ class MergeRequestPolicy < IssuablePolicy
     enable :set_merge_request_metadata
   end
 
-  rule { can?(:planner_access) }.policy do
-    enable :mark_note_as_internal
-  end
-
-  rule { can?(:reporter_access) }.policy do
-    enable :mark_note_as_internal
-  end
-
   private
 
   def can_approve?

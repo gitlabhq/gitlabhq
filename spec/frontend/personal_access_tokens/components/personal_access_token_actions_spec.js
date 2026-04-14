@@ -10,6 +10,7 @@ import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_us
 import getUserPersonalAccessTokenStatistics from '~/personal_access_tokens/graphql/get_user_personal_access_token_statistics.query.graphql';
 import revokePersonalAccessToken from '~/personal_access_tokens/graphql/revoke_personal_access_token.mutation.graphql';
 import rotatePersonalAccessToken from '~/personal_access_tokens/graphql/rotate_personal_access_token.mutation.graphql';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import {
   mockTokens,
   mockRotateMutationResponse,
@@ -73,6 +74,7 @@ describe('PersonalAccessTokenActions', () => {
       },
       stubs: {
         GlSprintf,
+        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
     });
   };
@@ -120,7 +122,7 @@ describe('PersonalAccessTokenActions', () => {
     });
 
     it('displays correct title for revoke action', () => {
-      expect(findModal().attributes('title')).toBe("Revoke the token 'Token 1'?");
+      expect(wrapper.findByTestId('slot-modal-title').text()).toBe("Revoke the token 'Token 1'?");
     });
 
     it('displays correct primary button for revoke action', () => {
@@ -198,7 +200,7 @@ describe('PersonalAccessTokenActions', () => {
     });
 
     it('displays correct title for rotate action', () => {
-      expect(findModal().attributes('title')).toBe("Rotate the token 'Token 1'?");
+      expect(wrapper.findByTestId('slot-modal-title').text()).toBe("Rotate the token 'Token 1'?");
     });
 
     it('displays correct primary button for rotate action', () => {

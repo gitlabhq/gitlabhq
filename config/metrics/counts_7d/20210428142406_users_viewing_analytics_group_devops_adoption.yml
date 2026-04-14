@@ -3,6 +3,8 @@ data_category: optional
 key_path: analytics_unique_visits.users_viewing_analytics_group_devops_adoption
 description: Unique users viewing analytics group devops adoption
 product_group: optimize
+product_categories:
+- devops_reports
 value_type: number
 status: active
 milestone: "13.12"

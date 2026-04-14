@@ -188,7 +188,7 @@ Prerequisites:
 > If you remove a fork relationship, you can't send new merge requests to the source.
 > Any existing open merge requests from the fork to the source are also closed.
 > If anyone has forked your project, their fork also loses the relationship.
-> To restore the fork relationship, use the [Project forks API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
+> To restore the fork relationship, use the [Project forks API](../../../api/project_forks.md#create-a-fork-relationship).
 
 To remove a fork relationship:
 

@@ -8,6 +8,10 @@
       "type": "boolean",
       "description": "Enable global search for issues"
     },
+    "global_search_work_items_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for work items"
+    },
     "global_search_merge_requests_enabled": {
       "type": "boolean",
       "description": "Enable global search for merge requests"

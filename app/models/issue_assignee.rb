@@ -5,6 +5,7 @@ class IssueAssignee < ApplicationRecord
 
   belongs_to :issue
   belongs_to :assignee, class_name: "User", foreign_key: :user_id, inverse_of: :issue_assignees
+  belongs_to :namespace
 
   validates :assignee, uniqueness: { scope: :issue_id }
 

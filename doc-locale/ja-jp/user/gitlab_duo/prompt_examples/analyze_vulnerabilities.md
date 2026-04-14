@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: セキュリティの脆弱性を分析し、ビジネスインパクトに基づいて修正の優先順位をつけます。
 title: セキュリティの脆弱性を分析し、修正の優先順位をつけます
 ---
@@ -60,7 +60,7 @@ Rank as Critical/High/Medium/Low priority with justification.
 
 ### ステップ3: 修正計画の生成 {#step-3-generate-fix-plans}
 
-優先度の高い脆弱性については、脆弱性の修正またはChatを使用して、具体的な修正のガイダンスを取得します。
+優先度の高い脆弱性については、脆弱性の修正またはChatを使用して、具体的な修正ガイダンスを取得します。
 
 ```plaintext
 Provide a detailed remediation plan for this [vulnerability_type]:

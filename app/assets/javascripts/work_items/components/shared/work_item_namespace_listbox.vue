@@ -123,8 +123,8 @@ export default {
 
       // group is not filtered by graphql query so we filter it here
       if (!this.searchKey || searchMatchesGroup) {
-        const { id, name, avatarUrl, path, fullPath } = this.group;
-        filteredGroupsArr.push({ id, name, avatarUrl, path, fullPath });
+        const { id, name, avatarUrl, fullName, fullPath } = this.group;
+        filteredGroupsArr.push({ id, name, avatarUrl, fullName, fullPath });
       }
 
       if (this.group.descendantGroups) {
@@ -141,7 +141,7 @@ export default {
           id: group.id,
           text: group.name,
           value: group.fullPath,
-          namespace: group.path,
+          namespace: group.fullName,
           avatarUrl: group.avatarUrl,
         };
       });
@@ -161,7 +161,7 @@ export default {
             id: project.id,
             text: project.name,
             value: project.fullPath,
-            namespace: project.nameWithNamespace || project.namespace?.name,
+            namespace: project.nameWithNamespace,
             avatarUrl: project.avatarUrl,
           };
         });

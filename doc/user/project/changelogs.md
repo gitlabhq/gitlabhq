@@ -83,7 +83,7 @@ GitLab CLI. The changelog output is formatted in Markdown, and
 ### From the API
 
 To use the API to generate changelogs with a `curl` command, see
-[Add changelog data to a changelog file](../../api/repositories.md#add-changelog-data-to-file)
+[add changelog data to a changelog file](../../api/repositories.md#add-changelog-data-to-file)
 in the API documentation.
 
 ### From the GitLab CLI
@@ -125,9 +125,8 @@ To generate the changelog:
    - `--trailer [string]`: The Git trailer to use for including commits. Defaults to `Changelog`.
    - `--version [string]`: The version to generate the changelog for.
 
-To learn more about the parameters available in GitLab CLI, run `glab changelog generate --help`. See the
-[API documentation](../../api/repositories.md#add-changelog-data-to-file)
-for definitions and usage.
+To learn more about the parameters available in GitLab CLI, run `glab changelog generate --help`.
+For definitions and usage, see the [repositories API](../../api/repositories.md#add-changelog-data-to-file).
 
 ## Customize the changelog output
 

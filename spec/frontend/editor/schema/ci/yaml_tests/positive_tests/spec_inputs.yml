@@ -13,6 +13,10 @@ spec:
     array_input:
       type: array
       description: "Array input"
+    framework:
+      default: "rails"
+      description: "Framework to use"
+      options: ["rails", "sinatra", "hanami"]
 
 # Global component: include with inputs
 include:

@@ -4,7 +4,7 @@ import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
-import { captureException } from '../../sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
 
 /**
@@ -89,7 +89,7 @@ export default normalizeRender({
   },
   methods: {
     reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
 
     // Component API

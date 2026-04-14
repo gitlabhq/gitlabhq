@@ -12,6 +12,12 @@ title: Rate limits on raw endpoints
 
 {{< /details >}}
 
+{{< history >}}
+
+- Raw blob request rate limit per minute (unauthenticated) [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226344) in GitLab 18.10.
+
+{{< /history >}}
+
 Prerequisites:
 
 - Administrator access.

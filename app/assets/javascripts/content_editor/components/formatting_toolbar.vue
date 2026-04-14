@@ -12,6 +12,7 @@ import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
 import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
 
 export default {
+  name: 'FormattingToolbar',
   components: {
     GlButton,
     ToolbarButton,

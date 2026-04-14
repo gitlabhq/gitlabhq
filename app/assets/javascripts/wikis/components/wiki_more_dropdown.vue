@@ -30,6 +30,23 @@ export default {
     templatesUrl: { default: null },
     pagePersisted: { default: null },
   },
+  props: {
+    deleteModalId: {
+      type: String,
+      required: false,
+      default: 'delete-wiki-modal',
+    },
+    cloneModalId: {
+      type: String,
+      required: false,
+      default: 'clone-wiki-modal',
+    },
+    dropdownTestid: {
+      type: String,
+      required: false,
+      default: 'wiki-more-dropdown',
+    },
+  },
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -40,6 +57,9 @@ export default {
   },
   computed: {
     isTemplate,
+    templateLinkClass() {
+      return '';
+    },
     newItem() {
       return {
         text: this.isTemplate ? s__('Wiki|New template') : s__('Wiki|New page'),
@@ -110,7 +130,7 @@ export default {
       placement="bottom-end"
       no-caret
       toggle-id="wiki-more-dropdown"
-      data-testid="wiki-more-dropdown"
+      :data-testid="dropdownTestid"
       class="print:gl-hidden"
       @shown="showDropdown"
       @hidden="hideDropdown"
@@ -129,7 +149,7 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <clone-wiki-modal show-as-dropdown-item />
+      <clone-wiki-modal show-as-dropdown-item :modal-id="cloneModalId" />
 
       <gl-disclosure-dropdown-group v-if="historyUrl || showPrintItem" bordered>
         <gl-disclosure-dropdown-item v-if="historyUrl" :item="historyItem">
@@ -151,7 +171,7 @@ export default {
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group v-if="pagePersisted" bordered>
-        <delete-wiki-modal show-as-dropdown-item />
+        <delete-wiki-modal show-as-dropdown-item :modal-id="deleteModalId" />
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
   </div>

@@ -311,6 +311,10 @@ RSpec.describe PlanLimits do
       expect(attributes).to all(include(be_zero))
     end
 
+    it "has a non-zero default for ci_max_artifact_size_sarif" do
+      expect(plan_limits.ci_max_artifact_size_sarif).to eq(10)
+    end
+
     it "has nil values for disabled limits" do
       attributes = plan_limits.attributes
       attributes = attributes.slice(*columns_with_nil)

@@ -1,6 +1,6 @@
 <script>
 import jsYaml from 'js-yaml';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import {
   GlForm,
   GlLink,
@@ -18,6 +18,7 @@ import {
   GlFormTextarea,
   GlToggle,
 } from '@gitlab/ui';
+import produce from 'immer';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
@@ -27,9 +28,9 @@ import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -37,6 +38,8 @@ import {
   CONTENT_EDITOR_LOADED_ACTION,
 } from '../constants';
 import { isTemplate } from '../utils';
+import getAutoCommitMessagePreference from '../graphql/auto_commit_message_preference.query.graphql';
+import updateAutoCommitMessagePreference from '../graphql/update_auto_commit_message_preference.mutation.graphql';
 import WikiTemplate from './wiki_template.vue';
 import DeleteWikiModal from './delete_wiki_modal.vue';
 
@@ -52,7 +55,7 @@ const MARKDOWN_LINK_TEXT = {
 };
 
 const SAVE_MESSAGE = {
-  DEFAULT: 'DEFAULT',
+  AUTO: 'AUTO',
   CUSTOM: 'CUSTOM',
 };
 
@@ -142,11 +145,14 @@ export default {
     submitButton: {
       existingPage: s__('WikiPage|Save changes'),
       newPage: s__('WikiPage|Create page'),
-      newSidebar: s__('WikiPage|Create custom sidebar'),
+      newSidebar: s__('WikiPage|Create sidebar'),
       newTemplate: s__('WikiPage|Create template'),
     },
     cancel: s__('WikiPage|Cancel'),
     messageModalTitle: s__('WikiPage|Add a commit message'),
+    autoCommitMessageToggle: s__('WikiPage|Use the default commit message for future saves'),
+    autoCommitMessageToggleHelp: s__('WikiPage|Wiki pages save without opening this dialog.'),
+    deleteSidebar: s__('WikiPage|Delete sidebar'),
   },
   components: {
     WikiSidebarToggle,
@@ -165,7 +171,6 @@ export default {
     GlCollapsibleListbox,
     GlModal,
     GlFormTextarea,
-    LocalStorageSync,
     GlDisclosureDropdown,
     GlToggle,
   },
@@ -186,7 +191,7 @@ export default {
     {
       text: s__('WikiPage|Save changes directly'),
       description: s__('WikiPage|Uses the default commit message'),
-      value: SAVE_MESSAGE.DEFAULT,
+      value: SAVE_MESSAGE.AUTO,
     },
     {
       text: s__('WikiPage|Save changes with message'),
@@ -224,9 +229,18 @@ export default {
       placeholderText: this.$options.i18n.title.newPagePlaceholder,
       parentPath: '',
       initialTitleValue: '',
-      saveMessageMode: SAVE_MESSAGE.DEFAULT,
+      useAutoCommitMessage: false,
+      savingPreference: false,
       commitMessageModalOpen: false,
     };
+  },
+  apollo: {
+    useAutoCommitMessage: {
+      query: getAutoCommitMessagePreference,
+      update: (data) => {
+        return data.currentUser?.userPreferences?.wikiUseAutoCommitMessage ?? false;
+      },
+    },
   },
   computed: {
     isTemplate,
@@ -319,6 +333,9 @@ export default {
         primary: { text: this.submitButtonText },
         cancel: { text: this.$options.i18n.cancel },
       };
+    },
+    saveMessageMode() {
+      return this.useAutoCommitMessage ? SAVE_MESSAGE.AUTO : SAVE_MESSAGE.CUSTOM;
     },
   },
   watch: {
@@ -483,6 +500,7 @@ export default {
         this.$emit('is-editing', false);
       }
     },
+
     isPrintableKey(event) {
       // More robust check for printable characters
       // Excludes control keys, function keys, etc.
@@ -495,6 +513,7 @@ export default {
       const { key } = event;
       return key.length === 1;
     },
+
     async initializeTitlePlaceholder() {
       if (!this.pageInfo.persisted) {
         this.initialTitleValue = this.pageTitle;
@@ -590,12 +609,60 @@ export default {
     handleSave() {
       if (!this.glFeatures.wikiImmersiveEditor) {
         this.validateTitle();
+        this.submitForm();
+        return;
       }
 
-      if (this.saveMessageMode === SAVE_MESSAGE.CUSTOM) {
-        this.commitMessageModalOpen = true;
-      } else {
+      if (this.useAutoCommitMessage) {
         this.submitForm();
+      } else {
+        this.commitMessageModalOpen = true;
+      }
+    },
+
+    async handleSaveMessageModeSelect(value) {
+      const useAutoCommitMessage = value === SAVE_MESSAGE.AUTO;
+      if (this.useAutoCommitMessage !== useAutoCommitMessage) {
+        this.useAutoCommitMessage = useAutoCommitMessage;
+        await this.updateCommitMessageModePreference(useAutoCommitMessage);
+      }
+      this.handleSave();
+    },
+
+    async updateCommitMessageModePreference(useAutoCommitMessage) {
+      try {
+        this.savingPreference = true;
+        await this.$apollo.mutate({
+          mutation: updateAutoCommitMessagePreference,
+          variables: {
+            input: {
+              wikiUseAutoCommitMessage: useAutoCommitMessage,
+            },
+          },
+          optimisticResponse: {
+            userPreferencesUpdate: {
+              __typename: 'UserPreferencesUpdatePayload',
+              userPreferences: {
+                __typename: 'UserPreferences',
+                wikiUseAutoCommitMessage: useAutoCommitMessage,
+              },
+            },
+          },
+          update(cache, { data: { userPreferencesUpdate } }) {
+            cache.updateQuery({ query: getAutoCommitMessagePreference }, (existingData) =>
+              produce(existingData, (draft) => {
+                if (draft?.currentUser?.userPreferences) {
+                  draft.currentUser.userPreferences.wikiUseAutoCommitMessage =
+                    userPreferencesUpdate.userPreferences.wikiUseAutoCommitMessage;
+                }
+              }),
+            );
+          },
+        });
+      } catch (e) {
+        Sentry.captureException();
+      } finally {
+        this.savingPreference = false;
       }
     },
   },
@@ -632,12 +699,7 @@ export default {
       name="wiki[message]"
       type="hidden"
     />
-    <local-storage-sync
-      v-if="glFeatures.wikiImmersiveEditor"
-      v-model="saveMessageMode"
-      storage-key="wiki_save_message_mode"
-    />
-
+    <input v-if="isCustomSidebar" value="_sidebar" name="wiki[title]" type="hidden" />
     <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
       <div class="gl-col-12">
         <gl-form-group
@@ -748,7 +810,11 @@ export default {
                   class="flexible-input-container gl-my-2 gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >
                   <h1 v-if="isCustomSidebar" class="gl-heading-3 !gl-mb-0 md:gl-heading-2">
-                    {{ s__('Wiki|Edit Sidebar') }}
+                    {{
+                      pageInfo.persisted
+                        ? s__('Wiki|Edit Sidebar')
+                        : s__('Wiki|Create custom sidebar')
+                    }}
                   </h1>
                   <input
                     v-else
@@ -791,12 +857,14 @@ export default {
                         />
                       </gl-form-group>
                       <gl-toggle
+                        v-if="!isCustomSidebar"
                         v-model="shouldGeneratePathFromTitle"
                         :label="$options.i18n.path.generateFromTitle"
                         :help="$options.i18n.path.generateFromTitleHelp"
                         label-position="top"
                         label-id="lock-path"
                         class="gl-mb-5"
+                        data-testid="path-generation-toggle"
                       />
                       <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
                         <gl-form-select
@@ -826,24 +894,25 @@ export default {
                     </div>
                   </gl-disclosure-dropdown>
                 </div>
-                <div class="gl-flex-grow"></div>
+                <div class="gl-grow"></div>
                 <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
                   <gl-button-group>
                     <gl-button
                       variant="confirm"
                       type="submit"
+                      :loading="savingPreference"
                       data-testid="wiki-submit-button"
                       @click.prevent="handleSave"
                       >{{ submitButtonText }}</gl-button
                     >
                     <gl-collapsible-listbox
-                      v-model="saveMessageMode"
+                      :selected="saveMessageMode"
                       :items="$options.saveOptions"
                       toggle-text="s__('Wiki|Save and choose commit message')"
                       variant="confirm"
                       data-testid="wiki-submit-message-mode"
                       text-sr-only
-                      @select="handleSave"
+                      @select="handleSaveMessageModeSelect"
                     >
                       <template #list-item="{ item }">
                         <div class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</div>
@@ -858,6 +927,7 @@ export default {
                   >
                     {{ $options.i18n.cancel }}</gl-button
                   >
+                  <delete-wiki-modal v-if="isCustomSidebar" />
                 </div>
               </div>
             </template>
@@ -952,6 +1022,15 @@ export default {
           :placeholder="$options.i18n.commitMessage.label"
         />
       </gl-form-group>
+      <gl-toggle
+        :value="useAutoCommitMessage"
+        :label="$options.i18n.autoCommitMessageToggle"
+        :help="$options.i18n.autoCommitMessageToggleHelp"
+        :disabled="savingPreference"
+        label-position="left"
+        data-testid="auto-commit-message-toggle"
+        @change="updateCommitMessageModePreference"
+      />
     </gl-modal>
   </gl-form>
 </template>

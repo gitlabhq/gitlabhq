@@ -1,0 +1,42 @@
+---
+name: public_anonymous
+description: Unauthenticated users on public projects.
+inherits_from: []
+project:
+  permissions: []
+  raw_permissions:
+  - _read_public_build
+  - _read_public_ci_cd_analytics
+  - _read_public_pipeline_schedule
+  - download_code
+  - download_wiki_code
+  - read_analytics
+  - read_code
+  - read_commit_status
+  - read_container_image
+  - read_cycle_analytics
+  - read_deployment
+  - read_environment
+  - read_insights
+  - read_issue
+  - read_issue_board
+  - read_issue_board_list
+  - read_label
+  - read_merge_request
+  - read_milestone
+  - read_note
+  - read_package
+  - read_pipeline
+  - read_project
+  - read_project_for_iids
+  - read_project_member
+  - read_release
+  - read_snippet
+  - read_upload
+  - read_wiki
+group:
+  permissions: []
+  raw_permissions:
+  - read_group
+  - read_package
+  - read_package_within_public_registries

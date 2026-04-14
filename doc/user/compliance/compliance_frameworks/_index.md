@@ -36,6 +36,50 @@ For a click-through demo, see [Custom Compliance frameworks](https://gitlab.nava
 - To add or remove a compliance framework to or from a project, the group to which the project belongs must have a
   compliance framework.
 
+## Import a compliance framework
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16499) in GitLab 17.11.
+
+{{< /history >}}
+
+With this feature, you can use shared or backed up compliance frameworks. The JSON file must not have the same name as an existing compliance framework.
+
+A library of JSON templates is available from the
+[Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project.
+These predefined templates provide complete frameworks. They do not require manual setup,
+and can help you get started quickly.
+
+### Import a predefined compliance framework
+
+To import a pre-built compliance framework:
+
+1. Go to the [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project.
+1. Browse the available framework templates and download the JSON file for your framework.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Secure** > **Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework**.
+1. Select **Import framework**.
+1. In the dialog that appears, select the JSON file from your local system.
+1. If the import is successful, the new compliance framework appears in the list.
+
+Your framework is now ready to apply to projects. See [Apply a compliance framework to a project](#apply-a-compliance-framework-to-a-project).
+
+### Import a compliance framework from a JSON file
+
+To import a compliance framework by using a JSON template:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Secure** > **Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework**.
+1. Select **Import framework**.
+1. In the dialog that appears, select the JSON file from your local system.
+
+If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.
+
 ## Create, edit, or delete a compliance framework
 
 You can create, edit, or delete a compliance framework by using either a compliance frameworks report or a compliance projects report.
@@ -123,21 +167,13 @@ To set as default (or remove the default) from [compliance framework report](../
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
 [compliance projects report](../compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
 
-## Import and export compliance frameworks
+## Export a compliance framework as a JSON file
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16499) in GitLab 17.11.
 
 {{< /history >}}
-
-Download existing compliance frameworks as JSON files and upload new frameworks from JSON templates.
-
-A library of JSON templates is available from the
-[Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project.
-Use these templates to quickly adopt predefined compliance frameworks.
-
-### Export a compliance framework as a JSON file
 
 With this feature, you can share and back up compliance frameworks.
 
@@ -151,21 +187,6 @@ To export a compliance framework from the compliance center:
 1. Select **Export as JSON file**.
 
 The JSON file is downloaded to your local system.
-
-### Import a compliance framework from a JSON file
-
-With this feature, you can use shared or backed up compliance frameworks. The JSON file must not have the same name as an existing compliance framework.
-
-To import a compliance framework by using a JSON template:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. Select **Secure** > **Compliance center**.
-1. On the page, select the **Frameworks** tab.
-1. Select **New framework**.
-1. Select **Import framework**.
-1. In the dialog that appears, select the JSON file from your local system.
-
-If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.
 
 ### JSON template structure and schema
 
@@ -287,6 +308,13 @@ behavior of projects that are assigned to a compliance framework.
 
 Combine GitLab compliance controls to help you meet
 [compliance standards](compliance_standards.md).
+
+> [!note]
+> Security scanner controls that check for a running scanner fail to detect scanners that are
+> configured in [child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
+> For these controls to pass, you must configure security scanners in the parent pipeline.
+> For more information, see
+> [issue 595632](https://gitlab.com/gitlab-org/gitlab/-/work_items/595632).
 
 <!-- Updates to control names must be reflected also in compliance_standards.md -->
 

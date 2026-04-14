@@ -4,6 +4,7 @@ class CommitUserMention < UserMention
   include Notes::WithAssociatedNote
 
   belongs_to :note
+  belongs_to :namespace
 
   private
 

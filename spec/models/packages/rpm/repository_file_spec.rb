@@ -18,6 +18,15 @@ RSpec.describe Packages::Rpm::RepositoryFile, type: :model, feature_category: :p
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'bytesize validations' do
+      it { is_expected.to allow_value('A' * described_class::FILE_MD5_MAX_LENGTH).for(:file_md5) }
+      it { is_expected.not_to allow_value('A' * (described_class::FILE_MD5_MAX_LENGTH + 1)).for(:file_md5) }
+      it { is_expected.to allow_value('A' * described_class::FILE_SHA1_MAX_LENGTH).for(:file_sha1) }
+      it { is_expected.not_to allow_value('A' * (described_class::FILE_SHA1_MAX_LENGTH + 1)).for(:file_sha1) }
+      it { is_expected.to allow_value('A' * described_class::FILE_SHA256_MAX_LENGTH).for(:file_sha256) }
+      it { is_expected.not_to allow_value('A' * (described_class::FILE_SHA256_MAX_LENGTH + 1)).for(:file_sha256) }
+    end
   end
 
   describe '.has_oversized_filelists?' do

@@ -1,4 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import YamlWorker from './monaco_yaml_worker?worker';
 
@@ -46,12 +47,14 @@ export const enableMonacoYamlWorkerForVite = () => {
     window.MonacoEnvironment = {
       async getWorker(moduleId, label) {
         switch (label) {
-          // Handle other cases
+          case 'json': {
+            return new JsonWorker();
+          }
           case 'yaml': {
             return new YamlWorker();
           }
           default:
-            throw new Error(`Unknown label ${label}`);
+            throw new Error(`Unknown Monaco worker label: "${label}"`);
         }
       },
     };

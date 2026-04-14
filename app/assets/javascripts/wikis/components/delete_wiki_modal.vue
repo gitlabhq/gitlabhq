@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlIcon, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { s__, __, sprintf } from '~/locale';
 import { isTemplate } from '../utils';
 
@@ -20,6 +20,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    modalId: {
+      type: String,
+      required: false,
+      default: 'delete-wiki-modal',
     },
   },
   computed: {
@@ -109,11 +114,7 @@ export default {
 
 <template>
   <div v-if="pagePersisted">
-    <gl-disclosure-dropdown-item
-      v-if="showAsDropdownItem"
-      v-gl-modal="$options.modal.modalId"
-      :item="listItem"
-    >
+    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" v-gl-modal="modalId" :item="listItem">
       <template #list-item>
         <gl-icon name="remove" class="gl-mr-2" />
         {{ listItem.text }}
@@ -121,7 +122,7 @@ export default {
     </gl-disclosure-dropdown-item>
     <gl-button
       v-else
-      v-gl-modal="$options.modal.modalId"
+      v-gl-modal="modalId"
       category="secondary"
       variant="danger"
       data-testid="delete-button"
@@ -132,7 +133,7 @@ export default {
       :title="title"
       :action-primary="primaryProps"
       :action-cancel="cancelProps"
-      :modal-id="$options.modal.modalId"
+      :modal-id="modalId"
       size="sm"
       @ok="onSubmit"
     >

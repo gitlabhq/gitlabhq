@@ -44,16 +44,6 @@ module QA
           element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
         end
 
-        view 'lib/gitlab/nav/top_nav_menu_item.rb' do
-          element 'menu-item-link'
-        end
-
-        view 'app/helpers/nav/new_dropdown_helper.rb' do
-          element 'global-new-group-link'
-          element 'global-new-project-link'
-          element 'global-new-snippet-link'
-        end
-
         def go_to_projects
           click_element('nav-item-link', submenu_item: 'Projects')
         end

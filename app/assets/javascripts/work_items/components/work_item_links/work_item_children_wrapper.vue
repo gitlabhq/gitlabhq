@@ -12,12 +12,7 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 
-import {
-  optimisticUserPermissions,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WIDGET_TYPE_HIERARCHY,
-} from 'ee_else_ce/work_items/constants';
+import { optimisticUserPermissions, WIDGET_TYPE_HIERARCHY } from 'ee_else_ce/work_items/constants';
 import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import moveWorkItem from '../../graphql/move_work_item.mutation.graphql';
@@ -176,12 +171,7 @@ export default {
         ({ type }) => type === WIDGET_TYPE_HIERARCHY,
       );
 
-      // the work item config is not available right now and hence need fallback implementation
-
-      return (
-        hierarchyWidget?.autoExpandTreeOnMove ||
-        [WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE].includes(workItemTypeName)
-      );
+      return hierarchyWidget?.autoExpandTreeOnMove;
     },
     async removeChild(child) {
       try {

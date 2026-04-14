@@ -649,7 +649,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'when IAM service is disabled' do
         before do
-          allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+          allow(Authn::IamAuthService).to receive(:enabled?).and_return(false)
         end
 
         it_behaves_like 'an oauth failure'
@@ -1773,6 +1773,103 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         it "does not find non-ldap user by valid login/password" do
           expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
+        end
+      end
+    end
+
+    context 'request-scoped caching' do
+      let_it_be(:user) { create(:user, password: 'test1234test') }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
+      end
+
+      context 'when RequestStore is active', :request_store do
+        it 'calls bcrypt only once for repeated calls with the same credentials' do
+          expect(Devise::Encryptor).to receive(:compare).once.and_call_original
+
+          result1 = described_class.find_with_user_password(user.username, 'test1234test')
+          result2 = described_class.find_with_user_password(user.username, 'test1234test')
+
+          expect(result1).to eq(user)
+          expect(result2).to eq(user)
+        end
+
+        it 'does not cache across different passwords for the same login' do
+          expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
+
+          result1 = described_class.find_with_user_password(user.username, 'test1234test')
+          result2 = described_class.find_with_user_password(user.username, 'wrong-password')
+
+          expect(result1).to eq(user)
+          expect(result2).to be_nil
+        end
+
+        it 'does not cache across different logins' do
+          other_user = create(:user, password: 'test1234test')
+
+          result1 = described_class.find_with_user_password(user.username, 'test1234test')
+          result2 = described_class.find_with_user_password(other_user.username, 'test1234test')
+
+          expect(result1).to eq(user)
+          expect(result2).to eq(other_user)
+        end
+
+        it 'still runs user_auth_attempt! on cache hits when increment_failed_attempts is true' do
+          # First call populates cache
+          described_class.find_with_user_password(user.username, 'test1234test')
+
+          # Second call hits cache but must still run the side effect
+          expect(described_class).to receive(:user_auth_attempt!).with(user, success: true)
+          described_class.find_with_user_password(
+            user.username, 'test1234test', increment_failed_attempts: true)
+        end
+
+        it 'caches failed authentication results' do
+          expect(Devise::Encryptor).to receive(:compare).once.and_call_original
+
+          result1 = described_class.find_with_user_password(user.username, 'wrong-password')
+          result2 = described_class.find_with_user_password(user.username, 'wrong-password')
+
+          expect(result1).to be_nil
+          expect(result2).to be_nil
+        end
+
+        it 'does not cache when user has expired password' do
+          expired_user = create(:user, password: 'test1234test', password_expires_at: 1.day.ago)
+
+          result1 = described_class.find_with_user_password(expired_user.username, 'test1234test')
+          result2 = described_class.find_with_user_password(expired_user.username, 'test1234test')
+
+          expect(result1).to be_nil
+          expect(result2).to be_nil
+        end
+      end
+
+      context 'when RequestStore is not active' do
+        it 'does not cache — bcrypt runs every time' do
+          expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
+
+          described_class.find_with_user_password(user.username, 'test1234test')
+          described_class.find_with_user_password(user.username, 'test1234test')
+        end
+      end
+
+      context 'when cache_find_with_user_password feature flag is disabled' do
+        before do
+          stub_feature_flags(cache_find_with_user_password: false)
+        end
+
+        context 'when RequestStore is active', :request_store do
+          it 'does not cache — bcrypt runs every time' do
+            expect(Devise::Encryptor).to receive(:compare).twice.and_call_original
+
+            result1 = described_class.find_with_user_password(user.username, 'test1234test')
+            result2 = described_class.find_with_user_password(user.username, 'test1234test')
+
+            expect(result1).to eq(user)
+            expect(result2).to eq(user)
+          end
         end
       end
     end

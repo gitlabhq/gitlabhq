@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
   let(:pipeline) { double('Pipeline') }
   let(:user) { double('User') }
   let(:sha) { '12345' }
-  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
+  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'a', value: 'b' }]) }
   let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig) }
   let(:attributes) do
     {

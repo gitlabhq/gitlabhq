@@ -24,7 +24,8 @@ While the first two metrics are generated from GitLab CI/CD and Merge Requests, 
 
 For teams using Jira for incident tracking, this means that incidents need to be replicated from Jira to GitLab in real-time. This project walks through setting up that replication.
 
-**NOTE**: A similar integration exists for issue replication to generate Value Stream Analytics metrics (Lead Time, Issues Created, and Issues Closed). If you're interested in issue replication for VSA metrics, refer to the [Jira to GitLab VSA Integration](jira_vsa.md).
+> [!note]
+> A similar integration exists for issue replication to generate Value Stream Analytics metrics (Lead Time, Issues Created, and Issues Closed). If you're interested in issue replication for VSA metrics, refer to the [Jira to GitLab VSA Integration](jira_vsa.md).
 
 ## Architecture
 

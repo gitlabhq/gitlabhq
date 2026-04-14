@@ -8,20 +8,16 @@ RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
   let(:user) { project.creator }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 
   it 'displays link to project issues and new issue' do
-    visit(new_project_issue_path(project))
+    visit(new_project_work_item_path(project))
 
     within_testid 'breadcrumb-links' do
-      expect(page).to have_link('Issues', href: project_issues_path(project))
-      expect(page).to have_link('New', href: new_project_issue_path(project))
+      expect(page).to have_link('Work items', href: project_work_items_path(project))
+      expect(page).to have_link('New', href: new_project_work_item_path(project))
     end
   end
 
@@ -39,7 +35,7 @@ RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
     issue = create(:issue, author: user, assignees: [user], project: project, title: 'foobar')
     create(:award_emoji, awardable: issue)
 
-    visit project_issues_path(project, assignee_id: user.id)
+    visit project_work_items_path(project, assignee_id: user.id)
 
     expect(page).to have_content 'foobar'
     expect(page).not_to have_selector("[data-testid='issuable-comments']")

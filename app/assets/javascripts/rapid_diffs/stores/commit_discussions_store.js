@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 
 export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () => {
@@ -24,10 +25,12 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     diffDiscussions.addDiscussion(discussion);
   }
 
-  async function createLineDiscussion(formDiscussion, noteData) {
+  async function createLineDiscussion(formDiscussion, noteBody) {
     const {
       data: { discussion },
-    } = await axios.post(endpoint.value, { note: noteData });
+    } = await axios.post(endpoint.value, {
+      note: { note: noteBody, position: formDiscussion.position },
+    });
     diffDiscussions.replaceDiscussionForm(formDiscussion, discussion);
   }
 
@@ -42,14 +45,22 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
   }
 
   async function saveNote(note, noteText) {
-    const {
-      data: { note: updatedNote },
-    } = await axios.put(note.path, {
-      rapid_diffs: true,
-      target_id: note.noteable_id,
-      note: { note: noteText },
-    });
-    diffDiscussions.updateNote(updatedNote);
+    try {
+      const {
+        data: { note: updatedNote },
+      } = await axios.put(note.path, {
+        rapid_diffs: true,
+        target_id: note.noteable_id,
+        note: { note: noteText },
+      });
+      diffDiscussions.updateNote(updatedNote);
+    } catch (error) {
+      if (error.response?.status === HTTP_STATUS_GONE) {
+        diffDiscussions.deleteNote(note);
+        return;
+      }
+      throw error;
+    }
   }
 
   async function destroyNote(note) {
@@ -60,23 +71,6 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
   async function toggleAwardOnNote(note, name) {
     await axios.post(note.toggle_award_path, { name });
     diffDiscussions.toggleAward({ note, award: name });
-  }
-
-  function replyToLineDiscussion({ oldPath, newPath, lineRange }) {
-    const { end } = lineRange;
-    const singleLineRange = { start: end, end };
-    const id = diffDiscussions.replyToLineDiscussion({
-      oldPath,
-      newPath,
-      oldLine: end.old_line,
-      newLine: end.new_line,
-    });
-    if (id) return id;
-    return diffDiscussions.addNewLineDiscussionForm({
-      oldPath,
-      newPath,
-      lineRange: singleLineRange,
-    });
   }
 
   return {
@@ -103,7 +97,6 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     setEditingMode: diffDiscussions.setEditingMode,
     requestLastNoteEditing: diffDiscussions.requestLastNoteEditing,
     toggleAward: diffDiscussions.toggleAward,
-    replyToLineDiscussion,
     addNewLineDiscussionForm: diffDiscussions.addNewLineDiscussionForm,
     replaceDiscussionForm: diffDiscussions.replaceDiscussionForm,
     removeNewLineDiscussionForm: diffDiscussions.removeNewLineDiscussionForm,
@@ -112,10 +105,10 @@ export const useCommitDiffDiscussions = defineStore('commitDiffDiscussions', () 
     setFileDiscussionsHidden: diffDiscussions.setFileDiscussionsHidden,
     setPositionDiscussionsHidden: diffDiscussions.setPositionDiscussionsHidden,
     discussionsWithForms: computed(() => diffDiscussions.discussionsWithForms),
-    getImageDiscussions: computed(() => diffDiscussions.getImageDiscussions),
     findDiscussionsForPosition: computed(() => diffDiscussions.findDiscussionsForPosition),
     findDiscussionsForFile: computed(() => diffDiscussions.findDiscussionsForFile),
-    findAllDiscussionsForFile: computed(() => diffDiscussions.findAllDiscussionsForFile),
+    findAllLineDiscussionsForFile: computed(() => diffDiscussions.findAllLineDiscussionsForFile),
+    findAllImageDiscussionsForFile: computed(() => diffDiscussions.findAllImageDiscussionsForFile),
     timelineDiscussions,
   };
 });

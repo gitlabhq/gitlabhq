@@ -18,6 +18,7 @@ export default {
   mounted() {
     this.applySidebarWidth();
     this.getSidebarContainer().classList.remove('gl-hidden');
+    requestAnimationFrame(this.restoreTransitions);
   },
   methods: {
     getSidebarContainer() {

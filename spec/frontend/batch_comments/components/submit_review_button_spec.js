@@ -30,11 +30,14 @@ describe('SubmitReviewButton', () => {
     });
     useLegacyDiffs();
     useNotes();
+    useNotes().isNotesFetched = true;
     useBatchComments();
+    useBatchComments().fetchDrafts.mockResolvedValue();
+    useBatchComments().isDraftsFetched = true;
     useBatchComments().isReviewer = true;
   });
 
-  it('shows toggle button when drats are not empty', () => {
+  it('shows toggle button when drafts are not empty', () => {
     useBatchComments().drafts = [{}];
     useBatchComments().isReviewer = false;
     createComponent();
@@ -50,6 +53,28 @@ describe('SubmitReviewButton', () => {
     useBatchComments().isReviewer = false;
     createComponent();
     expect(findButton().exists()).toBe(false);
+  });
+
+  it('shows button in loading state while notes are loading', () => {
+    useNotes().isNotesFetched = false;
+    createComponent();
+    expect(findButton().exists()).toBe(true);
+    expect(findButton().props('loading')).toBe(true);
+    expect(findButton().props('disabled')).toBe(true);
+  });
+
+  it('shows button in loading state while drafts are loading', () => {
+    useBatchComments().isDraftsFetched = false;
+    createComponent();
+    expect(findButton().exists()).toBe(true);
+    expect(findButton().props('loading')).toBe(true);
+    expect(findButton().props('disabled')).toBe(true);
+  });
+
+  it('shows button as interactive when all data is loaded', () => {
+    createComponent();
+    expect(findButton().props('loading')).toBe(false);
+    expect(findButton().props('disabled')).toBe(false);
   });
 
   it('shows drafts count', () => {

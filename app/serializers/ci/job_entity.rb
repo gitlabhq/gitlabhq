@@ -68,7 +68,7 @@ module Ci
     end
 
     def authorized_to_force_cancel?
-      can?(request.current_user, :cancel_build, job) && can?(request.current_user, :maintainer_access, job)
+      can?(request.current_user, :cancel_build, job) && can?(request.current_user, :force_cancel_build, job)
     end
 
     def force_cancelable?

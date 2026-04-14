@@ -6,10 +6,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/environments/#auto-rollback
+  documentation_link: https://docs.gitlab.com/ci/environments/#auto-rollback
   image_url: https://img.youtube.com/vi/G8fYYrxqF5E/hqdefault.jpg
   published_at: 2020-12-22
-  release: 13.7
+  release: "13.7"
 - name: Reviewers for merge requests
   description: |
     Asking a colleague to review your code should be a routine part of contributing code, but it's often needlessly complex. A simple task like asking for a review can lead to confusion. For example, how should you ask? An email? Comment? Chat message? Without a formal process, reviews can be inconsistent and hard to keep track of. Previously, an option was to assign a reviewer to a merge request, but even with this formality, both the author and the reviewer appeared in the same assignee field, making it hard for other team members to know who was doing what.
@@ -21,10 +21,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/reviews/
   image_url: https://about.gitlab.com/images/13_7/reviewers_sidebar.png
   published_at: 2020-12-22
-  release: 13.7
+  release: "13.7"
 - name: Clone an issue with a quick action
   description: |
     To make generating similar issues more efficient, issues now support a `/clone` quick action, which creates a new issue in the same project, with an identical title, description, and metadata. The `/clone` quick action replaces a more cumbersome process, which involves multiple steps to create an issue, copy the ID or path of the source issue, and use the `copy_meta` quick action.
@@ -34,18 +34,18 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/quick_actions.html
+  documentation_link: https://docs.gitlab.com/user/project/quick_actions/
   image_url: https://about.gitlab.com/images/13_7/clone_issue_with_quick_action.png
   published_at: 2020-12-22
-  release: 13.7
+  release: "13.7"
 - name: GitLab Runner for Red Hat OpenShift
   available_in: [Free, Premium, Ultimate]
   self-managed: true
   gitlab-com: true
-  documentation_link: 'https://docs.gitlab.com/runner/install/openshift.html'
+  documentation_link: 'https://docs.gitlab.com/runner/install/openshift/'
   image_url: 'https://about.gitlab.com/images/13_7/runner-redhat-openshift.png'
   stage: Verify
   description: |
     Available today is the GitLab Runner container image for the [Red Hat OpenShift Container Platform](https://www.openshift.com/products/container-platform). To install the runner on OpenShift, you can use the new [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator) available from the beta channel in Red Hat's Operator Hub -  a web console for OpenShift cluster administrators to discover and select Operators to install on their cluster. Operator Hub is deployed by default in the OpenShift Container Platform. We plan to transition the GitLab Runner Operator to the stable channel, and by extension [GA](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/6), in early 2021. Finally, we are also developing an operator for GitLab, so stay tuned to future release posts for those announcements.
   published_at: 2020-12-22
-  release: 13.7
+  release: "13.7"

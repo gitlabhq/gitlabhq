@@ -9,6 +9,8 @@
 #
 module Integrations
   class GroupMentionService
+    include Gitlab::Utils::StrongMemoize
+
     GROUP_MENTION_LIMIT = 3
 
     def initialize(mentionable, hook_data:, is_confidential:)
@@ -26,38 +28,45 @@ module Integrations
     attr_reader :mentionable, :hook_data, :is_confidential
 
     def process
-      return ServiceResponse.success if mentionable.nil? || hook_data.nil?
+      return ServiceResponse.success if mentionable.nil?
       return mentionable_without_to_ability_name_service_error unless mentionable.respond_to?(:to_ability_name)
 
-      @hook_data = hook_data.clone
-      # Fake a "group_mention" object kind so integrations can handle this as a separate class of event
-      hook_data[:object_attributes][:object_kind] = hook_data[:object_kind]
-      hook_data[:object_kind] = 'group_mention'
-
-      if confidential?
-        hook_data[:event_type] = 'group_confidential_mention'
-        hook_scope = :group_confidential_mention_hooks
-      else
-        hook_data[:event_type] = 'group_mention'
-        hook_scope = :group_mention_hooks
-      end
+      hook_scope = confidential? ? :group_confidential_mention_hooks : :group_mention_hooks
 
       groups.each do |group|
         next unless execute_integrations_for?(group)
 
-        group_hook_data = hook_data.merge(
-          mentioned: {
-            object_kind: 'group',
-            name: group.full_path,
-            url: group.web_url
-          }
-        )
+        group_hook_data = Gitlab::Lazy.new do
+          group_mention_hook_data.merge(
+            mentioned: {
+              object_kind: 'group',
+              name: group.full_path,
+              url: group.web_url
+            }
+          )
+        end
 
         group.execute_integrations(group_hook_data, hook_scope)
       end
 
       ServiceResponse.success
     end
+
+    def group_mention_hook_data
+      mention_hook_data = hook_data.clone
+      # Fake a "group_mention" object kind so integrations can handle this as a separate class of event
+      mention_hook_data[:object_attributes][:object_kind] = hook_data[:object_kind]
+      mention_hook_data[:object_kind] = 'group_mention'
+
+      mention_hook_data[:event_type] = if confidential?
+                                         'group_confidential_mention'
+                                       else
+                                         'group_mention'
+                                       end
+
+      mention_hook_data
+    end
+    strong_memoize_attr :group_mention_hook_data
 
     def confidential?
       return is_confidential if is_confidential.present?

@@ -1,0 +1,7 @@
+---
+name: read_ml_flow_run
+description: Grants the ability to read MLflow runs
+boundaries:
+  - project
+permissions:
+  - read_ml_flow_run

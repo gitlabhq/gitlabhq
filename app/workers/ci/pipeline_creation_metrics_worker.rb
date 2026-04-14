@@ -16,7 +16,6 @@ module Ci
       pipeline = Ci::Pipeline.find_by_id(pipeline_id)
       return unless pipeline
 
-      increment_pipeline_created_counter(pipeline)
       create_snowplow_event_for_pipeline_name(pipeline)
       track_inputs_usage(pipeline, inputs_count)
       track_template_usage(pipeline, template_names)
@@ -25,17 +24,6 @@ module Ci
     end
 
     private
-
-    def increment_pipeline_created_counter(pipeline)
-      labels = {
-        source: pipeline.source,
-        partition_id: pipeline.partition_id
-      }
-
-      ::Gitlab::Ci::Pipeline::Metrics
-        .pipelines_created_counter
-        .increment(**labels)
-    end
 
     def create_snowplow_event_for_pipeline_name(pipeline)
       return unless pipeline.pipeline_metadata&.name

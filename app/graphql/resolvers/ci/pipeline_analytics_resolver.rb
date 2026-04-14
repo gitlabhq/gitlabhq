@@ -5,6 +5,8 @@ module Resolvers
     class PipelineAnalyticsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
+      MAX_SUBGROUP_PATHS = ::Ci::CollectPipelineAnalyticsServiceBase::MAX_SUBGROUP_PATHS
+
       type Types::Ci::AnalyticsType, null: true
 
       authorizes_object!
@@ -31,12 +33,21 @@ module Resolvers
         description:
           'End of the requested time (in UTC). Defaults to the pipelines started before the current date.'
 
-      def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
+      argument :subgroup_full_paths, [GraphQL::Types::String],
+        required: false,
+        validates: { length: { maximum: MAX_SUBGROUP_PATHS } },
+        experiment: { milestone: '18.11' },
+        description:
+          "Full paths of subgroups to filter by. Only applies when querying pipeline " \
+          "analytics for a group (maximum is #{MAX_SUBGROUP_PATHS})."
+
+      def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil, subgroup_full_paths: nil)
         period = lookahead.selection(:time_series)&.arguments&.fetch(:period)
         base_service_args = {
           current_user: context[:current_user], container: container,
           source: source, ref: ref,
-          from_time: from_time, to_time: to_time
+          from_time: from_time, to_time: to_time,
+          subgroup_full_paths: subgroup_full_paths
         }
 
         legacy_fields(lookahead).then do |result|

@@ -1,6 +1,7 @@
 ---
 table_name: namespace_uploads
 classes:
+- Geo::GroupUpload
 - Group
 - Upload
 feature_categories:

@@ -62,7 +62,7 @@ module JiraImport
     end
 
     def create_import_label(project)
-      label = ::Labels::CreateService.new(build_label_attrs(project)).execute(project: project)
+      label = ::Labels::CreateService.new(nil, build_label_attrs(project)).execute(project: project)
       raise Projects::ImportService::Error, _('Failed to create import label for jira import.') if label.blank?
 
       label

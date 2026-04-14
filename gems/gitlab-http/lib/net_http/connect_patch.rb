@@ -69,8 +69,9 @@ module Net
                                       write_timeout: @write_timeout,
                                       continue_timeout: @continue_timeout,
                                       debug_output: @debug_output)
-          buf = +"CONNECT #{conn_address}:#{@port} HTTP/#{HTTPVersion}\r\n" \
-            "Host: #{@address}:#{@port}\r\n"
+          conn_target = conn_address.match?(Resolv::IPv6::Regex) ? "[#{conn_address}]" : conn_address
+          buf = +"CONNECT #{conn_target}:#{@port} HTTP/#{HTTPVersion}\r\n" \
+            "Host: #{conn_target}:#{@port}\r\n"
           if proxy_user
             credential = ["#{proxy_user}:#{proxy_pass}"].pack('m0')
             buf << "Proxy-Authorization: Basic #{credential}\r\n"

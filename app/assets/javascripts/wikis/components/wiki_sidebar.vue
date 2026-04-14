@@ -1,6 +1,5 @@
 <script>
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
 import { observeSidebarResponsiveness } from '~/wikis/utils/sidebar_responsive';
 import WikiSidebarHeader from './wiki_sidebar_header.vue';
@@ -16,7 +15,6 @@ const sidebarExpandedByDefault = () => {
 export default {
   name: 'WikiSidebar',
   components: { WikiSidebarHeader, WikiSidebarEntries, WikiSidebarToggle },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['hasCustomSidebar'],
   data() {
     return {
@@ -74,7 +72,6 @@ export default {
     data-spy="affix"
   >
     <wiki-sidebar-toggle
-      v-if="glFeatures.wikiFloatingSidebarToggle"
       class="gl-fixed gl-top-4 gl-ml-4 gl-hidden @lg/panel:gl-block"
       action="open"
     />

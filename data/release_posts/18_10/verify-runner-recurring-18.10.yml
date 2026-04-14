@@ -1,0 +1,31 @@
+features:
+  secondary:
+    - name: "GitLab Runner 18.10"
+      available_in: [core, premium, ultimate]
+      gitlab_com: true
+      gitlab_dedicated: true
+      self_managed: true
+      gitlab_dedicated_for_government: true
+      documentation_link: 'https://docs.gitlab.com/runner'
+      issueboard_url: 'https://gitlab.com/groups/gitlab-org/-/boards/9726167?label_name[]=group%3A%3Arunner%20core&milestone_title=18.10'
+      reporter: gabrielengel_gl
+      stage: verify
+      categories:
+        - 'GitLab Runner Core'
+      description: |
+        We're also releasing GitLab Runner 18.10 today!
+        GitLab Runner is the highly-scalable build agent that runs your CI/CD jobs and sends the results back to a GitLab instance.
+        GitLab Runner works in conjunction with GitLab CI/CD, the open-source continuous integration service included with GitLab.
+
+        #### What's New:
+
+        - [Allow k8s runner to define Pod Level Resources for build pod](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39085)
+        - [Add automation to update Go versions and packages for all Runner projects](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39192)
+
+        #### Bug Fixes:
+
+        - [S3 cache with RoleARN returns 403 instead of 404 for non-existent cache](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39105)
+        - [Using helper image `gitlab-runner-helper:x86_64-v16.11.1-nanoserver21H2` results in `init-permissions` error](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/37872)
+        - [MacOS: LaunchAgent - Service could not initialize on M1 architecture](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/28136)
+
+        The list of all changes is in the GitLab Runner [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-runner/blob/18-10-stable/CHANGELOG.md).

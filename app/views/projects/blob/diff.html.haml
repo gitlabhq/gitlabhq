@@ -1,4 +1,6 @@
-- if @lines.present?
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Blob|Unable to load diff')
+- elsif @lines.present?
   - line_class = diff_view == :inline ? '' : diff_view
   - if @form.unfold? && @form.since != 1 && !@form.bottom?
     %tr.line_holder{ class: line_class }

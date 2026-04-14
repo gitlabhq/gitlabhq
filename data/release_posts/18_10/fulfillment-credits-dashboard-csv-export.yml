@@ -1,0 +1,22 @@
+---
+features:
+  secondary:
+    - name: "Download credit usage data as CSV"
+      available_in: [premium, ultimate]
+      gitlab_com: true
+      self_managed: true
+      gitlab_dedicated: true
+      gitlab_dedicated_for_government: true
+      documentation_link: 'https://docs.gitlab.com/subscriptions/gitlab_credits/#export-usage-data'
+      image_url: '/images/18_10/fulfillment-credits-dashboard-csv-export.png'
+      reporter: brothwell1
+      stage: fulfillment
+      categories:
+        - Consumables Cost Management
+      issue_url: 'https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504'
+      description: |
+        Billing managers can now download credit usage data as a CSV file directly from the GitLab Credits dashboard in Customers Portal.
+
+        The export provides a daily, per-action breakdown of credit consumption for the current billing month, including commitment, waiver, trial, on-demand, and included credits used.
+
+        Finance and operations teams can use this data to perform cost allocation, chargeback reporting, and usage analysis in Excel, Google Sheets, or BI tools without manual data gathering or support requests.

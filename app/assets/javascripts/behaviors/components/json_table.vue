@@ -1,6 +1,6 @@
 <script>
 import { GlTable, GlFormInput } from '@gitlab/ui';
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import { __ } from '~/locale';
 import { sanitize, defaultConfig } from '~/lib/dompurify';
 import SafeHtml from '~/vue_shared/directives/safe_html';

@@ -17,6 +17,7 @@ module Packages
 
       def execute
         return EMPTY_VERSION_ERROR if params[:module_version].blank?
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
         return NAMESPACE_DUPLICATION_ERROR if duplicates_not_allowed? && current_package_exists_elsewhere?
         return PROJECT_DUPLICATION_ERROR if current_package_version_exists?
 
@@ -76,6 +77,12 @@ module Packages
         "#{params[:module_name]}/#{params[:module_system]}"
       end
       strong_memoize_attr :name
+
+      def package_protected?
+        return false if params[:module_name].blank? || params[:module_system].blank?
+
+        super(package_name: name, package_type: :terraform_module)
+      end
 
       def file_name
         "#{params[:module_name]}-#{params[:module_system]}-#{params[:module_version]}.tgz"

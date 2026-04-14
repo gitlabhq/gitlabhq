@@ -2,7 +2,6 @@
 name: create_commit
 description: Grants the ability to create commits
 permissions:
-  - authorize_commit
   - create_commit
   - cherry_pick_commit
   - revert_commit

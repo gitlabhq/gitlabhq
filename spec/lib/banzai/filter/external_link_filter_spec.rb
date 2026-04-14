@@ -53,7 +53,7 @@ RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :markdown d
   context 'for invalid urls' do
     it 'adds rel and target attributes to broken hrefs' do
       doc = filter %q(<p><a href="don't crash on broken urls">Google</a></p>)
-      expected = %q(<p><a href="don't%20crash%20on%20broken%20urls" rel="nofollow noreferrer noopener" target="_blank">Google</a></p>)
+      expected = %q(<p><a href="don't crash on broken urls" rel="nofollow noreferrer noopener" target="_blank">Google</a></p>)
 
       expect(doc.to_html).to eq(expected)
     end

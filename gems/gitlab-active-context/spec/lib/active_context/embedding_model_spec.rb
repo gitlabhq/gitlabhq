@@ -34,12 +34,9 @@ RSpec.describe ActiveContext::EmbeddingModel do
     end
 
     subject(:generate_embeddings) do
-      embedding_model.generate_embeddings(
-        content, unit_primitive: unit_primitive, user: user
-      )
+      embedding_model.generate_embeddings(content, user: user)
     end
 
-    let(:unit_primitive) { 'mock_unit_primitive' }
     let(:user) { double("User") }
 
     let(:content) { %w[one two three] }
@@ -52,7 +49,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
       it 'initializes the llm_class with the expected params and calls `execute`' do
         expect(llm_class).to receive(:new).with(
-          contents_for_llm, unit_primitive: unit_primitive, user: user, model: model
+          contents_for_llm, user: user, model: model
         )
 
         expect_any_instance_of(llm_class).to receive(:execute).and_return(embeddings)
@@ -106,7 +103,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
     context 'when llm class does not respond to `execute`' do
       let(:llm_class) do
         Class.new do
-          def initialize(contents, unit_primitive:, user:, model:); end
+          def initialize(contents, user:, model:); end
         end
       end
 

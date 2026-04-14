@@ -51,7 +51,7 @@ module Gitlab
 
         def cursor_for(item)
           raw_cursor = @items.manager.ast.orders.each_with_object({}) do |order, hash|
-            expression_name = order.expr.name
+            expression_name = order_expression_name(order)
             value = item[expression_name]
             raise "Cursor value for '#{expression_name}' is missing" if value.nil?
 
@@ -138,7 +138,7 @@ module Gitlab
         def build_current_cursor_condition(cursor, direction)
           # everything but last is `=`
           other_parts_eq_expressions = cursor[..-2].map do |ord, val|
-            @items[ord.expr.name].eq(val)
+            @items[order_expression_name(ord)].eq(val)
           end
 
           # last part is `>` or `<`
@@ -147,9 +147,9 @@ module Gitlab
           use_gt = (direction == :after && ascending_order) || (direction != :after && !ascending_order)
 
           current_condition = if use_gt
-                                @items[order.expr.name].gt(value)
+                                @items[order_expression_name(order)].gt(value)
                               else
-                                @items[order.expr.name].lt(value)
+                                @items[order_expression_name(order)].lt(value)
                               end
 
           (other_parts_eq_expressions + [current_condition]).inject { |acc, expr| acc.and(expr) }
@@ -160,7 +160,7 @@ module Gitlab
 
           @items.manager.ast.orders.map do |order|
             # Prevent SQL injection from a fabricated cursor value
-            [order, @items.quote(cursor[order.expr.name])]
+            [order, @items.quote(cursor[order_expression_name(order)])]
           end
         end
 
@@ -182,6 +182,12 @@ module Gitlab
         def execute_query(query)
           clickhouse_connection = context[:connection] || ::ClickHouse::Connection.new(:main)
           clickhouse_connection.select(query)
+        end
+
+        # Returns the column name for an ORDER BY node.
+        def order_expression_name(order)
+          expr = order.expr
+          expr.is_a?(Arel::Nodes::SqlLiteral) ? expr.to_s : expr.name
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

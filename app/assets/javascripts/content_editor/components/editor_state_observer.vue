@@ -16,6 +16,7 @@ export const eventHubEvents = [ALERT_EVENT, KEYDOWN_EVENT];
 const getComponentEventName = (tiptapEventName) => tiptapToComponentMap[tiptapEventName];
 
 export default normalizeRender({
+  name: 'EditorStateObserver',
   inject: ['tiptapEditor', 'eventHub'],
   props: {
     debounce: {

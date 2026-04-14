@@ -26,7 +26,7 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
   context 'when MR labeled with `pipeline:run-all-rspec` is changing app/models/user.rb' do
     let(:mr_labels) { ['pipeline:run-all-rspec'] }
     let(:changed_files) { ['app/models/user.rb'] }
-    let(:expected_job_name) { 'rspec-all frontend_fixture 1/7' }
+    let(:expected_job_name) { 'rspec-all frontend_fixture 1/8' }
 
     it_behaves_like 'merge request pipeline'
   end

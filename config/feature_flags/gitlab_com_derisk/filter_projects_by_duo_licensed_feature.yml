@@ -1,0 +1,10 @@
+---
+name: filter_projects_by_duo_licensed_feature
+description: Enables credits-based eligibility check in Namespace.with_ai_supported_plan, allowing namespaces to be filtered by the gitlab_credits add-on in addition to plan-only logic.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/573615
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228624
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595308
+milestone: '18.11'
+group: group::workflow catalog
+type: gitlab_com_derisk
+default_enabled: false

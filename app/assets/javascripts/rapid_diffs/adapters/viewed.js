@@ -6,6 +6,7 @@ import {
   EXPAND_FILE,
 } from '~/rapid_diffs/adapter_events';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 
 function getViewedStyleElement(id) {
   return document.querySelector(`style[data-viewed-file-style="${id}"]`);
@@ -45,7 +46,7 @@ export const viewedAdapter = {
     checkbox.checked = isViewed;
     this.diffElement.toggleAttribute('data-viewed', isViewed);
 
-    if (isViewed) {
+    if (isViewed && !useDiffsList(pinia).isLinkedFile(this.data)) {
       this.trigger(COLLAPSE_FILE);
     }
   },

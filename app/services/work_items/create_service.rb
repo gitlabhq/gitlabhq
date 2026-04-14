@@ -54,7 +54,7 @@ module WorkItems
 
     def track_work_item_create(work_item)
       candidate = "work_item_create_#{@create_source}" if @create_source.present?
-      event_name = candidate if Gitlab::WorkItems::Instrumentation::EventActions.valid_event?(candidate)
+      event_name = candidate if Gitlab::WorkItems::Instrumentation::EventActions.valid_work_item_event?(candidate)
       event_name ||= Gitlab::WorkItems::Instrumentation::EventActions::CREATE
 
       ::Gitlab::WorkItems::Instrumentation::TrackingService.new(

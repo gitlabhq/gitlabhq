@@ -20,14 +20,29 @@ module Gitlab
         DEFAULT_TARGET_S = 5
 
         def initialize_slis!
-          Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)
-          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:global_search, possible_labels)
+          all_labels = possible_labels + autocomplete_labels
+
+          Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, all_labels)
+          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:global_search, all_labels)
         end
 
         def record_apdex(elapsed:, search_type:, search_level:, search_scope:)
+          target = duration_target(search_type, search_scope)
+          success = elapsed < target
+
           Gitlab::Metrics::Sli::Apdex[:global_search].increment(
             labels: labels(search_type: search_type, search_level: search_level, search_scope: search_scope),
-            success: elapsed < duration_target(search_type, search_scope)
+            success: success
+          )
+
+          Gitlab::AppJsonLogger.info(
+            message: "Global Search Apdex SLI",
+            duration_s: elapsed,
+            target_s: target,
+            success: success,
+            search_type: search_type,
+            search_level: search_level,
+            search_scope: search_scope
           )
         end
 
@@ -35,6 +50,14 @@ module Gitlab
           Gitlab::Metrics::Sli::ErrorRate[:global_search].increment(
             labels: labels(search_type: search_type, search_level: search_level, search_scope: search_scope),
             error: error
+          )
+
+          Gitlab::AppJsonLogger.info(
+            message: "Global Search Error Rate SLI",
+            error: error,
+            search_type: search_type,
+            search_level: search_level,
+            search_scope: search_scope
           )
         end
 
@@ -59,7 +82,7 @@ module Gitlab
         end
 
         def search_types
-          %w[basic advanced]
+          ::SearchService.supported_search_types
         end
 
         def search_levels
@@ -73,7 +96,7 @@ module Gitlab
         def endpoint_ids
           api_endpoints = ['GET /api/:version/search', 'GET /api/:version/projects/:id/(-/)search',
             'GET /api/:version/groups/:id/(-/)search']
-          web_endpoints = ['SearchController#show']
+          web_endpoints = ['SearchController#show', 'SearchController#count']
 
           endpoints = []
 
@@ -87,7 +110,9 @@ module Gitlab
           search_types.flat_map do |search_type|
             search_levels.flat_map do |search_level|
               search_scopes.flat_map do |search_scope|
-                endpoint_ids.flat_map do |endpoint_id|
+                next [] unless valid_search_type?(search_type, search_scope, search_level)
+
+                endpoint_ids.map do |endpoint_id|
                   {
                     search_type: search_type,
                     search_level: search_level,
@@ -98,6 +123,22 @@ module Gitlab
               end
             end
           end
+        end
+
+        def autocomplete_labels
+          return [] unless Gitlab::Metrics::Environment.web?
+
+          [{
+            search_type: nil,
+            search_level: nil,
+            search_scope: nil,
+            endpoint_id: 'SearchController#autocomplete'
+          }]
+        end
+
+        def valid_search_type?(search_type, search_scope, search_level)
+          definition = ::Search::Scopes.scope_definitions[search_scope.to_sym]
+          definition[:availability].fetch(search_level.to_sym, []).include?(search_type.to_sym)
         end
 
         def labels(search_type:, search_level:, search_scope:)
@@ -124,3 +165,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Metrics::GlobalSearchSlis.prepend_mod

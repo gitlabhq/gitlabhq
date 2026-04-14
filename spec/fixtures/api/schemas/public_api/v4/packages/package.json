@@ -40,6 +40,9 @@
     "last_downloaded_at": {
       "type": ["string", "null"]
     },
+    "creator_id": {
+      "type": ["integer", "null"]
+    },
     "versions": {
       "type": "array",
       "items": {

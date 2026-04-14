@@ -6,13 +6,11 @@ import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_contai
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 
-jest.mock('~/super_sidebar/constants');
 describe('Experimental new namespace creation app', () => {
   let wrapper;
 
   const findWelcomePage = () => wrapper.findComponent(WelcomePage);
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
-  const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
@@ -115,15 +113,6 @@ describe('Experimental new namespace creation app', () => {
     await nextTick();
     expect(findWelcomePage().exists()).toBe(false);
     expect(findLegacyContainer().exists()).toBe(true);
-  });
-
-  describe('top bar', () => {
-    it('has correct classes', () => {
-      createComponent();
-
-      expect(findTopBar().classes()).toContain('top-bar-fixed');
-      expect(findTopBar().classes()).toContain('container-fluid');
-    });
   });
 
   describe('account verification alert', () => {

@@ -13,6 +13,7 @@ import {
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
 
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -35,7 +36,6 @@ import {
   I18N_FETCH_ERROR,
   FILTER_CSS_CLASSES,
 } from '../constants';
-import { captureException } from '../sentry_utils';
 
 export default {
   name: 'GroupRunnersApp',
@@ -193,7 +193,7 @@ export default {
       this.refetchCounts();
     },
     reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
     onPaginationInput(value) {
       this.search.pagination = value;

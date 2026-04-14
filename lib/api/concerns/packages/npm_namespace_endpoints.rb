@@ -62,7 +62,8 @@ module API
           # Granular token authorization is skipped because:
           # 1. When no package exists, project_or_nil returns nil and the request redirects to npmjs.org
           # 2. When a package exists, authorize_read_package!(project) provides authorization inside the block
-          route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: true
+          route_setting :authorization, skip_job_token_policies: true,
+            skip_granular_token_authorization: :external_registry_redirect
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = declared_params[:package_name]
             packages =

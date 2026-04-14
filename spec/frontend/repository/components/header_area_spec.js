@@ -139,6 +139,23 @@ describe('HeaderArea', () => {
       );
     });
 
+    it('initializes file tree browser store on mount', () => {
+      pinia = createTestingPinia({ stubActions: false });
+      fileTreeBrowserStore = useFileTreeBrowserVisibility();
+      jest.spyOn(fileTreeBrowserStore, 'initializeFileTreeBrowser');
+
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded' },
+        provided: {
+          glFeatures: {
+            repositoryFileTreeBrowser: true,
+          },
+        },
+      });
+
+      expect(fileTreeBrowserStore.initializeFileTreeBrowser).toHaveBeenCalled();
+    });
+
     describe('shortcuts', () => {
       describe('toggle visibility', () => {
         beforeEach(() => {
@@ -406,12 +423,20 @@ describe('HeaderArea', () => {
 
   describe('when rendered for readme project overview', () => {
     beforeEach(() => {
+      pinia = createTestingPinia({ stubActions: false });
+      fileTreeBrowserStore = useFileTreeBrowserVisibility();
+      jest.spyOn(fileTreeBrowserStore, 'initializeFileTreeBrowser');
+      shouldDisableShortcuts.mockReturnValue(false);
+
       wrapper = createComponent({
         route: { name: 'treePathDecoded' },
         provided: {
           newWorkspacePath: '/workspaces/new',
           organizationId: '1',
           isReadmeView: true,
+          glFeatures: {
+            repositoryFileTreeBrowser: true,
+          },
         },
       });
     });
@@ -432,6 +457,21 @@ describe('HeaderArea', () => {
 
     it('does not render AddToTree component', () => {
       expect(findAddToTreeDropdown().exists()).toBe(false);
+    });
+
+    describe('file tree browser', () => {
+      it('does not render FileTreeBrowserToggle', () => {
+        expect(findFileTreeToggle().exists()).toBe(false);
+      });
+
+      it('does not initialize file tree browser store to avoid Pinia errors', () => {
+        expect(fileTreeBrowserStore.initializeFileTreeBrowser).not.toHaveBeenCalled();
+      });
+
+      it('does not bind keyboard shortcuts', () => {
+        Mousetrap.trigger(toggleHotkeys[0]);
+        expect(fileTreeBrowserStore.toggleFileTreeBrowserIsExpanded).not.toHaveBeenCalled();
+      });
     });
   });
 

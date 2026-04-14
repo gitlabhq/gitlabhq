@@ -18,9 +18,9 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role.
 
-## Get Error Tracking settings
+## Retrieve Error Tracking settings
 
-Gets the Error Tracking settings for a specified project.
+Retrieves the Error Tracking settings for a specified project.
 
 ```plaintext
 GET /projects/:id/error_tracking/settings
@@ -91,9 +91,9 @@ Example response:
 }
 ```
 
-## Activate the Error Tracking project settings
+## Update Error Tracking project settings
 
-Activates or deactivates Error Tracking settings for a specified project.
+Updates Error Tracking settings for a specified project.
 
 ```plaintext
 PATCH /projects/:id/error_tracking/settings

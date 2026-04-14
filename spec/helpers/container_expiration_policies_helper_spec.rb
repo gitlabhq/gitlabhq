@@ -35,11 +35,17 @@ RSpec.describe ContainerExpirationPoliciesHelper do
   describe '#older_than_options' do
     it 'returns older_than options formatted for dropdown usage' do
       expected_result = [
+        { key: '1d', label: '1 day until tags are automatically removed' },
+        { key: '3d', label: '3 days until tags are automatically removed' },
         { key: '7d', label: '7 days until tags are automatically removed' },
         { key: '14d', label: '14 days until tags are automatically removed' },
         { key: '30d', label: '30 days until tags are automatically removed' },
         { key: '60d', label: '60 days until tags are automatically removed' },
-        { key: '90d', label: '90 days until tags are automatically removed', default: true }
+        { key: '90d', label: '90 days until tags are automatically removed', default: true },
+        { key: '180d', label: '180 days until tags are automatically removed' },
+        { key: '365d', label: '1 year until tags are automatically removed' },
+        { key: '730d', label: '2 years until tags are automatically removed' },
+        { key: '1095d', label: '3 years until tags are automatically removed' }
       ]
 
       expect(helper.older_than_options).to eq(expected_result)

@@ -7,5 +7,6 @@ module AlertManagement
       inverse_of: :user_mentions
 
     belongs_to :note
+    belongs_to :project
   end
 end

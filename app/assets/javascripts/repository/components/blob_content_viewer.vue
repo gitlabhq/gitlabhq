@@ -1,12 +1,11 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { computed } from 'vue';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
-import BlameHeader from '~/blob/components/blame_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/components/constants';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -38,7 +37,6 @@ const trackingMixin = InternalEvents.mixin();
 export default {
   components: {
     BlobHeader,
-    BlameHeader,
     BlobContent,
     GlLoadingIcon,
     GlButton,
@@ -447,6 +445,7 @@ export default {
         :show-fork-suggestion="showSingleFileEditorForkSuggestion"
         :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
         :show-blame-toggle="glFeatures.inlineBlame"
+        :show-blame-info="isBlameAvailable"
         :project-path="projectPath"
         :project-id="projectId"
         :is-using-lfs="isUsingLfs"
@@ -458,7 +457,6 @@ export default {
         @preload-blame="shouldPreloadBlame = true"
         @blame="handleToggleBlame"
       />
-      <blame-header v-if="isBlameAvailable" />
       <blob-content
         v-if="!blobViewer"
         class="js-syntax-highlight"

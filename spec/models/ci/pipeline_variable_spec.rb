@@ -81,27 +81,6 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
       it 'prevents updates' do
         expect { variable.update!(value: 'new_value') }.to raise_error(ActiveRecord::ReadOnlyRecord)
       end
-
-      context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
-        before do
-          stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
-        end
-
-        it { is_expected.to be false }
-
-        it 'does not prevent updates' do
-          variable.update!(value: 'new_value')
-
-          expect(variable.reload.value).to eq('new_value')
-        end
-
-        it 'sets the project_id before validation on update if it is nil' do
-          variable.project_id = nil
-          expect do
-            variable.save!
-          end.to change { variable.project_id }.from(nil).to(variable.pipeline.project.id)
-        end
-      end
     end
   end
 

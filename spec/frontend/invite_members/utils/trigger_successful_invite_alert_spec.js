@@ -18,6 +18,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 jest.mock('~/alert');
 useLocalStorageSpy();
+useMockLocationHelper();
 
 describe('Display Successful Invitation Alert', () => {
   it('does not show an alert if localStorage key not present', () => {
@@ -74,10 +75,6 @@ describe('Display Successful Invitation Alert', () => {
 });
 
 describe('Reload On Member Invitation Success', () => {
-  beforeAll(() => {
-    useMockLocationHelper();
-  });
-
   it('sets localStorage value', () => {
     reloadOnMemberInvitationSuccess();
 
@@ -92,10 +89,6 @@ describe('Reload On Member Invitation Success', () => {
 });
 
 describe('Reload On Group Invitation Success', () => {
-  beforeAll(() => {
-    useMockLocationHelper();
-  });
-
   it('sets localStorage value', () => {
     reloadOnGroupInvitationSuccess();
 
@@ -110,10 +103,6 @@ describe('Reload On Group Invitation Success', () => {
 });
 
 describe('markLocalStorageForQueuedAlert', () => {
-  beforeAll(() => {
-    useMockLocationHelper();
-  });
-
   it('sets localStorage value', () => {
     markLocalStorageForQueuedAlert();
 

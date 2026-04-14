@@ -26,6 +26,13 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
 
   it { expect(described_class).to require_graphql_authorizations(:create_organization) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_organization do
+    let(:boundary_object) { :instance }
+    let(:avatar) { nil }
+    let(:mutation) { graphql_mutation(:organization_create, params, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   def mutation_response
     graphql_mutation_response(:organization_create)
   end

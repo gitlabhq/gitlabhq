@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import Vue from 'vue';
 import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown';
 import { InternalEvents } from '~/tracking';

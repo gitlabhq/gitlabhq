@@ -8,11 +8,6 @@ RSpec.describe 'Service Desk Ticket Tracker', :js, feature_category: :service_de
   let(:project) { create(:project, :private, service_desk_enabled: true, maintainers: [user]) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     # The following conditions equate to ServiceDesk.supported == true
     allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
 

@@ -51,7 +51,10 @@
     .form-group
       = render 'admin/application_settings/require_access_token_expiry', form: f
       = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
+
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
+
+    = render 'admin/application_settings/granular_tokens_enforced_after', form: f
 
     = render 'admin/application_settings/project_and_group_access_tokens', form: f
 

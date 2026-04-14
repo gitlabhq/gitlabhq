@@ -8,7 +8,7 @@
   documentation_link: https://docs.gitlab.com/user/compliance/compliance_center/compliance_status_report
   image_url: https://about.gitlab.com/images/17_11/custom_compliance_frameworks.png
   published_at: 2025-04-17
-  release: 17.11
+  release: "17.11"
 - name: More AI features on GitLab Duo Self-Hosted
   description: |  # Do not modify this line, instead modify the lines below.
     You can now use more [GitLab Duo](https://about.gitlab.com/gitlab-duo/) features with GitLab Duo Self-Hosted in your GitLab Self-Managed instance. The following features are available in beta:
@@ -30,7 +30,7 @@
   documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#supported-gitlab-duo-features
   image_url: https://about.gitlab.com/images/17_11/ResizedExpandedDuoFeaturesImage.jpg
   published_at: 2025-04-17
-  release: 17.11
+  release: "17.11"
 - name: Epic, issue, and task custom fields
   description: |  # Do not modify this line, instead modify the lines below.
     With this release, you can configure text, number, single-select, and multi-select custom fields for issues, epics, tasks, objectives, and key results. While labels have been the primary way to categorize work items up to this point, custom fields provide a more user-friendly approach for adding structured metadata to your planning artifacts.
@@ -43,7 +43,7 @@
   documentation_link: https://docs.gitlab.com/user/work_items/custom_fields
   image_url: https://about.gitlab.com/images/17_11/work-items-custom-fields.png
   published_at: 2025-04-17
-  release: 17.11
+  release: "17.11"
 - name: CI/CD pipeline inputs
   description: |  # Do not modify this line, instead modify the lines below.
     CI/CD variables are essential for dynamic CI/CD workflows, and are used for many things, including as environment variables, context variables, tool configuration, and matrix variables. But developers sometimes rely on CI/CD variables to inject [pipeline variables](https://docs.gitlab.com/ci/variables/#use-pipeline-variables) into pipelines to manually modify pipeline behavior, which have some risks due to the higher precedence of pipeline variables.
@@ -56,4 +56,4 @@
   documentation_link: https://docs.gitlab.com/ci/inputs/#for-a-pipeline
   image_url: https://about.gitlab.com/images/17_11/run_new_pipeline_spec_input.png
   published_at: 2025-04-17
-  release: 17.11
+  release: "17.11"

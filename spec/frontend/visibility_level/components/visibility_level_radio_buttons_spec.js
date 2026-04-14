@@ -32,7 +32,7 @@ describe('VisibilityLevelRadioButtons', () => {
   it('renders radio group with `checked` prop correctly set', () => {
     createComponent();
 
-    expect(findRadioGroup().vm.$attrs.checked).toBe(defaultPropsData.checked);
+    expect(findRadioGroup().props().checked).toBe(defaultPropsData.checked);
   });
 
   describe('when radio group emits `input` event', () => {

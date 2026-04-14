@@ -9,7 +9,6 @@ title: セルフホストモデルを使用するようにGitLabを設定する
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Enterprise
 - 提供形態: GitLab Self-Managed
 
 {{< /details >}}
@@ -18,7 +17,7 @@ title: セルフホストモデルを使用するようにGitLabを設定する
 
 - GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
 - GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
-- GitLab 17.6以降、GitLab Duoアドオンが必須となりました。
+- GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - UIを使用したAIゲートウェイURLの設定機能がGitLab 17.9で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/473143)されました。
 - GitLab 17.9で一般提供になりました。
@@ -31,13 +30,12 @@ title: セルフホストモデルを使用するようにGitLabを設定する
 - [GitLabをバージョン17.9以降にアップグレード](../../update/_index.md)してください。
 - 管理者である必要があります。
 
-インフラストラクチャ内の利用可能なセルフホストモデルにアクセスするようにGitLabインスタンスを設定するには:
+インフラストラクチャ内のセルフホストモデルにアクセスするようにGitLabインスタンスを設定するには:
 
-1. [完全なセルフホスト設定が、ユースケースに適していることを確認](_index.md#ai-gateway-configurations)します。
 1. AIゲートウェイにアクセスするようにGitLabインスタンスを設定します。
 1. GitLab 18.4以降では、GitLab Duo Agent PlatformサービスにアクセスするようにGitLabインスタンスを設定します。
-1. セルフホストモデルを設定します。
-1. セルフホストモデルを使用するようにGitLab Duo機能を設定します。
+1. GitLabインスタンスにセルフホストモデルを追加します。
+1. 機能用のセルフホストモデルを選択します。
 
 ## ローカルAIゲートウェイへのアクセスを設定する {#configure-access-to-the-local-ai-gateway}
 
@@ -49,10 +47,10 @@ GitLabインスタンスとローカルAIゲートウェイ間のアクセスを
 1. **ローカルAIゲートウェイURL**に、AIゲートウェイURLを入力します。
 1. **変更を保存**を選択します。
 
-> [!note] 
+> [!note]
 > AIゲートウェイURLがローカルネットワークまたはプライベートIPアドレス（例 `172.31.x.x`や`ip-172-xx-xx-xx.region.compute.internal`のような内部ホスト名）を指している場合、GitLabはセキュリティ上の理由からリクエストをブロックする可能性があります。このアドレスへのリクエストを許可するには、[アドレスをIP許可リストに追加](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)します。
 
-## AIゲートウェイのタイムアウトを設定する {#configure-timeout-for-the-ai-gateway}
+### AIゲートウェイのタイムアウトを設定する {#configure-timeout-for-the-ai-gateway}
 
 {{< history >}}
 
@@ -95,12 +93,12 @@ AIゲートウェイのタイムアウトを設定するには:
 - GitLab 18.7で[有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951)になりました。
 - GitLab 18.8で[一般提供](https://gitlab.com/groups/gitlab-org/-/work_items/19125)になりました。
 - 機能フラグ`self_hosted_agent_platform`は、GitLab 18.9で[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589)されました。
+- GitLab 18.7および18.8では、この機能はオンラインサブスクリプションを持つ顧客向けのベータ版です。この機能を使用するには、[セルフホスト](#turn-on-self-hosted-beta-models-and-features)ベータモデルと機能を有効にする必要があります。
 
 {{< /history >}}
 
 前提条件: 
 
-- セルフホストベータモデルと機能が[オン](#turn-on-self-hosted-beta-models-and-features)になっている必要があります。
 - インスタンスにオフラインライセンスがある場合は、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md)アドオンが必要です。
 
 GitLabインスタンスからAgent Platformサービスにアクセスするには:
@@ -111,11 +109,8 @@ GitLabインスタンスからAgent Platformサービスにアクセスするに
 1. **GitLab Duo Agent PlatformサービスのローカルURL**に、ローカルAgent PlatformサービスのURLを入力します。
    - 通常、このURLは**ローカルAIゲートウェイURL**と同じですが、gRPCポート：50052にあります。
    - `http://`や`https://`などのURLプレフィックスを含めないでください。
-
-   - URLがTLSで設定されていない場合は、GitLabインスタンスで`DUO_AGENT_PLATFORM_SERVICE_SECURE`環境変数を設定する必要があります:
-
-     - Linuxパッケージインストールの場合、`gitlab_rails['env']`で`'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`を設定します
-     - セルフコンパイルインストールの場合、`/etc/default/gitlab`内で`export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`を設定します
+   - SSLを設定していて、[推奨されるNGINXリバースプロキシ](../../install/install_ai_gateway.md#set-up-docker-with-nginx-and-ssl)を使用している場合、または[Ingressが有効なHelmチャート](../../install/install_ai_gateway.md#install-by-using-helm-chart)を使用している場合は、ポートを指定しないでください。NGINX Ingressはポートフォワーディングを処理します。
+1. オプション。ローカルのGitLab Duo Agent PlatformのエンドポイントがTLSを使用している場合、**セキュリティ**の下にある**Use secure connection (TLS) for GitLab Duo Agent Platform service**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 ## セルフホストモデルを追加する {#add-a-self-hosted-model}
@@ -126,8 +121,8 @@ GitLab Duo機能でセルフホストモデルを使用するには、GitLabイ�
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **GitLab Duo Self-Hostedの設定**を選択します。
-   - **GitLab Duo Self-Hostedの設定**が使用できない場合は、購入後にサブスクリプションを同期してください:
+1. **GitLab Duoのモデルを設定する**を選択します。
+   - **GitLab Duoのモデルを設定する**が利用できない場合は、購入後にサブスクリプションを同期してください:
      1. 左側のサイドバーで、**サブスクリプション**を選択します。
      1. **サブスクリプションの詳細**の**最終同期**の右側で、サブスクリプションの同期（{{< icon name="retry" >}}）を選択します。
 1. **セルフホストモデルの追加**を選択します。
@@ -142,6 +137,9 @@ GitLab Duo機能でセルフホストモデルを使用するには、GitLabイ�
      |-------------|---------|---------|
      | [vLLM](supported_llm_serving_platforms.md#find-the-model-name)        | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
      | [Amazon Bedrock](#set-the-model-identifier-for-amazon-bedrock-models) | `bedrock/<model ID of the model>`                       | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
+     | [Google Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude) | `vertex_ai/<model ID of the model>` | `vertex_ai/claude-sonnet-4-6@default` |
+     | [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)                                                             | `anthropic/<model ID of the model>`                     | `anthropic/claude-opus-4-6` |
+     | [OpenAI](https://developers.openai.com/api/docs/models)                                                                | `openai/<model ID of the model>`                        | `openai/gpt-5` |
      | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
 
 1. **セルフホストモデルの追加**を選択します。
@@ -167,7 +165,7 @@ Amazon Bedrockモデルのモデル識別子を設定するには:
 
 ## セルフホストベータモデルと機能をオンにする {#turn-on-self-hosted-beta-models-and-features}
 
-> [!note] 
+> [!note]
 > ベータ版のセルフホストモデルと機能をオンにすると、[GitLabテスト規約](https://handbook.gitlab.com/handbook/legal/testing-agreement/)にも同意したことになります。
 
 セルフホストベータモデルと機能を有効にするには:
@@ -184,89 +182,54 @@ Amazon Bedrockモデルのモデル識別子を設定するには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **GitLab Duo Self-Hostedの設定**を選択します。
-   - **GitLab Duo Self-Hostedの設定**が使用できない場合は、購入後にサブスクリプションを同期してください:
+1. **GitLab Duoのモデルを設定する**を選択します。
+   - **GitLab Duoのモデルを設定する**が利用できない場合は、購入後にサブスクリプションを同期してください:
      1. 左側のサイドバーで、**サブスクリプション**を選択します。
      1. **サブスクリプションの詳細**の**最終同期**の右側で、サブスクリプションの同期（{{< icon name="retry" >}}）を選択します。
 1. **AIネイティブ機能**タブを選択します。
 
-### セルフホストモデルを使用するように機能を設定する {#configure-a-feature-to-use-a-self-hosted-model}
+### 機能のセルフホストモデルを選択する {#select-a-self-hosted-model-for-a-feature}
 
-セルフホストモデルにクエリを送信するようにGitLab Duo機能とサブ機能を設定します:
+セルフホストモデルを選択するには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **GitLab Duo Self-Hostedの設定**を選択します。
+1. **GitLab Duoのモデルを設定する**を選択します。
 1. **AIネイティブ機能**タブを選択します。
-1. 設定する機能とサブ機能について、ドロップダウンリストから使用したいセルフホストモデルを選択します。
+1. セルフホストモデルを選択したい機能について、ドロップダウンリストからモデルを選択します。
 
-   たとえば、コード生成の場合、**Claude-3 on Bedrock deployment (Claude 3)**を選択できます。
+> [!note]
+> GitLab Duo Chatのサブ機能にモデルを指定しない場合、**General Chat**に設定されているモデルが自動的に使用されます。これにより、サブ機能ごとに個別のモデルを選択する必要なく、すべてのチャット機能が動作します。
 
-   ![GitLab Duo Self-Hostedの機能の設定](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
-
-> [!note] 
-> GitLab Duo Chatのサブ機能にモデルを指定しない場合、**General Chat**に設定されているモデルが自動的に使用されます。これにより、サブ機能ごとに個別のモデルを設定しなくても、すべてのChat機能が確実に動作します。
-
-### GitLab AIベンダーモデルを使用するように機能を設定する {#configure-a-feature-to-use-a-gitlab-ai-vendor-model}
+### 機能のGitLabマネージドモデルを選択する {#select-a-gitlab-managed-model-for-a-feature}
 
 {{< history >}}
 
 - GitLab 18.3で、`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)機能として[導入](https://gitlab.com/groups/gitlab-org/-/epics/17192)されました。デフォルトでは無効になっています。
 - GitLab 18.7で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030)になりました。
-- GitLab 18.9で一般提供。機能フラグ`ai_self_hosted_vendored_features`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
+- GitLab 18.9で一般提供になりました。機能フラグ`ai_self_hosted_vendored_features`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
 
 {{< /history >}}
 
-セルフホストモデルとAIゲートウェイを使用している場合でも、GitLab AIベンダーモデルを使用するようにGitLab Duo機能を設定できます。
+セルフホストのAIゲートウェイやセルフホストモデルを使用している場合でも、機能に対してGitLabマネージドモデルを選択できます。
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **GitLab Duo Self-Hostedの設定**を選択します。
+1. **GitLab Duoのモデルを設定する**を選択します。
 1. **AIネイティブ機能**タブを選択します。
-1. 設定する機能とサブ機能について、ドロップダウンリストから**GitLab AIベンダーモデル**を選択します。
+1. 設定したい機能とサブ機能について、ドロップダウンリストから**GitLab-managed model**を選択します。
 
-![GitLab AIベンダーモデルを使用したGitLab Duo Self-Hostedの機能の設定](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
+### GitLab Duo機能をオフにする {#turn-off-gitlab-duo-features}
 
-### デバッグのための拡張ログを有効化 {#enable-extended-logging-for-debugging}
+機能にモデルを選択していない場合でも、GitLab Duo機能はオンのままです。
 
-{{< history >}}
-
-- GitLab 18.9.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/587976)。
-
-{{< /history >}}
-
-拡張ログを有効にして、GitLab Duo Agent Platformからの詳細なAIインタラクションデータを収集できます。
-
-- GitLab Self-Managedでは、詳細ログはGitLabと共有されます。
-- セルフホストモデルとAIゲートウェイをホストする場合、このデータはインフラストラクチャに残り、GitLabと共有されません。
-
-ログに記録される情報を表示するには、[使用状況データの収集](../../user/gitlab_duo/data_usage.md#collecting-usage-data)を参照してください。
-
-前提条件: 
-
-- GitLab 18.9.1以降が必要です。
-
-拡張ログを有効にするには:
+GitLab Duo機能をオフにするには:
 
 1. 右上隅で、**管理者**を選択します。
 1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **設定の変更**を選択します。
-1. **Collect usage data**チェックボックスを選択します。
-1. **変更を保存**を選択します。
-
-### GitLab Duo機能を無効にする {#disable-gitlab-duo-features}
-
-GitLab Duo機能は、サブ機能にモデルを選択していない場合でも、オンのままになっています。
-
-GitLab Duo機能またはサブ機能を無効にするには:
-
-1. 右上隅で、**管理者**を選択します。
-1. 左側のサイドバーで、**GitLab Duo**を選択します。
-1. **GitLab Duo Self-Hostedの設定**を選択します。
+1. **GitLab Duoのモデルを設定する**を選択します。
 1. **AIネイティブ機能**タブを選択します。
-1. 無効にする機能またはサブ機能について、ドロップダウンリストから**無効**を選択します。
-
-![GitLab Duo機能を無効にする](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
+1. オフにしたい機能について、ドロップダウンリストから**無効**を選択します。
 
 ### GitLabドキュメントをセルフホストする {#self-host-the-gitlab-documentation}
 
@@ -276,4 +239,4 @@ GitLab Duo機能またはサブ機能を無効にするには:
 
 - [サポート対象モデル](supported_models_and_hardware_requirements.md#supported-models)
 - [互換性のあるモデル](supported_models_and_hardware_requirements.md#compatible-models)
-- [AIゲートウェイの構成タイプ](_index.md#ai-gateway-configurations)
+- [AIゲートウェイの設定タイプ](_index.md#ai-gateway-configurations)

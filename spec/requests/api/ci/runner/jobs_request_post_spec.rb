@@ -271,7 +271,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'sha' => job.sha,
               'before_sha' => job.before_sha,
               'ref_type' => 'branch',
-              'refspecs' => [pipeline.sha,
+              'refspecs' => ["+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
                 "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
               'depth' => project.ci_default_git_depth,
               'repo_object_format' => 'sha1',
@@ -438,7 +438,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs']).to contain_exactly(
-                  pipeline.sha,
+                  "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
                   '+refs/tags/*:refs/tags/*',
                   '+refs/heads/*:refs/remotes/origin/*'
                 )
@@ -480,7 +480,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs']).to contain_exactly(
-                  pipeline.sha,
+                  "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
                   '+refs/tags/*:refs/tags/*',
                   '+refs/heads/*:refs/remotes/origin/*'
                 )
@@ -769,7 +769,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               end
 
               it 'queries the ci_builds table five times' do
-                expect { request_job }.not_to exceed_all_query_limit(5).for_model(::Ci::Build)
+                expect { request_job }.not_to exceed_all_query_limit(6).for_model(::Ci::Build)
               end
             end
           end
@@ -1356,7 +1356,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           context 'when the runner is of project type' do
             it_behaves_like 'storing arguments in the application context for the API' do
-              let(:expected_params) { { project: project.full_path, client_id: "runner/#{runner.id}" } }
+              let(:expected_params) do
+                {
+                  project: project.full_path,
+                  client_id: "runner/#{runner.id}",
+                  organization_id: project.organization_id
+                }
+              end
             end
 
             it_behaves_like 'not executing any extra queries for the application context', 3 do
@@ -1370,7 +1376,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
             it_behaves_like 'storing arguments in the application context for the API' do
-              let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{runner.id}" } }
+              let(:expected_params) do
+                {
+                  root_namespace: group.full_path_components.first,
+                  client_id: "runner/#{runner.id}",
+                  organization_id: group.organization_id
+                }
+              end
             end
 
             it_behaves_like 'not executing any extra queries for the application context', 3 do

@@ -23,6 +23,7 @@ module WorkItems
         normalize_usernames(:assignee_usernames, :assignee_ids)
         normalize_author_username
         normalize_label_names
+        normalize_work_item_type_ids
         normalize_attribute(:milestone_title, :milestone_ids, method: :find_milestone_ids)
         normalize_attribute(:release_tag, :release_ids, method: :find_release_ids,
           condition: -> { container.is_a?(Project) })
@@ -208,6 +209,18 @@ module WorkItems
 
         normalized_filters[:not] ||= {}
         normalized_filters[:not][:parent_ids] = filters[:not][:parent_ids]
+      end
+
+      def normalize_work_item_type_ids
+        if filters[:work_item_type_ids]
+          normalized_filters[:work_item_type_ids] = filters[:work_item_type_ids].map(&:to_i)
+        end
+
+        negated_type_ids = filters.dig(:not, :work_item_type_ids)
+        return unless negated_type_ids
+
+        normalized_filters[:not] ||= {}
+        normalized_filters[:not][:work_item_type_ids] = negated_type_ids.map(&:to_i)
       end
 
       def label_wildcard?(value)

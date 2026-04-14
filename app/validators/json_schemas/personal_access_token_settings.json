@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Personal access token settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enforce_granular_tokens": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether fine-grained personal access tokens are enforced."
+    },
+    "granular_tokens_enforced_after": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Date after which only fine-grained personal access tokens can be created. Existing legacy tokens remain valid."
+    }
+  }
+}

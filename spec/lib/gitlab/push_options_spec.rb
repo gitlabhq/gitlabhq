@@ -110,4 +110,10 @@ RSpec.describe Gitlab::PushOptions do
 
     expect(options.get(:merge_request, :target)).to eq('value')
   end
+
+  it 'stores ci.no_pipeline as true' do
+    options = described_class.new(['ci.no_pipeline'])
+
+    expect(options.get(:ci, :no_pipeline)).to eq(true)
+  end
 end

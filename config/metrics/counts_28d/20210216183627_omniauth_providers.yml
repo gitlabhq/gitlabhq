@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.omniauth_providers
 description: List of unique OmniAuth providers
 product_group: authentication
+product_categories:
+- system_access
 value_type: object
 status: active
 time_frame: 28d

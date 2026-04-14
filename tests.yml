@@ -208,14 +208,12 @@ mapping:
       - 'spec/config/metrics/every_metric_definition_spec.rb'
       - 'ee/spec/config/metrics/every_metric_definition_spec.rb'
       - 'spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb'
-      - 'spec/scripts/internal_events/cli_spec.rb'
       - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
 
   # Internal events schema changes should trigger validations for all events and tooling
   - source: 'config/events/schema\.json'
     test:
       - 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
-      - 'spec/scripts/internal_events/cli_spec.rb'
       - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
 
   # Any change to metric/event definitions should trigger the specs in the ee/spec/config/metrics/ folder.
@@ -232,15 +230,12 @@ mapping:
       - '(ee/)?config/events/.+\.yml'
     test: 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
 
-  # Changes to Internal Events behavior should trigger tests for the CLI and shared matchers
+  # Changes to Internal Events behavior should trigger tests for the shared matchers
   - source:
       - 'lib/gitlab/internal_events\.rb'
-      - 'scripts/internal_events/cli(/.+)?\.rb'
       - 'spec/support/shared_examples/controllers/internal_event_tracking_examples\.rb'
       - 'spec/support/matchers/internal_events_matchers\.rb'
-      - 'spec/fixtures/scripts/internal_events/.+\.yml'
     test:
-      - 'spec/scripts/internal_events/cli_spec.rb'
       - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146
@@ -394,6 +389,8 @@ mapping:
       - 'ee/app/models/onboarding/user_status\.rb'
     test:
       - 'ee/spec/features/registrations/saas/*_spec.rb'
+      - 'ee/spec/requests/ee/registrations_controller_spec.rb'
+      - 'ee/spec/requests/trial_registrations_controller_spec.rb'
       - ee/spec/features/registrations/email_opt_in_registration_spec.rb
       - ee/spec/features/registrations/one_trust_spec.rb
 
@@ -448,3 +445,7 @@ mapping:
   - source:
       - 'app/models/(?<model>.+)\.rb'
     test: 'spec/cells/claims/**/%{model}_spec.rb'
+
+  # GLQL shared examples should trigger the feature spec that includes them
+  - source: 'spec/support/shared_examples/features/glql/glql_shared_examples\.rb'
+    test: 'spec/features/work_items/issues/new/user_creates_issue_spec.rb'

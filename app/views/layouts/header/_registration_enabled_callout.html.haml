@@ -1,6 +1,6 @@
 - return unless show_registration_enabled_user_callout?
 
-= render Users::DismissibleAlertComponent.new(title: _('Check your sign-up restrictions'),
+= render Users::DismissibleAlertComponent.new(title: _('Check the restrictions for new users'),
   variant: :warning,
   dismiss_options: { user: current_user, feature_id: 'registration_enabled_callout' },
   close_button_options: { data: { testid: 'close-registration-enabled-callout' }}) do |c|

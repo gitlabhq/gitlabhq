@@ -4,6 +4,7 @@ module Gitlab
   module SidekiqMiddleware
     class InstrumentationLogger
       def call(worker, job, queue)
+        ensure_gvl_instrumentation
         ::Gitlab::InstrumentationHelper.init_instrumentation_data
 
         yield
@@ -19,6 +20,18 @@ module Gitlab
         # https://github.com/mperham/sidekiq/blob/53bd529a0c3f901879925b8390353129c465b1f2/lib/sidekiq/processor.rb#L115-L118
         job[:instrumentation] = {}.tap do |instrumentation_values|
           ::Gitlab::InstrumentationHelper.add_instrumentation_data(instrumentation_values)
+        end
+      end
+
+      private
+
+      def ensure_gvl_instrumentation
+        if Feature.enabled?(:enable_sidekiq_gvl_metrics, :current_pod, type: :ops)
+          GVLTools::LocalTimer.enable
+          GVLTools::GlobalTimer.enable
+        else
+          GVLTools::LocalTimer.disable
+          GVLTools::GlobalTimer.disable
         end
       end
     end

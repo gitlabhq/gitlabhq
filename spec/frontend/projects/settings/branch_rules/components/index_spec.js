@@ -99,6 +99,7 @@ describe('View branch rules', () => {
     editMutationHandler = editBranchRuleSuccessHandler,
     editSquashOptionMutationHandler = editSquashOptionSuccessHandler,
     deleteSquashOptionMutationHandler = deleteSquashOptionSuccessHandler,
+    glFeatures = { skipEmptyAccessLevelsInBranchRules: true },
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, branchRulesQueryHandler],
@@ -118,6 +119,7 @@ describe('View branch rules', () => {
         branchRulesPath,
         canAdminProtectedBranches,
         allowEditSquashSetting,
+        glFeatures,
       },
       stubs: {
         ApprovalRulesApp: true,
@@ -394,6 +396,23 @@ describe('View branch rules', () => {
     await createComponent();
 
     expect(findAllBranches().text()).toBe('*');
+  });
+
+  it('renders matching branches link without regex pattern for All branches', async () => {
+    util.getParameterByName.mockReturnValueOnce(I18N.allBranches);
+    util.mergeUrlParams.mockReturnValueOnce('/branches?state=all');
+
+    const mockResponse = JSON.parse(JSON.stringify(branchProtectionsMockResponse));
+    mockResponse.data.project.branchRules.nodes[0].name = I18N.allBranches;
+
+    await createComponent({
+      branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
+    });
+
+    const matchingBranchesLink = findMatchingBranchesLink();
+
+    expect(matchingBranchesLink.exists()).toBe(true);
+    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all');
   });
 
   it('renders matching branches link', () => {
@@ -786,6 +805,42 @@ describe('View branch rules', () => {
           },
         }),
       );
+    });
+
+    describe('when skipEmptyAccessLevelsInBranchRules feature flag is enabled', () => {
+      it('does not include access levels in mutation when toggling force push', async () => {
+        findAllowForcePushToggle().vm.$emit('toggle', false);
+        await nextTick();
+        await waitForPromises();
+
+        const callArgs = editBranchRuleSuccessHandler.mock.calls[0][0];
+        const { branchProtection } = callArgs.input;
+
+        expect(branchProtection).toHaveProperty('allowForcePush', false);
+        expect(branchProtection).not.toHaveProperty('pushAccessLevels');
+        expect(branchProtection).not.toHaveProperty('mergeAccessLevels');
+      });
+    });
+
+    describe('when skipEmptyAccessLevelsInBranchRules feature flag is disabled', () => {
+      beforeEach(async () => {
+        await createComponent({
+          glFeatures: { skipEmptyAccessLevelsInBranchRules: false },
+        });
+      });
+
+      it('includes access levels in mutation when toggling force push', async () => {
+        findAllowForcePushToggle().vm.$emit('toggle', false);
+        await nextTick();
+        await waitForPromises();
+
+        const callArgs = editBranchRuleSuccessHandler.mock.calls[0][0];
+        const { branchProtection } = callArgs.input;
+
+        expect(branchProtection).toHaveProperty('allowForcePush', false);
+        expect(branchProtection).toHaveProperty('pushAccessLevels');
+        expect(branchProtection).toHaveProperty('mergeAccessLevels');
+      });
     });
 
     it('emits a tracking event when a toggle is triggered', async () => {

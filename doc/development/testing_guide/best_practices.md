@@ -55,6 +55,7 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
   methods.
 - Use `context` to test branching logic (`RSpec/AvoidConditionalStatements` RuboCop Cop - [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117152)).
 - Try to match the ordering of tests to the ordering in the class.
+- Prefer [table-based tests](#table-based--parameterized-tests) where possible.
 - Try to follow the [Four-Phase Test](https://thoughtbot.com/blog/four-phase-test) pattern, using newlines
   to separate phases.
 - Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`.
@@ -74,14 +75,13 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
   when you need an ID/IID/access level that doesn't actually exist. Using 123, 1234,
   or even 999 is brittle as these IDs could actually exist in the database in the
   context of a CI run.
+- When writing a new test, verify it fails in the way you expect before asserting it passes.
+  Run the spec with the condition inverted or the behavior under test removed to confirm the failure message is meaningful.
+  A test that cannot fail is not providing coverage.
 
 ### Eager loading the application code
 
-By default, the application code:
-
-- Isn't eagerly loaded in the `test` environment.
-- Is eagerly loaded in CI/CD (when `ENV['CI'].present?`) to surface any potential loading issues.
-
+By default, the application code is not eager loaded in the test environment in order to speed up test runtime.
 If you need to enable eager loading when executing tests,
 use the `GITLAB_TEST_EAGER_LOAD` environment variable:
 
@@ -89,7 +89,7 @@ use the `GITLAB_TEST_EAGER_LOAD` environment variable:
 GITLAB_TEST_EAGER_LOAD=1 bin/rspec spec/models/project_spec.rb
 ```
 
-If your test depends on all the application code that is being loaded, add the `:eager_load` tag.
+If your test depends on all the application code being loaded, add the `:eager_load` tag.
 This ensures that the application code is eagerly loaded before the test execution.
 
 ### Ruby warnings
@@ -532,6 +532,75 @@ performance gains.
 When combining tests, consider using `:aggregate_failures`, so that the full
 results are available, and not just the first failure.
 
+#### Avoid waiting for elements you expect to be absent
+
+Capybara's default wait time applies whenever you query for an element, including
+negative assertions. When checking that an element does _not_ appear inside a
+container that has already loaded, Capybara waits the full timeout before
+concluding the element is absent. This makes the test slow by design, even when
+the assertion is correct.
+
+##### Custom `have_no_testid` matcher
+
+The `have_testid` matcher uses `has_css?` internally, so negating it with
+`not_to` still waits the full timeout. Use `have_no_testid` instead, which uses
+`has_no_css?` and returns immediately when the element is absent:
+
+```ruby
+# Slow: not_to have_testid uses has_css? internally, waits the full timeout
+expect(page).not_to have_testid('relationship-blocks-icon')
+expect(page).not_to have_testid('issuable-weight-content')
+
+# Fast: have_no_testid uses has_no_css? returns immediately when absent
+expect(page).to have_no_testid('relationship-blocks-icon')
+expect(page).to have_no_testid('issuable-weight-content')
+```
+
+##### Generic Capybara matchers
+
+For other Capybara matchers inside a container you have already confirmed is
+loaded, pass `wait: 0` to skip the timeout:
+
+```ruby
+# Slow: waits the full Capybara default timeout before concluding the link is absent
+within_testid('search-filter') do
+  has_link?(scope)
+end
+
+# Fast: when the container is already confirmed loaded, wait: 0 skips the timeout
+within_testid('search-filter') do
+  has_link?(scope, wait: 0)
+end
+```
+
+Do not use `wait: 0` on the container itself or on any element whose presence you
+cannot guarantee has already been established. Prefer `have_no_testid` over
+`wait: 0` whenever you are asserting on a `data-testid` attribute.
+
+#### Mock expensive external operations
+
+Feature and integration specs that trigger real external processes (compiling
+binaries, running Git commands, making network calls) inherit the full wall-clock
+cost of those processes, even when the logic under test does not require them to
+be real.
+
+Examples from production codebase fixes:
+
+- A spec that triggered a real Go compilation added **~3 minutes** per run.
+- A spec that ran real Git commands added **~10 seconds** per example.
+
+In both cases, the logic under test was already covered by unit tests.
+
+Look for `before` blocks or `let` definitions that shell out, compile, or call an
+external service. Use `allow` / `expect(...).to receive(...)` stubs or RSpec
+doubles to return realistic fixtures instead. See
+[Stubbing methods in factories](#stubbing-methods-within-factories) for stubbing
+approaches compatible with `let_it_be`.
+
+If a unit test already verifies the output of an external operation, stub it in
+higher-level specs. A slow `before(:all)` or `let_it_be` that triggers an external
+process multiplies its cost across every example in the context.
+
 #### In case you're stuck
 
 We have a `backend_testing_performance` [domain expertise](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
@@ -668,6 +737,51 @@ find_field _('Checkbox label'), unchecked: true
 # acceptable when finding a element that is not a button, link, or field
 find_by_testid('element')
 ```
+
+###### Avoid `all()` with `.first` or block iteration
+
+`all()` returns a collection but does not raise if the selector is not found, and
+it does not benefit from Capybara's smart waiting. This makes it both error-prone
+and slow.
+
+Pattern 1 — `all().first` silently fails:
+
+```ruby
+# Avoid: silent no-op if selector not found; slower than find()
+all('[data-testid="download-dropdown"]').first do |button|
+  button.find_by_testid('base-dropdown-toggle').click
+  expect(page).to have_link format, href: uri.to_s
+end
+
+# Prefer: find() raises immediately with a clear error message if not found
+find('[data-testid="unique-download-dropdown"]') do |button|
+  button.find_by_testid('base-dropdown-toggle').click
+  expect(page).to have_link format, href: uri.to_s
+end
+
+# Even better:
+within_testid('unique-download-dropdown') do
+  find_by_testid('base-dropdown-toggle').click
+end
+
+expect(page).to have_link format, href: uri.to_s
+```
+
+Pattern 2 — `all()` with block iteration to filter by child selector:
+
+```ruby
+# Avoid: iterates every card, calling has_selector? on each, very slow and not robust
+card = all("[data-testid='security-testing-card']").find do |node|
+  node.has_selector?('h3', text: title, exact_text: true)
+end
+
+# Prefer: single CSS child selector query, then walk up to the parent
+card = find("[data-testid='security-testing-card'] h3", text: title, exact_text: true)
+          .ancestor("[data-testid='security-testing-card']")
+```
+
+When you need to locate a parent element by the text of a known child, use a CSS
+child selector to find the child first, then call .ancestor() to walk back up.
 
 ##### Matchers
 
@@ -891,9 +1005,12 @@ running successfully in isolation. See the script for more details.
 ### `subject` and `let` variables
 
 The GitLab RSpec suite has made extensive use of `let`(along with its strict, non-lazy
-version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity](https://thoughtbot.com/blog/lets-not),
+version `let!`) variables to reduce duplication.
+However, this sometimes [comes at the cost of clarity](https://thoughtbot.com/blog/lets-not),
 so we need to set some guidelines for their use going forward:
 
+- Prefer [table-based / parameterized tests](#table-based--parameterized-tests)
+  instead of repeating `let` definitions across contexts.
 - `let!` variables are preferable to instance variables. `let` variables
   are preferable to `let!` variables. Local variables are preferable to
   `let` variables.
@@ -911,7 +1028,90 @@ so we need to set some guidelines for their use going forward:
   be evaluated until it is referenced.
 - Avoid referencing `subject` in examples. Use a named subject `subject(:name)`, or a `let` variable instead, so
   the variable has a contextual name.
-- If the `subject` is never referenced inside examples, then it's acceptable to define the `subject` without a name.
+
+### Table-based / Parameterized tests
+
+This style of testing is used to exercise one piece of code with a comprehensive
+range of inputs. By specifying the test case once, alongside a table of inputs
+and the expected output for each, your tests can be made easier to read and more
+compact.
+
+We use the [RSpec::Parameterized](https://github.com/tomykaira/rspec-parameterized)
+gem.
+
+Prefer table-based tests over multiple `context` blocks that differ only in their
+`let` values. For example, instead of repeating contexts:
+
+```ruby
+# bad
+context 'when the group status is :active' do
+  let(:status) { :active }
+  let(:actor) { create(:group) }
+
+  it { expect(actor.visible?).to be(true) }
+end
+
+context 'when the project status is :active' do
+  let(:status) { :active }
+  let(:actor) { create(:project) }
+
+  it { expect(actor.visible?).to be(true) }
+end
+
+context 'when the group status is :inactive' do
+  let(:status) { :inactive }
+  let(:actor) { create(:group) }
+
+  it { expect(actor.visible?).to be(false) }
+end
+
+context 'when the project status is :inactive' do
+  let(:status) { :inactive }
+  let(:actor) { create(:project) }
+
+  it { expect(actor.visible?).to be(false) }
+end
+```
+
+Use a table to express the same cases more compactly:
+
+```ruby
+# good
+using RSpec::Parameterized::TableSyntax
+
+let(:group) { create(:group) }
+let(:project) { create(:project) }
+
+where(:actor, :status, :visible) do
+  ref(:group) | :active   | true
+  ref(:group) | :inactive | false
+  ref(:project) | :active   | true
+  ref(:project) | :inactive | false
+end
+
+with_them do
+  it { expect(actor.visible?).to be(visible) }
+end
+```
+
+If, after creating a table-based test, you see an error that looks like this:
+
+```ruby
+NoMethodError:
+  undefined method `to_params'
+
+  param_sets = extracted.is_a?(Array) ? extracted : extracted.to_params
+                                                                       ^^^^^^^^^^
+  Did you mean?  to_param
+```
+
+That indicates that you need to include the line `using RSpec::Parameterized::TableSyntax` in the spec file.
+
+> [!warning]
+> Only use simple values as input in the `where` block. Using procs, stateful
+> objects, FactoryBot-created objects, and similar items can lead to
+> [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
+> Use `ref(:symbol)` instead.
 
 ### Common test setup
 
@@ -1488,65 +1688,6 @@ To add a schema matcher spec:
    match_snowplow_context_schema(schema_path: '<filename from step 1>', context: <Context Hash> )
    ```
 
-### Table-based / Parameterized tests
-
-This style of testing is used to exercise one piece of code with a comprehensive
-range of inputs. By specifying the test case once, alongside a table of inputs
-and the expected output for each, your tests can be made easier to read and more
-compact.
-
-We use the [RSpec::Parameterized](https://github.com/tomykaira/rspec-parameterized)
-gem. A short example, using the table syntax and checking Ruby equality for a
-range of inputs, might look like this:
-
-```ruby
-describe "#==" do
-  using RSpec::Parameterized::TableSyntax
-
-  let(:one) { 1 }
-  let(:two) { 2 }
-
-  where(:a, :b, :result) do
-    1         | 1         | true
-    1         | 2         | false
-    true      | true      | true
-    true      | false     | false
-    ref(:one) | ref(:one) | true  # let variables must be referenced using `ref`
-    ref(:one) | ref(:two) | false
-  end
-
-  with_them do
-    it { expect(a == b).to eq(result) }
-
-    it 'is isomorphic' do
-      expect(b == a).to eq(result)
-    end
-  end
-end
-```
-
-If, after creating a table-based test, you see an error that looks like this:
-
-```ruby
-NoMethodError:
-  undefined method `to_params'
-
-  param_sets = extracted.is_a?(Array) ? extracted : extracted.to_params
-                                                                       ^^^^^^^^^^
-  Did you mean?  to_param
-```
-
-That indicates that you need to include the line `using RSpec::Parameterized::TableSyntax` in the spec file.
-
-<!-- vale gitlab_base.Spelling = NO -->
-
-> [!warning]
-> Only use simple values as input in the `where` block. Using procs, stateful
-> objects, FactoryBot-created objects, and similar items can lead to
-> [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
-
-<!-- vale gitlab_base.Spelling = YES -->
-
 ### Prometheus tests
 
 Prometheus metrics may be preserved from one test run to another. To ensure that metrics are
@@ -1662,6 +1803,20 @@ expect(:a).to be_one_of(%i[a b c])
 expect(:z).not_to be_one_of(%i[a b c])
 ```
 
+#### `have_no_testid`
+
+The inverse of `have_testid`.
+
+```ruby
+# Prefer have_no_testid over not_to have_testid
+expect(page).to have_no_testid('relationship-blocks-icon')
+```
+
+Prefer `have_no_testid` over `expect(page).not_to have_testid(...)`. The `have_testid`
+matcher uses `has_css?` internally, so negating it with `not_to` waits the full
+Capybara timeout before concluding the element is absent. `have_no_testid` uses
+`has_no_css?` and returns immediately. See [Avoid waiting for elements you expect to be absent](#avoid-waiting-for-elements-you-expect-to-be-absent).
+
 ### Testing query performance
 
 Testing query performance allows us to:
@@ -1705,6 +1860,26 @@ For shared examples used by more than one spec file, placement depends on their 
 - Only move shared examples to the global `spec/support/shared_*` directory when they are actually shared across different bounded contexts
 - Shared examples and shared contexts files typically use naming patterns like `*_contexts.rb`, `*_examples.rb`, `*_shared.rb`, or `*_shared_context_and_examples.rb`
 - The goal is to maintain high cohesion in bounded contexts while keeping coupling between contexts loose
+
+#### Performance impact of slow shared examples
+
+A slow shared example multiplies its cost. A single example that takes 30 seconds
+and is included across 10 spec files costs 300 seconds of CI time, not 30.
+
+Shared examples under `spec/support/shared_*`, included broadly across the
+codebase, are held to a stricter performance standard than single spec examples.
+
+Guidelines:
+
+- Profile and optimize a slow example as a local spec _before_ extracting it into
+  a shared context.
+- Avoid `create` calls in shared examples unless the contract explicitly requires
+  database state. Prefer `build_stubbed` or `build`.
+- If a shared example requires `:js`, consider whether the UI-asserting portion
+  can be split out so the rest runs as a plain request spec.
+- Treat a slow widely-included shared example like a factory cascade: a small fix
+  in one place yields large aggregate savings across the suite. See
+  [Optimize factory usage](#optimize-factory-usage).
 
 ### Helpers
 

@@ -17,7 +17,7 @@
 - [ ] GitLab: https://dev.gitlab.org/help
 
 #### Enable on `dev.gitlab.org`:
-- [ ] `/chatops feature set FEATURE_NAME true --dev` in [`#dev-gitlab`](https://gitlab.slack.com/messages/C6WQ87MU3)
+- [ ] `/chatops gitlab feature set FEATURE_NAME true --dev` in [`#dev-gitlab`](https://gitlab.slack.com/messages/C6WQ87MU3)
 
 Then leave running while monitoring and performing some testing through web, api or SSH.
 
@@ -33,7 +33,7 @@ Then leave running while monitoring and performing some testing through web, api
 - [ ] GitLab: https://staging.gitlab.com/help
 
 #### Enable on `staging.gitlab.com`
-- [ ] `/chatops run feature set FEATURE_NAME true --staging` in [`#development`](https://gitlab.slack.com/messages/C02PF508L/)
+- [ ] `/chatops gitlab run feature set FEATURE_NAME true --staging` in [`#development`](https://gitlab.slack.com/messages/C02PF508L/)
 
 Then leave running while monitoring for at least **15 minutes** while performing some testing through web, api or SSH.
 
@@ -85,7 +85,7 @@ Then leave running while monitoring for at least **12 hours** while performing s
 
 ## 8. Full Impact Trial
 
-- [ ] Enable for all users: `/chatops run feature set FEATURE_NAME true
+- [ ] Enable for all users: `/chatops gitlab run feature set FEATURE_NAME true`
 
 Then leave running while monitoring for at least **1 week**.
 

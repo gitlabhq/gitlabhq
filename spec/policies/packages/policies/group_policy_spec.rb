@@ -12,56 +12,56 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_package) }
+        it { expect_allowed(:read_package) }
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:read_package) }
+        it { expect_disallowed(:read_package) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
     end
 
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
     end
 
     context 'with reporter' do
       let(:current_user) { reporter }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
     end
 
     context 'with guest' do
       let(:current_user) { guest }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
 
       context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
         before do
           stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
         end
 
-        it { is_expected.to be_disallowed(:read_package) }
+        it { expect_disallowed(:read_package) }
       end
     end
 
     context 'with non member' do
       let(:current_user) { create(:user) }
 
-      it { is_expected.to be_disallowed(:read_package) }
+      it { expect_disallowed(:read_package) }
     end
 
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_disallowed(:read_package) }
+      it { expect_disallowed(:read_package) }
     end
   end
 
@@ -71,13 +71,13 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
     context 'when a deploy token with read_package_registry scope' do
       let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true, groups: [group]) }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
     end
 
     context 'when a deploy token with write_package_registry scope' do
       let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true, groups: [group]) }
 
-      it { is_expected.to be_allowed(:read_package) }
+      it { expect_allowed(:read_package) }
     end
   end
 
@@ -86,6 +86,7 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
 
     let_it_be_with_reload(:project) { create(:project, group: group) }
     let(:current_user) { can_read_group ? reporter : external_user }
+    let(:permission) { :read_package_within_public_registries }
 
     subject { described_class.new(current_user, group.packages_policy_subject) }
 
@@ -97,7 +98,7 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
     end
 
     where(:group_visibility, :project_visibility, :package_registry_access_level, :can_read_group,
-      :application_setting, :result) do
+      :application_setting, :allowed) do
       'PRIVATE' | 'PRIVATE' | ::ProjectFeature::DISABLED | true  | true  | true
       'PRIVATE' | 'PRIVATE' | ::ProjectFeature::DISABLED | true  | false | true
       'PRIVATE' | 'PRIVATE' | ::ProjectFeature::DISABLED | false | true  | false
@@ -140,7 +141,7 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
     end
 
     with_them do
-      it { is_expected.to public_send(result ? :be_allowed : :be_disallowed, :read_package_within_public_registries) }
+      it { allowed ? expect_allowed(permission) : expect_disallowed(permission) }
     end
   end
 end

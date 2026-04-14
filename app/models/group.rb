@@ -57,6 +57,8 @@ class Group < Namespace
 
   has_many :users, through: :group_members
   has_many :owners, through: :all_owner_members, source: :user
+  has_many :provisioned_user_details, class_name: 'UserDetail', foreign_key: 'provisioned_by_group_id', inverse_of: :provisioned_by_group
+  has_many :provisioned_users, through: :provisioned_user_details, source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -1164,17 +1166,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def work_items_consolidated_list_enabled?(user = nil)
-    # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
-    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :beta)
-
-    user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
+  def use_mermaid_v11_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:use_mermaid_v11, type: :gitlab_com_derisk)
   end
 
   def use_work_item_url?
-    return false if feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
-
-    work_items_consolidated_list_enabled?
+    !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
   end
 
   # overriden in EE
@@ -1395,7 +1392,11 @@ class Group < Namespace
   # Overriding of Namespaces::AdjournedDeletable method
   override :ancestors_scheduled_for_deletion
   def ancestors_scheduled_for_deletion
-    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+    cache_key = "ancestors_scheduled_for_deletion:#{ancestor_ids(hierarchy_order: :desc).join(',')}"
+
+    Gitlab::SafeRequestStore.fetch(cache_key) do
+      ancestors(hierarchy_order: :asc).joins(:deletion_schedule).to_a
+    end
   end
 end
 

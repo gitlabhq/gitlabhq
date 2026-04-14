@@ -41,6 +41,10 @@ export default {
       type: String,
       required: true,
     },
+    version: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -53,6 +57,7 @@ export default {
       variables() {
         return {
           fullPath: this.resourcePath,
+          version: this.version,
         };
       },
       update(data) {

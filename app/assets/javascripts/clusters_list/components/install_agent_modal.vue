@@ -9,7 +9,7 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';

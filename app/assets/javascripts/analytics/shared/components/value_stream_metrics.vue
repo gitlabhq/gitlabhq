@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import {

@@ -2,10 +2,6 @@
 
 module Gitlab
   module Kas
-    # The name of the cookie that will be used for the KAS cookie
-    COOKIE_KEY = '_gitlab_kas'
-    DEFAULT_ENCRYPTED_COOKIE_CIPHER = 'aes-256-gcm'
-
     class UserAccess
       class << self
         def enabled?

@@ -92,11 +92,6 @@ export default {
       required: false,
       default: false,
     },
-    experimentFeaturesEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     ultimateFeaturesAvailable: {
       type: Boolean,
       required: false,
@@ -133,9 +128,6 @@ export default {
       }
 
       return null;
-    },
-    shouldShowExclusionSettings() {
-      return this.experimentFeaturesEnabled;
     },
     showAvailabilityCascadingButton() {
       return (
@@ -378,7 +370,6 @@ export default {
     </project-setting-row>
 
     <exclusion-settings
-      v-if="shouldShowExclusionSettings"
       class="gl-mt-6"
       :exclusion-rules="exclusionRules"
       @update="handleExclusionRulesUpdate"

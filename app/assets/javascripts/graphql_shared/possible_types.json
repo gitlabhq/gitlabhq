@@ -243,15 +243,19 @@
   "RecentlyViewedItemUnion": [
     "Epic",
     "Issue",
-    "MergeRequest"
+    "MergeRequest",
+    "WikiPage"
   ],
   "Registrable": [
     "AbuseReportUploadRegistry",
+    "AchievementUploadRegistry",
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
+    "DesignManagementActionUploadRegistry",
     "DesignManagementRepositoryRegistry",
+    "GroupUploadRegistry",
     "GroupWikiRepositoryRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
@@ -266,7 +270,8 @@
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
-    "UploadRegistry"
+    "UploadRegistry",
+    "UserUploadRegistry"
   ],
   "RegistryInterface": [
     "ContainerRegistry",
@@ -390,6 +395,7 @@
     "WorkItemTextFieldValue"
   ],
   "WorkItemWidget": [
+    "WorkItemWidgetAiSession",
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",
     "WorkItemWidgetColor",

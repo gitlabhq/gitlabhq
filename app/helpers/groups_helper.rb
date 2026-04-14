@@ -198,39 +198,6 @@ module GroupsHelper
     new_group_custom_emoji_path(group)
   end
 
-  def groups_projects_more_actions_dropdown_data(source)
-    model_name = source.model_name.to_s.downcase
-    dropdown_data = {
-      is_group: source.is_a?(Group).to_s,
-      id: source.id
-    }
-
-    return dropdown_data unless current_user
-
-    if source.is_a?(Group)
-      dropdown_data[:can_edit] = can?(current_user, :admin_group, source).to_s
-      dropdown_data[:edit_path] = edit_group_path(source)
-    else
-      dropdown_data[:can_edit] = can?(current_user, :admin_project, source).to_s
-      dropdown_data[:edit_path] = edit_project_path(source)
-    end
-
-    if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id)) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
-      dropdown_data[:leave_path] = polymorphic_path([:leave, source, :members])
-      dropdown_data[:leave_confirm_message] = leave_confirmation_message(source)
-    elsif source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
-      requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
-      if can?(current_user, :withdraw_member_access_request, requester)
-        dropdown_data[:withdraw_path] = polymorphic_path([:leave, source, :members])
-        dropdown_data[:withdraw_confirm_message] = remove_member_message(requester)
-      end
-    elsif source.request_access_enabled && can?(current_user, :request_access, source)
-      dropdown_data[:request_access_path] = polymorphic_path([:request_access, source, :members])
-    end
-
-    dropdown_data
-  end
-
   def groups_list_with_filtered_search_app_data(endpoint)
     {
       endpoint: endpoint,

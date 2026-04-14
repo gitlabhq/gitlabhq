@@ -16,15 +16,15 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
     let(:main_host_list) { double(:host_list, hosts: [main_replica_host]) }
     let(:main_replica_host) { double(:host, pool: main_replica_pool, host: 'main-replica-host', port: 2345) }
     let(:main_replica_pool) do
-      double(:main_replica_pool, db_config: double(:main_replica_db_config, name: 'main_replica'), extended_stat: stats)
+      double(:main_replica_pool, db_config: double(:main_replica_db_config, name: 'main_replica'), stat: stats)
     end
 
     let(:stats) do
       {
         size: 123,
         connections: 100,
-        busy_by_thread_name: { "unnamed" => 5, "puma-1" => 5 },
-        dead_by_thread_name: {},
+        busy: 10,
+        dead: 0,
         idle: 85,
         waiting: 1
       }
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
     let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
     let(:ci_replica_host) { double(:host, pool: ci_replica_pool, host: 'ci-replica-host', port: 3456) }
     let(:ci_replica_pool) do
-      double(:ci_replica_pool, db_config: double(:ci_replica_db_config, name: 'ci_replica'), extended_stat: stats)
+      double(:ci_replica_pool, db_config: double(:ci_replica_db_config, name: 'ci_replica'), stat: stats)
     end
 
     let(:main_labels) do
@@ -77,13 +77,10 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       }
     end
 
-    let(:thread_labels) do
-      {
-        thread_name: a_value
-      }
-    end
-
     before do
+      # This ops feature flag is disabled by default
+      stub_feature_flags(per_thread_db_connection_pool_metrics: false)
+
       described_class::METRIC_DESCRIPTIONS.each_key do |metric|
         allow(subject.metrics[metric]).to receive(:set)
       end
@@ -152,11 +149,62 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
     end
 
+    context 'when per_thread_db_connection_pool_metrics is enabled' do
+      let(:extended_stats) do
+        {
+          size: 123,
+          connections: 100,
+          busy_by_thread_name: { 'puma srv tp 001' => 5, 'sidekiq_worker_thread' => 3 },
+          dead_by_thread_name: { 'unnamed' => 2 },
+          idle: 85,
+          waiting: 1,
+          checkout_timeout: 5
+        }
+      end
+
+      before do
+        skip_if_multiple_databases_not_setup
+
+        stub_feature_flags(per_thread_db_connection_pool_metrics: true)
+
+        allow(ApplicationRecord.connection_pool).to receive(:extended_stat).and_return(extended_stats)
+        allow(Ci::ApplicationRecord.connection_pool).to receive(:extended_stat).and_return(extended_stats)
+
+        described_class::EXTENDED_METRIC_DESCRIPTIONS.each_key do |metric|
+          allow(subject.extended_metrics[metric]).to receive(:set)
+        end
+      end
+
+      it 'emits scalar metrics and extended per-thread metrics' do
+        expect_metrics_with_labels(main_labels)
+        expect_metrics_with_labels(ci_labels)
+
+        expect_extended_metrics_with_labels(main_labels)
+        expect_extended_metrics_with_labels(ci_labels)
+
+        subject.sample
+      end
+
+      it 'does not emit extended metrics when the feature flag is disabled' do
+        stub_feature_flags(per_thread_db_connection_pool_metrics: false)
+
+        expect_metrics_with_labels(main_labels)
+        expect_metrics_with_labels(ci_labels)
+
+        described_class::EXTENDED_METRIC_DESCRIPTIONS.each_key do |metric|
+          expect(subject.extended_metrics[metric]).not_to receive(:set)
+        end
+
+        subject.sample
+      end
+    end
+
     def expect_metrics_with_labels(labels)
       expect(subject.metrics[:size]).to receive(:set).with(labels, a_value >= 1)
       expect(subject.metrics[:connections]).to receive(:set).with(labels, a_value >= 1)
-      expect(subject.metrics[:busy]).to receive(:set).with(labels.merge(thread_labels), a_value >= 1)
-      expect(subject.metrics[:dead]).to receive(:set).with(labels.merge(thread_labels), a_value >= 0)
+      expect(subject.metrics[:busy]).to receive(:set).with(labels, a_value >= 0)
+      expect(subject.metrics[:dead]).to receive(:set).with(labels, a_value >= 0)
+      expect(subject.metrics[:idle]).to receive(:set).with(labels, a_value >= 0)
       expect(subject.metrics[:waiting]).to receive(:set).with(labels, a_value >= 0)
     end
 
@@ -164,6 +212,15 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       described_class::METRIC_DESCRIPTIONS.each_key do |metric|
         expect(subject.metrics[metric]).not_to receive(:set).with(labels, anything)
       end
+    end
+
+    def expect_extended_metrics_with_labels(labels)
+      expect(subject.extended_metrics[:busy]).to(
+        receive(:set).with(labels.merge(thread_name: a_value), a_value >= 0).at_least(:once)
+      )
+      expect(subject.extended_metrics[:dead]).to(
+        receive(:set).with(labels.merge(thread_name: a_value), a_value >= 0).at_least(:once)
+      )
     end
   end
 end

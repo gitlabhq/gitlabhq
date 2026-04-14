@@ -1,0 +1,5 @@
+---
+name: _run_dast_pipeline
+description: Private permission that gates the ability to run DAST on-demand
+  scan pipelines. It enables run_pipeline when the target pipeline is for a DAST
+  on-demand scan.

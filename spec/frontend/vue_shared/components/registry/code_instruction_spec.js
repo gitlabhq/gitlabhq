@@ -3,8 +3,8 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
   uniqueId: (prefix) => (prefix ? `${prefix}1` : 1),
 }));
 

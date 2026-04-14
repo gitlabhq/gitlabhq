@@ -33,6 +33,7 @@ module API
       expose :message_background_color
       expose :message_font_color
       expose :email_header_and_footer_enabled
+      expose :site_name
     end
   end
 end

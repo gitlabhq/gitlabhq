@@ -500,6 +500,49 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         it_behaves_like 'post project export start'
 
+        context 'with excluded_relations param' do
+          around do |example|
+            Grape::Endpoint.before_each do |endpoint|
+              allow(endpoint).to receive(:user_project).and_return(project)
+            end
+
+            example.run
+          ensure
+            Grape::Endpoint.before_each nil
+          end
+
+          before do
+            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+              allow(strategy).to receive(:increment).and_return(0)
+            end
+          end
+
+          it 'passes excluded_relations to add_export_job' do
+            expect(project).to receive(:add_export_job).with(
+              current_user: user,
+              after_export_strategy: nil,
+              params: hash_including(excluded_relations: %w[merge_requests issues])
+            )
+
+            post api(path, user), params: { excluded_relations: %w[merge_requests issues] }
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+
+          it 'returns 400 for unknown relation names' do
+            post api(path, user), params: { excluded_relations: %w[merge_requests totally_invalid_relation] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('totally_invalid_relation')
+          end
+
+          it 'works without excluded_relations param' do
+            post api(path, user), params: {}
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+        end
+
         it_behaves_like 'authorizing granular token permissions', :create_project_export do
           let(:boundary_object) { project }
           let(:request) { post api(path, personal_access_token: pat) }

@@ -433,8 +433,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def wiki_anchor_data
     return unless project.wiki_enabled? && can_read_wiki?
 
-    if project.wiki.has_home_page?
-      AnchorData.new(false, statistic_icon('book', 'subtle') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
+    if project.wiki.exists?
+      AnchorData.new(false, statistic_icon('book', 'subtle') + _('Wiki'), project_wiki_index_path, 'btn-default', nil, nil)
     elsif can_create_wiki?
       icon = statistic_icon('plus', 'info')
       label = icon + _('Add Wiki')
@@ -570,6 +570,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def project_wiki_path
     wiki_path(project.wiki)
+  end
+
+  def project_wiki_index_path
+    wiki_path(project.wiki, action: :index)
   end
 
   def project_create_wiki_path

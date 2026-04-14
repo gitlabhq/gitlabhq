@@ -387,10 +387,10 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
   If you need to use markup within the translation, use `sprintf` and stop it
   from escaping placeholder values by passing `false` as its third argument.
   You must escape any interpolated dynamic values yourself, for instance
-  using `escape` from `lodash`.
+  using `escape` from `lodash-es`.
 
   ```javascript
-  import { escape } from 'lodash';
+  import { escape } from 'lodash-es';
   import { __, sprintf } from '~/locale';
 
   let someDynamicValue = '<script>alert("evil")</script>';

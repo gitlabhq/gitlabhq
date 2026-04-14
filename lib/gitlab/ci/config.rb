@@ -10,8 +10,11 @@ module Gitlab
 
       ConfigError = Class.new(StandardError)
       TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
+      OVERRIDE_TIMEOUT_SECONDS = 90.seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
       GITALY_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_GITALY_TIMEOUT_SECONDS', 10).to_i.clamp(1, 60)
+      HTTP_OPEN_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_HTTP_OPEN_TIMEOUT_SECONDS', 10).to_i.clamp(1, 60)
+      HTTP_READ_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_HTTP_READ_TIMEOUT_SECONDS', 30).to_i.clamp(1, 60)
 
       RESCUE_ERRORS = [
         Gitlab::Config::Loader::FormatError,
@@ -48,7 +51,7 @@ module Gitlab
           )
         end
 
-        @context.set_deadline(TIMEOUT_SECONDS)
+        @context.set_deadline(fetch_timeout(project))
 
         @source = source
 
@@ -252,6 +255,16 @@ module Gitlab
 
       def normalizer
         @normalizer ||= Ci::Config::Normalizer.new(jobs)
+      end
+
+      def fetch_timeout(project)
+        return TIMEOUT_SECONDS unless project
+
+        if Feature.enabled?(:ci_config_fetch_timeout_override, project.root_namespace, type: :ops)
+          OVERRIDE_TIMEOUT_SECONDS
+        else
+          TIMEOUT_SECONDS
+        end
       end
 
       def track_and_raise_for_dev_exception(error)

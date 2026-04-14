@@ -1,5 +1,5 @@
 import { KeyMod, KeyCode, Emitter } from 'monaco-editor';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
 import { createAlert } from '~/alert';
 import { sanitize } from '~/lib/dompurify';

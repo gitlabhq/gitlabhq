@@ -43,7 +43,7 @@ Track the development of the security inventory in [epic 16939](https://gitlab.c
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
+- You must have the Security Manager, Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
 
 To manage security attributes for a group:
 
@@ -54,7 +54,7 @@ To manage security attributes for a group:
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
+- You must have the Security Manager, Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
 
 To manage security attributes for a project:
 
@@ -74,8 +74,8 @@ When working with the security attributes, you might encounter the following iss
 
 ### Security configuration menu item missing
 
-Users might not have the required permissions to access the **Security configuration** menu item even if they are a Maintainer or Owner in that group.
+Users might not have the required permissions to access the **Security configuration** menu item even if they are a Security Manager, Maintainer or Owner in that group.
 
-The menu item only displays for groups when the authenticated user has the Maintainer or Owner role in the top-level group (namespace) that contains the subgroup.
+The menu item only displays for groups when the authenticated user has the Security Manager, Maintainer or Owner role in the top-level group (namespace) that contains the subgroup.
 
 To manage security attributes, ask a maintainer to complete the configuration changes or request the Maintainer role from your administrator.

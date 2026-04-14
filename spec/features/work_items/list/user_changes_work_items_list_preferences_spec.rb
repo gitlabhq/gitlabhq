@@ -53,27 +53,13 @@ RSpec.describe 'Work Items List User Preferences', :js, feature_category: :team_
       end
     end
 
-    context 'when work_item_planning_view is disabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-        sign_in(user)
-        visit project_work_items_path(project)
-        wait_for_all_requests
-      end
-
-      it_behaves_like 'work items list preferences'
+    before do
+      sign_in(user)
+      visit project_work_items_path(project)
+      wait_for_all_requests
     end
 
-    context 'when work_item_planning_view is enabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-        sign_in(user)
-        visit project_work_items_path(project)
-        wait_for_all_requests
-      end
-
-      it_behaves_like 'work items list preferences'
-    end
+    it_behaves_like 'work items list preferences'
   end
 
   def first_card

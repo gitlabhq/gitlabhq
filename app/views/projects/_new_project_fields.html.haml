@@ -1,6 +1,7 @@
 - visibility_level = selected_visibility_level(@project, params.dig(:project, :visibility_level))
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 - hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
+- disable_init_with_readme = local_assigns.fetch(:disable_init_with_readme, false)
 - include_description = local_assigns.fetch(:include_description, true)
 - track_label = local_assigns.fetch(:track_label, 'blank_project')
 - display_sha256_repository = Feature.enabled?(:support_sha256_repositories, current_user)
@@ -71,12 +72,15 @@
 
   .form-group
     = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_readme]',
-      checked: true,
-      checkbox_options: { data: { testid: 'initialize-with-readme-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' } }) do |c|
+      checked: !disable_init_with_readme,
+      checkbox_options: { disabled: disable_init_with_readme, data: { testid: 'initialize-with-readme-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' } }) do |c|
       - c.with_label do
         = s_('ProjectsNew|Initialize repository with a README')
       - c.with_help_text do
-        = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
+        - if disable_init_with_readme
+          = s_('ProjectsNew|Your role does not allow pushing to the default branch of new projects in this namespace.')
+        - else
+          = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
   .form-group
     = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',

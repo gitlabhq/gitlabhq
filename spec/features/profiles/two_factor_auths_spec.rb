@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Two factor auths', feature_category: :system_access do
+RSpec.describe 'Password and authentication', feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
   include Features::TwoFactorHelpers
 
@@ -386,6 +386,41 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         click_button 'Save changes'
         fill_in 'current_password', with: password
         click_button _('Update email OTP settings')
+      end
+    end
+
+    describe 'Service sign-in' do
+      let(:user) { create(:user, username: 'foo') }
+
+      context 'when an identity does not exist' do
+        before do
+          allow(Devise).to receive_messages(omniauth_configs: { google_oauth2: {} })
+        end
+
+        it 'allows the user to connect' do
+          visit profile_two_factor_auth_path
+
+          expect(page).to have_link('Connect Google', href: '/users/auth/google_oauth2')
+        end
+      end
+
+      context 'when an identity already exists' do
+        before do
+          allow(Devise).to receive_messages(omniauth_configs: { twitter: {}, saml: {} })
+
+          create(:identity, user: user, provider: :twitter)
+          create(:identity, user: user, provider: :saml)
+
+          visit profile_two_factor_auth_path
+        end
+
+        it 'allows the user to disconnect when there is an existing identity' do
+          expect(page).to have_link('Disconnect Twitter', href: '/-/profile/account/unlink?provider=twitter')
+        end
+
+        it 'shows active for a provider that is not allowed to unlink' do
+          expect(page).to have_content('Saml Active')
+        end
       end
     end
 

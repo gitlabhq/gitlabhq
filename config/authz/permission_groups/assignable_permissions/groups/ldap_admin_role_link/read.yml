@@ -1,0 +1,7 @@
+---
+name: read_ldap_admin_role_link
+description: Grants the ability to view LDAP admin role links
+boundaries:
+  - instance
+permissions:
+  - read_ldap_admin_role_link

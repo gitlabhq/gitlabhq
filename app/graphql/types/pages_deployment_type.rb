@@ -7,6 +7,7 @@ module Types
 
     connection_type_class Types::CountableConnectionType
     authorize :read_pages_deployments
+    authorize_granular_token permissions: :read_page_deployment, boundary: :project, boundary_type: :project
 
     field :active, GraphQL::Types::Boolean, null: false,
       description: 'Whether the deployment is currently active.', method: :active?

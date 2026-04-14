@@ -458,8 +458,11 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
               pipeline_source_bridge: pipeline.source_bridge
             ).and_return(project_config)
 
+            expected_uri = "#{Settings.build_server_fqdn}/#{target_project.full_path}" \
+              "//.gitlab-ci.yml@#{pipeline.source_ref_path}"
+
             expect(payload[:project_id]).to eq(forked_project.id.to_s)
-            expect(payload[:ci_config_ref_uri]).to eq("#{project_config.url}@#{pipeline.source_ref_path}")
+            expect(payload[:ci_config_ref_uri]).to eq(expected_uri)
             expect(payload[:ci_config_sha]).to eq(pipeline.sha)
           end
         end

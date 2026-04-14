@@ -6,6 +6,10 @@ module Types
 
     authorize :read_user_preference
 
+    authorize_granular_token permissions: :read_user_preference,
+      boundary: :user,
+      boundary_type: :user
+
     alias_method :user_preference, :object
 
     field :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,

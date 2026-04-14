@@ -60,7 +60,7 @@ module API
         detail 'This feature was introduced in GitLab 12.9'
         tags ['project_import']
       end
-      route_setting :authorization, permissions: :authorize_project_import, boundary_type: :instance
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post 'import/authorize' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -272,7 +272,7 @@ module API
         detail 'This feature was introduced in GitLab 16.11'
         tags ['project_import']
       end
-      route_setting :authorization, permissions: :authorize_project_relation_import, boundary_type: :instance
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post 'import-relation/authorize' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 

@@ -1,0 +1,5 @@
+#import "./base_work_items_list_features.fragment.graphql"
+
+fragment WorkItemsListFeatures on WorkItemFeatures {
+  ...BaseWorkItemsListFeatures
+}

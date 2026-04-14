@@ -6,7 +6,20 @@ module API
 
     helpers ::API::Helpers::NotesHelpers
 
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
+
+    helpers do
+      def present_resource_label_event_collection(_eventable, events, _eventable_class)
+        present ResourceLabelEvent.visible_to_user?(current_user, paginate(events)), with: Entities::ResourceLabelEvent
+      end
+
+      def present_single_resource_label_event(_eventable, event, _eventable_class)
+        present event, with: Entities::ResourceLabelEvent
+      end
+    end
 
     Helpers::ResourceEventsHelpers.eventable_types.each do |eventable_type, details|
       parent_type = eventable_type.parent_class.to_s.underscore
@@ -35,7 +48,7 @@ module API
 
           events = eventable.resource_label_events.inc_relations
 
-          present ResourceLabelEvent.visible_to_user?(current_user, paginate(events)), with: Entities::ResourceLabelEvent
+          present_resource_label_event_collection(eventable, events, eventable_type)
         end
 
         desc "Get a single #{human_eventable_str} resource label event" do
@@ -55,9 +68,11 @@ module API
 
           not_found!('ResourceLabelEvent') unless can?(current_user, :read_resource_label_event, event)
 
-          present event, with: Entities::ResourceLabelEvent
+          present_single_resource_label_event(eventable, event, eventable_type)
         end
       end
     end
   end
 end
+
+API::ResourceLabelEvents.prepend_mod_with('API::ResourceLabelEvents')

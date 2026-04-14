@@ -37,7 +37,7 @@ RSpec.describe Gitlab::LegacyGithubImport::LabelFormatter do
     end
 
     it 'does not create a new label when label exists' do
-      Labels::CreateService.new(name: raw[:name]).execute(project: project)
+      Labels::CreateService.new(nil, name: raw[:name]).execute(project: project)
 
       expect { label.create! }.not_to change(Label, :count)
     end

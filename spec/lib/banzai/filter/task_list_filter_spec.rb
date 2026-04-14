@@ -33,7 +33,7 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
     expect(aria_labels[5].value).to eq('Check option: suspicious item 2')
     expect(aria_labels[6].value).to eq('Check option: alert(1)')
     expect(aria_labels[7].value).to eq('Check option: alert(1)')
-    expect(aria_labels[8].value).to eq('Check option: x=&quot;&quot;,alert(1)//&quot;;')
+    expect(aria_labels[8].value).to eq('Check option: x="",alert(1)//";')
     expect(aria_labels[9].value).to eq("Check option: \" hijacking quotes \" a ' b ' c")
   end
 

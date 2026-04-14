@@ -7,8 +7,9 @@ module Import
     class PushService < BaseService
       class << self
         def from_record(import_source:, import_uid:, source_user:, record:, user_reference_column:)
-          if record.is_a?(IssueAssignee)
-            composite_key = { 'issue_id' => record.issue_id, 'user_id' => record.user_id }
+          if record.class.primary_key.is_a?(Array)
+            composite_key = {}
+            record.class.primary_key.each { |key| composite_key[key] = record[key] }
           elsif record.respond_to?(:id) && record.id.is_a?(Integer)
             numeric_key = record.id
           end

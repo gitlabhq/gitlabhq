@@ -1,0 +1,4 @@
+---
+name: update_subscription_usage_cap
+description: Allows updating subscription usage budget caps including flat user caps
+  and per-user overrides

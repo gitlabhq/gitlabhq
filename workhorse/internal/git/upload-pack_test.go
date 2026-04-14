@@ -2,16 +2,11 @@ package git
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"net"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 
@@ -19,7 +14,6 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 var (
@@ -71,42 +65,12 @@ func TestUploadPackTimesOut(t *testing.T) {
 	require.ErrorIs(t, err, context.DeadlineExceeded)
 }
 
+// startSmartHTTPServer is a convenience wrapper around startGRPCServer
+// that registers a SmartHTTPService.
 func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) string {
 	t.Helper()
 
-	// Ideally, we'd just use t.TempDir(), which would then use either the value of
-	// `$TMPDIR` or alternatively "/tmp". But given that macOS sets `$TMPDIR` to a user specific
-	// temporary directory, resulting paths would be too long and thus cause issues galore. We
-	// thus support our own specific variable instead which allows users to override it, with
-	// our default being "/tmp".
-	// This fixes errors like this on macOS:
-	//
-	// listen unix /var/folders/xx/xx/T/xx/001/gitaly.sock: bind: invalid argument
-	tempDirLocation := os.Getenv("TEST_TMP_DIR")
-	if tempDirLocation == "" {
-		tempDirLocation = "/tmp"
-	}
-
-	tmp, err := os.MkdirTemp(tempDirLocation, "workhorse-")
-	require.NoError(t, err)
-
-	t.Cleanup(func() {
-		assert.NoError(t, os.RemoveAll(tmp))
+	return startGRPCServer(t, func(srv *grpc.Server) {
+		gitalypb.RegisterSmartHTTPServiceServer(srv, s)
 	})
-
-	socket := filepath.Join(tmp, "gitaly.sock")
-	ln, err := net.Listen("unix", socket)
-	require.NoError(t, err)
-
-	srv := grpc.NewServer(testhelper.WithSidechannel())
-	gitalypb.RegisterSmartHTTPServiceServer(srv, s)
-	go func() {
-		assert.NoError(t, srv.Serve(ln))
-	}()
-
-	t.Cleanup(func() {
-		srv.GracefulStop()
-	})
-
-	return fmt.Sprintf("%s://%s", ln.Addr().Network(), ln.Addr().String())
 }

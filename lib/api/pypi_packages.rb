@@ -407,7 +407,7 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, permissions: :authorize_pypi_package, boundary_type: :project,
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization,
           job_token_policies: :admin_packages
         post 'authorize' do
           project = project!(action: :read_project)

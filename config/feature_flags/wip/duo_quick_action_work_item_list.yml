@@ -1,0 +1,10 @@
+---
+name: duo_quick_action_work_item_list
+description: Trigger prompt to analyze work item list
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595244
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229970
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595616
+milestone: '18.11'
+group: group::knowledge
+type: wip
+default_enabled: false

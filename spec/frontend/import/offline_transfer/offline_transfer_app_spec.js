@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import OfflineTransferApp from '~/import/offline_transfer/components/app.vue';
+import OfflineTransferApp from '~/import/offline_transfer/app.vue';
 
 describe('OfflineTransferApp', () => {
   let wrapper;

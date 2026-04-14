@@ -36,6 +36,7 @@
               %th= _('Callback URL')
               %th= _('Trusted')
               %th= _('Confidential')
+              %th= _('Device authorization grant')
               %th.gl-text-right= _('Actions')
           %tbody
             - @applications.each do |application|
@@ -44,6 +45,7 @@
                 %td{ data: { label: _('Callback URL') } }= application.redirect_uri
                 %td{ data: { label: _('Trusted') } }= application.trusted? ? _('Yes'): _('No')
                 %td{ data: { label: _('Confidential') } }= application.confidential? ? _('Yes'): _('No')
+                %td{ data: { label: _('Device authorization grant') } }= application.device_code_enabled? ? _('Yes'): _('No')
                 %td{ data: { label: _('Actions') } }
                   .gl-flex.gl-justify-end.gl-gap-2{ class: '!-gl-my-3' }
                     = render Pajamas::ButtonComponent.new(href: edit_admin_application_path(application), category: :tertiary, icon: 'pencil', button_options: { title: _('Edit'), class: 'has-tooltip' })

@@ -2,19 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable list', :js, feature_category: :team_planning do
+RSpec.describe 'issuable list', :js, feature_category: :portfolio_management do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     project.add_member(user, :developer)
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end
@@ -70,7 +66,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
 
   def visit_issuable_list(issuable_type)
     if issuable_type == :issue
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
     else
       visit project_merge_requests_path(project)
     end

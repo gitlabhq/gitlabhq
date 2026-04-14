@@ -68,26 +68,6 @@ RSpec.shared_examples 'handles archived labels' do
       expect(assigns(:labels)).to match_array all_labels
     end
   end
-
-  it 'pushes labels_archive feature flag to frontend' do
-    allow(controller).to receive(:push_frontend_feature_flag)
-
-    get :index, params: params
-    expect(controller).to have_received(:push_frontend_feature_flag).with(:labels_archive, anything).at_least(:once)
-  end
-
-  context 'with feature flag labels_archive disabled' do
-    let(:archived) { true }
-
-    before do
-      stub_feature_flags(labels_archive: false)
-    end
-
-    it 'returns all labels' do
-      list_labels_with_archive
-      expect(assigns(:labels)).to match_array all_labels
-    end
-  end
 end
 
 RSpec.shared_examples 'updating archived status' do
@@ -97,19 +77,6 @@ RSpec.shared_examples 'updating archived status' do
 
       expect(response).to redirect_to(expected_redirect_path)
       expect(label.reload.archived).to be_truthy
-    end
-
-    context 'when labels_archive feature flag is disabled' do
-      before do
-        stub_feature_flags(labels_archive: false)
-      end
-
-      it 'does not allow setting archived parameter' do
-        put :update, params: update_params.merge(label: { archived: true })
-
-        expect(response).to redirect_to(expected_redirect_path)
-        expect(label.reload.archived).to be_falsey
-      end
     end
   end
 end

@@ -7,10 +7,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   include BadgesHelper
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(work_item_legacy_url: true)
     # create AI Setting singleton record to prevent N+1
     Ai::Setting.instance if Gitlab.ee?
@@ -102,9 +98,11 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           let(:secondary_email) { create(:email, :confirmed, user: user_with_other_email, email: term) }
           let(:ids) { search_autocomplete_opts(term).pluck(:id) }
 
-          context 'when current_user is an admin' do
+          context 'when current_user is an admin', :enable_admin_mode do
+            let_it_be(:admin_user) { create(:admin) }
+
             before do
-              allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+              allow(self).to receive(:current_user).and_return(admin_user)
             end
 
             it 'includes users with matching public emails' do
@@ -137,10 +135,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           end
 
           context 'when current_user is not an admin' do
-            before do
-              allow(current_user).to receive(:can_admin_all_resources?).and_return(false)
-            end
-
             it 'includes users with matching public emails' do
               public_email_user
               project.add_developer(public_email_user)
@@ -207,6 +201,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         let(:search_term) { 'the search term' }
         let(:recent_issues) { instance_double(::Gitlab::Search::RecentIssues) }
         let(:recent_merge_requests) { instance_double(::Gitlab::Search::RecentMergeRequests) }
+        let(:recent_wiki_pages) { instance_double(::Gitlab::Search::RecentWikiPages) }
 
         let_it_be(:project1) { create(:project, namespace: user.namespace) }
         let_it_be(:project2) { create(:project) }
@@ -310,6 +305,35 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             label: 'Merge request 2',
             url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request2.project, merge_request2),
             avatar_url: '' # This project didn't have an avatar so set this to ''
+          })
+        end
+
+        it 'includes the users recently viewed wiki pages', :aggregate_failures do
+          expect(::Gitlab::Search::RecentWikiPages).to receive(:new).with(user: user)
+            .and_return(recent_wiki_pages)
+
+          wiki_page_meta1 = create(:wiki_page_meta, title: 'Wiki page 1', project: project1, canonical_slug: 'wiki-page-1')
+          wiki_page_meta2 = create(:wiki_page_meta, title: 'Wiki page 2', project: project2, canonical_slug: 'wiki-page-2')
+
+          expect(recent_wiki_pages).to receive(:search).with(search_term)
+            .and_return(WikiPage::Meta.id_in_ordered([wiki_page_meta1.id, wiki_page_meta2.id]))
+
+          results = search_autocomplete_opts(search_term)
+
+          expect(results.count).to eq(2)
+
+          expect(results[0]).to include({
+            category: 'Recent wiki pages',
+            id: wiki_page_meta1.id,
+            label: 'Wiki page 1',
+            url: Gitlab::UrlBuilder.build(wiki_page_meta1)
+          })
+
+          expect(results[1]).to include({
+            category: 'Recent wiki pages',
+            id: wiki_page_meta2.id,
+            label: 'Wiki page 2',
+            url: Gitlab::UrlBuilder.build(wiki_page_meta2)
           })
         end
 
@@ -1183,17 +1207,6 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       it 'returns items in order' do
         expect(Gitlab::Json.parse(search_navigation_json).keys)
           .to eq(%w[projects blobs work_items merge_requests wiki_blobs commits notes milestones users snippet_titles])
-      end
-
-      context 'when search_scope_work_item feature flag is disabled' do
-        before do
-          stub_feature_flags(search_scope_work_item: false)
-        end
-
-        it 'returns items in order with issues instead of work_items' do
-          expect(Gitlab::Json.parse(search_navigation_json).keys)
-            .to eq(%w[projects blobs issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
-        end
       end
     end
   end

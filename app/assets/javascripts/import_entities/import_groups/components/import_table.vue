@@ -16,7 +16,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { debounce, isNumber, isUndefined } from 'lodash';
+import { debounce, isNumber, isUndefined } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
@@ -642,7 +642,7 @@ export default {
 
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-permissions' }),
-  placeholderUserLimitsHelpPath: helpPagePath('user/import/mapping/_index', {
+  placeholderUserLimitsHelpPath: helpPagePath('user/import/mapping/post_migration_mapping', {
     anchor: 'placeholder-user-limits',
   }),
   visibilityRulesHelpPath: helpPagePath('user/group/import/_index', {

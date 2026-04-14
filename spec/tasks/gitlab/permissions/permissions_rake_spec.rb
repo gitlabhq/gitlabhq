@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe 'gitlab:permissions rake tasks', feature_category: :permissions do
+RSpec.describe 'gitlab:permissions rake tasks', :silence_stdout, feature_category: :permissions do
   before do
     Rake.application.rake_require('tasks/gitlab/permissions/permissions')
   end
@@ -17,10 +17,14 @@ RSpec.describe 'gitlab:permissions rake tasks', feature_category: :permissions d
     it 'invokes Gitlab::Permissions::ValidateTask' do
       validate_task = stub_task_initialization(Tasks::Gitlab::Permissions::ValidateTask)
       assignable_validate_task = stub_task_initialization(Tasks::Gitlab::Permissions::Assignable::ValidateTask)
+      routes_validate_task = stub_task_initialization(Tasks::Gitlab::Permissions::Routes::ValidateTask)
+      graphql_validate_task = stub_task_initialization(Tasks::Gitlab::Permissions::Graphql::ValidateTask)
       routes_docs_task = stub_task_initialization(Tasks::Gitlab::Permissions::Routes::DocsTask)
 
       expect(validate_task).to receive(:run)
       expect(assignable_validate_task).to receive(:run)
+      expect(routes_validate_task).to receive(:run)
+      expect(graphql_validate_task).to receive(:run)
       expect(routes_docs_task).to receive(:check_docs)
 
       run_rake_task('gitlab:permissions:validate')

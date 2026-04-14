@@ -7,7 +7,6 @@ RSpec/AvoidConditionalStatements:
     - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
     - 'ee/spec/features/group_protected_branches_spec.rb'
     - 'ee/spec/features/groups/iterations/user_views_iteration_spec.rb'
-    - 'ee/spec/features/groups/navbar_spec.rb'
     - 'ee/spec/features/incidents/incident_details_spec.rb'
     - 'ee/spec/features/labels_hierarchy_spec.rb'
     - 'ee/spec/features/projects/merge_requests/user_approves_merge_request_spec.rb'

@@ -16,7 +16,7 @@ RSpec.describe Authz::Resource, feature_category: :permissions do
     end
 
     let(:resource_dir_name) { 'resource' }
-    let(:file_path) { "path/to/config/authz/permissions/#{resource_dir_name}/_metadata.yml" }
+    let(:file_path) { "path/to/config/authz/permissions/#{resource_dir_name}/.metadata.yml" }
 
     subject(:resource) { described_class.new(definition, file_path) }
 

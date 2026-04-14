@@ -51,6 +51,7 @@ describe('Job actions cell', () => {
   const findPlayButton = () => wrapper.findByTestId('play');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findDownloadArtifactsButton = () => wrapper.findByTestId('download-artifacts');
+  const findBrowseArtifactsButton = () => wrapper.findByTestId('browse-artifacts');
   const findCountdownButton = () => wrapper.findByTestId('countdown');
   const findPlayScheduledJobButton = () => wrapper.findByTestId('play-scheduled');
   const findUnscheduleButton = () => wrapper.findByTestId('unschedule');
@@ -105,6 +106,20 @@ describe('Job actions cell', () => {
     expect(findDownloadArtifactsButton().exists()).toBe(false);
   });
 
+  it('displays the artifacts browse button with correct link', () => {
+    createComponent(jobWithArtifact);
+
+    expect(findBrowseArtifactsButton().attributes('href')).toBe(
+      jobWithArtifact.browseArtifactsPath,
+    );
+  });
+
+  it('does not display an artifacts browse button', () => {
+    createComponent(mockJob);
+
+    expect(findBrowseArtifactsButton().exists()).toBe(false);
+  });
+
   it.each`
     button                        | action              | jobType
     ${findPlayButton}             | ${'play'}           | ${cannotPlayJob}
@@ -122,6 +137,7 @@ describe('Job actions cell', () => {
     ${findPlayButton}              | ${'play'}               | ${playableJob}
     ${findRetryButton}             | ${'retry'}              | ${retryableJob}
     ${findDownloadArtifactsButton} | ${'download artifacts'} | ${jobWithArtifact}
+    ${findBrowseArtifactsButton}   | ${'browse artifacts'}   | ${jobWithArtifact}
     ${findCancelButton}            | ${'cancel'}             | ${cancelableJob}
   `('displays the $action button', ({ button, jobType }) => {
     createComponent(jobType);

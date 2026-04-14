@@ -189,6 +189,45 @@ RSpec.describe Gitlab::SSHPublicKey, :lib, feature_category: :system_access, fip
     end
   end
 
+  describe '.extract_key_parts' do
+    subject(:extract_key_parts) { described_class.extract_key_parts(input) }
+
+    let(:ed25519_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' }
+    let(:ed25519_key_data) { ed25519_key.split(' ', 2).last }
+
+    context 'with bare key' do
+      let(:input) { ed25519_key }
+
+      it 'returns prefix, algorithm, and key data' do
+        is_expected.to eq({ prefix: '', algorithm: 'ssh-ed25519', key_data: ed25519_key_data })
+      end
+    end
+
+    context 'with known_hosts format' do
+      let(:input) { "example.com #{ed25519_key}" }
+
+      it 'returns hostname as prefix' do
+        is_expected.to eq({ prefix: 'example.com', algorithm: 'ssh-ed25519', key_data: ed25519_key_data })
+      end
+    end
+
+    context 'with unsupported algorithm' do
+      let(:input) { 'completely-invalid' }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'with nil input' do
+      let(:input) { nil }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { public_key }
 

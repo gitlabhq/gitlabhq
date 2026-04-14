@@ -18,6 +18,7 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
     include Gitlab::InternalEventsTracking
+    include Ci::PartitionableFinder
 
     self.table_name = :p_ci_pipelines
     self.primary_key = :id
@@ -174,9 +175,6 @@ module Ci
 
     has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
 
-    # TODO: Remove with FF `ci_stop_writing_to_pipeline_variables`
-    accepts_nested_attributes_for :variables, reject_if: :reject_variables_attributes?
-
     delegate :full_path, to: :project, prefix: true
     delegate :name, to: :pipeline_metadata, allow_nil: true
 
@@ -200,8 +198,8 @@ module Ci
     validates :target_sha, length: { maximum: MAX_SHA_LENGTH }, if: :target_sha_changed?
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
-    after_create :keep_around_commits, unless: :importing?
     before_destroy :destroy_job_artifact_associations, prepend: true
+    after_commit :keep_around_commits, on: :create, unless: :importing?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -347,7 +345,11 @@ module Ci
             ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
           end
 
-          Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
+          if Feature.enabled?(:ci_expire_pipeline_cache_workers, pipeline.project)
+            Ci::ExpirePipelineCacheWorker.perform_async(pipeline.id, { 'partition_id' => pipeline.partition_id })
+          else
+            Ci::ExpirePipelineCacheService.new.execute(pipeline) # rubocop: disable CodeReuse/ServiceClass
+          end
         end
       end
 
@@ -399,8 +401,9 @@ module Ci
             project: pipeline.project,
             user: pipeline.user,
             additional_properties: {
-              label: pipeline.status
-            }
+              label: pipeline.status,
+              failure_reason: pipeline.failure_reason
+            }.compact
           )
         end
       end
@@ -545,25 +548,6 @@ module Ci
       archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
 
       archive_cutoff ? created_after(archive_cutoff) : all
-    end
-
-    # Finds a pipeline by ID, first attempting to search within the current partition
-    # for improved query performance when partition pruning is enabled, then falling
-    # back to a global search if not found.
-    #
-    def self.find_by_id_through_partition(pipeline_id)
-      return unless pipeline_id
-
-      partition_id = Ci::Partition.current&.id
-      scope = Ci::Pipeline.in_partition(partition_id) if partition_id
-
-      if Feature.enabled?(:ci_partition_pruning_workers, :current_request) && scope
-        pipeline = scope.find_by_id(pipeline_id)
-      end
-
-      pipeline ||= Ci::Pipeline.find_by_id(pipeline_id)
-
-      pipeline
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -946,10 +930,10 @@ module Ci
     end
 
     def latest?
-      return false unless git_ref && commit.present?
+      return false unless git_ref && sha.present?
       return false if lazy_ref_commit.nil?
 
-      lazy_ref_commit.id == commit.id
+      lazy_ref_commit.id == sha
     end
 
     def retried
@@ -1279,7 +1263,10 @@ module Ci
 
     # With multi-project and parent-child pipelines
     def upstream_and_all_downstreams
-      object_hierarchy.all_objects
+      pairs = ::Gitlab::Ci::PipelineSourceHierarchy.new(self)
+        .all_objects.pluck(:pipeline_id, :partition_id)
+
+      self.class.where([:id, :partition_id] => pairs)
     end
 
     # With only parent-child pipelines
@@ -1661,6 +1648,12 @@ module Ci
       end
     end
 
+    def ci_config_ref_uri
+      url = File.join(Settings.build_server_fqdn, project.full_path, '//', project.ci_config_path_or_default)
+
+      "#{url}@#{source_ref_path}"
+    end
+
     # Set scheduling type of processables if they were created before scheduling_type
     # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
     def ensure_scheduling_type!
@@ -1823,7 +1816,7 @@ module Ci
     # Using `unscoped` here will be redundant after Rails 6.1
     def object_hierarchy(options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy
-        .new(self.class.unscoped.where(id: id), options: options)
+        .new(self.class.unscoped.where(id: id, partition_id: partition_id), options: options)
     end
 
     def internal_pipeline?
@@ -1864,10 +1857,6 @@ module Ci
 
     rescue Repository::AmbiguousRefError
       false
-    end
-
-    def reject_variables_attributes?
-      persisted? || Feature.enabled?(:ci_stop_writing_to_pipeline_variables, project)
     end
 
     def read_variables_from_pipeline_artifact

@@ -232,3 +232,90 @@ instructions:
       2. For any new fields being added to log messages:
         - Check to ensure that these fields are not dynamically generated
         - Remind: "We're aiming to standardise the fields that we emit across all of our services at GitLab through this approach"
+
+  - name: Internal Analytics
+    fileFilters:
+      - "config/events/**/*.yml"
+      - "ee/config/events/**/*.yml"
+      - "config/metrics/**/*.yml"
+      - "ee/config/metrics/**/*.yml"
+    instructions: |
+      For internal event and metric definition changes, verify:
+      1. Event `action` follows naming convention: `<operation>_<target_of_operation>_<where/when>` (e.g., `create_ci_build`, `click_previous_blame_on_blob_page`)
+      2. For event definitions: required fields are present: `description`, `action`, `product_group`, `tiers`
+      3. For metric definitions: required fields are present: `key_path`, `description`, `product_group`, `data_source: internal_events`, `events`, `time_frame`
+      4. `identifiers` list matches what is passed in tracking calls (user, project, namespace)
+      5. All `additional_properties` used in tracking code are documented in the event definition
+      6. No sensitive information like full page url, page path, group name, project name, organization name and user inputs added in tracking parameters. (PII, secrets, credentials)
+      7. For metrics: `data_source: internal_events` is set for event-based metrics
+      8. For metrics: `events` section correctly references existing event names
+      9. For metrics: `unique` property (if present) references a valid identifier from the event definition
+      10. For metrics: `time_frame` is appropriate for the use case (7d, 28d, or all)
+      11. Make sure the milestone in event and metric definition files reflects the current milestone at time of merge, not the milestone when the file was originally created
+      12. introduced_by_url field in metric and event definition file should reference the correct merge request link
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/review_guidelines.md
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/internal_event_instrumentation/event_definition_guide.md
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/internal_event_instrumentation/metric_definition_guide.md
+
+  - name: ViewComponent Best Practices
+    fileFilters:
+      - "app/components/**/*.rb"
+      - "ee/app/components/**/*.rb"
+      - "app/components/**/*.html.haml"
+      - "ee/app/components/**/*.html.haml"
+    instructions: |
+      For ViewComponent changes, verify:
+      1. Composition over inheritance:
+         - Flag ViewComponents that inherit from another ViewComponent (not ViewComponent::Base or ApplicationComponent)
+         - Remind: "Prefer composition (wrapping one component with another) over inheritance between ViewComponents, as inheritance with separate templates leads to confusion"
+      2. Instance method visibility:
+         - Flag public instance methods that are only used in the component template
+         - Remind: "Most ViewComponent instance methods should be private, even `render?`. Private methods are still accessible from the component template"
+      3. Avoid global state:
+         - Flag components that access `params`, `request`, `session`, or `current_url` directly instead of receiving values through `initialize`
+         - Remind: "Avoid implicit coupling to global state. Pass values into the component explicitly through initialize arguments to keep it reusable and testable"
+      4. Avoid inline Ruby in templates:
+         - Flag logic, variable assignments, or string interpolation in ViewComponent templates (ERB/Haml)
+         - Remind: "Move inline Ruby logic from templates into instance methods on the ViewComponent class"
+      5. Prefer slots over markup arguments:
+         - Flag arguments that accept HTML strings (especially with `.html_safe`)
+         - Remind: "Prefer slots for providing markup to components. Passing markup as an argument bypasses Rails HTML sanitization and creates potential security issues"
+      6. Test against rendered content:
+         - In corresponding specs, flag tests that only assert on component instance methods without rendering
+         - Remind: "ViewComponent tests should use `render_inline` and assert against rendered output, not just instance method return values"
+      7. Naming convention:
+         - Flag ViewComponent classes that do not end with `Component`
+         - Remind: "Include the `Component` suffix in component class names (e.g., `UserAvatarComponent`) to make it clear the class is a component, following Rails naming conventions"
+      8. Reduce permutations:
+         - Flag new components that closely duplicate existing components in the same directory
+         - Remind: "Look for opportunities to consolidate similar patterns into a single component. Consider abstracting once there are three or more similar instances"
+
+  - name: Internal Events Tracking Code
+    fileFilters:
+      - "**/*.rb"
+      - "**/*.vue"
+      - "**/*.js"
+      - "**/*.haml"
+      - "!spec/**/*"
+      - "!ee/spec/**/*"
+    instructions: |
+      Only review these items if this MR adds or modifies internal event tracking (e.g., `track_internal_event`, `trackEvent`, `data-event-tracking` attributes).
+
+      For code that instruments internal events tracking, verify:
+      1. A corresponding event definition exists in `config/events/` or `ee/config/events/`
+      2. For backend `track_internal_event` calls:
+         - All required identifiers (user, project, namespace) are passed when the metric uses them
+         - If a metric has a unique property like `unique: project.id`, ensure the corresponding argument (e.g., `project`) is passed in the tracking call
+         - `additional_properties` match those documented in the event definition
+      3. For frontend `trackEvent` or `InternalEvents.trackEvent` calls:
+         - Event name matches an existing event definition
+         - Additional properties are documented in the event definition
+      4. For data attribute tracking (`data-event-tracking`, `event_tracking:`):
+         - Event name is valid and defined
+         - Labels/properties match event definition's `additional_properties`
+      5. Ensure test coverage exists using `trigger_internal_events` and `increment_usage_metrics` matchers for backend and `useMockInternalEventsTracking` helper for frontend
+      6. When testing that an event was not triggered, ensure `not_trigger_internal_events` matcher or `not_to` syntax is used
+      7. For batch events:
+         - When multiple events are emitted at once, ensure `with_batched_redis_writes` is used to batch all of them into a single Redis call
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/internal_event_instrumentation/quick_start.md
+      - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/internal_analytics/review_guidelines.md

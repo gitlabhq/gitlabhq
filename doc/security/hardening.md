@@ -15,7 +15,7 @@ title: GitLab Hardening Recommendations
 This documentation is for GitLab instances where the overall system can be "hardened"
 against common and even not-so-common attacks. It is not designed to completely
 eradicate attacks, but to provide strong mitigation thereby reducing overall risk. Some
-of the techniques apply to any GitLab deployment, such as SaaS or self-managed, while other
+of the techniques apply to any GitLab deployment, such as GitLab.com or GitLab Self-Managed, while other
 techniques apply to the underlying OS.
 
 These techniques are a work in progress, and have not been tested at scale

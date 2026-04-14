@@ -34,7 +34,6 @@ module WikiActions
 
     before_action do
       push_frontend_feature_flag(:wiki_immersive_editor, container)
-      push_frontend_feature_flag(:wiki_floating_sidebar_toggle, container)
 
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end
@@ -140,6 +139,8 @@ module WikiActions
       @ref = params[:version_id]
       @path = page.path
       @templates = templates_list
+
+      log_wiki_page_view
 
       render 'shared/wikis/show'
     elsif file_blob
@@ -409,7 +410,7 @@ module WikiActions
   end
 
   # Override CommitsHelper#view_file_button
-  def view_file_button(commit_sha, *args)
+  def view_file_button(commit_sha, *_args)
     path = wiki_page_path(wiki, page, version_id: page.version.id)
 
     helpers.link_button_to(path) do
@@ -427,6 +428,13 @@ module WikiActions
 
   def send_wiki_file_blob(wiki, file_blob)
     send_blob(wiki.repository, file_blob)
+  end
+
+  def log_wiki_page_view
+    return unless current_user
+
+    wiki_page_meta = page.find_or_create_meta
+    ::Gitlab::Search::RecentWikiPages.new(user: current_user).log_view(wiki_page_meta)
   end
 
   def load_content?

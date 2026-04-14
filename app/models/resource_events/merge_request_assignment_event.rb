@@ -6,6 +6,7 @@ module ResourceEvents
 
     belongs_to :user, optional: true
     belongs_to :merge_request
+    belongs_to :project
 
     validates :merge_request, presence: true
 

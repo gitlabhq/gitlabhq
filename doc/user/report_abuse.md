@@ -31,6 +31,8 @@ You can report a user through their:
 - [Merge requests](#report-abuse-from-a-merge-request)
 - [Snippets](snippets.md#mark-snippet-as-spam)
 
+You can also report abuse from an agent or a flow.
+
 ## Report abuse from the user's profile page
 
 {{< history >}}
@@ -129,6 +131,14 @@ To report abuse from a user's comment:
 
 ## Report abuse from an agent
 
+Prerequisites:
+
+- Be signed into GitLab.
+- Belong to a group that has been [granted access to the GitLab Duo Agent Platform](../administration/gitlab_duo/configure/access_control.md).
+- An administrator must have configured an [abuse reports notification email](../administration/review_abuse_reports.md) for the instance.
+
+To report abuse from an agent:
+
 1. On the agent detail view, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Report to admin**.
 1. Select a reason for reporting this agent.
@@ -136,6 +146,14 @@ To report abuse from a user's comment:
 1. Select **Submit**.
 
 ## Report abuse from a flow
+
+Prerequisites:
+
+- Be signed into GitLab.
+- Belong to a group that has been [granted access to the GitLab Duo Agent Platform](../administration/gitlab_duo/configure/access_control.md).
+- An administrator must have configured an [abuse reports notification email](../administration/review_abuse_reports.md) for the instance.
+
+To report abuse from a flow:
 
 1. On the flow detail view, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Report to admin**.

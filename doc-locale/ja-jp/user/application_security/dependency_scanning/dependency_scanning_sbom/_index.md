@@ -8,19 +8,19 @@ title: SBOMを使用した依存関係スキャン
 {{< details >}}
 
 - プラン: Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: 利用制限（GitLab.com）
+- 提供形態: GitLab.com、GitLab Self-Managed
+- ステータス: 利用制限付き (GitLab.comおよびGitLab Self-Managed)
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 17.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/395692)され、`dependency_scanning_using_sbom_reports`という機能フラグを使用してGitLab 17.3の[実験的機能](../../../../policy/development_stages_support.md#experiment)として正式にリリースされました。
-- [ロックファイルベースの依存関係スキャン](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files)アナライザーがGitLab 17.4の[実験的機能](../../../../policy/development_stages_support.md#experiment)としてリリースされました。
-- [GitLab.com、Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692)で、GitLab 17.5のデフォルトブランチでのみ有効になりました。
-- すべてのブランチをサポートするベータ版としてリリースされ、GitLab 17.9のCargo、Conda、Cocoapods、Swiftの[最新の依存関係スキャンCI/CDテンプレートでデフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/519597)になりました。
+- GitLab 17.4で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/8026)され、デフォルトブランチのみの[実験](../../../../policy/development_stages_support.md#experiment)として、[機能フラグ](../../../../administration/feature_flags/_index.md) `dependency_scanning_using_sbom_reports`という名前で提供。デフォルトでは無効になっています。
+- GitLab 17.5で[GitLab Self-Managedで有効化](https://gitlab.com/gitlab-org/gitlab/-/issues/395692)。
+- GitLab 17.9で[変更](https://gitlab.com/groups/gitlab-org/-/work_items/15960)され、実験からベータになり、すべてのブランチがサポートされ、Cargo、Conda、Cocoapods、Swift向けの最新の依存関係スキャンCI/CDテンプレートで[デフォルトで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/519597)。
 - 機能フラグ`dependency_scanning_using_sbom_reports`はGitLab 17.10で削除されました。
-- GitLab 18.5で、新しい[V2 CI/CD依存関係スキャンテンプレート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/)で、GitLab.comでのみ利用制限付きでリリースされました。機能フラグ`dependency_scanning_sbom_scan_api`の背後にある依存関係スキャンSBOM APIを使用すると、デフォルトで無効になります。
+- GitLab 18.5で[変更](https://gitlab.com/groups/gitlab-org/-/work_items/15960)され、ベータからGitLab.comのみの利用制限付きになり、新しい[V2 CI/CD依存関係スキャンテンプレート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/)とともに、[機能フラグ](../../../../administration/feature_flags/_index.md) `dependency_scanning_sbom_scan_api`という名前で提供。デフォルトでは無効になっています。
+- GitLab 18.10で機能フラグ`dependency_scanning_using_sbom_reports`が[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/work_items/551861)になりました。
 
 {{< /history >}}
 
@@ -28,35 +28,41 @@ CycloneDXソフトウェア部品表（SBOM）を使用した依存関係スキ�
 
 依存関係スキャンは、多くの場合、ソフトウェアコンポジション解析（SCA）の一部と見なされます。SCAには、コードで使用するアイテムの検査の側面が含まれる場合があります。これらのアイテムには通常、アプリケーションやシステムの依存関係が含まれており、ほとんどの場合、これらはユーザーが記述したアイテムからではなく外部ソースからインポートされます。
 
-依存関係スキャンは、アプリケーションのライフサイクルの開発フェーズで実行できます。パイプラインでSBOMレポートが生成されるたびに、セキュリティアドバイザリーが識別され、ソースブランチとターゲットブランチ間で比較されます。コードの変更がコミットされる前に、アプリケーションに対するリスクにプロアクティブに対処できるように、検出結果とその重大度がマージリクエストにリストされます。報告されたSBOMコンポーネントのセキュリティアドバイザリーは、新しいセキュリティアドバイザリーが公開されると、CI/CDパイプラインとは無関係に、[継続的脆弱性スキャン](../../continuous_vulnerability_scanning/_index.md)によっても識別されます。
+依存関係スキャンは、アプリケーションのライフサイクルの開発フェーズで実行できます。新しい依存関係スキャンアナライザーをCI/CDパイプラインで使用すると、プロジェクトの依存関係が検出され、CycloneDX SBOMレポートとして報告されます。セキュリティの検出結果は、ソースブランチとターゲットブランチの間で特定され、比較されます。コードの変更がコミットされる前に、アプリケーションに対するリスクにプロアクティブに対処できるように、検出結果とその重大度がマージリクエストにリストされます。報告されたSBOMコンポーネントのセキュリティアドバイザリーは、新しいセキュリティアドバイザリーが公開されると、CI/CDパイプラインとは無関係に、[継続的脆弱性スキャン](../../continuous_vulnerability_scanning/_index.md)によっても識別されます。
 
 GitLabは、これらのすべての依存関係タイプを確実に網羅するために、依存関係スキャンと[コンテナスキャン](../../container_scanning/_index.md)の両方を提供しています。リスク領域をできるだけ広くカバーするために、すべてのセキュリティスキャナーを使用することをおすすめします。これらの機能の比較については、[依存関係スキャンとコンテナスキャンの比較](../../comparison_dependency_and_container_scanning.md)を参照してください。
 
 この[フィードバックイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/523458)で、新しい依存関係スキャンアナライザーに関するご意見をお聞かせください。
 
-## はじめに {#getting-started}
+## 依存関係スキャンを有効にする {#turn-on-dependency-scanning}
 
 依存関係スキャンを初めて使用する場合は、次の手順に従ってプロジェクトで有効にしてください。
 
 - すべてのGitLabインスタンスの前提条件:
-
-  - リポジトリ内、またはCI/CDパイプラインで作成され、アーティファクトとして`dependency-scanning`ジョブに渡される、[サポートされているロックファイルまたは依存関係グラフ](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)。
-  - Runnerには、[`docker`](https://docs.gitlab.com/runner/executors/docker/)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executorがインストールされている必要があります。GitLab.comでは、これはデフォルトで提供されています。
-
+  - プロジェクトのデベロッパー、メンテナー、またはオーナーロール。
+  - サポートされている[ロックファイルまたは依存関係グラフ](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)。または、サポートされている言語のフォールバックオプションとして、[マニフェストファイル](#manifest-fallback)を使用できます。これは、リポジトリ内にあるか、CI/CDパイプラインで作成され、`dependency-scanning`ジョブにアーティファクトとして渡されます。
+  - セルフマネージドGitLab Runnerの場合は、[`docker`](https://docs.gitlab.com/runner/executors/docker/)または[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executorを使用するGitLab Runner。
+  - GitLab.comでホストされているRunnerの場合、この設定はデフォルトで有効になっています。
 - Self-ManagedインスタンスのGitLabのみの追加前提条件:
-
   - スキャンされるすべてのPURLタイプの[パッケージメタデータ](../../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)は、GitLabインスタンスで同期されている必要があります。
 
-    > [!note] GitLabインスタンスでこのデータが利用できない場合、依存関係スキャンで脆弱性を特定できません。
+    > [!note]
+    > GitLabインスタンスでこのデータが利用できない場合、依存関係スキャンで脆弱性を特定できません。
 
-依存関係スキャンを有効にするには、以下の手順に従います:
+依存関係スキャンを有効にするには:
 
-- プロジェクトの`.gitlab-ci.yml`ファイルに、`v2`依存関係スキャンCI/CDテンプレート`Dependency-Scanning.v2.gitlab-ci.yml`を含めます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **コード** > **リポジトリ**を選択します。
+1. `.gitlab-ci.yml`ファイルを選択します。
+1. **編集** > **単一のファイルを編集**を選択します。
+1. `v2`依存関係スキャンCI/CDテンプレートを追加します:
 
-  ```yaml
-  include:
-    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-  ```
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+   ```
+
+1. **変更をコミットする**を選択します。
 
 ### ロックファイルまたは依存関係グラフを作成する {#create-lock-file-or-dependency-graph}
 
@@ -202,7 +208,8 @@ allprojects {
 }
 ```
 
-> [!note]依存関係レポートは、一部の構成の依存関係が`FAILED`解決されない可能性があることを示している場合があります。この場合、依存関係スキャンは警告をログに記録しますが、ジョブは失敗しません。解決の失敗が報告された場合にパイプラインを失敗させたい場合は、上記の`build`の例に次の追加手順を追加します。
+> [!note]
+> 依存関係レポートは、一部の構成の依存関係が`FAILED`解決されない可能性があることを示している場合があります。この場合、依存関係スキャンは警告をログに記録しますが、ジョブは失敗しません。解決の失敗が報告された場合にパイプラインを失敗させたい場合は、上記の`build`の例に次の追加手順を追加します。
 
 ```shell
 while IFS= read -r -d '' file; do
@@ -334,7 +341,7 @@ build:
 依存関係スキャンアナライザーの出力内容:
 
 - 検出された、サポート対象のロックファイルまたは依存関係グラフのエクスポートごとに、CycloneDX形式のSBOMを生成します。
-- スキャンされたすべてのSBOMドキュメントを統合した、単一の依存関係スキャンレポートを出力します（GitLab.comのみ）。
+- スキャンされたすべてのSBOMドキュメントに対する単一の依存関係スキャンレポート（GitLab.comおよびGitLab Self-Managedのみ）。
 
 ### CycloneDXソフトウェア部品表 {#cyclonedx-software-bill-of-materials}
 
@@ -378,7 +385,8 @@ CycloneDX SBOMの仕様は次のとおりです:
 
 CI/CDジョブを使用して、複数のCycloneDX SBOMを単一のSBOMにマージできます。
 
-> [!note]GitLabは、依存関係グラフエクスポートやロックファイルの場所など、各CycloneDX SBOMのメタデータに実装固有の詳細を格納するために[CycloneDXプロパティ](https://cyclonedx.org/use-cases/#properties--name-value-store)を使用します。複数のCycloneDX SBOMをマージすると、この情報はマージ後のファイルから削除されます。
+> [!note]
+> GitLabは、依存関係グラフエクスポートやロックファイルの場所など、各CycloneDX SBOMのメタデータに実装固有の詳細を格納するために[CycloneDXプロパティ](https://cyclonedx.org/use-cases/#properties--name-value-store)を使用します。複数のCycloneDX SBOMをマージすると、この情報はマージ後のファイルから削除されます。
 
 たとえば、次の`.gitlab-ci.yml`の抜粋は、複数のCyclone SBOMファイルをマージし、結果として生成されるファイルを検証する方法を示しています。
 
@@ -406,7 +414,13 @@ merge cyclonedx sboms:
 
 ### 依存関係スキャンレポート {#dependency-scanning-report}
 
-依存関係スキャンアナライザーは、スキャンされたすべてのロックファイルに対する脆弱性を含む単一の依存関係スキャンレポートを出力します。
+{{< details >}}
+
+- 提供形態: GitLab.com、GitLab Self-Managed
+
+{{< /details >}}
+
+依存関係スキャンアナライザーは、CycloneDX SBOMファイルで特定された依存関係で特定されたすべての脆弱性をドキュメント化する依存関係スキャンレポートを生成します。
 
 依存関係スキャンレポート:
 
@@ -502,6 +516,7 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 | Java                      | ivy             | `ivy-report.xml`                                | `report` Apache Antタスクによって生成された依存関係グラフエクスポート。                                                                                                    | {{< no >}}               | {{< yes >}}                  |
 | Java                      | Maven           | `maven.graph.json`                              | `mvn dependency:tree -DoutputType=json`によって生成された依存関係グラフエクスポート。                                                                                         | {{< yes >}}              | {{< yes >}}                  |
 | Java/Kotlin               | Gradle          | `dependencies.lock`、`dependencies.direct.lock` | [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin)によって生成されたロックファイル。                                              | {{< yes >}}              | {{< yes >}}                  |
+| Java/Kotlin               | Gradle          | `gradle.lockfile`                               | `gradle dependencies --write-locks`によって生成されたロックファイル。                                                                                                            | {{< no >}}               | {{< yes >}}                 |
 | Java/Kotlin               | Gradle          | `gradle-html-dependency-report.js`              | [htmlDependencyReport](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.diagnostics.DependencyReportTask.html)タスクによって生成された依存関係グラフのエクスポート。 | {{< yes >}}              | {{< yes >}}                  |
 | JavaScript/TypeScript     | npm             | `package-lock.json`、`npm-shrinkwrap.json`      | `npm` v5以降で生成されたロックファイル（`lockfileVersion`属性を生成しない以前のバージョンはサポートされていません）。                                  | {{< yes >}}              | {{< yes >}}                 |
 | JavaScript/TypeScript     | pnpm            | `pnpm-lock.yaml`                                | `pnpm`によって生成されたロックファイル。                                                                                                                                        | {{< yes >}}              | {{< yes >}}                 |
@@ -520,7 +535,7 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 
 **脚注**: 
 
-1. ロックファイルに、異なる環境マーカーを持つ同じパッケージの複数のエントリが含まれている場合（たとえば、Python 3.11 未満の場合は numpy==2.2.6、Python 3.11 以上の場合は numpy==2.4.1）、最初のエントリのみが解析され、レポートされます。
+1. ロックファイルに、異なる環境マーカーを持つ同じパッケージの複数のエントリが含まれている場合（たとえば、Python 3.11未満の場合はnumpy==2.2.6、Python 3.11以上の場合はnumpy==2.4.1）、最初のエントリのみが解析され、レポートされます。
 
 ### パッケージハッシュ情報 {#package-hash-information}
 
@@ -551,7 +566,8 @@ GitLab SBOM脆弱性スキャナーは、次の[PURLタイプ](https://github.co
 
 アナライザーの動作のカスタマイズ方法は、イネーブルメントソリューションによって異なります。
 
-> [!warning]これらの変更をデフォルトブランチにマージする前に、マージリクエストでGitLabアナライザーのすべてのカスタマイズをテストしてください。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
+> [!warning]
+> これらの変更をデフォルトブランチにマージする前に、マージリクエストでGitLabアナライザーのすべてのカスタマイズをテストしてください。そうしないと、誤検出が多数発生するなど、予期しない結果が生じる可能性があります。
 
 ### CI/CDテンプレートを使用した動作のカスタマイズ {#customizing-behavior-with-the-cicd-template}
 
@@ -624,21 +640,30 @@ variables:
 
 ### マニフェストフォールバック {#manifest-fallback}
 
+{{< history >}}
+
+- GitLab 18.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/585886)されました。Mavenのマニフェストファイルのみがサポートされています。
+- GitLab 18.9で[更新](https://gitlab.com/gitlab-org/gitlab/-/work_items/586921)されました。Pythonのrequirementsファイルへのサポートが追加されました。
+- GitLab 18.10で[更新](https://gitlab.com/gitlab-org/gitlab/-/work_items/588788)されました。Gradleのマニフェストファイルへのサポートが追加されました。
+
+{{< /history >}}
+
 サポートされているロックファイルまたは依存関係グラフのエクスポートが利用できない場合、依存関係スキャンアナライザーは、サポートされているマニフェストファイルからフォールバックとして依存関係を抽出できます。
 
 次のマニフェストファイルがサポートされています:
 
-| 言語 | パッケージマネージャー | マニフェストファイル      |
-|----------|-----------------|--------------------|
-| Java     | Maven           | `pom.xml`          |
-| Python   | pip             | `requirements.txt` |
+| 言語 | パッケージマネージャー | マニフェストファイル                      |
+|----------|-----------------|------------------------------------|
+| Java     | Maven           | `pom.xml`                          |
+| Python   | pip             | `requirements.txt`                 |
+| Java     | Gradle          | `build.gradle`、`build.gradle.kts` |
 
 > [!warning]
 >
-> マニフェストフォールバックは、ロックファイルスキャンと比較して精度が低下します:
+> マニフェストフォールバックは、ロックファイルスキャンと比較すると精度が落ちます:
 >
 > - 推移的な依存関係はありません: 直接的な依存関係のみが検出されます。
-> - 正確な解決されたバージョンを常に特定できるとは限りません。
+> - 解決済みの正確なバージョンを常に特定できるとは限りません。
 
 マニフェストフォールバックを有効にするには、`DS_ENABLE_MANIFEST_FALLBACK`CI/CD変数を`"true"`に設定します。
 
@@ -838,7 +863,8 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 
 ### `latest`テンプレートの使用 {#using-the-latest-template}
 
-> [!warning] `latest`テンプレートは安定版とは見なされておらず、破壊的な変更が含まれる可能性があります。詳しくは[テンプレートエディション](../../detect/security_configuration.md#template-editions)を参照してください。
+> [!warning]
+> `latest`テンプレートは安定版とは見なされておらず、破壊的な変更が含まれる可能性があります。詳しくは[テンプレートエディション](../../detect/security_configuration.md#template-editions)を参照してください。
 
 `latest`依存関係スキャンCI/CDテンプレート`Dependency-Scanning.latest.gitlab-ci.yml`を使用して、GitLab提供のアナライザーを有効にします。
 
@@ -892,7 +918,8 @@ SBOMレポートは、[依存関係リスト](../../dependency_list/_index.md) �
 
 ### 独自のSBOMの持ち込み {#bringing-your-own-sbom}
 
-> [!warning]サードパーティ製のSBOMのサポートは技術的には可能ですが、この[エピック](https://www.gitlab.com/groups/gitlab-org/-/epics/14760)での公式サポートが完了すると、大きく変更される可能性があります。
+> [!warning]
+> サードパーティ製のSBOMのサポートは技術的には可能ですが、この[エピック](https://www.gitlab.com/groups/gitlab-org/-/epics/14760)での公式サポートが完了すると、大きく変更される可能性があります。
 
 カスタムCIジョブで、サードパーティ製のCycloneDX SBOMジェネレーターまたはカスタムツールで生成された独自のCycloneDX SBOMドキュメントを[CI/CDアーティファクトレポート](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)として使用します。
 

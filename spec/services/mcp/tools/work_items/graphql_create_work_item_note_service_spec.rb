@@ -33,6 +33,16 @@ RSpec.describe Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService, feature_
     it 'has correct description' do
       expect(service.description).to eq('Create a new note (comment) on a GitLab work item')
     end
+
+    it 'has readOnlyHint: false annotation' do
+      annotations = service.annotations
+      expect(annotations[:readOnlyHint]).to be(false)
+    end
+
+    it 'has destructiveHint: false annotation' do
+      annotations = service.annotations
+      expect(annotations[:destructiveHint]).to be(false)
+    end
   end
 
   describe 'input schema' do

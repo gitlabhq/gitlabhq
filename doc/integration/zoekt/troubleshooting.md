@@ -77,6 +77,192 @@ You can get this information by running `ip a` and checking one of the following
 - The IP address of the appropriate network interface
 - The public IP address of any load balancer you're using
 
+## Out-of-memory errors
+
+Zoekt nodes can run out of memory during search or indexing. Out-of-memory (OOM)
+errors are more likely in the webserver. The webserver memory-maps index shards into
+physical memory as searches are served, so resident memory grows with index size and
+query volume. The symptoms of an OOM error, and the recovery steps required, differ
+between the two components. For more information, see
+[memory architecture](_index.md#memory-architecture).
+
+### Detect an out-of-memory event
+
+For Kubernetes deployments, check whether a container was killed because
+of an OOM error:
+
+```shell
+kubectl describe pod <your_pod_name> -n <your_namespace>
+```
+
+Look for `OOMKilled` in the `Last State` section and a non-zero `Exit Code`
+(typically `137`):
+
+```plaintext
+Last State: Terminated
+  Reason: OOMKilled
+  Exit Code: 137
+```
+
+You can also check restart counts across all Zoekt pods:
+
+```shell
+kubectl get pods -n <your_namespace> -l app=gitlab-zoekt
+```
+
+A high `RESTARTS` count on a pod indicates repeated OOM kills. The label selector
+`app=gitlab-zoekt` may differ depending on your chart version or operator configuration.
+
+If you have [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) installed,
+you can also monitor these metrics in Prometheus or Grafana:
+
+- `kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}`: pods terminated due to OOM.
+- `kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}`: pods in a crash loop.
+- `kube_pod_container_status_restarts_total`: cumulative restart count per container. Rapid increases indicate repeated crashes.
+
+The webserver exposes `process_resident_memory_bytes` at `/metrics` on port `6070`.
+If you have configured Prometheus to scrape the webserver pods directly, you can use this
+metric to monitor webserver resident memory usage over time.
+
+For VM and bare metal deployments, check the system journal for OOM events:
+
+```shell
+sudo journalctl -k | grep -i "oom\|killed process"
+```
+
+### Recover from an out-of-memory event
+
+The recovery steps differ depending on which component is experiencing OOM errors.
+
+#### Indexer out-of-memory errors
+
+If the indexer is repeatedly killed due to an OOM error, pause indexing globally to stop
+all new indexing work across all nodes while you investigate:
+
+```shell
+gitlab-rake gitlab:zoekt:pause_indexing
+```
+
+Or pause indexing from the UI:
+
+Prerequisites:
+
+- Administrator access.
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Select the **Pause indexing** checkbox.
+1. Select **Save changes**.
+
+After you stabilize the node, resume indexing:
+
+```shell
+gitlab-rake gitlab:zoekt:resume_indexing
+```
+
+#### Webserver out-of-memory errors
+
+If the webserver is repeatedly killed due to an OOM error, disable Zoekt search while
+you investigate. This stops search traffic to the crashing node without affecting indexing.
+
+> [!note]
+> When Zoekt search is disabled, code search falls back to basic search mode.
+> If Elasticsearch is not available, only project-scope code search is possible in basic
+> search mode, which increases load on Gitaly.
+
+Prerequisites:
+
+- Administrator access.
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Clear the **Enable searching** checkbox.
+1. Select **Save changes**.
+
+After you stabilize the node, re-enable searching:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Select the **Enable searching** checkbox.
+1. Select **Save changes**.
+
+### Reduce memory pressure
+
+If your nodes are sized correctly but still experience memory pressure, adjust
+the following settings to reduce memory usage.
+
+#### Reduce parallel indexing processes
+
+Prerequisites:
+
+- Administrator access.
+
+To reduce peak indexer memory, lower the number of parallel processes per indexing task:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Set **Number of parallel processes per indexing task** to `1`.
+1. Select **Save changes**.
+
+#### Reduce concurrent indexing tasks
+
+Prerequisites:
+
+- Administrator access.
+
+To reduce how many indexing tasks run at the same time, lower the **Indexing CPU to tasks multiplier** value:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Lower the **Indexing CPU to tasks multiplier** value (for example, to `0.5`).
+1. Select **Save changes**.
+
+#### Increase force reindexing probability
+
+The Zoekt webserver memory-maps index shards. Over time, incremental
+indexing accumulates many small shards, increasing the number of open mmap handles.
+Force reindexing rebuilds indices completely, consolidating shards into fewer,
+larger files, which reduces memory overhead.
+
+Prerequisites:
+
+- Administrator access.
+
+To reduce shard accumulation, increase the force reindexing probability:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. Increase the **Probability of random force reindexing (percentage)** value.
+   The default is `0.25` (0.25%). For example, set it to `1` to force reindex
+   roughly 1 in 100 incremental indexing tasks.
+1. Select **Save changes**.
+
+### Right-size the node
+
+If adjusting settings does not resolve repeated OOM events, the node needs more
+memory. For guidance on memory allocation based on your index size, see
+[sizing recommendations](_index.md#sizing-recommendations).
+
+For Kubernetes deployments, increase the memory request and limit in your Helm
+chart `values.yaml`. Make sure the memory limit is at or above the value in
+the sizing table for your disk tier.
+
+For VM and bare metal deployments, move to a larger instance type from the
+sizing table, or add additional nodes to distribute the index across more
+machines.
+
+After resizing, run the health check to confirm the nodes recover:
+
+```shell
+gitlab-rake gitlab:zoekt:health
+```
+
 ## Verify Zoekt node connections
 
 To verify that your Zoekt nodes are properly configured and connected,
@@ -178,13 +364,13 @@ to identify connection issues.
 
 ```shell
 # Monitor webserver logs (search requests from Rails)
-kubectl logs -f statefulset/gitlab-zoekt -c zoekt-webserver -n your_namespace
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-webserver -n <your_namespace>
 
 # Monitor indexer logs (repository indexing)
-kubectl logs -f statefulset/gitlab-zoekt -c zoekt-indexer -n your_namespace
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-indexer -n <your_namespace>
 
 # Monitor internal gateway logs (NGINX proxy between the external gateway and webserver)
-kubectl logs -f statefulset/gitlab-zoekt -c zoekt-internal-gateway -n your_namespace
+kubectl logs -f statefulset/gitlab-zoekt -c zoekt-internal-gateway -n <your_namespace>
 ```
 
 If you're using the external gateway deployment,
@@ -192,7 +378,7 @@ you can also monitor external gateway logs:
 
 ```shell
 # Monitor external gateway logs (NGINX proxy for incoming requests from Rails)
-kubectl logs -f deployment/gitlab-zoekt-gateway -c zoekt-external-gateway -n your_namespace
+kubectl logs -f deployment/gitlab-zoekt-gateway -c zoekt-external-gateway -n <your_namespace>
 ```
 
 While you monitor these logs, run test searches from the GitLab UI.
@@ -227,16 +413,16 @@ For Helm chart (Kubernetes) deployments, check the status of your Zoekt pods and
 
 ```shell
 # Check pod status
-kubectl get pods -n your_namespace -l app=gitlab-zoekt
+kubectl get pods -n <your_namespace> -l app=gitlab-zoekt
 
 # Check `StatefulSet` status
-kubectl get statefulset gitlab-zoekt -n your_namespace
+kubectl get statefulset gitlab-zoekt -n <your_namespace>
 
 # Check service endpoints
-kubectl get endpoints gitlab-zoekt -n your_namespace
+kubectl get endpoints gitlab-zoekt -n <your_namespace>
 
 # Describe the service to see the configuration
-kubectl describe service gitlab-zoekt -n your_namespace
+kubectl describe service gitlab-zoekt -n <your_namespace>
 ```
 
 Ensure all pods are in a running state and the service has valid endpoints.

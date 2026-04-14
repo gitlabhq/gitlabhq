@@ -652,6 +652,19 @@ which configuration file is the source of the loop or excessive included files.
 In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) users on GitLab Self-Managed can
 change the [maximum includes](../../administration/settings/continuous_integration.md#set-maximum-includes) value.
 
+### Error: `Local file <file> does not exist!` with `include:local`
+
+You might receive a `Local file <file> does not exist!` error when using
+[`include:local`](_index.md#includelocal), even though the file exists in the
+repository.
+
+This error is a known system-level issue, not a CI/CD configuration problem.
+It has been observed intermittently in distributed Gitaly or Praefect setups.
+If you encounter this error, retry the pipeline.
+
+For more information, see
+[issue 336789](https://gitlab.com/gitlab-org/gitlab/-/issues/336789).
+
 ### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` and other network failures
 
 When using [`include:remote`](_index.md#includeremote), GitLab tries to fetch the remote file

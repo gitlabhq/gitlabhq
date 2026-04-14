@@ -5,7 +5,7 @@ clusterwide: false
 column: domain_allowlist
 db_type: text
 default:
-description: Force people to use only corporate emails for sign-up. Default is `null`,
+description: Force people to use only corporate emails for new user accounts. Default is `null`,
   meaning there is no restriction.
 encrypted: false
 gitlab_com_different_than_default: false

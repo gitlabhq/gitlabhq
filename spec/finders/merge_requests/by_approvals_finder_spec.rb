@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::ByApprovalsFinder do
+RSpec.describe MergeRequests::ByApprovalsFinder, feature_category: :code_review_workflow do
   let_it_be(:first_user) { create(:user) }
   let_it_be(:second_user) { create(:user) }
   let(:third_user) { create(:user) }

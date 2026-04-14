@@ -640,14 +640,13 @@ export const catalogSharedDataMock = {
         nodes: [
           {
             __typename: 'CiCatalogResourceVersion',
-            id: '3',
-            components: componentsListMockData,
-            name: '1.0.0',
+            id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+            name: '1.1.0',
             path: 'path/to/release',
-            createdAt: Date.now(),
+            createdAt: '2026-02-15T00:00:00Z',
             author: {
               __typename: 'UserCore',
-              id: 1,
+              id: 'gid://gitlab/User/1',
               webUrl: 'profile/1',
               name: 'username',
               state: 'active',
@@ -747,3 +746,26 @@ export const mockComponentsEmpty = {
 
 export const longResourceDescription =
   'This innovative project leverages cutting-edge microservices architecture to deliver scalable cloud-native solutions. With comprehensive CI/CD pipelines, automated testing frameworks, and robust monitoring capabilities, it ensures reliable deployments and optimal performance. The modular design incorporates industry best practices for security, maintainability and extensibility. Advanced caching mechanisms and efficient database optimization techniques provide lightning-fast response times. Built using modern development frameworks and tools, it seamlessly integrates with existing enterprise systems while maintaining flexibility for future enhancements.';
+
+export const mockVersionsResponse = {
+  data: {
+    ciCatalogResource: {
+      id: 'gid://gitlab/CiCatalogResource/1',
+      webPath: '/path/to/project',
+      versions: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+            name: '1.1.0',
+            createdAt: '2026-02-15T00:00:00Z',
+          },
+          {
+            id: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
+            name: '1.0.0',
+            createdAt: '2024-02-15T00:00:00Z',
+          },
+        ],
+      },
+    },
+  },
+};

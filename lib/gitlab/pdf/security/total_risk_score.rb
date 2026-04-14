@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-require "prawn"
-require "prawn-svg"
-
 module Gitlab
   module PDF
     module Security
-      class TotalRiskScore
-        include Prawn::View
-
+      class TotalRiskScore < BaseSvgChart
         # the SVG provided by the frontend uses CSS variables, but
         # prawn-svg does not support CSS variables. We will gsub in
         # hardcoded colors for the CSS variables we care about.
@@ -26,99 +21,24 @@ module Gitlab
           ['var(--risk-score-gauge-text-critical)', '#b91c1c']
         ].freeze
 
-        PADDING = 10
-        TOTAL_HEIGHT = 300
-
-        def self.render(pdf, data: nil)
-          new(pdf, data).render
-        end
-
-        def initialize(pdf, data)
-          @pdf = pdf
-          @data = process_raw(data)
-          @y = pdf.cursor
-        end
-
-        def render
-          return :noop if @data.blank?
-
-          @pdf.bounding_box([0, @y], width: @pdf.bounds.right, height: TOTAL_HEIGHT) do
-            draw_background
-
-            @pdf.move_down PADDING
-
-            @pdf.bounding_box([PADDING, @pdf.cursor],
-              width: @pdf.bounds.right - (PADDING * 2),
-              height: TOTAL_HEIGHT) do
-              draw_title
-              draw_description
-
-              remaining_height = @pdf.cursor - @pdf.bounds.bottom
-
-              draw_svg(remaining_height)
-            end
-          end
-        end
+        TOTAL_HEIGHT = 280
 
         private
 
-        def draw_background
-          @pdf.save_graphics_state
-          @pdf.fill_color "F9F9F9"
-          @pdf.fill_rectangle [0, @pdf.bounds.top], @pdf.bounds.right, TOTAL_HEIGHT
-          @pdf.restore_graphics_state
+        def total_height
+          TOTAL_HEIGHT
         end
 
-        def draw_title
-          @pdf.text_box(
-            s_('Total Risk Score'),
-            at: [0, @pdf.cursor],
-            width: @pdf.bounds.right,
-            height: 20,
-            align: :left,
-            style: :bold,
-            size: 14
-          )
-          @pdf.move_down 20
+        def title_text
+          _('Total Risk Score')
         end
 
-        def draw_description
-          @pdf.text_box(
-            s_("The overall risk score for your organization based on vulnerability severity and age."),
-            at: [0, @pdf.cursor],
-            width: @pdf.bounds.right,
-            height: 20,
-            align: :left,
-            size: 10
-          )
-          @pdf.move_down 10
+        def description_text
+          _("The overall risk score for your organization based on vulnerability severity and age.")
         end
 
-        def draw_svg(height)
-          @pdf.svg @data,
-            height: height,
-            position: :center
-        end
-
-        def process_raw(data)
-          return if data.blank?
-
-          # Handle both direct SVG string and hash with 'svg' key
-          svg = if data.is_a?(Hash)
-                  data['svg'] || data[:svg]
-                else
-                  data
-                end
-
-          return if svg.blank?
-
-          svg = CGI.unescape(svg).delete("\n")[%r{(<svg.*?</svg>)}, 1]
-
-          return if svg.blank?
-
-          CSS_TRANSLATIONS.each { |css_variable, color| svg.gsub!(css_variable, color) }
-
-          svg
+        def css_translations
+          CSS_TRANSLATIONS
         end
       end
     end

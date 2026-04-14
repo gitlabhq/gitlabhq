@@ -1,0 +1,8 @@
+---
+name: import_projects
+description: >-
+  Grants the ability to import projects into a namespace. Restricted to Maintainer+ by default because
+  imported project data bypasses normal Git push protections. An imported project can contain branches,
+  commits, and CI configuration that were never reviewed through merge requests or protected-branch rules,
+  so granting this permission to users who cannot merge to protected branches would allow them to introduce
+  unreviewed code and CI pipelines that can access group-level secrets.

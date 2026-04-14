@@ -25,7 +25,7 @@ For more information on using OIDC with GitLab, read [Connect to cloud services]
 Prerequisites:
 
 - Access to an existing Azure Subscription with `Owner` access level.
-- Access to the corresponding Azure Active Directory Tenant with at least the `Application Developer` access level.
+- Access to the corresponding Microsoft Entra ID tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
   Alternatively, you can use all the following steps with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
 - Your GitLab instance must be publicly accessible over the internet as Azure must to connect to the GitLab OIDC endpoint.
@@ -33,19 +33,19 @@ Prerequisites:
 
 To complete this tutorial:
 
-1. [Create Azure AD application and service principal](#create-azure-ad-application-and-service-principal).
-1. [Create Azure AD federated identity credentials](#create-azure-ad-federated-identity-credentials).
+1. [Create an Entra ID application and service principal](#create-an-entra-id-application-and-service-principal).
+1. [Create Entra ID federated identity credentials](#create-entra-id-federated-identity-credentials).
 1. [Grant permissions for the service principal](#grant-permissions-for-the-service-principal).
 1. [Retrieve a temporary credential](#retrieve-a-temporary-credential).
 
 For more information about Azure identity federation, see [workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
 
-## Create Azure AD application and service principal
+## Create an Entra ID application and service principal
 
-To create an [Azure AD application](https://learn.microsoft.com/en-us/cli/azure/ad/app?view=azure-cli-latest#az-ad-app-create)
-and service principal:
+To create an [Entra ID application](https://learn.microsoft.com/en-us/cli/azure/ad/app?view=azure-cli-latest#az-ad-app-create)
+and service principal for GitLab:
 
-1. In the Azure CLI, create the AD application:
+1. In the Azure CLI, create the application for GitLab:
 
    ```shell
    appId=$(az ad app create --display-name gitlab-oidc --query appId -otsv)
@@ -62,9 +62,9 @@ and service principal:
 
 Instead of the Azure CLI, you can [use the Azure Portal to create these resources](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal).
 
-## Create Azure AD federated identity credentials
+## Create Entra ID federated identity credentials
 
-To create the federated identity credentials for the previous Azure AD application
+To create the federated identity credentials for the previous Entra ID application
 for a specific branch in `<mygroup>/<myproject>`:
 
 ```shell
@@ -88,15 +88,15 @@ az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$obje
 For issues related to the values of `issuer`, `subject` or `audiences`, see the
 [troubleshooting](#troubleshooting) details.
 
-Optionally, you can now verify the Azure AD application and the Azure AD federated
+Optionally, you can now verify the Entra ID application and the Entra ID federated
 identity credentials from the Azure Portal:
 
-1. Open the [Azure Active Directory App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+1. Open the [Microsoft Entra ID App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
    view and select the appropriate app registration by searching for the display name `gitlab-oidc`.
 1. On the overview page you can verify details like the `Application (client) ID`,
    `Object ID`, and `Tenant ID`.
 1. Under `Certificates & secrets`, go to `Federated credentials` to review your
-   Azure AD federated identity credentials.
+   Entra ID federated identity credentials.
 
 ### Create credentials for any branch or any tag
 
@@ -165,11 +165,11 @@ You can find your subscription ID in:
 - The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
 - The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
 
-The previous command grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Azure AD roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices).
+The previous command grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Entra ID roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices).
 
 ## Retrieve a temporary credential
 
-After you configure the Azure AD application and federated identity credentials,
+After you configure the Entra ID application and federated identity credentials,
 the CI/CD job can retrieve a temporary credential by using the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-login):
 
 ```yaml
@@ -191,8 +191,8 @@ auth:
 
 The CI/CD variables are:
 
-- `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-azure-ad-application-and-service-principal).
-- `AZURE_TENANT_ID`: Your Azure Active Directory. You can
+- `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-an-entra-id-application-and-service-principal).
+- `AZURE_TENANT_ID`: Your Microsoft Entra ID tenant ID. You can
   [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/entra/fundamentals/how-to-find-tenant).
 - `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../secrets/id_token_authentication.md).
 
@@ -203,26 +203,26 @@ The CI/CD variables are:
 If you receive the error `ERROR: AADSTS70021: No matching federated identity record found for presented assertion.`
 you should verify:
 
-- The `Issuer` defined in the Azure AD federated identity credentials, for example
+- The `Issuer` defined in the Entra ID federated identity credentials, for example
   `https://gitlab.com` or your own GitLab URL.
-- The `Subject identifier` defined in the Azure AD federated identity credentials,
+- The `Subject identifier` defined in the Entra ID federated identity credentials,
   for example `project_path:<mygroup>/<myproject>:ref_type:branch:ref:<branch>`.
   - For the `gitlab-group/gitlab-project` project and `main` branch it would be:
     `project_path:gitlab-group/gitlab-project:ref_type:branch:ref:main`.
   - The correct values of `mygroup` and `myproject` can be retrieved by checking the URL
     when accessing your GitLab project or, in the upper-right corner of the project's overview page, selecting **Code**.
-- The `Audience` defined in the Azure AD federated identity credentials, for example `https://gitlab.com`
+- The `Audience` defined in the Entra ID federated identity credentials, for example `https://gitlab.com`
   or your own GitLab URL.
 
 You can review these settings, as well as your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`
 CI/CD variables, from the Azure Portal:
 
-1. Open the [Azure Active Directory App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+1. Open the [Microsoft Entra ID App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
    view and select the appropriate app registration by searching for the display name `gitlab-oidc`.
 1. On the overview page you can verify details like the `Application (client) ID`,
    `Object ID`, and `Tenant ID`.
 1. Under `Certificates & secrets`, go to `Federated credentials` to review your
-   Azure AD federated identity credentials.
+   Entra ID federated identity credentials.
 
 Review [Connect to cloud services](../_index.md) for further details.
 
@@ -244,4 +244,4 @@ and try again.
 If you receive the error `ERROR: AADSTS700212: No matching federated identity record found for presented assertion audience 'https://gitlab.com'`
 you should verify that your CI/CD job uses the correct `aud` value.
 
-The `aud` value should match the audience used to [create the federated identity credentials](#create-azure-ad-federated-identity-credentials).
+The `aud` value should match the audience used to [create the federated identity credentials](#create-entra-id-federated-identity-credentials).

@@ -38,7 +38,10 @@ module Keeps
 
           When a migration is marked as obsolete, this check ALWAYS returns `true`. This creates opportunities for significant code simplification by removing dead code branches.
 
-          Once you are done with the changes, make sure to run rubocop as well and reformat the code. Also remove any dead code and unreachable code that you see after the refactoring.
+          Once you are done with the changes, make sure to run rubocop as well and reformat the code.
+          Remove any dead code and unreachable code that you see after the refactoring.
+          Ensure that commit messages are concise, abide by the [commit message guidelines](doc/development/contributing/merge_request_workflow.md#commit-message-guidelines),
+          and describe only the code changes.
         MARKDOWN
       end
 

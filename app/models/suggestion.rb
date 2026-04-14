@@ -6,6 +6,8 @@ class Suggestion < ApplicationRecord
   include Notes::WithAssociatedNote
 
   belongs_to :note, inverse_of: :suggestions
+  belongs_to :namespace
+
   validates :note, presence: true, unless: :importing?
   validates :commit_id, presence: true, if: :applied?
 

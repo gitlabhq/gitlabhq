@@ -17,7 +17,7 @@
  * @property {Object} api
  */
 
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { editor as monacoEditor } from 'monaco-editor';
 import { enableMonacoYamlWorkerForVite, getBlobLanguage } from '~/editor/utils';
 import { logError } from '~/lib/logger';

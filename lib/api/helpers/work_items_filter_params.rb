@@ -28,6 +28,7 @@ module API
         rewrite_param_name(transformed[:or], :label_names, :label_name)
 
         rewrite_param_name(transformed, :release_tag_wildcard_id, :release_tag)
+        transformed[:non_archived] = !transformed.delete(:include_archived) if transformed.key?(:include_archived)
 
         transformed
       end
@@ -42,3 +43,5 @@ module API
     end
   end
 end
+
+API::Helpers::WorkItemsFilterParams.prepend_mod

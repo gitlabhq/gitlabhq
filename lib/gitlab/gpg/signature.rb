@@ -25,21 +25,7 @@ module Gitlab
       end
 
       def verification_status
-        using_keychain do
-          break :verified_system if verified_by_gitlab?
-          break :multiple_signatures if multiple_signatures?
-          break :unknown_key unless gpg_key
-          break :unverified_key unless gpg_key.verified?
-          break :unverified unless verified_signature&.valid?
-
-          if gpg_key.verified_and_belongs_to_email?(email)
-            :verified
-          elsif gpg_key.user.all_emails.include?(email)
-            :same_user_different_email
-          else
-            :other_user
-          end
-        end
+        keychain_attributes[:verification_status]
       end
 
       def gpg_key_primary_keyid
@@ -47,20 +33,16 @@ module Gitlab
       end
 
       def gpg_key
-        return @preloaded_gpg_key if @preloaded_gpg_key
-        return unless fingerprint
-
-        find_gpg_key(fingerprint)
+        keychain_attributes[:gpg_key]
       end
-      strong_memoize_attr :gpg_key
 
       def fingerprint
-        verified_signature&.fingerprint
+        keychain_attributes[:fingerprint]
       end
 
       private
 
-      def using_keychain
+      def keychain_attributes
         Gitlab::Gpg.using_tmp_keychain do
           # first we need to get the fingerprint from the signature to query the gpg
           # key belonging to the fingerprint.
@@ -69,33 +51,27 @@ module Gitlab
           # NOTE: the invoked method is #fingerprint but versions of GnuPG
           # prior to 2.2.13 return 16 characters (the format used by keyid)
           # instead of 40.
-          break unless fingerprint
+          signatures = gpg_signatures
+          fp = signatures.first&.fingerprint
 
-          if gpg_key
-            Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-            clear_memoization(:gpg_signatures)
+          break {} unless fp
+
+          key = @preloaded_gpg_key || find_gpg_key(fp)
+
+          if key
+            Gitlab::Gpg::CurrentKeyChain.add(key.key)
+            signatures = gpg_signatures
+            fp = signatures.first&.fingerprint
           end
 
-          yield gpg_key
+          {
+            fingerprint: fp,
+            gpg_key: key,
+            verification_status: calculate_verification_status(signatures, key)
+          }
         end
       end
-
-      def verified_signature
-        gpg_signatures.first
-      end
-
-      # If a commit is signed by Gitaly, the Gitaly returns `SIGNER_SYSTEM` as a signer
-      # In order to calculate it, the signature is Verified using the Gitaly's public key:
-      # https://gitlab.com/gitlab-org/gitaly/-/blob/v16.2.0-rc2/internal/gitaly/service/commit/commit_signatures.go#L63
-      #
-      # It is safe to skip verification step if the commit has been signed by Gitaly
-      def verified_by_gitlab?
-        signer == :SIGNER_SYSTEM
-      end
-
-      def multiple_signatures?
-        gpg_signatures.size > 1
-      end
+      strong_memoize_attr :keychain_attributes
 
       def gpg_signatures
         signatures = []
@@ -108,7 +84,31 @@ module Gitlab
       rescue GPGME::Error
         []
       end
-      strong_memoize_attr :gpg_signatures
+
+      def calculate_verification_status(signatures, key)
+        return :verified_system if verified_by_gitlab?
+        return :multiple_signatures if signatures.size > 1
+        return :unknown_key unless key
+        return :unverified_key unless key.verified?
+        return :unverified unless signatures.first&.valid?
+
+        if key.verified_and_belongs_to_email?(email)
+          :verified
+        elsif key.user.all_emails.include?(email)
+          :same_user_different_email
+        else
+          :other_user
+        end
+      end
+
+      # A commit signed by Gitaly returns `SIGNER_SYSTEM` as a signer
+      # In order to calculate it, the signature is verified using the Gitaly's public key:
+      # https://gitlab.com/gitlab-org/gitaly/-/blob/v16.2.0-rc2/internal/gitaly/service/commit/commit_signatures.go#L63
+      #
+      # It is safe to skip verification step if the commit has been signed by Gitaly
+      def verified_by_gitlab?
+        signer == :SIGNER_SYSTEM
+      end
 
       def find_gpg_key(fingerprint)
         if fingerprint.length > 16

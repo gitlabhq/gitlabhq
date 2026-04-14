@@ -38,7 +38,9 @@ Follow the steps below on how to use this React Native Mobile App sample project
   1. Make sure the project is marked as a CI/CD catalog project. For more information, see [publish a component project](../../ci/components/_index.md#publish-a-component-project).
 
   > [!note]
-  > There is a public GitLab Snyk component on GitLab.com, if you are on SaaS, and you are able to access the public GitLab Snyk component, to set up your own Snyk CI/CD catalog project is not needed, and you can follow the documentation in the public GitLab Snyk component on GitLab.com to use the component directly.
+  > A public GitLab Snyk component is available on GitLab.com. If you can access the
+  > public GitLab Snyk component, you don't need to set up your own Snyk CI/CD catalog
+  > project. Instead, use the public component directly by following its documentation.
 
 - Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. See the documentation for the [change control workflow with ServiceNow solution component](integrated_servicenow.md), and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
 - Copy the CI YAML files into your project:

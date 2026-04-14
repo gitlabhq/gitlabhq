@@ -411,16 +411,21 @@ export default {
     </div>
     <div
       :class="{
-        'gl-flex gl-items-center gl-justify-between gl-gap-3': $scopedSlots['user-preference'],
+        'gl-flex gl-items-center gl-justify-between gl-gap-3':
+          $scopedSlots['user-preference'] || $scopedSlots['time-range-filter'],
       }"
     >
       <slot name="user-preference"></slot>
+      <slot name="time-range-filter"></slot>
       <gl-sorting
         v-if="selectedSortOption"
         :sort-options="transformedSortOptions"
         :sort-by="sortById"
         :is-ascending="sortDirectionAscending"
-        class="sort-dropdown-container !gl-m-0 gl-w-full @sm/panel:gl-w-auto"
+        :class="[
+          'sort-dropdown-container !gl-m-0 gl-w-full @sm/panel:gl-w-auto',
+          { '!gl-w-auto @lg/panel:gl-w-full': $scopedSlots['time-range-filter'] },
+        ]"
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"
         sort-direction-toggle-class="!gl-shrink !gl-grow-0"

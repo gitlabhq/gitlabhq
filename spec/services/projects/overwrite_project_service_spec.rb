@@ -72,7 +72,7 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
           create_list(:lfs_objects_project, 3, project: project_from)
         end
 
-        it do
+        it 'retains all lfs relationships' do
           lfs_objects_count = project_from.lfs_objects.count
 
           subject.execute(project_from)

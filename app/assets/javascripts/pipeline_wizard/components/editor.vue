@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { markRaw } from 'vue';
 import { isDocument } from 'yaml';
 import { CONTENT_UPDATE_DEBOUNCE } from '~/editor/constants';

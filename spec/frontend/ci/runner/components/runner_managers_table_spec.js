@@ -8,7 +8,7 @@ import { I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
 import { runnerData } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockItems = runnerData.data.runner.managers.nodes;
 

@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-# RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, feature_category: :permissions do
-RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :permissions do
+RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
   let(:path) { Rails.root.join('tmp/tests/doc/gitlab/permissions/routes/') }
   let(:doc) { 'granular_pat_rest_api_endpoints.md' }
@@ -208,14 +207,39 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
   describe '#skipped_endpoints' do
     let(:expected_markdown) do
       <<~MARKDOWN.chomp
-        | Method | Path |
-        | ------ | ---- |
-        | `POST` | `/path/to/skipped_route` |
+        | Method | Path | Reason |
+        | ------ | ---- | ------ |
+        | `POST` | `/path/to/skipped_route` | CI job token |
       MARKDOWN
     end
 
     it 'returns the expected markdown' do
       expect(task.skipped_endpoints).to eq(expected_markdown)
+    end
+
+    context 'when the API route list contains duplicates' do
+      let(:routes) { super() + [skipped_route] }
+
+      it 'de-duplicates identical route rows' do
+        markdown = task.skipped_endpoints
+
+        expect(markdown.scan('`POST` | `/path/to/skipped_route`').length).to eq(1)
+        expect(markdown).to eq(expected_markdown)
+      end
+    end
+
+    context 'when skip_granular_token_authorization is true instead of a symbol' do
+      let(:routes) { [skipped_route_without_reason] }
+
+      it 'renders without a reason label' do
+        expected = <<~MARKDOWN.chomp
+          | Method | Path | Reason |
+          | ------ | ---- | ------ |
+          | `GET` | `/path/to/legacy_skipped_route` |  |
+        MARKDOWN
+
+        expect(task.skipped_endpoints).to eq(expected)
+      end
     end
   end
 
@@ -265,11 +289,23 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::DocsTask, feature_category: :
     instance_double(Grape::Router::Route,
       settings: {
         authorization: {
-          skip_granular_token_authorization: true
+          skip_granular_token_authorization: :job_token_auth
         }
       },
       request_method: 'POST',
       origin: '/api/:version/path/to/skipped_route'
+    )
+  end
+
+  def skipped_route_without_reason
+    instance_double(Grape::Router::Route,
+      settings: {
+        authorization: {
+          skip_granular_token_authorization: true
+        }
+      },
+      request_method: 'GET',
+      origin: '/api/:version/path/to/legacy_skipped_route'
     )
   end
 end

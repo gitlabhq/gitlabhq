@@ -89,7 +89,7 @@ module API
           default: false,
           desc: 'Allow force push for all users with push access.'
 
-        use :optional_params_ee
+        use :optional_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :create_protected_branch, boundary_type: :project
@@ -130,7 +130,7 @@ module API
           desc: 'Allow force push for all users with push access.',
           allow_blank: false
 
-        use :optional_params_ee
+        use :optional_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :update_protected_branch, boundary_type: :project

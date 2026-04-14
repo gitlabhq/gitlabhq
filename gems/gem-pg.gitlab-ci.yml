@@ -17,6 +17,9 @@ spec:
 workflow:
   name: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION pipeline'
   rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
     - when: always
 
 variables:

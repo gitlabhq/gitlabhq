@@ -46,7 +46,7 @@ module RuboCop
 
         MSG = 'Creating a table with more than one foreign key at once violates our migration style guide. ' \
           'For more details check the ' \
-          'https://docs.gitlab.com/ee/development/migration_style_guide.html#creating-a-new-table-when-we-have-two-foreign-keys'
+          'https://docs.gitlab.com/development/migration_style_guide/#creating-a-new-table-when-we-have-two-foreign-keys'
 
         # @!method create_table_with_block?(node)
         def_node_matcher :create_table_with_block?, <<~PATTERN

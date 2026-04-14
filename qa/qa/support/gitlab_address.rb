@@ -9,7 +9,9 @@ module QA
         # @param [String] address
         # @return [void]
         def define_gitlab_address_attribute!(address = nil)
-          return if initialized?
+          # Allow explicit address to override previously inferred one (e.g., Geo scenarios)
+          # Only skip if already initialized AND no explicit address provided
+          return if initialized? && address.to_s.strip.empty?
 
           address = gitlab_address(address)
 

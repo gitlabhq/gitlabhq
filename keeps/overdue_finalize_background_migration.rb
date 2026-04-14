@@ -113,7 +113,7 @@ module Keeps
         To confirm it is finished you can run:
 
       ```
-      /chatops run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
+      /chatops gitlab run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
       ```
 
       The last time this background migration was triggered was in

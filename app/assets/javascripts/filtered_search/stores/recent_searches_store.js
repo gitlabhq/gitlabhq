@@ -1,4 +1,4 @@
-import { uniqWith, isEqual } from 'lodash';
+import { uniqWith, isEqual } from 'lodash-es';
 
 import { MAX_HISTORY_SIZE } from '../constants';
 

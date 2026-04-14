@@ -91,7 +91,7 @@ module Ci
       # database, what is especially important in EE. This method does not
       # change the behavior in CE.
       #
-      def with_read_consistency(build, &block)
+      def with_read_consistency(&block)
         ::Gitlab::Database::Consistency
           .with_read_consistency(&block)
       end
@@ -174,7 +174,7 @@ module Ci
       in_lock(lock_key, **lock_params) do # exclusive Redis lock is acquired first
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
-        self.class.with_read_consistency(build) do
+        self.class.with_read_consistency do
           reset.unsafe_persist_data!
         end
       end

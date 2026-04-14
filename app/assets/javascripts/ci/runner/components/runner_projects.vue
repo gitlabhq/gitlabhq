@@ -3,6 +3,7 @@ import { GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerProjectsQuery from '../graphql/show/runner_projects.query.graphql';
 import {
   I18N_CLEAR_FILTER_PROJECTS,
@@ -12,7 +13,6 @@ import {
   RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
 } from '../constants';
 import { getPaginationVariables } from '../utils';
-import { captureException } from '../sentry_utils';
 import RunnerAssignedItem from './runner_assigned_item.vue';
 import RunnerPagination from './runner_pagination.vue';
 
@@ -68,7 +68,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
     },
   },

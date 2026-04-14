@@ -7,6 +7,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { reportToSentry } from '~/ci/utils';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -23,6 +24,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'PipelineMultiActions',
   i18n,
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -107,11 +109,12 @@ export default {
           this.artifacts = data.artifacts;
           this.isNewPipeline = false;
         })
-        .catch(() => {
+        .catch((err) => {
           this.hasError = true;
           if (!this.isNewPipeline) {
             this.artifacts = oldArtifacts;
           }
+          reportToSentry(this.$options.name, err);
         })
         .finally(() => {
           this.isLoading = false;

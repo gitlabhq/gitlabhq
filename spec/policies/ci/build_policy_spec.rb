@@ -6,6 +6,20 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:overrides) do
+    %i[
+      create_build_service_proxy
+      create_build_terminal
+      read_build_metadata
+      read_build_trace
+      read_ci_minutes_limited_summary
+      read_job_artifacts
+      read_manual_variables
+      read_web_ide_terminal
+      troubleshoot_job_with_ai
+      update_web_ide_terminal
+    ]
+  end
 
   let(:policy) do
     described_class.new(user, build)
@@ -17,6 +31,13 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     before do
       project.update_attribute(:public_builds, false)
     end
+  end
+
+  describe 'delegation' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(policy).to delegate_to(ProjectPolicy) }
+    it { expect(described_class).to override_delegates_for(*overrides) }
   end
 
   describe 'artifacts access config with access keyword' do

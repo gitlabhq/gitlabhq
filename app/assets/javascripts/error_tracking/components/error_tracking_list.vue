@@ -16,7 +16,7 @@ import {
   GlTooltipDirective,
   GlKeysetPagination,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';

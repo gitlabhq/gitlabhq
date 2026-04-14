@@ -1,5 +1,5 @@
 <script>
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { GlButton } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';

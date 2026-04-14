@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -10,6 +11,7 @@ import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retr
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 
 export default {
+  name: 'FailedJobDetails',
   components: {
     CiIcon,
     GlButton,
@@ -85,6 +87,7 @@ export default {
         this.$emit('job-retried', this.job.name);
       } catch (error) {
         createAlert({ message: error?.message || this.$options.i18n.retryError });
+        reportToSentry(this.$options.name, error);
       } finally {
         this.isLoadingAction = false;
       }

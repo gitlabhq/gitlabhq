@@ -3,7 +3,6 @@
 Style/AccessorGrouping:
   Exclude:
     - 'app/finders/template_finder.rb'
-    - 'app/models/commit.rb'
     - 'app/models/commit_range.rb'
     - 'app/models/concerns/importable.rb'
     - 'app/models/design_management/design_at_version.rb'

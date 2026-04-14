@@ -1,4 +1,4 @@
-import { omitBy, isNil, uniqBy } from 'lodash';
+import { omitBy, isNil, uniqBy } from 'lodash-es';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import {

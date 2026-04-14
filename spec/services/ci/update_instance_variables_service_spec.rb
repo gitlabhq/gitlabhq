@@ -18,8 +18,8 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
     context 'with insert only variables' do
       let(:variables_attributes) do
         [
-          { key: 'var_a', secret_value: 'dummy_value_for_a', protected: true },
-          { key: 'var_b', secret_value: 'dummy_value_for_b', protected: false }
+          { key: 'var_a', value: 'dummy_value_for_a', protected: true },
+          { key: 'var_b', value: 'dummy_value_for_b', protected: false }
         ]
       end
 
@@ -35,8 +35,8 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
         service.execute
 
         expect(Ci::InstanceVariable.all).to contain_exactly(
-          have_attributes(key: 'var_a', secret_value: 'dummy_value_for_a', protected: true),
-          have_attributes(key: 'var_b', secret_value: 'dummy_value_for_b', protected: false)
+          have_attributes(key: 'var_a', value: 'dummy_value_for_a', protected: true),
+          have_attributes(key: 'var_b', value: 'dummy_value_for_b', protected: false)
         )
       end
     end
@@ -50,13 +50,13 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
           {
             id: var_a.id,
             key: var_a.key,
-            secret_value: 'new_dummy_value_for_a',
+            value: 'new_dummy_value_for_a',
             protected: var_a.protected?.to_s
           },
           {
             id: var_b.id,
             key: 'var_b_key',
-            secret_value: 'new_dummy_value_for_b',
+            value: 'new_dummy_value_for_b',
             protected: 'true'
           }
         ]
@@ -72,10 +72,10 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
       it 'updates the records in place', :aggregate_failures do
         service.execute
 
-        expect(var_a.reload).to have_attributes(secret_value: 'new_dummy_value_for_a')
+        expect(var_a.reload).to have_attributes(value: 'new_dummy_value_for_a')
 
         expect(var_b.reload).to have_attributes(
-          key: 'var_b_key', secret_value: 'new_dummy_value_for_b', protected: true)
+          key: 'var_b_key', value: 'new_dummy_value_for_b', protected: true)
       end
     end
 
@@ -87,12 +87,12 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
           {
             id: var_a.id,
             key: var_a.key,
-            secret_value: 'new_dummy_value_for_a',
+            value: 'new_dummy_value_for_a',
             protected: var_a.protected?.to_s
           },
           {
             key: 'var_b',
-            secret_value: 'dummy_value_for_b',
+            value: 'dummy_value_for_b',
             protected: true
           }
         ]
@@ -109,8 +109,8 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
         service.execute
         var_b = Ci::InstanceVariable.find_by(key: 'var_b')
 
-        expect(var_a.reload.secret_value).to eq('new_dummy_value_for_a')
-        expect(var_b.secret_value).to eq('dummy_value_for_b')
+        expect(var_a.reload.value).to eq('new_dummy_value_for_a')
+        expect(var_b.value).to eq('dummy_value_for_b')
       end
     end
 
@@ -123,19 +123,19 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
           {
             id: var_a.id,
             key: var_a.key,
-            secret_value: 'new_dummy_value_for_a',
+            value: 'new_dummy_value_for_a',
             protected: var_a.protected?.to_s
           },
           {
             id: var_b.id,
             key: var_b.key,
-            secret_value: 'dummy_value_for_b',
+            value: 'dummy_value_for_b',
             protected: var_b.protected?.to_s,
             '_destroy' => 'true'
           },
           {
             key: 'var_c',
-            secret_value: 'dummy_value_for_c',
+            value: 'dummy_value_for_c',
             protected: true
           }
         ]
@@ -147,30 +147,30 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
         service.execute
         var_c = Ci::InstanceVariable.find_by(key: 'var_c')
 
-        expect(var_a.reload.secret_value).to eq('new_dummy_value_for_a')
+        expect(var_a.reload.value).to eq('new_dummy_value_for_a')
         expect { var_b.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect(var_c.secret_value).to eq('dummy_value_for_c')
+        expect(var_c.value).to eq('dummy_value_for_c')
       end
     end
 
     context 'with invalid variables' do
-      let!(:var_a) { create(:ci_instance_variable, secret_value: 'dummy_value_for_a') }
+      let!(:var_a) { create(:ci_instance_variable, value: 'dummy_value_for_a') }
 
       let(:variables_attributes) do
         [
           {
             key: '...?',
-            secret_value: 'nice_value'
+            value: 'nice_value'
           },
           {
             id: var_a.id,
             key: var_a.key,
-            secret_value: 'new_dummy_value_for_a',
+            value: 'new_dummy_value_for_a',
             protected: var_a.protected?.to_s
           },
           {
             key: var_a.key,
-            secret_value: 'other_value'
+            value: 'other_value'
           }
         ]
       end
@@ -185,7 +185,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
       it 'does not update existing records' do
         service.execute
 
-        expect(var_a.reload.secret_value).to eq('dummy_value_for_a')
+        expect(var_a.reload.value).to eq('dummy_value_for_a')
       end
 
       it 'returns errors' do
@@ -205,7 +205,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
           {
             id: 'some-id',
             key: 'some_key',
-            secret_value: 'other_value',
+            value: 'other_value',
             '_destroy' => 'true'
           }
         ]
@@ -220,7 +220,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :pipeline_c
           {
             id: 'some-id',
             key: 'some_key',
-            secret_value: 'other_value'
+            value: 'other_value'
           }
         ]
       end

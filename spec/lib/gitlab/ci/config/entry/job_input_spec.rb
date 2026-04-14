@@ -26,6 +26,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::JobInput, feature_category: :pipeline_
         expect(entry.errors).to contain_exactly('website must have a default value')
       end
     end
+
+    context 'when config is not a hash' do
+      let(:config) { true }
+
+      it 'reports an error about invalid type' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include('website config should be a hash')
+      end
+    end
   end
 
   describe '#value' do

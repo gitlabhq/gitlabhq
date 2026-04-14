@@ -1,27 +1,31 @@
 - breadcrumb_title _('Repository')
-- page_title @blob.path, @ref
 - add_page_specific_style 'page_bundles/tree'
-- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
-- content_for :prefetch_asset_tags do
-  - webpack_preload_asset_tag('monaco', prefetch: true)
-- add_page_startup_graphql_call('repository/blob_info', { projectPath: @project.full_path, ref: current_ref, refType: @ref_type.to_s.upcase.presence, filePath: @blob.path, shouldFetchRawText: @blob.rendered_as_text? && !@blob.rich_viewer })
-- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, current_user)
 
-.js-signature-container{ data: { 'signatures-path': signatures_path } }
-
-= render 'projects/last_push'
-
-- if repository_file_tree_browser_enabled
-  .gl-flex.navigation-root
-    -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
-    #js-file-browser{ style: 'width:320px' }
-    #tree-holder.tree-holder.gl-pt-5.gl-pl-4.gl-w-full.gl-min-w-0
-      = render 'blob', blob: @blob
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Blob|Unable to load file content')
 - else
-  #tree-holder.tree-holder.gl-pt-5
-    = render 'blob', blob: @blob
+  - page_title @blob.path, @ref
+  - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
+  - content_for :prefetch_asset_tags do
+    - webpack_preload_asset_tag('monaco', prefetch: true)
+  - add_page_startup_graphql_call('repository/blob_info', { projectPath: @project.full_path, ref: current_ref, refType: @ref_type.to_s.upcase.presence, filePath: @blob.path, shouldFetchRawText: @blob.rendered_as_text? && !@blob.rich_viewer })
+  - repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, current_user)
 
-= render 'shared/web_ide_path'
+  .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
--# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
-#js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }
+  = render 'projects/last_push'
+
+  - if repository_file_tree_browser_enabled
+    .gl-flex.navigation-root
+      -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
+      #js-file-browser{ style: 'width:320px' }
+      #tree-holder.tree-holder.gl-pt-5.gl-pl-4.gl-w-full.gl-min-w-0
+        = render 'blob', blob: @blob
+  - else
+    #tree-holder.tree-holder.gl-pt-5
+      = render 'blob', blob: @blob
+
+  = render 'shared/web_ide_path'
+
+  -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983
+  #js-ambiguous-ref-modal{ data: { ambiguous: @is_ambiguous_ref.to_s, ref: current_ref } }

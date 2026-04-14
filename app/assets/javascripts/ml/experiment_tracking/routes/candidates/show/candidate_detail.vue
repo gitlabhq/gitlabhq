@@ -8,7 +8,7 @@ import {
   GlTableLite,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { isEmpty, maxBy, range } from 'lodash';
+import { isEmpty, maxBy, range } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';

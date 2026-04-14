@@ -253,6 +253,10 @@ class Blob < SimpleDelegator
     OpenSSL::Digest::SHA256.hexdigest(path)
   end
 
+  def short_file_hash
+    file_hash[0..8]
+  end
+
   private
 
   def simple_viewer_class

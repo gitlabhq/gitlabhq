@@ -19,7 +19,12 @@ describe('WikiSidebar', () => {
   const findSidebarToggle = () => wrapper.findComponent(WikiSidebarToggle);
 
   const createComponent = (provide) => {
-    wrapper = shallowMountExtended(WikiSidebar, { provide });
+    wrapper = shallowMountExtended(WikiSidebar, {
+      provide: {
+        hasCustomSidebar: false,
+        ...provide,
+      },
+    });
   };
 
   beforeEach(() => {
@@ -98,25 +103,9 @@ describe('WikiSidebar', () => {
     });
   });
 
-  describe('with wikiFloatingSidebarToggle feature flag disabled', () => {
+  describe('sidebar toggle', () => {
     beforeEach(() => {
-      createComponent({
-        hasCustomSidebar: false,
-        glFeatures: { wikiFloatingSidebarToggle: false },
-      });
-    });
-
-    it('does not show the toggle component', () => {
-      expect(findSidebarToggle().exists()).toBe(false);
-    });
-  });
-
-  describe('with wikiFloatingSidebarToggle feature flag enabled', () => {
-    beforeEach(() => {
-      createComponent({
-        hasCustomSidebar: false,
-        glFeatures: { wikiFloatingSidebarToggle: true },
-      });
+      createComponent();
     });
 
     it('shows the toggle component', () => {

@@ -241,7 +241,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
   describe 'DELETE destroy' do
     it "deletes the pages domain" do
       expect { delete(:destroy, params: request_params.merge(id: pages_domain.domain)) }
-        .to change(PagesDomain, :count).by(-1)
+        .to change { PagesDomain.count }.by(-1)
         .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
         .with(
           project_id: project.id,

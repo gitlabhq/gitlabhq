@@ -37,7 +37,7 @@ module BranchRules
 
     def extract_push_access_levels_params!(transformed_params)
       push_levels_params = transformed_params.delete(:push_access_levels)
-      return unless push_levels_params
+      return if skip_empty_access_levels?(push_levels_params)
 
       push_levels = branch_rule.branch_protection.push_access_levels
       transformed_params[:push_access_levels_attributes] = access_levels_attributes(push_levels, push_levels_params)
@@ -45,10 +45,17 @@ module BranchRules
 
     def extract_merge_access_levels_params!(transformed_params)
       merge_levels_params = transformed_params.delete(:merge_access_levels)
-      return unless merge_levels_params
+      return if skip_empty_access_levels?(merge_levels_params)
 
       merge_levels = branch_rule.branch_protection.merge_access_levels
       transformed_params[:merge_access_levels_attributes] = access_levels_attributes(merge_levels, merge_levels_params)
+    end
+
+    def skip_empty_access_levels?(access_levels_params)
+      return true if access_levels_params.nil?
+      return false unless Feature.enabled?(:skip_empty_access_levels_in_branch_rules, project)
+
+      access_levels_params.blank?
     end
 
     # In ProtectedBranch we are using:

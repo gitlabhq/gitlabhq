@@ -38,6 +38,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to belong_to(:deleting_user) }
     it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:provisioned_user_details).inverse_of(:provisioned_by_project) }
+    it { is_expected.to have_many(:provisioned_users) }
     it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:owners_and_maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:events) }
@@ -178,6 +180,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:package_protection_rules).class_name('Packages::Protection::Rule').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
+    it { is_expected.to have_many(:terraform_state_protection_rules).inverse_of(:project).class_name('Terraform::StateProtectionRule') }
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
@@ -1923,6 +1926,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           auto_rollback_enabled
           merge_trains_skip_train_allowed
           restrict_pipeline_cancellation_role
+          max_pipelines_per_merge_train
         ]
       end
     end
@@ -2648,6 +2652,94 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         allow(group).to receive(:first_owner).and_return(Object.new)
 
         expect(project.first_owner).to eq(group.first_owner)
+      end
+    end
+  end
+
+  describe '#first_human_owner' do
+    context 'for a personal project' do
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:namespace) { create(:namespace, owner: owner) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      it 'returns the namespace owner when they are a human and active' do
+        expect(project.first_human_owner).to eq(owner)
+      end
+    end
+
+    context 'for a group project when the first owner is a human and active' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:human_owner) { create(:user) }
+
+      before_all do
+        group.add_owner(human_owner)
+      end
+
+      it 'returns the human owner' do
+        expect(project.first_human_owner).to eq(human_owner)
+      end
+    end
+
+    context 'for a group project when the first owner is a service account' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:service_account) { create(:user, :service_account) }
+      let_it_be(:human_owner) { create(:user) }
+
+      before_all do
+        group.add_owner(service_account)
+        group.add_owner(human_owner)
+      end
+
+      it 'skips the service account and returns the human owner' do
+        expect(project.first_human_owner).to eq(human_owner)
+      end
+    end
+
+    context 'for a group project when the first owner is a ghost user' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:ghost_user) { create(:user, :ghost) }
+      let_it_be(:human_owner) { create(:user) }
+
+      before_all do
+        group.add_owner(ghost_user)
+        group.add_owner(human_owner)
+      end
+
+      it 'skips the ghost user and returns the human owner' do
+        expect(project.first_human_owner).to eq(human_owner)
+      end
+    end
+
+    context 'for a group project when the first owner is deactivated' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:deactivated_owner) { create(:user, :deactivated) }
+      let_it_be(:active_owner) { create(:user) }
+
+      before_all do
+        group.add_owner(deactivated_owner)
+        group.add_owner(active_owner)
+      end
+
+      it 'skips the deactivated owner and returns the active owner' do
+        expect(project.first_human_owner).to eq(active_owner)
+      end
+    end
+
+    context 'for a group project when no active human owner exists' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:service_account) { create(:user, :service_account) }
+
+      before_all do
+        group.add_owner(service_account)
+      end
+
+      it 'returns nil' do
+        expect(project.first_human_owner).to be_nil
       end
     end
   end
@@ -3867,31 +3959,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       Gitlab::Access::BranchProtection.protection_partial                 | false
       Gitlab::Access::BranchProtection.protected_against_developer_pushes | true
       Gitlab::Access::BranchProtection.protected_fully                    | true
-      Gitlab::Access::BranchProtection.protected_after_initial_push       | true
-    end
-
-    with_them do
-      before do
-        expect(project.namespace)
-          .to receive(:default_branch_protection_settings)
-                .and_return(default_branch_protection_level)
-      end
-
-      it { is_expected.to eq(result) }
-    end
-  end
-
-  describe 'initial_push_to_default_branch_allowed_for_developer?' do
-    let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project, namespace: namespace) }
-
-    subject { project.initial_push_to_default_branch_allowed_for_developer? }
-
-    where(:default_branch_protection_level, :result) do
-      Gitlab::Access::BranchProtection.protection_none                    | true
-      Gitlab::Access::BranchProtection.protection_partial                 | true
-      Gitlab::Access::BranchProtection.protected_against_developer_pushes | false
-      Gitlab::Access::BranchProtection.protected_fully                    | false
       Gitlab::Access::BranchProtection.protected_after_initial_push       | true
     end
 
@@ -6978,83 +7045,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#has_auto_devops_implicitly_disabled?' do
-    let_it_be(:project, reload: true) { create(:project) }
-
-    before do
-      Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 0)
-    end
-
-    context 'when explicitly disabled' do
-      before do
-        create(:project_auto_devops, project: project, enabled: false)
-      end
-
-      it 'does not have auto devops implicitly disabled' do
-        expect(project).not_to have_auto_devops_implicitly_disabled
-      end
-    end
-
-    context 'when explicitly enabled' do
-      before do
-        create(:project_auto_devops, project: project, enabled: true)
-      end
-
-      it 'does not have auto devops implicitly disabled' do
-        expect(project).not_to have_auto_devops_implicitly_disabled
-      end
-    end
-
-    context 'when enabled in settings' do
-      before do
-        stub_application_setting(auto_devops_enabled: true)
-      end
-
-      it 'does not have auto devops implicitly disabled' do
-        expect(project).not_to have_auto_devops_implicitly_disabled
-      end
-    end
-
-    context 'when disabled in settings' do
-      before do
-        stub_application_setting(auto_devops_enabled: false)
-      end
-
-      it 'auto devops is implicitly disabled' do
-        expect(project).to have_auto_devops_implicitly_disabled
-      end
-
-      context 'when force_autodevops_on_by_default is enabled for the project' do
-        before do
-          create(:project_auto_devops, project: project, enabled: false)
-
-          Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 100)
-        end
-
-        it 'does not have auto devops implicitly disabled' do
-          expect(project).not_to have_auto_devops_implicitly_disabled
-        end
-      end
-
-      context 'when disabled on group' do
-        it 'has auto devops implicitly disabled' do
-          project.update!(namespace: create(:group, :auto_devops_disabled))
-
-          expect(project).to have_auto_devops_implicitly_disabled
-        end
-      end
-
-      context 'when disabled on parent group' do
-        it 'has auto devops implicitly disabled' do
-          subgroup = create(:group, parent: create(:group, :auto_devops_disabled))
-          project.update!(namespace: subgroup)
-
-          expect(project).to have_auto_devops_implicitly_disabled
-        end
-      end
-    end
-  end
-
   describe '#api_variables' do
     let_it_be(:project) { create(:project) }
 
@@ -7250,9 +7240,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#reset_counters_and_iids' do
     let(:project) { build(:project) }
 
-    it 'runs the correct hooks' do
-      expect(project).to receive(:update_project_counter_caches)
+    it 'flushes project-scoped internal ids' do
+      allow(InternalId).to receive(:flush_records!).with(namespace: project.project_namespace, usage: :issues)
       expect(InternalId).to receive(:flush_records!).with(project: project)
+
+      project.reset_counters_and_iids
+    end
+
+    it 'flushes namespace-scoped issue internal ids' do
+      allow(InternalId).to receive(:flush_records!).with(project: project)
+      expect(InternalId).to receive(:flush_records!)
+        .with(namespace: project.project_namespace, usage: :issues)
+
+      project.reset_counters_and_iids
+    end
+
+    it 'updates project counter caches' do
+      expect(project).to receive(:update_project_counter_caches)
 
       project.reset_counters_and_iids
     end
@@ -10163,6 +10167,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#use_mermaid_v11_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :use_mermaid_v11_feature_flag_enabled? }
+      let(:feature_flag) { :use_mermaid_v11 }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 
@@ -10544,27 +10558,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project_in_group) { build_stubbed(:project, group: group) }
     let_it_be(:project_in_user) { build_stubbed(:project, :in_user_namespace) }
 
-    where(:project, :consolidated_list, :legacy_url, :result) do
-      ref(:project_in_group) | false | false | false
-      ref(:project_in_group) | false | true | false
-      ref(:project_in_group) | true | false | true
-      ref(:project_in_group) | true | ref(:group) | false
-      ref(:project_in_group) | true | ref(:project_in_group) | false
-      ref(:project_in_group) | true | ref(:project_in_user) | true
-      ref(:project_in_user) | false | false | false
-      ref(:project_in_user) | false | true | false
-      ref(:project_in_user) | true | false | true
-      ref(:project_in_user) | true | ref(:group) | true
-      ref(:project_in_user) | true | ref(:project_in_group) | true
-      ref(:project_in_user) | true | ref(:project_in_user) | false
+    where(:project, :legacy_url, :result) do
+      ref(:project_in_group) | false | true
+      ref(:project_in_group) | ref(:group) | false
+      ref(:project_in_group) | ref(:project_in_group) | false
+      ref(:project_in_group) | ref(:project_in_user) | true
+      ref(:project_in_user) | false | true
+      ref(:project_in_user) | ref(:group) | true
+      ref(:project_in_user) | ref(:project_in_group) | true
+      ref(:project_in_user) | ref(:project_in_user) | false
     end
 
     with_them do
       before do
-        stub_feature_flags(
-          work_item_planning_view: consolidated_list,
-          work_item_legacy_url: legacy_url
-        )
+        stub_feature_flags(work_item_legacy_url: legacy_url)
       end
 
       subject(:use_work_item_url?) { project.use_work_item_url? }

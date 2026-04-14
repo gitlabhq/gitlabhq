@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import getToolbarItemsQuery from '~/editor/graphql/get_items.query.graphql';
 import { EDITOR_TOOLBAR_BUTTON_GROUPS } from '~/editor/constants';
 import SourceEditorToolbarButton from './source_editor_toolbar_button.vue';

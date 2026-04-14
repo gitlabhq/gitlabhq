@@ -11,6 +11,7 @@ export const mockJobResponse = {
           nodes: [],
           __typename: 'CiManualVariableConnection',
         },
+        inputsSpec: [],
         __typename: 'CiJob',
         manualJob: false,
         name: 'artifact_job',
@@ -29,6 +30,18 @@ export const mockJobResponse = {
   },
 };
 
+export const mockJobWithInputsResponse = {
+  data: {
+    project: {
+      ...mockJobResponse.data.project,
+      job: {
+        ...mockJobResponse.data.project.job,
+        inputsSpec: [{ name: 'test' }],
+      },
+    },
+  },
+};
+
 export const mockManualJobResponse = {
   data: {
     project: {
@@ -39,6 +52,7 @@ export const mockManualJobResponse = {
           nodes: [],
           __typename: 'CiManualVariableConnection',
         },
+        inputsSpec: [],
         __typename: 'CiJob',
         manualJob: true,
         name: 'artifact_job',
@@ -75,6 +89,7 @@ export const mockJobWithVariablesResponse = {
           ],
           __typename: 'CiManualVariableConnection',
         },
+        inputsSpec: [],
         name: 'manual_job',
         detailedStatus: {
           id: 'manual-13046-13046',

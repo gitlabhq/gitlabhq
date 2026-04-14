@@ -24,7 +24,73 @@ simpler operation compared to the three-step import method.
 
 {{< tabs >}}
 
-{{< tab title="GitLab 18.3 and later" >}}
+{{< tab title="GitLab 18.7 and later" >}}
+
+1. Ensure the database is disabled in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false, # Must be false!
+   }
+   ```
+
+1. Ensure the registry is set to `read-only` mode.
+
+   Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']` configuration.
+   For example, for a `gcs` backend registry using a `gs://my-company-container-registry` bucket,
+   the configuration could be:
+
+   ```ruby
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => true # Must be set to true.
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. [Apply database migrations](container_registry_metadata_database.md#apply-database-migrations).
+1. Run the following command:
+
+   ```shell
+   sudo gitlab-ctl registry-database import --log-to-stdout
+   ```
+
+1. If the command completed successfully, the registry is fully imported. You
+   can enable the database, turn off read-only mode in the configuration, and
+   start the registry service:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => true, # Must be enabled now!
+   }
+
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => false
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.3 to 18.6" >}}
 
 1. Ensure the database is disabled in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
 

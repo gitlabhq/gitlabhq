@@ -47,6 +47,10 @@ module CapybaraHelpers
     page.driver.browser.manage.delete_cookie('_gitlab_session')
   end
 
+  def clear_remember_me_cookie
+    page.driver.browser.manage.delete_cookie('remember_user_token')
+  end
+
   def javascript_test?
     Capybara.current_driver == Capybara.javascript_driver
   end

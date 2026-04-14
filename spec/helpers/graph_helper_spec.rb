@@ -9,7 +9,7 @@ RSpec.describe GraphHelper do
     let(:graph) { Network::Graph.new(project, 'master', commit, '') }
 
     it 'filters our refs used by GitLab' do
-      self.instance_variable_set(:@graph, graph)
+      instance_variable_set(:@graph, graph)
       refs = refs(project.repository, commit)
 
       expect(refs).to match('master')
@@ -20,7 +20,7 @@ RSpec.describe GraphHelper do
     let(:project) { create(:project, :private) }
 
     before do
-      self.instance_variable_set(:@project, project)
+      instance_variable_set(:@project, project)
     end
 
     it 'always returns false' do

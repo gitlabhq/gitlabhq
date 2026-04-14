@@ -114,13 +114,121 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:project_id/packages/rubygems/quick/Marshal.4.8/:file_name' do
-    let(:url) { api("/projects/#{project.id}/packages/rubygems/quick/Marshal.4.8/my_gem-1.0.0.gemspec.rz") }
+    let_it_be(:package) do
+      create(:rubygems_package, project: project, name: 'package', version: '0.0.1')
+    end
+
+    let_it_be(:gemspec_file) { create(:package_file, :gemspec_rz, package: package) }
+
+    let(:url) { api("/projects/#{project.id}/packages/rubygems/quick/Marshal.4.8/package-0.0.1.gemspec.rz") }
 
     subject { get(url, headers: headers) }
 
-    it_behaves_like 'an unimplemented route'
+    context 'with valid project' do
+      where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do
+        :public  | :guest      | true  | :personal_access_token | true  | :success
+        :public  | :guest      | true  | :personal_access_token | false | :unauthorized
+        :public  | :guest      | false | :personal_access_token | true  | :success
+        :public  | :guest      | false | :personal_access_token | false | :unauthorized
+        :public  | :anonymous  | false | :personal_access_token | true  | :success
+        :private | :guest      | true  | :personal_access_token | true  | :success
+        :private | :guest      | true  | :personal_access_token | false | :unauthorized
+        :private | :guest      | false | :personal_access_token | true  | :not_found
+        :private | :guest      | false | :personal_access_token | false | :unauthorized
+        :private | :anonymous  | false | :personal_access_token | true  | :not_found
+        :public  | :guest      | true  | :job_token             | true  | :success
+        :public  | :guest      | true  | :job_token             | false | :unauthorized
+        :public  | :guest      | false | :job_token             | true  | :success
+        :public  | :guest      | false | :job_token             | false | :unauthorized
+        :private | :guest      | true  | :job_token             | true  | :success
+        :private | :guest      | true  | :job_token             | false | :unauthorized
+        :private | :guest      | false | :job_token             | true  | :not_found
+        :private | :guest      | false | :job_token             | false | :unauthorized
+        :public  | :guest      | true  | :deploy_token          | true  | :success
+        :public  | :guest      | true  | :deploy_token          | false | :unauthorized
+        :private | :guest      | true  | :deploy_token          | true  | :success
+        :private | :guest      | true  | :deploy_token          | false | :unauthorized
+      end
+
+      with_them do
+        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
+        let(:headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          project.send("add_#{user_role}", user) if member && user_role != :anonymous
+        end
+
+        it_behaves_like 'returning response status', params[:expected_status]
+      end
+    end
+
+    context 'with access to package registry for everyone' do
+      let(:headers) { {} }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'with successful download' do
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+      let(:snowplow_gitlab_standard_context) { snowplow_context }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it 'returns the gemspec file', :aggregate_failures do
+        subject
+
+        expect(response.media_type).to eq('application/octet-stream')
+        expect(response.headers['X-Sendfile']).to eq(gemspec_file.file.path)
+      end
+
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
+    end
+
+    context 'with invalid gemspec file name' do
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/quick/Marshal.4.8/invalid.txt") }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    context 'with non-existent package' do
+      let(:url) { api("/projects/#{project.id}/packages/rubygems/quick/Marshal.4.8/nonexistent-1.0.0.gemspec.rz") }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => personal_access_token.token } }
+
+      before do
+        project.add_guest(user)
+      end
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    it_behaves_like 'when feature flag is disabled'
+    it_behaves_like 'when package feature is disabled'
+
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => pat.token } }
+      let(:request) { get(url, headers: headers) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
@@ -297,16 +405,6 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
 
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
-    end
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_ruby_gem do
-      let(:boundary_object) { project }
-      let(:headers) { workhorse_headers.merge({ 'HTTP_AUTHORIZATION' => pat.token }) }
-      let(:request) { post(url, headers: headers) }
-
-      before do
-        project.add_developer(user)
-      end
     end
   end
 

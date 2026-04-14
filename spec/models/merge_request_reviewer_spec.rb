@@ -13,5 +13,6 @@ RSpec.describe MergeRequestReviewer, feature_category: :code_review_workflow do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request).class_name('MergeRequest') }
     it { is_expected.to belong_to(:reviewer).class_name('User').inverse_of(:merge_request_reviewers) }
+    it { is_expected.to belong_to(:project) }
   end
 end

@@ -301,13 +301,13 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     it 'returns true for a file that is too large' do
       expect(diff).to receive(:too_large?).and_return(true)
 
-      expect(diff_file.too_large?).to eq(true)
+      expect(diff_file.too_large?).to be(true)
     end
 
     it 'returns false for a file that is small enough' do
       expect(diff).to receive(:too_large?).and_return(false)
 
-      expect(diff_file.too_large?).to eq(false)
+      expect(diff_file.too_large?).to be(false)
     end
   end
 
@@ -315,13 +315,13 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     it 'returns true for a file that is quite big' do
       expect(diff).to receive(:collapsed?).and_return(true)
 
-      expect(diff_file.collapsed?).to eq(true)
+      expect(diff_file.collapsed?).to be(true)
     end
 
     it 'returns false for a file that is small enough' do
       expect(diff).to receive(:collapsed?).and_return(false)
 
-      expect(diff_file.collapsed?).to eq(false)
+      expect(diff_file.collapsed?).to be(false)
     end
   end
 
@@ -501,6 +501,12 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   describe '#file_hash' do
     it 'returns a hash of file_path' do
       expect(diff_file.file_hash).to eq(Digest::SHA1.hexdigest(diff_file.file_path))
+    end
+  end
+
+  describe '#short_file_hash' do
+    it 'returns the first 9 characters of file_hash' do
+      expect(diff_file.short_file_hash.length).to eq(9)
     end
   end
 
@@ -1209,18 +1215,18 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     subject(:ai_reviewable?) { diff_file.ai_reviewable? }
 
-    it { is_expected.to eq(true) }
+    it { is_expected.to be(true) }
 
     context 'when not diffable' do
       let(:diffable?) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when not text' do
       let(:text?) { false }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -1228,22 +1234,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     subject(:diffable_text?) { diff_file.diffable_text? }
 
     it 'returns true for text diffs' do
-      expect(diffable_text?).to eq(true)
+      expect(diffable_text?).to be(true)
     end
 
     it 'returns false for non text files' do
       allow(diff_file).to receive(:text?).and_return(false)
-      expect(diffable_text?).to eq(false)
+      expect(diffable_text?).to be(false)
     end
 
     it 'returns false for non diffable files' do
       allow(diff_file).to receive(:diffable?).and_return(false)
-      expect(diffable_text?).to eq(false)
+      expect(diffable_text?).to be(false)
     end
 
     it 'returns false for too large' do
       allow(diff_file).to receive(:too_large?).and_return(true)
-      expect(diffable_text?).to eq(false)
+      expect(diffable_text?).to be(false)
     end
   end
 
@@ -1255,7 +1261,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       allow(diff_file).to receive(:diff_lines_for_serializer).and_return(nil)
       allow(diff_file).to receive(:added_lines).and_return(2)
       allow(diff_file).to receive(:removed_lines).and_return(2)
-      expect(whitespace_only?).to eq(true)
+      expect(whitespace_only?).to be(true)
     end
 
     context 'when file is binary' do
@@ -1276,19 +1282,19 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     it 'returns true for image diffs' do
       allow(diff_file).to receive_messages(different_type?: false, external_storage_error?: false)
       allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
-      expect(image_diff?).to eq(true)
+      expect(image_diff?).to be(true)
     end
 
     it 'returns false for different types' do
       allow(diff_file).to receive_messages(different_type?: true, external_storage_error?: false)
       allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
-      expect(image_diff?).to eq(false)
+      expect(image_diff?).to be(false)
     end
 
     it 'returns false for storage error' do
       allow(diff_file).to receive_messages(different_type?: false, external_storage_error?: true)
       allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
-      expect(image_diff?).to eq(false)
+      expect(image_diff?).to be(false)
     end
   end
 
@@ -1301,17 +1307,17 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     it 'returns true for new file' do
       allow(diff_file).to receive(:new_file?).and_return(true)
-      expect(modified_file?).to eq(true)
+      expect(modified_file?).to be(true)
     end
 
     it 'returns true for deleted file' do
       allow(diff_file).to receive(:deleted_file?).and_return(true)
-      expect(modified_file?).to eq(true)
+      expect(modified_file?).to be(true)
     end
 
     it 'returns true for changed file' do
       allow(diff_file).to receive(:content_changed?).and_return(true)
-      expect(modified_file?).to eq(true)
+      expect(modified_file?).to be(true)
     end
   end
 
@@ -1334,28 +1340,28 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     it 'returns true for collapsed file' do
       allow(diff_file).to receive(:collapsed?).and_return(true)
-      expect(no_preview?).to eq(true)
+      expect(no_preview?).to be(true)
     end
 
     it 'returns true for unmodified file' do
       allow(diff_file).to receive(:modified_file?).and_return(false)
-      expect(no_preview?).to eq(true)
+      expect(no_preview?).to be(true)
     end
 
     it 'returns false for submodule' do
       allow(diff_file).to receive(:submodule?).and_return(true)
-      expect(no_preview?).to eq(false)
+      expect(no_preview?).to be(false)
     end
 
     context 'with empty files' do
       it 'returns true for empty file without content change' do
         allow(diff_file).to receive_messages(empty?: true, content_changed?: false)
-        expect(no_preview?).to eq(true)
+        expect(no_preview?).to be(true)
       end
 
       it 'returns false for empty file with content change' do
         allow(diff_file).to receive_messages(empty?: true, content_changed?: true)
-        expect(no_preview?).to eq(false)
+        expect(no_preview?).to be(false)
       end
     end
   end
@@ -1403,11 +1409,11 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       it 'returns true after expand_to_full is called' do
         diff_file.expand_to_full!
 
-        expect(diff_file.manually_expanded?).to eq(true)
+        expect(diff_file.manually_expanded?).to be(true)
       end
 
       it 'returns false before expand_to_ful is called' do
-        expect(diff_file.manually_expanded?).to eq(false)
+        expect(diff_file.manually_expanded?).to be(false)
       end
     end
 

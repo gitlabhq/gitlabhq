@@ -185,16 +185,6 @@ RSpec.shared_examples 'when parent bulk edit shows no available items' do
 end
 
 RSpec.shared_examples 'when parent bulk edit fetches correct work items' do
-  it 'fetches and excludes incident, test case and ticket for task work items' do
-    check_work_items([child_work_item.title])
-    click_parent_bulk_edit_dropdown
-
-    within_testid('bulk-edit-parent') do
-      expect(page).to have_content parent_work_item.title
-      expect(page).not_to have_content incident_work_item.title
-    end
-  end
-
   it 'searches across groups when issue is selected' do
     check_work_items([child_work_item.title])
     click_parent_bulk_edit_dropdown

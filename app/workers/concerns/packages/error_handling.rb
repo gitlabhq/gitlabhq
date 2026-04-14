@@ -20,7 +20,11 @@ module Packages
       ::Packages::Rubygems::ProcessGemService::InvalidMetadataError,
       ::Packages::Npm::ProcessPackageFileService::ExtractionError,
       ::Packages::Npm::CheckManifestCoherenceService::MismatchError,
-      ::Packages::Conan::MetadataExtractionService::ExtractionError
+      ::Packages::Conan::MetadataExtractionService::ExtractionError,
+      ::Packages::Cargo::ProcessPackageFileService::ExtractionError,
+      ::Packages::Cargo::UpdatePackageFromMetadataService::InvalidMetadataError,
+      ::Packages::Cargo::UpdatePackageFromMetadataService::ProtectedPackageError,
+      ::Packages::Cargo::UpdatePackageFromMetadataService::DuplicatePackageError
     ].freeze
 
     def process_package_file_error(package_file:, exception:, extra_log_payload: {})

@@ -1,11 +1,8 @@
 <script>
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
-import { visitUrl, visitUrlWithAlerts } from '~/lib/utils/url_utility';
-import {
-  ACTION_DELETE_IMMEDIATELY,
-  ACTION_LEAVE,
-} from '~/vue_shared/components/list_actions/constants';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import { buildRedirectConfig } from '~/groups_projects/actions';
 
 export default {
   name: 'GroupActionsApp',
@@ -24,44 +21,32 @@ export default {
   },
   computed: {
     redirectConfig() {
-      return {
-        [ACTION_DELETE_IMMEDIATELY]: {
-          path: this.dashboardPath,
-          alerts: [
-            {
-              id: 'group-overview-delete-success',
-              message: sprintf(__('%{group_name} is being deleted.'), {
-                group_name: this.group.fullName,
-              }),
-              variant: 'info',
-            },
-          ],
-        },
-        [ACTION_LEAVE]: {
-          path: this.dashboardPath,
-          alerts: [
-            {
-              id: 'group-overview-leave-success',
-              message: sprintf(__('You left the "%{group_name}" group.'), {
-                group_name: this.group.fullName,
-              }),
-              variant: 'info',
-            },
-          ],
-        },
-      };
+      const deleteScheduledMessage = sprintf(__('%{group_name} moved to pending deletion.'), {
+        group_name: this.group.name,
+      });
+
+      const deleteMessage = sprintf(__('%{group_name} is being deleted.'), {
+        group_name: this.group.name,
+      });
+
+      const leaveMessage = sprintf(__('You left the "%{group_name}" group.'), {
+        group_name: this.group.fullName,
+      });
+
+      return buildRedirectConfig({
+        path: this.dashboardPath,
+        deleteScheduledMessage,
+        deleteMessage,
+        leaveMessage,
+      });
     },
   },
   methods: {
     handleAction(action) {
-      const { alerts, path = this.group.fullPath } = this.redirectConfig[action] || {};
+      const { alerts = [], path = this.group.fullPath } = this.redirectConfig[action] || {};
       const url = new URL(path, window.location.origin);
 
-      if (alerts) {
-        visitUrlWithAlerts(url.href, alerts);
-      } else {
-        visitUrl(url.href);
-      }
+      visitUrlWithAlerts(url.href, alerts);
     },
   },
 };

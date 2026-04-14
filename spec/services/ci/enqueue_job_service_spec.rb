@@ -37,8 +37,8 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
 
   context 'when variables are supplied' do
     let(:job_variables) do
-      [{ key: 'first', secret_value: 'first' },
-        { key: 'second', secret_value: 'second' }]
+      [{ key: 'first', value: 'first' },
+        { key: 'second', value: 'second' }]
     end
 
     let(:service) do
@@ -52,10 +52,10 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
   end
 
   context 'when the job transition is invalid' do
-    let(:bridge) { create(:ci_bridge, :failed, pipeline: pipeline, project: project) }
+    let(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
     let(:service) do
-      described_class.new(bridge, current_user: user)
+      described_class.new(failed_build, current_user: user)
     end
 
     it 'raises StateMachines::InvalidTransition' do
@@ -63,10 +63,20 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
     end
   end
 
+  context 'when the current user cannot play the job' do
+    let(:guest) { create(:user, guest_of: project) }
+
+    let(:service) do
+      described_class.new(build, current_user: guest)
+    end
+
+    it { expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError) }
+  end
+
   context 'when the job is manually triggered another user' do
     let(:job_variables) do
-      [{ key: 'third', secret_value: 'third' },
-        { key: 'fourth', secret_value: 'fourth' }]
+      [{ key: 'third', value: 'third' },
+        { key: 'fourth', value: 'fourth' }]
     end
 
     let(:service) do

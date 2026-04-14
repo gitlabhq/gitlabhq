@@ -88,6 +88,8 @@
 - :line_number
 - :location
 - :lock_recorder
+- :lsn_tagging
+- :lsn_tagging_context
 - :mailer
 - :manage
 - :migration

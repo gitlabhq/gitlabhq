@@ -19,6 +19,7 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :portfolio_ma
     it { is_expected.to belong_to(:author).class_name('User').with_foreign_key(:created_by_id).optional }
     it { is_expected.to have_many(:user_saved_views).class_name('WorkItems::SavedViews::UserSavedView') }
     it { is_expected.to have_many(:subscribed_users).through(:user_saved_views).source(:user) }
+    it { is_expected.to belong_to(:updated_by).class_name('User').optional }
   end
 
   describe 'validations' do

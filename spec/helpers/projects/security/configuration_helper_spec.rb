@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Security::ConfigurationHelper do
-  let(:current_user) { create(:user) }
+RSpec.describe Projects::Security::ConfigurationHelper, feature_category: :security_testing_configuration do
+  let(:current_user) { build_stubbed(:user) }
 
   describe 'security_upgrade_path' do
     subject { security_upgrade_path }

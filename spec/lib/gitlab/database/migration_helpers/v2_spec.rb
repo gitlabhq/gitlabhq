@@ -415,7 +415,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
             with_lock_retries can not be run inside an already open transaction.
 
             Lock retries are enabled by default for transactional migrations, so this can be run without `with_lock_retries`.
-            For more details, see: https://docs.gitlab.com/ee/development/migration_style_guide.html#transactional-migrations
+            For more details, see: https://docs.gitlab.com/development/migration_style_guide/#transactional-migrations
           MESSAGE
         end
 

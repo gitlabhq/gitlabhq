@@ -6,12 +6,12 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   include RepoHelpers
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:issue)   { create(:issue, project: project) }
+
   it_behaves_like 'sanitize pipeline'
 
   describe 'References' do
-    let(:project) { create(:project, :public) }
-    let(:issue)   { create(:issue, project: project) }
-
     before do
       stub_commonmark_sourcepos_disabled
     end
@@ -47,54 +47,64 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
       # by the FullPipeline.  The PlainMarkdownPipeline runs first and produces the DOM
       # which is actually operated on by the GfmPipeline.
       #
+      # We used to use an HTML4-based parser which would parse these nested <a> tags and
+      # leave them nested, opening the door to the vulnerability this spec was written to
+      # cover. We now use an HTML5 parser, which correctly keeps them separate at this
+      # early stage
+      # (https://dev.w3.org/html5/spec-LC/tree-construction.html#:~:text=adoption%20agency%20algorithm),
+      # closing the door to this kind of vulnerability entirely.
+      #
       # Here we recreate the PlainMarkdownPipeline's effects by themselves and assert the
-      # result, to clarify what the malicious input is interpreted as:
-
+      # result, to clarify how the malicious input is now interpreted.
       html_after_plain_markdown_pipeline = Banzai::Pipeline::PlainMarkdownPipeline.to_html(markdown, project:)
       expect(html_after_plain_markdown_pipeline).to eq_html(<<-HTML, trim_text_nodes: true)
         <div>
-          <a href="#{reference_link}&lt;i&gt;&lt;a%20alt='&quot;#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;">
+          <a href="#{reference_link}&lt;i&gt;&lt;a alt='&quot;#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;">
             #{reference_link}
-            <i>
-              <a alt='"#{reference_link}'></a>
-            </i>
+            <i></i>
           </a>
+          <i>
+            <a alt="&quot;#{reference_link}"></a>
+          </i>
         </div>
       HTML
 
-      result = described_class.to_html(markdown, project: project)
-      expect(result).to include "<a alt='\"#{reference_link}'></a>"
+      # The vulnerability relied on the href's content (which includes a spelled-out "<a>" tag)
+      # being equal to its inner HTML. Now, the previously nested <a> is not located within it
+      # in the DOM, so this cannot happen.
 
-      # As above, we assert the full result to clarify the full result. We used to interpret
+      # As above, we assert the full result to clarify its exact structure. We used to interpret
       # this input as a valid reference link, which eventually lead to the original XSS whose
-      # fix this spec initially accompanied.
-      #
-      # We no longer do; we do not compare the full inner HTML of the link with the href
-      # attribute, but only its textual contents.
+      # fix this spec initially accompanied. As of the HTML5 parser, the nested <a>s no longer
+      # make it to the DOM nested, so the first one cannot be interpreted as a reference link under
+      # any circumstances.
+      result = described_class.to_html(markdown, project: project)
       expect(result).to eq_html(<<-HTML, trim_text_nodes: true)
         <div>
           <a href="#{reference_link}&lt;i&gt;&lt;a%20alt='%22#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;"
              rel="nofollow noreferrer noopener" target="_blank">
             #{reference_link}
-            <i>
-              <a alt='"#{reference_link}'></a>
-            </i>
+            <i></i>
           </a>
+          <i>
+            <a alt="&quot;#{reference_link}"></a>
+          </i>
         </div>
       HTML
     end
 
     it 'escapes the data-original attribute on a reference' do
       markdown = %{[">bad things](#{issue.to_reference})}
-      result = described_class.to_html(markdown, project: project)
-      expect(result).to include(%(data-original='\"&amp;gt;bad things'))
+      doc = described_class.call(markdown, project: project)[:output]
+      link = doc.at_css('a.gfm')
+
+      expect(link['data-original']).to eq(%("&gt;bad things))
     end
   end
 
   describe 'footnotes' do
-    let(:project)    { create(:project, :public) }
-    let(:html)       { described_class.to_html(footnote_markdown, project: project) }
-    let(:identifier) { html[/.*fnref-1-(\d+).*/, 1] }
+    let(:doc)        { described_class.call(footnote_markdown, project: project)[:output] }
+    let(:identifier) { doc.to_html[/fnref-1-(\d+)/, 1] }
     let(:footnote_markdown) do
       <<~EOF
         first[^1] and second[^😄second] and twenty[^_twenty]
@@ -104,29 +114,24 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
       EOF
     end
 
-    let(:filtered_footnote) do
-      <<~EOF.strip_heredoc
-        <p dir="auto">first<sup class="footnote-ref"><a href="#fn-1-#{identifier}" id="fnref-1-#{identifier}" data-footnote-ref>1</a></sup> and second<sup class="footnote-ref"><a href="#fn-%F0%9F%98%84second-#{identifier}" id="fnref-%F0%9F%98%84second-#{identifier}" data-footnote-ref>2</a></sup> and twenty<sup class="footnote-ref"><a href="#fn-_twenty-#{identifier}" id="fnref-_twenty-#{identifier}" data-footnote-ref>3</a></sup></p>
-        <section data-footnotes class="footnotes">
-        <ol>
-        <li id="fn-1-#{identifier}">
-        <p>one <a href="#fnref-1-#{identifier}" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" title="Back to reference 1" class="footnote-backref">↩</a></p>
-        </li>
-        <li id="fn-%F0%9F%98%84second-#{identifier}">
-        <p>two <a href="#fnref-%F0%9F%98%84second-#{identifier}" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" title="Back to reference 2" class="footnote-backref">↩</a></p>
-        </li>
-        <li id="fn-_twenty-#{identifier}">
-        <p>twenty <a href="#fnref-_twenty-#{identifier}" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" title="Back to reference 3" class="footnote-backref">↩</a></p>
-        </li>
-        </ol>
-        </section>
-      EOF
-    end
-
     it 'properly adds the necessary ids and classes' do
       stub_commonmark_sourcepos_disabled
 
-      expect(html.lines.map(&:strip).join("\n")).to eq filtered_footnote.strip
+      footnote_refs = doc.css('a[data-footnote-ref]')
+      expect(footnote_refs.count).to eq(3)
+      expect(footnote_refs[0]['href']).to eq("#fn-1-#{identifier}")
+      expect(footnote_refs[1]['href']).to eq("#fn-%F0%9F%98%84second-#{identifier}")
+      expect(footnote_refs[2]['href']).to eq("#fn-_twenty-#{identifier}")
+
+      section = doc.at_css('section[data-footnotes]')
+      expect(section).to be_present
+      expect(section['class']).to eq('footnotes')
+
+      backrefs = section.css('a[data-footnote-backref]')
+      expect(backrefs.count).to eq(3)
+      expect(backrefs[0]['data-footnote-backref-idx']).to eq('1')
+      expect(backrefs[1]['data-footnote-backref-idx']).to eq('2')
+      expect(backrefs[2]['data-footnote-backref-idx']).to eq('3')
     end
   end
 
@@ -169,8 +174,6 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   end
 
   describe 'table of contents' do
-    let(:project) { create(:project, :public) }
-
     shared_examples 'table of contents tag' do |tag, tag_html|
       let(:markdown) do
         <<-MARKDOWN.strip_heredoc
@@ -215,25 +218,28 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   end
 
   describe 'backslash escapes' do
-    let_it_be(:project) { create(:project, :public) }
-    let_it_be(:issue)   { create(:issue, project: project) }
-
     it 'does not convert an escaped reference' do
       stub_commonmark_sourcepos_disabled
 
       markdown = "\\#{issue.to_reference}"
-      output = described_class.to_html(markdown, project: project)
+      doc = described_class.call(markdown, project: project)[:output]
 
-      expect(output).to include("<span data-escaped-char>#</span>#{issue.iid}")
+      escaped_span = doc.at_css('span[data-escaped-char]')
+
+      expect(escaped_span).to be_present
+      expect(escaped_span.text).to eq('#')
+      expect(doc.text).to eq("##{issue.iid}")
     end
 
     it 'converts user reference with escaped underscore because of italics' do
       stub_commonmark_sourcepos_disabled
 
       markdown = '_@test\__'
-      output = described_class.to_html(markdown, project: project)
+      doc = described_class.call(markdown, project: project)[:output]
 
-      expect(output).to include('<em>@test_</em>')
+      em = doc.at_css('em')
+      expect(em).to be_present
+      expect(em.text).to eq('@test_')
     end
 
     context 'when a reference (such as a label name) is autocompleted with characters that require escaping' do
@@ -298,7 +304,6 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
   end
 
   describe 'when using include in code segements' do
-    let_it_be(:project)        { create(:project, :repository) }
     let_it_be(:ref)            { 'markdown' }
     let_it_be(:requested_path) { '/' }
     let_it_be(:commit)         { project.commit(ref) }
@@ -365,18 +370,37 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     end
   end
 
+  describe 'inline block-level raw HTML in list items' do
+    it 'does not let an inline <div> in a list item swallow the rest of the document' do
+      markdown = "1. first <div>\n2. second <div>\n\nAfter the list.\n"
+      result = described_class.call(markdown, project: nil)
+      doc = result[:output]
+
+      paragraph = doc.css('p').find { |p| p.text.include?('After the list') }
+      expect(paragraph).to be_present
+      expect(paragraph.ancestors.map(&:name)).not_to include('ol')
+    end
+
+    it 'does not let an inline <section> in a list item swallow the rest of the document' do
+      markdown = "1. first <section>\n2. second <section>\n\nAfter the list.\n"
+      result = described_class.call(markdown, project: nil)
+      doc = result[:output]
+
+      paragraph = doc.css('p').find { |p| p.text.include?('After the list') }
+      expect(paragraph).to be_present
+      expect(paragraph.ancestors.map(&:name)).not_to include('ol')
+    end
+  end
+
   describe 'pathological input' do
-    it 'does not crash on deeply nested emphasis when run in a thread' do
+    it 'returns an error message for deeply nested emphasis when run in a thread' do
       thread = Thread.start do
         n = 5000
         markdown = ("*a **a " * n) + (" a** a*" * n)
 
         rendered = described_class.to_html(markdown, project: nil)
 
-        # Nokogiri (libxml2) by default will limit parse depth to 256; we get
-        # the outer <p> tag, and then 127 each of the alternating <em> and <strong>.
-        expect(rendered).to include("<em").exactly(127).times
-        expect(rendered).to include("<strong").exactly(127).times
+        expect(rendered).to include('nesting was too deep')
       end
       thread.join
     end

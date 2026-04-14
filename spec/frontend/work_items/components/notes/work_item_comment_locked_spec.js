@@ -1,4 +1,4 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comment_locked.vue';
 
@@ -9,6 +9,9 @@ describe('WorkItemCommentLocked', () => {
     wrapper = shallowMount(WorkItemCommentLocked, {
       propsData: {
         workItemType,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -26,13 +29,13 @@ describe('WorkItemCommentLocked', () => {
 
   it('renders text', () => {
     expect(wrapper.text()).toMatchInterpolatedText(
-      'The discussion in this task is locked. Only project members can comment. Learn more.',
+      'Discussion is locked. Only members can comment.',
     );
   });
 
   it('renders learn more link which links to locked discussions docs path', () => {
     expect(findLearnMoreLink().attributes('href')).toBe(
-      WorkItemCommentLocked.constantOptions.lockedIssueDocsPath,
+      '/help/user/discussions/_index.md#prevent-comments-by-locking-the-discussion',
     );
   });
 });

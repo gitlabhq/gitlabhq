@@ -7,7 +7,8 @@ import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '../constants';
+import { JS_TOGGLE_EXPAND_CLASS } from '../constants';
+import { sidebarState } from '../state';
 import {
   isCollapsed,
   toggleSuperSidebarCollapsed,

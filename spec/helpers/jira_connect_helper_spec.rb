@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe JiraConnectHelper, feature_category: :integrations do
   describe '#jira_connect_app_data' do
-    let_it_be(:installation) { create(:jira_connect_installation) }
-    let_it_be(:subscription) { create(:jira_connect_subscription) }
+    let_it_be(:installation) { build_stubbed(:jira_connect_installation) }
+    let_it_be(:subscription) { build_stubbed(:jira_connect_subscription) }
 
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:client_id) { '123' }
     let(:enable_public_keys_storage) { false }
 
@@ -64,7 +64,7 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
         end
 
         context 'with self-managed instance' do
-          let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
+          let_it_be(:installation) { build_stubbed(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
 
           it 'points urls to the self-managed instance' do
             expect(parsed_oauth_metadata).to include(
@@ -74,7 +74,7 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
           end
 
           context 'with relative_url_root' do
-            let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com/gitlab') }
+            let_it_be(:installation) { build_stubbed(:jira_connect_installation, instance_url: 'https://gitlab.example.com/gitlab') }
 
             before do
               stub_config_setting(relative_url_root: '/gitlab')

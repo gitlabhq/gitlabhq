@@ -34,7 +34,7 @@ module API
         desc: 'The organization id for the topics'
       use :pagination
     end
-    route_setting :authorization, skip_granular_token_authorization: true
+    route_setting :authorization, skip_granular_token_authorization: :public_endpoint
     get 'topics' do
       organization = find_organization!(params[:organization_id])
 
@@ -54,7 +54,7 @@ module API
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
     end
-    route_setting :authorization, skip_granular_token_authorization: true
+    route_setting :authorization, skip_granular_token_authorization: :public_endpoint
     get 'topics/:id' do
       topic = find_topic!(params[:id])
 

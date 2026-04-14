@@ -4,6 +4,47 @@ module Sidebars
   module Projects
     module Menus
       class SettingsMenu < ::Sidebars::Menu
+        MENU_ITEMS = %i[
+          general_menu_item
+          integrations_menu_item
+          webhooks_menu_item
+          access_tokens_menu_item
+          repository_menu_item
+          merge_requests_menu_item
+          ci_cd_menu_item
+          packages_and_registries_menu_item
+          monitor_menu_item
+          usage_quotas_menu_item
+        ].freeze
+        NON_ADMIN_MENU_ITEMS = {
+          general_menu_item: [
+            :view_edit_page
+          ],
+          integrations_menu_item: [
+            :admin_integrations
+          ],
+          webhooks_menu_item: [
+            :read_web_hook
+          ],
+          access_tokens_menu_item: [
+            :manage_resource_access_tokens
+          ],
+          repository_menu_item: [
+            :admin_push_rules,
+            :manage_deploy_tokens,
+            :admin_protected_branch,
+            :manage_protected_tags
+          ],
+          merge_requests_menu_item: [
+            :manage_merge_request_settings
+          ],
+          ci_cd_menu_item: [
+            :admin_cicd_variables,
+            :admin_protected_environments,
+            :read_runners
+          ]
+        }.freeze
+
         override :configure_menu_items
         def configure_menu_items
           return false if enabled_menu_items.empty?
@@ -36,23 +77,8 @@ module Sidebars
 
         private
 
-        def enabled_menu_items
-          if can?(context.current_user, :admin_project, context.project)
-            [
-              general_menu_item,
-              integrations_menu_item,
-              webhooks_menu_item,
-              access_tokens_menu_item,
-              repository_menu_item,
-              merge_requests_menu_item,
-              ci_cd_menu_item,
-              packages_and_registries_menu_item,
-              monitor_menu_item,
-              usage_quotas_menu_item
-            ]
-          else
-            []
-          end
+        def can_admin_project?
+          can?(context.current_user, :admin_project, context.project)
         end
 
         def general_menu_item
@@ -163,6 +189,21 @@ module Sidebars
             active_routes: { path: 'projects/settings/merge_requests#show' },
             item_id: context.is_super_sidebar ? :merge_request_settings : :merge_requests
           )
+        end
+
+        alias_method :build, :send
+
+        def enabled_menu_items
+          return [] if context.current_user.blank?
+
+          return MENU_ITEMS.filter_map { |menu_item| build(menu_item) } if can_admin_project?
+
+          MENU_ITEMS.filter_map do |menu_item|
+            permissions = NON_ADMIN_MENU_ITEMS.fetch(menu_item, [])
+            next if permissions.empty?
+
+            build(menu_item) if can_any?(context.current_user, permissions, context.project)
+          end
         end
       end
     end

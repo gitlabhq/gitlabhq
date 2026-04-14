@@ -1,0 +1,21 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Database/EstablishConnection:
+  Enabled: false
+
+# This project does not use multiple databases and relies on establishing
+# the connection manually via ActiveRecord::Base.
+Database/MultipleDatabases:
+  Exclude:
+    - 'spec/support/database.rb'
+
+Naming/FileName:
+  Exclude:
+    - 'lib/gitlab-database-data_isolation.rb'
+
+RSpec/EnvAssignment:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

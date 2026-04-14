@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
@@ -35,10 +35,10 @@ describe('Global Search Store Getters', () => {
   defaultState.aggregations = MOCK_LABEL_AGGREGATIONS;
   defaultState.aggregations.data.push(SMALL_MOCK_AGGREGATIONS[0]);
 
+  useMockLocationHelper();
+
   beforeEach(() => {
     state = cloneDeep(defaultState);
-
-    useMockLocationHelper();
   });
 
   describe('frequentGroups', () => {
@@ -84,6 +84,21 @@ describe('Global Search Store Getters', () => {
 
       state.navigation = MOCK_NAVIGATION;
       expect(getters.navigationItems(state)).toStrictEqual(MOCK_NAVIGATION_ITEMS);
+    });
+
+    it('returns "-" when count is unavailable', () => {
+      state.navigation = {
+        projects: {
+          label: 'Projects',
+          scope: 'projects',
+          link: '/search?scope=projects&search=et',
+          count: undefined,
+        },
+      };
+
+      const result = getters.navigationItems(state);
+
+      expect(result[0].pill_count).toBe('-');
     });
   });
 

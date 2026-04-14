@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';

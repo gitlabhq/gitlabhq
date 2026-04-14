@@ -249,27 +249,27 @@ module AuthHelper
   end
 
   def delete_otp_authenticator_data(password_required)
-    message = if password_required
-                _('Are you sure you want to delete this one-time password authenticator? ' \
-                  'Enter your password to continue.')
-              else
-                _('Are you sure you want to delete this one-time password authenticator?')
-              end
+    messages = if password_required
+                 [_('Are you sure you want to delete this one-time password authenticator?'),
+                   _('Enter your password to continue.')]
+               else
+                 [_('Are you sure you want to delete this one-time password authenticator?')]
+               end
 
     { button_text: _('Delete one-time password authenticator'),
       icon: 'remove',
-      message: message,
+      messages: messages,
       path: destroy_otp_profile_two_factor_auth_path,
       password_required: password_required.to_s }
   end
 
   def delete_passkey_data(password_required, path, passkey_count)
-    message = if password_required
-                s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
-                  'Enter your password to continue.')
-              else
-                s_('ProfilesAuthentication|Are you sure you want to delete this passkey?')
-              end
+    messages = if password_required
+                 [s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+                   _('Enter your password to continue.')]
+               else
+                 [s_('ProfilesAuthentication|Are you sure you want to delete this passkey?')]
+               end
 
     if passkey_count > 1
       modal_title = s_('ProfilesAuthentication|Delete passkey')
@@ -282,50 +282,53 @@ module AuthHelper
     { modal_title: modal_title,
       button_text: button_text,
       icon: 'remove',
-      message: message,
+      messages: messages,
       path: path,
       password_required: password_required.to_s }
   end
 
   def delete_webauthn_device_data(password_required, path)
-    message = if password_required
-                _('Are you sure you want to delete this WebAuthn device? ' \
-                  'Enter your password to continue.')
-              else
-                _('Are you sure you want to delete this WebAuthn device?')
-              end
+    messages = if password_required
+                 [_('Are you sure you want to delete this WebAuthn device?'),
+                   _('Enter your password to continue.')]
+               else
+                 [_('Are you sure you want to delete this WebAuthn device?')]
+               end
 
     { button_text: _('Delete WebAuthn device'),
       icon: 'remove',
-      message: message,
+      messages: messages,
       path: path,
       password_required: password_required.to_s }
   end
 
-  def disable_two_factor_authentication_data(password_required)
-    message = if password_required
-                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
-                  'Enter your password to continue. This action cannot be undone.')
-              else
-                _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?')
-              end
+  def disable_two_factor_authentication_data(password_required, passkeys)
+    messages = if passkeys
+                 [_('This will delete all 2FA methods from your account. We recommend keeping 2FA enabled to protect ' \
+                   'your account.'),
+                   _('Your passkey will only be eligible for passwordless sign-in.')]
+               else
+                 [_('This will delete all 2FA methods from your account. We recommend keeping 2FA enabled to protect ' \
+                   'your account.')]
+               end
 
     { button_text: _('Disable 2FA'),
-      message: message,
+      messages: messages,
+      modal_title: _('Disabled two-factor authentication (2FA)?'),
       path: profile_two_factor_auth_path,
       password_required: password_required.to_s }
   end
 
   def codes_two_factor_authentication_data(password_required)
-    message = if password_required
-                _('Are you sure you want to regenerate recovery codes? ' \
-                  'Enter your password to continue.')
-              else
-                _('Are you sure you want to regenerate recovery codes?')
-              end
+    messages = if password_required
+                 [_('Are you sure you want to regenerate recovery codes?'),
+                   _('Enter your password to continue.')]
+               else
+                 [_('Are you sure you want to regenerate recovery codes?')]
+               end
 
     { button_text: _('Regenerate recovery codes'),
-      message: message,
+      messages: messages,
       method: 'post',
       path: codes_profile_two_factor_auth_path,
       password_required: password_required.to_s,

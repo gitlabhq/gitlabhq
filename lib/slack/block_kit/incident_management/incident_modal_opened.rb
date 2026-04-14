@@ -109,7 +109,7 @@ module Slack
             action_id: "status",
             placeholder: {
               type: "plain_text",
-              text: s_("Status (optional)")
+              text: _("Status (optional)")
             },
             options: [
               {
@@ -143,34 +143,34 @@ module Slack
             action_id: "severity",
             placeholder: {
               type: "plain_text",
-              text: s_("Select severity (optional)")
+              text: _("Select severity (optional)")
             },
             options: [
               {
                 text: {
                   type: "plain_text",
-                  text: s_("Critical - S1")
+                  text: _("Critical - S1")
                 },
                 value: "critical"
               },
               {
                 text: {
                   type: "plain_text",
-                  text: s_("High - S2")
+                  text: _("High - S2")
                 },
                 value: "high"
               },
               {
                 text: {
                   type: "plain_text",
-                  text: s_("Medium - S3")
+                  text: _("Medium - S3")
                 },
                 value: "medium"
               },
               {
                 text: {
                   type: "plain_text",
-                  text: s_("Low - S4")
+                  text: _("Low - S4")
                 },
                 value: "low"
               }
@@ -184,7 +184,7 @@ module Slack
             action_id: "assignee",
             placeholder: {
               type: "plain_text",
-              text: s_("Assignee (optional)")
+              text: _("Assignee (optional)")
             }
           }
         end
@@ -196,14 +196,14 @@ module Slack
             block_id: "label_selector",
             label: {
               type: "plain_text",
-              text: s_("Labels")
+              text: _("Labels")
             },
             element: {
               type: "multi_external_select",
               action_id: "labels",
               placeholder: {
                 type: "plain_text",
-                text: s_("Select labels (optional)")
+                text: _("Select labels (optional)")
               }
             }
           }

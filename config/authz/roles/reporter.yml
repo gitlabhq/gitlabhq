@@ -7,61 +7,143 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _delete_shared_saved_view
+  - _update_incident_work_item
+  - _update_protected_job
+  - _update_shared_saved_view
+  - admin_issuable_resource_link
   - admin_issue
   - admin_issue_board
   - admin_issue_board_list
+  - admin_iteration
   - admin_label
   - admin_milestone
+  - admin_requirement
+  - admin_value_stream
   - admin_work_item
   - create_design
+  - create_epic
+  - create_incident
+  - create_iteration
+  - create_project_secrets
+  - create_requirement
+  - create_requirement_test_report
   - create_saved_view
   - create_snippet
+  - create_test_case
+  - create_ticket
+  - create_timelog
   - daily_statistics
+  - delete_project_secrets
   - destroy_design
   - download_code
   - download_wiki_code
+  - export_requirements
+  - fork_project
+  - import_requirements
+  - mark_note_as_internal
   - metrics_dashboard
   - move_design
   - read_build
   - read_ci_cd_analytics
   - read_code
   - read_commit_status
+  - read_compliance_framework
   - read_confidential_issues
   - read_container_image
+  - read_customizable_dashboards
+  - read_dependency
   - read_deploy_board
   - read_deployment
+  - read_dora4_analytics
+  - read_enterprise_ai_analytics
   - read_environment
   - read_external_emails
+  - read_external_status_check_response
+  - read_freeze_period
+  - read_google_cloud_artifact_registry
   - read_grafana
   - read_harbor_registry
+  - read_incident_management_escalation_policy
+  - read_incident_management_oncall_schedule
   - read_internal_note
+  - read_issuable_resource_link
+  - read_licenses
   - read_merge_request
+  - read_observability
   - read_package
   - read_pipeline
   - read_pipeline_schedule
+  - read_pro_ai_analytics
+  - read_project_merge_request_analytics
+  - read_project_secrets
+  - read_project_secrets_manager_status
   - read_prometheus
+  - read_security_orchestration_policy_project
   - read_sentry_issue
+  - read_software_license_policy
   - read_statistics
+  - read_timelog_category
   - reopen_issue
   - update_design
   - update_issue
+  - update_project_secrets
+  - update_requirement
+  - write_ai_agents
 group:
   permissions: []
   raw_permissions:
+  - _delete_created_custom_dashboard
+  - _delete_shared_saved_view
+  - _update_created_custom_dashboard
+  - _update_shared_saved_view
+  - admin_epic
+  - admin_epic_board
+  - admin_epic_board_list
   - admin_issue
   - admin_issue_board
   - admin_issue_board_list
+  - admin_iteration
+  - admin_iteration_cadence
   - admin_label
   - admin_milestone
+  - admin_value_stream
   - admin_work_item
+  - create_epic
+  - create_iteration
+  - create_iteration_cadence
   - create_saved_view
+  - create_secret
+  - create_timelog
+  - delete_secret
+  - download_wiki_code
+  - mark_note_as_internal
   - read_ci_cd_analytics
+  - read_confidential_epic
   - read_confidential_issues
   - read_container_image
   - read_crm_contact
   - read_crm_organization
+  - read_custom_dashboard
+  - read_customizable_dashboards
+  - read_cycle_analytics
+  - read_dora4_analytics
+  - read_enterprise_ai_analytics
+  - read_group_analytics_dashboards
+  - read_group_coverage_reports
+  - read_group_repository_analytics
+  - read_group_stage
   - read_harbor_registry
   - read_internal_note
   - read_package
+  - read_pro_ai_analytics
   - read_prometheus
+  - read_secret
+  - read_timelog_category
+  - reopen_issue
+  - update_epic
   - update_issue
+  - update_secret
+  - view_group_ci_cd_analytics
+  - view_productivity_analytics
+  - view_type_of_work_charts

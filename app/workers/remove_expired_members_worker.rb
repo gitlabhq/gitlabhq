@@ -49,7 +49,7 @@ class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
       namespace: member.source
     }
     with_context(context) do
-      Members::DestroyService.new.execute(member, skip_authorization: true, skip_subresources: true)
+      Members::DestroyService.new(member, skip_authorization: true, skip_subresources: true).execute
 
       expired_user = member.user
 

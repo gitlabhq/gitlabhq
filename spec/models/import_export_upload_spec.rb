@@ -71,9 +71,9 @@ RSpec.describe ImportExportUpload, feature_category: :importers do
       expect(find_callback(after_save_callbacks, :store_export_file!)).to be_nil
     end
 
-    it 'import file is stored in after_save callback' do
-      expect(find_callback(after_save_callbacks, :store_import_file!)).to be_present
-      expect(find_callback(after_commit_callbacks, :store_import_file!)).to be_nil
+    it 'import file is stored in after_commit callback' do
+      expect(find_callback(after_commit_callbacks, :store_import_file!)).to be_present
+      expect(find_callback(after_save_callbacks, :store_import_file!)).to be_nil
     end
   end
 

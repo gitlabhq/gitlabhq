@@ -70,6 +70,30 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
           })
         end
       end
+
+      context 'when x-gitlab-mcp-server-tool-name-prefix header is present' do
+        subject(:tool_call) do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: params,
+            headers: { 'X-Gitlab-Mcp-Server-Tool-Name-Prefix' => 'test_' }
+        end
+
+        let(:tool_params) { { name: 'test_get_issue', arguments: { id: project.full_path, issue_iid: issue.iid } } }
+
+        it 'returns success response' do
+          tool_call
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['jsonrpc']).to eq(params[:jsonrpc])
+          expect(json_response['id']).to eq(params[:id])
+          expect(json_response.keys).to include('result')
+          expect(json_response['result']['content']).to be_an(Array)
+          expect(json_response['result']['content'].first['type']).to eq('text')
+          expect(json_response['result']['content'].first['text']).to include(issue.title)
+          expect(json_response['result']['structuredContent']['title']).to eq(issue.title)
+          expect(json_response['result']['isError']).to be_falsey
+        end
+      end
     end
 
     context 'with tool validation errors' do

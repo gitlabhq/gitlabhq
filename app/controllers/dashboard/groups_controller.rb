@@ -12,10 +12,6 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
 
   urgency :low, [:index]
 
-  before_action only: [:index] do
-    push_frontend_feature_flag(:groups_list_keyset_pagination, current_user)
-  end
-
   def index
     groups = GroupsFinder.new(
       current_user,

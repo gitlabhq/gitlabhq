@@ -87,7 +87,7 @@ RSpec.shared_examples 'integration settings form' do
     event_titles = {
       push_events: s_('IntegrationEvents|A push is made to the repository'),
       issues_events: s_('IntegrationEvents|A work item is created, closed, or reopened'),
-      confidential_issues_events: s_('A confidential work item is created, closed, or reopened'),
+      confidential_issues_events: _('A confidential work item is created, closed, or reopened'),
       merge_requests_events: s_('IntegrationEvents|A merge request is created, merged, closed, or reopened'),
       note_events: s_('IntegrationEvents|A comment is added'),
       confidential_note_events: s_(

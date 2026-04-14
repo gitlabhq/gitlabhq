@@ -60,12 +60,15 @@ describe('WorkItemMoreActions', () => {
     expect(findTooltip().value).toBe('');
   });
 
-  it('does not contain a roadmap page link when the work item type is not an Epic', () => {
+  it('does not contain a roadmap page link when supportsRoadmapView is not set', () => {
     expect(findViewRoadmapLink().exists()).toBe(false);
   });
 
-  it('contains a link to the roadmap page when the work item type is an Epic', () => {
-    createComponent({ workItemType: 'Epic' });
+  it('contains a link to the roadmap page when supportsRoadmapView is true', () => {
+    createComponent({
+      workItemType: 'Epic',
+      workItemTypeConfiguration: { supportsRoadmapView: true },
+    });
 
     const link = findViewRoadmapLink();
 
@@ -81,16 +84,12 @@ describe('WorkItemMoreActions', () => {
       showViewRoadmapAction | supportsRoadmapView | workItemType | expected | description
       ${true}               | ${true}             | ${'Task'}    | ${true}  | ${'when supportsRoadmapView is true'}
       ${true}               | ${true}             | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is true'}
-      ${false}              | ${true}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is true'}
-      ${false}              | ${true}             | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is true'}
+      ${false}              | ${true}             | ${'Task'}    | ${false} | ${'when showViewRoadmapAction is false'}
+      ${false}              | ${true}             | ${'Epic'}    | ${false} | ${'when showViewRoadmapAction is false'}
       ${true}               | ${false}            | ${'Task'}    | ${false} | ${'when supportsRoadmapView is false'}
-      ${true}               | ${false}            | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is false'}
-      ${false}              | ${false}            | ${'Task'}    | ${false} | ${'when supportsRoadmapView is false'}
-      ${false}              | ${false}            | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is false'}
-      ${true}               | ${null}             | ${'Epic'}    | ${true}  | ${'when supportsRoadmapView is null and workItemType is "Epic" (fallback)'}
-      ${false}              | ${null}             | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is "Epic" (fallback)'}
-      ${true}               | ${null}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is not "Epic" (fallback)'}
-      ${false}              | ${null}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is null and workItemType is not "Epic" (fallback)'}
+      ${true}               | ${false}            | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is false'}
+      ${true}               | ${null}             | ${'Epic'}    | ${false} | ${'when supportsRoadmapView is null'}
+      ${true}               | ${null}             | ${'Task'}    | ${false} | ${'when supportsRoadmapView is null'}
     `('$description', ({ showViewRoadmapAction, supportsRoadmapView, workItemType, expected }) => {
       const workItemTypeConfiguration = { supportsRoadmapView };
       createComponent({ showViewRoadmapAction, workItemType, workItemTypeConfiguration });
@@ -116,7 +115,10 @@ describe('WorkItemMoreActions', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     beforeEach(() => {
-      createComponent({ workItemType: 'Epic' });
+      createComponent({
+        workItemType: 'Epic',
+        workItemTypeConfiguration: { supportsRoadmapView: true },
+      });
     });
 
     it('View on roadmap button should have tracking', async () => {

@@ -1,0 +1,9 @@
+---
+name: merge_train_api_auto_merge_fallback
+description: Fix merge train API auto_merge to fall back to merge_train strategy when checks already passed
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226033
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592889
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

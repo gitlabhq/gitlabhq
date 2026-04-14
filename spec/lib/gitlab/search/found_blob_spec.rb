@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Search::FoundBlob, feature_category: :global_search do
   end
 
   describe 'policy' do
-    let(:project) { build(:project, :repository) }
+    let(:project) { build_stubbed(:project, :repository) }
 
     subject { described_class.new(project: project) }
 

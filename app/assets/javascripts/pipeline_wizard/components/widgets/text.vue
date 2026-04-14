@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 
 const VALIDATION_STATE = {

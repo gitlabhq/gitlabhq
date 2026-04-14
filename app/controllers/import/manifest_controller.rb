@@ -36,7 +36,6 @@ class Import::ManifestController < Import::BaseController
           format.json do
             render json: { success: true }
           end
-          # HTML support can be removed here when the FF :new_project_creation_form gets removed
           format.html do
             redirect_to status_import_manifest_path
           end
@@ -52,7 +51,6 @@ class Import::ManifestController < Import::BaseController
       format.json do
         render json: { errors: @errors }, status: :unprocessable_entity
       end
-      # HTML support can be removed here when the FF :new_project_creation_form gets removed
       format.html do
         render(:new)
       end
@@ -139,7 +137,6 @@ class Import::ManifestController < Import::BaseController
       format.json do
         render json: { errors: @errors }, status: :unprocessable_entity
       end
-      # HTML support can be removed here when the FF :new_project_creation_form gets removed
       format.html do
         render(:new)
       end

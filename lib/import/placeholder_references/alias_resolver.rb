@@ -237,7 +237,8 @@ module Import
         'WorkItems::Description' => {
           1 => {
             model: WorkItems::Description,
-            columns: { "last_edited_by_id" => "last_edited_by_id" }
+            columns: { "last_edited_by_id" => "last_edited_by_id" },
+            columns_ignored_on_deletion: %w[last_edited_by_id]
           }
         }
       }.freeze

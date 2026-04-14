@@ -41,6 +41,8 @@ required upgrade stops occur at versions:
   > Automatic database version upgrades only apply to single node instances when using the Linux package.
   > In all other cases, like Geo instances, PostgreSQL with high availability using the
   > Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-geo-instance) for detailed steps.
+
+- GitLab bundles the `pg_dump` binary. When using an external PostgreSQL server, ensure the `pg_dump` client version is compatible with the PostgreSQL server, for both creating and restoring GitLab database backups.
 - From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
   GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
   downtime. For more information, see [issue 6089](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).

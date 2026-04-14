@@ -347,10 +347,39 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
       end
+
+      context 'when dropping with a failure reason' do
+        it 'includes the failure_reason in the internal event' do
+          expect { pipeline.drop!(:config_error) }.to trigger_internal_events('completed_pipeline_execution')
+            .with(
+              project: project,
+              user: user,
+              additional_properties: { label: 'failed', failure_reason: 'config_error' }
+            )
+        end
+      end
     end
   end
 
   describe 'callbacks' do
+    describe '#keep_around_commits' do
+      let(:pipeline) { build(:ci_pipeline, user: user, project: project) }
+
+      it 'calls keep_around_commits on create' do
+        expect(pipeline).to receive(:keep_around_commits)
+
+        pipeline.save!
+      end
+
+      it 'does not call keep_around_commits on update' do
+        pipeline.save!
+
+        expect(pipeline).not_to receive(:keep_around_commits)
+
+        pipeline.update!(ref: 'new-ref')
+      end
+    end
+
     describe '.track_ci_pipeline_created_event' do
       let(:pipeline) { build(:ci_pipeline, user: user) }
 
@@ -2229,47 +2258,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe 'nested attributes for variables' do
-    let_it_be(:variables_attributes) { [{ key: 'TEST', secret_value: 'value' }] }
-    let_it_be_with_refind(:persisted_pipeline) do
-      create(:ci_pipeline, project: project).tap { |pipeline| pipeline.variables_attributes = variables_attributes }
-    end
-
-    let(:pipeline) do
-      build(:ci_pipeline, project: project).tap { |pipeline| pipeline.variables_attributes = variables_attributes }
-    end
-
-    it 'rejects variables_attributes' do
-      expect(pipeline.association(:variables).target).to be_empty
-    end
-
-    context 'when pipeline is persisted' do
-      let(:pipeline) { persisted_pipeline }
-
-      it 'rejects variables_attributes' do
-        expect(pipeline.association(:variables).reader).to be_empty
-      end
-    end
-
-    context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
-      before do
-        stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
-      end
-
-      it 'accepts variables_attributes' do
-        expect(pipeline.association(:variables).target).not_to be_empty
-      end
-
-      context 'when pipeline is persisted' do
-        let(:pipeline) { persisted_pipeline }
-
-        it 'rejects variables_attributes' do
-          expect(pipeline.association(:variables).reader).to be_empty
-        end
-      end
-    end
-  end
-
   describe '#auto_canceled?' do
     subject { pipeline.auto_canceled? }
 
@@ -2703,12 +2691,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'pipeline caching' do
-      it 'executes Ci::ExpirePipelineCacheService' do
-        expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
-          expect(service).to receive(:execute).with(pipeline)
-        end
+      it 'enqueues Ci::ExpirePipelineCacheWorker' do
+        expect(Ci::ExpirePipelineCacheWorker)
+          .to receive(:perform_async)
+          .with(pipeline.id, { 'partition_id' => pipeline.partition_id })
 
         pipeline.cancel
+      end
+
+      context 'when ci_expire_pipeline_cache_workers feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_expire_pipeline_cache_workers: false)
+        end
+
+        it 'executes Ci::ExpirePipelineCacheService' do
+          expect_next_instance_of(Ci::ExpirePipelineCacheService) do |service|
+            expect(service).to receive(:execute).with(pipeline)
+          end
+
+          pipeline.cancel
+        end
       end
     end
 
@@ -2801,7 +2803,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let!(:job) { downstream_pipeline.builds.first }
 
         context 'when source bridge is dependent on pipeline status' do
-          let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline) }
+          let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, downstream: project) }
 
           it 'schedules the pipeline bridge worker' do
             expect(::Ci::PipelineBridgeStatusWorker).to receive(:perform_async).with(downstream_pipeline.id)
@@ -2855,7 +2857,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             let!(:upstream_of_upstream_pipeline) { create(:ci_pipeline) }
 
             before do
-              upstream_bridge = create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream_pipeline)
+              upstream_bridge = create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream_pipeline, downstream: project)
               create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)
             end
 
@@ -3323,6 +3325,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it 'returns false' do
+          expect(pipeline).not_to be_latest
+        end
+      end
+
+      context 'with blank sha' do
+        before do
+          pipeline.update_column(:sha, nil)
+        end
+
+        it 'returns false without hitting Gitaly' do
           expect(pipeline).not_to be_latest
         end
       end
@@ -3918,78 +3930,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns latest pipelines for ref and statuses' do
           expect(latest_pipelines_for_ref_by_statuses).to match_array([ref1_success, ref1_failed])
         end
-      end
-    end
-  end
-
-  describe '.find_by_id_through_partition' do
-    let_it_be(:pipeline) { create(:ci_pipeline) }
-
-    context 'when ci_partition_pruning_workers feature flag is enabled' do
-      context 'when pipeline belongs to the current partition' do
-        let_it_be(:current_partition) do
-          Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
-          Ci::Partition.find_or_create_by!(id: pipeline.partition_id, status: Ci::Partition.statuses[:current])
-        end
-
-        it 'finds the pipeline using the partition-scoped query' do
-          recorder = ActiveRecord::QueryRecorder.new do
-            described_class.find_by_id_through_partition(pipeline.id)
-          end
-
-          expect(recorder.log)
-            .to include(/"partition_id" = #{current_partition.id} AND "p_ci_pipelines"."id" = #{pipeline.id}/)
-        end
-
-        it 'returns the pipeline' do
-          expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
-        end
-      end
-
-      context 'when pipeline does not belong to the current partition' do
-        let_it_be(:current_partition) do
-          Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
-          Ci::Partition.find_or_create_by!(id: pipeline.partition_id + 1, status: Ci::Partition.statuses[:current])
-        end
-
-        it 'falls back to the unscoped query' do
-          recorder = ActiveRecord::QueryRecorder.new do
-            described_class.find_by_id_through_partition(pipeline.id)
-          end
-
-          expect(recorder.log)
-            .to include(/WHERE "p_ci_pipelines"."id" = #{pipeline.id}/)
-        end
-
-        it 'returns the pipeline' do
-          expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
-        end
-      end
-    end
-
-    context 'when pipeline does not exist' do
-      it 'returns nil' do
-        expect(described_class.find_by_id_through_partition(non_existing_record_id)).to be_nil
-      end
-    end
-
-    context 'when id is nil' do
-      it 'returns nil' do
-        expect(described_class.find_by_id_through_partition(nil)).to be_nil
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_partition_pruning_workers: false)
-      end
-
-      it 'skips the partition-scoped query and uses the unscoped lookup' do
-        expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
-      end
-
-      it 'returns nil when pipeline does not exist' do
-        expect(described_class.find_by_id_through_partition(non_existing_record_id)).to be_nil
       end
     end
   end
@@ -6678,6 +6618,45 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#ci_config_ref_uri' do
+    let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'main') }
+
+    it 'returns the fully qualified config ref URI' do
+      expected = "#{Settings.build_server_fqdn}/#{pipeline.project.full_path}" \
+        "//.gitlab-ci.yml@refs/heads/main"
+
+      expect(pipeline.ci_config_ref_uri).to eq(expected)
+    end
+
+    context 'when the project has a custom CI config path' do
+      before do
+        allow(pipeline.project).to receive(:ci_config_path_or_default).and_return('custom/path.yml')
+      end
+
+      it 'uses the custom config path' do
+        expect(pipeline.ci_config_ref_uri).to include('//custom/path.yml@')
+      end
+    end
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { build_stubbed(:ci_pipeline, tag: 'v1.0', ref: 'v1.0') }
+
+      it 'uses the tag ref path' do
+        expect(pipeline.ci_config_ref_uri).to end_with('@refs/tags/v1.0')
+      end
+    end
+
+    context 'when source_ref_path is nil' do
+      before do
+        allow(pipeline).to receive(:source_ref_path).and_return(nil)
+      end
+
+      it 'returns a URI ending with @' do
+        expect(pipeline.ci_config_ref_uri).to end_with('@')
+      end
+    end
+  end
+
   describe '#builds_with_coverage' do
     let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
@@ -6821,6 +6800,109 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#upstream_and_all_downstreams' do
+    subject(:upstream_and_all_downstreams) { pipeline.upstream_and_all_downstreams }
+
+    let(:pipeline) { create(:ci_pipeline, :created) }
+
+    context 'when pipeline has no relatives' do
+      it 'returns only the pipeline itself' do
+        expect(upstream_and_all_downstreams).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline has an upstream' do
+      let(:upstream) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+      end
+
+      it 'returns upstream and self' do
+        expect(upstream_and_all_downstreams).to contain_exactly(upstream, pipeline)
+      end
+    end
+
+    context 'when pipeline has a downstream' do
+      let(:downstream) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'returns self and downstream' do
+        expect(upstream_and_all_downstreams).to contain_exactly(pipeline, downstream)
+      end
+    end
+
+    context 'when pipeline is in the middle of a chain' do
+      let(:upstream) { create(:ci_pipeline) }
+      let(:downstream) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'returns upstream, self, and downstream' do
+        expect(upstream_and_all_downstreams).to contain_exactly(upstream, pipeline, downstream)
+      end
+    end
+
+    context 'when pipeline is the root of a multi-level hierarchy' do
+      let(:child) { create(:ci_pipeline) }
+      let(:grandchild) { create(:ci_pipeline) }
+      let(:another_grandchild) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(pipeline, child)
+        create_source_pipeline(child, grandchild)
+        create_source_pipeline(child, another_grandchild)
+      end
+
+      it 'returns self and all descendants' do
+        expect(upstream_and_all_downstreams).to contain_exactly(pipeline, child, grandchild, another_grandchild)
+      end
+    end
+
+    context 'when pipeline has cross-project upstream and downstream' do
+      let(:upstream) { create(:ci_pipeline, project: create(:project)) }
+      let(:downstream) { create(:ci_pipeline, project: create(:project)) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+        create_source_pipeline(pipeline, downstream)
+      end
+
+      it 'returns all pipelines across projects' do
+        expect(upstream_and_all_downstreams).to contain_exactly(upstream, pipeline, downstream)
+      end
+    end
+
+    context 'when pipeline has a sibling (shares the same upstream)' do
+      let(:ancestor) { create(:ci_pipeline) }
+      let(:sibling) { create(:ci_pipeline) }
+      let(:child) { create(:ci_pipeline) }
+
+      before do
+        create_source_pipeline(ancestor, pipeline)
+        create_source_pipeline(ancestor, sibling)
+        create_source_pipeline(pipeline, child)
+      end
+
+      it 'does not include siblings, only the direct lineage' do
+        expect(upstream_and_all_downstreams).to contain_exactly(ancestor, pipeline, child)
+      end
+    end
+
+    it 'returns an ActiveRecord::Relation that supports includes' do
+      relation = upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }])
+
+      expect(relation).to be_an(ActiveRecord::Relation)
+      expect { relation.to_a }.not_to raise_error
+    end
+  end
+
   describe '#self_and_project_ancestors' do
     subject(:self_and_project_ancestors) { pipeline.self_and_project_ancestors }
 
@@ -6954,7 +7036,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when the downstream has strategy: depend' do
-      let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, status: 'created', user: current_user) }
+      let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, status: 'created', user: current_user, downstream: project) }
       let_it_be(:current_user) { owner }
 
       before do
@@ -6966,7 +7048,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when the upstream pipeline has an upstream bridge that is dependant on status' do
         let(:upstream_of_upstream) { create(:ci_pipeline, project: create(:project)) }
-        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner) }
+        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner, downstream: project) }
 
         before do
           create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)
@@ -6983,7 +7065,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when the downstream has strategy: mirror' do
-      let!(:bridge) { create(:ci_bridge, :strategy_mirror, pipeline: upstream_pipeline, status: 'created', user: current_user) }
+      let!(:bridge) { create(:ci_bridge, :strategy_mirror, pipeline: upstream_pipeline, status: 'created', user: current_user, downstream: project) }
       let_it_be(:current_user) { owner }
 
       before do
@@ -6995,7 +7077,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when the upstream pipeline has an upstream bridge that mirrors the status' do
         let(:upstream_of_upstream) { create(:ci_pipeline, project: create(:project)) }
-        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner) }
+        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner, downstream: project) }
 
         before do
           create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)

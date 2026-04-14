@@ -40,7 +40,7 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, permissions: :authorize_generic_package, boundary_type: :project,
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization,
             job_token_policies: :admin_packages
 
           params do

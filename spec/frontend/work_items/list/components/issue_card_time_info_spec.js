@@ -3,12 +3,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { STATUS_CLOSED } from '~/issues/constants';
 import IssueCardTimeInfo from '~/work_items/list/components/issue_card_time_info.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
+import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_TIME_TRACKING,
+  WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
+import { mockParentWorkItem } from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('CE IssueCardTimeInfo component', () => {
   let wrapper;
@@ -101,6 +104,7 @@ describe('CE IssueCardTimeInfo component', () => {
   const findMilestone = () => wrapper.findComponent(IssuableMilestone);
   const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
   const findDueDateIcon = () => wrapper.findByTestId('issuable-due-date').findComponent(GlIcon);
+  const findParentMetadata = () => wrapper.findComponent(WorkItemParentMetadata);
 
   const mountComponent = ({ issue = issueObject(), hiddenMetadataKeys = [] } = {}) =>
     shallowMountExtended(IssueCardTimeInfo, {
@@ -260,6 +264,32 @@ describe('CE IssueCardTimeInfo component', () => {
 
       expect(findMilestone().exists()).toBe(true);
       expect(findWorkItemAttribute().exists()).toBe(true);
+    });
+  });
+
+  describe('parent metadata', () => {
+    it('does not render parent metadata when parent is not present', () => {
+      wrapper = mountComponent({ issue: issueObject() });
+
+      expect(findParentMetadata().exists()).toBe(false);
+    });
+
+    it('renders parent metadata when parent is present', () => {
+      wrapper = mountComponent({
+        issue: {
+          ...workItemObject(),
+          widgets: [
+            ...workItemObject().widgets,
+            {
+              type: WIDGET_TYPE_HIERARCHY,
+              parent: mockParentWorkItem,
+            },
+          ],
+        },
+      });
+
+      expect(findParentMetadata().exists()).toBe(true);
+      expect(findParentMetadata().props('parent')).toEqual(mockParentWorkItem);
     });
   });
 });

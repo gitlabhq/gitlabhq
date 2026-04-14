@@ -1,0 +1,8 @@
+%p
+  - code_tag_pair = tag_pair(tag.code, :code_open, :code_close)
+  = safe_format(s_('Notify|Group %{code_open}%{old_path_with_namespace}%{code_close} was moved to another location.'), code_tag_pair, old_path_with_namespace: @old_path_with_namespace)
+%p
+  - group_link_tag_pair = tag_pair(link_to('', group_url(@group), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+  = safe_format(s_('Notify|The group is now located under %{link_start}%{group_full_name}%{link_end}.'), group_link_tag_pair, group_full_name: @group.full_name)
+%p
+  = s_('Notify|Please update any bookmarks or links that reference the old group path.')

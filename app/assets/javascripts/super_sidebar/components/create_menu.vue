@@ -3,7 +3,6 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
-  GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { isMetaClick } from '~/lib/utils/common_utils';
@@ -16,10 +15,8 @@ import {
 import {
   CREATE_NEW_WORK_ITEM_MODAL,
   CREATION_CONTEXT_SUPER_SIDEBAR,
-  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DROPDOWN_Y_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned
@@ -31,7 +28,6 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
-    GlLink,
     InviteMembersTrigger,
     CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
   },
@@ -41,8 +37,7 @@ export default {
   i18n: {
     createNew: __('Create new…'),
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled'],
+  inject: ['isGroup', 'fullPath'],
   props: {
     groups: {
       type: Array,
@@ -63,14 +58,6 @@ export default {
         crossAxis: DROPDOWN_X_OFFSET_BASE,
       };
     },
-    isEpicsList() {
-      // If consolidated list is disabled and is group
-      // New epic is show which is similar to epic list experience
-      return !this.workItemPlanningViewEnabled && this.isGroup;
-    },
-    preselectedWorkItemType() {
-      return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : undefined;
-    },
   },
   methods: {
     isInvitedMembers(groupItem) {
@@ -83,9 +70,6 @@ export default {
       // Make sure <gl-disclosure-dropdown-item> doesn't have an href so it's
       // not rendered as <a> which prevents us from opening the create modal
       return { ...groupItem, href: undefined };
-    },
-    getCreateWorkItemHref(groupItem) {
-      return this.workItemPlanningViewEnabled ? undefined : groupItem.href;
     },
     handleCreateWorkItemClick(event) {
       if (event && isMetaClick(event)) {
@@ -102,7 +86,6 @@ export default {
   },
   toggleId: 'create-menu-toggle',
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
-  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_CREATE_SOURCES,
 };
 </script>
@@ -141,18 +124,7 @@ export default {
           :item="getCreateWorkItemItem(groupItem)"
           data-testid="new-work-item-trigger"
           @action="handleCreateWorkItemClick"
-        >
-          <template #list-item>
-            <gl-link
-              v-if="getCreateWorkItemHref(groupItem)"
-              class="gl-block gl-text-default hover:gl-text-default hover:gl-no-underline"
-              :href="getCreateWorkItemHref(groupItem)"
-              @click.stop="handleCreateWorkItemClick"
-            >
-              {{ groupItem.text }}
-            </gl-link>
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>
     </gl-disclosure-dropdown-group>
@@ -163,9 +135,7 @@ export default {
       :full-path="fullPath"
       hide-button
       :is-group="isGroup"
-      :preselected-work-item-type="preselectedWorkItemType"
       :visible="isCreateWorkItemModalVisible"
-      :is-epics-list="isEpicsList"
       from-global-menu
       data-testid="new-work-item-modal"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"

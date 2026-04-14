@@ -288,12 +288,13 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
       allow(Kaminari.config).to receive(:default_per_page).and_return(1)
 
       sign_in(user)
-      visit dashboard_groups_path
     end
 
     it 'loads results for next page' do
-      expect(page).to have_selector('[data-testid="gl-pagination-item"]', count: 2)
-      expect(page).to have_selector('[data-testid="gl-pagination-next"]')
+      visit dashboard_groups_path
+
+      expect(page).to have_selector('[data-testid="prevButton"]')
+      expect(page).to have_selector('[data-testid="nextButton"]')
 
       # Check first page
       expect(page).to have_content(group2.full_name)
@@ -302,7 +303,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
       expect(has_testid?("groups-list-item-#{group.id}")).to be false
 
       # Go to next page
-      find_by_testid('gl-pagination-next').click
+      find_by_testid('nextButton').click
 
       wait_for_requests
 

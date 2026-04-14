@@ -7,7 +7,7 @@ module Banzai
         FilterArray[
           Filter::IncludeFilter,
           Filter::MarkdownFilter,
-          Filter::ConvertTextToDocFilter,
+          Filter::ParseHtmlFilter
         ]
       end
     end

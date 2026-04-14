@@ -35,7 +35,7 @@ To view security findings:
 1. Select a severity level.
 1. Select a finding to open it in a VS Code tab.
 
-## Perform SAST scanning
+## Static application security testing (SAST)
 
 {{< details >}}
 
@@ -64,17 +64,31 @@ To learn about setting up SAST scanning, see
 [SAST scanning in VS Code](https://www.youtube.com/watch?v=s-qOSQO0i-8) on GitLab Unfiltered.
 <!-- Video published on 2025-02-10 -->
 
+### Enable SAST scanning
+
+To enable real-time SAST scanning:
+
+1. Select **Extensions** > **GitLab**.
+1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings** > **Code Security**.
+1. Select the **Enable Real-time SAST scan** checkbox.
+1. Optional. To enable SAST scanning of the active file when you save it, select the
+   **Enable scanning on file save** checkbox.
+
+### Perform SAST scanning
+
 Prerequisites:
 
 - GitLab for VS Code 5.31.0 or later.
 - The extension is [authenticated with GitLab](setup.md#authenticate-with-gitlab).
-- Real-time SAST scan is [enabled](setup.md#code-security).
+- Real-time SAST scan is enabled.
 
 To perform SAST scanning of a file in VS Code:
 
 1. Open the file.
 1. Trigger the SAST scan by either:
-   - Saving the file (if you have enabled [scanning on file save](setup.md#code-security)).
+   - Saving the file (if you have enabled scanning on file save).
+   - In the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}) > **GitLab remote scan (SAST)**.
+     Then, select the **Scan current file** button at the top of the section.
    - Using the Command Palette:
      1. Open the Command Palette:
         - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.

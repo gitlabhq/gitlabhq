@@ -84,16 +84,6 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
     end
 
-    it_behaves_like 'authorizing granular token permissions', :authorize_terraform_module do
-      before_all do
-        project.add_developer(user)
-      end
-
-      let(:boundary_object) { project }
-      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => pat.token) }
-      let(:request) { api_request }
-    end
-
     context 'for use_final_store_path' do
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
 
@@ -290,6 +280,33 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
             it_behaves_like 'not creating a package', :forbidden
           end
         end
+      end
+    end
+
+    context 'with package protection rule' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, :terraform_module,
+          project: project,
+          package_name_pattern: 'mymodule/mysystem',
+          minimum_access_level_for_push: :maintainer
+        )
+      end
+
+      let_it_be(:developer) { create(:user, developer_of: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => auth_user.token) }
+
+      context 'when user has lower access level than required' do
+        let(:auth_user) { create(:personal_access_token, user: developer) }
+
+        it_behaves_like 'not creating a package', :forbidden
+      end
+
+      context 'when user meets the required access level' do
+        let(:auth_user) { create(:personal_access_token, user: maintainer) }
+
+        it_behaves_like 'creating a package'
       end
     end
 

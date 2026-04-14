@@ -1,0 +1,10 @@
+---
+name: security_policy_pipeline_check
+description: Enable mergeability check that ensures all pipelines succeed when scan execution or pipeline execution policies are configured
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589650
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224319
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592205
+milestone: '18.11'
+group: group::security policies
+type: beta
+default_enabled: true

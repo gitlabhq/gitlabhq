@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work item listing filters' do
-  let_it_be(:task_type) { WorkItems::Type.default_by_type(:task) }
+  let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
   let_it_be_with_reload(:work_item_1) { create_namespace_work_item(namespace_record) }
   let_it_be_with_reload(:work_item_2) { create_namespace_work_item(namespace_record) }
   let_it_be(:namespace_label) { create_label_for_namespace(namespace_record) }

@@ -109,4 +109,93 @@ RSpec.describe Gitlab::Database::SchemaHelpers, feature_category: :database do
       end
     end
   end
+
+  describe '#trigger_exists?' do
+    let(:table_name) { '_test_trigger_exists_table' }
+    let(:trigger_name) { '_test_trigger' }
+    let(:function_name) { '_test_trigger_fn' }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{table_name} (id serial PRIMARY KEY);
+
+        CREATE FUNCTION #{function_name}() RETURNS trigger
+          LANGUAGE plpgsql AS $$ BEGIN RETURN NEW; END $$;
+
+        CREATE TRIGGER #{trigger_name}
+          BEFORE INSERT ON #{table_name}
+          FOR EACH ROW EXECUTE FUNCTION #{function_name}();
+      SQL
+    end
+
+    shared_examples 'trigger existence check' do
+      it 'returns true when the trigger exists' do
+        expect(migration_context.trigger_exists?(table_name, trigger_name)).to be(true)
+      end
+
+      it 'returns false when the trigger does not exist' do
+        expect(migration_context.trigger_exists?(table_name, 'nonexistent')).to be(false)
+      end
+    end
+
+    context 'when postgres_triggers view exists' do
+      include_examples 'trigger existence check'
+    end
+
+    context 'when postgres_triggers view does not exist' do
+      before do
+        allow(connection).to receive(:view_exists?).and_call_original
+        allow(connection).to receive(:view_exists?).with(:postgres_triggers).and_return(false)
+      end
+
+      include_examples 'trigger existence check'
+    end
+  end
+
+  describe '#find_table_triggers' do
+    let(:table_name) { '_test_find_triggers_table' }
+    let(:trigger_name) { '_test_find_trigger' }
+    let(:function_name) { '_test_find_trigger_fn' }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{table_name} (id serial PRIMARY KEY);
+
+        CREATE FUNCTION #{function_name}() RETURNS trigger
+          LANGUAGE plpgsql AS $$ BEGIN RETURN NEW; END $$;
+
+        CREATE TRIGGER #{trigger_name}
+          BEFORE INSERT ON #{table_name}
+          FOR EACH ROW EXECUTE FUNCTION #{function_name}();
+      SQL
+    end
+
+    shared_examples 'find triggers check' do
+      it 'returns triggers for the table' do
+        triggers = migration_context.send(:find_table_triggers, table_name)
+
+        expect(triggers).to contain_exactly(a_hash_including('function_name' => function_name))
+      end
+
+      it 'returns an empty result for a table with no triggers' do
+        connection.execute("DROP TRIGGER #{trigger_name} ON #{table_name}")
+        triggers = migration_context.send(:find_table_triggers, table_name)
+
+        expect(triggers).to be_empty
+      end
+    end
+
+    context 'when postgres_triggers view exists' do
+      include_examples 'find triggers check'
+    end
+
+    context 'when postgres_triggers view does not exist' do
+      before do
+        allow(connection).to receive(:view_exists?).and_call_original
+        allow(connection).to receive(:view_exists?).with(:postgres_triggers).and_return(false)
+      end
+
+      include_examples 'find triggers check'
+    end
+  end
 end

@@ -281,6 +281,44 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.column_type' do
+    let(:model) { ActiveRecord::Base }
+
+    context "with integer array columns" do
+      let(:table_name) { "_test_gitlab_main_column_type" }
+
+      before do
+        model.connection.execute('CREATE TABLE _test_gitlab_main_column_type (small_numbers INT4[], large_numbers INT8[])')
+      end
+
+      it 'returns the correct type for small integers' do
+        expect(described_class.column_type(model.connection, table_name, 'small_numbers')).to eq('_int4')
+      end
+
+      it 'returns the correct type for large integers' do
+        expect(described_class.column_type(model.connection, table_name, 'large_numbers')).to eq('_int8')
+      end
+    end
+
+    context 'with an unknown table' do
+      it 'raises an undefined table error' do
+        expect { described_class.column_type(model.connection, 'nonexistent_database_table', 'username') }.to raise_error(ActiveRecord::StatementInvalid) { |e| expect(e.cause).to be_a(PG::UndefinedTable) }
+      end
+    end
+
+    context 'with an unknown column' do
+      it 'returns nil' do
+        expect(described_class.column_type(model.connection, 'users', 'nonexistent_database_column')).to be_nil
+      end
+    end
+
+    context 'with no connection' do
+      it 'returns nil' do
+        expect(described_class.column_type(nil, 'users', 'username')).to be_nil
+      end
+    end
+  end
+
   describe '.db_config_names' do
     using RSpec::Parameterized::TableSyntax
 

@@ -14,11 +14,13 @@ RSpec.describe 'Pipeline analytics (JavaScript fixtures)', feature_category: :fl
 
     include_context 'with pipelines executed on different projects'
 
-    it "graphql/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql.json" do
+    query_path = 'ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.query.graphql'
+
+    it "graphql/ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.query.graphql.json" do
       insert_ci_pipelines_to_click_house(pipelines)
 
       post_graphql(
-        get_graphql_query_as_string('projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql'),
+        get_graphql_query_as_string(query_path),
         current_user: current_user,
         variables: { fullPath: project.full_path, fromTime: from_time, toTime: to_time }
       )
@@ -26,9 +28,9 @@ RSpec.describe 'Pipeline analytics (JavaScript fixtures)', feature_category: :fl
       expect_graphql_errors_to_be_empty
     end
 
-    it "graphql/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.empty.query.graphql.json" do
+    it "graphql/ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.empty.query.graphql.json" do
       post_graphql(
-        get_graphql_query_as_string('projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql'),
+        get_graphql_query_as_string(query_path),
         current_user: current_user,
         variables: { fullPath: project.full_path, fromTime: from_time, toTime: to_time }
       )

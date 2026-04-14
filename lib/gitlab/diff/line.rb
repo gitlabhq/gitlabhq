@@ -139,11 +139,9 @@ module Gitlab
       def id(file_hash)
         return if meta?
 
-        hash = file_hash[0..8]
+        return "line_#{file_hash}_A#{new_pos}" if added?
 
-        return "line_#{hash}_A#{new_pos}" if added?
-
-        "line_#{hash}_#{old_pos}"
+        "line_#{file_hash}_#{old_pos}"
       end
 
       def legacy_id(file_path)

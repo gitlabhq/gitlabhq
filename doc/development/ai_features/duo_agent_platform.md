@@ -222,7 +222,8 @@ scope :automate do
 end
 ```
 
-**Note**: Use plural form for the route name (e.g., `automate_your_features`) to match the existing pattern and ensure the Rails path helper is generated correctly.
+> [!note]
+> Use plural form for the route name (e.g., `automate_your_features`) to match the existing pattern and ensure the Rails path helper is generated correctly.
 
 #### Step 4: Add Sidebar Menu Item
 

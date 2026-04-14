@@ -89,8 +89,8 @@ RSpec.describe Gitlab::PDF::Security::GroupVulnerabilitiesProjectsGrades, featur
 
     let(:expected_labels) do
       [
-        s_('Project security status'),
-        s_('Projects are graded based on the highest severity vulnerability present')
+        _('Project security status'),
+        _('Projects are graded based on the highest severity vulnerability present')
       ]
     end
 

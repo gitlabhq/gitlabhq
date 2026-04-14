@@ -53,6 +53,55 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
     expect(described_class.new(context: {})).to require_method_definition(:execute_query_plan, nil)
   end
 
+  describe '.transient' do
+    it 'stores transient expressions' do
+      klass = described_class.build do
+        def self.metrics_mapping
+          { count: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        def self.dimensions_mapping
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        def self.filters_mapping
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        transient(:duration) { 'test_expression' }
+      end
+
+      expect(klass.transients).to include(:duration)
+      expect(klass.transients[:duration]).to be_a(Proc)
+    end
+
+    it 'resolves transient references in metrics via transient() helper' do
+      klass = described_class.build do
+        def self.metrics_mapping
+          { count: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        def self.dimensions_mapping
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        def self.filters_mapping
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        transient(:my_expr) { 'resolved' }
+
+        metrics do
+          count :total, :integer, transient(:my_expr)
+        end
+      end
+
+      metric = klass.metrics.first
+      expect(metric.expression).to be_a(Proc)
+      expect(metric.expression.call).to eq('resolved')
+    end
+  end
+
   describe 'duplicated definitions validation' do
     it 'raises an exception if duplicate dimensions are defined' do
       expect do

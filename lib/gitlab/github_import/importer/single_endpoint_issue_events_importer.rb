@@ -76,11 +76,11 @@ module Gitlab
         end
 
         def issues_collection
-          project.issues.where.not(iid: already_imported_parents).select(:id, :iid) # rubocop: disable CodeReuse/ActiveRecord
+          project.issues.where.not(iid: already_imported_parents).select(:id, :iid, :imported_from) # rubocop: disable CodeReuse/ActiveRecord -- lightweight scoped query
         end
 
         def merge_requests_collection
-          project.merge_requests.where.not(iid: already_imported_parents).select(:id, :iid) # rubocop: disable CodeReuse/ActiveRecord
+          project.merge_requests.where.not(iid: already_imported_parents).select(:id, :iid, :imported_from) # rubocop: disable CodeReuse/ActiveRecord -- lightweight scoped query
         end
 
         def parent_imported_cache_key

@@ -4,7 +4,10 @@ import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import securityConfigurationQuery from '../graphql/security_configuration.query.graphql';
+import projectMergeRequestsEnabledQuery from '../graphql/project_merge_requests_enabled.query.graphql';
 import { augmentFeatures } from '../utils';
 import SecurityConfigurationApp from './app.vue';
 
@@ -54,11 +57,6 @@ export default {
       validityChecksAvailable: computed(() => this.graphqlData?.validityChecksAvailable ?? false),
       validityChecksEnabled: computed(() => this.graphqlData?.validityChecksEnabled ?? false),
       userIsProjectAdmin: computed(() => this.graphqlData?.userIsProjectAdmin ?? false),
-      secretPushProtectionLicensed: computed(
-        () => this.graphqlData?.secretPushProtectionLicensed ?? false,
-      ),
-      canEnableSpp: computed(() => this.graphqlData?.canEnableSpp ?? false),
-      isGitlabCom: computed(() => this.graphqlData?.isGitlabCom ?? false),
     };
   },
   data() {
@@ -67,6 +65,7 @@ export default {
       graphqlError: null,
       // eslint-disable-next-line vue/no-unused-properties
       securityConfiguration: null,
+      mergeRequestsEnabled: true,
     };
   },
   apollo: {
@@ -83,28 +82,7 @@ export default {
         }
 
         const { securityConfiguration: config } = data;
-
-        // Transform GraphQL response to match expected format
-        const features = config.features.map((feature) => {
-          const transformed = {
-            type: feature.type,
-            configured: feature.configured,
-            configuration_path: feature.configurationPath,
-            available: feature.available,
-            can_enable_by_merge_request: feature.canEnableByMergeRequest,
-            meta_info_path: feature.metaInfoPath,
-            on_demand_available: feature.onDemandAvailable,
-            anchor: feature.anchor,
-          };
-
-          if (feature.securityFeatures) {
-            transformed.security_features = feature.securityFeatures;
-          }
-
-          return transformed;
-        });
-
-        const { augmentedSecurityFeatures } = augmentFeatures(features);
+        const { augmentedSecurityFeatures } = augmentFeatures(config.features);
 
         this.graphqlData = {
           augmentedSecurityFeatures,
@@ -120,12 +98,9 @@ export default {
           containerScanningForRegistryEnabled: config.containerScanningForRegistryEnabled,
           secretPushProtectionAvailable: config.secretPushProtectionAvailable,
           secretPushProtectionEnabled: config.secretPushProtectionEnabled,
-          secretPushProtectionLicensed: config.secretPushProtectionLicensed,
           validityChecksAvailable: config.validityChecksAvailable,
           validityChecksEnabled: config.validityChecksEnabled,
           userIsProjectAdmin: config.userIsProjectAdmin,
-          canEnableSpp: config.canEnableSpp,
-          isGitlabCom: config.isGitlabCom,
           secretDetectionConfigurationPath: config.secretDetectionConfigurationPath,
           licenseConfigurationSource: config.licenseConfigurationSource,
           vulnerabilityArchiveExportPath: config.vulnerabilityArchiveExportPath,
@@ -137,6 +112,7 @@ export default {
           canManageAttributes: config.canManageAttributes,
           securityScanProfilesLicensed: config.securityScanProfilesLicensed,
           groupManageAttributesPath: config.groupManageAttributesPath,
+          mergeRequestsEnabled: this.mergeRequestsEnabled,
         };
 
         return config;
@@ -148,10 +124,30 @@ export default {
         return !this.projectId;
       },
     },
+    mergeRequestsEnabled: {
+      query: projectMergeRequestsEnabledQuery,
+      variables() {
+        return {
+          projectFullPath: this.projectFullPath,
+        };
+      },
+      update: (data) => data.project?.mergeRequestsEnabled ?? true,
+      skip() {
+        return !this.projectFullPath;
+      },
+      error(error) {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        logError('Failed to fetch merge requests enabled status', error);
+        captureException(error);
+      },
+    },
   },
   computed: {
     isLoading() {
-      return this.$apollo?.queries?.securityConfiguration?.loading ?? false;
+      return (
+        (this.$apollo?.queries?.securityConfiguration?.loading ?? false) ||
+        (this.$apollo?.queries?.mergeRequestsEnabled?.loading ?? false)
+      );
     },
     errorMessage() {
       if (this.graphqlError) {
@@ -178,6 +174,7 @@ export default {
       :gitlab-ci-history-path="graphqlData.gitlabCiHistoryPath"
       :latest-pipeline-path="graphqlData.latestPipelinePath"
       :security-training-enabled="graphqlData.securityTrainingEnabled"
+      :merge-requests-enabled="mergeRequestsEnabled"
     />
   </div>
 </template>

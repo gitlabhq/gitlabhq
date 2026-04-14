@@ -117,7 +117,7 @@ class TaskListToggleService
   end
 
   def toggle_markdown_html
-    html          = Nokogiri::HTML.fragment(markdown_html)
+    html          = Nokogiri::HTML5.fragment(markdown_html)
     html_checkbox = get_html_checkbox(html)
     return unless html_checkbox
 

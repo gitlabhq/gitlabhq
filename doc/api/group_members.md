@@ -610,7 +610,7 @@ POST /groups/:id/members
 | `id`             | integer or string | yes                                | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer or string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
 | `username`       | string            | yes, if `user_id` is not provided  | The username of the new member or multiple usernames separated by commas. |
-| `access_level`   | integer           | yes                                | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner). Default: `30`. |
+| `access_level`   | integer           | yes                                | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                 | A date string in the format `YEAR-MONTH-DAY`. |
 | `invite_source`  | string            | no                                 | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
 | `member_role_id` | integer           | no                                 | Ultimate only. The ID of a custom member role. |
@@ -698,7 +698,7 @@ PUT /groups/:id/members/:user_id
 | ---------------- | ----------------- | -------- | ----------- |
 | `id`             | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer           | yes      | The user ID of the member. |
-| `access_level`   | integer           | yes       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner), `60` (Admin). Default: `30`. |
+| `access_level`   | integer           | yes       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), `50` (Owner), `60` (Admin). Default: `30`. |
 | `expires_at`     | string            | no       | A date string in the format `YEAR-MONTH-DAY`. |
 | `member_role_id` | integer           | no       | Ultimate only. The ID of a custom member role. If no value is specified, removes all roles. |
 

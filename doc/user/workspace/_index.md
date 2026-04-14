@@ -35,7 +35,7 @@ For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.
 > A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run `sudo` commands, or
 > build and run containers in your workspace, there might be platform-specific requirements.
 >
-> For more information, see [Platform compatibility](configuration.md#platform-compatibility).
+> For more information, see [platform compatibility](configuration.md#platform-compatibility).
 
 ## Workspaces and projects
 
@@ -78,7 +78,7 @@ When you delete a project, `agentk`, user, or token associated with a running wo
 
 To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
 
-[Issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384) proposes to change this behavior.
+[Epic 11452](https://gitlab.com/groups/gitlab-org/-/work_items/11452) proposes to change this behavior.
 
 ## Manage workspaces at the agent level
 
@@ -548,7 +548,7 @@ The container runtime used by the Kubernetes cluster must ensure all containers 
 If you have a container image that does not support arbitrary user IDs,
 you cannot create, update, or delete files in a workspace.
 To create a container image that supports arbitrary user IDs,
-see [Create a custom workspace image that supports arbitrary user IDs](create_image.md).
+see [create a custom workspace image that supports arbitrary user IDs](create_image.md).
 
 ## Workspace logs directory
 
@@ -559,7 +559,7 @@ The workspace logs are stored in `/tmp/workspace-logs/`.
 
 This directory helps you monitor workspace startup progress and troubleshoot
 issues with `postStart` events, development tools, and other workspace components.
-For more information, see [Debug `postStart` events](workspaces_troubleshooting.md#debug-poststart-events).
+For more information, see [debug `postStart` events](workspaces_troubleshooting.md#debug-poststart-events).
 
 ### Available log files
 
@@ -600,7 +600,7 @@ This process is transparent and doesn't affect your development workflow.
 - [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
 - [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/_index.md)
-- [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)
 - [GraphQL API reference](../../api/graphql/reference/_index.md)
 - [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)
 - [OpenShift documentation on arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images)

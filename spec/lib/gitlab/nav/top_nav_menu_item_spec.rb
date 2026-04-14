@@ -13,12 +13,13 @@ RSpec.describe ::Gitlab::Nav::TopNavMenuItem, feature_category: :navigation do
         href: 'href',
         view: 'view',
         css_class: 'css_class',
-        data: {},
         partial: 'groups/some_view_partial_file',
         component: '_some_component_used_as_a_trigger_for_frontend_dropdown_item_render_'
       }
 
-      expect(described_class.build(**item)).to eq(item.merge(type: :item))
+      result = described_class.build(**item)
+
+      expect(result).to eq(item.merge(type: :item))
     end
   end
 end

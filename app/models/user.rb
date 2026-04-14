@@ -328,6 +328,13 @@ class User < ApplicationRecord
   has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
   has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
+  has_many :cluster_agent_activity_events, class_name: 'Clusters::Agents::ActivityEvent', foreign_key: :user_id, inverse_of: :user, dependent: :nullify
+  has_many :clusters, class_name: 'Clusters::Cluster', inverse_of: :user, dependent: :nullify
+  has_many :cluster_agents, class_name: 'Clusters::Agent', foreign_key: :created_by_user_id, inverse_of: :created_by_user, dependent: :nullify
+  has_many :cluster_agent_tokens, class_name: 'Clusters::AgentToken', foreign_key: :created_by_user_id, inverse_of: :created_by_user, dependent: :nullify
+  has_many :deploy_tokens, class_name: 'DeployToken', foreign_key: :creator_id, inverse_of: :user, dependent: :nullify
+  has_many :terraform_states, class_name: 'Terraform::State', foreign_key: :locked_by_user_id, inverse_of: :locked_by_user, dependent: :nullify
+  has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', foreign_key: :created_by_user_id, inverse_of: :created_by_user, dependent: :nullify
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
@@ -539,6 +546,12 @@ class User < ApplicationRecord
   delegate :company, :company=, to: :user_detail, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
+  delegate :provisioned_by_group, :provisioned_by_group=,
+    :provisioned_by_group_id, :provisioned_by_group_id=,
+    to: :user_detail, allow_nil: true
+  delegate :provisioned_by_project, :provisioned_by_project=,
+    :provisioned_by_project_id, :provisioned_by_project_id=,
+    to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
   delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
@@ -780,6 +793,15 @@ class User < ApplicationRecord
 
   scope :member_of_organization, ->(organization) do
     joins(:organization_users).where(organization_users: { organization: organization })
+  end
+  scope :with_provisioning_group, ->(group) do
+    joins(:user_detail).where(user_detail: { provisioned_by_group: group })
+  end
+  scope :with_provisioning_project, ->(project) do
+    joins(:user_detail).where(user_detail: { provisioned_by_project: project })
+  end
+  scope :with_provisioning_project_in, ->(namespaces) do
+    joins(user_detail: :provisioned_by_project).where(projects: { namespace_id: namespaces })
   end
 
   def self.supported_keyset_orderings
@@ -1500,10 +1522,6 @@ class User < ApplicationRecord
       email_otp_required_after.present? && email_otp_required_after <= Time.zone.now
   end
 
-  def work_items_consolidated_list_enabled?
-    Feature.enabled?(:work_items_consolidated_list_user, self)
-  end
-
   def update_otp_secret!
     self.otp_secret = User.generate_otp_secret(OTP_SECRET_LENGTH)
     self.otp_secret_expires_at = Time.current + OTP_SECRET_TTL
@@ -1619,6 +1637,7 @@ class User < ApplicationRecord
   # Returns a relation of groups the user has access to, including their parent
   # and child groups (recursively).
   def all_expanded_groups
+    groups = groups_with_at_least_minimal_access
     return groups if groups.empty?
 
     Gitlab::ObjectHierarchy.new(groups).all_objects
@@ -1631,7 +1650,7 @@ class User < ApplicationRecord
   def source_groups_of_two_factor_authentication_requirement
     Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
       .all_objects
-      .where(id: groups)
+      .where(id: groups_with_at_least_minimal_access)
   end
 
   def direct_groups_with_route
@@ -2916,13 +2935,6 @@ class User < ApplicationRecord
     admin?
   end
 
-  def can_access_organization_admin_area?(organization)
-    return false unless organization
-    return false unless Feature.enabled?(:org_admin_area, organization)
-
-    can?(:access_organization_admin_area, organization)
-  end
-
   def free_or_trial_owned_group_ids
     @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
   end
@@ -2939,15 +2951,6 @@ class User < ApplicationRecord
 
   def composite_identity_enforced!
     @composite_identity_enforced_override = true
-  end
-
-  def authorization_user
-    return self unless service_account? && composite_identity_enforced?
-
-    identity = ::Gitlab::Auth::Identity.currently_linked
-    return self unless identity&.linked?
-
-    identity.scoped_user
   end
 
   def immutable_username_with_enforced_composite_identity
@@ -2993,6 +2996,11 @@ class User < ApplicationRecord
   end
 
   private
+
+  # method overridden in EE
+  def groups_with_at_least_minimal_access
+    groups
+  end
 
   def self_managed_admin?
     can_admin_all_resources?
@@ -3151,7 +3159,7 @@ class User < ApplicationRecord
   end
 
   def signup_email_invalid_message
-    self.new_record? ? _('is not allowed for sign-up. Please use your regular email address.') : _('is not allowed. Please use your regular email address.')
+    _('is not allowed. Please use your regular email address.')
   end
 
   def check_username_format

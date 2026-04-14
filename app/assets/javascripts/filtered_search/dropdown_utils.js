@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { TOKEN_TYPE_LABEL } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchContainer from './container';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';

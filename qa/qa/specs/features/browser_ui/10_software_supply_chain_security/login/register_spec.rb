@@ -31,6 +31,10 @@ module QA
         end
 
         context "with basic registration",
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/39940',
+            type: :investigating
+          },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
           it 'allows the user to register and login' do
             Runtime::Browser.visit(:gitlab, Page::Main::Login)

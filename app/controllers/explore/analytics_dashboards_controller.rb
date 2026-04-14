@@ -2,7 +2,7 @@
 
 module Explore
   class AnalyticsDashboardsController < Explore::ApplicationController
-    feature_category :value_stream_management
+    feature_category :custom_dashboards_foundation
     before_action :check_feature_flag
 
     def index; end

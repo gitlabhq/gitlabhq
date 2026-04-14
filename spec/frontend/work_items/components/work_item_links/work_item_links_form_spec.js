@@ -15,7 +15,6 @@ import {
   SEARCH_DEBOUNCE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
@@ -72,7 +71,7 @@ describe('WorkItemLinksForm', () => {
     parentMilestone = null,
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_NAME_ISSUE,
-    childrenType = WORK_ITEM_TYPE_NAME_TASK,
+    childrenType = { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task' },
     addMutation = addMutationResolver,
     createMutation = createMutationResolver,
     isGroup = false,
@@ -170,7 +169,7 @@ describe('WorkItemLinksForm', () => {
       it('renders create form', () => {
         expect(findForm().exists()).toBe(true);
         expect(findInput().exists()).toBe(true);
-        expect(findAddChildButton().text()).toBe('Create task');
+        expect(findAddChildButton().text()).toBe('Create Task');
         expect(findWorkItemTokenInput().exists()).toBe(false);
       });
 
@@ -252,14 +251,14 @@ describe('WorkItemLinksForm', () => {
         await createComponent({
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
+          childrenType: { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
         });
       });
 
       it('renders create form with project selection', () => {
         expect(findForm().exists()).toBe(true);
         expect(findInput().exists()).toBe(true);
-        expect(findAddChildButton().text()).toBe('Create issue');
+        expect(findAddChildButton().text()).toBe('Create Issue');
         expect(findProjectSelector().exists()).toBe(true);
         expect(findWorkItemTokenInput().exists()).toBe(false);
       });
@@ -294,7 +293,7 @@ describe('WorkItemLinksForm', () => {
           parentConfidential: true,
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
+          childrenType: { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
         });
 
         submitForm({ title: 'Create confidential issue', fullPath: projectData[0].fullPath });
@@ -326,7 +325,7 @@ describe('WorkItemLinksForm', () => {
         await createComponent({
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_NAME_EPIC,
+          childrenType: { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic' },
         });
       });
 
@@ -336,7 +335,7 @@ describe('WorkItemLinksForm', () => {
           fullPath: 'group-a',
           selectedGroupFullPath: 'group-a',
         });
-        expect(findAddChildButton().text()).toBe('Create epic');
+        expect(findAddChildButton().text()).toBe('Create Epic');
       });
     });
 
@@ -362,7 +361,7 @@ describe('WorkItemLinksForm', () => {
         expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
         expect(findTooltip().text()).toBe(
-          'A non-confidential task cannot be assigned to a confidential parent issue.',
+          'A non-confidential Task cannot be assigned to a confidential parent Issue.',
         );
       });
     });
@@ -372,14 +371,16 @@ describe('WorkItemLinksForm', () => {
         parentConfidential: false,
         isGroup: true,
         parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
+        childrenType: { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
       });
 
       findInput().vm.$emit('input', 'Pretending to add an issue');
 
       findProjectSelector().vm.$emit('selectProject', projectData[0]);
 
-      await wrapper.setProps({ childrenType: WORK_ITEM_TYPE_NAME_EPIC });
+      await wrapper.setProps({
+        childrenType: { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic' },
+      });
 
       findInput().vm.$emit('input', 'Actually adding an epic');
 
@@ -410,7 +411,7 @@ describe('WorkItemLinksForm', () => {
         parentConfidential: false,
         isGroup: true,
         parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
+        childrenType: { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
         createGroupLevelWorkItems: false,
       });
 
@@ -440,7 +441,7 @@ describe('WorkItemLinksForm', () => {
     it('renders add form', () => {
       expect(findForm().exists()).toBe(true);
       expect(findWorkItemTokenInput().exists()).toBe(true);
-      expect(findAddChildButton().text()).toBe('Add task');
+      expect(findAddChildButton().text()).toBe('Add Task');
       expect(findInput().exists()).toBe(false);
       expect(findConfidentialCheckbox().exists()).toBe(false);
     });
@@ -449,7 +450,7 @@ describe('WorkItemLinksForm', () => {
       expect(findWorkItemTokenInput().props()).toMatchObject({
         value: [],
         fullPath: 'group-a',
-        childrenType: WORK_ITEM_TYPE_NAME_TASK,
+        childrenType: { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task' },
         childrenIds: [],
         parentWorkItemId: 'gid://gitlab/WorkItem/1',
         areWorkItemsToAddValid: true,
@@ -459,7 +460,7 @@ describe('WorkItemLinksForm', () => {
     it('selects and adds children', async () => {
       await selectAvailableWorkItemTokens();
 
-      expect(findAddChildButton().text()).toBe('Add tasks');
+      expect(findAddChildButton().text()).toBe('Add Tasks');
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(true);
       expect(findWorkItemTokenInput().props('value')).toBe(
         availableWorkItemsResponse.data.namespace.workItems.nodes,
@@ -480,7 +481,7 @@ describe('WorkItemLinksForm', () => {
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
       expect(findValidationElement().exists()).toBe(true);
       expect(findValidationElement().text()).toBe(
-        'Task 1, Task 2, Task 3 cannot be added: Cannot assign a non-confidential task to a confidential parent issue. Make the selected task confidential and try again.',
+        'Task 1, Task 2, Task 3 cannot be added: Cannot assign a non-confidential Task to a confidential parent Issue. Make the selected Task confidential and try again.',
       );
     });
 

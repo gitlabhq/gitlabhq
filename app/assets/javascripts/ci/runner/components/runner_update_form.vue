@@ -5,7 +5,7 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
 import { __ } from '~/locale';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import {
   modelToUpdateMutationVariables,
@@ -78,7 +78,7 @@ export default {
       } catch (error) {
         const { message } = error;
         this.onError(message);
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       }
     },
     onSuccess() {

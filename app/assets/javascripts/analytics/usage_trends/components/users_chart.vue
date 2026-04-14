@@ -2,7 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/src/charts';
 import produce from 'immer';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { formatDateAsMonth } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';

@@ -776,7 +776,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'does not schedule the transfer' do
           expect do
             update_project(project, user, opts)
-          end.not_to change(project.repository_storage_moves, :count)
+          end.not_to change { project.repository_storage_moves.count }
         end
       end
 

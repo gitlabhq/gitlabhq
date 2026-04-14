@@ -2,6 +2,8 @@
 
 module Boards
   class CreateService < Boards::BaseService
+    include Gitlab::InternalEventsTracking
+
     def execute
       unless can_create_board?
         return ServiceResponse.error(message: "You don't have the permission to create a board for this resource.")
@@ -28,7 +30,17 @@ module Boards
         created_board.lists.create(list_type: :closed)
       end
 
+      track_board_creation_event(board)
+
       ServiceResponse.success(payload: board)
+    end
+
+    def track_board_creation_event(board)
+      track_internal_event('board_created', **internal_event_context(board))
+    end
+
+    def internal_event_context(board)
+      { project: board.project, namespace: board.group }
     end
 
     def parent_board_collection

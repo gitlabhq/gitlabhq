@@ -1,0 +1,20 @@
+# @feature_category: portfolio_management
+query mergeRequestRelatedWorkItems($id: MergeRequestID!) {
+  mergeRequest(id: $id) {
+    id
+    linkedWorkItems {
+      linkType
+      workItem {
+        id
+        iid
+        title
+        webPath
+        webUrl
+        namespace {
+          id
+          fullPath
+        }
+      }
+    }
+  }
+}

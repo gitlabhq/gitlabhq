@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab CI/CD variables
+title: CI/CD variables
 description: Configuration, usage, and security.
 ---
 
@@ -491,7 +491,7 @@ The order of precedence for variables is (from highest to lowest):
    the job uses the value from the closest subgroup. For example, if you have
    `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in `Subgroup 2` takes precedence.
 1. Instance variables.
-1. [Variables from `dotenv` reports](job_scripts.md#pass-environment-variables-to-later-jobs).
+1. [Variables from `dotenv` reports](dotenv_variables.md#pass-variables-to-later-jobs).
 1. Job variables, defined in jobs in the `.gitlab-ci.yml` file.
 1. Default variables for all jobs, defined at the top-level of the `.gitlab-ci.yml` file.
 1. [Deployment variables](predefined_variables.md#deployment-variables).
@@ -573,7 +573,7 @@ To limit the use of pipeline variables to only the Maintainer role and higher:
     Default when not specified on GitLab Self-Managed and GitLab Dedicated.
   - `developer`: Only users with the Developer, Maintainer, or Owner role can run pipelines with pipeline variables.
 
-You can also use [the projects API](../../api/projects.md#edit-a-project) to set
+You can also use [the projects API](../../api/projects.md#update-a-project) to set
 the role for the `ci_pipeline_variables_minimum_override_role` setting.
 
 This restriction does not affect the use of CI/CD variables from the project or group settings.

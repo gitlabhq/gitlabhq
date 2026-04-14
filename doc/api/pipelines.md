@@ -39,23 +39,23 @@ GET /projects/:id/pipelines
 Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
 control the pagination of results.
 
-| Attribute        | Type           | Required | Description |
-|------------------|----------------|----------|-------------|
-| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `name`           | string         | No       | Return pipelines with the specified name. |
-| `order_by`       | string         | No       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
-| `ref`            | string         | No       | The ref of pipelines |
-| `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
-| `sha`            | string         | No       | The SHA of pipelines |
-| `sort`           | string         | No       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
-| `source`         | string         | No       | The [pipeline source](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
-| `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
-| `updated_after`  | datetime       | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `updated_before` | datetime       | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `created_after`  | datetime       | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `created_before` | datetime       | No       | Return pipelines created before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `username`       | string         | No       | The username of the user who triggered pipelines |
-| `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`           | string            | No       | Return pipelines with the specified name. |
+| `order_by`       | string            | No       | The field to order pipelines by: `id`, `status`, `ref`, `updated_at`, or `user_id` (default: `id`). |
+| `ref`            | string            | No       | Return pipelines for the specified branch or tag. |
+| `scope`          | string            | No       | Return pipelines in the specified scope: `running`, `pending`, `finished`, `branches`, or `tags`. |
+| `sha`            | string            | No       | Return pipelines for the specified commit SHA. |
+| `sort`           | string            | No       | The sort order: `asc` or `desc` (default: `desc`). |
+| `source`         | string            | No       | Return pipelines with the specified [source](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
+| `status`         | string            | No       | Return pipelines with the specified status: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, or `scheduled`. |
+| `updated_after`  | datetime          | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `updated_before` | datetime          | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `created_after`  | datetime          | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `created_before` | datetime          | No       | Return pipelines created before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `username`       | string            | No       | Return pipelines triggered by the specified username. |
+| `yaml_errors`    | boolean           | No       | Return pipelines with invalid configurations. |
 
 When `scope` is set to `branches` or `tags`, the API returns only the latest pipeline for each branch or tag ref.
 

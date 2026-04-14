@@ -249,9 +249,7 @@
       display: table;
       overflow-x: initial;
       mix-blend-mode: multiply;
-      // strech is not available yet, so we have to rely
-      // on the vendor prefixed ones below
-      min-width: strech;
+      min-width: stretch;
       /* stylelint-disable-next-line value-no-vendor-prefix */
       min-width: -webkit-fill-available;
       /* stylelint-disable-next-line value-no-vendor-prefix */
@@ -264,8 +262,11 @@
     @apply gl-text-default;
     border: 0;
     width: auto;
-    display: block;
-    overflow-x: auto;
+
+    &:not(.gl-table-shadow > *, [data-sticky-header] > *) {
+      display: block;
+      overflow-x: auto;
+    }
 
     td,
     th {
@@ -411,6 +412,19 @@
     &.stripes-hover tr:hover {
       @apply gl-bg-subtle;
     }
+  }
+
+  [data-sticky-header] > table:not(.code) > thead th,
+  [data-sticky-header] > table:not(.code) > tbody > tr:first-child > th {
+    @apply gl-sticky;
+    @apply gl-top-0;
+    @apply gl-z-2;
+    @apply gl-bg-default;
+    border-top: 0;
+    border-bottom: 0;
+    box-shadow:
+      inset 0 1px 0 var(--gl-border-color-default),
+      inset 0 -1px 0 var(--gl-border-color-default);
   }
 
   table:dir(rtl) th {

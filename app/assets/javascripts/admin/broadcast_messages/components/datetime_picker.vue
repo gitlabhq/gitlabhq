@@ -14,6 +14,7 @@ export default {
       required: true,
     },
   },
+  emits: ['input'],
   computed: {
     date: {
       get() {

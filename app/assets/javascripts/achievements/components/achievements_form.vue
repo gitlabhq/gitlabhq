@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/src/utils';
 import { produce } from 'immer';
-import { get as getPropValueByPath } from 'lodash';
+import { get as getPropValueByPath } from 'lodash-es';
 import { MountingPortal } from 'portal-vue';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { __, s__, sprintf } from '~/locale';
@@ -25,6 +25,7 @@ import createAchievementMutation from './graphql/create_achievement.mutation.gra
 const maxLength = { name: 255, description: 1024 };
 
 export default {
+  name: 'AchievementsForm',
   components: {
     GlAlert,
     GlAvatar,

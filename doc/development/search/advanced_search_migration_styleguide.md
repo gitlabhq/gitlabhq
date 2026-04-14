@@ -164,6 +164,10 @@ marked as completed by default and can set to pending by sending `including: fal
 
 Provides an instance of `Gitlab::Elastic::Helper.default`
 
+#### `es_client`
+
+Provides an instance of `Gitlab::Search::Client.new`
+
 #### `warm_elasticsearch_migrations_cache!`
 
 Primes the `::Elastic::DataMigrationService` migration cache by calling `migration_has_finished?` for each migration.
@@ -391,7 +395,7 @@ end
 
 When marking a skippable migration as obsolete, you must keep the `skip_if` condition.
 
-You can test this migration with the `'a deprecated Advanced Search migration'`
+You can test this migration with the `'a deprecated advanced search migration'`
 shared examples. Follow the [process for marking migrations as obsolete](#process-for-marking-migrations-as-obsolete).
 
 #### `Search::Elastic::MigrationCreateIndexHelper`
@@ -1012,7 +1016,7 @@ the Keep:
     ClassName.prepend ::Search::Elastic::MigrationObsolete
    ```
 
-1. Replaces the spec file content with the `'a deprecated Advanced Search migration'` shared example.
+1. Replaces the spec file content with the `'a deprecated advanced search migration'` shared example.
 1. Randomly selects a Global Search backend engineer as an assignee.
 1. Updates the dictionary file to mark the migration as obsolete.
 
@@ -1046,10 +1050,10 @@ The MR assignee must:
 You can check migration status from Slack (or any ChatOps‑enabled channel) at any time:
 
 ```plaintext
-/chatops run search_migrations --help
-/chatops run search_migrations list
-/chatops run search_migrations get MigrationName
-/chatops run search_migrations get VersionNumber
+/chatops gitlab run search_migrations --help
+/chatops gitlab run search_migrations list
+/chatops gitlab run search_migrations get MigrationName
+/chatops gitlab run search_migrations get VersionNumber
 ```
 
 The above uses the [search_migrations](https://gitlab.com/gitlab-com/chatops/-/blob/master/lib/chatops/commands/search_migrations.rb) ChatOps plugin to fetch current migration state.

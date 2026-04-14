@@ -958,7 +958,8 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 すべての項目が緑色の場合は、GitLabのインストールに成功しました。
 
-> [!note]チェックコマンドの出力からプロジェクト名を省略するには、`SANITIZE=true`環境変数を`gitlab:check`に指定します。
+> [!note]
+> チェックコマンドの出力からプロジェクト名を省略するには、`SANITIZE=true`環境変数を`gitlab:check`に指定します。
 
 ### 最初のログイン {#initial-login}
 

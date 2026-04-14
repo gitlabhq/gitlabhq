@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'utils/override'
+require 'gitlab/utils/override'
 
 module Gitlab
   class ExceptionsApp < ActionDispatch::PublicExceptions

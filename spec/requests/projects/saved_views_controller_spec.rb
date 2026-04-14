@@ -37,22 +37,6 @@ RSpec.describe 'Projects::SavedViews', feature_category: :portfolio_management d
       end
     end
 
-    context 'when feature is disabled' do
-      let(:saved_view) { create(:saved_view, namespace: project.project_namespace) }
-
-      subject(:show_saved_view) { get project_saved_view_path(project, saved_view.id) }
-
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns 404' do
-        show_saved_view
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'when user is not authenticated' do
       let(:saved_view) { create(:saved_view, namespace: project.project_namespace) }
 

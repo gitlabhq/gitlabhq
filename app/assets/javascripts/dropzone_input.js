@@ -1,6 +1,6 @@
 import Dropzone from 'dropzone';
 import $ from 'jquery';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import './behaviors/preview_markdown';
 import { spriteIcon, insertText } from '~/lib/utils/common_utils';
 import { getFilename } from '~/lib/utils/file_upload';

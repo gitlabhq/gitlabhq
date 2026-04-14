@@ -23,6 +23,7 @@ perform any action.
 {{< history >}}
 
 - Planner role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482733) in GitLab 17.7.
+- Security Manager role [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20123) in GitLab 18.11.
 
 {{< /history >}}
 
@@ -46,15 +47,16 @@ To view assigned roles, go to the **Members** page for a
 
 The following default roles are available:
 
-| Role           | Description |
-| -------------- | ----------- |
-| Minimal Access | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
-| Guest          | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
-| Planner        | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
-| Reporter       | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
-| Developer      | Push code to non-protected branches, create merge requests, and run CI/CD pipelines. Cannot manage project settings. |
-| Maintainer     | Manage branches, merge requests, CI/CD settings, and project members. Cannot delete the project. |
-| Owner          | Full control over the project or group, including deletion and visibility settings. |
+| Role             | Description |
+| ---------------- | ----------- |
+| Minimal Access   | View limited group information without access to projects. For more information, see [Users with Minimal Access](#users-with-minimal-access). |
+| Guest            | View and comment on issues and epics. Cannot push code or access repository. This role applies to [private and internal projects](public_access.md) only. |
+| Planner          | Create and manage issues, epics, milestones, and iterations. Focused on project planning and tracking with the ability to view and collaborate on code changes. |
+| Reporter         | View code, create issues, and generate reports. Cannot push code or manage protected branches. |
+| Security Manager | View and manage security vulnerabilities, compliance configurations, and audit events. Focused on security operations without code push access. |
+| Developer        | Push code to non-protected branches, create merge requests, and run CI/CD pipelines. Cannot manage project settings. |
+| Maintainer       | Manage branches, merge requests, CI/CD settings, and project members. Cannot delete the project. |
+| Owner            | Full control over the project or group, including deletion and visibility settings. |
 
 By default, all users can create top-level groups and change their usernames.
 Users with [administrator access](../administration/user_settings.md) can change this behavior.
@@ -81,30 +83,30 @@ The following table lists group permissions available for each role:
 
 Group permissions for [group features](group/_index.md):
 
-| Action                                                                                      | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Browse group                                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) projects in group                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View group [audit events](compliance/audit_events.md) <sup>1</sup>                          |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create project in group <sup>2</sup>                                                        |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create subgroup <sup>3</sup>                                                                |       |         |          |           |     ✓      |   ✓   |
-| Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |           |            |   ✓   |
-| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |         |          |           |     ✓      |   ✓   |
-| Fork project into a group                                                                   |       |         |          |           |     ✓      |   ✓   |
-| View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
-| View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
-| [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
-| Archive group                                                                               |       |         |          |           |            |   ✓   |
-| Delete group                                                                                |       |         |          |           |            |   ✓   |
-| Transfer group                                                                              |       |         |          |           |            |   ✓   |
-| Manage [subscriptions, storage, and compute minutes](../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage) |       |         |          |           |            |   ✓   |
-| Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |
-| Change group visibility level                                                               |       |         |          |           |            |   ✓   |
-| Edit group settings                                                                         |       |         |          |           |            |   ✓   |
-| Configure project templates                                                                 |       |         |          |           |            |   ✓   |
-| Configure [SAML SSO](group/saml_sso/_index.md) <sup>4</sup>                                 |       |         |          |           |            |   ✓   |
-| Disable notification emails                                                                 |       |         |          |           |            |   ✓   |
-| Import [project](project/settings/import_export.md)                                         |       |         |          |           |     ✓      |   ✓   |
+| Action                                                                                      | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Browse group                                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) projects in group                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View group [audit events](compliance/audit_events.md) <sup>1</sup>                          |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create project in group <sup>2</sup>                                                        |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Create subgroup <sup>3</sup>                                                                |       |         |          |                  |           |     ✓      |   ✓   |
+| Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |                  |           |            |   ✓   |
+| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |         |          |                  |           |     ✓      |   ✓   |
+| Fork project into a group                                                                   |       |         |          |                  |           |     ✓      |   ✓   |
+| View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |                  |           |            |   ✓   |
+| View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |                  |           |            |   ✓   |
+| [Migrate group](group/import/_index.md)                                                     |       |         |          |                  |           |            |   ✓   |
+| Archive group                                                                               |       |         |          |                  |           |            |   ✓   |
+| Delete group                                                                                |       |         |          |                  |           |            |   ✓   |
+| Transfer group                                                                              |       |         |          |                  |           |            |   ✓   |
+| Manage [subscriptions, storage, and compute minutes](../subscriptions/manage_seats.md#gitlabcom-billing-and-usage) |       |         |          |                  |           |            |   ✓   |
+| Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |                  |           |            |   ✓   |
+| Change group visibility level                                                               |       |         |          |                  |           |            |   ✓   |
+| Edit group settings                                                                         |       |         |          |                  |           |            |   ✓   |
+| Configure project templates                                                                 |       |         |          |                  |           |            |   ✓   |
+| Configure [SAML SSO](group/saml_sso/_index.md) <sup>4</sup>                                 |       |         |          |                  |           |            |   ✓   |
+| Disable notification emails                                                                 |       |         |          |                  |           |            |   ✓   |
+| Import [project](project/settings/import_export.md)                                         |       |         |          |                  |           |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -123,56 +125,57 @@ Group permissions for [group features](group/_index.md):
 
 Group permission for [analytics](analytics/_index.md) features including value streams, product analytics, and insights:
 
-| Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [insights](project/insights/_index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [insights](project/insights/_index.md) charts                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View contribution analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View value stream analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [productivity analytics](analytics/productivity_analytics.md) |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [group DevOps adoption](group/devops_adoption/_index.md)      |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View metrics dashboard annotations                                 |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage metrics dashboard annotations                               |       |         |          |     ✓     |     ✓      |   ✓   |
+| Action                                                             | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------ | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [insights](project/insights/_index.md)                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [insights](project/insights/_index.md) charts                 |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View contribution analytics                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View value stream analytics                                        |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [productivity analytics](analytics/productivity_analytics.md) |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [group DevOps adoption](group/devops_adoption/_index.md)      |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View metrics dashboard annotations                                 |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage metrics dashboard annotations                               |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 
 ### Group application security
 
 Group permissions for [Application Security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
 
-| Action                                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |
-| View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |
-| View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |
-| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |
+| Action                                                                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [security policy project](application_security/policies/_index.md)        |       |         |          |                  |           |            |   ✓   |
+| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |                  |           |            |   ✓   |
+| Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                |       |         |          |                  |           |            |   ✓   |
 
 ### Group CI/CD
 
 Group permissions for [CI/CD](../ci/_index.md) features including runners, variables, and protected environments:
 
-| Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View instance runner                  |   ✓   |    ✓    |     ✓    |    ✓      |     ✓      |   ✓   |
-| View group runners                    |       |         |          |           |     ✓      |   ✓   |
-| Manage group-level Kubernetes cluster |       |         |          |           |     ✓      |   ✓   |
-| Manage group runners                  |       |         |          |           |            |   ✓   |
-| Manage group level CI/CD variables    |       |         |          |           |            |   ✓   |
-| Manage group protected environments   |       |         |          |           |            |   ✓   |
+| Action                                | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View instance runner                  |   ✓   |    ✓    |     ✓    |        ✓         |     ✓     |     ✓      |   ✓   |
+| View group runners                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage group-level Kubernetes cluster |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage group runners                  |       |         |          |                  |           |            |   ✓   |
+| Manage group level CI/CD variables    |       |         |          |                  |           |            |   ✓   |
+| Manage group protected environments   |       |         |          |                  |           |            |   ✓   |
 
 ### Group compliance
 
 Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
-| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [audit events](compliance/audit_events.md) <sup>1</sup>                           |       |         |          |     ✓     |     ✓      |   ✓   |
-| View licenses in [dependency list](application_security/dependency_list/_index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |
-| View [compliance center](compliance/compliance_center/_index.md)                       |       |         |          |           |            |   ✓   |
-| Manage [compliance frameworks](compliance/compliance_frameworks/_index.md)             |       |         |          |           |            |   ✓   |
-| Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |           |            |   ✓   |
-| Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |           |            |   ✓   |
+| Action                                                                                 | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [audit events](compliance/audit_events.md) <sup>1</sup>                           |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View licenses in [dependency list](application_security/dependency_list/_index.md)     |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [compliance center](compliance/compliance_center/_index.md)                       |       |         |          |        ✓         |           |            |   ✓   |
+| Manage [compliance frameworks](compliance/compliance_frameworks/_index.md)             |       |         |          |        ✓         |           |            |   ✓   |
+| Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |        ✓         |           |            |   ✓   |
+| Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -182,13 +185,13 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 
 Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
-| Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                                       |            |   ✓   |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
-| Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |           |     ✓      |   ✓   |
-| Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |           |            |   ✓   |
-| Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
-| Purchase [GitLab Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |         |          |           |            |   ✓   |
+| Action                                                                                                     | Non-member | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Use GitLab Duo features <sup>1</sup>                                                                       |            |   ✓   |     ✓   |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |                  |           |     ✓      |   ✓   |
+| Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |                  |           |            |   ✓   |
+| Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |                  |           |            |   ✓   |
+| Purchase [GitLab Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -200,13 +203,13 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 Group permissions for the [package and container registry](packages/_index.md):
 
-| Action                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Pull container registry images <sup>1</sup>     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Pull container images with the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete container registry images                |       |         |          |     ✓     |     ✓      |   ✓   |
-| Configure a virtual registry                    |       |         |          |           |     ✓      |   ✓   |
-| Pull an artifact from a virtual registry        |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| Action                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ----------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Pull container registry images <sup>1</sup>     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Pull container images with the dependency proxy |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Delete container registry images                |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Configure a virtual registry                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Pull an artifact from a virtual registry        |   ✓   |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -214,33 +217,33 @@ Group permissions for the [package and container registry](packages/_index.md):
 
 Group permissions for [package registry](packages/_index.md):
 
-| Action                                   | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ---------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Pull packages                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Publish packages                         |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete packages                          |       |         |          |           |     ✓      |   ✓   |
-| Manage package settings                  |       |         |          |           |            |   ✓   |
-| Manage dependency proxy cleanup policies |       |         |          |           |            |   ✓   |
-| Enable dependency proxy                  |       |         |          |           |            |   ✓   |
-| Disable dependency proxy                 |       |         |          |           |            |   ✓   |
-| Purge the group dependency proxy         |       |         |          |           |            |   ✓   |
-| Enable package request forwarding        |       |         |          |           |            |   ✓   |
-| Disable package request forwarding       |       |         |          |           |            |   ✓   |
+| Action                                   | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ---------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Pull packages                            |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Publish packages                         |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete packages                          |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage package settings                  |       |         |          |                  |           |            |   ✓   |
+| Manage dependency proxy cleanup policies |       |         |          |                  |           |            |   ✓   |
+| Enable dependency proxy                  |       |         |          |                  |           |            |   ✓   |
+| Disable dependency proxy                 |       |         |          |                  |           |            |   ✓   |
+| Purge the group dependency proxy         |       |         |          |                  |           |            |   ✓   |
+| Enable package request forwarding        |       |         |          |                  |           |            |   ✓   |
+| Disable package request forwarding       |       |         |          |                  |           |            |   ✓   |
 
 ### Group planning
 
-| Action                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ----------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View epic                                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) epics <sup>1</sup>                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add issues to an [epic](group/epics/_index.md) <sup>2</sup>                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add [child epics](group/epics/manage_epics.md#multi-level-child-epics) <sup>3</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add parent epic <sup>4</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add internal notes                                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create epics                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Update epic details                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete epics <sup>5</sup>                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Action                                                                              | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ----------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View epic                                                                           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) epics <sup>1</sup>                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add issues to an [epic](group/epics/_index.md) <sup>2</sup>                         |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add [child epics](work_items/child_items.md#work-with-multi-level-hierarchies) <sup>3</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add parent epic <sup>4</sup>                                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal notes                                                                  |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create epics                                                                        |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Update epic details                                                                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Delete epics <sup>5</sup>                                                           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -252,13 +255,13 @@ Group permissions for [package registry](packages/_index.md):
 
 Group permissions for [wikis](project/wiki/group.md):
 
-| Action                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View group wiki <sup>1</sup>                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) group wikis <sup>2</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create group wiki pages                             |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
-| Edit group wiki pages                               |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
-| Delete group wiki pages                             |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
+| Action                                              | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View group wiki <sup>1</sup>                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) group wikis <sup>2</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create group wiki pages                             |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| Edit group wiki pages                               |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete group wiki pages                             |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -269,32 +272,32 @@ Group permissions for [wikis](project/wiki/group.md):
 
 Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
 
-| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-|----------------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|
-| Manage [deploy tokens](project/deploy_tokens/_index.md)                                |       |         |          |           |            |   ✓   |
-| Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |
-| Manage [push rules](project/repository/push_rules.md#group-push-rules)         |       |         |          |           |            |   ✓   |
+| Action                                                                                 | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+|----------------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
+| Manage [deploy tokens](project/deploy_tokens/_index.md)                                |       |         |          |                  |           |            |   ✓   |
+| Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |                  |           |            |   ✓   |
+| Manage [push rules](project/repository/push_rules.md#group-push-rules)         |       |         |          |                  |           |            |   ✓   |
 
 ### Group user management
 
 Group permissions for user management:
 
-| Action                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View 2FA status of members      |       |         |          |           |            |   ✓   |
-| Filter members by 2FA status    |       |         |          |           |            |   ✓   |
-| Manage group members            |       |         |          |           |            |   ✓   |
-| Manage group-level custom roles |       |         |          |           |            |   ✓   |
-| Share (invite) groups to groups |       |         |          |           |            |   ✓   |
+| Action                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View 2FA status of members      |       |         |          |                  |           |            |   ✓   |
+| Filter members by 2FA status    |       |         |          |                  |           |            |   ✓   |
+| Manage group members            |       |         |          |                  |           |            |   ✓   |
+| Manage group-level custom roles |       |         |          |                  |           |            |   ✓   |
+| Share (invite) groups to groups |       |         |          |                  |           |            |   ✓   |
 
 ### Group workspaces
 
 Groups permissions for workspaces:
 
-| Action                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View workspace cluster agents mapped to a group           |       |         |          |           |     ✓      |   ✓   |
-| Map or unmap workspace cluster agents to and from a group |       |         |          |           |            |   ✓   |
+| Action                                                    | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View workspace cluster agents mapped to a group           |       |         |          |                  |           |     ✓      |   ✓   |
+| Map or unmap workspace cluster agents to and from a group |       |         |          |                  |           |            |   ✓   |
 
 ## Project permissions
 
@@ -323,39 +326,39 @@ The following tables list the project permissions available for each role.
 
 Project permissions for [project features](project/organize_work_with_projects.md):
 
-| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Download project <sup>1</sup>                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Leave comments                                                                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Reposition comments on images (posted by any user) <sup>2</sup>                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [insights](project/insights/_index.md)                                            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [requirements](project/requirements/_index.md)                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [time tracking](project/time_tracking.md) reports <sup>1</sup>                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [snippets](snippets.md)                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) [snippets](snippets.md) and comments                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [project traffic statistics](../api/project_statistics.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [snippets](snippets.md)                                                         |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [releases](project/releases/_index.md) <sup>3</sup>                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [releases](project/releases/_index.md) <sup>4</sup>                             |       |         |          |           |     ✓      |   ✓   |
-| Configure [webhooks](project/integrations/webhooks.md)                                 |       |         |          |           |     ✓      |   ✓   |
-| Manage [project access tokens](project/settings/project_access_tokens.md) <sup>5</sup> |       |         |          |           |     ✓      |   ✓   |
-| [Export project](project/settings/import_export.md)                                    |       |         |          |           |     ✓      |   ✓   |
-| Rename project                                                                         |       |         |          |           |     ✓      |   ✓   |
-| Edit project badges                                                                    |       |         |          |           |     ✓      |   ✓   |
-| Edit project settings                                                                  |       |         |          |           |     ✓      |   ✓   |
-| Change [project features visibility](public_access.md) level <sup>6</sup>              |       |         |          |           |     ✓      |   ✓   |
-| Change custom settings for [project integrations](project/integrations/_index.md)      |       |         |          |           |     ✓      |   ✓   |
-| Edit comments posted by other users                                                    |       |         |          |           |     ✓      |   ✓   |
-| Add [deploy keys](project/deploy_keys/_index.md)                                       |       |         |          |           |     ✓      |   ✓   |
-| Manage [project operations](../operations/_index.md)                                   |       |         |          |           |     ✓      |   ✓   |
-| View [Usage quotas](storage_usage_quotas.md) page                                      |       |         |          |           |     ✓      |   ✓   |
-| Globally delete [snippets](snippets.md)                                                |       |         |          |           |     ✓      |   ✓   |
-| Globally edit [snippets](snippets.md)                                                  |       |         |          |           |     ✓      |   ✓   |
-| Archive project                                                                        |       |         |          |           |            |   ✓   |
-| Change project visibility level                                                        |       |         |          |           |            |   ✓   |
-| Delete project                                                                         |       |         |          |           |            |   ✓   |
-| Disable notification emails                                                            |       |         |          |           |            |   ✓   |
-| Transfer project                                                                       |       |         |          |           |            |   ✓   |
+| Action                                                                                 | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Download project <sup>1</sup>                                                          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Leave comments                                                                         |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Reposition comments on images (posted by any user) <sup>2</sup>                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [insights](project/insights/_index.md)                                            |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [requirements](project/requirements/_index.md)                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [time tracking](project/time_tracking.md) reports <sup>1</sup>                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [snippets](snippets.md)                                                           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) [snippets](snippets.md) and comments                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [project traffic statistics](../api/project_statistics.md)                        |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [snippets](snippets.md)                                                         |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [releases](project/releases/_index.md) <sup>3</sup>                               |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [releases](project/releases/_index.md) <sup>4</sup>                             |       |         |          |                  |           |     ✓      |   ✓   |
+| Configure [webhooks](project/integrations/webhooks.md)                                 |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [project access tokens](project/settings/project_access_tokens.md) <sup>5</sup> |       |         |          |                  |           |     ✓      |   ✓   |
+| [Export project](project/settings/import_export.md)                                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Rename project                                                                         |       |         |          |                  |           |     ✓      |   ✓   |
+| Edit project badges                                                                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Edit project settings                                                                  |       |         |          |                  |           |     ✓      |   ✓   |
+| Change [project features visibility](public_access.md) level <sup>6</sup>              |       |         |          |                  |           |     ✓      |   ✓   |
+| Change custom settings for [project integrations](project/integrations/_index.md)      |       |         |          |                  |           |     ✓      |   ✓   |
+| Edit comments posted by other users                                                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Add [deploy keys](project/deploy_keys/_index.md)                                       |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [project operations](../operations/_index.md)                                   |       |         |          |                  |           |     ✓      |   ✓   |
+| View [Usage quotas](storage_usage_quotas.md) page                                      |       |         |          |                  |           |     ✓      |   ✓   |
+| Globally delete [snippets](snippets.md)                                                |       |         |          |                  |           |     ✓      |   ✓   |
+| Globally edit [snippets](snippets.md)                                                  |       |         |          |                  |           |     ✓      |   ✓   |
+| Archive project                                                                        |       |         |          |                  |           |            |   ✓   |
+| Change project visibility level                                                        |       |         |          |                  |           |            |   ✓   |
+| Delete project                                                                         |       |         |          |                  |           |            |   ✓   |
+| Disable notification emails                                                            |       |         |          |                  |           |            |   ✓   |
+| Transfer project                                                                       |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -382,55 +385,57 @@ Project permissions for [project features](project/organize_work_with_projects.m
 
 Project permissions for [GitLab Pages](project/pages/_index.md):
 
-| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View GitLab Pages protected by [access control](project/pages/pages_access_control.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage GitLab Pages                                                                    |       |         |          |           |     ✓      |   ✓   |
-| Manage GitLab Pages domain and certificates                                            |       |         |          |           |     ✓      |   ✓   |
-| Remove GitLab Pages                                                                    |       |         |          |           |     ✓      |   ✓   |
+| Action                                                                                 | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View GitLab Pages protected by [access control](project/pages/pages_access_control.md) |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage GitLab Pages                                                                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage GitLab Pages domain and certificates                                            |       |         |          |                  |           |     ✓      |   ✓   |
+| Remove GitLab Pages                                                                    |       |         |          |                  |           |     ✓      |   ✓   |
 
 ### Project analytics
 
 Project permissions for [analytics](analytics/_index.md) features including value streams, usage trends, product analytics, and insights.
 
-| Action                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [issue analytics](group/issues_analytics/_index.md)                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [value stream analytics](group/value_stream_analytics/_index.md)                      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [CI/CD analytics](analytics/ci_cd_analytics.md)                                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [code review analytics](analytics/code_review_analytics.md)                           |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [DORA metrics](analytics/ci_cd_analytics.md)                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [merge request analytics](analytics/merge_request_analytics.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [repository analytics](analytics/repository_analytics.md)                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [Value Streams Dashboard](analytics/value_streams_dashboard.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| Action                                                                                     | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [issue analytics](group/issues_analytics/_index.md)                                   |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [value stream analytics](group/value_stream_analytics/_index.md)                      |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [CI/CD analytics](analytics/ci_cd_analytics.md)                                       |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [code review analytics](analytics/code_review_analytics.md)                           |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [DORA metrics](analytics/ci_cd_analytics.md)                                          |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [merge request analytics](analytics/merge_request_analytics.md)                       |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [repository analytics](analytics/repository_analytics.md)                             |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [Value Streams Dashboard](analytics/value_streams_dashboard.md)                       |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 
 ### Project application security
 
 Project permissions for [application security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
 
-| Action                                                                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ----------------------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [dependency list](application_security/dependency_list/_index.md)                                                              |       |         |          |     ✓     |     ✓      |   ✓   |
-| View licenses in [dependency list](application_security/dependency_list/_index.md)                                                  |       |         |          |     ✓     |     ✓      |   ✓   |
-| View [security dashboard](application_security/security_dashboard/_index.md)                                                        |       |         |          |     ✓     |     ✓      |   ✓   |
-| View [vulnerability report](application_security/vulnerability_report/_index.md)                                                    |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [vulnerability manually](application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)                   |       |         |          |           |     ✓      |   ✓   |
-| Create [issue](application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability) from vulnerability finding |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                          |       |         |          |     ✓     |     ✓      |   ✓   |
-| Run [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                             |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |
-| Change [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [CVE ID request](application_security/cve_id_request.md)                                                                     |       |         |          |           |     ✓      |   ✓   |
-| Change vulnerability status <sup>1</sup>                                                                                            |       |         |          |           |     ✓      |   ✓   |
-| Create [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
-| Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
-| Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |     ✓      |   ✓   |
+| Action                                                                                                                              | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ----------------------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [dependency list](application_security/dependency_list/_index.md)                                                              |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View licenses in [dependency list](application_security/dependency_list/_index.md)                                                  |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [security dashboard](application_security/security_dashboard/_index.md)                                                        |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [vulnerability report](application_security/vulnerability_report/_index.md)                                                    |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [vulnerability manually](application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)                   |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Create [issue](application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability) from vulnerability finding |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                          |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Run [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                             |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Change [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Create [CVE ID request](application_security/cve_id_request.md)                                                                     |       |         |          |                  |           |     ✓      |   ✓   |
+| Change vulnerability status <sup>1</sup>                                                                                            |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Create [security policy project](application_security/policies/_index.md)                                                           |       |         |          |                  |           |            |   ✓   |
+| Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |                  |           |            |   ✓   |
+| Manage [security configurations](application_security/detect/security_configuration.md) <sup>2</sup>                               |       |         |          |        ✓         |           |     ✓      |   ✓   |
+| Manage [Secrets Manager](../ci/secrets/secrets_manager/_index.md)                                                                   |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
 1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
+1. Security Managers can only manage security configurations through the UI (**Secure > Security configuration**).
 
 ### Project CI/CD
 
@@ -443,53 +448,53 @@ Project permissions for [application security](application_security/secure_your_
 
 Project Owners can perform any listed action, and can delete pipelines:
 
-| Action                                                                                                      | Non-member | Guest | Planner | Reporter | Developer | Maintainer |
-| ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: |
-| View instance runner                                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View existing artifacts <sup>1</sup>                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View list of jobs <sup>2</sup>                                                                              |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View artifacts <sup>3</sup>                                                                                 |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| Download artifacts <sup>3</sup>                                                                             |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View [environments](../ci/environments/_index.md) <sup>1</sup>                                              |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View job logs and job details page <sup>2</sup>                                                             |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View pipelines and pipeline details pages <sup>2</sup>                                                      |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View pipelines tab in MR <sup>1</sup>                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| View [vulnerabilities in a pipeline](application_security/detect/security_scanning_results.md) <sup>4</sup> |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
-| Run deployment job for a protected environment <sup>5</sup>                                                 |            |       |         |    ✓     |     ✓     |     ✓      |
-| View [agents for Kubernetes](clusters/agent/_index.md)                                                      |            |       |         |          |     ✓     |     ✓      |
-| View project [Secure Files](../api/secure_files.md)                                                         |            |       |         |          |     ✓     |     ✓      |
-| Download project [Secure Files](../api/secure_files.md)                                                     |            |       |         |          |     ✓     |     ✓      |
-| View a job with [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging)          |            |       |         |          |     ✓     |     ✓      |
-| Create [environments](../ci/environments/_index.md)                                                         |            |       |         |          |     ✓     |     ✓      |
-| Delete [environments](../ci/environments/_index.md)                                                         |            |       |         |          |     ✓     |     ✓      |
-| Stop [environments](../ci/environments/_index.md)                                                           |            |       |         |          |     ✓     |     ✓      |
-| Run, rerun, or retry CI/CD pipeline or job                                                                  |            |       |         |          |     ✓     |     ✓      |
-| Run, rerun, or retry CI/CD pipeline or job for a protected branch <sup>6</sup>                              |            |       |         |          |     ✓     |     ✓      |
-| Delete job logs or job artifacts <sup>7</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
-| Enable [review apps](../ci/review_apps/_index.md)                                                           |            |       |         |          |     ✓     |     ✓      |
-| Cancel jobs <sup>8</sup>                                                                                    |            |       |         |          |     ✓     |     ✓      |
-| Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |     ✓     |     ✓      |
-| Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |     ✓     |     ✓      |
-| Use pipeline editor                                                                                         |            |       |         |          |     ✓     |     ✓      |
-| View project runners <sup>9</sup>                                                                           |            |       |         |          |           |     ✓      |
-| Manage project runners <sup>9</sup>                                                                         |            |       |         |          |           |     ✓      |
-| Delete project runners <sup>10</sup>                                                                        |            |       |         |          |           |     ✓      |
-| Manage [agents for Kubernetes](clusters/agent/_index.md)                                                    |            |       |         |          |           |     ✓      |
-| Manage CI/CD settings                                                                                       |            |       |         |          |           |     ✓      |
-| Manage job triggers                                                                                         |            |       |         |          |           |     ✓      |
-| Manage project CI/CD variables                                                                              |            |       |         |          |           |     ✓      |
-| Manage project protected environments                                                                       |            |       |         |          |           |     ✓      |
-| Manage project [Secure Files](../api/secure_files.md)                                                       |            |       |         |          |           |     ✓      |
-| Manage [Terraform](infrastructure/_index.md) state                                                          |            |       |         |          |           |     ✓      |
-| Add project runners to project <sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
-| Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
-| Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
-| Create pipeline schedules <sup>12</sup>                                                                     |            |       |         |          |     ✓     |     ✓      |
-| Edit own pipeline schedules <sup>12</sup>                                                                   |            |       |         |          |     ✓     |     ✓      |
-| Delete own pipeline schedules                                                                               |            |       |         |          |     ✓     |     ✓      |
-| Run pipeline schedules manually <sup>13</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
-| Take ownership of pipeline schedules                                                                        |            |       |         |          |           |     ✓      |
-| Delete others' pipeline schedules                                                                           |            |       |         |          |           |     ✓      |
+| Action                                                                                                      | Non-member | Guest | Planner | Reporter | Security Manager | Developer | Maintainer |
+| ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :--------------: | :-------: | :--------: |
+| View instance runner                                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View existing artifacts <sup>1</sup>                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View list of jobs <sup>2</sup>                                                                              |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View artifacts <sup>3</sup>                                                                                 |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| Download artifacts <sup>3</sup>                                                                             |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View [environments](../ci/environments/_index.md) <sup>1</sup>                                              |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View job logs and job details page <sup>2</sup>                                                             |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View pipelines and pipeline details pages <sup>2</sup>                                                      |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View pipelines tab in MR <sup>1</sup>                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View [vulnerabilities in a pipeline](application_security/detect/security_scanning_results.md) <sup>4</sup> |            |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| Run deployment job for a protected environment <sup>5</sup>                                                 |            |       |         |    ✓     |                  |     ✓     |     ✓      |
+| View [agents for Kubernetes](clusters/agent/_index.md)                                                      |            |       |         |          |                  |     ✓     |     ✓      |
+| View project [Secure Files](../api/secure_files.md)                                                         |            |       |         |          |                  |     ✓     |     ✓      |
+| Download project [Secure Files](../api/secure_files.md)                                                     |            |       |         |          |                  |     ✓     |     ✓      |
+| View a job with [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging)          |            |       |         |          |                  |     ✓     |     ✓      |
+| Create [environments](../ci/environments/_index.md)                                                         |            |       |         |          |                  |     ✓     |     ✓      |
+| Delete [environments](../ci/environments/_index.md)                                                         |            |       |         |          |                  |     ✓     |     ✓      |
+| Stop [environments](../ci/environments/_index.md)                                                           |            |       |         |          |                  |     ✓     |     ✓      |
+| Run, rerun, or retry CI/CD pipeline or job <sup>14</sup>                                                    |            |       |         |          |        ✓         |     ✓     |     ✓      |
+| Run, rerun, or retry CI/CD pipeline or job for a protected branch <sup>6</sup>                              |            |       |         |          |                  |     ✓     |     ✓      |
+| Delete job logs or job artifacts <sup>7</sup>                                                               |            |       |         |          |                  |     ✓     |     ✓      |
+| Enable [review apps](../ci/review_apps/_index.md)                                                           |            |       |         |          |                  |     ✓     |     ✓      |
+| Cancel jobs <sup>8</sup>                                                                                    |            |       |         |          |                  |     ✓     |     ✓      |
+| Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |                  |     ✓     |     ✓      |
+| Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |                  |     ✓     |     ✓      |
+| Use pipeline editor                                                                                         |            |       |         |          |                  |     ✓     |     ✓      |
+| View project runners <sup>9</sup>                                                                           |            |       |         |          |        ✓         |           |     ✓      |
+| Manage project runners <sup>9</sup>                                                                         |            |       |         |          |                  |           |     ✓      |
+| Delete project runners <sup>10</sup>                                                                        |            |       |         |          |                  |           |     ✓      |
+| Manage [agents for Kubernetes](clusters/agent/_index.md)                                                    |            |       |         |          |                  |           |     ✓      |
+| Manage CI/CD settings                                                                                       |            |       |         |          |                  |           |     ✓      |
+| Manage job triggers                                                                                         |            |       |         |          |                  |           |     ✓      |
+| Manage project CI/CD variables                                                                              |            |       |         |          |                  |           |     ✓      |
+| Manage project protected environments                                                                       |            |       |         |          |                  |           |     ✓      |
+| Manage project [Secure Files](../api/secure_files.md)                                                       |            |       |         |          |                  |           |     ✓      |
+| Manage [Terraform](infrastructure/_index.md) state                                                          |            |       |         |          |                  |           |     ✓      |
+| Add project runners to project <sup>11</sup>                                                                |            |       |         |          |                  |           |     ✓      |
+| Clear runner caches manually                                                                                |            |       |         |          |                  |           |     ✓      |
+| Enable instance runners in project                                                                          |            |       |         |          |                  |           |     ✓      |
+| Create pipeline schedules <sup>12</sup>                                                                     |            |       |         |          |                  |     ✓     |     ✓      |
+| Edit own pipeline schedules <sup>12</sup>                                                                   |            |       |         |          |                  |     ✓     |     ✓      |
+| Delete own pipeline schedules                                                                               |            |       |         |          |                  |     ✓     |     ✓      |
+| Run pipeline schedules manually <sup>13</sup>                                                               |            |       |         |          |                  |     ✓     |     ✓      |
+| Take ownership of pipeline schedules                                                                        |            |       |         |          |                  |           |     ✓      |
+| Delete others' pipeline schedules                                                                           |            |       |         |          |                  |           |     ✓      |
 
 **Footnotes**:
 
@@ -519,6 +524,7 @@ Project Owners can perform any listed action, and can delete pipelines:
     For protected tags, the user must be allowed to create protected tags.
     These permission requirements apply when creating or editing schedules, and are checked dynamically as branch protection rules may change over time.
 13. When running manually, the pipeline executes with the triggering user's permissions instead of the schedule owner's permissions.
+14. Security Managers can only run DAST on-demand scan pipelines.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -549,12 +555,12 @@ Guest users and members with the Reporter role cannot do any of these actions.
 
 Project permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
-| Action                                                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/_index.md) <sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [audit events](compliance/audit_events.md) <sup>2</sup>                                                    |       |         |          |     ✓     |     ✓      |   ✓   |
-| View licenses in [dependency list](application_security/dependency_list/_index.md)                              |       |         |          |     ✓     |     ✓      |   ✓   |
-| Manage [audit streams](compliance/audit_event_streaming.md)                                                     |       |         |          |           |            |   ✓   |
+| Action                                                                                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/_index.md) <sup>1</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [audit events](compliance/audit_events.md) <sup>2</sup>                                                    |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| View licenses in [dependency list](application_security/dependency_list/_index.md)                              |       |         |          |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [audit streams](compliance/audit_event_streaming.md)                                                     |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -569,10 +575,10 @@ Project permissions for [compliance](compliance/_index.md) features including co
 
 Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 
-| Action                                                                               | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------------ | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                 |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-project) |            |       |         |          |           |     ✓      |   ✓   |
+| Action                                                                               | Non-member | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------------ | :--------: | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Use GitLab Duo features <sup>1</sup>                                                 |            |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-project) |            |       |         |          |                  |           |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -582,19 +588,19 @@ Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 Project permissions for [merge requests](project/merge_requests/_index.md):
 
-| Action                                                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| [View](project/merge_requests/_index.md#view-merge-requests) a merge request <sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) merge requests and comments <sup>1</sup><sup>2</sup>           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>3</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add internal note                                                                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Comment and add suggestions                                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [snippets](snippets.md)                                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>4</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update merge request details <sup>5</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
-| Manage [merge request settings](project/merge_requests/approvals/settings.md)             |       |         |          |           |     ✓      |   ✓   |
-| Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
-| Delete merge request                                                                      |       |         |          |           |            |   ✓   |
+| Action                                                                                    | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| [View](project/merge_requests/_index.md#view-merge-requests) a merge request <sup>1</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) merge requests and comments <sup>1</sup><sup>2</sup>           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>3</sup>         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal note                                                                         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Comment and add suggestions                                                               |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [snippets](snippets.md)                                                            |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>4</sup>    |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Update merge request details <sup>5</sup>                                                 |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Manage [merge request settings](project/merge_requests/approvals/settings.md)             |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |                  |           |     ✓      |   ✓   |
+| Delete merge request                                                                      |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -619,16 +625,16 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 
 Project permissions for [model registry](project/ml/model_registry/_index.md) and [model experiments](project/ml/experiment_tracking/_index.md).
 
-| Action                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View [models and versions](project/ml/model_registry/_index.md) <sup>1</sup>    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [model experiments](project/ml/experiment_tracking/_index.md) <sup>2</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create models, versions, and artifacts <sup>3</sup>                             |       |         |          |     ✓     |     ✓      |   ✓   |
-| Edit models, versions, and artifacts                                            |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete models, versions, and artifacts                                          |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create experiments and candidates                                               |       |         |          |     ✓     |     ✓      |   ✓   |
-| Edit experiments and candidates                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete experiments and candidates                                               |       |         |          |     ✓     |     ✓      |   ✓   |
+| Action                                                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View [models and versions](project/ml/model_registry/_index.md) <sup>1</sup>    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [model experiments](project/ml/experiment_tracking/_index.md) <sup>2</sup> |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create models, versions, and artifacts <sup>3</sup>                             |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Edit models, versions, and artifacts                                            |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete models, versions, and artifacts                                          |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Create experiments and candidates                                               |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Edit experiments and candidates                                                 |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete experiments and candidates                                               |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -643,36 +649,36 @@ Project permissions for [model registry](project/ml/model_registry/_index.md) an
 
 Project permissions for monitoring including [error tracking](../operations/error_tracking.md) and [incident management](../operations/incident_management/_index.md):
 
-| Action                                                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View an [incident](../operations/incident_management/incidents.md)                                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Assign an [incident management](../operations/incident_management/_index.md) alert                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Participate in on-call rotation for [Incident Management](../operations/incident_management/_index.md)              |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [alerts](../operations/incident_management/alerts.md)                                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [error tracking](../operations/error_tracking.md) list                                                         |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [escalation policies](../operations/incident_management/escalation_policies.md)                                |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                     |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [incident](../operations/incident_management/incidents.md)                                                   |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Change [alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Change [incident severity](../operations/incident_management/manage_incidents.md#change-severity)                   |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Change [incident escalation status](../operations/incident_management/manage_incidents.md#change-status)            |       |         |          |     ✓     |     ✓      |   ✓   |
-| Change [incident escalation policy](../operations/incident_management/manage_incidents.md#change-escalation-policy) |       |         |          |     ✓     |     ✓      |   ✓   |
-| Manage [error tracking](../operations/error_tracking.md)                                                            |       |         |          |           |     ✓      |   ✓   |
-| Manage [escalation policies](../operations/incident_management/escalation_policies.md)                              |       |         |          |           |     ✓      |   ✓   |
-| Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                                   |       |         |          |           |     ✓      |   ✓   |
+| Action                                                                                                              | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View an [incident](../operations/incident_management/incidents.md)                                                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Assign an [incident management](../operations/incident_management/_index.md) alert                                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Participate in on-call rotation for [Incident Management](../operations/incident_management/_index.md)              |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [alerts](../operations/incident_management/alerts.md)                                                          |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [error tracking](../operations/error_tracking.md) list                                                         |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [escalation policies](../operations/incident_management/escalation_policies.md)                                |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                     |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [incident](../operations/incident_management/incidents.md)                                                   |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Change [alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                          |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Change [incident severity](../operations/incident_management/manage_incidents.md#change-severity)                   |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Change [incident escalation status](../operations/incident_management/manage_incidents.md#change-status)            |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Change [incident escalation policy](../operations/incident_management/manage_incidents.md#change-escalation-policy) |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Manage [error tracking](../operations/error_tracking.md)                                                            |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [escalation policies](../operations/incident_management/escalation_policies.md)                              |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                                   |       |         |          |                  |           |     ✓      |   ✓   |
 
 ### Project packages and registries
 
 Project permissions for [container registry](packages/_index.md):
 
-| Action                                                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Pull container registry images <sup>1</sup>                                                      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Push container registry images                                                                   |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete container registry images                                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
-| Manage cleanup policies                                                                          |       |         |          |           |     ✓      |   ✓   |
-| Create [tag protection](packages/container_registry/protected_container_tags.md) rules           |       |         |          |           |     ✓      |   ✓   |
-| Create [immutable tag protection](packages/container_registry/immutable_container_tags.md) rules |       |         |          |           |            |   ✓   |
+| Action                                                                                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Pull container registry images <sup>1</sup>                                                      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Push container registry images                                                                   |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete container registry images                                                                 |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Manage cleanup policies                                                                          |       |         |          |                  |           |     ✓      |   ✓   |
+| Create [tag protection](packages/container_registry/protected_container_tags.md) rules           |       |         |          |                  |           |     ✓      |   ✓   |
+| Create [immutable tag protection](packages/container_registry/immutable_container_tags.md) rules |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -680,12 +686,12 @@ Project permissions for [container registry](packages/_index.md):
 
 Project permissions for [package registry](packages/_index.md):
 
-| Action                                  | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Pull packages <sup>1</sup>              |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Publish packages                        |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete packages                         |       |         |          |           |     ✓      |   ✓   |
-| Delete files associated with a package  |       |         |          |           |     ✓      |   ✓   |
+| Action                                  | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| Pull packages <sup>1</sup>              |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Publish packages                        |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete packages                         |       |         |          |                  |           |     ✓      |   ✓   |
+| Delete files associated with a package  |       |         |          |                  |           |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -699,31 +705,31 @@ Project permissions for [package registry](packages/_index.md):
 
 Project permissions for [issues](project/issues/_index.md):
 
-| Action                                                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View issues                                                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) issues and comments                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create issues                                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) confidential issues and comments <sup>6</sup>          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Edit issues, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add internal notes                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Close and reopen issues <sup>2</sup>                                              |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [design management](project/issues/design_management.md) files             |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [issue boards](project/issue_board.md)                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [milestones](project/milestones/_index.md)                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) milestones <sup>6</sup>                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Archive or reopen [requirements](project/requirements/_index.md) <sup>3</sup>     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create or edit [requirements](project/requirements/_index.md) <sup>4</sup>        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Import or export [requirements](project/requirements/_index.md)                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Archive [test cases](../ci/test_cases/_index.md)                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Move [test cases](../ci/test_cases/_index.md)                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
-| [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete issues <sup>5</sup>                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
+| Action                                                                            | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View issues                                                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) issues and comments                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create issues                                                                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) confidential issues and comments <sup>6</sup>          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit issues, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal notes                                                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Close and reopen issues <sup>2</sup>                                              |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [design management](project/issues/design_management.md) files             |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [issue boards](project/issue_board.md)                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [milestones](project/milestones/_index.md)                                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) milestones <sup>6</sup>                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Archive or reopen [requirements](project/requirements/_index.md) <sup>3</sup>     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create or edit [requirements](project/requirements/_index.md) <sup>4</sup>        |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Import or export [requirements](project/requirements/_index.md)                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Archive [test cases](../ci/test_cases/_index.md)                                  |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Move [test cases](../ci/test_cases/_index.md)                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Delete issues <sup>5</sup>                                                        |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -740,17 +746,17 @@ Project permissions for [issues](project/issues/_index.md):
 
 Project permissions for [tasks](tasks.md):
 
-| Action                                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View tasks                                                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) tasks                                                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create tasks                                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Edit tasks, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add a linked item                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Convert to another item type                                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Remove from issue                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add internal note                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete tasks <sup>2</sup>                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Action                                                                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View tasks                                                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) tasks                                                 |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create tasks                                                                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit tasks, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add a linked item                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Convert to another item type                                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Remove from issue                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal note                                                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Delete tasks <sup>2</sup>                                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**:
 
@@ -759,55 +765,55 @@ Project permissions for [tasks](tasks.md):
 
 Project permissions for [OKRs](okrs.md):
 
-| Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View OKRs                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) OKRs                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create OKRs                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Edit OKRs, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add a child OKR                                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add a linked item                                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Convert to another item type                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Edit OKRs                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Change confidentiality in OKR                                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Add internal note                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Action                                                             | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ------------------------------------------------------------------ | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View OKRs                                                          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) OKRs                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create OKRs                                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit OKRs, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add a child OKR                                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add a linked item                                                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Convert to another item type                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit OKRs                                                          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Change confidentiality in OKR                                      |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal note                                                  |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 
 Project permissions for [wikis](project/wiki/_index.md):
 
-| Action                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View wiki                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) wikis |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
-| Edit wiki pages                  |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
-| Delete wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
+| Action                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| -------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View wiki                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) wikis |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create wiki pages                |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| Edit wiki pages                  |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete wiki pages                |       |    ✓    |          |                  |     ✓     |     ✓      |   ✓   |
 
 ### Project repositories
 
 Project permissions for [repository](project/repository/_index.md) features including source code, branches, push rules, and more:
 
-| Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View project code <sup>1</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) project code <sup>1</sup> <sup>2</sup>                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) commits and comments <sup>1</sup> <sup>2</sup>          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Pull project code <sup>3</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create commit status <sup>4</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update commit status <sup>4</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
-| Create new [branches](project/repository/branches/_index.md)          |       |         |          |     ✓     |     ✓      |   ✓   |
-| Push to non-protected branches                                        |       |         |          |     ✓     |     ✓      |   ✓   |
-| Force push to non-protected branches                                  |       |         |          |     ✓     |     ✓      |   ✓   |
-| Delete non-protected branches                                         |       |         |          |     ✓     |     ✓      |   ✓   |
-| Manage [protected branches](project/repository/branches/protected.md) |       |         |          |           |     ✓      |   ✓   |
-| Push to protected branches <sup>4</sup>                               |       |         |          |           |     ✓      |   ✓   |
-| Delete protected branches                                             |       |         |          |           |     ✓      |   ✓   |
-| Manage [protected tags](project/protected_tags.md)                    |       |         |          |           |     ✓      |   ✓   |
-| Manage [push rules](project/repository/push_rules.md)                 |       |         |          |           |     ✓      |   ✓   |
-| Remove fork relationship                                              |       |         |          |           |            |   ✓   |
-| Force push to protected branches <sup>5</sup>                         |       |         |          |           |            |       |
+| Action                                                                | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| --------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View project code <sup>1</sup>                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) project code <sup>1</sup> <sup>2</sup>                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) commits and comments <sup>1</sup> <sup>2</sup>          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Pull project code <sup>3</sup>                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| View commit status                                                    |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Create commit status <sup>4</sup>                                     |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Update commit status <sup>4</sup>                                     |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Create [Git tags](project/repository/tags/_index.md)                  |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete [Git tags](project/repository/tags/_index.md)                  |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Create new [branches](project/repository/branches/_index.md)          |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Push to non-protected branches                                        |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Force push to non-protected branches                                  |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Delete non-protected branches                                         |       |         |          |                  |     ✓     |     ✓      |   ✓   |
+| Manage [protected branches](project/repository/branches/protected.md) |       |         |          |                  |           |     ✓      |   ✓   |
+| Push to protected branches <sup>4</sup>                               |       |         |          |                  |           |     ✓      |   ✓   |
+| Delete protected branches                                             |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [protected tags](project/protected_tags.md)                    |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [push rules](project/repository/push_rules.md)                 |       |         |          |                  |           |     ✓      |   ✓   |
+| Remove fork relationship                                              |       |         |          |                  |           |            |   ✓   |
+| Force push to protected branches <sup>5</sup>                         |       |         |          |                  |           |            |       |
 
 **Footnotes**:
 
@@ -843,11 +849,11 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 Project permissions for [user management](project/members/_index.md).
 
-| Action                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| ---------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| View 2FA status of members                                       |       |         |          |           |     ✓      |   ✓   |
-| Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
-| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |            |   ✓   |
+| Action                                                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+| ---------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
+| View 2FA status of members                                       |       |         |          |                  |           |     ✓      |   ✓   |
+| Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |                  |           |     ✓      |   ✓   |
+| Share (invite) projects with groups <sup>2</sup>                 |       |         |          |                  |           |            |   ✓   |
 
 **Footnotes**:
 
@@ -878,6 +884,7 @@ For more information, see
 
 - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 - Minimal Access users [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216727) to non-billable in GitLab 18.9.
+- [Enforce](https://gitlab.com/gitlab-org/gitlab/-/work_items/534094) two-factor authentication requirements for users with Minimal Access role in GitLab 18.11.
 
 {{< /history >}}
 
@@ -888,7 +895,7 @@ Users with the Minimal Access role do not:
   projects.
 - Count as licensed seats, provided the user has no other role anywhere on the instance or in the GitLab.com namespace.
 
-If a user with the Minimal Access role is granted a [billable role](../subscriptions/manage_users_and_seats.md#billable-users)
+If a user with the Minimal Access role is granted a [billable role](../subscriptions/manage_seats.md#billable-users)
 in any project or subgroup, they consume a license seat based on their highest role.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/_index.md)
@@ -907,7 +914,7 @@ Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/
 - Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
 - Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
-To work around the issue, give these users the Guest, Planner, Reporter, Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the issue, give these users the Guest, Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

@@ -28,6 +28,12 @@ import (
 // MaxMessageSize is the maximum size of messages that can be sent or received (4MB).
 const MaxMessageSize = 4 * 1024 * 1024 // 4MB
 
+// maxClientNameLength is the maximum characters in the client name header we're sending to DWS.
+const maxClientNameLength = 255
+
+// defaultClientName is the client name workhorse sends to DWS when there is no client name header present in request.
+const defaultClientName = "gitlab-duo-workflow"
+
 // ErrServerUnavailable is returned when the workflow server cannot be reached.
 var ErrServerUnavailable = fmt.Errorf("server is unavailable")
 
@@ -39,10 +45,19 @@ type Client struct {
 }
 
 // NewClient creates a new Duo Workflow client with the specified service config and user agent.
-func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string) (*Client, error) {
+func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string, clientName string) (*Client, error) {
 	serverURI := config.URI
 	headers := config.Headers
 	secure := config.Secure
+	gRPCClientName := defaultClientName
+	if clientName != "" {
+		gRPCClientName = clientName
+	}
+
+	if len(gRPCClientName) > maxClientNameLength {
+		gRPCClientName = gRPCClientName[:maxClientNameLength]
+	}
+
 	opts := []grpc.DialOption{
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
 			Time:                20 * time.Second, // send pings every 20 seconds if there is no activity
@@ -52,7 +67,7 @@ func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string) (*Client,
 			grpctracing.StreamClientTracingInterceptor(),
 			grpc_prometheus.StreamClientInterceptor,
 			grpccorrelation.StreamClientCorrelationInterceptor(
-				grpccorrelation.WithClientName("gitlab-duo-workflow"),
+				grpccorrelation.WithClientName(gRPCClientName),
 			),
 		),
 		grpc.WithUserAgent(fmt.Sprintf("%s %s", userAgent, version.GetUserAgentShort())),

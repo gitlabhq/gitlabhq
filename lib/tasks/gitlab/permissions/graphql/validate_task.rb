@@ -40,10 +40,11 @@ module Tasks
             GitlabSchema.types.each do |name, type|
               next unless graphql_object_type?(name, type)
 
-              directive = type.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
-              next unless directive
+              type.directives.each do |directive|
+                next unless directive.is_a?(Directives::Authz::GranularScope)
 
-              yield({ kind: 'type', name: name }, directive)
+                yield({ kind: 'type', name: name, source: class_source_path(type) }, directive)
+              end
             end
           end
 
@@ -52,11 +53,10 @@ module Tasks
               resolver = resolve_mutation_class(field)
               next unless resolver
 
-              directive = find_mutation_directive(field, resolver)
-              next unless directive
-
               mutation_name = resolver.respond_to?(:graphql_name) ? resolver.graphql_name : field_name.camelize
-              yield({ kind: 'mutation', name: mutation_name }, directive)
+              find_mutation_directives(field, resolver).each do |directive|
+                yield({ kind: 'mutation', name: mutation_name, source: class_source_path(resolver) }, directive)
+              end
             end
           end
 
@@ -68,10 +68,12 @@ module Tasks
               type.fields.each do |field_name, field|
                 next unless field.respond_to?(:directives)
 
-                directive = field.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
-                next unless directive
+                field.directives.each do |directive|
+                  next unless directive.is_a?(Directives::Authz::GranularScope)
 
-                yield({ kind: 'field', name: "#{type_name}.#{field_name}" }, directive)
+                  yield({ kind: 'field', name: "#{type_name}.#{field_name}",
+                          source: class_source_path(type) }, directive)
+                end
               end
             end
           end
@@ -95,16 +97,18 @@ module Tasks
             resolver if resolver && resolver < Mutations::BaseMutation
           end
 
-          def find_mutation_directive(field, resolver)
-            directive = if field.respond_to?(:directives)
-                          field.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
-                        end
+          def find_mutation_directives(field, resolver)
+            directives = if field.respond_to?(:directives)
+                           field.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
+                         else
+                           []
+                         end
 
-            if directive.nil? && resolver.respond_to?(:directives)
-              directive = resolver.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
+            if directives.empty? && resolver.respond_to?(:directives)
+              directives = resolver.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
             end
 
-            directive
+            directives
           end
 
           def valid_permissions
@@ -134,16 +138,16 @@ module Tasks
           end
 
           def format_all_errors
-            format_invalid_permission_errors + format_boundary_mismatch_errors
+            format_graphql_errors(:invalid_permission) + format_boundary_mismatch_errors
           end
 
-          def format_invalid_permission_errors
-            return '' if violations[:invalid_permission].empty?
+          def format_graphql_errors(kind)
+            return '' if violations[kind].empty?
 
-            out = "#{error_messages[:invalid_permission]}\n\n"
+            out = "#{error_messages[kind]}\n\n"
 
-            violations[:invalid_permission].each do |violation|
-              out += "  - [#{violation[:kind]}] #{violation[:name]}: #{violation[:permission]}\n"
+            violations[kind].each do |v|
+              out += "  - [#{v[:kind]}] #{v[:name]}: #{v[:permission]} (#{v[:source]})\n"
             end
 
             "#{out}\n"
@@ -154,13 +158,18 @@ module Tasks
 
             out = "#{error_messages[:boundary_mismatch]}\n\n"
 
-            violations[:boundary_mismatch].each do |violation|
-              out += "  - [#{violation[:kind]}] #{violation[:name]}: #{violation[:permission]}\n"
-              out += "      Directive boundary_type: #{violation[:boundary_type]}\n"
-              out += "      Assignable boundaries: #{violation[:assignable_boundaries].join(', ')}\n"
+            violations[:boundary_mismatch].each do |v|
+              out += "  - [#{v[:kind]}] #{v[:name]}: #{v[:permission]} (#{v[:source]})\n"
+              out += "      Directive boundary_type: #{v[:boundary_type]}\n"
+              out += "      Assignable boundaries: #{v[:assignable_boundaries].join(', ')}\n"
             end
 
             "#{out}\n"
+          end
+
+          def class_source_path(klass)
+            file, _line = Object.const_source_location(klass.name)
+            relative_path(file)
           end
 
           def error_messages

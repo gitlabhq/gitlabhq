@@ -61,17 +61,22 @@ module Ci
     private
 
     def update_bridge_status!(bridge, pipeline)
-      Gitlab::OptimisticLocking.retry_lock_with_transaction(bridge,
-        name: 'create_downstream_pipeline_update_bridge_status') do |subject|
-        if pipeline.created_successfully?
+      if pipeline.created_successfully?
+        Gitlab::OptimisticLocking.retry_lock(bridge,
+          name: 'create_downstream_pipeline_update_bridge_status_success') do |subject|
           subject.success! unless subject.has_strategy?
           ServiceResponse.success(payload: pipeline)
-        else
-          messages = pipeline.errors.full_messages
+        end
+      else
+        Gitlab::OptimisticLocking.retry_lock(bridge,
+          name: 'create_downstream_pipeline_update_bridge_status_failure') do |subject|
+          subject.transaction do
+            messages = pipeline.errors.full_messages
 
-          subject.drop!(:downstream_pipeline_creation_failed)
-          create_downstream_error_messages(subject, messages)
-          ServiceResponse.error(payload: pipeline, message: messages)
+            subject.drop!(:downstream_pipeline_creation_failed)
+            create_downstream_error_messages(subject, messages)
+            ServiceResponse.error(payload: pipeline, message: messages)
+          end
         end
       end
     rescue StateMachines::InvalidTransition => e
@@ -133,6 +138,7 @@ module Ci
 
     def downstream_project_accessible?
       downstream_project.present? &&
+        downstream_project.organization_id == project.organization_id &&
         can?(current_user, :read_project, downstream_project)
     end
 

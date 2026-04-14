@@ -10,6 +10,7 @@
 
 .rd-app-header {
   display: flex;
+  flex-wrap: wrap;
   padding: constants.$app-header-vertical-padding 0;
   min-height: 3rem;
 }

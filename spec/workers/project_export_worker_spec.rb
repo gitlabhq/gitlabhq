@@ -29,6 +29,7 @@ RSpec.describe ProjectExportWorker, feature_category: :importers do
       expect(worker).to receive(:log_extra_metadata_on_done).with(:lfs_saver_duration_s, anything)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:snippets_repo_saver_duration_s, anything)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:design_repo_saver_duration_s, anything)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:max_iids_saver_duration_s, anything)
 
       perform
     end

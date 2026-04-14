@@ -2,7 +2,6 @@
 import { GlModal, GlFormGroup } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemsCsvImportMutation from '../graphql/work_items_csv_import.mutation.graphql';
 
 export default {
@@ -10,19 +9,12 @@ export default {
   i18n: {
     maximumFileSizeText: __('The maximum file size allowed is %{size}.'),
     importWorkItemsText: s__('WorkItem|Import work items'),
-    importIssuesText: __('Import issues'),
     uploadCsvFileText: __('Upload CSV file'),
     workItemMainText: s__(
       "WorkItem|Your work items will be imported in the background. Once finished, you'll get a confirmation email.",
     ),
     workItemHelpText: s__(
       'WorkItem|It must have a header row and at least two columns: the first column is the work item title and the second column is the work item description. The separator is automatically detected.',
-    ),
-    issuesMainText: __(
-      "Your issues will be imported in the background. Once finished, you'll get a confirmation email.",
-    ),
-    issuesHelpText: __(
-      'It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected.',
     ),
   },
   actionCancel: {
@@ -32,7 +24,6 @@ export default {
     GlModal,
     GlFormGroup,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     maxAttachmentSize: {
       default: 0,
@@ -55,17 +46,12 @@ export default {
     };
   },
   computed: {
-    isPlanningViewsEnabled() {
-      return this.glFeatures.workItemPlanningView;
-    },
     maxFileSizeText() {
       return sprintf(this.$options.i18n.maximumFileSizeText, { size: this.maxAttachmentSize });
     },
     actionPrimary() {
       return {
-        text: this.isPlanningViewsEnabled
-          ? this.$options.i18n.importWorkItemsText
-          : this.$options.i18n.importIssuesText,
+        text: this.$options.i18n.importWorkItemsText,
         attributes: {
           variant: 'confirm',
           loading: this.isImporting,
@@ -74,21 +60,6 @@ export default {
           'data-track-label': 'import_work_items_csv',
         },
       };
-    },
-    modalTitle() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.importWorkItemsText
-        : this.$options.i18n.importIssuesText;
-    },
-    descriptionText() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemMainText
-        : this.$options.i18n.issuesMainText;
-    },
-    helpText() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemHelpText
-        : this.$options.i18n.issuesHelpText;
     },
   },
   methods: {
@@ -135,9 +106,7 @@ export default {
         }
       } catch (error) {
         createAlert({
-          message: this.isPlanningViewsEnabled
-            ? s__('WorkItem|An error occurred while importing work items.')
-            : s__('Issues|An error occurred while importing issues.'),
+          message: s__('WorkItem|An error occurred while importing work items.'),
         });
       } finally {
         this.isImporting = false;
@@ -151,14 +120,14 @@ export default {
   <gl-modal
     ref="modal"
     :modal-id="modalId"
-    :title="modalTitle"
+    :title="$options.i18n.importWorkItemsText"
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     data-testid="import-work-items-modal"
     @primary="importWorkItems"
   >
     <p>
-      {{ descriptionText }}
+      {{ $options.i18n.workItemMainText }}
     </p>
     <gl-form-group :label="$options.i18n.uploadCsvFileText" class="gl-truncate" label-for="file">
       <input
@@ -171,7 +140,7 @@ export default {
       />
     </gl-form-group>
     <p class="gl-text-subtle">
-      {{ helpText }}
+      {{ $options.i18n.workItemHelpText }}
       {{ maxFileSizeText }}
     </p>
   </gl-modal>

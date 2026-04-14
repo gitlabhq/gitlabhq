@@ -128,8 +128,8 @@ export default {
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
-    isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
+    isIconButton() {
+      return this.isMergeRequest || this.glFeatures.notificationsTodosButtons;
     },
   },
   methods: {
@@ -201,7 +201,7 @@ export default {
 <template>
   <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
-      v-if="isNotificationsTodosButtons"
+      v-if="isIconButton"
       v-gl-tooltip.hover.top
       :title="tootltipTitle"
       :issuable-type="issuableType"
@@ -209,7 +209,7 @@ export default {
       :is-todo="hasTodo"
       :disabled="isLoading"
       :is-icon-button="true"
-      class="hide-collapsed"
+      class="hide-collapsed !gl-align-top"
       @click.stop.prevent="toggleTodo"
     >
       <gl-animated-todo-icon
@@ -224,9 +224,8 @@ export default {
       :issuable-id="issuableId"
       :is-todo="hasTodo"
       :loading="isLoading"
-      :size="isMergeRequest ? 'medium' : 'small'"
-      class="hide-collapsed"
-      :class="{ 'gl-mt-2': !isMergeRequest }"
+      size="small"
+      class="hide-collapsed gl-mt-2"
       @click.stop.prevent="toggleTodo"
     />
     <gl-button

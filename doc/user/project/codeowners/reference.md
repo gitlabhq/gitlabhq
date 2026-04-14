@@ -123,7 +123,7 @@ For protected branches only, they can:
 
 - Require approval (default).
 - Be optional (prefixed with `^`).
-- Require a specific number of approvals. For more information, see [Group inheritance and eligibility](advanced.md#group-inheritance-and-eligibility) and [Approvals shown as optional](troubleshooting.md#approvals-shown-as-optional).
+- Require a specific number of approvals. For more information, see [group inheritance and eligibility](advanced.md#group-inheritance-and-eligibility) and [approvals shown as optional](troubleshooting.md#approvals-shown-as-optional).
 - Include default owners.
 
 Examples:
@@ -254,8 +254,8 @@ When referencing a role (`@@role`), the following rules apply:
 - Roles are not inclusive of higher roles. For example, specifying `@@developer` does not include
   users with Maintainer or Owner roles.
 
-For more complex scenarios involving group inheritance and eligibility,
-see [Group inheritance and eligibility](advanced.md#group-inheritance-and-eligibility).
+For more information about complex group inheritance and eligibility,
+see [group inheritance and eligibility](advanced.md#group-inheritance-and-eligibility).
 
 ## Add a role as a Code Owner
 
@@ -292,7 +292,7 @@ role as Code Owners for `file.md`:
 ## Add a group as a Code Owner
 
 You can set direct members of a group or subgroup as a Code Owner.
-For more information about group membership, see [Membership types](../members/_index.md#membership-types).
+For more information about group membership, see [membership types](../members/_index.md#membership-types).
 
 Prerequisites:
 
@@ -336,9 +336,11 @@ In this example:
   ![Merge request maintainers.](img/merge_request_maintainers_v17_9.png)
 
 > [!note]
-> When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
+> When [global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+> is enabled, you cannot set a group or subgroup as a Code Owner.
+> For more information, see [incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 
-If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
+If you encounter issues, see [user not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 
 ## Path matching
 
@@ -502,7 +504,7 @@ and users.
 /path/to/entry.rb @group @group/subgroup @user
 ```
 
-For more information on adding groups as Code Owners, see [Add a group as a Code Owner](#add-a-group-as-a-code-owner).
+For more information about adding groups as Code Owners, see [add a group as a Code Owner](#add-a-group-as-a-code-owner).
 
 ## Related topics
 

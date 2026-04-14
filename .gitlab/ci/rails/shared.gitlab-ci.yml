@@ -2,14 +2,6 @@ include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/rules.gitlab-ci.yml
 
-.rules:dont-interrupt:
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-      allow_failure: true
-    - if: $CI_MERGE_REQUEST_IID
-      when: manual
-      allow_failure: true
-
 #######################
 # rspec job base specs
 .rails-job-base:
@@ -98,7 +90,6 @@ include:
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
-    RECORD_DEPRECATIONS: "true"
     GEO_SECONDARY_PROXY: 0
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
     EVENT_PROF: "sql.active_record"
@@ -287,12 +278,12 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-es8-ee
-    - .rails:rules:run-search-tests
 
 .rspec-ee-base-pg17-es9:
   extends:
     - .rspec-base
     - .use-pg17-es9-ee
+    - .rails:rules:run-search-tests
 
 .rspec-ee-base-pg17-opensearch-latest:
   extends:

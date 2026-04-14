@@ -5,6 +5,10 @@ module Mutations
     class Update < BaseMutation
       graphql_name 'UserPreferencesUpdate'
 
+      authorize_granular_token permissions: :update_user_preference,
+        boundary: :user,
+        boundary_type: :user
+
       NON_NULLABLE_ARGS = [
         :extensions_marketplace_opt_in_status,
         :organization_groups_projects_display,

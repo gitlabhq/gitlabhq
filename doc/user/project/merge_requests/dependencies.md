@@ -96,8 +96,6 @@ proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
 If a merge request is dependent on another, the merge request reports section shows
 information about the dependency:
 
-![Dependencies in merge request widget](img/dependencies_view_v15_3.png)
-
 To view dependency information on a merge request:
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -108,8 +106,7 @@ To view dependency information on a merge request:
 1. Select **Expand** to view the title, milestone, assignee, and pipeline status
    of each dependency.
 
-Until your merge request's dependencies all merge, your merge request cannot merge. The message
-**Merge blocked: you can only merge after the above items are resolved** displays.
+Until your merge request's dependencies all merge, your merge request cannot merge.
 
 ### Closed merge requests
 

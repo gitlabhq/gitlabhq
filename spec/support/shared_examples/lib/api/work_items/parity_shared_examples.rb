@@ -101,8 +101,7 @@ RSpec.shared_examples 'work item API field parity' do
         expect(rest_fields).not_to be_empty
         expect(graphql_fields).not_to be_empty
 
-        expect(rest_fields)
-          .to match_array(graphql_fields - feature_field_exceptions(feature_name))
+        expect(rest_fields).to match_array(graphql_fields - %w[type widget_definition])
       end
     end
   end
@@ -154,23 +153,6 @@ RSpec.shared_examples 'work item API field parity' do
     graphql_type.fields.keys.map(&:underscore).to_set
   end
 
-  def feature_field_exceptions(feature_name)
-    exceptions = Set.new(%w[type])
-
-    if feature_name == 'start_and_due_date'
-      exceptions.merge(%w[
-        roll_up
-        is_fixed
-        start_date_sourcing_work_item
-        start_date_sourcing_milestone
-        due_date_sourcing_work_item
-        due_date_sourcing_milestone
-      ])
-    end
-
-    exceptions
-  end
-
   def rest_feature_entity_class(feature_name)
     custom_mappings = {
       'assignees' => ::API::Entities::UserBasic,
@@ -192,15 +174,105 @@ RSpec.shared_examples 'work item API field parity' do
   end
 end
 
+RSpec.shared_examples 'work item API create parity' do
+  let(:widget_exceptions) { Set.new(%w[crm_contacts_widget]) }
+
+  # GraphQL mutation args not yet implemented in the REST API
+  let(:create_parity_wip) { %w[discussions_to_resolve] }
+
+  let(:graphql_arg_exceptions) do
+    Set.new(%w[
+      client_mutation_id
+      create_source
+      description
+      namespace_path
+      project_path
+      vulnerability_id
+    ])
+  end
+
+  let(:rest_param_exceptions) do
+    Set.new(%w[work_item_type_name])
+  end
+
+  let(:widget_field_exceptions) do
+    { 'start_and_due_date_widget' => %w[is_fixed] }
+  end
+
+  let(:create_route) do
+    API::API.routes.find do |r|
+      r.request_method == 'POST' && r.path == '/api/:version/namespaces/:id/-/work_items(.:format)'
+    end
+  end
+
+  let(:graphql_widget_args) do
+    Mutations::WorkItems::Create.arguments
+      .select { |k, _| k.to_s.end_with?('Widget') }
+      .transform_keys { |k| k.to_s.underscore }
+  end
+
+  # Matches feature sub-keys under `features[...]` (e.g. `features[assignees]`) and maps
+  # them to widget names (e.g. `assignees_widget`) for comparison against GraphQL.
+  let(:rest_widget_params) do
+    create_route.params.keys
+      .select { |k| k.start_with?('features[') && k.end_with?(']') && k.count('[') == 1 }
+      .map { |k| "#{k.delete_prefix('features[').delete_suffix(']')}_widget" }
+      .to_set
+  end
+
+  let(:graphql_non_widget_args) do
+    Mutations::WorkItems::Create.arguments
+      .reject { |k, _| k.to_s.end_with?('Widget') }
+      .keys
+      .map { |k| k.to_s.underscore }
+      .to_set - graphql_arg_exceptions - create_parity_wip
+  end
+
+  let(:rest_non_widget_params) do
+    non_param_keys = %w[id format features fields]
+    create_route.params.keys
+      .reject { |k| k.include?('[') || non_param_keys.include?(k) }
+      .to_set - rest_param_exceptions
+  end
+
+  describe 'REST create params vs GraphQL create mutation' do
+    it 'keeps top-level non-widget params in sync with known exceptions' do
+      expect(rest_non_widget_params).to match_array(graphql_non_widget_args)
+    end
+
+    it 'keeps widget params in sync with known exceptions' do
+      expect(rest_widget_params).to match_array(graphql_widget_args.keys.to_set - widget_exceptions)
+    end
+
+    it 'keeps widget field names in sync with known exceptions', :aggregate_failures do
+      shared_widgets = rest_widget_params & graphql_widget_args.keys.to_set
+
+      shared_widgets.each do |widget_key|
+        graphql_fields = graphql_widget_args[widget_key].type.unwrap.arguments.keys
+          .map { |k| k.to_s.underscore }.to_set
+        feature_key = widget_key.delete_suffix('_widget')
+        rest_fields = create_route.params.keys
+          .select { |k| k.start_with?("features[#{feature_key}][") }
+          .map { |k| k.split('[').last.delete(']') }
+          .to_set
+        exceptions = widget_field_exceptions.fetch(widget_key, []).to_set
+
+        expect(rest_fields).to match_array(graphql_fields - exceptions),
+          "Widget #{widget_key}: REST #{rest_fields.to_a.sort} vs GraphQL #{(graphql_fields - exceptions).to_a.sort}"
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'work item API filter parity' do
   # These are filters that we have not yet migrated to the REST API. See EE parity_spec where we override them.
   let(:filter_parity_wip) do
-    %w[exclude_group_work_items exclude_projects include_ancestors include_archived include_descendants timeframe]
+    %w[exclude_group_work_items exclude_projects timeframe]
   end
 
   let(:not_filter_parity_wip) { [] }
   let(:or_filter_parity_wip) { [] }
-  let(:parity_wip) { Set.new(%w[in search sort]).merge(filter_parity_wip).to_a }
+  let(:parity_wip) { Set.new(%w[in search]).merge(filter_parity_wip).to_a }
 
   let(:graphql_filter_params) do
     # instad of `iid` we have `iids`
@@ -241,11 +313,11 @@ RSpec.shared_examples 'work item API filter parity' do
   end
 
   let(:rest_not_filter_params) do
-    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s[/\[(.+)\]/, 1] }
+    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s.delete_prefix('not[').delete_suffix(']') }
   end
 
   let(:rest_or_filter_params) do
-    rest_params.select { |key| key.starts_with?("or[") }.map { |s| s[/\[(.+)\]/, 1] }
+    rest_params.select { |key| key.starts_with?("or[") }.map { |s| s.delete_prefix('or[').delete_suffix(']') }
   end
 
   describe 'REST filter params vs GraphQL filter arguments' do

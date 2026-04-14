@@ -17,7 +17,7 @@ RSpec.shared_examples 'rich text editor - diagrams' do
     it 'renders and updates the diagram correctly in a sandboxed iframe',
       quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24075' do
       iframe = find(content_editor_testid).find('iframe')
-      expect(iframe['src']).to include('/-/sandbox/mermaid')
+      expect(iframe['src']).to match(%r{/-/sandbox/mermaid_v\d+})
 
       within_frame(iframe) do
         expect(find('svg .nodes').text).to include('JohnDoe12')

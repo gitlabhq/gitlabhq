@@ -18,7 +18,7 @@ FactoryBot.define do
     #
     source_branch { "master" }
     target_branch { "feature" }
-
+    skip_branch_existence_check { true }
     merge_status { "can_be_merged" }
 
     trait :draft_merge_request do

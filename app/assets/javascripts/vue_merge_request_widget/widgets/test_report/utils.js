@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { i18n } from './constants';
 
 const textBuilder = (results, boldNumbers = false) => {

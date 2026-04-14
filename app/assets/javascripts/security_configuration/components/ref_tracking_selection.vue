@@ -8,7 +8,7 @@ import {
   GlAlert,
   GlEmptyState,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
 import {

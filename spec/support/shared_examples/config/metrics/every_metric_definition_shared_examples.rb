@@ -72,6 +72,7 @@ RSpec.shared_examples 'every metric definition' do
     allow(Gitlab::UsageData).to receive(:alt_usage_data).and_wrap_original do |_m, *_args, **kwargs|
       kwargs[:fallback] || Gitlab::Utils::UsageData::FALLBACK
     end
+    allow(::Gitlab::Usage::Metrics::Instrumentations::BaseMetric).to receive(:available?).and_return(true)
     # We only sleep to reduce load in production, which isn't a concern in specs.
     # See https://docs.gitlab.com/development/database/batching_best_practices/#batching-in-background-jobs
     stub_const('Gitlab::Database::BatchCounter::SLEEP_TIME_IN_SECONDS', 0)

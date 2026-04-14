@@ -44,19 +44,27 @@ module Gitlab
       end
 
       def trigger_exists?(table_name, name, schema = nil)
-        result = connection.select_value(<<~SQL.squish)
-          SELECT true
-          FROM pg_catalog.pg_trigger trgr
-            INNER JOIN pg_catalog.pg_class rel
-              ON trgr.tgrelid = rel.oid
-            INNER JOIN pg_catalog.pg_namespace nsp
-              ON nsp.oid = rel.relnamespace
-          WHERE nsp.nspname = #{connection.quote(schema || connection.current_schema)}
-            AND rel.relname = #{connection.quote(table_name)}
-            AND trgr.tgname = #{connection.quote(name)}
-        SQL
+        if connection.view_exists?(:postgres_triggers)
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresTrigger
+              .where(table_name: table_name, trigger_name: name, schema_name: schema || connection.current_schema)
+              .exists?
+          end
+        else
+          result = connection.select_value(<<~SQL.squish)
+            SELECT true
+            FROM pg_catalog.pg_trigger trgr
+              INNER JOIN pg_catalog.pg_class rel
+                ON trgr.tgrelid = rel.oid
+              INNER JOIN pg_catalog.pg_namespace nsp
+                ON nsp.oid = rel.relnamespace
+            WHERE nsp.nspname = #{connection.quote(schema || connection.current_schema)}
+              AND rel.relname = #{connection.quote(table_name)}
+              AND trgr.tgname = #{connection.quote(name)}
+          SQL
 
-        !!result
+          !!result
+        end
       end
 
       def drop_function(name, if_exists: true)
@@ -147,18 +155,26 @@ module Gitlab
       end
 
       def find_table_triggers(table_name)
-        schema_qualified_table = "#{quote_table_name(current_schema)}.#{quote_table_name(table_name)}"
+        if connection.view_exists?(:postgres_triggers)
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresTrigger
+              .by_table_name(table_name)
+              .distinct
+              .pluck(:function_name)
+              .map { |name| { 'function_name' => name } }
+          end
+        else
+          schema_qualified_table = "#{quote_table_name(current_schema)}.#{quote_table_name(table_name)}"
 
-        triggers_query = <<~SQL
-          SELECT DISTINCT
-            p.proname AS function_name
-          FROM pg_trigger tr
-          JOIN pg_proc p ON tr.tgfoid = p.oid
-          WHERE tr.tgisinternal IS FALSE
-            AND tr.tgrelid = '#{schema_qualified_table}'::regclass
-        SQL
-
-        select_all(triggers_query).to_a
+          select_all(<<~SQL).to_a
+            SELECT DISTINCT
+              p.proname AS function_name
+            FROM pg_trigger tr
+            JOIN pg_proc p ON tr.tgfoid = p.oid
+            WHERE tr.tgisinternal IS FALSE
+              AND tr.tgrelid = '#{schema_qualified_table}'::regclass
+          SQL
+        end
       end
     end
   end

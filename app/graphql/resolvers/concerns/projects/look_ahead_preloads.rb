@@ -12,6 +12,7 @@ module Projects
 
     def preloads
       {
+        namespace: [:namespace],
         full_path: [:route],
         topics: [:topics],
         import_status: [:import_state],
@@ -21,9 +22,15 @@ module Projects
         container_repositories_count: [:container_repositories],
         web_url: { namespace: [:route] },
         is_catalog_resource: [:catalog_resource],
-        open_merge_requests_count: [:project_feature],
-        organization_edit_path: [:organization]
+        open_merge_requests_count: [:project_feature]
       }
+    end
+
+    def unconditional_includes
+      super.concat([
+        :organization,
+        :group
+      ])
     end
   end
 end

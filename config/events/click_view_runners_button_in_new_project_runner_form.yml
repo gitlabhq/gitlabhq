@@ -6,7 +6,7 @@ identifiers:
   - project
   - namespace
   - user
-product_group: runner
+product_group: runner_core
 product_categories:
   - runner_core
 milestone: '16.10'

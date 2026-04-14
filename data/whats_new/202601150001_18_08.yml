@@ -15,7 +15,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
   image_url: https://img.youtube.com/vi/UD8vAAglkY0/hqdefault.jpg
   published_at: 2026-01-15
-  release: 18.8
+  release: "18.8"
 
 - name: "GitLab Duo Planner Agent now generally available"
   description: |
@@ -30,7 +30,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/planner/
   image_url: https://img.youtube.com/vi/k2-ZsMRX-YI/hqdefault.jpg
   published_at: 2026-01-15
-  release: 18.8
+  release: "18.8"
 
 - name: "GitLab Duo Security Analyst Agent now generally available"
   description: |
@@ -47,7 +47,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/security_analyst_agent/
   image_url: https://about.gitlab.com/images/18_8/security_analyst_agent.png
   published_at: 2026-01-15
-  release: 18.8
+  release: "18.8"
 
 - name: "Auto-dismiss irrelevant vulnerabilities with vulnerability management policies"
   description: |
@@ -63,7 +63,7 @@
   documentation_link: https://docs.gitlab.com/user/application_security/policies/vulnerability_management_policy/#auto-dismiss-policies
   image_url: https://about.gitlab.com/images/18_8/auto-dismiss.png
   published_at: 2026-01-15
-  release: 18.8
+  release: "18.8"
 
 - name: "GitLab Duo Agent Platform Prompt Library"
   description: |
@@ -79,4 +79,4 @@
   documentation_link: https://about.gitlab.com/gitlab-duo/prompt-library/
   image_url: https://res.cloudinary.com/about-gitlab-com/image/upload/v1768499345/mc9emd5szlpv11t7ntzg.png
   published_at: 2026-01-15
-  release: 18.8
+  release: "18.8"

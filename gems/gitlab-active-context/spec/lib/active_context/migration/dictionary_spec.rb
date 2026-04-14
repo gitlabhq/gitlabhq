@@ -103,6 +103,16 @@ RSpec.describe ActiveContext::Migration::Dictionary do
     end
   end
 
+  describe '.reset!' do
+    it 'clears the singleton instance' do
+      instance_before = described_class.instance
+
+      described_class.reset!
+
+      expect(described_class.instance).not_to be(instance_before)
+    end
+  end
+
   describe 'error handling' do
     it 'raises an error when migration file has invalid format' do
       create_migration_file('invalid_migration_name', <<~RUBY)

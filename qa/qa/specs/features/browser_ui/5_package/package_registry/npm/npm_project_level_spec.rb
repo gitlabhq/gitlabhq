@@ -7,21 +7,11 @@ module QA
         issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/14567',
         type: :flaky
       } do
-      using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
-      include Support::Helpers::MaskToken
 
-      let!(:personal_access_token) { Runtime::User::Store.test_user.current_personal_access_token }
       let!(:group) { create(:group) }
       let!(:registry_scope) { group.sandbox.name }
       let!(:project) { create(:project, :private, name: 'npm-project-level', group: group) }
-      let!(:runner) do
-        create(:project_runner,
-          name: "qa-runner-#{SecureRandom.hex(6)}",
-          tags: ["runner-for-#{project.name}"],
-          executor: :docker,
-          project: project)
-      end
 
       let(:project_deploy_token) do
         create(:project_deploy_token,
@@ -42,29 +32,23 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        runner.remove_via_api!
-      end
-
-      where(:case_name, :authentication_token_type, :token_name, :testcase) do
-        'using personal access token' | :personal_access_token | 'Personal access token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/485903'
-        'using ci job token'          | :ci_job_token          | 'CI Job Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/485904'
-        'using project deploy token'  | :project_deploy_token  | 'Deploy Token'          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/579715'
-      end
-
-      with_them do
-        let(:auth_token) do
-          case authentication_token_type
-          when :personal_access_token
-            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: project)
-          when :ci_job_token
-            '${CI_JOB_TOKEN}'
-          when :project_deploy_token
-            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: project)
-          end
+      context 'with ci job token' do
+        let!(:runner) do
+          create(:project_runner,
+            name: "qa-runner-#{SecureRandom.hex(6)}",
+            tags: ["runner-for-#{project.name}"],
+            executor: :docker,
+            project: project)
         end
 
-        it 'push and pull a npm package via CI', :smoke, testcase: params[:testcase] do
+        let(:auth_token) { '${CI_JOB_TOKEN}' }
+
+        after do
+          runner.remove_via_api!
+        end
+
+        it 'push and pull a npm package via CI', :smoke,
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/485904' do
           npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm',
             'npm_upload_install_package_project.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
@@ -105,6 +89,26 @@ module QA
           Page::Project::Packages::Show.perform do |show|
             expect(show).to have_package_info(name: package.name, version: "1.0.0")
           end
+        end
+      end
+
+      context 'with other token types', :smoke do
+        include_context 'npm docker container publish and install'
+
+        let(:install_registry_url) { "#{gitlab_address_without_port}/api/v4/projects/#{project.id}/packages/npm/" }
+
+        context 'with a personal access token' do
+          let(:token) { Runtime::User::Store.test_user.current_personal_access_token }
+
+          it_behaves_like 'using a docker container',
+            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/485903'
+        end
+
+        context 'with a project deploy token' do
+          let(:token) { project_deploy_token.token }
+
+          it_behaves_like 'using a docker container',
+            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/579715'
         end
       end
     end

@@ -161,7 +161,7 @@ export default {
 
 <template>
   <div>
-    <div class="flash-container js-suggestions-flash gl-whitespace-pre-line"></div>
+    <div class="flash-container js-suggestions-flash gl-mb-4 gl-whitespace-pre-line !gl-px-0"></div>
     <div
       v-show="isRendered"
       ref="container"

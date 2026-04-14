@@ -37,6 +37,14 @@ complex permission requirements, see [protection rules](protection_rules.md).
 
 Configure protected branches for individual projects or for all projects in a group.
 
+> [!note]
+> Group rules can't be modified in a project, but a project maintainer can create
+> a separate rule for the same branch name. When both rules apply to the same branch,
+> GitLab evaluates all matching rules together and applies the most permissive result
+> for most settings.
+> For more information, see
+> [rules across groups and projects](protection_rules.md#rules-across-groups-and-projects).
+
 ### In a project
 
 Prerequisites:
@@ -53,14 +61,14 @@ To protect a branch:
 1. Expand **Branch rules**.
 1. Select **Add branch rule** > **Branch name or pattern**.
 1. From the dropdown list, search for and select the branch you want to protect.
-1. Select **Create branch rule**. You are directed to the **Branch rule details** page.
+1. To view the **Branch rule details** page, select **Create branch rule**.
 1. From the **Protect branch** section, choose one of the following options:
    - From **Allowed to merge**, select **Edit**.
      1. Select the roles that can merge into this branch.
      1. Select **Save changes**.
    - From **Allowed to push and merge**, select **Edit**.
-     1. Select the roles that can merge into this branch.
-     1. If desired, search to add **Deploy keys**.
+     1. Select the roles that can push to this branch.
+     1. Optional. Search for and select **Deploy keys**.
      1. Select **Save changes**.
 
 > [!note]
@@ -82,26 +90,25 @@ To protect a branch:
 
 {{< /history >}}
 
-Group owners can create protected branches for a group. These settings are inherited
-by all projects in the group and can't be overridden by project settings.
+Group owners can create protected branches for a group. These settings apply to all
+projects in the group and can't be modified in a project.
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 - The group must be a top-level group. Subgroups are not supported.
 
-To protect a branch for all the projects in a group:
+To protect a branch for all projects in a group:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
-1. In the **Branch** text box, type the branch name or a [wildcard](#use-wildcard-rules) (`*`).
+1. In the **Branch** text box, enter the branch name or a [wildcard](#use-wildcard-rules) (`*`).
    Branch names and wildcards are case-sensitive.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
-1. Choose your preferences for the **Allowed to force push** and **Require approval from code owners**
-   settings.
+1. Select your preferences for **Allowed to force push** and **Require approval from code owners**.
 1. Select **Protect**.
 
 ## Push and merge permissions
@@ -444,6 +451,9 @@ You can configure these permissions through the API only. Use this feature for:
 - Large organizations: Prevent accidental removal of protections across multiple repositories.
 - Automated governance: Enable scripts to create admin-only protections that development teams
   cannot override.
+
+For information about valid access levels and constraints for unprotect permissions, see
+[valid access levels](../../../../api/protected_branches.md#valid-access-levels).
 
 #### Unprotect permissions
 

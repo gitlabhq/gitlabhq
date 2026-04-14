@@ -264,7 +264,7 @@ module API
 
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :admin_packages,
-                        permissions: :authorize_conan_package, boundary_type: :project
+                        skip_granular_token_authorization: :workhorse_pre_authorization
 
                       put 'authorize', urgency: :low do
                         protect_package!(params[:package_name], :conan)
@@ -506,7 +506,7 @@ module API
                             route_setting :authentication, job_token_allowed: true,
                               basic_auth_personal_access_token: true
                             route_setting :authorization, job_token_policies: :admin_packages,
-                              permissions: :authorize_conan_package, boundary_type: :project
+                              skip_granular_token_authorization: :workhorse_pre_authorization
 
                             put 'authorize', urgency: :low do
                               protect_package!(params[:package_name], :conan)

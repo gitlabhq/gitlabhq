@@ -20,6 +20,8 @@ class PostReceiveService
 
     response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 
+    update_rebuildable_ref_cache if repository
+
     # The PostReceive worker will normally invalidate the cache. However, it
     # runs asynchronously. If push options require us to create a new merge
     # request synchronously, we can't rely on that, so invalidate the cache here
@@ -96,6 +98,20 @@ class PostReceiveService
 
     response.add_basic_message(redirect_message)
     response.add_basic_message(project_created_message)
+  end
+
+  def update_rebuildable_ref_cache
+    return unless repository.repo_type.project?
+
+    changes = Gitlab::GitPostReceive.new(
+      repository.container,
+      params[:identifier],
+      params[:changes]
+    ).changes
+
+    Gitlab::Repositories::RefCacheUpdateService.new(repository, changes).execute
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, project_id: repository.container.id)
   end
 
   def broadcast_message

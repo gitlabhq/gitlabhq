@@ -61,6 +61,21 @@ module API
             def remote_state_handler
               ::Terraform::RemoteStateHandler.new(user_project, current_user, name: params[:name], lock_id: params[:ID])
             end
+
+            def check_terraform_state_protection!
+              result = ::Terraform::StateProtectionRules::CheckRuleExistenceService.new(
+                project: user_project,
+                current_user: current_user,
+                params: {
+                  state_name: params[:name],
+                  current_authenticated_job: current_authenticated_job
+                }
+              ).execute
+
+              return unless result.payload[:protection_rule_exists?]
+
+              forbidden!('Write access to this Terraform state is restricted by a protection rule')
+            end
           end
 
           desc 'Get a Terraform state by its name' do
@@ -108,7 +123,7 @@ module API
             ]
             tags %w[terraform]
           end
-          route_setting :authorization, skip_granular_token_authorization: true
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           post 'authorize' do
             status 200
             content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
@@ -141,6 +156,7 @@ module API
           route_setting :authorization, permissions: :create_terraform_state, boundary_type: :project, job_token_policies: :admin_terraform_state
           post do
             authorize! :admin_terraform_state, user_project
+            check_terraform_state_protection!
 
             # Direct upload is not supported, so we should have access to the file.
             file_path = params['file.path']
@@ -182,6 +198,7 @@ module API
           route_setting :authorization, permissions: :delete_terraform_state, boundary_type: :project, job_token_policies: :admin_terraform_state
           delete do
             authorize! :admin_terraform_state, user_project
+            check_terraform_state_protection!
 
             remote_state_handler.find_with_lock do |state|
               ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
@@ -215,6 +232,7 @@ module API
           end
           post '/lock' do
             authorize! :admin_terraform_state, user_project
+            check_terraform_state_protection!
 
             status_code = :ok
             lock_info = {
@@ -259,6 +277,7 @@ module API
           end
           delete '/lock' do
             authorize! :admin_terraform_state, user_project
+            check_terraform_state_protection!
 
             remote_state_handler.unlock!
             status :ok

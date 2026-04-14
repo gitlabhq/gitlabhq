@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlCard, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import FeatureCardBadge from './feature_card_badge.vue';
@@ -83,6 +84,9 @@ export default {
     onError(message) {
       this.$emit('error', message);
     },
+    configureViaUrl() {
+      visitUrl(this.feature.configurationPath);
+    },
   },
   i18n: {
     enabled: s__('SecurityConfiguration|Enabled'),
@@ -141,8 +145,9 @@ export default {
       <template v-if="available">
         <gl-button
           v-if="feature.configurationPath"
-          :href="feature.configurationPath"
+          :disabled="!feature.canUserConfigure"
           :data-testid="`${hyphenatedFeature}-enable-button`"
+          @click="configureViaUrl"
         >
           {{ configurationButton.text }}
         </gl-button>

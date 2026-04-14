@@ -275,6 +275,22 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemCrmContacts().exists()).toBe(exists);
     });
+
+    it('renders when features.crmContacts is present', () => {
+      createComponent({
+        workItem: {
+          ...workItemResponseFactory({ crmContactsWidgetPresent: false }).data.workItem,
+          features: {
+            crmContacts: {
+              contactsAvailable: true,
+              contacts: { nodes: [] },
+            },
+          },
+        },
+      });
+
+      expect(findWorkItemCrmContacts().exists()).toBe(true);
+    });
   });
 
   describe('participants widget', () => {

@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { captureException } from '../../sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerAssignToProjectMutation from '../../graphql/list/runner_assign_to_project.mutation.graphql';
 import runnerUnassignFromProjectMutation from '../../graphql/list/runner_unassign_from_project.mutation.graphql';
 import { formatRunnerName } from '../../utils';
@@ -111,7 +111,7 @@ export default {
       }
     },
     onError(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
 
       const message = this.assigns
         ? s__('Runner|Failed to assign runner to project.')

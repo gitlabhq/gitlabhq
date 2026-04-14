@@ -10,7 +10,7 @@ class MergeRequest::CommitsMetadata < ApplicationRecord # rubocop:disable Style/
   # this table is partitioned by `project_id`.
   self.primary_key = :id
 
-  partitioned_by :project_id, strategy: :int_range, partition_size: 2_000_000
+  partitioned_by :project_id, strategy: :int_range, partition_size: 2_000_000, sequence_name: 'projects_id_seq'
 
   belongs_to :project
 

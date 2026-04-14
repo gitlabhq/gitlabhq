@@ -1106,6 +1106,59 @@ describe('ReadyToMerge', () => {
           expect(findRebaseButton().exists()).toBe(false);
         });
       });
+
+      describe('rebase button text when source branch has diverged', () => {
+        it('shows "Rebase with pipeline" when showAutomaticRebaseInfo is true', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 5,
+              canPushToSourceBranch: true,
+              showAutomaticRebaseInfo: true,
+            },
+          });
+
+          expect(findRebaseButton().text()).toBe('Rebase with pipeline');
+        });
+
+        it('shows "Rebase source branch" when showAutomaticRebaseInfo is false', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 5,
+              canPushToSourceBranch: true,
+              showAutomaticRebaseInfo: false,
+            },
+          });
+
+          expect(findRebaseButton().text()).toBe('Rebase source branch');
+        });
+      });
+    });
+
+    describe('automatic rebase info message', () => {
+      const findAutomaticRebaseInfo = () => wrapper.findByTestId('automatic-rebase-info');
+
+      it('shows rebased without pipeline message when showAutomaticRebaseInfo is true', () => {
+        createComponent({
+          mr: {
+            showAutomaticRebaseInfo: true,
+          },
+        });
+
+        expect(findAutomaticRebaseInfo().exists()).toBe(true);
+        expect(findAutomaticRebaseInfo().text()).toBe(
+          'Source branch will be rebased without pipeline.',
+        );
+      });
+
+      it('does not show rebased without pipeline message when showAutomaticRebaseInfo is false', () => {
+        createComponent({
+          mr: {
+            showAutomaticRebaseInfo: false,
+          },
+        });
+
+        expect(findAutomaticRebaseInfo().exists()).toBe(false);
+      });
     });
   });
 

@@ -23,14 +23,44 @@ RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :s
   end
 
   describe '#initialize' do
-    context 'with missing required routing keys' do
+    context 'when neither c nor o routing key is present' do
       let(:routing_payload) do
-        { p: 'foo' }
+        { p: ->(_) { 'foo' } }
       end
 
       it 'raises an exception' do
         expect { generator }.to raise_error(described_class::MissingRequiredRoutingKeys,
-          "Missing required routing keys: :o. Required routing keys are: :o.")
+          "At least one routing key must be present: :c or :o.")
+      end
+    end
+
+    context 'with only c routing key' do
+      let(:routing_payload) do
+        { c: ->(_) { 1 } }
+      end
+
+      it 'does not raise an exception' do
+        expect { generator }.not_to raise_error
+      end
+    end
+
+    context 'with only o routing key' do
+      let(:routing_payload) do
+        { o: ->(_) { 1 } }
+      end
+
+      it 'does not raise an exception' do
+        expect { generator }.not_to raise_error
+      end
+    end
+
+    context 'with both c and o routing keys' do
+      let(:routing_payload) do
+        { c: ->(_) { 1 }, o: ->(_) { 1 } }
+      end
+
+      it 'does not raise an exception' do
+        expect { generator }.not_to raise_error
       end
     end
 
@@ -119,6 +149,109 @@ RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :s
         expect(token)
           .to be_a_routable_token
           .with_payload("o:foo")
+      end
+    end
+
+    context 'with only c routing key (cell-scoped token)' do
+      let(:cell_setting) { { enabled: true, id: 100 } }
+
+      let(:routing_payload) do
+        { c: ->(_) { 1 } }
+      end
+
+      it 'generates a routable token with c payload only' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("c:1")
+      end
+
+      it 'uses the explicitly provided c value instead of the default cell id' do
+        expect(decoded_routing_payload(token)).to eq("c:1")
+        expect(decoded_routing_payload(token)).not_to include("c:#{cell_setting[:id].to_s(36)}")
+      end
+    end
+
+    context 'with c and p routing keys (no o)' do
+      let(:cell_setting) { { enabled: true, id: 100 } }
+
+      let(:routing_payload) do
+        { c: ->(_) { 1 }, p: ->(_) { 'proj' } }
+      end
+
+      it 'generates a routable token with c and p payload' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("c:1\np:proj")
+      end
+
+      it 'uses the explicitly provided c value instead of the default cell id' do
+        expect(decoded_routing_payload(token)).to start_with("c:1")
+        expect(decoded_routing_payload(token)).not_to include("c:#{cell_setting[:id].to_s(36)}")
+      end
+    end
+
+    context 'when no c key is provided and cell is configured' do
+      let(:cell_setting) { { enabled: true, id: 100 } }
+
+      let(:routing_payload) do
+        { o: ->(record) { record.id } }
+      end
+
+      it 'falls back to the default cell id from settings' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("c:#{cell_setting[:id].to_s(36)}\no:#{token_owner_record.id.to_s(36)}")
+      end
+    end
+
+    context 'when no c key is provided and cell id is nil' do
+      let(:cell_setting) { { enabled: false, id: nil } }
+
+      let(:routing_payload) do
+        { o: ->(record) { record.id } }
+      end
+
+      it 'omits the c key from the payload' do
+        expect(decoded_routing_payload(token)).to eq("o:#{token_owner_record.id.to_s(36)}")
+        expect(decoded_routing_payload(token)).not_to include("c:")
+      end
+    end
+
+    context 'with o and p routing keys' do
+      let(:routing_payload) do
+        { o: ->(record) { record.id }, p: ->(_) { 'proj' } }
+      end
+
+      it 'generates a routable token with o and p payload' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("o:#{token_owner_record.id.to_s(36)}\np:proj")
+      end
+    end
+
+    context 'with c, o, and p routing keys' do
+      let(:cell_setting) { { enabled: true, id: 100 } }
+
+      let(:routing_payload) do
+        { o: ->(record) { record.id }, p: ->(_) { 'proj' } }
+      end
+
+      it 'generates a routable token with c, o, and p payload' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("c:#{cell_setting[:id].to_s(36)}\no:#{token_owner_record.id.to_s(36)}\np:proj")
+      end
+    end
+
+    context 'with o, p, and u routing keys' do
+      let(:routing_payload) do
+        { o: ->(record) { record.id }, p: ->(_) { 'proj' }, u: ->(_) { 'usr' } }
+      end
+
+      it 'generates a routable token with o, p, and u payload' do
+        expect(token)
+          .to be_a_routable_token
+          .with_payload("o:#{token_owner_record.id.to_s(36)}\np:proj\nu:usr")
       end
     end
 

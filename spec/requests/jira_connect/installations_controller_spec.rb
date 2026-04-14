@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::InstallationsController, feature_category: :integrations do
-  let_it_be(:installation) { create(:jira_connect_installation) }
+RSpec.describe JiraConnect::InstallationsController, :with_current_organization, feature_category: :integrations do
+  let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
 
   describe 'GET /-/jira_connect/installations' do
     before do
@@ -34,7 +34,9 @@ RSpec.describe JiraConnect::InstallationsController, feature_category: :integrat
       end
 
       context 'with instance_url' do
-        let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://example.com') }
+        let_it_be(:installation) do
+          create(:jira_connect_installation, instance_url: 'https://example.com', organization: current_organization)
+        end
 
         it 'returns the installation as json' do
           expect(json_response).to eq({

@@ -33,7 +33,7 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   end
 
   override :fail_login
-  def fail_login(user)
+  def fail_login(_user)
     flash[:alert] = _('Access denied for your LDAP account.')
 
     redirect_to new_user_session_path

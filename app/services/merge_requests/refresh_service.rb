@@ -6,6 +6,14 @@ module MergeRequests
 
     attr_reader :push
 
+    # Staggered delays for auto-merge worker enqueue.
+    # Each MR gets a delay of index * INTERVAL seconds, spaced 3 seconds apart
+    # (0s, 3s, 6s, ..., 57s) to avoid workers from the same or overlapping push
+    # events landing at the same time. Capped at 20 MRs per push event; remaining
+    # MRs are picked up in subsequent rounds as merges trigger new pushes.
+    AUTO_MERGE_DELAY_INTERVAL = 3
+    AUTO_MERGE_BATCH_LIMIT = 20
+
     def execute(oldrev, newrev, ref)
       @push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
       return true unless @push.branch_push?
@@ -215,6 +223,20 @@ module MergeRequests
       # source branch. Clearing the error when the target branch
       # changes will hide the error from the user.
       MergeRequest.batch_clear_merge_error(source_branch_or_force_pushed_mrs.map(&:id))
+
+      enqueue_auto_merge_for_unchecked(filtered_merge_requests)
+    end
+
+    def enqueue_auto_merge_for_unchecked(merge_requests)
+      return unless Feature.enabled?(:auto_merge_on_mark_as_unchecked, @project)
+
+      auto_merge_mrs = merge_requests.select(&:auto_merge_enabled?)
+      return if auto_merge_mrs.empty?
+
+      auto_merge_mrs.first(AUTO_MERGE_BATCH_LIMIT).each_with_index do |mr, index|
+        delay = index * AUTO_MERGE_DELAY_INTERVAL
+        AutoMergeProcessWorker.perform_in(delay.seconds, { 'merge_request_id' => mr.id })
+      end
     end
 
     def push_commit_ids
@@ -285,8 +307,7 @@ module MergeRequests
           # Since any number of commits could have been made to the restored branch,
           # find the common root to see what has been added.
           common_ref = @project.repository.merge_base(merge_request.diff_head_sha, @push.newrev)
-          # If the a commit no longer exists in this repo, gitlab_git throws
-          # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
+          # If a commit no longer exists in this repo, the call may raise an error.
           @commits = @project.repository.commits_between(common_ref, @push.newrev) if common_ref
         rescue StandardError
         end

@@ -1,4 +1,4 @@
-import { uniqueId, debounce } from 'lodash';
+import { uniqueId, debounce } from 'lodash-es';
 import { __ } from '~/locale';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { setAttributes } from '~/lib/utils/dom_utils';

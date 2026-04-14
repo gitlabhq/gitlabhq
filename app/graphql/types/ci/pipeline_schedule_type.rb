@@ -12,6 +12,7 @@ module Types
       expose_permissions Types::PermissionTypes::Ci::PipelineSchedules
 
       authorize :read_pipeline_schedule
+      authorize_granular_token permissions: :read_pipeline_schedule, boundary: :project, boundary_type: :project
 
       field :id, GraphQL::Types::ID, null: false, description: 'ID of the pipeline schedule.'
 

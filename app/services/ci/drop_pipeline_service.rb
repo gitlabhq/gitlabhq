@@ -14,12 +14,12 @@ module Ci
     end
 
     def execute(pipeline, failure_reason, retries: 3)
-      Gitlab::OptimisticLocking.retry_lock_with_transaction(pipeline.cancelable_statuses, retries, name: 'ci_pipeline_drop_running') do |cancelables|
-        cancelables.find_in_batches do |batch|
-          preload_associations_for_drop(batch)
+      pipeline.cancelable_statuses.find_in_batches do |batch|
+        preload_associations_for_drop(batch)
 
-          batch.each do |job|
-            job.drop(failure_reason)
+        batch.each do |job|
+          Gitlab::OptimisticLocking.retry_lock(job, retries, name: 'ci_pipeline_drop_running') do |subject|
+            subject.drop(failure_reason)
           end
         end
       end

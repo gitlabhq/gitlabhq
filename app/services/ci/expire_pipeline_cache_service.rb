@@ -97,10 +97,12 @@ module Ci
         etag_paths << path
       end
 
-      pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
-        etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
-        etag_paths << graphql_pipeline_path(relative_pipeline)
-        etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha) if relative_pipeline.sha
+      Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
+        pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
+          etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
+          etag_paths << graphql_pipeline_path(relative_pipeline)
+          etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha) if relative_pipeline.sha
+        end
       end
 
       store.touch(*etag_paths)

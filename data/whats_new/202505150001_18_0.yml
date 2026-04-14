@@ -15,7 +15,7 @@
   documentation_link: 'https://docs.gitlab.com/user/gitlab_duo/#summary-of-gitlab-duo-features'
   image_url: https://about.gitlab.com/images/18_0/Premium_Duo.png
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"
 - name: "Automatic reviews with Duo Code Review"
   description: |
       Duo Code Review provides valuable insights during the review process, but currently requires you to manually request reviews on each merge request.
@@ -33,7 +33,7 @@
   documentation_link: 'https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#automatic-reviews-from-gitlab-duo'
   image_url: https://about.gitlab.com/images/18_0/create-auto-dcr.png
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"
 - name: "GitLab Query Language views enhancements"
   description: |
         We've made significant improvements to GitLab Query Language (GLQL) views. These improvements include support for:
@@ -51,7 +51,7 @@
   available_in: [Free, Premium, Ultimate]
   documentation_link: 'https://docs.gitlab.com/user/glql/'
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"
 - name: "New CI/CD analytics view for projects in limited availability"
   description: |
         The redesigned CI/CD analytics view transforms how your development teams analyze, monitor, and optimize pipeline performance
@@ -67,7 +67,7 @@
   documentation_link: 'https://docs.gitlab.com/user/analytics/ci_cd_analytics/'
   image_url: https://img.youtube.com/vi/78Nxbem9OAk/hqdefault.jpg
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"
 - name: "Shared Kubernetes namespace for workspaces"
   description: |
       You can now create GitLab workspaces in a shared Kubernetes namespace. This removes the need to create
@@ -87,7 +87,7 @@
   documentation_link: 'https://docs.gitlab.com/user/workspace/settings/#shared_namespace'
   image_url: https://img.youtube.com/vi/CXakdRuoGgU/hqdefault.jpg
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"
 - name: "Event data collection"
   description: |
       In GitLab 18.0, we are enabling event-level product usage data collection from GitLab Self-Managed and GitLab Dedicated instances. Unlike aggregated data, event-level data provides GitLab with deeper insights into usage, allowing us to improve user experience on the platform and increase feature adoption. For detailed instructions on how to adjust data sharing settings, please refer to our documentation.
@@ -97,4 +97,4 @@
   available_in: [Free, Premium, Ultimate]
   documentation_link: 'https://docs.gitlab.com/administration/settings/event_data/'
   published_at: 2025-05-15
-  release: 18.0
+  release: "18.0"

@@ -4,8 +4,13 @@ module Gitlab
   module WorkItems
     module Instrumentation
       class TrackingService
+        extend Gitlab::InternalEventsTracking
         include Gitlab::InternalEventsTracking
         include EventActions
+
+        def self.track(event:, properties:)
+          track_internal_event(event, **properties)
+        end
 
         def initialize(work_item:, current_user:, event: nil, old_associations: nil)
           raise ArgumentError unless valid_params?(work_item, current_user, event, old_associations)
@@ -43,7 +48,7 @@ module Gitlab
         def valid_params?(work_item, current_user, event, old_associations)
           return false unless work_item.is_a?(Issue)
           return false unless current_user.is_a?(User)
-          return false if event && !EventActions.valid_event?(event)
+          return false if event && !EventActions.valid_work_item_event?(event)
           return false if event && old_associations
           return false if !event && !old_associations
 

@@ -304,6 +304,65 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
+
+      context 'with allowed_to_push using deploy_key_id' do
+        let_it_be(:deploy_key) { create(:deploy_key, write_access_to: project, user: maintainer) }
+
+        it 'protects a branch while allowing a deploy key to push' do
+          post post_endpoint,
+            params: { name: branch_name, allowed_to_push: [{ deploy_key_id: deploy_key.id }] }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('protected_branch')
+          expect(json_response['name']).to eq(branch_name)
+          expect(json_response['push_access_levels'][0]['deploy_key_id']).to eq(deploy_key.id)
+        end
+
+        it 'avoids creating default access levels when deploy key is specified' do
+          post post_endpoint,
+            params: { name: branch_name, allowed_to_push: [{ deploy_key_id: deploy_key.id }] }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['push_access_levels'].count).to eq(1)
+          expect(json_response['push_access_levels'][0]['deploy_key_id']).to eq(deploy_key.id)
+        end
+
+        context 'when deploy key does not have write access' do
+          let_it_be(:read_only_deploy_key) { create(:deploy_key, user: maintainer) }
+
+          before_all do
+            create(:deploy_keys_project, project: project, deploy_key: read_only_deploy_key, can_push: false)
+          end
+
+          it 'returns unprocessable entity error' do
+            post post_endpoint,
+              params: { name: branch_name, allowed_to_push: [{ deploy_key_id: read_only_deploy_key.id }] }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'when deploy key is not associated with the project' do
+          let_it_be(:invalid_deploy_key) { create(:deploy_key) }
+
+          it 'returns unprocessable entity error' do
+            post post_endpoint,
+              params: { name: branch_name, allowed_to_push: [{ deploy_key_id: invalid_deploy_key.id }] }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'when allowed_to_push format is incorrect' do
+          it 'returns a bad request error' do
+            post post_endpoint,
+              params: { name: branch_name, allowed_to_push: [''] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('allowed_to_push is invalid')
+          end
+        end
+      end
     end
 
     context 'when authenticated as a developer' do

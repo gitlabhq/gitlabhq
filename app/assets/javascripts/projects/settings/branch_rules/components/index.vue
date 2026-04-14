@@ -1,15 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import {
-  GlSprintf,
-  GlLink,
-  GlLoadingIcon,
-  GlButton,
-  GlModal,
-  GlModalDirective,
-  GlPopover,
-} from '@gitlab/ui';
+import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
 import {
@@ -55,7 +47,6 @@ import {
 } from './constants';
 
 const protectedBranchesHelpDocLink = helpPagePath('user/project/repository/branches/protected');
-const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/_index');
 const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
 const squashSettingsHelpDocLink = helpPagePath('user/project/merge_requests/squash_and_merge');
 
@@ -64,7 +55,6 @@ export default {
   i18n: I18N,
   deleteModalId: DELETE_RULE_MODAL_ID,
   protectedBranchesHelpDocLink,
-  codeOwnersHelpDocLink,
   pushRulesHelpDocLink,
   squashSettingsHelpDocLink,
   directives: {
@@ -79,7 +69,6 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlButton,
-    GlPopover,
     BranchRuleModal,
     AccessLevelsDrawer,
     SquashSettingsDrawer,
@@ -107,7 +96,6 @@ export default {
     },
     showStatusChecks: { default: false },
     showApprovers: { default: false },
-    showCodeOwners: { default: false },
     canAdminProtectedBranches: { default: false },
   },
   apollo: {
@@ -127,7 +115,6 @@ export default {
 
         this.branchRule = projectBranchRule;
         this.branchProtection = projectBranchRule?.branchProtection;
-        this.statusChecks = projectBranchRule?.externalStatusChecks?.nodes || [];
         this.matchingBranchesCount = projectBranchRule?.matchingBranchesCount;
         this.groupId = getIdFromGraphQLId(group?.id) || null;
 
@@ -167,7 +154,6 @@ export default {
     return {
       branch: getParameterByName(BRANCH_PARAM_NAME),
       branchProtection: {},
-      statusChecks: [],
       branchRule: {},
       groupId: null,
       matchingBranchesCount: null,
@@ -184,15 +170,6 @@ export default {
     allowForcePush() {
       return this.branchProtection?.allowForcePush;
     },
-    deleteBranchRuleTooltip() {
-      return this.modificationBlockedByPolicy
-        ? s__(
-            "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd}. %{linkStart}Learn more%{linkEnd}.",
-          )
-        : s__(
-            "SecurityOrchestration|If one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd} become enforced, you can't unprotect this branch. %{linkStart}Learn more%{linkEnd}.",
-          );
-    },
     forcePushAttributes() {
       const title = this.allowForcePush
         ? this.$options.i18n.allowForcePushTitle
@@ -203,28 +180,12 @@ export default {
         description: this.$options.i18n.forcePushDescriptionWithDocs,
       };
     },
-    codeOwnersApprovalAttributes() {
-      const { codeOwnerApprovalRequired } = this.branchProtection || {};
-      const title = codeOwnerApprovalRequired
-        ? this.$options.i18n.requiresCodeOwnerApprovalTitle
-        : this.$options.i18n.doesNotRequireCodeOwnerApprovalTitle;
-
-      return {
-        title,
-        description: this.$options.i18n.codeOwnerApprovalDescription,
-      };
-    },
     mergeAccessLevels() {
       const { mergeAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(mergeAccessLevels);
     },
-    // needed to override EE component
-    modificationBlockedByPolicy() {
-      return false;
-    },
-    // needed to override EE component
     protectedFromPushBySecurityPolicy() {
-      return false;
+      return this.branchProtection?.protectedFromPushBySecurityPolicy ?? false;
     },
     pushAccessLevels() {
       const { pushAccessLevels } = this.branchProtection || {};
@@ -234,6 +195,9 @@ export default {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
     matchingBranchesLinkHref() {
+      if (this.branch === s__('BranchRules|All branches')) {
+        return mergeUrlParams({ state: 'all' }, this.branchesPath);
+      }
       return mergeUrlParams({ state: 'all', search: `^${this.branch}$` }, this.branchesPath);
     },
     matchingBranchesLinkTitle() {
@@ -247,11 +211,11 @@ export default {
     isAllProtectedBranchesRule() {
       return this.branch === this.$options.i18n.allProtectedBranches;
     },
+    modificationBlockedByPolicy() {
+      return this.branchProtection?.modificationBlockedByPolicy ?? false;
+    },
     isDeleteButtonDisabled() {
       return this.$apollo.loading || this.modificationBlockedByPolicy;
-    },
-    isModificationAffectedByPolicy() {
-      return this.modificationBlockedByPolicy || this.warnModificationBlockedByPolicy;
     },
     isPredefinedRule() {
       return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
@@ -267,9 +231,7 @@ export default {
     accessLevelsDrawerData() {
       return this.isAllowedToMergeDrawerOpen ? this.mergeAccessLevels : this.pushAccessLevels;
     },
-    showStatusChecksSection() {
-      return this.showStatusChecks && this.branch !== this.$options.i18n.allProtectedBranches;
-    },
+
     showMergeRequestsSection() {
       return this.showApprovers || this.showSquashSetting;
     },
@@ -289,19 +251,25 @@ export default {
         !this.branchProtection?.isGroupLevel
       );
     },
-    // needed to override EE component
-    warnModificationBlockedByPolicy() {
-      return false;
-    },
-    // needed to override EE component
     warnProtectedFromPushBySecurityPolicy() {
-      return false;
+      return this.branchProtection?.warnProtectedFromPushBySecurityPolicy ?? false;
     },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
     getAccessLevels,
     getAccessLevelInputFromEdges,
+    refetchProject() {
+      try {
+        this.$apollo.queries.project.refetch();
+      } catch (error) {
+        createAlert({
+          message: error.message,
+          captureError: true,
+          error,
+        });
+      }
+    },
     deleteBranchRule() {
       this.$apollo
         .mutate({
@@ -454,6 +422,13 @@ export default {
       toastMessage = '',
       trackEvent = '',
     }) {
+      // Only include access levels if they're explicitly being changed (when feature flag is enabled)
+      // This prevents empty arrays from being sent to the backend, which would delete all access levels
+      const isExplicitAccessLevelChange =
+        branchProtection?.pushAccessLevels || branchProtection?.mergeAccessLevels;
+      const includeAccessLevels =
+        !this.glFeatures.skipEmptyAccessLevelsInBranchRules || isExplicitAccessLevelChange;
+
       this.$apollo
         .mutate({
           mutation: editBranchRuleMutation,
@@ -466,12 +441,14 @@ export default {
                 ...(this.branchProtection.codeOwnerApprovalRequired !== undefined && {
                   codeOwnerApprovalRequired: this.branchProtection.codeOwnerApprovalRequired,
                 }),
-                pushAccessLevels: this.getAccessLevelInputFromEdges(
-                  this.branchProtection.pushAccessLevels?.edges || [],
-                ),
-                mergeAccessLevels: this.getAccessLevelInputFromEdges(
-                  this.branchProtection.mergeAccessLevels?.edges || [],
-                ),
+                ...(includeAccessLevels && {
+                  pushAccessLevels: this.getAccessLevelInputFromEdges(
+                    this.branchProtection.pushAccessLevels?.edges || [],
+                  ),
+                  mergeAccessLevels: this.getAccessLevelInputFromEdges(
+                    this.branchProtection.mergeAccessLevels?.edges || [],
+                  ),
+                }),
                 ...(branchProtection || {}),
               },
             },
@@ -531,19 +508,12 @@ export default {
             >{{ $options.i18n.deleteRule }}
           </gl-button>
         </div>
-        <!-- EE only-->
-        <gl-popover v-if="isModificationAffectedByPolicy" :target="$options.deleteButtonId">
-          <gl-sprintf :message="deleteBranchRuleTooltip">
-            <template #securityPoliciesPath="{ content }">
-              <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
-            </template>
-            <template #link="{ content }">
-              <gl-link :href="$options.policiesDocumentationLink" target="_blank">{{
-                content
-              }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </gl-popover>
+        <!-- EE delete button popover -->
+        <slot
+          name="ee-delete-popover"
+          :delete-button-id="$options.deleteButtonId"
+          :branch-protection="branchProtection"
+        ></slot>
       </template>
     </page-heading>
 
@@ -656,53 +626,20 @@ export default {
           @toggle="onEnableForcePushToggle"
         />
 
-        <!-- EE start -->
-        <!-- Code Owners -->
-        <protection-toggle
-          v-if="showCodeOwners"
-          :class="{ 'gl-mt-6': !hasPushAccessLevelSet }"
-          data-testid="code-owners-content"
-          data-test-id-prefix="code-owners"
-          :is-protected="branchProtection.codeOwnerApprovalRequired"
-          :label="$options.i18n.requiresCodeOwnerApprovalLabel"
-          :icon-title="codeOwnersApprovalAttributes.title"
-          :description="codeOwnersApprovalAttributes.description"
-          :description-link="$options.codeOwnersHelpDocLink"
-          :is-loading="isCodeOwnersLoading"
-          :is-group-level="branchProtection.isGroupLevel"
-          @toggle="onEnableCodeOwnersToggle"
-        />
+        <!-- EE code owners toggle -->
+        <slot
+          name="ee-code-owners"
+          :branch-protection="branchProtection"
+          :has-push-access-level-set="hasPushAccessLevelSet"
+          :is-code-owners-loading="isCodeOwnersLoading"
+          :on-toggle="onEnableCodeOwnersToggle"
+        ></slot>
       </settings-section>
 
       <!-- Merge requests -->
-      <settings-section
-        v-if="showMergeRequestsSection"
-        :heading="$options.i18n.mergeRequestsTitle"
-        class="gl-mt-5"
-      >
-        <!-- eslint-disable-next-line vue/no-undef-components -->
-        <approval-rules-app
-          v-if="showApprovers"
-          :is-mr-edit="false"
-          :is-branch-rules-edit="true"
-          class="!gl-mt-0"
-          @submitted="$apollo.queries.project.refetch()"
-        >
-          <template #description>
-            <gl-sprintf :message="$options.i18n.approvalsDescription">
-              <template #link="{ content }">
-                <gl-link :href="$options.approvalsHelpDocLink">
-                  {{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </template>
-
-          <template #rules>
-            <!-- eslint-disable-next-line vue/no-undef-components -->
-            <project-rules :is-branch-rules-edit="true" />
-          </template>
-        </approval-rules-app>
+      <settings-section v-if="showMergeRequestsSection" :heading="$options.i18n.mergeRequestsTitle">
+        <!-- EE approval rules -->
+        <slot name="ee-approval-rules" :on-submitted="refetchProject"></slot>
 
         <!-- Squash setting-->
         <protection
@@ -747,31 +684,16 @@ export default {
         @close="isSquashSettingsDrawerOpen = false"
       />
 
-      <!-- Status checks -->
-      <settings-section
-        v-if="showStatusChecksSection"
-        :heading="$options.i18n.statusChecksTitle"
-        class="-gl-mt-5"
-      >
-        <template #description>
-          <gl-sprintf :message="$options.i18n.statusChecksDescription">
-            <template #link="{ content }">
-              <gl-link :href="$options.statusChecksHelpDocLink">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
-
-        <!-- eslint-disable-next-line vue/no-undef-components -->
-        <status-checks
-          :branch-rule-id="branchRule && branchRule.id"
-          :status-checks="statusChecks"
-          :project-path="projectPath"
+      <!-- EE Status Checks -->
+      <template v-if="branchRule">
+        <slot
+          name="ee-status-checks"
+          :branch-rule="branchRule"
+          :branch="branch"
           :is-all-branches-rule="isAllBranchesRule"
-          class="gl-mt-3"
-        />
-      </settings-section>
+          :project-path="projectPath"
+        ></slot>
+      </template>
 
       <!-- EE end -->
       <gl-modal

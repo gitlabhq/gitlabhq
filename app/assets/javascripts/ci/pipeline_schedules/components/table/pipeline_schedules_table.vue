@@ -9,6 +9,7 @@ import PipelineScheduleOwner from './cells/pipeline_schedule_owner.vue';
 import PipelineScheduleTarget from './cells/pipeline_schedule_target.vue';
 
 export default {
+  name: 'PipelineSchedulesTable',
   fields: [
     {
       key: 'description',

@@ -364,34 +364,13 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           )
         end
 
-        context 'when ci_pipeline_inputs_reactive_cache feature flag is disabled' do
+        context 'when cache is not populated' do
           before do
-            stub_feature_flags(ci_pipeline_inputs_reactive_cache: false)
-            project.repository.create_file(
-              project.creator, '.gitlab-ci.yml', config_yaml,
-              message: 'Add CI', branch_name: 'master')
+            allow(service).to receive(:with_reactive_cache).and_return(nil)
           end
 
-          it 'returns inputs directly without caching' do
-            expect(service).not_to receive(:with_reactive_cache)
-            result = service.execute
-            expect(result).to be_success
-          end
-        end
-
-        context 'when ci_pipeline_inputs_reactive_cache feature flag is enabled' do
-          before do
-            stub_feature_flags(ci_pipeline_inputs_reactive_cache: true)
-          end
-
-          context 'when cache is not populated' do
-            before do
-              allow(service).to receive(:with_reactive_cache).and_return(nil)
-            end
-
-            it 'returns nil' do
-              expect(service.execute).to be_nil
-            end
+          it 'returns nil' do
+            expect(service.execute).to be_nil
           end
         end
       end

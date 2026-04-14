@@ -14,7 +14,7 @@ title: Release evidence
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
 This data is saved in a JSON file and called *release evidence*. The feature
-includes test artifacts and linked milestones to facilitate
+includes test artifacts, linked milestones, and matching packages to facilitate
 internal processes, like external audits.
 
 To access the release evidence, on the Releases page, select the link to the JSON file that's listed
@@ -61,6 +61,15 @@ Here is an example of a release evidence object:
         "description": "milestone description",
       }
     ],
+    "packages": [
+      {
+        "id": 1,
+        "name": "my-package",
+        "version": "4.0",
+        "package_type": "generic",
+        "created_at": "2019-06-20 10:00:00 UTC"
+      }
+    ],
     "report_artifacts": [
       {
         "url":"https://gitlab.example.com/root/project-name/-/jobs/111/artifacts/download"
@@ -69,6 +78,44 @@ Here is an example of a release evidence object:
   }
 }
 ```
+
+## Include packages as release evidence
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/283995) in GitLab 18.11.
+
+{{< /history >}}
+
+When a release is created, GitLab automatically queries the project's
+[package registry](../../packages/package_registry/_index.md) for packages
+whose version matches the release tag. Matching packages are included in the
+release evidence JSON under the `packages` key.
+
+Version matching works as follows:
+
+- If the release tag has a `v` or `V` prefix (for example, `v1.0.0`), the prefix
+  is stripped before matching. A tag `v1.0.0` matches packages with version `1.0.0`.
+- If the release tag has no prefix (for example, `1.0.0`), it is matched directly.
+- Only [displayable packages](../../packages/package_registry/_index.md) are included.
+  Packages that are pending destruction or in an error state are excluded.
+- Multiple packages can match a single release. For example, if a project
+  publishes both a generic package and an npm package with version `1.0.0`,
+  both are included in the evidence.
+
+Each package entry in the evidence contains the following fields:
+
+| Field          | Description                                                    |
+|----------------|----------------------------------------------------------------|
+| `id`           | The unique ID of the package.                                  |
+| `name`         | The name of the package.                                       |
+| `version`      | The version string of the package.                             |
+| `package_type` | The type of the package (for example, `generic`, `npm`, `maven`). |
+| `created_at`   | The timestamp when the package was created.                    |
+
+No additional configuration is required. As long as packages exist in the
+project's package registry with a version that matches the release tag,
+they are automatically included when evidence is collected.
 
 ## Collect release evidence
 

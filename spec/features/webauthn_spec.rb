@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_access do
+RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_access, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/595412' do
   include Features::TwoFactorHelpers
   let(:app_id) { "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" }
 
   before do
-    WebAuthn.configuration.origin = app_id
+    allow(WebAuthn.configuration).to receive(:allowed_origins).and_return([app_id])
   end
 
   it_behaves_like 'OTP devices work independently of WebAuthn authenticators', 'WebAuthn'
@@ -160,9 +160,10 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             it "shows an error and does not register the passkey" do
               visit profile_two_factor_auth_path
 
-              passkey_registration(password: user.password) do
-                page.execute_script(bad_authenticator_response)
-              end
+              passkey_registration(
+                password: user.password,
+                respond_to_webauthn_registration_proc: -> { page.execute_script(bad_authenticator_response) }
+              )
 
               expect(page).to have_current_path(profile_passkeys_path) # Stays on POST request path of passkeys#new
               expect(page).to have_content(_('Failed to connect to your device.'))
@@ -190,7 +191,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               expect(page).to have_content(_('You must provide a valid current password.'))
 
               # Successful registration
-              passkey ||= FakeWebauthnDevice.new(page, name: 'Retried passkey')
+              passkey ||= FakeWebauthnDevice.new(page, 'Retried passkey')
               passkey.respond_to_webauthn_registration
               click_button _('Try again')
               wait_for_requests
@@ -208,7 +209,7 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             it 'does not render any passkeys content' do
               visit profile_two_factor_auth_path
 
-              expect(page).not_to have_content("passkey")
+              expect(page).not_to have_content(s_('ProfilesAuthentication|Add passkey'))
             end
           end
         end
@@ -349,8 +350,6 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
               passkey.respond_to_webauthn_authentication
               expect(page).to have_current_path(new_user_session_path)
 
-              click_button('Try again?')
-
               # with WebAuthn
               second_factor_authenticator = add_webauthn_device(app_id, user)
               gitlab_sign_in(user)
@@ -385,23 +384,21 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
             expect(page).to have_current_path(users_passkeys_sign_in_path)
 
             passkey.respond_to_webauthn_authentication(passkey: true)
-            click_button _('Try again')
 
             expect(page).to have_current_path(root_path)
           end
         end
 
         context 'with invalid authentications' do
-          context 'when a given passkey in GitLab is not owned by a user' do
+          context 'when a given passkey in not registered in GitLab' do
             it 'does not allow a user to sign-in in with that particular authenticator' do
-              passkey = add_passkey(app_id, user, save_passkey: false)
+              passkey = add_passkey(app_id, user, save: false)
 
               visit root_path
               click_button(_('Passkey'))
               expect(page).to have_current_path(users_passkeys_sign_in_path)
 
               passkey.respond_to_webauthn_authentication(passkey: true)
-              click_button _('Try again')
 
               expect(page).to have_content('Failed to connect to your device')
             end
@@ -410,18 +407,16 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
           context 'with retries' do
             it 'allows retrying authentication' do
               # Failed authentication
-              passkey = add_passkey(app_id, user, save_passkey: false)
+              passkey = add_passkey(app_id, user, save: false)
               visit root_path
               click_button(_('Passkey'))
               expect(page).to have_current_path(users_passkeys_sign_in_path)
               passkey.respond_to_webauthn_authentication(passkey: true)
-              click_button _('Try again')
               expect(page).to have_content('Failed to connect to your device')
 
               # Successful authentication
               passkey = add_passkey(app_id, user)
               passkey.respond_to_webauthn_authentication(passkey: true)
-              click_button _('Try again')
 
               expect(page).to have_current_path(root_path)
             end

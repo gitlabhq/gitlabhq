@@ -139,7 +139,7 @@ export default {
             return {
               text: project.name,
               value: project.fullPath,
-              namespace: project.namespace?.name,
+              namespace: project.nameWithNamespace,
               avatarUrl: project.avatarUrl,
             };
           });

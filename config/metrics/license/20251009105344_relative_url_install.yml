@@ -3,6 +3,8 @@ data_category: optional
 key_path: relative_url_install
 description: Indicates whether GitLab is installed with a relative URL root configuration
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: boolean
 status: active
 milestone: "18.6"

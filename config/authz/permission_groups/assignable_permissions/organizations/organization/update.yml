@@ -1,0 +1,8 @@
+---
+name: update_organization
+description: Grants the ability to update organizations
+boundaries:
+  - instance
+permissions:
+  - update_organization
+  - update_organization_user

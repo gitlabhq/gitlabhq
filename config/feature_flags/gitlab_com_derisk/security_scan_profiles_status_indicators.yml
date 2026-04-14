@@ -1,0 +1,10 @@
+---
+name: security_scan_profiles_status_indicators
+description: Add status indicators (scanner health) to Security Configuration scan profiles table
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594041
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228173
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594052
+milestone: '18.11'
+group: group::security platform management
+type: gitlab_com_derisk
+default_enabled: false

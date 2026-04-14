@@ -1,0 +1,16 @@
+---
+table: milestones
+database: main
+ignored_columns:
+  - title_html
+  - description_html
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_milestones
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - group_id
+        - project_id

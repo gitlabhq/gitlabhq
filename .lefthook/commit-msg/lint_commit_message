@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-exec ruby "$(dirname "$0")/../../scripts/lint/commit_linter.rb" "$@"

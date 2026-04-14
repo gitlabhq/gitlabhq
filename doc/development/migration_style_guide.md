@@ -237,10 +237,11 @@ and explains how to perform them without requiring downtime.
 Your migration **must be** reversible. This is very important, as it should
 be possible to downgrade in case of a vulnerability or bugs.
 
-**Note**: On GitLab production environments, if a problem occurs, a roll-forward strategy is used instead of rolling back migrations using `db:rollback`.
-On GitLab Self-Managed, we advise users to restore the backup which was created before the upgrade process started.
-The `down` method is used primarily in the development environment, for example, when a developer wants to ensure
-their local copy of `structure.sql` file and database are in a consistent state when switching between commits or branches.
+> [!note]
+> On GitLab production environments, if a problem occurs, a roll-forward strategy is used instead of rolling back migrations using `db:rollback`.
+> On GitLab Self-Managed, we advise users to restore the backup which was created before the upgrade process started.
+> The `down` method is used primarily in the development environment, for example, when a developer wants to ensure
+> their local copy of `structure.sql` file and database are in a consistent state when switching between commits or branches.
 
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
@@ -1257,6 +1258,10 @@ end
 ```
 
 When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time. You must also specify a `size_limit` to prevent performance issues from large JSONB data, with **64 KB** as the recommended maximum.
+
+If your JSON schema uses `additionalProperties: false`, see
+[Changing JSON/JSONB columns with schema validation](database/avoiding_downtime_in_migrations.md#changing-jsonjsonb-columns-with-schema-validation)
+for deployment requirements when adding or removing properties.
 
 The `JsonbSizeLimit` cop enforces this requirement for new validations, as unbounded JSONB growth can cause memory pressure and slow query performance across millions of database records. For larger datasets, use object storage and store references in the database instead.
 

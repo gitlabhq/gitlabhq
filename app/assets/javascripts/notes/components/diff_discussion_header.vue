@@ -1,10 +1,8 @@
 <script>
-import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
-import { escape } from 'lodash-es';
+import { GlAvatar, GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { mapActions } from 'pinia';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
 import NoteEditedText from './note_edited_text.vue';
@@ -16,12 +14,13 @@ export default {
   components: {
     GlAvatar,
     GlAvatarLink,
+    GlSprintf,
     NoteEditedText,
     NoteHeader,
     ToggleRepliesWidget,
   },
-  directives: {
-    SafeHtml,
+  inject: {
+    navigateToDiffNote: { default: null },
   },
   props: {
     discussion: {
@@ -42,48 +41,47 @@ export default {
     resolvedText() {
       return this.discussion.resolved_by_push ? __('Automatically resolved') : __('Resolved');
     },
-    headerText() {
-      const linkStart = `<a href="${escape(this.discussion.discussion_path)}">`;
-      const linkEnd = '</a>';
-
-      const { commit_id: commitId } = this.discussion;
-      let commitDisplay = commitId;
-
-      if (commitId) {
-        commitDisplay = `<span class="commit-sha">${truncateSha(commitId)}</span>`;
-      }
-
+    headerMessage() {
       const {
         for_commit: isForCommit,
         diff_discussion: isDiffDiscussion,
         active: isActive,
+        commit_id: commitId,
         position,
       } = this.discussion;
 
-      let text = s__('MergeRequests|started a thread');
       if (isForCommit) {
-        text = s__(
-          'MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}',
-        );
-      } else if (isDiffDiscussion && commitId) {
-        text = isActive
-          ? s__('MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}')
-          : s__(
-              'MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitDisplay}%{linkEnd}',
-            );
-      } else if (isDiffDiscussion && position?.position_type === FILE_DIFF_POSITION_TYPE) {
-        text = isActive
+        return s__('MergeRequests|started a thread on commit %{link}');
+      }
+      if (isDiffDiscussion && commitId) {
+        return isActive
+          ? s__('MergeRequests|started a thread on commit %{link}')
+          : s__('MergeRequests|started a thread on an outdated change in commit %{link}');
+      }
+      if (isDiffDiscussion && position?.position_type === FILE_DIFF_POSITION_TYPE) {
+        return isActive
           ? s__('MergeRequests|started a thread on %{linkStart}a file%{linkEnd}')
           : s__('MergeRequests|started a thread on %{linkStart}an old version of a file%{linkEnd}');
-      } else if (isDiffDiscussion) {
-        text = isActive
+      }
+      if (isDiffDiscussion) {
+        return isActive
           ? s__('MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}')
           : s__(
               'MergeRequests|started a thread on %{linkStart}an old version of the diff%{linkEnd}',
             );
       }
-
-      return sprintf(text, { commitDisplay, linkStart, linkEnd }, false);
+      return s__('MergeRequests|started a thread');
+    },
+    isCommitLink() {
+      const {
+        for_commit: isForCommit,
+        diff_discussion: isDiffDiscussion,
+        commit_id: commitId,
+      } = this.discussion;
+      return isForCommit || (isDiffDiscussion && commitId);
+    },
+    truncatedCommitId() {
+      return truncateSha(this.discussion.commit_id);
     },
     toggleClass() {
       return this.discussion.expanded ? 'expanded' : 'collapsed';
@@ -96,6 +94,11 @@ export default {
     ...mapActions(useNotes, ['toggleDiscussion']),
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
+    },
+    handleDiscussionLinkClick(event) {
+      if (!this.navigateToDiffNote) return;
+      event.preventDefault();
+      this.navigateToDiffNote(this.discussion);
     },
   },
 };
@@ -116,7 +119,14 @@ export default {
     </div>
     <div class="timeline-content gl-ml-3 gl-w-full" :class="toggleClass">
       <note-header :author="author" :created-at="firstNote.created_at" :note-id="firstNote.id">
-        <span v-safe-html="headerText"></span>
+        <gl-sprintf :message="headerMessage">
+          <template #link="{ content } = {}">
+            <a :href="discussion.discussion_path" @click="handleDiscussionLinkClick">
+              <span v-if="isCommitLink" class="commit-sha">{{ truncatedCommitId }}</span>
+              <template v-else>{{ content }}</template>
+            </a>
+          </template>
+        </gl-sprintf>
       </note-header>
       <note-edited-text
         v-if="discussion.resolved"

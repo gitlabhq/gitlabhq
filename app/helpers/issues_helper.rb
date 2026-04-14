@@ -159,10 +159,6 @@ module IssuesHelper
   def award_emoji_issue_api_path(issue)
     api_v4_projects_issues_award_emoji_path(id: issue.project.id, issue_iid: issue.iid)
   end
-
-  def work_items_page_title
-    current_user.work_items_consolidated_list_enabled? ? _("Work items") : _("Issues")
-  end
 end
 
 IssuesHelper.prepend_mod_with('IssuesHelper')

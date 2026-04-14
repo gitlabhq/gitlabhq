@@ -1053,7 +1053,7 @@ To start and stop GitLab when using:
 
 After completing your installation, consider taking the
 [recommended next steps](../next_steps.md), including authentication options
-and sign-up restrictions.
+and new user account restrictions.
 
 ## Advanced Setup Tips
 

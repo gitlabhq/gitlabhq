@@ -38,7 +38,7 @@ module Mutations
         parent = authorized_resource_parent_find!(args)
         parent_key = parent.is_a?(Project) ? :project : :group
 
-        label = ::Labels::CreateService.new(args).execute(parent_key => parent)
+        label = ::Labels::CreateService.new(current_user, args).execute(parent_key => parent)
 
         {
           label: label.persisted? ? label : nil,

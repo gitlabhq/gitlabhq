@@ -1,91 +1,41 @@
-- @hide_top_bar = true
-- @hide_top_links = true
-- page_title    _('Create a new project')
+- page_title    _('New project')
 - header_title  _("Projects"), dashboard_projects_path
 - add_page_specific_style 'page_bundles/new_namespace'
 - add_page_specific_style 'page_bundles/projects'
 
-- if Feature.enabled?(:new_project_creation_form, current_user)
-  #js-vue-new-project-app{ data: {
-    namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
-    namespace_id: namespace_id_from(params).to_s || @current_user_group&.id.to_s,
-    user_namespace_id: current_user.namespace_id.to_s,
-    user_namespace_full_path: current_user.namespace.full_path,
+.project-edit-container
+  .project-edit-errors
+    = render 'projects/errors'
+
+  .js-new-project-creation{ data: {
+    is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
+    has_errors: @project.errors.any?.to_s,
     new_project_guidelines: brand_new_project_guidelines,
     push_to_create_project_command: push_to_create_project_command,
     root_path: root_path,
-    projects_url: dashboard_projects_url,
     parent_group_url: @project.parent && group_url(@project.parent),
     parent_group_name: @project.parent&.name,
-    is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
-    can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true',
-    import_sources_enabled: import_sources_enabled?.to_s,
-    track_label: local_assigns.fetch(:track_label, 'blank_project'),
-    can_select_namespace: current_user.can_select_namespace?.to_s,
-    can_create_project: current_user.can_create_project?.to_s,
-    user_project_limit: current_user.projects_limit,
-    display_sha256_repository: Feature.enabled?(:support_sha256_repositories, current_user),
-    restricted_visibility_levels: restricted_visibility_levels,
-    default_project_visibility: default_project_visibility,
-    import_history_path: import_history_index_path,
-    import_gitlab_enabled: gitlab_project_import_enabled?.to_s,
-    import_gitlab_import_path: new_import_gitlab_project_path,
-    import_github_enabled: github_import_enabled?.to_s,
-    import_github_import_path: new_import_github_path(namespace_id: @namespace&.id),
-    import_bitbucket_enabled: bitbucket_import_enabled?.to_s,
-    import_bitbucket_import_path: status_import_bitbucket_path(namespace_id: @namespace&.id),
-    import_bitbucket_import_configured: bitbucket_import_configured?.to_s,
-    import_bitbucket_disabled_message: import_from_bitbucket_message,
-    import_bitbucket_server_enabled: bitbucket_server_import_enabled?.to_s,
-    import_bitbucket_server_import_path: status_import_bitbucket_server_path(namespace_id: @namespace&.id),
-    import_fogbugz_enabled: fogbugz_import_enabled?.to_s,
-    import_fogbugz_import_path: new_import_fogbugz_path(namespace_id: @namespace&.id),
-    import_gitea_enabled: gitea_import_enabled?.to_s,
-    import_gitea_import_path: new_import_gitea_path(namespace_id: @namespace&.id),
-    import_git_enabled: git_import_enabled?.to_s,
-    import_manifest_enabled: manifest_import_enabled?.to_s,
-    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id),
-    import_by_url_validate_path: validate_import_url_path,
-    form_path: "/projects" } }
-- else
-  .project-edit-container
-    .project-edit-errors
-      = render 'projects/errors'
+    projects_url: dashboard_projects_url,
+    can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true' } }
 
-    .js-new-project-creation{ data: {
-      is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
-      has_errors: @project.errors.any?.to_s,
-      new_project_guidelines: brand_new_project_guidelines,
-      push_to_create_project_command: push_to_create_project_command,
-      root_path: root_path,
-      parent_group_url: @project.parent && group_url(@project.parent),
-      parent_group_name: @project.parent&.name,
-      projects_url: dashboard_projects_url,
-      can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true' } }
+  .row{ 'v-cloak': true }
+    #blank-project-pane.tab-pane.active
+      = gitlab_ui_form_for @project, html: { class: 'new_project gl-mt-3' } do |f|
+        = render 'new_project_fields', f: f, project_name_id: "blank-project-name", include_description: false, disable_init_with_readme: !can_push_initial_commit_to_namespace?(@namespace || current_user.namespace)
 
-    .row{ 'v-cloak': true }
-      #blank-project-pane.tab-pane.active
-        = gitlab_ui_form_for @project, html: { class: 'new_project gl-mt-3' } do |f|
-          = render 'new_project_fields', f: f, project_name_id: "blank-project-name", include_description: false
-
-      #create-from-template-pane.tab-pane
-        = render Pajamas::CardComponent.new(card_options: { class: 'gl-my-5' }) do |c|
-          - c.with_body do
+    #create-from-template-pane.tab-pane
+      = gitlab_ui_form_for @project, html: { class: 'new_project' } do |f|
+        .project-template
+          .form-group
             %div
-              - link = link_to('', 'https://gitlab.com/gitlab-org/project-templates/contributing', target: '_blank', rel: 'noopener noreferrer')
-              = safe_format(_('Learn how to %{link_start}contribute to the built-in templates%{link_end}'), tag_pair(link, :link_start, :link_end))
-        = gitlab_ui_form_for @project, html: { class: 'new_project' } do |f|
-          .project-template
-            .form-group
-              %div
-                = render 'project_templates', f: f, project: @project
+              = render 'project_templates', f: f, project: @project
 
-      #import-project-pane.tab-pane.js-toggle-container
-        - if import_sources_enabled?
-          = render 'import_project_pane', destination_namespace_id: @namespace&.id
-        - else
-          .nothing-here-block
-            %h4= s_('ProjectsNew|No import options available')
-            %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
+    #import-project-pane.tab-pane.js-toggle-container
+      - if import_sources_enabled?
+        = render 'import_project_pane', destination_namespace_id: @namespace&.id
+      - else
+        .nothing-here-block
+          %h4= s_('ProjectsNew|No import options available')
+          %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
 
-      = render_if_exists 'projects/new_ci_cd_only_project_pane'
+    = render_if_exists 'projects/new_ci_cd_only_project_pane'

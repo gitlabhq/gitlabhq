@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Orchestrator::Commands::Subcommands::Deployment do
   describe "kind deployment command" do
     let(:command_name) { "kind" }
 
+    let(:kind_image) { "kindest/node:v1.31.0" }
     let(:installation_instance) { instance_double(Gitlab::Orchestrator::Deployment::Installation, create: nil) }
     let(:configuration_instance) { instance_double(Gitlab::Orchestrator::Deployment::Configurations::Kind) }
     let(:cluster_instance) { instance_double(Gitlab::Orchestrator::Kind::Cluster, create: nil) }
@@ -80,6 +81,22 @@ RSpec.describe Gitlab::Orchestrator::Commands::Subcommands::Deployment do
       expect(cluster_instance).to have_received(:create)
     end
 
+    it "passes kind_image to cluster creation" do
+      invoke_command(command_name, [], {
+        namespace: "gitlab",
+        ci: true,
+        kind_image: kind_image
+      })
+
+      expect(Gitlab::Orchestrator::Kind::Cluster).to have_received(:new).with(
+        ci: true,
+        host_http_port: 80,
+        host_ssh_port: 22,
+        host_registry_port: 5000,
+        kind_image: kind_image
+      )
+    end
+
     it "passes extra environment options" do
       invoke_command(command_name, [], {
         namespace: "gitlab",
@@ -117,6 +134,16 @@ RSpec.describe Gitlab::Orchestrator::Commands::Subcommands::Deployment do
 
       expect(cluster_instance).not_to have_received(:create)
       expect(installation_instance).not_to have_received(:create)
+    end
+
+    it "includes --kind-image in printed deploy args" do
+      expect do
+        invoke_command(command_name, [], {
+          ci: true,
+          print_deploy_args: true,
+          kind_image: kind_image
+        })
+      end.to output(match(/--kind-image #{kind_image}/)).to_stdout
     end
   end
 end

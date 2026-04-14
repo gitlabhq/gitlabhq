@@ -61,7 +61,7 @@ describe('navigation tabs component', () => {
     it('should trigger onTabClick', async () => {
       await wrapper.find('.js-pipelines-tab-pending').trigger('click');
 
-      expect(wrapper.emitted('onChangeTab')).toEqual([['pending']]);
+      expect(wrapper.emitted('on-change-tab')).toEqual([['pending']]);
     });
   });
 

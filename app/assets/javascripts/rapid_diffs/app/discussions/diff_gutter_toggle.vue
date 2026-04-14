@@ -26,14 +26,15 @@ export default {
       type: Array,
       required: true,
     },
+    expanded: {
+      type: Boolean,
+      required: true,
+    },
   },
   emits: ['toggle'],
   computed: {
     allNotes() {
-      return this.discussions.flatMap((d) => d.notes || []);
-    },
-    expanded() {
-      return this.discussions.some((d) => !d.hidden);
+      return this.discussions.flatMap((d) => d.notes || []).filter((n) => !n.isDraft);
     },
     notesInGutter() {
       return this.allNotes.slice(0, COUNT_OF_AVATARS_IN_GUTTER);

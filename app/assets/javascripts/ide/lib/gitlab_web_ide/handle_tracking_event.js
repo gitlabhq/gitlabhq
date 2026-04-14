@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash';
+import { snakeCase } from 'lodash-es';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 

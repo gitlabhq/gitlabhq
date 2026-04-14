@@ -13,7 +13,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
     context 'when user is the author' do
       let(:saved_view) { create(:saved_view, created_by_id: user.id) }
 
-      it { is_expected.to be_allowed(:read_saved_view) }
+      it { expect_allowed(:read_saved_view) }
     end
 
     context 'when user is not the author and saved view is private' do
@@ -23,9 +23,9 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
         group.add_developer(user)
       end
 
-      it { is_expected.to be_disallowed(:read_saved_view) }
-      it { is_expected.to be_disallowed(:update_saved_view) }
-      it { is_expected.to be_disallowed(:delete_saved_view) }
+      it { expect_disallowed(:read_saved_view) }
+      it { expect_disallowed(:update_saved_view) }
+      it { expect_disallowed(:delete_saved_view) }
     end
 
     context 'when user is nil' do
@@ -33,27 +33,37 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
 
       let(:saved_view) { create(:saved_view) }
 
-      it { is_expected.to be_disallowed(:read_saved_view) }
-      it { is_expected.to be_disallowed(:update_saved_view) }
-      it { is_expected.to be_disallowed(:delete_saved_view) }
+      it { expect_disallowed(:read_saved_view) }
+      it { expect_disallowed(:update_saved_view) }
+      it { expect_disallowed(:delete_saved_view) }
     end
   end
 
-  describe 'has_planner_access condition' do
+  describe 'update and delete shared saved views' do
     context 'when namespace is a group' do
       let(:saved_view) { create(:saved_view, namespace: group, private: false) }
 
-      context 'when user has planner access' do
+      context 'when user has the planner role that grants update and delete shared saved view permissions' do
         before do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_allowed(:read_saved_view) }
-        it { is_expected.to be_allowed(:update_saved_view) }
-        it { is_expected.to be_allowed(:delete_saved_view) }
+        it { expect_allowed(:read_saved_view) }
+        it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
       end
 
-      context 'when user does not have planner access but can read namespace' do
+      context 'when user has the reporter role that grants update and delete shared saved view permissions' do
+        before_all do
+          group.add_reporter(user)
+        end
+
+        it { expect_allowed(:read_saved_view) }
+        it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
+      end
+
+      context 'when user can read namespace but lacks shared saved view permissions' do
         before_all do
           group.add_guest(user)
         end
@@ -73,17 +83,27 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
       let_it_be(:project) { create(:project) }
       let_it_be(:saved_view) { create(:saved_view, namespace: project.project_namespace, private: false) }
 
-      context 'when user has planner access' do
+      context 'when user has the planner role that grants update and delete shared saved view permissions' do
         before_all do
           project.add_planner(user)
         end
 
-        it { is_expected.to be_allowed(:read_saved_view) }
-        it { is_expected.to be_allowed(:update_saved_view) }
-        it { is_expected.to be_allowed(:delete_saved_view) }
+        it { expect_allowed(:read_saved_view) }
+        it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
       end
 
-      context 'when user does not have planner access but can read namespace' do
+      context 'when user has the reporter role that grants update and delete shared saved view permissions' do
+        before_all do
+          project.add_reporter(user)
+        end
+
+        it { expect_allowed(:read_saved_view) }
+        it { expect_allowed(:update_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
+      end
+
+      context 'when user can read namespace but lacks shared saved view permissions' do
         before_all do
           project.add_guest(user)
         end
@@ -109,14 +129,14 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_guest(user)
         end
 
-        it { is_expected.to be_allowed(:read_saved_view) }
+        it { expect_allowed(:read_saved_view) }
       end
 
       context 'when user cannot read namespace' do
         let_it_be(:private_group) { create(:group, :private) }
         let_it_be(:saved_view) { create(:saved_view, namespace: private_group, private: false) }
 
-        it { is_expected.to be_disallowed(:read_saved_view) }
+        it { expect_disallowed(:read_saved_view) }
       end
     end
 
@@ -130,7 +150,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_guest(user)
         end
 
-        it { is_expected.to be_allowed(:read_saved_view) }
+        it { expect_allowed(:read_saved_view) }
       end
 
       context 'when user is not the author' do
@@ -138,7 +158,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_planner(user)
         end
 
-        it { is_expected.to be_disallowed(:read_saved_view) }
+        it { expect_disallowed(:read_saved_view) }
       end
     end
   end
@@ -147,20 +167,20 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
     context 'with shared saved view' do
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false, created_by_id: other_user.id) }
 
-      context 'when user has planner access' do
+      context 'when user has a role that grants update and delete shared saved view permissions' do
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_allowed(:update_saved_view) }
+        it { expect_allowed(:update_saved_view) }
       end
 
-      context 'when user does not have planner access' do
+      context 'when user lacks shared saved view permissions' do
         before_all do
           group.add_guest(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view) }
+        it { expect_disallowed(:update_saved_view) }
       end
     end
 
@@ -174,15 +194,15 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_guest(user)
         end
 
-        it { is_expected.to be_allowed(:update_saved_view) }
+        it { expect_allowed(:update_saved_view) }
       end
 
-      context 'when user is not the author but has planner access' do
+      context 'when user is not the author but has shared saved view permissions' do
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view) }
+        it { expect_disallowed(:update_saved_view) }
       end
     end
   end
@@ -191,20 +211,20 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
     context 'with shared saved view' do
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false, created_by_id: other_user.id) }
 
-      context 'when user has planner access' do
+      context 'when user has a role that grants update and delete shared saved view permissions' do
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_allowed(:delete_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
       end
 
-      context 'when user does not have planner access' do
+      context 'when user lacks shared saved view permissions' do
         before_all do
           group.add_guest(user)
         end
 
-        it { is_expected.to be_disallowed(:delete_saved_view) }
+        it { expect_disallowed(:delete_saved_view) }
       end
     end
 
@@ -218,15 +238,15 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_guest(user)
         end
 
-        it { is_expected.to be_allowed(:delete_saved_view) }
+        it { expect_allowed(:delete_saved_view) }
       end
 
-      context 'when user is not the author but has planner access' do
+      context 'when user is not the author but has shared saved view permissions' do
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_disallowed(:delete_saved_view) }
+        it { expect_disallowed(:delete_saved_view) }
       end
     end
   end
@@ -235,20 +255,20 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
     context 'with shared saved view' do
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false, created_by_id: other_user.id) }
 
-      context 'when user has planner access but is not the author' do
+      context 'when user has shared saved view permissions but is not the author' do
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+        it { expect_disallowed(:update_saved_view_visibility) }
       end
 
-      context 'when user does not have planner access' do
+      context 'when user lacks shared saved view permissions' do
         before_all do
           group.add_guest(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+        it { expect_disallowed(:update_saved_view_visibility) }
       end
     end
 
@@ -260,27 +280,27 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
           group.add_guest(user)
         end
 
-        it { is_expected.to be_allowed(:update_saved_view_visibility) }
+        it { expect_allowed(:update_saved_view_visibility) }
       end
 
-      context 'when user is not the author but has planner access' do
+      context 'when user is not the author but has shared saved view permissions' do
         let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
 
         before_all do
           group.add_planner(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+        it { expect_disallowed(:update_saved_view_visibility) }
       end
 
-      context 'when user is not the author and does not have planner access' do
+      context 'when user is not the author and lacks shared saved view permissions' do
         let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
 
         before_all do
           group.add_guest(user)
         end
 
-        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+        it { expect_disallowed(:update_saved_view_visibility) }
       end
     end
 
@@ -288,7 +308,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
       let_it_be(:private_group) { create(:group, :private) }
       let_it_be(:saved_view) { create(:saved_view, namespace: private_group, private: false, created_by_id: user.id) }
 
-      it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+      it { expect_disallowed(:update_saved_view_visibility) }
     end
   end
 end

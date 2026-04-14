@@ -218,58 +218,18 @@ To revoke a personal access token:
 
 ## Access token expiration
 
-{{< history >}}
+Personal, group, and project access tokens expire at midnight UTC on the expiry date.
+After they expire, they can no longer be used to authenticate requests.
 
-- Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
+In GitLab 16.0 and later, new access tokens must have an expiry date. If an expiry date isn't
+explicitly set during token creation, an expiry date of 365 days from the current date is applied.
+In GitLab Ultimate, administrators can configure a
+[maximum allowable lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
+for access tokens.
 
-{{< /history >}}
-
-> [!flag]
-> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-> For more information, see the history.
-
-Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
-
-- GitLab runs a check at 1:00 AM UTC every day to identify personal access tokens that expire soon. The owners of these tokens are [notified by email](#personal-access-token-expiry-emails).
-- GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
-- In GitLab Ultimate, administrators can
-  [limit the allowable lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens). If not set, the maximum allowable lifetime of a personal access token is 365 days. In GitLab 17.6 or later, you can extend this limit to 400 days.
-- In GitLab Free and Premium, the maximum allowable lifetime of a personal access token is 365 days. In GitLab 17.6 or later, you can extend this limit to 400 days.
-- If you do not set an expiry date when creating a personal access token, the expiry date is set to the
-  [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
-  If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
-
-Whether your existing personal access tokens have expiry dates automatically applied
-depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
-
-- On GitLab.com, during the 16.0 milestone, existing personal access tokens without
-  an expiry date were automatically given an expiry date of 365 days later than the current date.
-- On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
-  - On or before July 23, 2024, existing personal access tokens without an expiry
-    date were automatically given an expiry date of 365 days later than the current date.
-    This change is a breaking change.
-  - On or after July 24, 2024, existing personal access tokens without an expiry
-    date did not have an expiry date set.
-
-On GitLab Self-Managed, if you do a new install of one of the following GitLab
-versions, your existing personal access tokens do not have expiry dates
-automatically applied:
-
-- 16.0.9
-- 16.1.7
-- 16.2.10
-- 16.3.8
-- 16.4.6
-- 16.5.9
-- 16.6.9
-- 16.7.9
-- 16.8.9
-- 16.9.10
-- 16.10.9
-- 16.11.7
-- 17.0.5
-- 17.1.3
-- 17.2.1
+Depending on your GitLab version and offering, your existing access tokens might have an expiry date
+automatically applied when upgrading GitLab versions. For more information,
+see [non-expiring access tokens](../../update/deprecations.md#non-expiring-access-tokens).
 
 ### Personal access token expiry emails
 

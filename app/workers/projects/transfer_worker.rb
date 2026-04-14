@@ -41,6 +41,15 @@ module Projects
     def execute_transfer(project, new_namespace, user, exclusive_lease)
       project_namespace = project.project_namespace
 
+      if project_namespace.transfer_in_progress?
+        Gitlab::AppLogger.warn(
+          message: 'Cancelling stale transfer_in_progress state',
+          project_id: project.id
+        )
+        project_namespace.cancel_transfer!
+      end
+
+      project_namespace.schedule_transfer!(transition_user: user) unless project_namespace.transfer_scheduled?
       project_namespace.start_transfer!(transition_user: user)
 
       result = ::Projects::TransferService.new(project, user).execute(new_namespace)

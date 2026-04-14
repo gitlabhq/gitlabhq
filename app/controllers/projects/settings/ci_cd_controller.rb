@@ -132,7 +132,7 @@ module Projects
         return if can_any?(current_user, [
           :admin_cicd_variables,
           :admin_protected_environments,
-          :admin_runners
+          :read_runners
         ], project)
 
         access_denied!

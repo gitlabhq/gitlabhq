@@ -1,11 +1,10 @@
 <script>
-import { GlModal, GlFormCheckbox, GlBadge, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlBadge, GlSprintf } from '@gitlab/ui';
 import { __, sprintf, n__, s__ } from '~/locale';
 
 export default {
   components: {
     GlModal,
-    GlFormCheckbox,
     GlBadge,
     GlSprintf,
   },
@@ -15,11 +14,6 @@ export default {
       required: false,
       default: null,
     },
-  },
-  data() {
-    return {
-      archiveVulnerabilities: true,
-    };
   },
   computed: {
     modalTitle() {
@@ -49,8 +43,8 @@ export default {
     },
     vulnerabilityWarningMessage() {
       return n__(
-        'SecurityTrackedRefs|If you do not archive associated vulnerabilities, the data for %{count} vulnerability will be permanently deleted.',
-        'SecurityTrackedRefs|If you do not archive associated vulnerabilities, the data for %{count} vulnerabilities will be permanently deleted.',
+        'SecurityTrackedRefs|The data for %{count} vulnerability will be permanently deleted.',
+        'SecurityTrackedRefs|The data for %{count} vulnerabilities will be permanently deleted.',
         this.vulnerabilityCount,
       );
     },
@@ -72,12 +66,7 @@ export default {
     confirmUntrack() {
       this.$emit('confirm', {
         refId: this.refToUntrack.id,
-        archiveVulnerabilities: this.archiveVulnerabilities,
       });
-    },
-    enableArchiveVulnerabilities() {
-      // This ensures that the checkbox is always checked when the modal is opened
-      this.archiveVulnerabilities = true;
     },
   },
 };
@@ -93,18 +82,14 @@ export default {
     size="sm"
     @primary="confirmUntrack"
     @hidden="$emit('cancel')"
-    @show="enableArchiveVulnerabilities"
   >
     <p>{{ confirmationMessage }}</p>
-    <p>
+    <p v-if="vulnerabilityCount > 0">
       <gl-sprintf :message="vulnerabilityWarningMessage">
         <template #count>
           <gl-badge variant="neutral" class="gl-mx-1">{{ vulnerabilityCount }}</gl-badge>
         </template>
       </gl-sprintf>
     </p>
-    <gl-form-checkbox v-model="archiveVulnerabilities" data-testid="archive-checkbox">
-      {{ s__('SecurityTrackedRefs|Archive associated vulnerabilities') }}
-    </gl-form-checkbox>
   </gl-modal>
 </template>

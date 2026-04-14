@@ -412,6 +412,30 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         expect(controller.view_context.rapid_diffs_presenter).to be_a(RapidDiffs::MergeRequestPresenter)
       end
 
+      it 'is lazy on show action' do
+        go(format: :html)
+
+        expect(controller.view_context.rapid_diffs_presenter).to be_lazy
+      end
+
+      context 'on rapid_diffs action' do
+        def go_rapid_diffs
+          stub_feature_flags(rapid_diffs_on_mr_show: true)
+          get :rapid_diffs, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid,
+            rapid_diffs: 'true'
+          }
+        end
+
+        it 'is not lazy' do
+          go_rapid_diffs
+
+          expect(controller.view_context.rapid_diffs_presenter).not_to be_lazy
+        end
+      end
+
       context 'when merge request has conflicts' do
         let(:conflict_file) { instance_double(Gitlab::Conflict::File, path: 'file.txt') }
         let(:file_collection) { instance_double(Gitlab::Conflict::FileCollection, files: [conflict_file]) }

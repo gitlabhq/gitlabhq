@@ -124,21 +124,13 @@ updating the active and current stable releases only, with no backports. Factors
 the very low likelihood of exploitation, the low impact of the vulnerability, the complexity of security fixes and
 the eventual risk to stability. We always address high and critical security issues with a patch release.
 
-### Policy exceptions
+## Policy exceptions
 
-In exceptional circumstances, deviations from this maintenance policy may be necessary. This includes requests for backporting fixes to releases older than those covered by standard policy and deviations from the [release principles](https://handbook.gitlab.com/handbook/engineering/releases/#what-each-release-type-contains)
-Severity 3 and lower requests are automatically turned down.
+In exceptional circumstances, deviations from this maintenance policy may be necessary. This includes requests for backporting fixes to releases older than those covered by standard policy and deviations from the [release principles](https://handbook.gitlab.com/handbook/engineering/releases/#what-each-release-type-contains). Severity 3 and lower requests are automatically turned down.
 
-To request a policy exception:
+To request a policy exception, follow the [exception process](https://handbook.gitlab.com/handbook/engineering/releases/#exception-process) guidelines.
 
-1. **Raise an issue** in the [`release/tasks`](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
-1. **Document business justification** including:
-   - Severity and priority of the bug or feature.
-   - Potential for data loss or security breach.
-   - Customer impact and why upgrading to a maintained version is not feasible.
-1. **Obtain written approval** from a sponsoring Director or VP.
-
-Exceptions are granted at the discretion of the [Release Managers](https://about.gitlab.com/community/release-m://about.gitlab.com/community/release-ma) as policy owners, subject to [SLO commitments](https://handbook.gitlab.com/handbook/engineering/releases/patch-releases/#slo-commitments).
+The [Release Exception Process](https://handbook.gitlab.com/handbook/engineering/releases/#exception-process) describes the guidelines to request a policy exception. Exceptions are granted at the discretion of the [Release Managers](https://about.gitlab.com/community/release-managers/) as policy owners, subject to [SLO commitments](https://handbook.gitlab.com/handbook/engineering/releases/patch-releases/#slo-commitments).
 
 ## More information
 

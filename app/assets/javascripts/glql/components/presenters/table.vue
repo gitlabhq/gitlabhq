@@ -58,24 +58,24 @@ export default {
 </script>
 <template>
   <div class="gl-table-shadow">
-    <table class="!gl-my-0 gl-overflow-y-hidden">
-      <thead class="!gl-border-b !gl-border-section gl-text-sm">
+    <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden">
+      <thead class="!gl-border-b gl-text-sm">
         <tr>
           <th-resizable
             v-for="(field, fieldIndex) in fields"
             :key="field.key"
-            class="gl-relative !gl-border-section !gl-bg-subtle !gl-p-0 !gl-text-subtle gl-text-subtle dark:!gl-bg-strong"
+            class="gl-relative !gl-bg-default !gl-p-0 !gl-text-subtle dark:!gl-bg-strong"
           >
             <div
               :data-testid="`column-${fieldIndex}`"
-              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-px-5 gl-py-3 hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
+              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-bg-default gl-px-5 gl-py-3 hover:gl-bg-subtle"
               @click="sortBy(field.key)"
             >
+              {{ field.label }}
               <gl-icon
                 v-if="sortOptions.fieldName === field.key"
                 :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
               />
-              {{ field.label }}
             </div>
             <div class="gl-pointer-events-none gl-py-3">&nbsp;</div>
           </th-resizable>
@@ -90,7 +90,7 @@ export default {
           <td
             v-for="field in fields"
             :key="field.key"
-            class="!gl-border-l-0 !gl-border-r-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3"
+            class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
           >
             <field-presenter :item="item" :field-key="field.key" />
           </td>
@@ -100,7 +100,7 @@ export default {
             <td
               v-for="field in fields"
               :key="field.key"
-              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3"
+              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-default !gl-px-5 !gl-py-3"
             >
               <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
             </td>

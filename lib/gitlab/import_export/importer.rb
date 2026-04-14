@@ -19,7 +19,7 @@ module Gitlab
 
       def execute
         project.importing = true
-        if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
+        if import_file && check_version! && preallocate_iids && restorers.all?(&:restore) && overwrite_project
           remove_import_file
 
           project
@@ -65,6 +65,15 @@ module Gitlab
       # Extension point for EE to add restorers that must run at the end.
       def final_restorers
         []
+      end
+
+      def preallocate_iids
+        Gitlab::Import::IidPreallocator.from_file(
+          project,
+          File.join(shared.export_path, 'max_iids.json')
+        )
+
+        true
       end
 
       def import_file

@@ -82,6 +82,26 @@ RSpec.describe 'Project Pages Deployments query', feature_category: :pages do
     let(:current_user) { project_maintainer }
     let(:expected_deployment) { pages_deployments[0] }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_page_deployment] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        <<~GRAPHQL
+          query PagesDeployments {
+            project(fullPath: "#{project.full_path}") {
+              pagesDeployments {
+                nodes {
+                  id
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
     describe 'response' do
       it 'returns a deployment with all of the expected fields' do
         match_deployment_node_for(expected_deployment)

@@ -7,23 +7,14 @@ import {
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { __, s__ } from '~/locale';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import MergeRequest from '~/merge_request';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import { TYPE_MERGE_REQUEST } from '~/issues/constants';
-
-Vue.use(VueApollo);
 
 export default {
-  apolloProvider,
   i18n: {
     edit: __('Edit'),
     copyReferenceText: __('Copy reference'),
@@ -45,13 +36,11 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
-    SidebarSubscriptionsWidget,
     AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     reportAbusePath: {
       default: '',
@@ -61,11 +50,6 @@ export default {
     mr: {
       type: Object,
       required: true,
-    },
-    projectPath: {
-      type: String,
-      default: '',
-      required: false,
     },
     url: {
       type: String,
@@ -81,11 +65,6 @@ export default {
       type: Boolean,
       default: false,
       required: true,
-    },
-    isLoggedIn: {
-      type: Boolean,
-      defauilt: false,
-      required: false,
     },
     canUpdateMergeRequest: {
       type: Boolean,
@@ -122,8 +101,6 @@ export default {
     return {
       isOpen: this.open,
       draft: this.mr.draft,
-      issuableType: TYPE_MERGE_REQUEST,
-      fullPath: this.projectPath,
       isLoading: false,
       isLoadingDraft: false,
       isReportAbuseDrawerOpen: false,
@@ -131,9 +108,6 @@ export default {
     };
   },
   computed: {
-    isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
     draftLabel() {
       return this.draft ? this.$options.i18n.markAsReady : this.$options.i18n.markAsDraft;
     },
@@ -242,21 +216,7 @@ export default {
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
-      <gl-disclosure-dropdown-group v-if="isLoggedIn && !isNotificationsTodosButtons">
-        <sidebar-subscriptions-widget
-          :iid="String(mr.iid)"
-          :full-path="fullPath"
-          :issuable-type="issuableType"
-          data-testid="notification-toggle"
-        />
-      </gl-disclosure-dropdown-group>
-
-      <gl-disclosure-dropdown-group
-        bordered
-        :class="{
-          '!gl-mt-0 !gl-border-t-0 !gl-pt-0': !isLoggedIn || isNotificationsTodosButtons,
-        }"
-      >
+      <gl-disclosure-dropdown-group>
         <gl-disclosure-dropdown-item
           v-if="canUpdateMergeRequest"
           class="@sm/panel:!gl-hidden"

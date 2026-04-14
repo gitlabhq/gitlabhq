@@ -2,6 +2,7 @@ package log
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -152,6 +153,123 @@ func TestLogErrorWithFields(t *testing.T) {
 			})
 
 			require.Contains(t, logLine, tt.logMatcher)
+		})
+	}
+}
+
+// captureLogsFromStdLogger redirects the standard logger (which backs NewBuilder)
+// and returns output produced during fn's execution.
+func captureLogsFromStdLogger(fn func()) string {
+	b := NewBuilder()
+	return captureLogs(b, fn)
+}
+
+func TestPackageLevelInfo(t *testing.T) {
+	logLine := captureLogsFromStdLogger(func() {
+		Info("package level observation")
+	})
+
+	require.Contains(t, logLine, "level=info")
+	require.Contains(t, logLine, "package level observation")
+}
+
+func TestPackageLevelError(t *testing.T) {
+	logLine := captureLogsFromStdLogger(func() {
+		Error("package level error")
+	})
+
+	require.Contains(t, logLine, "level=error")
+	require.Contains(t, logLine, "package level error")
+}
+
+func TestPackageLevelWithError(t *testing.T) {
+	logLine := captureLogsFromStdLogger(func() {
+		WithError(fmt.Errorf("pkg error")).Error("something failed")
+	})
+
+	require.Contains(t, logLine, "level=error")
+	require.Contains(t, logLine, `error="pkg error"`)
+	require.Contains(t, logLine, "something failed")
+}
+
+func TestPackageLevelWithRequest(t *testing.T) {
+	r := httptest.NewRequest("POST", "http://localhost:3000/upload", nil)
+	logLine := captureLogsFromStdLogger(func() {
+		WithRequest(r).Info("handling upload")
+	})
+
+	require.Contains(t, logLine, "level=info")
+	require.Contains(t, logLine, "method=POST")
+	require.Contains(t, logLine, `uri="http://localhost:3000/upload"`)
+	require.Contains(t, logLine, "handling upload")
+}
+
+func TestPackageLevelWithFields(t *testing.T) {
+	logLine := captureLogsFromStdLogger(func() {
+		WithFields(Fields{"component": "proxy", "backend": "rails"}).Info("forwarding request")
+	})
+
+	require.Contains(t, logLine, "level=info")
+	require.Contains(t, logLine, "component=proxy")
+	require.Contains(t, logLine, "backend=rails")
+	require.Contains(t, logLine, "forwarding request")
+}
+
+func TestWithContextFields(t *testing.T) {
+	ctx := context.Background()
+	b := NewBuilder()
+
+	logLine := captureLogs(b, func() {
+		WithContextFields(ctx, Fields{"traced_component": "upload"}).Info("context fields log")
+	})
+
+	require.Contains(t, logLine, "level=info")
+	require.Contains(t, logLine, "traced_component=upload")
+	require.Contains(t, logLine, "context fields log")
+}
+
+func TestBuilderWithRequestMasksSecretURLParams(t *testing.T) {
+	tests := []struct {
+		name        string
+		uri         string
+		wantMasked  []string
+		wantPresent []string
+	}{
+		{
+			name:        "certificate param is filtered",
+			uri:         "http://localhost/path?certificate=secret-cert",
+			wantMasked:  []string{"secret-cert"},
+			wantPresent: []string{"certificate=[FILTERED]"},
+		},
+		{
+			name:        "sharedSecret param is filtered",
+			uri:         "http://localhost/path?sharedSecret=topsecret",
+			wantMasked:  []string{"topsecret"},
+			wantPresent: []string{"sharedSecret=[FILTERED]"},
+		},
+		{
+			name:        "non-sensitive params are preserved",
+			uri:         "http://localhost/path?page=2&per_page=50",
+			wantMasked:  []string{},
+			wantPresent: []string{"page=2", "per_page=50"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := httptest.NewRequest("GET", tt.uri, nil)
+			b := NewBuilder()
+
+			logLine := captureLogs(b, func() {
+				b.WithRequest(r).Info("request received")
+			})
+
+			for _, secret := range tt.wantMasked {
+				require.NotContains(t, logLine, secret)
+			}
+			for _, want := range tt.wantPresent {
+				require.Contains(t, logLine, want)
+			}
 		})
 	}
 }

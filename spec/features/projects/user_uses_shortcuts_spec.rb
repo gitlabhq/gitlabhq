@@ -100,7 +100,7 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :groups_and_project
       find('body').native.send_key('i')
 
       expect(page).to have_content(project.title)
-      expect(page).to have_css('h1', text: 'New issue')
+      expect(page).to have_css('h1', text: 'New Issue')
     end
   end
 

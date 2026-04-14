@@ -302,7 +302,11 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
             actions: [{ event: 'creation', design: { filename: 'design.png', iid: 1 } }]
           }],
           issue_assignees: [{ user_id: 101 }],
-          award_emoji: [{ name: 'clapper', user_id: 101 }]
+          award_emoji: [{ name: 'clapper', user_id: 101 }],
+          work_item_description: {
+            description: 'Imported issue description',
+            last_edited_by_id: 101
+          }
         }.deep_stringify_keys
       end
 
@@ -325,6 +329,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         expect(issue.updated_by).to be_import_user
         expect(issue.last_edited_by).to be_import_user
         expect(issue.closed_by).to be_import_user
+        expect(issue.work_item_description.last_editing_user).to be_import_user
         expect(event.author).to be_import_user
         expect(timelog.user).to be_import_user
         expect(note.author).to be_import_user
@@ -341,7 +346,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         source_user = Import::SourceUser.find_by(source_user_identifier: 101)
         expect(source_user.placeholder_user).to be_import_user
 
-        expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(16).times
+        expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(17).times
       end
 
       context 'when direct reassignment is supported' do

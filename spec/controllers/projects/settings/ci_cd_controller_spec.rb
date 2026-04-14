@@ -4,85 +4,13 @@ require('spec_helper')
 
 RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :allow_runner_registration_token) }
-  let_it_be(:project_auto_devops) { create(:project_auto_devops, project: project) }
+  let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token) }
+  let_it_be_with_reload(:project_auto_devops) { create(:project_auto_devops, project: project) }
 
   context 'as a maintainer' do
     before do
       project.add_maintainer(user)
       sign_in(user)
-    end
-
-    describe 'GET show' do
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: parent_group) }
-      let_it_be(:other_project) { create(:project, group: group) }
-
-      subject(:request) { get :show, params: { namespace_id: project.namespace, project_id: project } }
-
-      it 'renders show with 200 status code' do
-        request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:show)
-      end
-
-      context 'with CI/CD disabled' do
-        before do
-          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
-        end
-
-        it 'renders show with 404 status code' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when user is authorized to access this action' do
-        before do
-          project.add_maintainer(user)
-        end
-
-        it 'returns a success header' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when the user is not authorized to access this action' do
-        before do
-          project.add_guest(user)
-        end
-
-        it 'returns not found' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when accessing CI/CD Settings page for a project' do
-        it 'creates a streaming audit event' do
-          expect(::Gitlab::Audit::Auditor).to receive(:audit).with({
-            name: 'project_ci_cd_settings_accessed',
-            author: user,
-            scope: project,
-            target: project,
-            message: 'User accessed CI/CD settings for project',
-            additional_details: hash_including(
-              project_path: project.full_path,
-              project_id: project.id,
-              ip_address: '0.0.0.0',
-              timestamp: kind_of(String),
-              action: 'project_ci_cd_settings_page_viewed'
-            )
-          })
-
-          get :show, params: { namespace_id: project.namespace, project_id: project }
-        end
-      end
     end
 
     describe 'POST reset_cache' do
@@ -470,8 +398,94 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
   end
 
   describe 'GET show' do
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent_group) }
+    let_it_be(:other_project) { create(:project, group: group) }
+
     subject(:request) do
       get :show, params: { namespace_id: project.namespace, project_id: project }
+    end
+
+    shared_examples 'accessible show page' do
+      it 'renders show with 200 status code' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:show)
+      end
+
+      context 'with CI/CD disabled' do
+        before do
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+        end
+
+        it 'renders show with 404 status code' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when accessing CI/CD Settings page for a project' do
+        it 'creates a streaming audit event' do
+          expect(::Gitlab::Audit::Auditor).to receive(:audit).with({
+            name: 'project_ci_cd_settings_accessed',
+            author: user,
+            scope: project,
+            target: project,
+            message: 'User accessed CI/CD settings for project',
+            additional_details: hash_including(
+              project_path: project.full_path,
+              project_id: project.id,
+              ip_address: '0.0.0.0',
+              timestamp: kind_of(String),
+              action: 'project_ci_cd_settings_page_viewed'
+            )
+          })
+
+          get :show, params: { namespace_id: project.namespace, project_id: project }
+        end
+      end
+    end
+
+    describe 'as an owner' do
+      before do
+        project.add_owner(user)
+        sign_in(user)
+      end
+
+      it_behaves_like 'accessible show page'
+    end
+
+    describe 'as a maintainer' do
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it_behaves_like 'accessible show page'
+    end
+
+    describe 'as a security manager' do
+      before do
+        project.add_security_manager(user)
+        sign_in(user)
+      end
+
+      it_behaves_like 'accessible show page'
+    end
+
+    context 'as a guest' do
+      before do
+        sign_in(user)
+        project.add_guest(user)
+      end
+
+      it 'returns not found' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     context 'as a developer' do

@@ -19,6 +19,11 @@ module Tooling
       # Safety limits
       MAX_DIFF_LINES = 5000
       MAX_CHANGED_FILES = 50
+      # Conservative byte limit for the raw diff passed via env var.
+      # macOS ARG_MAX is ~1 MB; Linux is ~2 MB (args + env combined).
+      # 200 KB leaves ample headroom for the JSON wrapper, other env vars, and
+      # the CLI arguments, so we skip Duo rather than risk Errno::E2BIG.
+      MAX_DIFF_BYTES = 200_000
 
       def initialize(git_diff: nil, changed_files: nil, logger: nil)
         @git_diff = git_diff
@@ -51,7 +56,16 @@ module Tooling
           @logger.warn "⚠️  Large change: #{changed_files.length} files (limit: #{MAX_CHANGED_FILES})"
           @logger.warn "     Skipping Duo analysis to save costs"
           return low_confidence_result(
-            "Large change (#{changed_files.length} files exceeds limit). Skipping Duo to save costs.",
+            "Large change (#{changed_files.length} files exceeds limit). Skipping Duo Test Selection.",
+            changed_files
+          )
+        end
+
+        if diff.bytesize > MAX_DIFF_BYTES
+          @logger.warn "⚠️  Very large diff: #{diff.bytesize} bytes (limit: #{MAX_DIFF_BYTES})"
+          @logger.warn "     Skipping Duo analysis to avoid OS ARG_MAX limits"
+          return low_confidence_result(
+            "Very large diff (#{diff.bytesize} bytes exceeds #{MAX_DIFF_BYTES} limit). Skipping Duo Test Selection.",
             changed_files
           )
         end
@@ -60,7 +74,7 @@ module Tooling
           @logger.warn "⚠️  Very large diff: #{diff_lines} lines (limit: #{MAX_DIFF_LINES})"
           @logger.warn "     Skipping Duo analysis to save costs"
           return low_confidence_result(
-            "Very large diff (#{diff_lines} lines exceeds limit). Skipping Duo to save costs.",
+            "Very large diff (#{diff_lines} lines exceeds limit). Skipping Duo Test Selection.",
             changed_files
           )
         end
@@ -82,7 +96,7 @@ module Tooling
 
         response = nil
         elapsed_time = Benchmark.realtime do
-          response = call_duo_cli(prompt)
+          response = call_duo_cli(prompt, diff)
         end
 
         @logger.debug "⏱️  Duo CLI response time: #{elapsed_time.round(2)}s"
@@ -135,20 +149,14 @@ module Tooling
         <<~PROMPT
           #{base_prompt}
 
-          GIT DIFF:
-          ```diff
-          #{diff}
-          ```
+          The git diff is provided as additional context.
 
           Analyze this diff and return your JSON response with directories and individual files.
         PROMPT
       end
 
-      def call_duo_cli(prompt)
+      def call_duo_cli(prompt, diff)
         @logger.debug "🤖 Calling Duo CLI..."
-
-        File.write('tmp/.duo_last_prompt.txt', prompt)
-        @logger.debug "💾 Prompt saved to tmp/.duo_last_prompt.txt"
 
         # Remove any existing output file so we can detect if Duo wrote a new one
         FileUtils.rm_f(DUO_OUTPUT_FILE)
@@ -163,7 +171,21 @@ module Tooling
           @logger.warn "⚠️  DUO_TEST_SELECTION_TOKEN not set - will try default Duo CLI auth"
         end
 
-        combined_output, status = Open3.capture2e({ 'GITLAB_TOKEN' => gitlab_token }, *cmd)
+        context_items = JSON.generate([{ category: 'file', content: diff.to_s, metadata: {} }])
+        @logger.debug "📦 Passing diff as context item via DUO_WORKFLOW_ADDITIONAL_CONTEXT_CONTENT"
+
+        env = {
+          'GITLAB_TOKEN' => gitlab_token,
+          'DUO_WORKFLOW_ADDITIONAL_CONTEXT_CONTENT' => context_items
+        }
+
+        begin
+          combined_output, status = Open3.capture2e(env, *cmd)
+        rescue Errno::E2BIG
+          @logger.error "❌ OS ARG_MAX exceeded when invoking duo CLI (diff: #{diff.bytesize} bytes). " \
+            "The combined size of environment variables and arguments exceeded the OS limit. "
+          return
+        end
 
         File.write('tmp/.duo_last_output.txt', combined_output)
 
@@ -333,6 +355,7 @@ module Tooling
             puts "Triggers:"
             puts "  - Confidence < #{(DuoTestSelector::CONFIDENCE_THRESHOLD * 100).round}%"
             puts "  - Change exceeds #{DuoTestSelector::MAX_CHANGED_FILES} files"
+            puts "  - Diff exceeds #{DuoTestSelector::MAX_DIFF_BYTES} bytes"
             puts "  - Diff exceeds #{DuoTestSelector::MAX_DIFF_LINES} lines"
             puts "  - Duo analysis failed"
           end

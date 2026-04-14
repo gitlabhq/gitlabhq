@@ -227,28 +227,6 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
   end
 
-  describe '#above_threshold?' do
-    subject(:above_threshold) { ci_partition.send(:above_threshold?, threshold) }
-
-    context 'when one of the partition is above the threshold' do
-      let(:threshold) { 1.byte }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when all partitions are below the threshold' do
-      let(:threshold) { 100.megabytes }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with default value' do
-      subject(:above_threshold) { ci_partition.send(:above_threshold?) }
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#all_partitions_exist?' do
     subject(:all_partitions_exist) { ci_partition.all_partitions_exist? }
 

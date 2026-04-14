@@ -3,6 +3,76 @@
 require 'spec_helper'
 
 RSpec.describe PageLayoutHelper do
+  describe 'page_title' do
+    it 'initializes as an empty array' do
+      expect(helper.page_title).to eq ''
+    end
+
+    it 'stores and returns a single title' do
+      helper.page_title('Foo')
+
+      expect(helper.page_title).to eq 'Foo'
+    end
+
+    it 'accumulates multiple titles' do
+      helper.page_title('Foo')
+      helper.page_title('Bar')
+      helper.page_title('Baz')
+
+      expect(helper.page_title).to eq 'Foo · Bar · Baz'
+    end
+
+    it 'accepts multiple titles in a single call' do
+      helper.page_title('Foo', 'Bar', 'Baz')
+
+      expect(helper.page_title).to eq 'Foo · Bar · Baz'
+    end
+
+    it 'compacts nil values' do
+      helper.page_title('Foo', nil, 'Bar')
+
+      expect(helper.page_title).to eq 'Foo · Bar'
+    end
+
+    it 'sets breadcrumb_title to the last title on first call' do
+      helper.page_title('Foo', 'Bar')
+
+      expect(helper.instance_variable_get(:@breadcrumb_title)).to eq 'Bar'
+    end
+
+    it 'does not override breadcrumb_title on subsequent calls' do
+      helper.instance_variable_set(:@breadcrumb_title, 'Original')
+      helper.page_title('Foo')
+
+      expect(helper.instance_variable_get(:@breadcrumb_title)).to eq 'Original'
+    end
+
+    it 'include site_name from current_appearance and no title' do
+      appearance = instance_double(Appearance, site_name: 'Foo')
+      allow(helper).to receive(:current_appearance).and_return(appearance)
+
+      expect(helper.page_title).to eq 'Foo'
+    end
+
+    it 'include site_name from current_appearance and single title' do
+      helper.page_title('Foo')
+
+      appearance = instance_double(Appearance, site_name: 'Bar')
+      allow(helper).to receive(:current_appearance).and_return(appearance)
+
+      expect(helper.page_title).to eq 'Foo · Bar'
+    end
+
+    it 'include site_name from current_appearance and multiple titles' do
+      helper.page_title('Foo', 'Bar')
+
+      appearance = instance_double(Appearance, site_name: 'Baz')
+      allow(helper).to receive(:current_appearance).and_return(appearance)
+
+      expect(helper.page_title).to eq 'Foo · Bar · Baz'
+    end
+  end
+
   describe 'page_description' do
     it 'defaults to nil' do
       expect(helper.page_description).to eq nil

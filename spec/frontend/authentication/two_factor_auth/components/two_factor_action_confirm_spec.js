@@ -8,7 +8,7 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 const defaultProps = {
   buttonText: 'My button',
-  message: 'my message',
+  messages: ['my message', 'second line'],
   path: '/my/path',
   passwordRequired: true,
 };
@@ -113,7 +113,8 @@ describe('TwoFactorActionConfirm', () => {
       const modal = findModal();
       expect(modal.props('title')).toBe(defaultProps.buttonText);
       expect(modal.props('size')).toBe('sm');
-      expect(modal.text()).toBe(defaultProps.message);
+      expect(modal.text()).toContain(defaultProps.messages[0]);
+      expect(modal.text()).toContain(defaultProps.messages[1]);
       expect(findModal().props('actionCancel').text).toBe('Cancel');
     });
 

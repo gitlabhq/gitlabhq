@@ -280,11 +280,12 @@ For example, a component that references a Docker image built with the same vers
 spec:
   component: [name, version, reference]
   inputs:
-    image_tag:
-      default: latest
+    stage:
+      default: build
 ---
 
 build-image:
+  stage: $[[ inputs.stage ]]
   image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
   script:
     - echo "Building with component version $[[ component.version ]]"
@@ -699,6 +700,10 @@ This view shows:
 - **Projects**: The catalog resource name and its latest released version.
 - **Usage statistics**: The number of unique projects that used a component from this catalog resource in a pipeline in the last 30 days.
 - **Components**: A list of components available in the latest version of the catalog resource.
+
+For example:
+
+![The catalog resource analytics page showing 3 components and their usage numbers.](img/catalog_analytics_v18_10.png)
 
 You can use this information to:
 

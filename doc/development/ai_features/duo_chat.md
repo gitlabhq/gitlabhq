@@ -118,7 +118,7 @@ Chat interface. The following example shows how to open the GitLab Duo Chat
 drawer by using an event listener and the GitLab Duo Chat global state:
 
 ```javascript
-import { duoChatGlobalState } from '~/super_sidebar/constants';
+import { duoChatGlobalState } from '~/super_sidebar/state';
 myFancyToggleToOpenChat.addEventListener('click', () => {
   duoChatGlobalState.isShown = true;
 });
@@ -152,6 +152,135 @@ Note that `sendDuoChatCommand` cannot be chained, meaning that you can send one 
 
 This enhancement allows for a more tailored user experience by guiding the
 conversation in GitLab Duo Chat towards predefined areas of interest or concern.
+
+#### Using Duo Chat to update a form
+
+UI components can listen to Duo Chat tool outputs and update the UI in response.
+This lets you use Duo Chat as an assistant that fills in or modifies form fields,
+for example to help users create tokens, configure CI, edit issues, or make file edits.
+
+The implementation has three parts:
+
+1. A custom agent with its own tool that collects information from the user and
+   returns structured data your form can consume. Each agent must define its own
+   tool — there is no shared generic tool.
+1. A button that opens Duo Chat with that agent pre-selected.
+1. A component that listens for the tool completion event and applies the result.
+
+##### Step 1: Create a custom agent with a form-update tool
+
+Create a flow config in the
+[AI Gateway repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+under `duo_workflow_service/agent_platform/v1/flows/configs/`. You must define
+your own tool for the agent. The tool name you choose here is what you listen
+for in the frontend in Step 3.
+
+See [foundational_chat_agents.md](foundational_chat_agents.md) for the full agent
+creation process.
+
+##### Step 2: Open Duo Chat with a pre-selected agent
+
+Use the `OpenAgenticChatButton` component to render a button that opens the Duo
+Chat drawer with your agent pre-selected. Pass `welcomeMessage` and
+`predefinedPrompts` to guide the user when the chat panel is empty.
+
+```javascript
+import OpenAgenticChatButton from 'ee/ai/shared/widgets/open_agentic_chat_button.vue';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { s__, __ } from '~/locale';
+
+const AGENT = { name: __('My Feature Assistant') };
+const WELCOME_MESSAGE = s__('MyFeature|I can help you configure this feature.');
+const PREDEFINED_PROMPTS = [
+  s__('MyFeature|Enable read access to repositories.'),
+  s__('MyFeature|Set up CI/CD pipeline permissions.'),
+];
+
+export default {
+  components: { OpenAgenticChatButton },
+  computed: {
+    resourceId() {
+      return convertToGraphQLId(TYPENAME_USER, window.gon?.current_user_id);
+    },
+  },
+  // ...
+  AGENT,
+  WELCOME_MESSAGE,
+  PREDEFINED_PROMPTS,
+};
+```
+
+```html
+<open-agentic-chat-button
+  button-text="Configure with Duo"
+  :resource-id="resourceId"
+  :agent="$options.AGENT"
+  :welcome-message="$options.WELCOME_MESSAGE"
+  :predefined-prompts="$options.PREDEFINED_PROMPTS"
+  @tool-completed="handleToolCompleted"
+/>
+```
+
+`predefinedPrompts` is an array of strings displayed as suggestion chips when
+the chat panel is empty. Use `welcomeMessage` to explain to the user what the
+agent can do. Both are optional but recommended to reduce time-to-first-prompt.
+
+##### Step 3: Listen for tool completion events
+
+When your agent's tool completes successfully, `OpenAgenticChatButton` emits a
+`tool-completed` Vue event. Listen for it with `@tool-completed` on the button
+component. The payload has the shape `{ name, args }` where `name` is the tool
+name and `args` is the object of arguments returned by the tool.
+
+Because all tool completions are broadcast through the same event, your handler
+must check that `name` matches the tool name defined in your agent config before
+acting on the payload.
+
+```javascript
+// Must match the tool name defined in your agent config
+const TOOL_NAME = 'my_feature_tool';
+
+export default {
+  methods: {
+    handleToolCompleted({ name, args } = {}) {
+      if (name !== TOOL_NAME || !args || typeof args !== 'object') return;
+
+      // Apply the tool output to your form
+      this.myField = args.my_field;
+    },
+  },
+};
+```
+
+```html
+<open-agentic-chat-button
+  ...
+  @tool-completed="handleToolCompleted"
+/>
+```
+
+The event payload has the shape:
+
+```javascript
+{
+  name: 'my_feature_tool', // tool name as defined in your agent config
+  args: {
+    // fields defined by your tool
+    my_field: 'value',
+  }
+}
+```
+
+##### Known limitations
+
+- Agents must implement their own tool; AI Catalog agents cannot share tools for this pattern.
+  ([ai-assist#2113](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/work_items/2113))
+- Custom questions cannot be defined in the agent YAML; they must be hardcoded in the calling component.
+  ([GitLab#594533](https://gitlab.com/gitlab-org/gitlab/-/work_items/594533))
+- Agents created for a specific page are still selectable as foundational agents site-wide.
+- Streaming responses are not supported.
+- The agent does not read existing form field values.
 
 ### Adding a new tool
 
@@ -540,7 +669,8 @@ and, as an Admin, easily create licensed groups for testing.
 
 ### Important Testing Considerations
 
-**Note**: A user who has a seat in multiple groups with different tiers of GitLab Duo add-on gets the highest tier experience across the entire instance.
+> [!note]
+> A user who has a seat in multiple groups with different tiers of GitLab Duo add-on gets the highest tier experience across the entire instance.
 
 It's not possible to test feature separation between different GitLab Duo add-ons if your test account has a seat in a higher tier add-on.
 To properly test different tiers, create a separate test account for each tier you need to test.

@@ -10,6 +10,7 @@ module Types
     connection_type_class Types::CountableConnectionType
 
     authorize :read_project
+    authorize_granular_token permissions: :read_project, boundary: :itself, boundary_type: :project
 
     def self.authorization_scopes
       super + [:ai_workflows]
@@ -502,7 +503,10 @@ module Types
       type: Types::Ci::PipelineScheduleType.connection_type,
       null: true,
       description: 'Pipeline schedules of the project. This field can only be resolved for one project per request.',
-      resolver: Resolvers::Ci::ProjectPipelineSchedulesResolver
+      resolver: Resolvers::Ci::ProjectPipelineSchedulesResolver,
+      directives: granular_scope_directive(
+        permissions: :read_pipeline_schedule, boundary: :itself, boundary_type: :project
+      )
 
     field :pipeline_triggers,
       Types::Ci::PipelineTriggerType.connection_type,
@@ -685,6 +689,13 @@ module Types
       description: 'Terraform states associated with the project.',
       resolver: Resolvers::Terraform::StatesResolver
 
+    field :terraform_state_protection_rules,
+      Types::Terraform::StateProtectionRuleType.connection_type,
+      null: true,
+      experiment: { milestone: '18.11' },
+      description: 'Terraform state protection rules for the project.',
+      resolver: Resolvers::Terraform::StateProtectionRulesResolver
+
     field :pipeline_analytics, Types::Ci::AnalyticsType,
       null: true,
       description: 'Pipeline analytics.',
@@ -803,7 +814,10 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
       null: true,
       resolver: ::Resolvers::Ci::ProjectRunnersResolver,
-      description: "Find runners visible to the current user."
+      description: "Find runners visible to the current user.",
+      directives: granular_scope_directive(
+        permissions: :read_runner, boundary: :itself, boundary_type: :project
+      )
 
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
       null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682

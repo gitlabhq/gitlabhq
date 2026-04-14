@@ -19,8 +19,6 @@ module Terraform
         raise StateLockedError unless lock_matches?(state)
 
         yield state if block_given?
-
-        state.save! unless state.destroyed?
       end
 
       nil
@@ -60,7 +58,7 @@ module Terraform
 
     def retrieve_with_lock(find_only: false)
       create_or_find!(find_only: find_only).tap do |state|
-        Gitlab::OptimisticLocking.retry_lock_with_transaction(state, name: "Terraform state: #{state.id}") do
+        Gitlab::OptimisticLocking.retry_lock(state, name: "Terraform state: #{state.id}") do
           yield state
         end
       end

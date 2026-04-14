@@ -1,12 +1,11 @@
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
 import {
-  mockGroupPermissionsByResource,
+  mockGroupPermissions,
   mockGroupResources,
-  mockUserPermissionsByResource,
+  mockUserPermissions,
   mockUserResources,
 } from '../../mock_data';
 
@@ -17,14 +16,13 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     wrapper = mountFn(PersonalAccessTokenGranularPermissionsList, {
       propsData: {
         scope: 'namespace',
-        permissionsByResource: mockGroupPermissionsByResource,
+        permissions: mockGroupPermissions,
         selectedResources: mockGroupResources,
         ...props,
       },
     });
   };
 
-  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCategory = (key) => wrapper.findByTestId(`category-${key}`);
   const findCategoryHeading = (key) => findCategory(key).find('[data-testid="category-heading"]');
   const findResourceName = (key) => findCategory(key).findAll('[data-testid="resource-name"]');
@@ -51,20 +49,14 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
   });
 
   describe('rendering', () => {
-    it('renders crud component for group scope', () => {
-      createComponent({ mountFn: mountExtended });
-
-      expect(findCrudComponent().exists()).toBe(true);
-      expect(findCrudComponent().text()).toContain('Group and project permissions');
-      expect(findCrudComponent().text()).toContain(
-        'Grant permissions only to specific resources in your groups or projects.',
-      );
+    it('renders title', () => {
+      expect(wrapper.text()).toContain('Group and project');
     });
 
     it('shows empty state when no resources are selected', () => {
-      createComponent({ props: { selectedResources: [] }, mountFn: mountExtended });
+      createComponent({ props: { selectedResources: [] } });
 
-      expect(findCrudComponent().text()).toContain('No resources selected');
+      expect(wrapper.text()).toContain('No resources added');
     });
 
     it('renders a row for each selected resource with category', () => {
@@ -137,19 +129,15 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
         createComponent({
           props: {
             scope: 'user',
-            permissionsByResource: mockUserPermissionsByResource,
+            permissions: mockUserPermissions,
             selectedResources: mockUserResources,
           },
           mountFn: mountExtended,
         });
       });
 
-      it('renders crud component for user scope', () => {
-        expect(findCrudComponent().exists()).toBe(true);
-        expect(findCrudComponent().text()).toContain('User permissions');
-        expect(findCrudComponent().text()).toContain(
-          'Grant permissions to resources in your GitLab user account.',
-        );
+      it('renders title for user scope', () => {
+        expect(wrapper.text()).toContain('User');
       });
 
       it('renders correct list of permissions for each resource', () => {

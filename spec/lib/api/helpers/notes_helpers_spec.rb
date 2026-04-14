@@ -63,6 +63,50 @@ RSpec.describe API::Helpers::NotesHelpers, feature_category: :api do
     end
   end
 
+  describe '#add_parent_to_finder_params' do
+    let(:helper_instance) do
+      Class.new do
+        include API::Helpers::NotesHelpers
+
+        attr_reader :user_project
+
+        def initialize(project)
+          @user_project = project
+        end
+      end.new(project)
+    end
+
+    let(:project) { instance_double(Project) }
+    let(:organization) { instance_double(Organizations::Organization, id: 42) }
+
+    before do
+      allow(Current).to receive(:organization).and_return(organization)
+    end
+
+    it 'includes organization_id from Current.organization' do
+      finder_params = {}
+      helper_instance.send(:add_parent_to_finder_params, finder_params, Issue, nil)
+
+      expect(finder_params[:organization_id]).to eq(42)
+    end
+
+    it 'includes project when parent_type is not group' do
+      finder_params = {}
+      helper_instance.send(:add_parent_to_finder_params, finder_params, Snippet, nil)
+
+      expect(finder_params[:project]).to eq(project)
+      expect(finder_params[:organization_id]).to eq(42)
+    end
+
+    it 'does not include project when parent_type is group' do
+      finder_params = {}
+      helper_instance.send(:add_parent_to_finder_params, finder_params, Issue, 'group')
+
+      expect(finder_params).not_to have_key(:project)
+      expect(finder_params[:organization_id]).to eq(42)
+    end
+  end
+
   describe '.permission_name_for' do
     using RSpec::Parameterized::TableSyntax
 

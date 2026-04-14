@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Advanced Search Migration Review Guidelines
+title: Advanced search migration review guidelines
 ---
 
 This page is specific to advanced search migration reviews. Refer to our
@@ -107,3 +107,32 @@ not include these items, the review is reassigned back to the author.
   `Elastic::Latest::<IndexedData>Config`.
 - New fields have appropriate types and analyzers.
 - Follow-up backfill migration is included if needed.
+
+## How to apply for becoming an advanced search migration reviewer
+
+To apply, you should be familiar with:
+
+- The [advanced search migration style guide](advanced_search_migration_styleguide.md).
+- The [review checklist](#review-checklist) on this page.
+- The scope defined in [when a review is needed](#when-a-review-is-needed).
+
+You should also have prior experience authoring or reviewing advanced search migrations.
+
+Team members are encouraged to self-identify as advanced search migration domain experts,
+by adding it to your profile YAML file:
+
+1. Make a merge request following the
+   [project maintainer process for `gitlab-advanced-search-migration`](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-advanced-search-migration).
+1. Add your advanced search migration expertise to your YAML file:
+
+   ```yaml
+   projects:
+     gitlab:
+       - reviewer advanced_search_migrations
+   ```
+
+1. Assign the merge request to an advanced search migration maintainer or the
+   [Global Search Engineering Manager](https://handbook.gitlab.com/handbook/engineering/development/ai-powered/global-search/).
+
+After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
+may recommend you as an advanced search migration reviewer.

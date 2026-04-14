@@ -87,6 +87,7 @@ RSpec.describe 'projects/tags/show.html.haml', feature_category: :source_code_ma
   context 'for remove tag button' do
     it 'is rendered when user has permission' do
       allow(view).to receive(:can?).with(user, :admin_tag, project).and_return(true)
+      allow(view).to receive(:can?).with(user, :delete_tag, git_tag).and_return(true)
       render
 
       expect(rendered).to have_css('button[title="Delete tag"]')
@@ -97,6 +98,41 @@ RSpec.describe 'projects/tags/show.html.haml', feature_category: :source_code_ma
       render
 
       expect(rendered).not_to have_css('button[title="Delete tag"]')
+    end
+
+    context 'when tag is protected' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:user_access_instance) { instance_double(Gitlab::UserAccess) }
+
+      before do
+        allow(view).to receive(:can?).with(user, :admin_tag, project).and_return(true)
+        allow(view).to receive(:protected_tag?).with(project, git_tag).and_return(true)
+        allow(view).to receive(:user_access).with(project).and_return(user_access_instance)
+        allow(view).to receive(:can?).with(user, :delete_protected_tag,
+          project).and_return(has_delete_protected_tag_permission)
+        allow(user_access_instance).to receive(:can_create_tag?)
+          .with(git_tag.name).and_return(in_allowed_to_create_list)
+      end
+
+      # User needs BOTH permissions to delete a protected tag:
+      # 1. :delete_protected_tag permission (maintainer+)
+      # 2. Be in the "Allowed to create" list for the protected tag
+      where(:has_delete_protected_tag_permission, :in_allowed_to_create_list, :expected_title, :disabled) do
+        true  | true  | 'Delete protected tag'                                       | false
+        true  | false | 'You do not have permission to delete this protected tag'    | true
+        false | true  | 'You do not have permission to delete this protected tag'    | true
+        false | false | 'You do not have permission to delete this protected tag'    | true
+      end
+
+      with_them do
+        it 'renders button with correct state' do
+          render
+
+          disabled_selector = disabled ? '[disabled]' : ':not([disabled])'
+          expect(rendered).to have_css("button[title=\"#{expected_title}\"]#{disabled_selector}")
+        end
+      end
     end
   end
 end

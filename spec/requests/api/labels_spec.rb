@@ -775,4 +775,106 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'granular token permissions' do
+    let_it_be(:granular_test_group) { create(:group) }
+    let_it_be(:granular_test_user) { create(:user) }
+    let_it_be(:granular_test_project) do
+      create(:project, creator_id: granular_test_user.id, namespace: granular_test_group)
+    end
+
+    let_it_be(:read_label) { create(:label, title: 'read_test_label', project: granular_test_project) }
+    let_it_be(:promote_label) { create(:label, title: 'promote_test_label', project: granular_test_project) }
+    let_it_be(:update_label) { create(:label, title: 'update_test_label', project: granular_test_project) }
+    let_it_be(:delete_label) { create(:label, title: 'delete_test_label', project: granular_test_project) }
+
+    before_all do
+      granular_test_project.add_developer(granular_test_user)
+      granular_test_group.add_owner(granular_test_user)
+    end
+
+    context 'when reading labels with GET /projects/:id/labels' do
+      it_behaves_like 'authorizing granular token permissions', :read_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          get api("/projects/#{granular_test_project.id}/labels", personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'when reading a single label with GET /projects/:id/labels/:name' do
+      it_behaves_like 'authorizing granular token permissions', :read_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          get api("/projects/#{granular_test_project.id}/labels/#{ERB::Util.url_encode(read_label.title)}", personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'when creating a label with POST /projects/:id/labels' do
+      it_behaves_like 'authorizing granular token permissions', :create_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          post api("/projects/#{granular_test_project.id}/labels", personal_access_token: pat),
+            params: { name: 'new_label', color: '#FF0000' }
+        end
+      end
+    end
+
+    context 'when updating a label with PUT /projects/:id/labels (deprecated)' do
+      it_behaves_like 'authorizing granular token permissions', :update_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          put api("/projects/#{granular_test_project.id}/labels", personal_access_token: pat),
+            params: { name: update_label.title, new_name: 'updated_label' }
+        end
+      end
+    end
+
+    context 'when updating a label with PUT /projects/:id/labels/:name' do
+      it_behaves_like 'authorizing granular token permissions', :update_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          put api("/projects/#{granular_test_project.id}/labels/#{ERB::Util.url_encode(update_label.title)}", personal_access_token: pat),
+            params: { new_name: 'updated_label' }
+        end
+      end
+    end
+
+    context 'when deleting a label with DELETE /projects/:id/labels (deprecated)' do
+      it_behaves_like 'authorizing granular token permissions', :delete_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          delete api("/projects/#{granular_test_project.id}/labels", personal_access_token: pat),
+            params: { name: delete_label.title }
+        end
+      end
+    end
+
+    context 'when deleting a label with DELETE /projects/:id/labels/:name' do
+      it_behaves_like 'authorizing granular token permissions', :delete_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          delete api("/projects/#{granular_test_project.id}/labels/#{ERB::Util.url_encode(delete_label.title)}", personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'when promoting a label with PUT /projects/:id/labels/:name/promote' do
+      it_behaves_like 'authorizing granular token permissions', :promote_label do
+        let(:boundary_object) { granular_test_project }
+        let(:user) { granular_test_user }
+        let(:request) do
+          put api("/projects/#{granular_test_project.id}/labels/#{ERB::Util.url_encode(promote_label.title)}/promote", personal_access_token: pat)
+        end
+      end
+    end
+  end
 end

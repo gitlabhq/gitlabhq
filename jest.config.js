@@ -8,11 +8,16 @@ if (IS_JH && fs.existsSync('./jh/jest.config.js')) {
   // eslint-disable-next-line
   module.exports = require('./jh/jest.config');
 } else {
+  const config = baseConfig('spec/frontend', {
+    roots: ['<rootDir>/spec/frontend/'],
+    rootsEE: ['<rootDir>/ee/spec/frontend/'],
+    rootsJH: ['<rootDir>/jh/spec/frontend/'],
+  });
   module.exports = {
-    ...baseConfig('spec/frontend', {
-      roots: ['<rootDir>/spec/frontend/'],
-      rootsEE: ['<rootDir>/ee/spec/frontend/'],
-      rootsJH: ['<rootDir>/jh/spec/frontend/'],
-    }),
+    ...config,
+    setupFilesAfterEnv: [
+      ...config.setupFilesAfterEnv,
+      '<rootDir>/spec/frontend/__helpers__/axios_mock_adapter_setup.js',
+    ],
   };
 }

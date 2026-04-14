@@ -22,6 +22,7 @@ import BubbleMenu from './bubble_menu.vue';
 const MEDIA_TYPES = [Audio.name, Image.name, Video.name, DrawioDiagram.name];
 
 export default {
+  name: 'MediaBubbleMenu',
   i18n: {
     editLabels: {
       [Audio.name]: __('Edit audio description'),

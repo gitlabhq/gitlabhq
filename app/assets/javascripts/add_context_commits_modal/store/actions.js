@@ -1,4 +1,4 @@
-import { uniqBy, orderBy } from 'lodash';
+import { uniqBy, orderBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { createAlert } from '~/alert';

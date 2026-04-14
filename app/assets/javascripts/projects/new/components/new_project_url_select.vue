@@ -166,6 +166,10 @@ export default {
 
         eventHub.$emit('update-visibility', eventData);
       }
+
+      eventHub.$emit('update-readme-checkbox', {
+        canPushInitialCommit: namespace ? namespace.canPushInitialCommit : true,
+      });
       this.setNamespace(namespace);
     },
     handleSelectTemplate(id, fullPath) {

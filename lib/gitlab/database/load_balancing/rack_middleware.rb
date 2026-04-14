@@ -36,11 +36,16 @@ module Gitlab
         # Typically this code will only be reachable for Rails requests as
         # Grape data is not yet available at this point.
         def find_caught_up_replica(env)
+          # In this call we accidentally preload the user object via warden
           namespaces_and_ids = sticking_namespaces(env)
 
           namespaces_and_ids.each do |(sticking, namespace, id)|
             sticking.find_caught_up_replica(namespace, id)
           end
+        end
+
+        def grab_user_id_enabled?
+          Feature.enabled?(:grab_user_id_from_warden_session, Feature.current_request)
         end
 
         # Determine if we need to stick after handling a request.
@@ -54,7 +59,7 @@ module Gitlab
         end
 
         def clear
-          ::Gitlab::Database::LoadBalancing.release_hosts
+          ::Gitlab::Database::LoadBalancing.release_hosts(force: true)
           ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
         end
 
@@ -66,7 +71,17 @@ module Gitlab
         def sticking_namespaces(env)
           warden = env['warden']
 
-          if warden && warden.user
+          user_id = if grab_user_id_enabled?
+                      # Retrieves the current user's ID directly from the Rack session without
+                      # loading the User record. This avoids accidentally caching the user object
+                      # before replica sticking is established, which would cause it to be loaded
+                      # from a random replica rather than a caught-up one.
+                      env['rack.session']&.dig(Warden::SessionSerializer.new(env).key_for(:user), 0, 0)
+                    else
+                      warden && warden.user && warden.user.id
+                    end
+
+          if user_id
             # When sticking per user, _only_ sticking the main connection could
             # result in the application trying to read data from a different
             # connection, while that data isn't available yet.
@@ -75,7 +90,7 @@ module Gitlab
             # models that support load balancing. In the future (if we
             # determined this to be OK) we may be able to relax this.
             ::Gitlab::Database::LoadBalancing.base_models.map do |model|
-              [model.sticking, :user, warden.user.id]
+              [model.sticking, :user, user_id]
             end
           elsif env[STICK_OBJECT].present?
             env[STICK_OBJECT].to_a

@@ -417,7 +417,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     it 'does not replace it' do
       markdown = '<code data-placeholder>%{gitlab-server}</code>'
 
-      expect(run_filter(markdown)).to include '<code data-placeholder>%{gitlab-server}</code>'
+      expect(run_filter(markdown)).to include_html '<code data-placeholder>%{gitlab-server}</code>'
     end
   end
 
@@ -525,7 +525,7 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
         '<span data-placeholder>%{gitlab_server}</span>'
     end
 
-    let(:ends_with) { '<span data-placeholder>%{gitlab_server}</span>' }
+    let(:ends_with) { '<span data-placeholder="">%{gitlab_server}</span>' }
 
     before do
       stub_const('Banzai::Filter::PlaceholdersPostFilter::FILTER_ITEM_LIMIT', 2)

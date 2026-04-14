@@ -4,7 +4,7 @@ import {
 } from '~/vue_shared/utils/dynamic_height';
 
 // Mock debounce to make tests synchronous
-jest.mock('lodash', () => ({
+jest.mock('lodash-es', () => ({
   debounce: jest.fn((fn) => fn),
 }));
 

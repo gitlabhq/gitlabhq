@@ -209,10 +209,8 @@ describe('StatesTable', () => {
     expect(state.text()).toBe(errorMessage);
   });
 
-  it('displays an actions dropdown for each state', () => {
-    beforeEach(() => {
-      return createComponent();
-    });
+  it('displays an actions dropdown for each state', async () => {
+    await createComponent();
 
     expect(findActions()).toHaveLength(defaultProps.states.length);
   });

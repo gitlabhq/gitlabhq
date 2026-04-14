@@ -83,12 +83,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     let(:extra_params) { { default_branch_protection_defaults: branch_protection } }
 
     context 'for users who have the ability to create a group with `default_branch_protection`' do
-      before do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability)
-          .to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
-      end
-
       it 'creates group with the specified default branch protection settings' do
         expect(created_group.default_branch_protection_defaults).to eq(branch_protection)
       end
@@ -100,6 +94,23 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
         expect(created_group.default_branch_protection_defaults).not_to eq(Gitlab::Access::PROTECTION_NONE)
+      end
+    end
+
+    context 'when creating group without prior ownership' do
+      let(:branch_protection) do
+        {
+          "allowed_to_push" => [{ "access_level" => 40 }],
+          "allowed_to_merge" => [{ "access_level" => 30 }, { "access_level" => 40 }],
+          "developer_can_initial_push" => true
+        }
+      end
+
+      let(:extra_params) { { default_branch_protection_defaults: branch_protection } }
+
+      it 'applies default_branch_protection_defaults on first creation without requiring prior ownership' do
+        expect(created_group).to be_persisted
+        expect(created_group.default_branch_protection_defaults).to eq(branch_protection)
       end
     end
   end

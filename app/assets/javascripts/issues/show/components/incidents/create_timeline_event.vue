@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';

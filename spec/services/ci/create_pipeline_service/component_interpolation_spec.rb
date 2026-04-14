@@ -152,6 +152,113 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
+    context 'when the component includes nested local files that uses component context' do
+      let_it_be(:component_name) { 'parent-component' }
+      let_it_be(:component_file_path) { "templates/#{component_name}/template.yml" }
+      let_it_be(:local_file_path) { 'templates/local.yml' }
+      let_it_be(:nested_local_file_path) { 'templates/nested-local.yml' }
+
+      let(:component_path) do
+        "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_version}"
+      end
+
+      let(:project_ci_yaml) do
+        <<~YAML
+        include:
+          - component: #{component_path}
+        YAML
+      end
+
+      let_it_be(:component_yaml) do
+        <<~YAML
+        spec:
+          component: [name, sha, version, reference]
+        ---
+        include:
+          - local: '/templates/local.yml'
+
+        component-job:
+          script:
+            - echo "component $[[ component.name ]]"
+        YAML
+      end
+
+      let_it_be(:local_yaml) do
+        <<~YAML
+        spec:
+          component: [name, sha]
+        ---
+        include:
+          - local: '/templates/nested-local.yml'
+
+        local-job:
+          script:
+            - echo "local using component $[[ component.name ]] at $[[ component.sha ]]"
+        YAML
+      end
+
+      let_it_be(:nested_local_yaml) do
+        <<~YAML
+        spec:
+          component: [name, sha]
+        ---
+        nested-job:
+          script:
+            - echo "nested local using component $[[ component.name ]] at $[[ component.sha ]]"
+        YAML
+      end
+
+      let_it_be(:parent_component_sha) do
+        components_project.repository.create_file(
+          user, nested_local_file_path, nested_local_yaml,
+          message: 'Add nested local file', branch_name: 'master'
+        )
+        components_project.repository.create_file(
+          user, local_file_path, local_yaml,
+          message: 'Add local file', branch_name: 'master'
+        )
+        components_project.repository.create_file(
+          user, component_file_path, component_yaml,
+          message: 'Add component', branch_name: 'master'
+        )
+      end
+
+      let_it_be(:component_version) { '0.2.0' }
+
+      before_all do
+        components_project.repository.add_tag(user, component_version, parent_component_sha)
+
+        create(:release, :with_catalog_resource_version,
+          tag: component_version, author: user, project: components_project, sha: parent_component_sha
+        )
+      end
+
+      it 'propagates component context to local includes' do
+        response = execute
+        pipeline = response.payload
+
+        expect(response).to be_success
+        expect(pipeline).to be_created_successfully
+
+        expect(pipeline.builds.map(&:name)).to contain_exactly('component-job', 'local-job', 'nested-job')
+
+        parent_job = pipeline.builds.find { |build| build.name == 'component-job' }
+        expect(parent_job.options[:script]).to eq([
+          "echo \"component #{component_name}\""
+        ])
+
+        local_job = pipeline.builds.find { |build| build.name == 'local-job' }
+        expect(local_job.options[:script]).to eq([
+          "echo \"local using component #{component_name} at #{parent_component_sha}\""
+        ])
+
+        nested_job = pipeline.builds.find { |build| build.name == 'nested-job' }
+        expect(nested_job.options[:script]).to eq([
+          "echo \"nested local using component #{component_name} at #{parent_component_sha}\""
+        ])
+      end
+    end
+
     context 'when the component file is included as include:project:file' do
       let(:project_ci_yaml) do
         <<~YAML

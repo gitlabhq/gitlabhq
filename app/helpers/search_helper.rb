@@ -71,7 +71,7 @@ module SearchHelper
   end
 
   def recent_items_autocomplete(term)
-    recent_merge_requests_autocomplete(term) + recent_issues_autocomplete(term)
+    recent_merge_requests_autocomplete(term) + recent_issues_autocomplete(term) + recent_wiki_pages_autocomplete(term)
   end
 
   def search_entries_info(collection, scope, term)
@@ -535,6 +535,17 @@ module SearchHelper
         avatar_url: i.project.avatar_url || '',
         project_id: i.project_id,
         project_name: i.project.name
+      }
+    end
+  end
+
+  def recent_wiki_pages_autocomplete(term)
+    ::Gitlab::Search::RecentWikiPages.new(user: current_user).search(term).map do |wiki_page_meta|
+      {
+        category: "Recent wiki pages",
+        id: wiki_page_meta.id,
+        label: search_result_sanitize(wiki_page_meta.title),
+        url: Gitlab::UrlBuilder.build(wiki_page_meta)
       }
     end
   end

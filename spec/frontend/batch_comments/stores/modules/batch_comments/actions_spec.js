@@ -1,13 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import service from '~/batch_comments/services/drafts_service';
 import * as actions from '~/batch_comments/stores/modules/batch_comments/actions';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
 jest.mock('~/alert');
 
@@ -240,53 +238,26 @@ describe('Batch comments store actions', () => {
       params = { note: { id: 1 }, noteText: 'test' };
     });
 
-    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', () => {
-      return actions.updateDraft(context, { ...params, callback() {} }).then(() => {
-        expect(commit).toHaveBeenCalledWith('RECEIVE_DRAFT_UPDATE_SUCCESS', { id: 1 });
-      });
+    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', async () => {
+      await actions.updateDraft(context, params);
+      expect(commit).toHaveBeenCalledWith('RECEIVE_DRAFT_UPDATE_SUCCESS', { id: 1 });
     });
 
-    it('calls passed callback', () => {
-      const callback = jest.fn();
-      return actions.updateDraft(context, { ...params, callback }).then(() => {
-        expect(callback).toHaveBeenCalled();
-      });
+    it('does not stringify empty position', async () => {
+      await actions.updateDraft(context, { ...params, position: {} });
+      expect(service.update.mock.calls[0][1].position).toBeUndefined();
     });
 
-    it('does not stringify empty position', () => {
-      return actions.updateDraft(context, { ...params, position: {}, callback() {} }).then(() => {
-        expect(service.update.mock.calls[0][1].position).toBeUndefined();
-      });
-    });
-
-    it('stringifies a non-empty position', () => {
+    it('stringifies a non-empty position', async () => {
       const position = { test: true };
       const expectation = JSON.stringify(position);
-      return actions.updateDraft(context, { ...params, position, callback() {} }).then(() => {
-        expect(service.update.mock.calls[0][1].position).toBe(expectation);
-      });
+      await actions.updateDraft(context, { ...params, position });
+      expect(service.update.mock.calls[0][1].position).toBe(expectation);
     });
 
-    describe('when updating a draft returns an error', () => {
-      const errorCallback = jest.fn();
-      const flashContainer = null;
-      const error = 'server error';
-
-      beforeEach(async () => {
-        service.update.mockRejectedValue({ response: { data: { errors: error } } });
-        await actions.updateDraft(context, { ...params, flashContainer, errorCallback });
-      });
-
-      it('renders an error message', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: sprintf(UPDATE_COMMENT_FORM.error, { reason: error }),
-          parent: flashContainer,
-        });
-      });
-
-      it('calls errorCallback', () => {
-        expect(errorCallback).toHaveBeenCalledTimes(1);
-      });
+    it('rejects the promise on error', async () => {
+      service.update.mockRejectedValue(new Error('server error'));
+      await expect(actions.updateDraft(context, params)).rejects.toThrow('server error');
     });
   });
 

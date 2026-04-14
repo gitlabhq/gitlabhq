@@ -7,6 +7,10 @@ module Types
 
       authorize :read_user_email_address
 
+      authorize_granular_token permissions: :read_user_email,
+        boundary: :user,
+        boundary_type: :user
+
       field :id,
         GraphQL::Types::ID,
         null: false,

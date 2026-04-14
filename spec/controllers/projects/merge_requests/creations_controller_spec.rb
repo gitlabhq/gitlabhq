@@ -314,7 +314,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
         base_params.merge(
           merge_request: {
             title: 'Test merge request',
-            source_branch: 'remove-submodule',
+            source_branch: 'feature',
             target_branch: 'master'
           }
         )

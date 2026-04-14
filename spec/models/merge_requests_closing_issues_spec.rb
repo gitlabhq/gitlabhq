@@ -10,6 +10,12 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
   let_it_be(:issue2) { create(:issue, project: project) }
   let_it_be(:closes_issue1) { create(:merge_requests_closing_issues, issue: issue1, merge_request: merge_request) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:merge_request) }
+    it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:project) }
+  end
+
   describe 'scopes' do
     describe '.with_opened_merge_request' do
       let(:closed_merge_request) do

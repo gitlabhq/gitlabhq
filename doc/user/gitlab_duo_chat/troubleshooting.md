@@ -20,7 +20,7 @@ button to appear.
 
 If this does not work, you can also check the following troubleshooting documentation:
 
-- [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/troubleshooting.md).
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/troubleshooting.md).
 - [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
 - [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
 - [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
@@ -339,7 +339,7 @@ Chat displays the following types of links as selectable in responses:
 - Links to `gitlab.com`, including but not limited to GitLab projects, issues, and merge requests.
 - Relative URLs in your GitLab instance.
 
-## Issues specific to GitLab Duo Chat (agentic)
+## Issues specific to GitLab Duo Agentic Chat
 
 ### Not enough GitLab Credits
 

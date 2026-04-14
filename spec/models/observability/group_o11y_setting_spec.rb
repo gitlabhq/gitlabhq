@@ -227,7 +227,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
   describe 'otel endpoints' do
     let(:setting) { build(:observability_group_o11y_setting, group: group) }
 
-    shared_examples 'otel endpoint' do |method, port|
+    shared_examples 'otel endpoint' do |method, scheme, port|
       context "when on GitLab.com" do
         before do
           allow(Gitlab).to receive(:com?).and_return(true)
@@ -239,7 +239,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
           end
 
           it "returns the correct #{method} endpoint" do
-            expect(setting.send(method)).to eq("http://my-service.otel.gitlab-o11y.com:#{port}")
+            expect(setting.send(method)).to eq("#{scheme}://my-service.otel.gitlab-o11y.com:#{port}")
           end
         end
 
@@ -250,7 +250,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
           end
 
           it "uses name_from_url as fallback" do
-            expect(setting.send(method)).to eq("http://service-from-url.otel.gitlab-o11y.com:#{port}")
+            expect(setting.send(method)).to eq("#{scheme}://service-from-url.otel.gitlab-o11y.com:#{port}")
           end
         end
 
@@ -261,7 +261,17 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
           end
 
           it "uses name_from_group as fallback" do
-            expect(setting.send(method)).to eq("http://group-path.otel.gitlab-o11y.com:#{port}")
+            expect(setting.send(method)).to eq("#{scheme}://group-path.otel.gitlab-o11y.com:#{port}")
+          end
+        end
+
+        context "with special characters in service name" do
+          before do
+            setting.o11y_service_name = 'my-service-with-dashes'
+          end
+
+          it "handles service names with special characters" do
+            expect(setting.send(method)).to eq("#{scheme}://my-service-with-dashes.otel.gitlab-o11y.com:#{port}")
           end
         end
       end
@@ -273,12 +283,12 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
 
         it "returns endpoint derived from o11y_service_url" do
           setting.o11y_service_url = 'https://my-o11y.example.com'
-          expect(setting.send(method)).to eq("http://my-o11y.example.com:#{port}")
+          expect(setting.send(method)).to eq("#{scheme}://my-o11y.example.com:#{port}")
         end
 
         it "extracts only the host from o11y_service_url with a path" do
           setting.o11y_service_url = 'https://my-o11y.example.com/api/v1'
-          expect(setting.send(method)).to eq("http://my-o11y.example.com:#{port}")
+          expect(setting.send(method)).to eq("#{scheme}://my-o11y.example.com:#{port}")
         end
 
         it "raises ArgumentError when o11y_service_url is blank" do
@@ -289,11 +299,19 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
 
     describe '#otel_http_endpoint' do
-      include_examples 'otel endpoint', :otel_http_endpoint, 4318
+      include_examples 'otel endpoint', :otel_http_endpoint, 'http', 4318
     end
 
     describe '#otel_grpc_endpoint' do
-      include_examples 'otel endpoint', :otel_grpc_endpoint, 4317
+      include_examples 'otel endpoint', :otel_grpc_endpoint, 'http', 4317
+    end
+
+    describe '#otel_https_endpoint' do
+      include_examples 'otel endpoint', :otel_https_endpoint, 'https', 14318
+    end
+
+    describe '#otel_grpcs_endpoint' do
+      include_examples 'otel endpoint', :otel_grpcs_endpoint, 'https', 14317
     end
   end
 

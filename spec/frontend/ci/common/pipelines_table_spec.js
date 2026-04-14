@@ -4,6 +4,7 @@ import { GlTableLite } from '@gitlab/ui';
 // fixture located in spec/frontend/fixtures/pipelines.rb
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
@@ -12,6 +13,7 @@ import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operatio
 import PipelineTriggerer from '~/ci/pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '~/ci/pipelines_page/components/pipeline_url.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import PipelinesTimeago from '~/ci/pipelines_page/components/pipelines_timeago.vue';
 import {
   PIPELINE_ID_KEY,
@@ -27,7 +29,6 @@ Vue.use(VueApollo);
 describe('Pipelines Table', () => {
   let wrapper;
   let trackingSpy;
-  let slots;
 
   const defaultProvide = {
     fullPath: '/my-project/',
@@ -60,10 +61,11 @@ describe('Pipelines Table', () => {
       },
       stubs: {
         PipelineOperations: true,
+        PipelineMiniGraph: stubComponent(PipelineMiniGraph),
+        PipelineFailedJobsWidget: stubComponent(PipelineFailedJobsWidget),
         ...stubs,
       },
       apolloProvider: createMockApollo(),
-      slots,
     });
   };
 
@@ -304,13 +306,23 @@ describe('Pipelines Table', () => {
       });
     });
 
-    describe('when refreshing pipelines', () => {
+    describe('when a manual job is played via pipeline operations', () => {
       beforeEach(() => {
-        findActions().vm.$emit('refresh-pipelines-table');
+        findActions().vm.$emit('job-action-executed', firstPipeline);
       });
 
-      it('emits the `refresh-pipelines-table` event', () => {
-        expect(wrapper.emitted('refresh-pipelines-table')).toEqual([[]]);
+      it('emits the `job-action-executed` event with the pipeline', () => {
+        expect(wrapper.emitted('job-action-executed')).toEqual([[firstPipeline]]);
+      });
+    });
+
+    describe('when a job action is executed', () => {
+      beforeEach(() => {
+        findPipelineMiniGraph().vm.$emit('job-action-executed');
+      });
+
+      it('emits the `job-action-executed` event with the pipeline', () => {
+        expect(wrapper.emitted('job-action-executed')).toEqual([[firstPipeline]]);
       });
     });
   });
@@ -342,16 +354,20 @@ describe('Pipelines Table', () => {
     });
   });
 
-  describe('table-header-actions slot', () => {
-    it('should replace actions column header by the slot content', () => {
-      const content = 'Actions slot content';
-      slots = {
-        'table-header-actions': `<div>${content}</div>`,
-      };
+  describe('run pipeline button in header', () => {
+    it('should render run pipeline button when showRunPipelineButton is true', () => {
+      createComponent({
+        props: { showRunPipelineButton: true },
+        stubs: { RunPipelineButton: true },
+      });
 
+      expect(findActionsTh().findComponent(RunPipelineButton).exists()).toBe(true);
+    });
+
+    it('should show default actions label when showRunPipelineButton is false', () => {
       createComponent();
 
-      expect(findActionsTh().text()).toBe(content);
+      expect(findActionsTh().text()).toBe('Actions');
     });
   });
 });

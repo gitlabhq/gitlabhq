@@ -26,6 +26,8 @@ class DeployToken < ApplicationRecord
   # It's for the auditing purpose on Credential Inventory, only.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/353467#note_859774246 for more information.
   belongs_to :user, foreign_key: :creator_id, optional: true
+  belongs_to :owner_project, class_name: 'Project', foreign_key: :project_id, optional: true
+  belongs_to :owner_group, class_name: 'Group', foreign_key: :group_id, optional: true
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
   has_many :projects, through: :project_deploy_tokens

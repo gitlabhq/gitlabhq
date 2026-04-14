@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
       it 'does load all existing objects' do
         5.times do |iid|
           MergeRequest.create!(
-            attributes.merge(iid: iid, source_branch: iid.to_s))
+            attributes.merge(iid: iid, source_branch: iid.to_s, skip_branch_existence_check: true))
         end
 
         # ensures that we only load object once by project.merge_requests.find
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
 
     context 'when merge request does exist' do
       before do
-        MergeRequest.create!(attributes)
+        MergeRequest.create!(attributes.merge(skip_branch_existence_check: true))
       end
 
       it 'returns an existing object' do

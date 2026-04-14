@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RapidDiffs::DiffsStatsEntity, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request_with_diffs) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needed to create diffs
-  let(:diffs_resource) { merge_request.latest_diffs }
+  let(:diffs_resource) { merge_request.diffs }
   let(:options) do
     {
       email_path: 'email_format_path',

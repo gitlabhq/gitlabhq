@@ -11,6 +11,8 @@ title: Remote execution environment sandbox
 - Feature flag `ai_duo_agent_platform_network_firewall` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215950) in GitLab 18.7.
 - Feature flag `ai_dap_executor_connects_over_ws` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215774) in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- `network_policy` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590021) in GitLab 18.10.
+- `allow_all_unix_sockets` network policy setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590871) in GitLab 18.11.
 
 {{< /history >}}
 
@@ -77,7 +79,7 @@ At runtime, the runner checks that the SRT is available and working:
 $ if which srt > /dev/null; then
 $ echo "SRT found, creating config..."
 SRT found, creating config...
-$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowUnixSockets":["/var/run/docker.sock"],"allowLocalBinding":true},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp/"],"denyWrite":[],"allowGitConfig":true}}' > /tmp/srt-settings.json
+$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowAllUnixSockets":false},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp/gitlab_duo_agent_platform"],"denyWrite":[],"allowGitConfig":true}}' > /tmp/gitlab_duo_agent_platform/srt-settings.json
 $ echo "Testing SRT sandbox capabilities..."
 Testing SRT sandbox capabilities...
 ```
@@ -120,15 +122,17 @@ Use an [`agent-config.yml`](flows/execution.md#create-the-configuration-file) fi
 By default, the sandbox permits access to the following configurations:
 
 - Default allow-listed domains. These are configured automatically and cannot be changed or updated.
-- Unix socket access (Docker socket).
-- Local binding.
+
+### Environment variables
+
+Only the environment variables and parameters required to run DAP and Git operations are accessible from the sandbox environment.
 
 ### Filesystem configuration
 
 The sandbox enforces the following filesystem restrictions:
 
 - Read restrictions: SSH keys (`~/.ssh`) are blocked.
-- Write allowed: Current directory (`./`) and temporary directory (`/tmp/`).
+- Write allowed: Current directory (`./`) and temporary directory (`/tmp/gitlab_duo_agent_platform`).
 - Git configuration access: Allowed.
 
 ### Configure a network policy
@@ -158,15 +162,31 @@ To allow or deny additional domains, add a `network_policy` to your
 ```yaml
 network_policy:
   include_recommended_allowed: true # default: false
+  allow_all_unix_sockets: true      # default: false
   allowed_domains:
     - my-own-site.com
   denied_domains:
     - malicious.com
 ```
 
-### Default allowed domain list
+#### Allow Unix socket access
 
-The setting `include_recommended_allowed` includes a list of domains used for packages and development:
+Use the `allow_all_unix_sockets` setting to grant the flow access to all Unix domain sockets on the host. This is disabled by default.
+
+> [!warning]
+> Enabling `allow_all_unix_sockets` grants access to all Unix sockets. Enable this only when necessary and only in trusted environments.
+
+### Turn on allowed domains
+
+To give your flows access to a set of external domains used for package registries and development tools,
+turn on the `include_recommended_allowed` setting.
+
+This setting is disabled by default (`false`). To turn it on, in your `agent-config.yml` file, set `include_recommended_allowed` to `true`.
+
+> [!warning]
+> Enabling `include_recommended_allowed` permits network access to a broad set of external domains. These egress endpoints could potentially be used to exfiltrate data from your environment. Enable this only when necessary and only in trusted environments.
+
+This setting turns on access to the following domains:
 
 - `github.com`
 - `www.github.com`

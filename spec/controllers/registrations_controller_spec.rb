@@ -40,11 +40,52 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
       it 'shows an alert message' do
         new
-        expect(flash[:alert]).to eq('Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account.')
+        expect(flash[:alert]).to eq('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
       end
 
       it 'does not render the signup form' do
         expect(new).not_to render_template(:new)
+      end
+    end
+  end
+
+  describe '#ensure_signup_enabled' do
+    context 'when signup is enabled' do
+      before do
+        stub_application_setting(signup_enabled: true)
+      end
+
+      it 'allows access to new action' do
+        get :new
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'allows access to create action' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+        post :create, params: { user: { first_name: 'first', last_name: 'last', username: 'test_user', email: 'test@example.com', password: User.random_password } }
+        expect(response).not_to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it 'redirects to sign in page on new action' do
+        get :new
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it 'redirects to sign in page on create action' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+        post :create, params: { user: { first_name: 'first', last_name: 'last', username: 'test_user', email: 'test@example.com', password: User.random_password } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it 'sets alert flash message' do
+        get :new
+        expect(flash[:alert]).to eq('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
       end
     end
   end
@@ -344,7 +385,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
           expect { subject }.not_to change(User, :count)
           expect(response).to redirect_to(new_user_session_path)
-          expect(flash[:alert]).to eq(_('Sign-ups are currently disabled. Please contact a GitLab administrator if you need an account.'))
+          expect(flash[:alert]).to eq(_('New accounts are not permitted. Please contact a GitLab administrator if you need an account.'))
         end
       end
     end
@@ -674,17 +715,15 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         end
       end
 
-      context 'when user is not invited' do
-        it 'tracks user creation with signup label' do
-          post :create, params: user_params
+      it 'tracks user creation with signup label', unless: Gitlab.ee? do
+        post :create, params: user_params
 
-          expect_snowplow_event(
-            category: 'RegistrationsController',
-            action: 'create_user',
-            label: 'signup',
-            user: User.find_by(email: base_user_params[:email])
-          )
-        end
+        expect_snowplow_event(
+          category: 'RegistrationsController',
+          action: 'create_user',
+          label: 'signup',
+          user: User.find_by(email: base_user_params[:email])
+        )
       end
 
       context 'when a timing operation fails' do

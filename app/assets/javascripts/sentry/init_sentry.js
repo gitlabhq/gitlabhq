@@ -30,6 +30,8 @@ const initSentry = () => {
       // Network errors create noise in Sentry and can't be fixed, ignore them.
       /Network Error/i,
       /NetworkError/i,
+      /NavigationDuplicated/,
+      /You must be logged in/,
     ],
 
     // Browser tracing configuration

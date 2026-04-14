@@ -7,7 +7,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
         include ::Sidebars::Concerns::RenderIfLoggedIn
 
         def configure_menu_items
-          add_item(password_menu_item)
+          add_item(password_and_authentication_menu_item)
           add_item(access_tokens_menu_item)
           add_item(ssh_keys_menu_item)
           add_item(gpg_keys_menu_item)
@@ -30,16 +30,12 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
 
         private
 
-        def password_menu_item
-          unless context.current_user.allow_password_authentication?
-            return ::Sidebars::NilMenuItem.new(item_id: :password)
-          end
-
+        def password_and_authentication_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Password'),
-            link: edit_user_settings_password_path,
-            active_routes: { controller: :passwords },
-            item_id: :password
+            title: s_('ProfilesAuthentication|Password and authentication'),
+            link: profile_two_factor_auth_path,
+            active_routes: { controller: [:passwords, :two_factor_auths] },
+            item_id: :password_and_authentication
           )
         end
 

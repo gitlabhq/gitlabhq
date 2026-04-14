@@ -17,6 +17,11 @@ RSpec.describe 'ActionCableSubscriptionAdapterIdentifier override' do
 
     context 'when id key is nil on cable.yml' do
       it 'does not override server config id with action cable pid' do
+        allow_next_instance_of(Gitlab::Redis::ActionCable) do |redis|
+          allow(redis).to receive(:fetch_config).and_return('unix:/home/localuser/redis/redis.socket')
+        end
+        allow(Gitlab::Redis::ActionCable).to receive(:params).and_return(Gitlab::Redis::ActionCable.new.params)
+
         config = {
           adapter: 'redis',
           url: 'unix:/home/localuser/redis/redis.socket',
@@ -27,7 +32,7 @@ RSpec.describe 'ActionCableSubscriptionAdapterIdentifier override' do
 
         sub = ActionCable.server.pubsub.send(:redis_connection)
 
-        expect(sub.secondary_store.connection[:id]).to eq('unix:///home/localuser/redis/redis.socket')
+        expect(sub.connection[:id]).to eq('unix:///home/localuser/redis/redis.socket')
         expect(ActionCable.server.config.cable[:id]).to be_nil
       end
     end

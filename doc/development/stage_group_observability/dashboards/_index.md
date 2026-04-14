@@ -60,8 +60,8 @@ directly on the graphs.
 | `PROMETHEUS_DS` | filter     | Filter the selective [Prometheus data sources](https://handbook.gitlab.com/handbook/engineering/monitoring/#prometheus). The default value is `Global`, which aggregates the data from all available data sources. Most of the time, you don't need to care about this filter. |
 | `environment`   | filter     | Filter the environment the metrics are fetched from. The default setting is production (`gprd`). For other options, see [Production Environment mapping](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/#environments). |
 | `stage`         | filter     | Filter metrics by stage: `main` or `cny` for canary. Default is `main` |
-| `deploy`        | annotation | Mark a deployment event on the GitLab.com SaaS platform. |
-| `canary-deploy` | annotation | Mark a [canary deployment](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/) event on the GitLab.com SaaS platform. |
+| `deploy`        | annotation | Mark a deployment event on the GitLab.com platform. |
+| `canary-deploy` | annotation | Mark a [canary deployment](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/) event on the GitLab.com platform. |
 | `feature-flags` | annotation | Mark the time point when a feature flag is updated. |
 
 Example of a feature flag annotation displayed on a dashboard panel:

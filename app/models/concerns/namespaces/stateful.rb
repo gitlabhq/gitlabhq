@@ -20,7 +20,8 @@ module Namespaces
         creation_in_progress: 3,
         deletion_in_progress: 4,
         transfer_in_progress: 5,
-        maintenance: 6
+        maintenance: 6,
+        transfer_scheduled: 7
       }, instance_methods: false
 
       # TODO: We're overriding the scopes defined by `enum :state` in `StateQuerying`.
@@ -46,9 +47,12 @@ module Namespaces
         before_transition on: :schedule_deletion, do: :ensure_transition_user
         before_transition on: :schedule_deletion, do: :set_deletion_schedule_data
         before_transition on: :cancel_deletion, do: :clear_deletion_schedule_data
+        before_transition on: :schedule_transfer, do: :ensure_transition_user
+        before_transition on: :schedule_transfer, do: :set_transfer_schedule_data
         before_transition on: :start_transfer, do: :ensure_transition_user
         before_transition on: :start_transfer, do: :set_transfer_data
         before_transition on: [:complete_transfer, :cancel_transfer], do: :clear_transfer_data
+        before_transition on: :reschedule_deletion, do: :set_deletion_error_data
 
         event :archive do
           transition ancestor_inherited: :archived
@@ -85,8 +89,12 @@ module Namespaces
           transition ancestor_inherited: :ancestor_inherited
         end
 
+        event :schedule_transfer do
+          transition %i[ancestor_inherited archived] => :transfer_scheduled
+        end
+
         event :start_transfer do
-          transition %i[ancestor_inherited archived] => :transfer_in_progress
+          transition transfer_scheduled: :transfer_in_progress
         end
 
         event :complete_transfer do
@@ -96,9 +104,9 @@ module Namespaces
         end
 
         event :cancel_transfer do
-          transition transfer_in_progress: :archived,
+          transition %i[transfer_scheduled transfer_in_progress] => :archived,
             if: :restore_to_archived_on_cancel_transfer?
-          transition transfer_in_progress: :ancestor_inherited
+          transition %i[transfer_scheduled transfer_in_progress] => :ancestor_inherited
         end
 
         after_transition :log_transition

@@ -5,8 +5,11 @@ import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
-import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
-import { SORT_OPTIONS, SORT_OPTION_CREATED } from '~/projects/filtered_search_and_sort/constants';
+import {
+  PAGINATION_TYPE_KEYSET,
+  SORT_OPTIONS,
+  SORT_OPTION_CREATED,
+} from '~/groups_projects/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
 

@@ -1,5 +1,6 @@
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlobHeader from '~/blob/components/blob_header.vue';
+import BlameHeader from '~/blob/components/blame_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
 import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
@@ -14,8 +15,10 @@ describe('Blob Header Default Actions', () => {
 
   const defaultProvide = {
     blobHash: 'foo-bar',
+    hasRevsFile: false,
   };
 
+  const findBlameHeader = () => wrapper.findComponent(BlameHeader);
   const findDefaultActions = () => wrapper.findComponent(DefaultActions);
   const findTableContents = () => wrapper.findComponent(TableContents);
   const findViewSwitcher = () => wrapper.findComponent(ViewerSwitcher);
@@ -136,6 +139,18 @@ describe('Blob Header Default Actions', () => {
 
     it('does not render the Duo Workflow action slot', () => {
       expect(findDuoWorkflowActionSlot().exists()).toBe(false);
+    });
+
+    describe('BlameHeader component', () => {
+      it('does not render BlameHeader by default', () => {
+        expect(findBlameHeader().exists()).toBe(false);
+      });
+
+      it('renders BlameHeader when showBlameInfo is true', () => {
+        createComponent({ propsData: { showBlameInfo: true } });
+
+        expect(findBlameHeader().exists()).toBe(true);
+      });
     });
   });
 

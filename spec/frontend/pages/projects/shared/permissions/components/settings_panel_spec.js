@@ -278,34 +278,18 @@ describe('Settings Panel', () => {
       );
     });
 
-    describe('work_item_planning_view feature flag', () => {
-      it('shows "Work items" label when feature flag is enabled', () => {
-        wrapper = mountComponent({ glFeatures: { workItemPlanningView: true } });
+    it('shows "Work items" label', () => {
+      wrapper = mountComponent();
 
-        expect(findIssuesSettingsRow().props('label')).toBe('Work items');
-      });
+      expect(findIssuesSettingsRow().props('label')).toBe('Work items');
+    });
 
-      it('shows "Issues" label when feature flag is disabled', () => {
-        wrapper = mountComponent({ glFeatures: { workItemPlanningView: false } });
+    it('shows work items help text', () => {
+      wrapper = mountComponent();
 
-        expect(findIssuesSettingsRow().props('label')).toBe('Issues');
-      });
-
-      it('shows work items help text when feature flag is enabled', () => {
-        wrapper = mountComponent({ glFeatures: { workItemPlanningView: true } });
-
-        expect(findIssuesSettingsRow().props('helpText')).toBe(
-          'Plan and track work with flexible objects and views.',
-        );
-      });
-
-      it('shows issues help text when feature flag is disabled', () => {
-        wrapper = mountComponent({ glFeatures: { workItemPlanningView: false } });
-
-        expect(findIssuesSettingsRow().props('helpText')).toBe(
-          'Flexible tool to collaboratively develop ideas and plan work in this project.',
-        );
-      });
+      expect(findIssuesSettingsRow().props('helpText')).toBe(
+        'Plan and track work with flexible objects and views.',
+      );
     });
   });
 

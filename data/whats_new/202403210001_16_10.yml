@@ -7,10 +7,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/components/#component-versions
+  documentation_link: https://docs.gitlab.com/ci/components/#component-versions
   image_url: https://about.gitlab.com/images/16_10/component.png
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"
 
 - name: Offload CI traffic to Geo secondaries
   description: |
@@ -19,10 +19,10 @@
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/administration/geo/secondary_proxy/runners.html
+  documentation_link: https://docs.gitlab.com/administration/geo/secondary_proxy/runners/
   image_url: https://about.gitlab.com/images/16_10/systems_geo_runner_acceleration.png
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"
 
 - name: Wiki templates
   description: |
@@ -33,24 +33,24 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/#wiki-page-templates
+  documentation_link: https://docs.gitlab.com/user/project/wiki/#wiki-page-templates
   image_url: https://about.gitlab.com/images/16_10/wiki_templates.gif
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"
 
 - name: New ClickHouse integration for high-performance DevOps Analytics
   description: |
-    The [Contribution Analytics report](https://docs.gitlab.com/ee/user/group/contribution_analytics/) is now more performant and backed by an advanced analytics database using [ClickHouse](https://docs.gitlab.com/ee/architecture/blueprints/clickhouse_usage/#summary) on GitLab.com. This upgrade set the foundation for new extensive analytics and reporting features, allowing us to deliver high-performance analytics aggregations, filtering, and slicing across multiple dimensions. Support for self-managed customers to be able to add to this capability is proposed in [issue 441626](https://gitlab.com/gitlab-org/gitlab/-/issues/441626).
+    The [Contribution Analytics report](https://docs.gitlab.com/user/group/contribution_analytics/) is now more performant and backed by an advanced analytics database using [ClickHouse](https://docs.gitlab.com/architecture/blueprints/clickhouse_usage/#summary) on GitLab.com. This upgrade set the foundation for new extensive analytics and reporting features, allowing us to deliver high-performance analytics aggregations, filtering, and slicing across multiple dimensions. Support for self-managed customers to be able to add to this capability is proposed in [issue 441626](https://gitlab.com/gitlab-org/gitlab/-/issues/441626).
 
     Although ClickHouse enhances GitLab analytics capabilities, it's not meant to replace PostgreSQL or Redis, and the existing capabilities remain unchanged.
   stage: plan
   self-managed: false
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/contribution_analytics/
+  documentation_link: https://docs.gitlab.com/user/group/contribution_analytics/
   image_url: https://about.gitlab.com/images/16_10/ca_ch16.10_2.png
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"
 
 - name: GitLab Duo access governance control
   description: |
@@ -61,23 +61,23 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/ai_features.html#disable-gitlab-duo-features
+  documentation_link: https://docs.gitlab.com/user/ai_features/#disable-gitlab-duo-features
   image_url: https://about.gitlab.com/images/16_10/Turn-off-GitLab-Duo-features.png
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"
 
 - name: GitLab Pages and Advanced Search available on GitLab Dedicated
   description: |
-    [GitLab Pages](https://docs.gitlab.com/ee/user/project/pages/) and [Advanced Search](https://docs.gitlab.com/ee/user/search/advanced_search.html) have been enabled for all [GitLab Dedicated instances](https://about.gitlab.com/dedicated/). These features are included in your GitLab Dedicated subscription.
+    [GitLab Pages](https://docs.gitlab.com/user/project/pages/) and [Advanced Search](https://docs.gitlab.com/user/search/advanced_search/) have been enabled for all [GitLab Dedicated instances](https://about.gitlab.com/dedicated/). These features are included in your GitLab Dedicated subscription.
 
     Advanced Search enables faster, more efficient search across your entire GitLab Dedicated instance. All capabilities of Advanced Search can be used with GitLab Dedicated instances.
 
-    With GitLab Pages, you can publish static websites directly from a repository in GitLab Dedicated. Some capabilities of Pages are [not yet available](https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/#gitlab-pages) for GitLab Dedicated instances.
+    With GitLab Pages, you can publish static websites directly from a repository in GitLab Dedicated. Some capabilities of Pages are [not yet available](https://docs.gitlab.com/subscriptions/gitlab_dedicated/#gitlab-pages) for GitLab Dedicated instances.
   stage: platforms
   self-managed: false
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/#available-features
+  documentation_link: https://docs.gitlab.com/subscriptions/gitlab_dedicated/#available-features
   image_url: https://about.gitlab.com/images/16_10/gitlab-dedicated.png
   published_at: 2024-03-21
-  release: 16.10
+  release: "16.10"

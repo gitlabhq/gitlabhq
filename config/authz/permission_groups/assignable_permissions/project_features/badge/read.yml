@@ -4,5 +4,6 @@ description: Grants the ability to read badges
 boundaries:
   - project
   - group
+  - instance
 permissions:
   - read_badge

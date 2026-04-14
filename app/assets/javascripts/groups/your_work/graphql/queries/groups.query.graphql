@@ -1,7 +1,23 @@
 #import "~/graphql_shared/fragments/group.fragment.graphql"
 
-query yourWorkGroups($active: Boolean, $search: String, $sort: String, $parentId: Int, $page: Int) {
-  groups(active: $active, search: $search, sort: $sort, parentId: $parentId, page: $page) @client {
+# @feature_category: groups_and_projects
+query yourWorkGroups(
+  $active: Boolean
+  $search: String
+  $sort: String
+  $parentId: Int
+  $before: String
+  $after: String
+) {
+  groups(
+    active: $active
+    search: $search
+    sort: $sort
+    parentId: $parentId
+    before: $before
+    after: $after
+    pagination: "keyset"
+  ) @client {
     nodes {
       ...Group
       hasChildren
@@ -9,10 +25,11 @@ query yourWorkGroups($active: Boolean, $search: String, $sort: String, $parentId
       childrenCount
     }
     pageInfo {
-      total
       perPage
-      nextPage
-      previousPage
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
   }
 }

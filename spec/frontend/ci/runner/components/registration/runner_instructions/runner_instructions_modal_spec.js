@@ -1,4 +1,5 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints; component is a modal
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';

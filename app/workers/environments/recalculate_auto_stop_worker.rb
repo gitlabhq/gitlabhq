@@ -8,13 +8,15 @@ module Environments
     idempotent!
     feature_category :environment_management
 
+    # rubocop: disable CodeReuse/ActiveRecord -- we already use partition pruning
     def perform(job_id, options = {})
       relation = Ci::Processable.all
       relation = relation.in_partition(options['partition_id']) if options['partition_id'].present?
 
-      relation.find_by_id(job_id).try do |job|
+      relation.find_by(id: job_id).try do |job|
         Environments::RecalculateAutoStopService.new(job).execute
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

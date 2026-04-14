@@ -10,7 +10,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     let(:issue) { create(:issue) }
 
     before do
-      self.instance_variable_set(:@issue, issue)
+      instance_variable_set(:@issue, issue)
     end
 
     context 'when given a MergeRequest' do
@@ -22,8 +22,8 @@ RSpec.describe EmailsHelper, feature_category: :shared do
 
         before do
           merge_request.project.add_developer(user)
-          self.instance_variable_set(:@recipient, user)
-          self.instance_variable_set(:@project, merge_request.project)
+          instance_variable_set(:@recipient, user)
+          instance_variable_set(:@project, merge_request.project)
         end
 
         context "and format is text" do
@@ -60,8 +60,8 @@ RSpec.describe EmailsHelper, feature_category: :shared do
       context 'when user can read commits' do
         before do
           project.add_developer(user)
-          self.instance_variable_set(:@recipient, user)
-          self.instance_variable_set(:@project, project)
+          instance_variable_set(:@recipient, user)
+          instance_variable_set(:@project, project)
         end
 
         it "returns plain text" do

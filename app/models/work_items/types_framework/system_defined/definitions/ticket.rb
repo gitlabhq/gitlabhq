@@ -8,11 +8,11 @@ module WorkItems
           class << self
             def widgets
               %w[
+                ai_session
                 assignees
                 award_emoji
                 crm_contacts
                 current_user_todos
-                custom_fields
                 description
                 designs
                 development
@@ -33,7 +33,7 @@ module WorkItems
             end
 
             def widget_options
-              { weight: { editable: true, rollup: false } }
+              {}
             end
 
             def configuration

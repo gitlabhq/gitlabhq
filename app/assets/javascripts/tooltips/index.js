@@ -1,4 +1,4 @@
-import { toArray, isElement } from 'lodash';
+import { toArray, isElement } from 'lodash-es';
 import Vue from 'vue';
 import Tooltips from './components/tooltips.vue';
 

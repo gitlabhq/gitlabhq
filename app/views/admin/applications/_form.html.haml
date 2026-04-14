@@ -25,6 +25,15 @@
       = f.label :confidential
       = f.gitlab_ui_checkbox_component :confidential, _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
 
+
+  = content_tag :div, class: 'form-group row' do
+    .gl-col-12
+      - docs_link_url = help_page_path('api/oauth2.md', anchor: 'device-authorization-grant-flow')
+      - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
+      = f.label _('Device authorization grant')
+      = f.gitlab_ui_checkbox_component :device_code_enabled, _('Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe },
+        checkbox_options: { data: { testid: 'device-code-enabled-checkbox' } }
+
   .form-group.row
     .gl-col-12
       = f.label :scopes

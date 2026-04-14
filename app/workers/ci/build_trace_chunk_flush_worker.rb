@@ -3,16 +3,14 @@
 module Ci
   class BuildTraceChunkFlushWorker
     include ApplicationWorker
-
-    data_consistency :always
-    urgency :high
-
-    sidekiq_options retry: 3
     include PipelineBackgroundQueue
 
-    deduplicate :until_executed
-
+    urgency :high
+    max_concurrency_limit_percentage 0.45
+    data_consistency :sticky
     idempotent!
+    deduplicate :until_executed
+    sidekiq_options retry: false
 
     def perform(id)
       ::Ci::BuildTraceChunk.find_by_id(id).try do |chunk|

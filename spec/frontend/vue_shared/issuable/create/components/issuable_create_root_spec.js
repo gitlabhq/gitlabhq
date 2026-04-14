@@ -15,6 +15,7 @@ const createComponent = ({
   labelsFetchPath = '/gitlab-org/gitlab-shell/-/labels.json',
   labelsManagePath = '/gitlab-org/gitlab-shell/-/labels',
   issuableType = TYPE_TEST_CASE,
+  allowScopedLabels = false,
 } = {}) => {
   return mount(IssuableCreateRoot, {
     propsData: {
@@ -23,6 +24,7 @@ const createComponent = ({
       labelsFetchPath,
       labelsManagePath,
       issuableType,
+      allowScopedLabels,
     },
     apolloProvider: createMockApollo(),
     slots: {

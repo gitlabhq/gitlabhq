@@ -124,13 +124,13 @@ describe('WorkItemTree', () => {
       .flatMap((action) => action.items)
       .map((action) => action.text);
 
-    expect(actions).not.toContain('New ticket');
+    expect(actions).not.toContain('New Ticket');
     expect(actions).toEqual([
-      'New issue',
-      'Existing issue',
-      'New epic',
-      'Existing epic',
-      'Existing ticket',
+      'New Issue',
+      'Existing Issue',
+      'New Epic',
+      'Existing Epic',
+      'Existing Ticket',
     ]);
   });
 
@@ -369,7 +369,7 @@ describe('WorkItemTree', () => {
     it('handles metadata display option toggle', async () => {
       await createComponent();
 
-      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(['parent']);
 
       await findMoreActions().vm.$emit('update-hidden-metadata-keys', ['labels']);
       await nextTick();
@@ -396,7 +396,7 @@ describe('WorkItemTree', () => {
     it('calls getHiddenMetadataKeysFromLocalStorage on mount for metadata', () => {
       expect(utils.getHiddenMetadataKeysFromLocalStorage).toHaveBeenCalledWith(
         WORKITEM_TREE_METADATA_LOCALSTORAGEKEY,
-        [],
+        ['parent'],
       );
     });
   });
@@ -587,7 +587,7 @@ describe('WorkItemTree', () => {
     it('initializes metadata visibility state with defaults when localStorage is empty', async () => {
       await createComponent();
 
-      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual([]);
+      expect(findWorkItemLinkChildrenWrapper().props('hiddenMetadataKeys')).toEqual(['parent']);
     });
 
     describe('metadata computed properties', () => {
@@ -612,7 +612,6 @@ describe('WorkItemTree', () => {
 
     describe('localStorage persistence', () => {
       beforeEach(() => {
-        useLocalStorageSpy();
         jest.spyOn(utils, 'saveToggleToLocalStorage');
         jest.spyOn(utils, 'saveHiddenMetadataKeysToLocalStorage');
       });

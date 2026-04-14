@@ -29,7 +29,11 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
           expect(saved_view).to be_persisted
           expect(saved_view.name).to eq('My Saved View')
           expect(saved_view.author).to eq(current_user)
+          expect(saved_view.updated_by).to eq(current_user)
         end
+
+        it_behaves_like 'tracks non work item event', :current_user,
+          Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_CREATE
 
         context 'when container is a project' do
           let(:container) { project }
@@ -63,6 +67,8 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
           expect(result).to be_error
           expect(result.message).to include("Name can't be blank")
         end
+
+        it_behaves_like 'does not track non work item event'
       end
 
       context 'when filter normalization fails' do
@@ -80,6 +86,8 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
           expect(result).to be_error
           expect(result.message).to eq('Invalid filter')
         end
+
+        it_behaves_like 'does not track non work item event'
       end
 
       describe 'auto subscription' do
@@ -132,19 +140,6 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
       end
     end
 
-    context 'when saved views are not enabled' do
-      before do
-        allow(container).to receive(:work_items_consolidated_list_enabled?).and_return(false)
-      end
-
-      it 'returns an error' do
-        result = service.execute
-
-        expect(result).to be_error
-        expect(result.message).to eq('Saved views are not enabled for this namespace.')
-      end
-    end
-
     context 'when container is nil' do
       let(:container) { nil }
 
@@ -152,8 +147,10 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Saved views are not enabled for this namespace.')
+        expect(result.message).to eq('You do not have permission to create saved views in this namespace.')
       end
+
+      it_behaves_like 'does not track non work item event'
     end
 
     context 'when user does not have permission' do
@@ -170,6 +167,8 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
       it 'does not create a saved view' do
         expect { service.execute }.not_to change { WorkItems::SavedViews::SavedView.count }
       end
+
+      it_behaves_like 'does not track non work item event'
     end
   end
 end

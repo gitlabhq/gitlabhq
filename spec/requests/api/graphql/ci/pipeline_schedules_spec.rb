@@ -47,6 +47,11 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
     )
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_pipeline_schedule] do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   describe 'computed graphql fields' do
     before do
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)

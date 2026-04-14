@@ -6,7 +6,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :secrets_management
+    feature_category :system_access
     urgency :low
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

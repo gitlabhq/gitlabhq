@@ -8,6 +8,13 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
   let_it_be(:project)       { create(:project, :repository) }
   let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
+  describe 'associations' do
+    subject { build(:draft_note, merge_request: merge_request) }
+
+    it { is_expected.to belong_to(:author) }
+    it { is_expected.to belong_to(:project) }
+  end
+
   describe 'validations' do
     it_behaves_like 'a valid diff positionable note' do
       subject { build(:draft_note, merge_request: merge_request, commit_id: commit_id, position: position) }

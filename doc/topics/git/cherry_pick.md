@@ -22,8 +22,8 @@ branch into your current branch. Cherry-picks help when you want to:
 - Apply an emergency production fix (hotfix) to a development branch.
 - Copy changes from a fork to the upstream repository.
 
-To learn about cherry-picking from the GitLab UI, see
-[Cherry-pick changes](../../user/project/merge_requests/cherry_pick_changes.md).
+For more information about cherry-picking from the GitLab UI, see
+[cherry-pick changes](../../user/project/merge_requests/cherry_pick_changes.md).
 
 When you cherry-pick a commit, Git:
 

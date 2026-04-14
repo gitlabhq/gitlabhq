@@ -76,7 +76,7 @@ RSpec.describe JwtController, feature_category: :system_access do
 
     context 'when IAM service is disabled' do
       before do
-        allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+        allow(Authn::IamAuthService).to receive(:enabled?).and_return(false)
       end
 
       it_behaves_like 'returning response status', :unauthorized

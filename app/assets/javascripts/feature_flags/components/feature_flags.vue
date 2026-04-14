@@ -8,10 +8,10 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { n__, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
@@ -34,7 +34,7 @@ export default {
     GlLink,
     GlSprintf,
     TablePagination,
-    PageHeading,
+    IndexLayout,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -65,9 +65,6 @@ export default {
       'hasRotateError',
       'rotateEndpoint',
     ]),
-    topAreaBaseClasses() {
-      return ['gl-flex', 'gl-flex-col'];
-    },
     canUserRotateToken() {
       return this.rotateEndpoint !== '';
     },
@@ -153,20 +150,72 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <gl-alert v-if="featureFlagsLimitExceeded" :dismissible="false" variant="warning">
-      <gl-sprintf :message="limitExceededAlertMessage">
-        <template #docLink="{ content }">
-          <gl-link :href="documentationLink" target="_blank">{{ content }}</gl-link>
-        </template>
-        <template #featureFlagsLimit>
-          <span>{{ featureFlagsLimit }}</span>
-        </template>
-        <template #pricingLink="{ content }">
-          <promo-page-link path="/pricing" target="_blank">{{ content }}</promo-page-link>
-        </template>
-      </gl-sprintf>
-    </gl-alert>
+  <index-layout>
+    <template #heading>
+      <span>
+        {{ s__('FeatureFlags|Feature flags') }}
+      </span>
+      <button
+        v-if="count && isFeatureFlagsLimitSet"
+        v-gl-tooltip
+        class="gl-ml-3 gl-border-0 gl-bg-transparent gl-p-0 gl-align-middle gl-leading-0"
+        :title="countBadgeTooltipMessage"
+        :aria-label="countBadgeAriaLabel"
+        data-testid="ff-count-badge-wrapper"
+      >
+        <gl-badge data-testid="ff-count-badge">
+          {{ countBadgeContents }}
+        </gl-badge>
+      </button>
+      <gl-badge v-else-if="count" class="gl-ml-3 gl-align-middle" data-testid="ff-count-badge">
+        {{ count }}
+      </gl-badge>
+    </template>
+
+    <template #actions>
+      <gl-button
+        v-if="userListPath"
+        :href="userListPath"
+        variant="confirm"
+        category="tertiary"
+        data-testid="ff-user-list-button"
+      >
+        {{ s__('FeatureFlags|View user lists') }}
+      </gl-button>
+      <gl-button
+        v-if="canUserConfigure"
+        v-gl-modal="'configure-feature-flags'"
+        data-testid="ff-configure-button"
+      >
+        {{ s__('FeatureFlags|Configure') }}
+      </gl-button>
+      <gl-button
+        v-if="hasNewPath"
+        :href="newFeatureFlagPath"
+        :disabled="featureFlagsLimitExceeded"
+        variant="confirm"
+        data-testid="ff-new-button"
+      >
+        {{ s__('FeatureFlags|New feature flag') }}
+      </gl-button>
+    </template>
+
+    <template #alerts>
+      <gl-alert v-if="featureFlagsLimitExceeded" :dismissible="false" variant="warning">
+        <gl-sprintf :message="limitExceededAlertMessage">
+          <template #docLink="{ content }">
+            <gl-link :href="documentationLink" target="_blank">{{ content }}</gl-link>
+          </template>
+          <template #featureFlagsLimit>
+            <span>{{ featureFlagsLimit }}</span>
+          </template>
+          <template #pricingLink="{ content }">
+            <promo-page-link path="/pricing" target="_blank">{{ content }}</promo-page-link>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
+    </template>
+
     <configure-feature-flags-modal
       v-if="canUserConfigure"
       :instance-id="instanceId"
@@ -176,76 +225,25 @@ export default {
       modal-id="configure-feature-flags"
       @token="rotateInstanceId()"
     />
-    <div :class="topAreaBaseClasses">
-      <page-heading>
-        <template #heading>
-          <span>
-            {{ s__('FeatureFlags|Feature flags') }}
-          </span>
-          <button
-            v-if="count && isFeatureFlagsLimitSet"
-            v-gl-tooltip
-            class="gl-ml-3 gl-border-0 gl-bg-transparent gl-p-0 gl-align-middle gl-leading-0"
-            :title="countBadgeTooltipMessage"
-            :aria-label="countBadgeAriaLabel"
-            data-testid="ff-count-badge-wrapper"
-          >
-            <gl-badge data-testid="ff-count-badge">
-              {{ countBadgeContents }}
-            </gl-badge>
-          </button>
-          <gl-badge v-else-if="count" class="gl-ml-3 gl-align-middle" data-testid="ff-count-badge">
-            {{ count }}
-          </gl-badge>
-        </template>
-        <template #actions>
-          <gl-button
-            v-if="userListPath"
-            :href="userListPath"
-            variant="confirm"
-            category="tertiary"
-            data-testid="ff-user-list-button"
-          >
-            {{ s__('FeatureFlags|View user lists') }}
-          </gl-button>
-          <gl-button
-            v-if="canUserConfigure"
-            v-gl-modal="'configure-feature-flags'"
-            data-testid="ff-configure-button"
-          >
-            {{ s__('FeatureFlags|Configure') }}
-          </gl-button>
 
-          <gl-button
-            v-if="hasNewPath"
-            :href="newFeatureFlagPath"
-            :disabled="featureFlagsLimitExceeded"
-            variant="confirm"
-            data-testid="ff-new-button"
-          >
-            {{ s__('FeatureFlags|New feature flag') }}
-          </gl-button></template
-        >
-      </page-heading>
+    <empty-state
+      :alerts="alerts"
+      :is-loading="isLoading"
+      :loading-label="s__('FeatureFlags|Loading feature flags')"
+      :error-state="shouldRenderErrorState"
+      :error-title="s__(`FeatureFlags|There was an error fetching the feature flags.`)"
+      :empty-state="shouldShowEmptyState"
+      :empty-title="s__('FeatureFlags|Get started with feature flags')"
+      :empty-description="
+        s__(
+          'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
+        )
+      "
+      @dismiss-alert="clearAlert"
+    >
+      <feature-flags-table :feature-flags="featureFlags" @toggle-flag="toggleFeatureFlag" />
+    </empty-state>
 
-      <empty-state
-        :alerts="alerts"
-        :is-loading="isLoading"
-        :loading-label="s__('FeatureFlags|Loading feature flags')"
-        :error-state="shouldRenderErrorState"
-        :error-title="s__(`FeatureFlags|There was an error fetching the feature flags.`)"
-        :empty-state="shouldShowEmptyState"
-        :empty-title="s__('FeatureFlags|Get started with feature flags')"
-        :empty-description="
-          s__(
-            'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
-          )
-        "
-        @dismiss-alert="clearAlert"
-      >
-        <feature-flags-table :feature-flags="featureFlags" @toggle-flag="toggleFeatureFlag" />
-      </empty-state>
-    </div>
     <table-pagination v-if="shouldRenderPagination" :change="onChangePage" :page-info="pageInfo" />
-  </div>
+  </index-layout>
 </template>

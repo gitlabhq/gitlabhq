@@ -211,7 +211,7 @@ module API
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
 
-        unless current_user&.can_read_all_resources?
+        unless current_user&.can?(:read_admin_users)
           index_params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
@@ -229,7 +229,7 @@ module API
         users = UsersFinder.new(current_user, index_params).execute
         users = reorder_users(users)
 
-        entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = current_user&.can?(:read_admin_users) ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
           users = users.preload(:identities, :second_factor_webauthn_registrations, :namespace, :followers, :followees, :user_preference, :user_detail)
@@ -268,7 +268,7 @@ module API
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user.can_read_all_resources? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user.can?(:read_admin_users) ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
@@ -464,7 +464,7 @@ module API
           user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
         end
 
-        user_params[:user_detail_organization] = user_params.delete(:organization) if user_params.key?(:organization)
+        user_params[:company] = user_params.delete(:organization) if user_params.key?(:organization)
 
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user

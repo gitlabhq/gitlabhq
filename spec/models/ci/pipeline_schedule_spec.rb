@@ -46,7 +46,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
     it 'does not allow empty variable key' do
       pipeline_schedule = build(:ci_pipeline_schedule,
-        variables_attributes: [{ secret_value: 'test_value' }],
+        variables_attributes: [{ value: 'test_value' }],
         project: project)
 
       expect(pipeline_schedule).not_to be_valid

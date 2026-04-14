@@ -24,8 +24,25 @@ describe('Batch comments mutations', () => {
         {
           ...draft,
           isDraft: true,
+          isEditing: false,
+          editedNote: null,
         },
       ]);
+    });
+
+    it('adds reactive properties with correct defaults', () => {
+      store[types.ADD_NEW_DRAFT](draft);
+
+      const added = store.drafts[0];
+      expect(added.isEditing).toBe(false);
+      expect(added.editedNote).toBeNull();
+    });
+
+    it('does not overwrite existing reactive properties from input', () => {
+      store[types.ADD_NEW_DRAFT]({ id: 2, note: 'test', isEditing: true });
+
+      const added = store.drafts[0];
+      expect(added.isEditing).toBe(true);
     });
 
     it('sets `shouldAnimateReviewButton` to true if it is a first draft', () => {
@@ -59,14 +76,8 @@ describe('Batch comments mutations', () => {
       store[types.SET_BATCH_COMMENTS_DRAFTS](drafts);
 
       expect(store.drafts).toEqual([
-        {
-          id: 1,
-          isDraft: true,
-        },
-        {
-          id: 2,
-          isDraft: true,
-        },
+        { id: 1, isDraft: true, isEditing: false, editedNote: null },
+        { id: 2, isDraft: true, isEditing: false, editedNote: null },
       ]);
     });
   });
@@ -100,17 +111,13 @@ describe('Batch comments mutations', () => {
   });
 
   describe(types.RECEIVE_DRAFT_UPDATE_SUCCESS, () => {
-    it('updates draft in store', () => {
+    it('updates draft in store with reactive properties', () => {
       store.drafts.push({ id: 1 });
 
       store[types.RECEIVE_DRAFT_UPDATE_SUCCESS]({ id: 1, note: 'test' });
 
       expect(store.drafts).toEqual([
-        {
-          id: 1,
-          note: 'test',
-          isDraft: true,
-        },
+        { id: 1, note: 'test', isDraft: true, isEditing: false, editedNote: null },
       ]);
     });
   });

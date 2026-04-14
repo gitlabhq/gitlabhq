@@ -5,6 +5,9 @@ module ClickHouse
     class Migrator
       attr_accessor :logger
 
+      MAX_RETRY_ATTEMPTS = 3
+      BASE_RETRY_SLEEP_SECONDS = 5
+
       def self.migrations_paths(database_name)
         paths = [File.join("db/click_house/migrate", database_name.to_s)]
 
@@ -99,7 +102,9 @@ module ClickHouse
 
         logger.info "Migrating to #{migration.name} (#{migration.version})" if logger
 
-        migration.migrate(@direction)
+        with_retry(migration) do
+          migration.migrate(@direction)
+        end
         record_version_state_after_migrating(migration.version)
       rescue StandardError => e
         msg = "An error has occurred, all later migrations canceled:\n\n#{e}"
@@ -133,6 +138,30 @@ module ClickHouse
         else
           migrated << version
           @schema_migration.create!(version: version.to_s)
+        end
+      end
+
+      def with_retry(migration)
+        attempts = 0
+        begin
+          attempts += 1
+          yield
+        rescue StandardError => e
+          if attempts < MAX_RETRY_ATTEMPTS
+            sleep_seconds = (BASE_RETRY_SLEEP_SECONDS * (2**(attempts - 1))) + rand
+            if logger
+              logger.warn(
+                "Migration #{migration.name} (#{migration.version}) failed " \
+                  "(attempt #{attempts}/#{MAX_RETRY_ATTEMPTS}): #{e.message}. " \
+                  "Retrying in #{sleep_seconds.round(2)}s..."
+              )
+            end
+
+            sleep(sleep_seconds)
+            retry
+          end
+
+          raise
         end
       end
 

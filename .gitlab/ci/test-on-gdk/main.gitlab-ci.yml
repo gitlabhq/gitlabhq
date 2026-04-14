@@ -3,10 +3,6 @@ include:
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
 
-workflow:
-  rules:
-    - when: always
-
 .rules:test:gdk-load-balancer-changes:
   rules:
     - when: manual

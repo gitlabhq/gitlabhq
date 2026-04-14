@@ -66,6 +66,18 @@ module BulkImports
       end
     end
 
+    def self.find_or_create_user_contributions_export!(portable, offline_export_id)
+      raise ArgumentError, 'portable must be a Group or Project' if !portable.is_a?(Project) && !portable.is_a?(Group)
+      raise ArgumentError, 'offline_export_id must be an Integer' unless offline_export_id.is_a?(Integer)
+
+      portable.bulk_import_exports.find_or_create_by!(
+        offline_export_id: offline_export_id,
+        relation: FileTransfer::BaseConfig::USER_CONTRIBUTIONS_RELATION
+      ) do |export|
+        export.status = Export::PENDING
+      end
+    end
+
     def portable_relation?
       return unless portable
 

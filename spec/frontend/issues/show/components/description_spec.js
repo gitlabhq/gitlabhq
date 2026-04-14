@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import Sortable from 'sortablejs';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -228,6 +229,15 @@ describe('Description component', () => {
         href: `${mockSpriteIcons}#grip`,
       });
     });
+
+    it('creates Sortable with forceFallback enabled', () => {
+      expect(Sortable.create).toHaveBeenCalled();
+      const options = Sortable.create.mock.calls[0][1];
+      expect(options).toMatchObject({
+        forceFallback: true,
+        handle: '.drag-icon',
+      });
+    });
   });
 
   describe('empty description', () => {
@@ -331,7 +341,7 @@ describe('Description component', () => {
 
         it('shows an alert with an error message', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: 'Something went wrong when creating task. Please try again.',
+            message: 'Something went wrong when creating Task. Please try again.',
             error: new Error('an error'),
             captureError: true,
           });

@@ -1,3 +1,0 @@
----
-name: authorize_helm_chart
-description: Grants the ability to authorize a Helm Chart upload

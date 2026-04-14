@@ -21,7 +21,6 @@ module Authn
 
       def perform(cursor = nil)
         return unless Gitlab::CurrentSettings.authn_data_retention_cleanup_enabled?
-        return unless Feature.enabled?(:archive_authentication_events, :instance)
 
         runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
         total_deleted_count = 0

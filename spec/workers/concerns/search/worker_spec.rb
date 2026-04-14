@@ -69,8 +69,7 @@ RSpec.describe Search::Worker, feature_category: :global_search do
         Search::Zoekt::SchedulingWorker,
         Search::Zoekt::DefaultBranchChangedWorker,
         # deprecated
-        ElasticNamespaceRolloutWorker,
-        Search::ElasticIndexEmbeddingBulkCronWorker
+        ElasticNamespaceRolloutWorker
       ]
     end
 

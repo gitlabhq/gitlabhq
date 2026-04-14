@@ -359,6 +359,68 @@ With the changes to `FoundationalChatAgentsDefinitions.rb` and the fetched confi
     --data '{"query": "query { __type(name: \"AiCatalogAgentCreatePayload\") { fields { name type { name } } } }"}'
   ```
 
+## Integration testing foundational agents
+
+Foundational agents have an integration test harness that runs the full agent loop end-to-end using real LLM calls.
+Use it to verify that an agent correctly selects tools, passes the right arguments,
+and produces valid responses — without needing a live GitLab instance or real tool backends.
+
+The tests live in the [ai-assist](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/agent_tests)
+repository and run as CI jobs (for example, the Data Analyst agent tests run on changes to the agent prompt, otherwise manual).
+
+### Key concepts
+
+- **Real LLM calls**: Both the agent execution and response validation use actual model calls,
+  so tests catch regressions in prompt behavior, not just string matching.
+- **Mockable tools**: Tool responses can be stubbed so tests are deterministic and fast.
+- **Fluent assertion API**: Chain assertions like `assert_called_tool` and `assert_llm_validates`
+  to express expected behavior clearly.
+
+### Example test
+
+```python
+@pytest.mark.asyncio
+async def test_how_many_open_issues(
+    analytics_agent,
+    initial_state,
+    mock_gitlab_client,
+):
+    """Agent must call run_glql_query and report the count."""
+    mock_glql_response(mock_gitlab_client, glql_response(SAMPLE_ISSUES, count=42))
+
+    result = await ask_agent(
+        analytics_agent,
+        initial_state,
+        "How many open issues are there in the gitlab-org group?",
+    )
+
+    (result.assert_has_tool_calls().assert_called_tool("run_glql_query"))
+    await result.assert_llm_validates(
+        [
+            "Response says 42 open issues",
+        ]
+    )
+```
+
+`ask_agent` runs the agent loop with the given prompt and returns a result object.
+`assert_called_tool` verifies the agent invoked the expected tool.
+`assert_llm_validates` asks an LLM to check the response against plain-language criteria,
+so you don't need brittle substring matches.
+
+### CI configuration
+
+Integration test jobs are defined in [`.gitlab/ci/test.gitlab-ci.yml`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/test.gitlab-ci.yml). Available configuration variables:
+
+- `EXECUTION_MODEL`: The model used to run the agent during the test.
+- `VALIDATION_MODEL`: The model used by `assert_llm_validates` to judge responses.
+
+### Getting started
+
+To reuse or extend this harness for your agent, see these merge requests for reference:
+
+- [Initial integration test harness (!4541)](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/4541)
+- [Additional test examples (!4543)](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/4543)
+
 ## Architecture design
 
 [Foundational Chat Agents](glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
@@ -461,6 +523,6 @@ sequenceDiagram
     Monolith->>User: Return response
 ```
 
-The execution flows are the same whether the user is using a local monolith, GitLab SaaS,
+The execution flows are the same whether the user is using a local monolith, GitLab.com,
 the cloud-connected DWS or a
 local installation of DWS.

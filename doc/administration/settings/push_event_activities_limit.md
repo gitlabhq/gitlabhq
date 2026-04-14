@@ -36,7 +36,7 @@ If your integrations or external systems must process every pushed ref individua
 
 > [!note]
 > Webhook triggering is controlled separately by the `push_event_hooks_limit` setting.
-> For more information, see [Push event limits](../../user/project/integrations/webhooks.md#push-event-limits).
+> For more information, see [push event limits](../../user/project/integrations/webhooks.md#push-event-limits).
 
 Prerequisites:
 
@@ -44,7 +44,7 @@ Prerequisites:
 
 To set a different **Push event activities limit**, either:
 
-- In the [Application settings API](../../api/settings.md#available-settings), set the
+- In the [application settings API](../../api/settings.md#available-settings), set the
   `push_event_activities_limit`.
 
 - In the GitLab UI:

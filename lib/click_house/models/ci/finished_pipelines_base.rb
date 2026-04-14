@@ -44,6 +44,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           where(query_builder.func('startsWith', [query_builder[:path], query_builder.quote(group.traversal_path)]))
         end
 
+        def for_subgroups(subgroups)
+          return self if subgroups.empty?
+
+          conditions = subgroups.map do |subgroup|
+            query_builder.func('startsWith', [query_builder[:path], query_builder.quote(subgroup.traversal_path)])
+          end
+
+          where(conditions.reduce { |left, right| left.or(right) })
+        end
+
         def within_dates(from_time, to_time)
           query = self
 

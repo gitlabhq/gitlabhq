@@ -4,6 +4,10 @@ module Ci
   class JobArtifactPolicy < BasePolicy
     delegate { @subject.job.project }
 
+    # Ensure read_job_artifacts does not get prevented due to prevent_all in the delegate
+    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229560
+    overrides(:read_job_artifacts)
+
     condition(:public_access, scope: :subject) do
       @subject.public_access? # public:true | access:all
     end

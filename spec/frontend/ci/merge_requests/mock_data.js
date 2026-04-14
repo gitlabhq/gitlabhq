@@ -26,6 +26,7 @@ export const generateMockPipeline = ({
   type: 'merge_request',
   hasManualActions: true,
   hasScheduledActions: false,
+  pipelineSchedule: null,
   failedJobsCount: 0,
   __typename: 'Pipeline',
   commit: {
@@ -67,6 +68,7 @@ export const generateMockPipeline = ({
         name: 'build',
         detailedStatus: {
           id: 'success-1949-1949',
+          name: 'SUCCESS',
           icon: 'status_success',
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#build`,
@@ -80,6 +82,7 @@ export const generateMockPipeline = ({
         name: 'test',
         detailedStatus: {
           id: 'success-1950-1950',
+          name: 'SUCCESS',
           icon: 'status_success',
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#test`,
@@ -93,6 +96,7 @@ export const generateMockPipeline = ({
         name: 'deploy',
         detailedStatus: {
           id: 'success-1951-1951',
+          name: 'SUCCESS',
           icon: 'status_success',
           text: 'Passed',
           detailsPath: `/gitlab-org/gitlab/-/pipelines/${id}#deploy`,
@@ -169,6 +173,7 @@ export const generateMRPipelinesResponse = ({
           iid: '1',
           title: 'Fix everything',
           webPath: '/merge_requests/1',
+          sourceBranch: 'feature-branch',
           pipelines: createMergeRequestPipelines({ count, mergeRequestEventType, status }),
         },
       },
@@ -248,6 +253,7 @@ export const mockPipelineUpdateResponse = {
               detailsPath: '/root/ci-project/-/pipelines/880#build',
               __typename: 'DetailedStatus',
               tooltip: 'running',
+              name: 'RUNNING',
             },
             __typename: 'CiStage',
           },
@@ -261,6 +267,7 @@ export const mockPipelineUpdateResponse = {
               detailsPath: '/root/ci-project/-/pipelines/880#test',
               __typename: 'DetailedStatus',
               tooltip: 'created',
+              name: 'CREATED',
             },
             __typename: 'CiStage',
           },
@@ -274,6 +281,7 @@ export const mockPipelineUpdateResponse = {
               detailsPath: '/root/ci-project/-/pipelines/880#deploy',
               __typename: 'DetailedStatus',
               tooltip: 'created',
+              name: 'CREATED',
             },
             __typename: 'CiStage',
           },
@@ -289,6 +297,7 @@ export const mockPipelineUpdateResponse = {
       },
       hasManualActions: false,
       hasScheduledActions: false,
+      pipelineSchedule: null,
       failedJobsCount: 0,
       __typename: 'Pipeline',
       downstream: {
@@ -419,6 +428,7 @@ export const mockPipelines = [
     },
     hasManualActions: false,
     hasScheduledActions: false,
+    pipelineSchedule: null,
     __typename: 'Pipeline',
   },
   {
@@ -534,6 +544,7 @@ export const mockPipelines = [
     },
     hasManualActions: false,
     hasScheduledActions: false,
+    pipelineSchedule: null,
     __typename: 'Pipeline',
   },
 ];
@@ -588,4 +599,20 @@ export const generatePipelineCreationRequest = ({
     pipeline ||
     (status === 'SUCCEEDED' ? generateMockPipeline({ id: pipelineId.split('/').pop() }) : null),
   __typename: 'CiPipelineCreationRequest',
+});
+
+export const generateSinglePipelineResponse = (pipeline) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      pipeline: {
+        ...pipeline,
+        downstream: {
+          nodes: [],
+          __typename: 'PipelineConnection',
+        },
+      },
+      __typename: 'Project',
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import dateformat from '~/lib/dateformat';
 import { __, n__ } from '~/locale';
 import { getDayName, parseSeconds } from './date_format_utility';

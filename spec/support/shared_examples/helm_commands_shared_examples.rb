@@ -3,9 +3,9 @@
 RSpec.shared_examples 'helm command generator' do
   describe '#generate_script' do
     let(:helm_setup) do
-      <<~EOS
+      <<~SHELL
          set -xeo pipefail
-      EOS
+      SHELL
     end
 
     it 'returns appropriate command' do

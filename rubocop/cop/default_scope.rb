@@ -4,11 +4,11 @@ module RuboCop
   module Cop
     # Cop that denylists the use of `default_scope`.
     class DefaultScope < RuboCop::Cop::Base
-      MSG = <<~EOF
+      MSG = <<~TEXT
         Do not use `default_scope`, as it does not follow the principle of
         least surprise. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33847
         for more details.
-      EOF
+      TEXT
 
       # @!method default_scope?(node)
       def_node_matcher :default_scope?, <<~PATTERN

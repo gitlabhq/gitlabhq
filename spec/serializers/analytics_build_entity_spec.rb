@@ -2,16 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe AnalyticsBuildEntity do
+RSpec.describe AnalyticsBuildEntity, feature_category: :continuous_integration do
   let(:entity) do
     described_class.new(build, request: double)
   end
 
   context 'build with an author' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:started_at) { 2.hours.ago }
     let(:finished_at) { 1.hour.ago }
-    let(:build) { create(:ci_build, author: user, started_at: started_at, finished_at: finished_at) }
+    let(:build) { build_stubbed(:ci_build, author: user, started_at: started_at, finished_at: finished_at) }
 
     subject { entity.as_json }
 

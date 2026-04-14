@@ -7,7 +7,8 @@
 
 %h1.gl-sr-only= page_title
 
-#js-work-items{ data: work_item_views_only_data(@project, current_user).merge(
+#js-work-items{ data: work_item_views_only_data(@project).merge(
+  router_path: project_issues_path(@project),
   is_service_desk_enabled: ::ServiceDesk.enabled?(@project).to_s,
   is_service_desk_supported: ::ServiceDesk.supported?.to_s,
   service_desk_callout_svg_path: image_path('illustrations/service-desk-sm.svg'),

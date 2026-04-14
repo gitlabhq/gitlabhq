@@ -12,10 +12,10 @@ module DraftNotes
         publish_draft_note(draft, executing_user)
       else
         review = create_review(executing_user)
-        merge_request_activity_counter.track_publish_review_action(user: current_user)
+        merge_request_activity_counter.track_publish_review_action(user: current_user) if review
       end
 
-      handle_notifications(current_user, merge_request, review)
+      handle_notifications(current_user, merge_request, review) if draft || review
       success
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "

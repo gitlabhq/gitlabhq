@@ -15,7 +15,6 @@ module API
     resource :organizations do
       desc 'Create an organization' do
         detail 'This feature was introduced in GitLab 17.5. \
-                    This feature is currently in an experimental state. \
                     This feature is behind the `allow_organization_creation` feature flag. \
                     In GitLab 18.3, feature flag changed to `organization_switching`.'
         success Entities::Organizations::Organization
@@ -28,6 +27,7 @@ module API
         optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'The avatar image for the organization',
           documentation: { type: 'file' }
       end
+      route_setting :lifecycle, :experiment
       post do
         forbidden! unless Feature.enabled?(:organization_switching, current_user)
         check_rate_limit!(:create_organization_api, scope: current_user)

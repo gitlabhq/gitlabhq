@@ -1,4 +1,10 @@
 import VueCompatOriginal from '@vue/compat';
+
+import GlLicensedFeaturesPlugin from '../../../vue_shared/gl_licensed_features_plugin';
+import GlFeatureFlagsPlugin from '../../../vue_shared/gl_feature_flags_plugin';
+import GlAbilitiesPlugin from '../../../vue_shared/gl_abilities_plugin';
+import Translate from '../../../vue_shared/translate';
+
 import { logDevNotice } from '../../logger';
 import { compatConfig } from './compat_config';
 
@@ -30,5 +36,16 @@ class GitLabPatchedVue extends VueCompatOriginal {
 }
 
 GitLabPatchedVue.configureCompat(compatConfig);
+
+// This is temporary place for this
+// We are basically mirroring app/assets/javascripts/commons/vue.js
+// We should not put them in jest, but we don't want for now to add
+// extra entrypoint in vite/webpack - so this ugly check
+if (typeof jest === 'undefined') {
+  GitLabPatchedVue.use(GlLicensedFeaturesPlugin);
+  GitLabPatchedVue.use(GlFeatureFlagsPlugin);
+  GitLabPatchedVue.use(GlAbilitiesPlugin);
+  GitLabPatchedVue.use(Translate);
+}
 
 export default GitLabPatchedVue;

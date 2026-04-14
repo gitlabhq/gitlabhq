@@ -25,7 +25,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
-import { createNoteErrorMessages, isSlashCommand } from '../utils';
+import { getNoteFormErrorMessages, isSlashCommand } from '../utils';
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
 import CommentTypeDropdown from './comment_type_dropdown.vue';
@@ -234,8 +234,8 @@ export default {
       'reopenIssuable',
       'toggleIssueLocalState',
     ]),
-    handleSaveError({ data, status }) {
-      this.errors = createNoteErrorMessages(data, status);
+    handleSaveError(response) {
+      this.errors = getNoteFormErrorMessages(response);
     },
     handleSaveDraft() {
       this.handleSave({ isDraft: true });

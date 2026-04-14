@@ -27,7 +27,7 @@ export default {
     'canReadCrmContact',
     'groupContactsPath',
     'groupFullPath',
-    'groupIssuesPath',
+    'groupWorkItemsPath',
     'textQuery',
   ],
   data() {
@@ -112,7 +112,7 @@ export default {
     filtersChanged({ searchTerm }) {
       this.searchTerm = searchTerm;
     },
-    getIssuesPath(path, value) {
+    getWorkItemsPath(path, value) {
       return `${path}?crm_organization_id=${value}`;
     },
     getEditRoute(id) {
@@ -140,7 +140,7 @@ export default {
   ],
   i18n: {
     emptyText: s__('Crm|No organizations found'),
-    issuesButtonLabel: __('View issues'),
+    issuesButtonLabel: __('View work items'),
     editButtonLabel: __('Edit'),
     title: s__('Crm|Customer relations organizations'),
     newOrganization: s__('Crm|New organization'),
@@ -229,9 +229,9 @@ export default {
               v-gl-tooltip.hover.bottom="$options.i18n.issuesButtonLabel"
               class="gl-mr-3"
               data-testid="issues-link"
-              icon="work-item-issue"
+              icon="work-items"
               :aria-label="$options.i18n.issuesButtonLabel"
-              :href="getIssuesPath(groupIssuesPath, id)"
+              :href="getWorkItemsPath(groupWorkItemsPath, id)"
             />
             <router-link :to="getEditRoute(id)">
               <gl-button

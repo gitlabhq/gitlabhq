@@ -50,7 +50,7 @@ exports[`Container Expiration Policy Settings Form OlderThan matches snapshot 1`
   data-testid="older-than-dropdown"
   description=""
   dropdownclass=""
-  formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+  formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
   label="Remove tags older than:"
   name="older-than"
   value="FOURTEEN_DAYS"

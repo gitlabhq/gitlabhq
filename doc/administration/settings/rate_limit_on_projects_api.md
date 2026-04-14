@@ -69,7 +69,7 @@ For more information about project API endpoints, see the [projects API](../../a
 {{< /history >}}
 
 Configure the rate limit for each project and user for requests to the
-[delete members endpoint](../../api/project_members.md#remove-a-member-from-a-project).
+[delete members endpoint](../../api/project_members.md#remove-a-direct-member-of-a-project).
 
 Prerequisites:
 

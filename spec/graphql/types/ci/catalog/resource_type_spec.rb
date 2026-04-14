@@ -24,6 +24,6 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       archived
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

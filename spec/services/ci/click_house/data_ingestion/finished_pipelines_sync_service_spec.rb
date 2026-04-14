@@ -123,6 +123,93 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
         expect(records.pluck(:id)).not_to include(pipeline_with_invalid_mirror.id)
       end
     end
+
+    context 'with is_default_branch syncing' do
+      let_it_be(:project_with_repo, freeze: true) { create(:project, :repository, group: group) }
+      let_it_be(:pipeline_on_default, freeze: true) do
+        create(:ci_pipeline, :success, project: project_with_repo,
+          ref: project_with_repo.default_branch, finished_at: 1.day.ago)
+      end
+
+      let_it_be(:pipeline_on_feature, freeze: true) do
+        create(:ci_pipeline, :success, project: project_with_repo,
+          ref: 'feature/test', finished_at: 1.day.ago)
+      end
+
+      before_all do
+        Namespace.id_in(project_with_repo.project_namespace_id)
+          .flat_map(&:sync_events).each { |event| ::Ci::NamespaceMirror.sync!(event) }
+        create_sync_events(pipeline_on_default, pipeline_on_feature)
+      end
+
+      it 'sets is_default_branch to true for pipelines on the default branch' do
+        execute
+
+        record = ci_finished_pipelines.find { |r| r[:id] == pipeline_on_default.id }
+        expect(record[:is_default_branch]).to be(true)
+      end
+
+      it 'sets is_default_branch to false for pipelines not on the default branch' do
+        execute
+
+        record = ci_finished_pipelines.find { |r| r[:id] == pipeline_on_feature.id }
+        expect(record[:is_default_branch]).to be(false)
+      end
+
+      context 'when resolving default branches across multiple projects', :request_store do
+        let(:control) do
+          create_project_with_pipeline
+          ActiveRecord::QueryRecorder.new { service.execute }
+        end
+
+        before do
+          execute # warm up execute
+          control
+          create_project_with_pipeline
+        end
+
+        it 'does not cause N+1 queries' do
+          expect { service.execute }.not_to exceed_all_query_limit(control)
+        end
+
+        private
+
+        def create_project_with_pipeline
+          project = create(:project, :repository, group: group)
+          Namespace.id_in(project.project_namespace_id)
+            .flat_map(&:sync_events).each { |event| ::Ci::NamespaceMirror.sync!(event) }
+          pipeline = create(:ci_pipeline, :success, project: project, ref: 'main', finished_at: 1.day.ago)
+          create_sync_events(pipeline)
+        end
+      end
+    end
+
+    context 'when a pipeline finished_at is NULLed after sync event creation' do
+      # Reproduces a ClickHouse CSV parser bug where a DateTime64 epoch value with
+      # fewer than 3 decimal digits (e.g. "0.0" from COALESCE for NULL timestamps)
+      # followed by a Bool column causes the parser to read past the comma delimiter.
+      # In production, a pipeline can have finished_at set when the sync event is
+      # created (via PipelineFinishedWorker), but finished_at becomes NULL by the time
+      # the sync service queries it (e.g. pipeline was retried or reset).
+      let_it_be(:pipeline_retried) do
+        create(:ci_pipeline, :failed, project: project1, ref: 'master', source: :push,
+          started_at: 1.hour.ago, finished_at: 1.hour.ago)
+      end
+
+      before_all do
+        create_sync_events(pipeline_retried)
+        pipeline_retried.update_column(:finished_at, nil)
+      end
+
+      it 'syncs the pipeline with NULL finished_at without CSV parsing errors' do
+        expect { execute }.to change { ci_finished_pipelines_row_count }.by(6)
+
+        record = ci_finished_pipelines.find { |r| r[:id] == pipeline_retried.id }
+        expect(record).to be_present
+        expect(record[:finished_at]).to be_within(0.001.seconds).of(Time.at(0).utc)
+        expect(record[:status]).to eq('failed')
+      end
+    end
   end
 
   context 'when multiple batches are required' do
@@ -312,7 +399,8 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
     end
 
     context 'with multiple workers' do
-      let(:service) { described_class.new(worker_index: 0, total_workers: 2) }
+      let(:worker_index) { Ci::Pipeline.finished.pluck_primary_key.map { |id| id % 100 < 50 ? 0 : 1 }.first }
+      let(:service) { described_class.new(worker_index: worker_index, total_workers: 2) }
 
       it 'uses keyset iterator query' do
         # With multiple workers, even with feature flag enabled, it should use the complex query path
@@ -359,7 +447,8 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
       source: pipeline.source || '',
       ref: pipeline.ref || '',
       date: pipeline.finished_at.beginning_of_month,
-      name: pipeline.name || ''
+      name: pipeline.name || '',
+      is_default_branch: pipeline.default_branch?
     }
   end
 

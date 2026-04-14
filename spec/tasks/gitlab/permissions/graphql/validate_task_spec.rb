@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_category: :permissions do
+RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
   # Helper to create a mock directive
@@ -131,14 +131,14 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
     end
   end
 
-  describe '#find_mutation_directive' do
+  describe '#find_mutation_directives' do
     context 'when directive is on the field' do
-      it 'returns the directive from the field without checking the resolver' do
+      it 'returns the directives from the field without checking the resolver' do
         directive = mock_directive(permissions: :read_project, boundary_type: :project)
         field = mock_field(directive: directive)
         resolver = mock_resolver(graphql_name: 'TestMutation')
 
-        expect(task.send(:find_mutation_directive, field, resolver)).to eq(directive)
+        expect(task.send(:find_mutation_directives, field, resolver)).to contain_exactly(directive)
       end
     end
 
@@ -149,7 +149,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
         field.define_singleton_method(:respond_to?) { |_, *| false }
         resolver = mock_resolver(graphql_name: 'TestMutation', directive: directive)
 
-        expect(task.send(:find_mutation_directive, field, resolver)).to eq(directive)
+        expect(task.send(:find_mutation_directives, field, resolver)).to contain_exactly(directive)
       end
     end
   end
@@ -177,9 +177,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
     end
   end
 
-  describe '#format_invalid_permission_errors' do
+  describe '#format_graphql_errors' do
     it 'returns empty string when there are no violations' do
-      expect(task.send(:format_invalid_permission_errors)).to eq('')
+      expect(task.send(:format_graphql_errors, :invalid_permission)).to eq('')
     end
   end
 
@@ -217,6 +217,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => empty_mutation_type })
       allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
         .and_return([:read_project, :update_project, :create_issue, :read_something])
+      allow(task).to receive(:class_source_path).and_return('app/graphql/types/test_type.rb')
     end
 
     context 'when there are no directives' do
@@ -271,6 +272,33 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
     end
 
+    context 'when a type has mixed directive types' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
+      let(:other_directive) do
+        Object.new.tap do |mocked_directive|
+          allow(mocked_directive).to receive(:is_a?).and_return(false)
+        end
+      end
+
+      let(:type) do
+        mock_type('ProjectType').tap do |mocked_type|
+          allow(mocked_type).to receive(:directives).and_return([other_directive, directive])
+        end
+      end
+
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'skips non-GranularScope type directives and validates the granular one' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
     context 'when a type has a boundary_type not matching assignable permission boundaries' do
       let(:directive) { mock_directive(permissions: :read_something, boundary_type: :user) }
       let(:type) { mock_type('SomethingType', directive: directive) }
@@ -285,9 +313,19 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
 
       it 'returns an error with boundary details' do
-        expect { run }.to raise_error(SystemExit).and output(
-          /\[type\] SomethingType: read_something.*Directive boundary_type: user/m
-        ).to_stdout
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields have a boundary_type that doesn't match the assignable permission boundaries.
+          #  Update the assignable permission to include the directive's boundary_type, or fix the directive's boundary_type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#determining-boundaries
+          #
+          #    - [type] SomethingType: read_something (app/graphql/types/test_type.rb)
+          #        Directive boundary_type: user
+          #        Assignable boundaries: project, group
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 
@@ -418,9 +456,19 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
 
       it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(
-          /\[mutation\] CreateIssue: create_issue.*Directive boundary_type: instance/m
-        ).to_stdout
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields have a boundary_type that doesn't match the assignable permission boundaries.
+          #  Update the assignable permission to include the directive's boundary_type, or fix the directive's boundary_type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#determining-boundaries
+          #
+          #    - [mutation] CreateIssue: create_issue (app/graphql/types/test_type.rb)
+          #        Directive boundary_type: instance
+          #        Assignable boundaries: project, group
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 
@@ -452,6 +500,34 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
 
       it 'skips the field and completes successfully' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a field has mixed directive types' do
+      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
+      let(:other_directive) do
+        Object.new.tap do |mocked_directive|
+          allow(mocked_directive).to receive(:is_a?).and_return(false)
+        end
+      end
+
+      let(:field) do
+        mock_field.tap do |mocked_field|
+          allow(mocked_field).to receive(:directives).and_return([other_directive, directive])
+        end
+      end
+
+      let(:type) { mock_type('QueryType', fields: { 'project' => field }) }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'QueryType' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'skips non-GranularScope field directives and validates the granular one' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
       end
     end
@@ -538,9 +614,17 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
 
       it 'returns an error listing the invalid permission' do
-        expect { run }.to raise_error(SystemExit).and output(
-          /not included in any assignable permission.*\[type\] BadType: not_a_real_permission/m
-        ).to_stdout
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields reference permissions not included in any assignable permission.
+          #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
+          #
+          #    - [type] BadType: not_a_real_permission (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 
@@ -574,9 +658,48 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
       end
 
       it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(
-          /\[field\] QueryType\.project: read_project.*Directive boundary_type: user/m
-        ).to_stdout
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL types/mutations/fields have a boundary_type that doesn't match the assignable permission boundaries.
+          #  Update the assignable permission to include the directive's boundary_type, or fix the directive's boundary_type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#determining-boundaries
+          #
+          #    - [field] QueryType.project: read_project (app/graphql/types/test_type.rb)
+          #        Directive boundary_type: user
+          #        Assignable boundaries: project, group
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    describe 'multi-boundary directive support' do
+      let(:type) do
+        directives = %i[project group instance].map do |bt|
+          mock_directive(permissions: :read_runner, boundary_type: bt)
+        end
+        assignable = instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[group instance project])
+        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+          .with(:read_runner).and_return([assignable])
+
+        type = Object.new
+        type.define_singleton_method(:name) { 'CiRunner' }
+        type.define_singleton_method(:kind) { type }
+        type.define_singleton_method(:object?) { true }
+        type.define_singleton_method(:directives) { directives }
+        type.define_singleton_method(:respond_to?) { |method, *| %i[kind directives].include?(method) }
+        type
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return({ 'CiRunner' => type, 'Mutation' => empty_mutation_type })
+        allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+          .and_return([:read_project, :read_runner])
+      end
+
+      it 'validates all directives and completes successfully' do
+        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
       end
     end
   end

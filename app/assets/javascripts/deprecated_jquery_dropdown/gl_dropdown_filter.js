@@ -1,6 +1,6 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import $ from 'jquery';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { isObject } from '~/lib/utils/type_utility';
 
 const BLUR_KEYCODES = [27, 40];

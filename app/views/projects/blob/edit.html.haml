@@ -1,38 +1,41 @@
 - breadcrumb_title _("Repository")
-- page_title _("Edit"), @blob.path, @ref
-- content_for :prefetch_asset_tags do
-  - webpack_preload_asset_tag('monaco')
 - add_page_specific_style 'page_bundles/editor'
 
-- if @conflict
-  = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
-    variant: :danger,
-    dismissible: false) do |c|
-    - c.with_body do
-      - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe
-      - link_end = '</a>'.html_safe
-      - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
-        - sprite_icon('external-link', css_class: 'gl-icon').html_safe
-      - if commit_to_fork
-        = _("Error: Can't edit this file. The fork and upstream project have diverged. %{link_start}Edit the file on the fork %{icon}%{link_end}, and create a merge request.").html_safe % {link_start: blob_link_start % { url: project_blob_path(@project_to_commit_into, @id) } , link_end: link_end, icon: external_link_icon }
-      - else
-        - blob_url = project_blob_path(@project, @id)
-        = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Blob|Unable to edit file')
+- else
+  - page_title _("Edit"), @blob.path, @ref
+  - content_for :prefetch_asset_tags do
+    - webpack_preload_asset_tag('monaco')
 
+  - if @conflict
+    = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
+      variant: :danger,
+      dismissible: false) do |c|
+      - c.with_body do
+        - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe
+        - link_end = '</a>'.html_safe
+        - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do
+          - sprite_icon('external-link', css_class: 'gl-icon').html_safe
+        - if commit_to_fork
+          = _("Error: Can't edit this file. The fork and upstream project have diverged. %{link_start}Edit the file on the fork %{icon}%{link_end}, and create a merge request.").html_safe % {link_start: blob_link_start % { url: project_blob_path(@project_to_commit_into, @id) } , link_end: link_end, icon: external_link_icon }
+        - else
+          - blob_url = project_blob_path(@project, @id)
+          = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
 
-.js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref, 'update') }
-  = render ::Layouts::PageHeadingComponent.new(_('Edit file'), options: { class: 'gl-mb-3' }) do |c|
-    - c.with_actions do
-      = render Pajamas::ButtonComponent.new do
-        = _('Cancel')
-      = render Pajamas::ButtonComponent.new(variant: :confirm) do
-        = _('Commit changes')
+  .js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref, 'update') }
+    = render ::Layouts::PageHeadingComponent.new(_('Edit file'), options: { class: 'gl-mb-3' }) do |c|
+      - c.with_actions do
+        = render Pajamas::ButtonComponent.new do
+          = _('Cancel')
+        = render Pajamas::ButtonComponent.new(variant: :confirm) do
+          = _('Commit changes')
 
-.file-editor
-  = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do
-    = gl_tab_link_to _('Write'), '#editor', { tab_class: 'active' }
+  .file-editor
+    = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do
+      = gl_tab_link_to _('Write'), '#editor', { tab_class: 'active' }
 
-    = gl_tab_link_to editing_preview_title(@blob.name), '#preview', { data: { 'preview-url': project_preview_blob_path(@project, @id) } }
+      = gl_tab_link_to editing_preview_title(@blob.name), '#preview', { data: { 'preview-url': project_preview_blob_path(@project, @id) } }
 
-  = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-edit-blob-form', data: blob_editor_paths(@project, 'put')) do
-    = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
+    = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-edit-blob-form', data: blob_editor_paths(@project, 'put')) do
+      = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data

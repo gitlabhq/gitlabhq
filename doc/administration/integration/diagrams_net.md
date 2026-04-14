@@ -23,7 +23,7 @@ title: Diagrams.net
 Use the [diagrams.net](https://www.drawio.com/) integration to create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.
 
-GitLab.com enables this integration for all SaaS users. No additional configuration is required.
+This integration is available to all GitLab.com users and requires no additional configuration.
 
 For GitLab Self-Managed and GitLab Dedicated, integrate with either the free [diagrams.net](https://www.drawio.com/)
 website, or host your own diagrams.net site in offline environments.

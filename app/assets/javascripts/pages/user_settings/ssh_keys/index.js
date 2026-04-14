@@ -29,7 +29,7 @@ initSshKeyValidation();
 
 initExpiresAtField();
 
-document.getElementById('key_key').addEventListener('input', (event) => {
+document.getElementById('key_key')?.addEventListener('input', (event) => {
   const keyTitleField = document.getElementById('key_title');
 
   const match = event.target.value.match(/^\S+ \S+ (.+)\n?$/);

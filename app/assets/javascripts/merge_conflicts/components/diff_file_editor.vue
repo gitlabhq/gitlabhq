@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { createAlert } from '~/alert';

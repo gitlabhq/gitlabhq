@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_planning do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:namespace) { group }
+  let_it_be(:user_namespace) { create(:user_namespace) }
   let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
   let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
 
@@ -13,9 +15,9 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
   describe '.unfiltered_base_types' do
     it 'returns all base type keys from WorkItems::Type' do
-      expected_types = WorkItems::Type.base_types.keys
-
-      expect(described_class.unfiltered_base_types).to match_array(expected_types)
+      expect(described_class.unfiltered_base_types).to match_array(
+        %w[issue incident test_case requirement task objective key_result epic ticket]
+      )
     end
   end
 
@@ -35,6 +37,14 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
         provider = described_class.new
 
         expect(provider.namespace).to be_nil
+      end
+    end
+
+    context 'when a Project is passed' do
+      it 'converts it to project_namespace' do
+        provider = described_class.new(project)
+
+        expect(provider.namespace).to eq(project.project_namespace)
       end
     end
   end
@@ -88,25 +98,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
         expect(result).to be_nil
       end
-    end
-  end
-
-  describe '#unfiltered_base_types' do
-    subject { provider.unfiltered_base_types }
-
-    it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all.map(&:base_type)) }
-
-    it { is_expected.to all(be_a(String)) }
-  end
-
-  describe '#unfiltered_base_types_for_issue_type' do
-    it 'converts base types to uppercase' do
-      base_types = provider.unfiltered_base_types
-      expected_types = base_types.map(&:upcase)
-
-      result = provider.unfiltered_base_types_for_issue_type
-
-      expect(result).to match_array(expected_types)
     end
   end
 
@@ -194,10 +185,69 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     it { is_expected.to eq(issue_type) }
   end
 
-  describe '#filtered_types' do
-    subject { provider.filtered_types }
+  describe '#allowed_types' do
+    before do
+      # `okrs_mvc` is enabled by default; disable it here to keep CE `allowed_types` expectations stable.
+      stub_feature_flags(okrs_mvc: false)
+    end
 
-    it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all) }
+    subject(:result) { provider.allowed_types.map(&:base_type) }
+
+    context 'when namespace is a organization' do
+      let(:provider) { described_class.new(organization) }
+
+      it 'returns empty array' do
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when namespace is a group' do
+      it 'returns empty array' do
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when namespace is a project' do
+      let(:provider) { described_class.new(project) }
+
+      it 'returns available system-defined types' do
+        expect(result).to include('issue', 'incident', 'task', 'ticket')
+      end
+    end
+
+    context 'when namespace is a project namespace' do
+      let(:project_namespace) { create(:project_namespace) }
+      let(:provider) { described_class.new(project_namespace) }
+
+      it 'returns available system-defined types' do
+        expect(result).to include('issue', 'incident', 'task', 'ticket')
+      end
+    end
+
+    context 'when namespace is a user namespace' do
+      let(:provider) { described_class.new(user_namespace) }
+
+      it 'returns empty array' do
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when project is under user namespace' do
+      let_it_be(:project) { create(:project, namespace: user_namespace) }
+      let(:provider) { described_class.new(project) }
+
+      it 'returns available system-defined types' do
+        expect(result).to include('issue', 'incident', 'task', 'ticket')
+      end
+    end
+
+    context 'when namespace is nil' do
+      let(:provider) { described_class.new(nil) }
+
+      it 'returns empty array' do
+        expect(result).to eq([])
+      end
+    end
   end
 
   describe '#by_base_types' do
@@ -427,6 +477,28 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   describe '#type_class' do
     it 'returns SystemDefined::Type class' do
       expect(provider.send(:type_class)).to eq(WorkItems::TypesFramework::SystemDefined::Type)
+    end
+  end
+
+  describe '#root_ancestor (private)' do
+    subject(:root_ancestor) { provider.send(:root_ancestor) }
+
+    context 'when namespace is nil' do
+      let(:provider) { described_class.new(nil) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when namespace is an organization' do
+      let(:provider) { described_class.new(organization) }
+
+      it { is_expected.to eq(organization) }
+    end
+
+    context 'when namespace is a group' do
+      it 'returns the root ancestor of the namespace' do
+        expect(root_ancestor).to eq(group.root_ancestor)
+      end
     end
   end
 end

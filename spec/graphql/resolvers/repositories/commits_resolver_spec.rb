@@ -34,8 +34,8 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
       }
     end
 
-    subject(:resolved) do
-      field = ::Types::BaseField.from_options(
+    let(:field_instance) do
+      ::Types::BaseField.from_options(
         'field_value',
         name: 'commits',
         owner: resolver_parent,
@@ -45,8 +45,10 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         null: true,
         max_page_size: max_page_size
       )
+    end
 
-      resolve_field(field, repository, args: arguments, object_type: resolver_parent, schema: schema)
+    subject(:resolved) do
+      resolve_field(field_instance, repository, args: arguments, object_type: resolver_parent, schema: schema)
     end
 
     context 'when a valid ref is supplied' do
@@ -277,6 +279,36 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
             expect(resolved.has_next_page).to be(false)
             expect(resolved.end_cursor).to be_nil
             expect(commits.size).to eq(max_page_size)
+          end
+        end
+      end
+
+      describe 'tags' do
+        before do
+          allow(repository).to receive(:list_refs).and_call_original
+        end
+
+        context 'when the tags field is selected' do
+          it 'batch loads tags for all commits via list_refs' do
+            resolve_field(field_instance, repository,
+              args: arguments, object_type: resolver_parent, schema: schema,
+              extras: { lookahead: positive_lookahead })
+
+            expect(repository).to have_received(:list_refs).with(
+              [Gitlab::Git::TAG_REF_PREFIX],
+              pointing_at_oids: an_instance_of(Array),
+              peel_tags: true
+            )
+          end
+        end
+
+        context 'when the tags field is not selected' do
+          it 'does not load tags' do
+            resolve_field(field_instance, repository,
+              args: arguments, object_type: resolver_parent, schema: schema,
+              extras: { lookahead: negative_lookahead })
+
+            expect(repository).not_to have_received(:list_refs)
           end
         end
       end

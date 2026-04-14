@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPackagesHelmMetadataCacheStatesProjectId
+description: Backfills sharding key `packages_helm_metadata_cache_states.project_id` from `packages_helm_metadata_caches`.
+feature_category: geo_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227986
+milestone: '18.11'
+queued_migration_version: 20260318153238
+finalized_by: # version of the migration that finalized this BBM

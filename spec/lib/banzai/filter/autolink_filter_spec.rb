@@ -319,6 +319,45 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
     end
   end
 
+  context 'when text contains HTML entities near URLs' do
+    let(:text) { "See #{link} and &lt;tag&gt; http://other.com/path" }
+
+    subject(:doc) { filter(text, context) }
+
+    it 'autolinks URLs in text with entities' do
+      found_links = doc.css('a')
+
+      expect(found_links.size).to eq(2)
+      expect(found_links[0]['href']).to eq link
+      expect(found_links[1]['href']).to eq 'http://other.com/path'
+    end
+
+    context 'with an ampersand entity adjacent to a URL' do
+      let(:text) { "See #{link} &amp; stuff" }
+
+      it 'still autolinks the URL' do
+        expect(doc.at_css('a')['href']).to eq link
+      end
+    end
+  end
+
+  context 'when StringRangeMarker yields nil due to out-of-bounds range' do
+    let(:text) { "See #{link}" }
+
+    before do
+      allow_next_instance_of(Gitlab::StringRegexMarker) do |instance|
+        allow(instance).to receive(:mark_with_ranges).and_yield(nil, true, true, nil)
+      end
+    end
+
+    it 'returns a valid document without autolinking' do
+      doc = filter(text, context)
+
+      expect(doc).to be_a(Nokogiri::HTML::DocumentFragment)
+      expect(doc.at_css('a')).to be_nil
+    end
+  end
+
   # Rinku does not escape these characters in HTML attributes, but content_tag
   # does. We don't care about that difference for these specs, though.
   def unescape(html)

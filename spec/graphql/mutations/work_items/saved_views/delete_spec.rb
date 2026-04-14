@@ -64,23 +64,6 @@ RSpec.describe Mutations::WorkItems::SavedViews::Delete, feature_category: :port
       end
     end
 
-    context 'when saved views are not enabled for the namespace' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns an error without deleting' do
-        result = mutation.resolve(id: saved_view_gid)
-
-        expect(result[:saved_view]).to be_nil
-        expect(result[:errors]).to eq(['Saved views are not enabled for this namespace.'])
-      end
-
-      it 'does not delete the saved view' do
-        expect { mutation.resolve(id: saved_view_gid) }.not_to change { WorkItems::SavedViews::SavedView.count }
-      end
-    end
-
     context 'when deleting a view with multiple user subscriptions' do
       let_it_be(:other_user) { create(:user) }
       let_it_be(:other_user_saved_view) do

@@ -80,7 +80,9 @@ module Users
       return false unless Feature.enabled?(:email_based_mfa, current_user)
       return false if user_dismissed?(EMAIL_OTP_ENROLLMENT_CALLOUT)
       return false unless current_user.email_otp_required_after.present?
+
       # Only show for users who can log in with a password and don't have 2FA
+      return false unless current_user.allow_password_authentication?
       return false if current_user.password_automatically_set? || current_user.two_factor_enabled?
 
       days_until_enrollment = (current_user.email_otp_required_after.to_date - Date.current).to_i

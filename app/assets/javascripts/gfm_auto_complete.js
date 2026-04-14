@@ -2,7 +2,7 @@ import { GlBadge } from '@gitlab/ui';
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import '~/lib/utils/jquery_at_who';
-import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash';
+import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash-es';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

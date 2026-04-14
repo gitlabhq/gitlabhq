@@ -81,14 +81,14 @@ describe('Persisted radio group', () => {
       it('on click updates the data and emits event', async () => {
         createComponent();
 
-        expect(findGlFormRadioGroup().attributes('checked')).toEqual('maven');
+        expect(findGlFormRadioGroup().props('checked')).toEqual('maven');
 
         const selectedItem = 'gradle';
         findGlFormRadioGroup().vm.$emit('change', selectedItem);
         await nextTick();
 
         expect(wrapper.emitted('change').at(-1)).toStrictEqual([selectedItem]);
-        expect(findGlFormRadioGroup().attributes('checked')).toEqual(selectedItem);
+        expect(findGlFormRadioGroup().props('checked')).toEqual(selectedItem);
       });
     });
   });

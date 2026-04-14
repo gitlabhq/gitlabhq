@@ -93,6 +93,15 @@ export const typePolicies = {
   ApprovalPolicy: {
     keyFields: ['name'],
   },
+  SecurityPolicyType: {
+    keyFields: ({ type, policyConfigurationId, name }) => {
+      if (!policyConfigurationId || !type || !name) {
+        return false;
+      }
+
+      return `SecurityPolicyType:${policyConfigurationId}:${type}:${name}`;
+    },
+  },
   ComplianceFrameworkConnection: {
     merge: true,
   },

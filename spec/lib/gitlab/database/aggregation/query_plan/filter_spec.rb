@@ -27,6 +27,35 @@ RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Filter, feature_categor
     end
   end
 
+  describe 'formatter' do
+    context 'when definition has a formatter' do
+      let(:formatting_map) { { 'a' => 1, 'b' => 2 } }
+      let(:part_definition) do
+        Gitlab::Database::Aggregation::PartDefinition.new(
+          :event, :string, nil,
+          formatter: ->(values) { Array.wrap(values).map { |v| formatting_map[v] } }
+        )
+      end
+
+      it 'formats single value' do
+        filter = described_class.new(part_definition, { identifier: :event, values: 'a' })
+        expect(filter.configuration[:values]).to eq([1])
+      end
+
+      it 'formats array values' do
+        filter = described_class.new(part_definition, { identifier: :event, values: %w[a b] })
+        expect(filter.configuration[:values]).to eq([1, 2])
+      end
+    end
+
+    context 'when definition has no formatter' do
+      it 'does not modify values' do
+        filter = described_class.new(part_definition, part_configuration)
+        expect(filter.configuration[:values]).to eq(['value1'])
+      end
+    end
+  end
+
   describe 'validations' do
     it 'is valid when definition is present' do
       filter = described_class.new(part_definition, part_configuration)

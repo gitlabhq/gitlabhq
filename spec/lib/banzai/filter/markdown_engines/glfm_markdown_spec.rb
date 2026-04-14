@@ -46,15 +46,6 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
     expect(engine.render('`code`')).to eq expected
   end
 
-  it 'turns on minimal markdown options' do
-    engine = described_class.new({ minimum_markdown: true })
-    expected = <<~HTML
-      <p><a href="http://example.com">http://example.com</a> <em>emphasis</em> $x + y$</p>
-    HTML
-
-    expect(engine.render('http://example.com _emphasis_ $x + y$')).to eq expected
-  end
-
   describe 'placeholder detection' do
     let_it_be(:project) { create(:project) }
     let_it_be(:group_project) { create(:project, :in_group) }

@@ -26,6 +26,7 @@ export default function initSignupRestrictions(elementSelector = '#js-signup-for
       'canDisableMemberPromotionManagement',
       'ldapSyncConfigured',
       'samlScimConfigured',
+      'contractOveragesAllowed',
     ],
   });
 

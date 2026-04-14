@@ -82,6 +82,34 @@ gl.lazyLoader = new LazyLoader({
 
 initRails();
 
+/**
+ * TODO: Apparently we are collapsing the right sidebar on certain screensizes per default
+ * except on issue board pages. Why can't we do it with CSS?
+ *
+ * Proposal: Expose a global sidebar API, which we could import wherever we are manipulating
+ * the visibility of the sidebar.
+ *
+ * Quick fix: Get rid of jQuery for this implementation
+ */
+function initRightSidebar() {
+  const currentBreakpoint = PanelBreakpointInstance.getBreakpointSize();
+  const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.test(
+    document.body.dataset.page,
+  );
+
+  if (!isBoardsOrMR && (currentBreakpoint === 'sm' || currentBreakpoint === 'xs')) {
+    const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
+    const $layoutPage = $('.layout-page');
+
+    if ($rightSidebar.length > 0) {
+      $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+      $layoutPage.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+    } else {
+      $layoutPage.removeClass('right-sidebar-expanded right-sidebar-collapsed');
+    }
+  }
+}
+
 // Put all initialisations here that can also wait after everything is rendered and ready
 function deferredInitialisation() {
   const $body = $('body');
@@ -99,6 +127,12 @@ function deferredInitialisation() {
   initGitlabVersionCheck();
   initExpireSessionModal();
   initPanelHeightCalc();
+
+  // The right sidebar's initialisation is delayed slightly to ensure it's in the proper state
+  // depending on the page's content's width. This should probably be done differently, but this is
+  // sufficient to address caveats in the short-term.
+  // We should improve this as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/594755.
+  setTimeout(initRightSidebar, 300);
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
@@ -122,7 +156,6 @@ function deferredInitialisation() {
 
 const $body = $('body');
 const $document = $(document);
-const currentBreakpoint = PanelBreakpointInstance.getBreakpointSize();
 
 initUserTracking();
 initLayoutNav();
@@ -135,30 +168,6 @@ $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
     setTimeout(handleLocationHash, 1);
   }
 });
-
-/**
- * TODO: Apparently we are collapsing the right sidebar on certain screensizes per default
- * except on issue board pages. Why can't we do it with CSS?
- *
- * Proposal: Expose a global sidebar API, which we could import wherever we are manipulating
- * the visibility of the sidebar.
- *
- * Quick fix: Get rid of jQuery for this implementation
- */
-const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.test(
-  document.body.dataset.page,
-);
-if (!isBoardsOrMR && (currentBreakpoint === 'sm' || currentBreakpoint === 'xs')) {
-  const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
-  const $layoutPage = $('.layout-page');
-
-  if ($rightSidebar.length > 0) {
-    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-    $layoutPage.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-  } else {
-    $layoutPage.removeClass('right-sidebar-expanded right-sidebar-collapsed');
-  }
-}
 
 // prevent default action for disabled buttons
 $('.btn').click(function clickDisabledButtonCallback(e) {

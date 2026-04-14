@@ -73,7 +73,8 @@ IdPアプリケーションを作成するには:
 
 SAMLアプリケーションがOktaに作成されます。
 
-> [!note]SAML属性と詳細な設定オプションの詳細については、[SAML SSOのドキュメントを参照してください。](../../user/group/saml_sso/_index.md#okta)
+> [!note]
+> SAML属性と詳細な設定オプションの詳細については、[SAML SSOのドキュメントを参照してください。](../../user/group/saml_sso/_index.md#okta)
 
 {{< /tab >}}
 
@@ -109,7 +110,8 @@ SAMLアプリケーションがOktaに作成されます。
    - **Name identifier format**: **Persistent**を選択します。
 1. **Save**を選択します。
 
-> [!note]SAML属性と詳細な設定オプションの詳細については、[SAML SSOのドキュメントを参照してください。](../../user/group/saml_sso/_index.md#azure)
+> [!note]
+> SAML属性と詳細な設定オプションの詳細については、[SAML SSOのドキュメントを参照してください。](../../user/group/saml_sso/_index.md#azure)
 
 {{< /tab >}}
 
@@ -170,7 +172,8 @@ SAMLを設定するには:
 
 基本的なSAML接続が設定されました。
 
-> [!note]デフォルトのメンバーシップロールは、任意のロールに設定できます。すべての新しいユーザーには、SAMLを介して最初にサインインするときに、このロールが割り当てられます。デフォルトを[**最小アクセス**](../../user/permissions.md#users-with-minimal-access)に設定し、後でユーザーを昇格させると、ユーザーが過剰なアクセス権を持つリスクが軽減されます。
+> [!note]
+> デフォルトのメンバーシップロールは、任意のロールに設定できます。すべての新しいユーザーには、SAMLを介して最初にサインインするときに、このロールが割り当てられます。デフォルトを[**最小アクセス**](../../user/permissions.md#users-with-minimal-access)に設定し、後でユーザーを昇格させると、ユーザーが過剰なアクセス権を持つリスクが軽減されます。
 
 ## ステップ5: SAML設定をテストする {#step-5-test-the-saml-configuration}
 

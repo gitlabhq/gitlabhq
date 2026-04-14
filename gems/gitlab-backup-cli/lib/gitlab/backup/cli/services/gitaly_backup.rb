@@ -73,7 +73,7 @@ module Gitlab
                         raise Gitlab::Backup::Cli::Errors::GitalyBackupError, "unknown backup type: #{type}"
                       end
 
-            args = [command] + ['-path', backup_repos_path, '-layout', 'manifest']
+            args = [command] + ['-path', backup_repos_path]
 
             case type
             when :create

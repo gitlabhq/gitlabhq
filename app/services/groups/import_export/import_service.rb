@@ -29,7 +29,7 @@ module Groups
       def execute
         Gitlab::Tracking.event(self.class.name, 'create', label: 'import_group_from_file')
 
-        if valid_user_permissions? && import_file && valid_import_file? && restorers.all?(&:restore)
+        if valid_user_permissions? && import_file && valid_import_file? && preallocate_iids && restorers.all?(&:restore)
           remove_import_file
           notify_success
 
@@ -47,6 +47,7 @@ module Groups
         end
 
       ensure
+        flush_iid_records
         remove_base_tmp_dir
       end
 
@@ -59,6 +60,21 @@ module Groups
           Gitlab::Access::OWNER
         Gitlab::Access.human_access(access_level)
         # rubocop:enable Style/MultilineTernaryOperator
+      end
+
+      def preallocate_iids
+        Gitlab::Import::IidPreallocator.from_file(
+          group,
+          File.join(shared.export_path, 'max_iids.json')
+        )
+
+        true
+      end
+
+      def flush_iid_records
+        return unless group&.persisted?
+
+        InternalId.flush_records!(namespace: group)
       end
 
       def import_file

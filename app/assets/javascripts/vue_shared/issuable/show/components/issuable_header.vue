@@ -243,9 +243,9 @@ export default {
         </template>
         <template #author>
           <gl-link
-            class="js-user-link gl-font-bold"
+            :class="['gl-font-bold', { 'js-user-link': !isAuthorExternal }]"
             :href="author.webUrl"
-            :data-user-id="authorId"
+            :data-user-id="isAuthorExternal ? undefined : authorId"
             data-testid="issue-author"
           >
             <span :class="[{ 'gl-hidden': !isAuthorExternal }, '@sm/panel:gl-inline']">

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupImport, feature_category: :importers do
+RSpec.describe API::GroupImport, :with_current_organization, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'
@@ -319,6 +319,19 @@ RSpec.describe API::GroupImport, feature_category: :importers do
       expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
     end
 
+    context 'when authenticating with a granular personal access token without authorize permissions' do
+      let(:pat) { create(:granular_pat, user: user) }
+
+      subject { post api('/groups/import/authorize', personal_access_token: pat), headers: workhorse_headers }
+
+      it 'grants access' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      end
+    end
+
     it 'rejects requests that bypassed gitlab-workhorse' do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
@@ -361,11 +374,6 @@ RSpec.describe API::GroupImport, feature_category: :importers do
           expect(json_response['RemoteObject']).to be_nil
         end
       end
-    end
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_group_import do
-      let(:boundary_object) { :instance }
-      let(:request) { post api('/groups/import/authorize', personal_access_token: pat), headers: workhorse_headers }
     end
   end
 end

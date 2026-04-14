@@ -12,7 +12,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   subject(:cluster) { build(:cluster) }
 
   it { is_expected.to include_module(HasEnvironmentScope) }
-  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:user).optional }
   it { is_expected.to belong_to(:management_project).class_name('::Project') }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }

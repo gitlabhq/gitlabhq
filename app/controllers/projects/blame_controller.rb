@@ -19,9 +19,9 @@ class Projects::BlameController < Projects::ApplicationController
     load_environment
     load_blame
   rescue Gitlab::Git::Blame::IgnoreRevsFormatError
-    redirect_show_with_flash(s_('Malformed .git-blame-ignore-revs'))
+    redirect_show_with_flash(_('Malformed .git-blame-ignore-revs'))
   rescue Gitlab::Git::Blame::IgnoreRevsFileError
-    redirect_show_with_flash(s_('.git-blame-ignore-revs is not a file'))
+    redirect_show_with_flash(_('.git-blame-ignore-revs is not a file'))
   end
 
   def streaming

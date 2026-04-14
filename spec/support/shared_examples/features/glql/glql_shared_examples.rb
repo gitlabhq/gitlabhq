@@ -4,33 +4,41 @@ require 'spec_helper'
 
 LIMIT = 5
 TOTAL_ISSUES = 30
-TOTAL_ISSUES_AGGREGATE_VIEW = 5
 
 RSpec.shared_examples 'embedded views (GLQL)' do
-  context 'with a simple query displaying a table of issues' do
-    let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
-    let(:modifier_key) { is_mac ? :command : :control }
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
 
+  def submit_glql_view(title:, glql_lines:)
+    stub_feature_flags(glql_load_on_click: false)
+    refresh
+    wait_for_all_requests
+
+    fill_in 'Title', with: title
+
+    textarea = find_field('Description')
+    textarea.send_keys "```glql\n"
+    glql_lines.each { |line| textarea.send_keys "#{line}\n" }
+    textarea.send_keys "```"
+    textarea.send_keys [modifier_key, :enter]
+    wait_for_all_requests
+  end
+
+  context 'with a simple query displaying a table of issues' do
     before_all do
       label = create(:label, project: project, name: 'glql')
       create_list(:issue, TOTAL_ISSUES, project: project, labels: [label])
     end
 
     before do
-      stub_feature_flags(glql_load_on_click: false)
-      refresh
-
-      fill_in 'Title', with: 'GLQL view test'
-
-      textarea = find 'textarea'
-      textarea.send_keys "```glql\n"
-      textarea.send_keys "title: All issues with label glql\n"
-      textarea.send_keys "query: type = Issue and label = ~glql\n"
-      textarea.send_keys "limit: #{LIMIT}\n"
-      textarea.send_keys "```"
-
-      # submit
-      textarea.send_keys [modifier_key, :enter]
+      submit_glql_view(
+        title: 'GLQL view test',
+        glql_lines: [
+          "title: All issues with label glql",
+          "query: type = Issue and label = ~glql",
+          "limit: #{LIMIT}"
+        ]
+      )
     end
 
     it 'renders embedded views properly' do
@@ -51,43 +59,78 @@ RSpec.shared_examples 'embedded views (GLQL)' do
     end
   end
 
-  context 'with an aggregate query (with feature flag enabled)' do
-    let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
-    let(:modifier_key) { is_mac ? :command : :control }
+  context 'with a query displaying jobs' do
+    let_it_be(:ci_pipeline) { create(:ci_pipeline, :success, project: project) }
+    let_it_be(:ci_build) { create(:ci_build, :success, pipeline: ci_pipeline, name: 'rspec unit') }
+
+    before do
+      submit_glql_view(
+        title: 'GLQL job query test',
+        glql_lines: [
+          "title: Jobs",
+          "query: type = Job and project = \"#{project.full_path}\"",
+          "fields: name, status",
+          "limit: 5",
+          "display: table"
+        ]
+      )
+    end
+
+    it 'renders the job query' do
+      expect(page).to have_content('Jobs')
+      expect(page).to have_css("[data-testid='glql-facade'] table")
+      expect(page).to have_content('rspec unit')
+    end
+  end
+
+  context 'with a query displaying pipelines' do
+    let_it_be(:ci_pipeline) { create(:ci_pipeline, :success, project: project, name: 'Deploy pipeline') }
+
+    before do
+      submit_glql_view(
+        title: 'GLQL pipeline query test',
+        glql_lines: [
+          "title: Pipelines",
+          "query: type = Pipeline and project = \"#{project.full_path}\" and status = success",
+          "fields: path, status",
+          "limit: 5",
+          "display: table"
+        ]
+      )
+    end
+
+    it 'renders the pipeline query' do
+      expect(page).to have_content('Pipelines')
+      expect(page).to have_css("[data-testid='glql-facade'] table")
+      expect(page).to have_content("pipelines/#{ci_pipeline.id}")
+    end
+  end
+
+  context 'with a query displaying projects' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_project) { create(:project, namespace: group) }
 
     before_all do
-      label = create(:label, project: project, name: 'glql')
-      create_list(:issue, TOTAL_ISSUES_AGGREGATE_VIEW, project: project, labels: [label])
+      group.add_maintainer(user)
     end
 
     before do
-      stub_feature_flags(glql_load_on_click: false)
-      stub_feature_flags(glql_aggregation: true)
-      refresh
-
-      fill_in 'Title', with: 'GLQL aggregate view test'
-
-      textarea = find 'textarea'
-      textarea.send_keys "```glql\n"
-      textarea.send_keys "display: table\n"
-      textarea.send_keys "title: Issues created in the last 7 days\n"
-      textarea.send_keys "query: type = Issue and label = ~glql and created > -7d and created <= today()\n"
-      textarea.send_keys "groupBy: timeSegment(1d) on createdAt\n"
-      textarea.send_keys "aggregate: count\n"
-      textarea.send_keys "```"
-
-      # submit
-      textarea.send_keys [modifier_key, :enter]
+      submit_glql_view(
+        title: 'GLQL project query test',
+        glql_lines: [
+          "title: Projects",
+          "query: type = Project and namespace = \"#{group.full_path}\"",
+          "fields: id, fullPath, webUrl",
+          "limit: 10",
+          "display: table"
+        ]
+      )
     end
 
-    it 'renders the aggregate query properly', pending: 'Skipped while aggregates are broken during the TS removal' do
-      expect(page).to have_content('Issues created in the last 7 days')
-      expect(page).to have_css("[data-testid='column-0']", text: 'Created at')
-      expect(page).to have_css("[data-testid='column-1']", text: 'Count')
-
-      # shows the correct count for the last day
-      expect(page).to have_css("[data-testid='glql-facade'] tr:last-child td:last-child",
-        text: TOTAL_ISSUES_AGGREGATE_VIEW)
+    it 'renders the project query' do
+      expect(page).to have_content('Projects')
+      expect(page).to have_css("[data-testid='glql-facade'] table")
+      expect(page).to have_text(group_project.full_path)
     end
   end
 end

@@ -8,7 +8,8 @@ module Gitlab
   module Cells
     module TopologyService
       module ClassifyService
-        # Public read-only service used by various Routing Services
+        # Public read-only service used by routing services to determine which cell
+        # should handle a given request.
         class Service
 
           include ::GRPC::GenericService
@@ -18,6 +19,8 @@ module Gitlab
           self.service_name = 'gitlab.cells.topology_service.ClassifyService'
 
           rpc :GetCells, ::Gitlab::Cells::TopologyService::GetCellsRequest, ::Gitlab::Cells::TopologyService::GetCellsResponse
+          # Given a classify type and value, resolves the target cell and returns
+          # the action and proxy address for the caller.
           rpc :Classify, ::Gitlab::Cells::TopologyService::ClassifyRequest, ::Gitlab::Cells::TopologyService::ClassifyResponse
         end
 

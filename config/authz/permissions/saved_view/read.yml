@@ -1,3 +1,7 @@
 ---
 name: read_saved_view
-description: Grants the ability to read a saved view
+description: Grants the ability to read private saved views that the user authored.
+  Saved views are user-configured filters and sorts on work item lists. The saved
+  view policy combines this permission with an authorship check to control access
+  to private saved views. Shared (non-private) saved views are readable by all
+  members with namespace read access regardless of this permission.

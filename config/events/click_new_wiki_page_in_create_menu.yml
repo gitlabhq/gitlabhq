@@ -1,0 +1,21 @@
+---
+description: User clicks 'New wiki page' in the Create (+) menu in the top navigation bar
+internal_events: true
+status: active
+action: click_new_wiki_page_in_create_menu
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: The context level of the wiki page creation, either 'project' or 'group'
+product_group: knowledge
+product_categories:
+- wiki
+milestone: '18.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227836
+tiers:
+- free
+- premium
+- ultimate

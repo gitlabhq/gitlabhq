@@ -21,6 +21,8 @@ class DetectRepositoryLanguagesWorker # rubocop:disable Scalability/IdempotentWo
     try_obtain_lease do
       ::Projects::DetectRepositoryLanguagesService.new(project).execute
     end
+  rescue Gitlab::Git::CommandError => e
+    Gitlab::ErrorTracking.track_exception(e, project_id: project_id)
   end
 
   private

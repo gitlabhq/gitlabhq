@@ -196,7 +196,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     end
   end
 
-  describe '#head_pipeline' do
+  describe '#head_pipeline', :request_store do
     let_it_be(:project) { create(:project, :public, :repository) }
     let_it_be(:merge_request) { create(:merge_request, :with_head_pipeline, source_project: project) }
 

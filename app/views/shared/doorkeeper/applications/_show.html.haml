@@ -37,6 +37,13 @@
       %td
         = @application.confidential? ? _('Yes') : _('No')
 
+    %tr
+      %td
+        = _('Device authorization grant')
+      %td
+        %span{ data: { testid: 'device-code-enabled-value' } }
+          = @application.device_code_enabled? ? _('Yes') : _('No')
+
     = render "shared/tokens/scopes_list", token: @application
 
 .gl-flex.gl-gap-3

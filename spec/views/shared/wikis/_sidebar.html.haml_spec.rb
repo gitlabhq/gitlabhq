@@ -27,5 +27,15 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
 
       expect(rendered).to include('Some sidebar content')
     end
+
+    it 'sets edit_sidebar_url with edit param' do
+      render
+
+      sidebar_element = Nokogiri::HTML.fragment(rendered).at_css('#js-wiki-sidebar')
+      edit_url = sidebar_element['data-edit-sidebar-url']
+
+      expect(edit_url).to include('edit=true')
+      expect(edit_url).not_to include('action=edit')
+    end
   end
 end

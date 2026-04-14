@@ -16,6 +16,7 @@ fragment WorkItem on WorkItem {
   description
   confidential
   createdAt
+  updatedAt
   closedAt
   userDiscussionsCount
   webUrl

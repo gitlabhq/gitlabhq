@@ -12,7 +12,13 @@ module InitializerConnections
         "InitializerConnections Backtrace: #{line}"
       end
 
-      warn(["InitializerConnections Query: #{payload[:sql]}", *backtrace].join("\n"))
+      # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Development output
+      warn([
+        "InitializerConnections Query: #{payload[:sql]}",
+        *backtrace,
+        "See https://docs.gitlab.com/ee/development/rails_initializers.html#database-connections-in-initializers"
+      ].join("\n"))
+      # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
     end
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do

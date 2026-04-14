@@ -75,17 +75,6 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
             get :index, params: { namespace_id: project.namespace.to_param, project_id: project, archived: 'true' }
             expect(assigns(:prioritized_labels)).to be_empty
           end
-
-          context 'with feature flag labels_archive disabled' do
-            before do
-              stub_feature_flags(labels_archive: false)
-            end
-
-            it 'returns all prioritized labels' do
-              get :index, params: { namespace_id: project.namespace.to_param, project_id: project, archived: 'true' }
-              expect(assigns(:prioritized_labels)).to match_array group_priority_labels + project_priority_labels
-            end
-          end
         end
       end
 

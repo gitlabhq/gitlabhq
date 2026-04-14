@@ -1,6 +1,6 @@
 import { GlFormGroup, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';

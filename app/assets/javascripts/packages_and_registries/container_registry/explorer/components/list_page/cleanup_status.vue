@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlIcon, GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeTilRun } from '../../utils';

@@ -1,5 +1,5 @@
 - editing ||= false
-- edit_sidebar_url = @sidebar_page ? wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit) : wiki_page_path(@wiki, Wiki::SIDEBAR, view: 'create')
+- edit_sidebar_url = @sidebar_page ? wiki_page_path(@wiki, Wiki::SIDEBAR, edit: true) : wiki_page_path(@wiki, Wiki::SIDEBAR, view: 'create')
 - has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
 #js-wiki-sidebar{

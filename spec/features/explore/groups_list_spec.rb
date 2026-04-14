@@ -49,72 +49,6 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
         'Below you will find all the groups that are public or internal. Contribute by requesting to join a group.'
       )
     end
-
-    context 'when `explore_groups_vue` flag is disabled' do
-      before do
-        stub_feature_flags(explore_groups_vue: false)
-
-        visit explore_groups_path
-        wait_for_requests
-      end
-
-      it 'resets search when user cleans the input' do
-        search(group.name)
-        click_button 'Search'
-        wait_for_requests
-
-        expect(page).to have_content(group.full_name)
-        expect(page).not_to have_content(public_group.full_name)
-
-        click_button 'Clear'
-        wait_for_requests
-
-        expect(page).to have_content(group.full_name)
-        expect(page).to have_content(public_group.full_name)
-        expect(page).not_to have_content(private_group.full_name)
-        expect(page.all('[data-testid="nested-groups-projects-list"] .groups-list li').length).to eq 2
-      end
-
-      it 'shows projects count' do
-        expect(
-          find('[data-testid="nested-groups-projects-list"] .groups-list li:first-child .stats .number-projects')
-        ).to have_text("1")
-      end
-
-      context 'when using pagination' do
-        before do
-          group.add_owner(user)
-          public_group.add_owner(user)
-
-          allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-          sign_in(user)
-          visit explore_groups_path
-          wait_for_requests
-        end
-
-        it 'loads results for next page' do
-          expect(page).to have_selector('.gl-pagination a', count: 3)
-
-          # Check first page
-          expect(page).to have_content(public_group.full_name)
-          expect(page).to have_selector("#group-#{public_group.id}")
-          expect(page).not_to have_content(group.full_name)
-          expect(page).not_to have_selector("#group-#{group.id}")
-
-          # Go to next page
-          find_by_testid('gl-pagination-next').click
-
-          wait_for_requests
-
-          # Check second page
-          expect(page).to have_content(group.full_name)
-          expect(page).to have_selector("#group-#{group.id}")
-          expect(page).not_to have_content(public_group.full_name)
-          expect(page).not_to have_selector("#group-#{public_group.id}")
-        end
-      end
-    end
   end
 
   context 'when there are no groups to show' do
@@ -128,17 +62,6 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
 
       expect(page).to have_content(s_('Projects|Explore active groups'))
       expect(page).to have_content(s_('Projects|Browse groups to learn from and contribute to.'))
-    end
-
-    context 'when `explore_groups_vue` is disabled' do
-      it 'shows empty state' do
-        stub_feature_flags(explore_groups_vue: false)
-
-        visit explore_groups_path
-        wait_for_requests
-
-        expect(page).to have_content(_('No public or internal groups'))
-      end
     end
   end
 

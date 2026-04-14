@@ -10,7 +10,7 @@ Use this API to interact with starred projects. For more information, see [proje
 
 ## List projects starred by a user
 
-Get a list of visible projects starred by the given user. When accessed without
+Lists all visible projects starred by a specified user. When accessed without
 authentication, only public projects are returned.
 
 ```plaintext
@@ -24,7 +24,7 @@ Supported attributes:
 | `user_id`                     | string   | Yes      | The ID or username of the user. |
 | `archived`                    | boolean  | No       | Limit by archived status. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |
@@ -273,7 +273,7 @@ Example response:
 
 ## List users who starred a project
 
-List the users who starred a project.
+Lists all users who starred a specified project.
 
 ```plaintext
 GET /projects/:id/starrers

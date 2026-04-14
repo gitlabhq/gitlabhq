@@ -582,12 +582,21 @@ export function queryToObject(
  * @param {String?} query - query string (default: window.location.search)
  * @param {Object?} options
  * @param {Boolean?} options.preservePlus - if true, decode without treating '+' as space (for ref/branch names containing '+')
+ * @param {Boolean?} options.gatherArrays - gather array values into an Array
  * @returns value of the parameter as string
  */
-export const getParameterByName = (name, query = window.location.search, options = {}) => {
+export const getParameterByName = (
+  name,
+  query = window.location.search,
+  { gatherArrays = false, preservePlus = false } = {},
+) => {
   const queryString = typeof query === 'string' ? query : window.location.search;
-  const opts = options?.preservePlus === true ? { preservePlusForKeys: [name] } : {};
-  const parsed = queryToObject(queryString, opts);
+  const options = { gatherArrays };
+  if (preservePlus) {
+    options.preservePlusForKeys = [name];
+  }
+
+  const parsed = queryToObject(queryString, options);
   return parsed[name] ?? null;
 };
 
@@ -737,9 +746,10 @@ export function constructWebIDEPath({
   }
   return mergeUrlParams(
     {
+      merge_request_id: iid,
       target_project: sourceProjectFullPath !== targetProjectFullPath ? targetProjectFullPath : '',
     },
-    webIDEUrl(`/${sourceProjectFullPath}/merge_requests/${iid}`),
+    webIDEUrl(`/${sourceProjectFullPath}`),
   );
 }
 

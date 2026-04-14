@@ -154,7 +154,9 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
                                     "ci_sources_pipelines"
                                 WHERE
                                     "ci_sources_pipelines"."pipeline_id" = "p_ci_pipelines"."id"
+                                    AND "ci_sources_pipelines"."partition_id" = "p_ci_pipelines"."partition_id"
                                     AND "ci_sources_pipelines"."source_pipeline_id" = "base_and_descendants"."id"
+                                    AND "ci_sources_pipelines"."source_partition_id" = "base_and_descendants"."partition_id"
                                     AND "ci_sources_pipelines"."source_project_id" = "ci_sources_pipelines"."project_id"))
                             SELECT
                                 "id"

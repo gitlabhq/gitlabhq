@@ -375,7 +375,7 @@ When you dismiss a vulnerability you must choose one of the following reasons:
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role for the project, or a custom role with the
+- You must have the Security Manager, Maintainer or Owner role for the project, or a custom role with the
   `admin_vulnerability` permission.
 
 To change a vulnerability's status from its Vulnerability Page:

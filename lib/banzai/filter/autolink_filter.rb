@@ -93,6 +93,8 @@ module Banzai
       private
 
       def autolink_match(match)
+        return match.to_s unless match
+
         # start by stripping out dangerous links
         begin
           uri = Addressable::URI.parse(match)

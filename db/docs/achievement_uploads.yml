@@ -2,6 +2,7 @@
 table_name: achievement_uploads
 classes:
 - Achievements::Achievement
+- Geo::AchievementUpload
 - Upload
 feature_categories:
 - user_profile

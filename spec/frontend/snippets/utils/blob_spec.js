@@ -1,9 +1,9 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { decorateBlob, createBlob, diffAll } from '~/snippets/utils/blob';
 import { testEntries, createBlobsFromTestEntries } from '../test_utils';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
   uniqueId: (arg) => `${arg}fakeUniqueId`,
 }));
 

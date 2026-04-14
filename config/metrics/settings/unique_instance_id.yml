@@ -2,6 +2,8 @@
 key_path: unique_instance_id
 description: Unique instance ID
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: string
 status: active
 milestone: "17.11"

@@ -2,6 +2,7 @@
 
 require 'resolv'
 require 'ipaddress'
+require 'ipaddr'
 require_relative 'url_allowlist'
 
 module Gitlab
@@ -205,7 +206,51 @@ module Gitlab
 
           # `no_proxy|NO_PROXY` is being used. We must check whether it
           # applies to this specific URI.
-          ::URI::Generic.use_proxy?(uri.hostname, ip_address, get_port(uri), no_proxy_env)
+
+          # URI::Generic.use_proxy? uses a regex that splits entries on colons,
+          # so it cannot correctly parse IPv6 literal addresses in no_proxy.
+          # Handle IPv6 hostnames separately until https://github.com/ruby/uri/issues/218 is fixed.
+          hostname = uri.hostname
+          return !ipv6_excluded_by_no_proxy?(hostname, get_port(uri)) if hostname&.match?(Resolv::IPv6::Regex)
+
+          ::URI::Generic.use_proxy?(hostname, ip_address, get_port(uri), no_proxy_env)
+        end
+
+        # Returns true if an IPv6 hostname is excluded from proxying via no_proxy.
+        #
+        # IPv6 entries in no_proxy may be formatted as:
+        #   2001:db8::1         - bare IPv6 without port
+        #   [2001:db8::1]       - bracketed without port
+        #   [2001:db8::1]:8080  - bracketed with port
+        #
+        # IPAddr is used for comparison so that different textual representations
+        # of the same address match (e.g. 2600:1900::  ==  2600:1900:0:0:0:0:0:0).
+        def ipv6_excluded_by_no_proxy?(ipv6_hostname, port)
+          begin
+            target_ip = IPAddr.new(ipv6_hostname)
+          rescue IPAddr::InvalidAddressError
+            # Treat malformed IPv6 addresses as not excluded from proxy
+            return false
+          end
+
+          no_proxy_env.split(/[\s,]+/).any? do |entry|
+            m = entry.match(/\A\[([^\]]+)\](?::(\d{1,5}))?\z/)
+            if m
+              entry_host = m[1]
+              entry_port = m[2]&.to_i
+            elsif entry.exclude?(']')
+              # Bare IPv6 without brackets cannot unambiguously specify a port
+              entry_host = entry
+              entry_port = nil
+            else
+              next
+            end
+
+            entry_ip = IPAddr.new(entry_host)
+            entry_ip == target_ip && (entry_port.nil? || entry_port == port)
+          rescue IPAddr::InvalidAddressError
+            false
+          end
         end
 
         # Returns addrinfo object for the URI.

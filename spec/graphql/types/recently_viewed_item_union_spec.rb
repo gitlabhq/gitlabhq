@@ -11,6 +11,10 @@ RSpec.describe GitlabSchema.types['RecentlyViewedItemUnion'], feature_category: 
     expect(described_class.resolve_type(build(:merge_request), {})).to eq(Types::MergeRequestType)
   end
 
+  it 'resolves WikiPage::Meta to WikiPageType' do
+    expect(described_class.resolve_type(build(:wiki_page_meta), {})).to eq(Types::Wikis::WikiPageType)
+  end
+
   it 'raises error for unknown type' do
     expect { described_class.resolve_type(Object.new, {}) }.to raise_error(/Unexpected RecentlyViewedItem type/)
   end

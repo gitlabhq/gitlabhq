@@ -5,4 +5,6 @@
 # avoiding SSL verification issues when IAM runs on HTTP (localhost:8084)
 #
 # DEVELOPMENT ONLY: This middleware is only active in development environments.
-Rails.application.config.middleware.use Gitlab::Middleware::IamServiceProxy if Rails.env.development?
+if Rails.env.development? && Authn::IamAuthService.enabled?
+  Rails.application.config.middleware.use Gitlab::Middleware::IamServiceProxy
+end

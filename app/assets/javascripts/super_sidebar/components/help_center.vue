@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import HelpCenterUpgradeSubscription from 'ee_component/super_sidebar/components/help_center_upgrade_subscription.vue';
 import GitlabVersionCheckBadge from 'jh_else_ce/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
@@ -20,6 +21,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
+    HelpCenterUpgradeSubscription,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,8 +58,14 @@ export default {
     };
   },
   computed: {
+    showUpgradeSubscription() {
+      return Boolean(this.sidebarData.free_group_upgrade_link);
+    },
     showWhatsNewTopMenu() {
-      return !this.sidebarData.display_upgrade_subscription && this.showWhatsNewNotification;
+      return !this.showUpgradeSubscription && this.showWhatsNewNotification;
+    },
+    showNotificationDot() {
+      return this.showUpgradeSubscription && this.showWhatsNewNotification;
     },
     itemGroups() {
       const groups = {
@@ -229,7 +237,7 @@ export default {
       if (this.showWhatsNewNotification && this.whatsNewMostRecentReleaseUnreadCount === 0) {
         this.showWhatsNewNotification = false;
 
-        if (!this.sidebarData.display_upgrade_subscription) {
+        if (!this.showUpgradeSubscription) {
           this.$toast.show(this.$options.i18n.whatsnewToast);
         }
       }
@@ -258,6 +266,11 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-col gl-gap-2">
+    <help-center-upgrade-subscription
+      v-if="showUpgradeSubscription"
+      :upgrade-link="sidebarData.free_group_upgrade_link"
+    />
+
     <gl-button
       v-if="showWhatsNewTopMenu"
       v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
@@ -307,7 +320,7 @@ export default {
           data-testid="sidebar-help-button"
         >
           <span
-            v-if="sidebarData.display_upgrade_subscription && showWhatsNewNotification"
+            v-if="showNotificationDot"
             data-testid="notification-dot"
             class="notification-dot-info"
           ></span>

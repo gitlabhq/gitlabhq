@@ -3,6 +3,8 @@ data_category: optional
 key_path: gravatar_enabled
 description: Whether gravatar is enabled
 product_group: authentication
+product_categories:
+- user_profile
 value_type: boolean
 status: active
 time_frame: none

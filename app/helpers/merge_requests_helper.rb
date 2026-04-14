@@ -159,10 +159,6 @@ module MergeRequestsHelper
     end
   end
 
-  def notifications_todos_buttons_enabled?
-    Feature.enabled?(:notifications_todos_buttons, current_user)
-  end
-
   def can_use_description_composer(_user, _merge_request)
     false
   end

@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Bitbucket Cloudから移行する
-description: "プロジェクトをBitbucket CloudからGitLabにインポートします。"
+description: "Bitbucket CloudからGitLabへ移行する。"
 ---
 
 {{< details >}}
@@ -15,7 +15,7 @@ description: "プロジェクトをBitbucket CloudからGitLabにインポート
 
 {{< history >}}
 
-- GitLab 16.0で導入され、GitLab 15.11.1およびGitLab 15.10.5にバックポートされたメンテナーロールの要件（デベロッパーロールではない）。
+- デベロッパーロールではなくメンテナーロールを必要とするように変更されました。この変更はGitLab 16.0で導入され、GitLab 15.11.1およびGitLab 15.10.5にもバックポートされています。
 - Bitbucket Cloudからの並列インポートは、GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/412614)されました（`bitbucket_parallel_importer`という名前の[フラグ付き](../../administration/feature_flags/_index.md)）。デフォルトでは無効になっています。
 - GitLab 16.6の[GitLab.comで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/423530)になりました。
 - GitLab 16.7で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/423530)になりました。機能フラグ`bitbucket_parallel_importer`は削除されました。
@@ -43,11 +43,11 @@ Bitbucket Cloudインポーターは、Bitbucket Cloudからアイテムのサ�
 
 ## インポーターのワークフロー {#importer-workflow}
 
-Bitbucket Cloudのアイテムをインポートすると、次のようになります:
+Bitbucket Cloudのアイテムがインポートされる場合は、以下のとおりとなります:
 
-- プルリクエストとイシューへの参照は保持される。
-- リポジトリの公開アクセスは保持されます。リポジトリがBitbucket Cloudでプライベートな場合、GitLabではプライベートとして作成されます。
-- インポートされたイシュー、マージリクエスト、コメントには、GitLabに**インポート済み**バッジが表示されます。
+- プルリクエストとイシューへの参照は保持されます。
+- リポジトリの公開アクセスは保持されます。リポジトリがBitbucket Cloudで非公開の場合、GitLabでは非公開として作成されます。
+- インポートされたイシュー、マージリクエスト、コメントには、GitLabで**インポート済み**バッジが付いています。
 
 イシュー、プルリクエスト、コメントをインポートする場合、Bitbucket Cloudインポーターは次のようになります:
 
@@ -62,16 +62,16 @@ Bitbucket Cloudのアイテムをインポートすると、次のようにな�
 
 イシューの場合、インポーターは次のようになります:
 
-- Bitbucketのイシューのタイプに対応するラベルを追加します。`bug`、`enhancement`、`proposal`、または`task`のいずれか。
+- Bitbucketのイシューのタイプに対応するラベルを追加します。`bug`、`enhancement`、`proposal`、または`task`のいずれかです。
 - Bitbucketのイシューが、`resolved`、`invalid`、`duplicate`、`wontfix`、または`closed`のいずれかであった場合、GitLabのイシューを閉じます。
 
-Bitbucket Cloudインポーターは、新しいネームスペース（グループ）が存在しない場合に作成します。ネームスペースが使用されている場合、リポジトリは、インポート処理を開始したユーザーのネームスペースの下にインポートされます。
+Bitbucket Cloudインポーターは、新しいネームスペース（グループ）が存在しない場合に作成します。ネームスペースが使用されている場合、リポジトリはインポートプロセスを開始したユーザーのネームスペースの下にインポートされます。
 
 ## 前提条件 {#prerequisites}
 
-- [Bitbucket Cloudインテグレーション](../../integration/bitbucket.md)を有効にするか、GitLab管理者に有効にするように依頼する必要があります。GitLab.comでは、デフォルトで有効になっています。
-- [Bitbucket Cloudインポート元](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)を有効にするか、GitLab管理者に有効にするように依頼する必要があります。GitLab.comでは、デフォルトで有効になっています。
-- インポート先の宛先グループに対するメンテナーロール以上が必要です。
+- [Bitbucket Cloudのインテグレーション](../../integration/bitbucket.md)を有効にする必要があります。無効な場合は、GitLab管理者に有効にするように依頼してください。GitLab.comではデフォルトで有効になっています。
+- [Bitbucket Cloudのインポート元](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)を有効にする必要があります。無効な場合は、GitLab管理者に有効にするように依頼してください。GitLab.comではデフォルトで有効になっています。
+- インポート先のグループで、メンテナーまたはオーナーロールが必要です。
 - Bitbucketのプルリクエストは、同じソースおよび宛先プロジェクトを持ち、プロジェクトのフォークからのものであってはなりません。そうでない場合、プルリクエストは空のマージリクエストとしてインポートされます。
 
 ユーザーのコントリビュートをマップするには、各ユーザーがプロジェクトのインポートの前に以下を完了する必要があります:
@@ -81,9 +81,12 @@ Bitbucket Cloudインポーターは、新しいネームスペース（グル�
 
 ### Bitbucket Cloudアプリパスワードを生成する {#generate-a-bitbucket-cloud-app-password}
 
+> [!warning]
+> アプリケーションパスワードのサポートは、GitLab 18.9で[非推奨](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961)になり、19.0での削除が予定されています。代わりに[ユーザーAPIトークン](https://support.atlassian.com/organization-administration/docs/understand-user-api-tokens/)を使用してください。
+
 インポートAPIを使用してBitbucket Cloudリポジトリをインポートする場合は、Bitbucket Cloudアプリパスワードを作成する必要があります。
 
-Bitbucket Cloudアプリパスワードを生成するには:
+Bitbucket Cloudアプリパスワードを生成するには、次の手順に従います:
 
 1. <https://bitbucket.org/account/settings/>に移動します。
 1. **Access Management**セクションで、**App passwords**を選択します。
@@ -108,8 +111,8 @@ Bitbucket Cloudアプリパスワードを生成するには:
 1. **プロジェクトをインポート**を選択します。
 1. **Bitbucket Cloud**を選択します。
 1. Bitbucketにサインインし、**アクセス許可**を選択して、GitLabがBitbucketアカウントにアクセスできるようにします。
-1. インポートするプロジェクトを選択するか、すべてのプロジェクトをインポートします。名前でプロジェクトをフィルタリングし、各プロジェクトのインポート先のネームスペースを選択できます。
-1. プロジェクトをインポートするには: 
+1. インポートしたいプロジェクトを選択するか、すべてのプロジェクトをインポートします。名前でプロジェクトをフィルタリングし、各プロジェクトのインポート先のネームスペースを選択できます。
+1. プロジェクトをインポートするには、以下の手順に従います: 
    - 初めての場合は、**インポート**を選択します。
    - 2回目以降は、**再インポート**を選択します。新しい名前を指定し、もう一度**再インポート**を選択します。再インポートすると、ソースプロジェクトの新しいコピーが作成されます。
 
@@ -121,7 +124,7 @@ Bitbucket Cloudアプリパスワードを生成するには:
 
 正しいアカウントにサインインしてください。誤ったアカウントでインポート処理を誤って開始した場合は、次の手順に従ってください:
 
-1. GitLabのBitbucketアカウントへのアクセスを失効させます。これは、[Bitbucket Cloudリポジトリをインポートした](#import-your-bitbucket-cloud-repositories)ときの処理を本質的に元に戻します。
+1. GitLabのBitbucketアカウントへのアクセスを失効させます。これにより、[Bitbucket Cloudリポジトリをインポートした](#import-your-bitbucket-cloud-repositories)ときの処理を本質的に元に戻されます。
 1. Bitbucketアカウントからサインアウトし、[Bitbucket Cloudリポジトリを再度インポートします](#import-your-bitbucket-cloud-repositories)。
 
 ### 名前が一致してもユーザーマッピングが失敗する {#user-mapping-fails-despite-matching-names}
@@ -144,5 +147,5 @@ Bitbucket Cloudアプリパスワードを生成するには:
 - [インポートAPI](../../api/import.md)
 - [インポートとエクスポートの設定](../../administration/settings/import_and_export_settings.md)。
 - [インポートに関するSidekiqの設定](../../administration/sidekiq/configuration_for_imports.md)。
-- [複数のSidekiqプロセスを実行する](../../administration/sidekiq/extra_sidekiq_processes.md)。
-- [特定のジョブクラスを処理する](../../administration/sidekiq/processing_specific_job_classes.md)。
+- [複数のSidekiqプロセスの実行](../../administration/sidekiq/extra_sidekiq_processes.md)。
+- [特定のジョブクラスの処理](../../administration/sidekiq/processing_specific_job_classes.md)。

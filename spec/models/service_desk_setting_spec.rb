@@ -11,6 +11,18 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_SERVICE_DESK_SETTINGS,
     claiming_attributes: [:custom_email]
 
+  describe '.cells_claims_scope' do
+    let!(:with_email) { create(:service_desk_setting, custom_email: 'support@example.com') }
+    let!(:without_email) { create(:service_desk_setting, custom_email: nil) }
+
+    it 'returns only settings with a non-nil custom_email' do
+      scope = described_class.cells_claims_scope
+
+      expect(scope).to include(with_email)
+      expect(scope).not_to include(without_email)
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_length_of(:outgoing_name).is_at_most(255) }

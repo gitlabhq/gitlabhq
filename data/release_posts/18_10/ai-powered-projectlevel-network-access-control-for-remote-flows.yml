@@ -1,0 +1,23 @@
+---
+features:
+  secondary:
+  - name: "Configure network access control for remote flows in projects"
+    available_in: [premium, ultimate]
+    gitlab_com: true
+    self_managed: true
+    gitlab_dedicated: true
+    gitlab_dedicated_for_government: true
+    add_ons: []
+    documentation_link: 'https://docs.gitlab.com/user/duo_agent_platform/environment_sandbox/#configure-a-network-policy'
+    image_url: '/images/18_10/projectlevel_network_access_control_for_remote_flows.png'
+    reporter: frwang1
+    stage: ai-powered
+    categories:
+    - Duo Agent Platform
+    issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/593560'
+    description: |
+      You can now configure [network access controls](https://docs.gitlab.com/user/duo_agent_platform/environment_sandbox/) for flows using GitLab runners in projects.
+
+      This provides secure external integrations, while maintaining control over network destinations. This also gives project maintainers the flexibility to allow necessary API connections, MCP servers, and third-party services while enforcing security boundaries.
+
+      Configure network access controls in the `network_policy` section of `agent-config.yml`. The `agent-config.yml` is protected by branch protection rules and MR approval workflows.

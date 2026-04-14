@@ -7,7 +7,6 @@ import Tracking from '~/tracking';
 import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
-  NAME_TO_TEXT_LOWERCASE_MAP,
   TRACKING_CATEGORY_SHOW,
   VIEW_CONTEXT,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -211,7 +210,7 @@ export default {
         })
         .catch((error) => {
           const message = sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
-            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+            workItemType: this.workItemType,
           });
           this.$emit('error', message);
           Sentry.captureException(error);

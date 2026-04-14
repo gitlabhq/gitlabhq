@@ -18,7 +18,10 @@ import * as redirectUtils from '~/repository/utils/blob_edit_redirect_utils';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/local_storage_alert');
-jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (input) => `${input}1` }));
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
+  uniqueId: (input) => `${input}1`,
+}));
 jest.mock('~/repository/utils/blob_edit_redirect_utils', () => ({
   ...jest.requireActual('~/repository/utils/blob_edit_redirect_utils'),
   redirectToExistingMergeRequest: jest.fn(),
@@ -145,6 +148,26 @@ describe('BlobEditHeader', () => {
   });
 
   describe('for edit blob', () => {
+    it('cancel button has cancelPath as href if user did not came from MR page', () => {
+      expect(findCancelButton().attributes('href')).toBe('/cancel');
+    });
+
+    it('cancel button has href to the MR if user came from MR page', () => {
+      const originalLocation = window.location;
+      delete window.location;
+      window.location = new URL(
+        'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
+      );
+      createWrapper();
+
+      expect(findCancelButton().attributes('href')).toBe(
+        'http://test.host/gitlab-org/gitlab/-/merge_requests/19',
+      );
+
+      // Restore original location
+      window.location = originalLocation;
+    });
+
     describe('when blobEditRefactor is enabled', () => {
       beforeEach(() => {
         clickCommitChangesButton();
@@ -222,6 +245,8 @@ describe('BlobEditHeader', () => {
         window.location = new URL(
           'http://test.host/gitlab-org/gitlab/-/edit/main/test.js?from_merge_request_iid=19',
         );
+
+        createWrapper();
 
         clickCommitChangesButton();
 

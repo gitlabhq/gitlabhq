@@ -8,7 +8,7 @@ title: Developer Flow
 {{< details >}}
 
 - Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -19,55 +19,124 @@ title: Developer Flow
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- Mention and assign triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228817) in GitLab 18.11.
 
 {{< /history >}}
 
-The Developer Flow streamlines the process of converting issues into actionable merge requests. This flow:
+The Developer Flow helps you work more efficiently across issues and merge requests.
+You can use the Developer Flow to:
 
-- Analyzes the issue description and requirements.
-- Opens a draft merge request that's linked to the original issue.
-- Creates a development plan based on the issue details.
-- Creates code structure or implementation.
-- Updates the merge request with the code changes.
-
-This flow is available in the GitLab UI only.
-
-> [!note]
-> The Developer Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
+- Create a draft merge request from an issue.
+- Iterate on an existing merge request based on review feedback.
+- Research implementation approaches and post findings to a discussion.
+- Split a large merge request into smaller, focused merge requests.
+- Resolve merge conflicts.
 
 ## Prerequisites
 
-To create a merge request from an issue, you must:
+To use the Developer Flow, you must:
 
-- Have an existing GitLab issue with clear requirements.
 - Have the Developer, Maintainer, or Owner role in the project.
 - Meet [the other prerequisites](../../_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
 - Ensure **Allow foundational flows** and **Developer** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 
+## Set up your project
+
+To help the Developer Flow produce better results, you should configure your project with the following optional settings:
+
+- Add an `AGENTS.md` file: Document your project conventions, such as test commands,
+  linting rules, commit format, and coding patterns. The Developer Flow uses this file
+  for context when working in your repository.
+  For more information, see [AGENTS.md customization files](../../customize/agents_md.md).
+- Configure the execution environment: If your project requires specific tooling
+  (for example, Go, Python, or Node.js), configure the agent environment with an `agent-config.yml` file.
+  With a properly configured environment, the Developer Flow can run tests and verify
+  its own changes before committing.
+  For more information, see [Configure flow execution](../execution.md).
+
 ## Use the flow
 
-To convert your issue to a merge request:
+Prerequisites:
+
+- The event types **Mention** and **Assign** are [configured](../../triggers/_index.md) in the trigger for the Developer Flow.
+
+### Mention Duo Developer in a discussion
+
+To turn your comment into an actionable task for the Developer Flow, mention it with `@duo-developer-<namespace>`
+in a discussion. Replace `<namespace>` with your GitLab namespace path (for example, `gitlab-org`).
+
+Depending on the issue or merge request content and the amount of context you provide, the flow can execute the following tasks:
+
+- Code changes
+- Merge request and issue creation
+- Research an implementation approach and report back or updates accordingly
+
+For example:
+
+```plaintext
+@duo-developer-<namespace> research approaches for implementing pagination
+on the /users endpoint, then create a draft MR with the most
+promising approach.
+```
+
+The Developer Flow responds with a link to its session.
+
+Alternatively, to monitor progress, in the left sidebar, select **Automate** > **Sessions**.
+
+### Generate a merge request from an issue
+
+To create a merge request from an issue:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select the issue you want to create a merge request for.
-1. Below the issue header, select **Generate MR with GitLab Duo**.
-1. Monitor progress by selecting **Automate** > **Sessions**.
-1. When the pipeline has successfully executed, a link to the merge request
-   is displayed in the issue's activity section.
-1. Review the merge request and make changes as needed.
+1. To create a merge request from the issue, either: 
+   - Assign the Duo Developer service account to the issue:
+     1. In the right sidebar, in the **Assignees** section, select **Edit**.
+     1. Type `duo developer` and select it from the search results.
+   - Below the issue header, select **Generate MR with GitLab Duo**.
+1. Optional. To monitor the flow's progress, in the left sidebar, select **Automate** > **Sessions**.
+1. When the session completes, review the merge request from the link in the **Activity** section of the issue.
 
 ## Best practices
 
-- Keep the issues well-scoped. Break down complex tasks into smaller, focused, and action-oriented requests.
-- Specify exact file paths.
-- Write specific acceptance criteria.
+### Provide clear context
+
+The Developer Flow only knows what you tell it or what is available
+in the context of the issue, merge request, or discussion thread.
+The same practices that help a human collaborator apply here:
+
+- Write a clear problem description with links to relevant files or discussions.
+- Include acceptance criteria that define what "done" looks like.
+- Specify exact file paths when you know them.
 - Include code examples of existing patterns to maintain consistency.
 
-## Example
+### Be explicit when mentioning Duo Developer in discussions
 
-This example shows a well-crafted issue that can be used to generate a merge request.
+When you mention Duo Developer in a discussion, tell it exactly
+what you want it to do. For example:
+
+- "Create a draft merge request that implements pagination for the `/api/users` endpoint."
+- "Address the review feedback on this merge request."
+- "Split the logging changes into a separate merge request."
+- "Research approaches for migrating this service to gRPC and post your findings here."
+- "There are merge conflicts on this merge request. Please resolve them."
+
+Without explicit instructions, the flow chooses its own approach,
+which might not match your expectations.
+
+### Keep tasks focused
+
+Break down complex tasks into smaller, focused, and action-oriented requests.
+Large, open-ended tasks are more likely to hit iteration limits.
+
+## Examples
+
+### Issue for generating a merge request
+
+This example shows a well-crafted issue that the Developer Flow can use
+to generate a merge request.
 
 ```plaintext
 ## Description
@@ -90,4 +159,42 @@ Add query parameters for per page size limit (default 5, max 20).
 - Accepts page and per_page query parameters (default: page=5, per_page=10).
 - Limits per_page to a maximum of 20 users.
 - Maintains existing response format for user objects in data array.
+```
+
+### Iterate on merge request review feedback
+
+After reviewing a merge request, you can mention the Developer Flow
+to address your feedback. For example, in a review comment on a specific line:
+
+```plaintext
+@duo-developer-<namespace> move this validation logic into the `BaseService` class
+in `app/services/base_service.rb` instead of duplicating it here.
+```
+
+You can also submit a full review and then mention the Developer Flow
+to address all open threads:
+
+```plaintext
+@duo-developer-<namespace> please address the review feedback on this MR.
+```
+
+### Split a merge request
+
+If a merge request has grown too large, you can ask the Developer Flow
+to extract part of it into a separate merge request:
+
+```plaintext
+@duo-developer-<namespace> the logging changes in this MR are out of scope.
+Split them into a separate MR.
+```
+
+### Research an implementation approach
+
+You can ask the Developer Flow to investigate a problem and report back
+before making any changes:
+
+```plaintext
+@duo-developer-<namespace> research whether the `PUT /api/users` endpoint also needs
+rate limiting like we added to the `POST /api/users` endpoint.
+Post your findings here.
 ```

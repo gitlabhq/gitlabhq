@@ -42,7 +42,8 @@ You can purchase the following add-ons:
 
 - [GitLab Duo](subscription-add-ons.md): Get access to AI-native features like Code Suggestions,
   GitLab Duo Chat, and more.
-- [Enterprise Agile Planning](manage_users_and_seats.md#enterprise-agile-planning): Increase collaboration between
+- [GitLab Credits](gitlab_credits.md): Buy credits to get access to GitLab Duo Agent Platform.
+- [Enterprise Agile Planning](manage_seats.md#enterprise-agile-planning): Increase collaboration between
   technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
   measure impact with Value Stream Analytics, and gain visibility into software development velocity.
 - [Storage](../user/storage_usage_quotas.md#purchase-more-storage): Buy more storage when you exceed your

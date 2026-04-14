@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';

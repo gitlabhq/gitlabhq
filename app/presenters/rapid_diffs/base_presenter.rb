@@ -18,7 +18,7 @@ module RapidDiffs
     end
 
     def diff_files(options = {})
-      transform_file_collection(diffs_resource(options).diff_files(sorted: sorted?))
+      transform_file_collection(diffs_resource(options))
     end
 
     def diffs_slice
@@ -28,17 +28,22 @@ module RapidDiffs
     end
 
     def diff_files_for_streaming(diff_options = {})
-      transform_file_collection(resource.diffs_for_streaming(diff_options).diff_files(sorted: sorted?))
+      # Duplicate `diff_options` so in case it gets mutated during the rest of
+      # code path, it won't affect other callers of that `diff_options`.
+      collection = resource.diffs_for_streaming(diff_options.dup)
+      with_linked_file_first(transform_file_collection(collection))
     end
 
     def diff_files_for_streaming_by_changed_paths(diff_options = {})
-      resource.diffs_for_streaming_by_changed_paths(diff_options) do |diff_files|
+      # Duplicate `diff_options` so in case it gets mutated during the rest of
+      # code path, it won't affect other callers of that `diff_options`.
+      resource.diffs_for_streaming_by_changed_paths(diff_options.dup) do |diff_files|
         yield transform_file_array(diff_files) if block_given?
       end
     end
 
     def linked_file
-      return if lazy? || (linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?)
+      return if linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?
 
       @linked_file ||= resource.diffs(@diff_options.merge({
         paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
@@ -95,12 +100,16 @@ module RapidDiffs
       offset.nil?
     end
 
+    attr_accessor :offset
+
     protected
 
     attr_reader :request_params
 
-    def offset
-      5
+    def transform_file_collection(collection)
+      diff_files = collection.diff_files(sorted: sorted?)
+      diff_files.decorate! { |file| transform_file(file) }
+      diff_files
     end
 
     def transform_file(diff_file)
@@ -114,11 +123,6 @@ module RapidDiffs
       return @highlight if defined?(@highlight)
 
       @highlight = @current_user.nil? || Gitlab::ColorSchemes.for_user(@current_user).css_class != 'none'
-    end
-
-    def transform_file_collection(diff_files)
-      diff_files.decorate! { |file| transform_file(file) }
-      diff_files
     end
 
     def transform_file_array(diff_files)
@@ -137,6 +141,24 @@ module RapidDiffs
         old_path: request_params[:old_path] || request_params[:file_path],
         new_path: request_params[:new_path] || request_params[:file_path]
       }
+    end
+
+    def with_linked_file_first(collection)
+      old_path = linked_file_params[:old_path]
+      new_path = linked_file_params[:new_path]
+      return collection unless old_path && new_path
+
+      result = []
+      collection.each do |file|
+        if file.old_path == old_path && file.new_path == new_path
+          file.linked = true
+          result.unshift(file)
+        else
+          result << file
+        end
+      end
+
+      result
     end
   end
 end

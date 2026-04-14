@@ -1,0 +1,21 @@
+---
+description: User toggles the age indicator legend visibility in the inline blame preferences dropdown on a blob page
+internal_events: true
+status: active
+action: toggle_inline_blame_age_indicator_on_blob_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: Whether the age indicator legend was toggled to show or hide. Possible values are 'show' or 'hide'.
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226142
+tiers:
+- free
+- premium
+- ultimate

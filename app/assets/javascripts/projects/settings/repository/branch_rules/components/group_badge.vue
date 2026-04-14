@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlPopover } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 
 export default {

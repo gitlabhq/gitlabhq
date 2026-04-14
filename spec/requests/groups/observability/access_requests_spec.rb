@@ -17,32 +17,6 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
     sign_in(user)
   end
 
-  shared_examples 'requires feature flag' do
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(observability_sass_features: false)
-      end
-
-      it 'returns 404' do
-        subject
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
-  shared_examples 'requires permissions' do
-    context 'without proper permissions' do
-      before do
-        group.members.find_by(user: user).destroy!
-      end
-
-      it 'returns 403' do
-        subject
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-  end
-
   shared_examples 'redirects when group has observability settings' do
     context 'when group has observability settings' do
       before do
@@ -64,7 +38,7 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
       allow(::Observability::AccessRequestService).to receive(:new).and_return(service_instance)
     end
 
-    include_examples 'requires feature flag'
+    include_examples 'observability requires feature flag'
     include_examples 'redirects when group has observability settings'
 
     context 'when feature flag is enabled' do
@@ -107,7 +81,7 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
         end
       end
 
-      include_examples 'requires permissions'
+      include_examples 'observability requires permissions'
 
       context 'when observability is already enabled' do
         before do

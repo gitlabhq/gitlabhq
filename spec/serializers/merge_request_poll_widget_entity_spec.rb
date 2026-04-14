@@ -25,6 +25,38 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
 
   it { is_expected.to include(ff_only_enabled: false) }
   it { is_expected.to include(ff_merge_possible: false) }
+  it { is_expected.to include(show_automatic_rebase_info: false) }
+
+  describe '#show_automatic_rebase_info' do
+    before do
+      allow(project.project_setting).to receive(:automatic_rebase_available?).and_return(true)
+    end
+
+    context 'when source branch has diverged from target' do
+      before do
+        allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: true)
+      end
+
+      it { is_expected.to include(show_automatic_rebase_info: true) }
+
+      context 'when merge trains are enabled' do
+        before do
+          allow(project).to receive(:merge_trains_enabled?).and_return(true)
+        end
+
+        it { is_expected.to include(show_automatic_rebase_info: false) }
+      end
+    end
+
+    context 'when source branch has not diverged from target' do
+      before do
+        allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: false)
+      end
+
+      it { is_expected.to include(show_automatic_rebase_info: false) }
+    end
+  end
+
   it { is_expected.to include(retargeted: false) }
 
   describe 'new_blob_path' do

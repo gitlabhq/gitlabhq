@@ -296,6 +296,24 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(response.body).to include('data-page="projects:merge_requests:diffs"')
       end
 
+      it 'enables rapid diffs when rapid_diffs_enabled cookie is set' do
+        cookies[:rapid_diffs_enabled] = 'true'
+
+        get diffs_project_merge_request_path(project, merge_request)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-page="projects:merge_requests:rapid_diffs"')
+      end
+
+      it 'returns 404 when cookie is set but feature flag is disabled' do
+        stub_feature_flags(rapid_diffs_on_mr_show: false)
+        cookies[:rapid_diffs_enabled] = 'true'
+
+        get diffs_project_merge_request_path(project, merge_request)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
       it 'shows only first 5 files' do
         get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
 
@@ -323,6 +341,59 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(response.body.scan('<diff-file ').size).to eq(1)
           expect(response.body).to include('new_file.txt')
           expect(response.body).to include('new content')
+        end
+      end
+
+      context 'internal events tracking' do
+        subject(:action) { get diffs_project_merge_request_path(project, merge_request, rapid_diffs: true) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'tracks view_merge_request_diffs internal event', :clean_gitlab_redis_shared_state do
+          expect { action }
+            .to trigger_internal_events('view_merge_request_diffs')
+            .with(
+              user: user,
+              project: project,
+              namespace: project.namespace,
+              category: 'InternalEventTracking',
+              additional_properties: { label: 'rapid_diffs' }
+            )
+            .and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_weekly',
+              'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_using_rapid_diffs_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_using_rapid_diffs_weekly'
+            )
+        end
+      end
+
+      context 'when an error occurs during rendering' do
+        it 'logs the exception, deletes the cookie, and redirects with an alert' do
+          cookies['rapid_diffs_enabled'] = 'true'
+
+          expect_next_instance_of(described_class) do |instance|
+            allow(instance)
+              .to receive(:show_merge_request)
+              .and_raise(StandardError, 'something went wrong')
+
+            expect(instance)
+              .to receive(:log_exception)
+              .with(instance_of(StandardError))
+          end
+
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(response).to redirect_to(diffs_project_merge_request_path(project, merge_request))
+          expect(response.cookies['rapid_diffs_enabled']).to be_nil
+          expect(flash[:alert]).to eq(
+            _("Rapid Diffs encountered an error and has been temporarily disabled. " \
+              "The page has loaded using the standard diff view. " \
+              "<a class=\"gl-link\" target=\"_blank\" rel=\"noopener noreferrer\" " \
+              "href=\"https://gitlab.com/gitlab-org/gitlab/-/work_items/596236\">Leave feedback</a>")
+          )
         end
       end
     end
@@ -766,6 +837,32 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
+
+  describe 'GET #diffs' do
+    subject(:action) { get diffs_project_merge_request_path(project, merge_request) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'tracks view_merge_request_diffs internal event', :clean_gitlab_redis_shared_state do
+      expect { action }
+        .to trigger_internal_events('view_merge_request_diffs')
+        .with(
+          user: user,
+          project: project,
+          namespace: project.namespace,
+          category: 'InternalEventTracking',
+          additional_properties: { label: 'legacy_diffs' }
+        )
+        .and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_monthly',
+          'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_weekly',
+          'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_using_legacy_diffs_monthly',
+          'redis_hll_counters.count_distinct_user_id_from_view_merge_request_diffs_using_legacy_diffs_weekly'
+        )
     end
   end
 end

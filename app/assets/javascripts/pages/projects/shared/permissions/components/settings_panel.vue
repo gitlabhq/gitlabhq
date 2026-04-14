@@ -11,7 +11,6 @@ import {
 import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/secrets_manager/secrets_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
@@ -49,11 +48,7 @@ export default {
     containerRegistryLabel: s__('ProjectSettings|Container registry'),
     ciCdLabel: __('CI/CD'),
     forksLabel: s__('ProjectSettings|Forks'),
-    issuesLabel: s__('ProjectSettings|Issues'),
     workItemsLabel: s__('ProjectSettings|Work items'),
-    issuesHelpText: s__(
-      'ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project.',
-    ),
     workItemsHelpText: s__('ProjectSettings|Plan and track work with flexible objects and views.'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
@@ -141,7 +136,7 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin, glFeatureFlagMixin()],
+  mixins: [settingsMixin],
   props: {
     requestCveAvailable: {
       type: Boolean,
@@ -356,19 +351,6 @@ export default {
     return { ...defaults, ...this.currentSettings };
   },
   computed: {
-    isPlanningViewsEnabled() {
-      return this.glFeatures.workItemPlanningView;
-    },
-    issuesFeatureLabel() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemsLabel
-        : this.$options.i18n.issuesLabel;
-    },
-    issuesFeatureHelpText() {
-      return this.isPlanningViewsEnabled
-        ? this.$options.i18n.workItemsHelpText
-        : this.$options.i18n.issuesHelpText;
-    },
     isProjectPrivate() {
       return this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
@@ -616,14 +598,14 @@ export default {
       <project-setting-row
         ref="issues-settings"
         :help-path="issuesHelpPath"
-        :label="issuesFeatureLabel"
+        :label="$options.i18n.workItemsLabel"
         label-for="issues_access_level"
-        :help-text="issuesFeatureHelpText"
+        :help-text="$options.i18n.workItemsHelpText"
       >
         <project-feature-setting
           id="issues_access_level"
           v-model="issuesAccessLevel"
-          :label="issuesFeatureLabel"
+          :label="$options.i18n.workItemsLabel"
           :options="featureAccessLevelOptions"
           :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][issues_access_level]"

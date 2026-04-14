@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlPopover, GlLink, GlToggle } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

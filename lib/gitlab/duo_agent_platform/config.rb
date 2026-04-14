@@ -3,13 +3,15 @@
 module Gitlab
   module DuoAgentPlatform
     class Config
+      include ActiveModel::Validations
+
       ConfigError = Class.new(StandardError)
 
       CONFIG_FILE_NAME = '.gitlab/duo/agent-config.yml'
       CACHE_EXPIRY = 5.minutes
       MAX_USER_SPECIFIED_DOMAINS = 1000
 
-      attr_reader :project
+      attr_reader :project, :config
 
       def initialize(project)
         @project = project
@@ -17,13 +19,13 @@ module Gitlab
       end
 
       def default_image
-        return unless valid?
+        return unless config_present?
 
         @config['image']
       end
 
       def network_policy
-        return unless valid?
+        return unless config_present?
 
         policy = @config['network_policy']
         return unless policy.is_a?(Hash)
@@ -42,7 +44,7 @@ module Gitlab
       end
 
       def setup_script
-        return unless valid?
+        return unless config_present?
 
         script = @config['setup_script']
         return unless script
@@ -52,7 +54,7 @@ module Gitlab
       end
 
       def cache_config
-        return unless valid?
+        return unless config_present?
 
         cache = @config['cache']
         return unless cache.is_a?(Hash)
@@ -96,10 +98,22 @@ module Gitlab
         normalized_cache.presence
       end
 
-      def valid?
-        return false unless @config.present? && @config.is_a?(Hash)
+      def config_present?
+        @config.present? && @config.is_a?(Hash)
+      end
 
-        true
+      def valid_format?
+        return false unless config_present?
+
+        run_schema_validation
+        errors[:config].empty?
+      end
+
+      def validation_errors
+        return [] unless config_present?
+
+        run_schema_validation
+        errors[:config].to_a
       end
 
       private
@@ -129,6 +143,18 @@ module Gitlab
       def cache_key
         sha = project.repository.commit(project.default_branch)&.sha || 'empty'
         "duo_config:#{project.id}:#{sha}"
+      end
+
+      def run_schema_validation
+        return if @schema_validated
+
+        @schema_validated = true
+        validator = JsonSchemaValidator.new(
+          filename: 'duo_agent_config',
+          attributes: [:config],
+          detail_errors: true
+        )
+        validator.validate(self)
       end
     end
   end

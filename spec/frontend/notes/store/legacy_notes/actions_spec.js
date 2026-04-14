@@ -1534,6 +1534,103 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('addOrUpdateDiscussions', () => {
+    it('delegates to ADD_OR_UPDATE_DISCUSSIONS mutation', () => {
+      const data = [{ id: '1', notes: [] }];
+      return testAction(
+        store.addOrUpdateDiscussions,
+        data,
+        null,
+        [{ type: store[types.ADD_OR_UPDATE_DISCUSSIONS], payload: data }],
+        [],
+      );
+    });
+  });
+
+  describe('fetchNotesBatches', () => {
+    const discussion1 = { id: '1', notes: [] };
+    const discussion2 = { id: '2', notes: [] };
+
+    beforeEach(() => {
+      getters.getFetchDiscussionsConfig = {
+        path: `${TEST_HOST}/discussions.json`,
+      };
+    });
+
+    async function consumeGenerator(generator) {
+      const batches = [];
+      for await (const batch of generator) {
+        batches.push(batch);
+      }
+      return batches;
+    }
+
+    it('yields discussion batches from paginated responses', async () => {
+      axiosMock
+        .onGet(`${TEST_HOST}/discussions.json`)
+        .replyOnce(HTTP_STATUS_OK, [discussion1], { 'x-next-page-cursor': 'cursor1' });
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).replyOnce(HTTP_STATUS_OK, [discussion2], {});
+
+      const batches = await consumeGenerator(store.fetchNotesBatches());
+
+      expect(batches).toEqual([[discussion1], [discussion2]]);
+    });
+
+    it('sets fetchNotesPromise that resolves on completion', async () => {
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).reply(HTTP_STATUS_OK, [], {});
+
+      await consumeGenerator(store.fetchNotesBatches());
+
+      expect(store.fetchNotesPromise).toBeInstanceOf(Promise);
+      await expect(store.fetchNotesPromise).resolves.toBeUndefined();
+    });
+
+    it('sets fetching state and cleans up on completion', async () => {
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).reply(HTTP_STATUS_OK, [], {});
+
+      await consumeGenerator(store.fetchNotesBatches());
+
+      expect(store.isFetching).toBe(false);
+      expect(store.isNotesFetched).toBe(true);
+      expect(store.isLoading).toBe(false);
+    });
+
+    it('rejects fetchNotesPromise on error', async () => {
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).reply(HTTP_STATUS_SERVICE_UNAVAILABLE, {});
+
+      await expect(consumeGenerator(store.fetchNotesBatches())).rejects.toThrow();
+      await expect(store.fetchNotesPromise).rejects.toThrow();
+    });
+
+    it('passes filter and persistFilter from config', async () => {
+      getters.getFetchDiscussionsConfig = {
+        path: `${TEST_HOST}/discussions.json`,
+        filter: 2,
+        persistFilter: true,
+      };
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).reply(HTTP_STATUS_OK, [], {});
+
+      await consumeGenerator(store.fetchNotesBatches());
+
+      expect(axiosMock.history.get[0].params).toMatchObject({
+        notes_filter: 2,
+        persist_filter: true,
+      });
+    });
+
+    it('increases per_page with each subsequent request', async () => {
+      axiosMock
+        .onGet(`${TEST_HOST}/discussions.json`)
+        .replyOnce(HTTP_STATUS_OK, [], { 'x-next-page-cursor': 'c1' });
+      axiosMock.onGet(`${TEST_HOST}/discussions.json`).replyOnce(HTTP_STATUS_OK, [], {});
+
+      await consumeGenerator(store.fetchNotesBatches());
+
+      expect(axiosMock.history.get[0].params.per_page).toBe(50);
+      expect(axiosMock.history.get[1].params.per_page).toBe(75);
+    });
+  });
+
   describe('toggleAllDiscussions', () => {
     it('commits SET_EXPAND_ALL_DISCUSSIONS', () => {
       discussionsStore.discussions = [{ expanded: false }];

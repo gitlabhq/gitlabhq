@@ -65,8 +65,10 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
   end
 
-  describe 'when there are no CI config file' do
+  describe 'when there are no CI config file and the update_visual_language is turned off' do
     before do
+      stub_feature_flags(update_visual_language: false)
+
       visit project_ci_pipeline_editor_path(project, branch_name: branch_without_ci)
     end
 
@@ -78,6 +80,32 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     context 'when clicking on the create new CI button' do
       before do
         click_button 'Configure pipeline'
+      end
+
+      it 'renders the source editor with default content', :aggregate_failures do
+        expect(page).to have_selector('#source-editor-')
+
+        page.within('#source-editor-') do
+          expect(page).to have_content('This file is a template, and might need editing before it works on your project.')
+        end
+      end
+    end
+  end
+
+  describe 'when there are no CI config file and the update_visual_language is turned on' do
+    before do
+      visit project_ci_pipeline_editor_path(project, branch_name: branch_without_ci)
+    end
+
+    it 'renders the empty page', :aggregate_failures do
+      expect(page).to have_content 'Get up and running with GitLab CI/CD'
+      expect(page).to have_content 'Streamline your development process effortlessly with robust CI/CD pipelines.'
+      expect(page).to have_selector '[data-testid="browse-catalog-button"]'
+    end
+
+    context 'when clicking on the Start building button' do
+      before do
+        click_button 'Start building'
       end
 
       it 'renders the source editor with default content', :aggregate_failures do

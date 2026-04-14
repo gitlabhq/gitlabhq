@@ -3,13 +3,12 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: サポートされているLLMサービスプラットフォーム。
-title: セルフホストモデルでサポートされているプラットフォーム
+title: LLMプラットフォームを設定する
 ---
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Enterprise
 - 提供形態: GitLab Self-Managed
 
 {{< /details >}}
@@ -25,9 +24,17 @@ title: セルフホストモデルでサポートされているプラットフ�
 
 {{< /history >}}
 
-セルフホストの大規模言語モデル（LLM）をホストする場合、複数のプラットフォームが利用可能です。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。次のドキュメントでは、現在サポートされているオプションをまとめています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
+AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)を通じて複数のLLMプロバイダーをサポートしています。各プラットフォームには、さまざまなニーズに対応できる独自の機能と利点があります。以下のドキュメントは、弊社が検証し、テストしたプロバイダーを要約しています。使用したいプラットフォームがこのドキュメントにない場合は、[プラットフォームリクエストイシュー（イシュー526144）](https://gitlab.com/gitlab-org/gitlab/-/issues/526144)でフィードバックをお寄せください。
 
-## セルフホストモデルのデプロイ {#for-self-hosted-model-deployments}
+## 複数のモデルとプラットフォームを使用する {#use-multiple-models-and-platforms}
+
+同じGitLabインスタンスで複数のモデルとプラットフォームを使用できます。
+
+たとえば、ある機能でAzure OpenAIを使用し、別の機能でAWS Bedrock、またはvLLMで提供されるセルフホストモデルを使用するように設定できます。
+
+このセットアップにより、各ユースケースに最適なモデルとプラットフォームを柔軟に選択できます。使用するモデルは、サポート対象かつ互換性のあるプラットフォームで提供されている必要があります。
+
+## セルフホストモデルのデプロイ {#self-hosted-model-deployments}
 
 ### vLLM {#vllm}
 
@@ -35,7 +42,7 @@ title: セルフホストモデルでサポートされているプラットフ�
 
 vLLMをインストールするには、[vLLMインストールガイド](https://docs.vllm.ai/en/latest/getting_started/installation.html)を参照してください。[バージョンv0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1)以降をインストールする必要があります。
 
-#### エンドポイント設定 {#endpoint-configuration}
+#### エンドポイントURLの設定 {#configuring-the-endpoint-url}
 
 GitLabでOpenAI API互換プラットフォーム（vLLMなど）のエンドポイントURLを設定する場合:
 
@@ -76,13 +83,10 @@ curl \
 
 この例では、モデルの`id`が`Mixtral-8x22B-Instruct-v0.1`の場合、GitLabのモデル識別子を`custom_openai/Mixtral-8x22B-Instruct-v0.1`として設定します。
 
-詳細:
+詳細については、次のドキュメントを参照してください:
 
 - vLLMでサポートされているモデルについては、[vLLMサポートモデルのドキュメント](https://docs.vllm.ai/en/latest/models/supported_models.html)を参照してください。
 - vLLMを使用してモデルを実行する場合に使用できるオプションについては、[エンジン引数に関するvLLMのドキュメント](https://docs.vllm.ai/en/stable/configuration/engine_args.html)を参照してください。
-- モデルに必要なハードウェアについては、[サポートされているモデルとハードウェア要件に関するドキュメント](supported_models_and_hardware_requirements.md)を参照してください。
-
-例: 
 
 #### Mistral-7B-Instruct-v0.2 {#mistral-7b-instruct-v02}
 
@@ -134,7 +138,7 @@ curl \
 
 本番環境でvLLMを実行する場合、`--disable-log-requests`フラグを使用してリクエストログを無効にすると、レイテンシーを大幅に削減できます。
 
-> [!note] 
+> [!note]
 > このフラグは、詳細なリクエストログを必要としない場合にのみ使用してください。
 
 リクエストログを無効にすると、特に高負荷時に冗長なログによって発生するオーバーヘッドが最小限に抑えられ、パフォーマンスレベルの向上に役立ちます。
@@ -147,53 +151,246 @@ vllm serve <path-to-model>/<model-version> \
 
 この変更により、内部ベンチマークでの応答時間が大幅に改善されることが確認されています。
 
-## クラウドホストモデルのデプロイ {#for-cloud-hosted-model-deployments}
+## クラウドホスト型モデルのデプロイ {#cloud-hosted-model-deployments}
 
-### AWS Bedrock {#aws-bedrock}
+GitLabは、以下のプロバイダーを検証し、テストしました。AIゲートウェイは、[LiteLLM](https://docs.litellm.ai/docs/providers)と互換性のあるLLMプロバイダーをサポートしています。
 
-[AWS Bedrock](https://aws.amazon.com/bedrock/)は、デベロッパーが大手AI企業の事前トレーニング済みモデルを使用して生成AIアプリケーションをビルドおよびスケールできるようにする、フルマネージドサービスです。他のAWSサービスとシームレスに統合され、従量課金制の価格モデルを提供します。
+- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
+- [OpenAI](https://developers.openai.com/api/docs/models)
 
-AWS Bedrockモデルにアクセスするには:
+### AWS Bedrockでの認証を設定する {#configure-authentication-with-aws-bedrock}
 
-1. 適切なAWS IAM権限でBedrockにアクセスするようにIAM認証情報を設定します:
+AWS BedrockをAIゲートウェイで認証するためのいくつかの方法を使用できます。
 
-   - IAMロールに`AmazonBedrockFullAccess`ポリシーがあることを確認し、[Amazon Web Services Bedrockへのアクセス](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess)を許可します。これはGitLab UIでは実行できません。
+前提条件: 
 
-   - 使用する[モデルへのアクセスをAmazon Web Servicesコンソールを使用してリクエストします](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)。
+- モデルは、最初に実行されたときにBedrockで自動的に有効になります。詳細については、[Bedrockモデルアクセス](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)を参照してください。
+- 適切なIAM権限でAWS認証情報が設定されていることを確認してください。
 
-1. Dockerコンテナの起動時に、適切なAWS SDK環境変数をエクスポートして、AIゲートウェイインスタンスを認証します。次のいずれかを使用できます。
+#### Amazon EKSとHelm Chart (推奨) {#amazon-eks-with-helm-chart-recommended}
 
-   - `AWS_BEARER_TOKEN_BEDROCK` ( [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html)を参照)
-   - `AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`、`AWS_REGION_NAME` ( [IAM認証情報](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)を参照)
+静的認証情報を保存せずに、AWS Bedrockへの認証のために、AIゲートウェイのポッドにIRSA (IAM Roles forサービスアカウント) を使用します。
 
-   詳細については、[AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html)を参照してください。
+Amazon EKSをIRSAで認証すると、AIゲートウェイはIRSAロールから一時的な認証情報を自動的に取得します。
+
+IRSAを使用してAmazon EKSを認証するには:
+
+1. Bedrockモデルへのアクセスを許可するIAMポリシーを作成します。より高いセキュリティが必要な場合は、これを特定のモデルにスコープできます:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "bedrock:InvokeModel",
+           "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Resource": "arn:aws:bedrock:*::foundation-model/*"
+       }
+     ]
+   }
+   ```
+
+   ```shell
+   aws iam create-policy \
+     --policy-name bedrock-ai-gateway-access \
+     --policy-document file://bedrock-policy.json \
+     --description "Bedrock access for AI Gateway"
+   ```
+
+1. オプション。より厳格なアクセス制御のために、ワイルドカードリソースを特定のモデルのAmazon Resource Name (ARN) に置き換えます。これにより、GitLabの設定が変更されても、承認されたモデルのみがアクセスできるようになります。利用可能なモデルのARNについては、[Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)を参照してください。
+
+   ```json
+   "Resource": [
+     "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0",
+     "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+   ]
+   ```
 
    > [!note]
-   > 一時的な認証情報は、現時点ではAIゲートウェイではサポートされていません。インスタンスプロファイルまたは一時的な認証情報を使用するためにBedrockのサポートを追加する方法については、[イシュー542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389)を参照してください。
+   > 一部のモデルは異なるARN形式を使用する場合があります。たとえば、新しいモデルでは、基盤モデルのARNに加えて、推論プロファイルのARNが必要になる場合があります。特定のモデルのARN形式を確認するには、[Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)を参照してください。
 
-1. オプション。Virtual Private Cloud（VPC）で動作するプライベートBedrockエンドポイントをセットアップするには、AIゲートウェイコンテナを起動する際に、`AWS_BEDROCK_RUNTIME_ENDPOINT`環境変数が内部URLで設定されていることを確認してください。
+1. Amazon EKSサービスアカウントが使用する信頼ポリシーを持つIAMロールを作成します。次の値を置き換えます:
 
-   設定例: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
+   - `YOUR_ACCOUNT_ID`: お客様のAWSアカウントID。
+   - `REGION`: お客様のAmazon EKSクラスターリージョン（例: `us-east-1`）。
+   - `YOUR_OIDC_ID`: お客様のAmazon EKSクラスターのOIDCプロバイダーID。
+   - `NAMESPACE`: AIゲートウェイがデプロイされているKubernetesネームスペース。
 
-   VPCエンドポイントの場合、URL形式が`https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`のように異なる場合があります
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "Federated": "arn:aws:iam::YOUR_ACCOUNT_ID:oidc-provider/oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID"
+         },
+         "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+           "StringEquals": {
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:sub": "system:serviceaccount:NAMESPACE:ai-gateway",
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:aud": "sts.amazonaws.com"
+           }
+         }
+       }
+     ]
+   }
+   ```
 
-詳細については、[Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)を参照してください。
+   ```shell
+   # Create the role
+   aws iam create-role \
+     --role-name eks-ai-gateway-bedrock \
+     --assume-role-policy-document file://trust-policy.json \
+     --description "EKS IRSA role for AI Gateway to access Bedrock"
+   ```
 
-### Azure OpenAI {#azure-openai}
+1. Bedrock IAMポリシーをこのロールにアタッチします。
 
-[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)は、OpenAIの強力なモデルへのアクセスを提供し、デベロッパーが堅牢なセキュリティとスケーラブルなインフラストラクチャを備えた高度なAI機能をアプリケーションに統合できるようにします。
+   ```shell
+   # Attach the role
+   aws iam attach-role-policy \
+     --role-name eks-ai-gateway-bedrock \
+     --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/bedrock-ai-gateway-access
+   ```
 
-詳細については、以下を参照してください:
+1. Helmチャートを設定するには、IAMロール注釈付きでAIゲートウェイをインストールします:
 
-- [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
-- [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+   ```yaml
+   serviceAccount:
+     create: true
+     name: ai-gateway
+     annotations:
+       eks.amazonaws.com/role-arn: arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_ROLE_NAME
+   extraEnvironmentVariables:
+     - name: AWS_REGION
+       value: us-east-1
+   ```
 
-## 複数のモデルとプラットフォームを使用する {#use-multiple-models-and-platforms}
+詳細については、[サービスアカウントのIAMロール](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)を参照してください。
 
-同じGitLabインスタンスで複数のモデルとプラットフォームを使用できます。
+#### Dockerデプロイ {#docker-deployments}
 
-たとえば、ある機能がAzure OpenAIを使用するように設定し、別の機能がAWS BedrockまたはvLLMで提供されるセルフホストモデルを使用するように設定できます。
+AIゲートウェイコンテナの起動時に、環境変数を通じてIAM認証情報を設定します:
 
-このセットアップにより、各ユースケースに最適なモデルとプラットフォームを柔軟に選択できます。使用するモデルは、サポート対象かつ互換性のあるプラットフォームで提供されている必要があります。
+```shell
+docker run -d \
+  -e AWS_ACCESS_KEY_ID=your-access-key \
+  -e AWS_SECRET_ACCESS_KEY=your-secret-key \
+  -e AWS_REGION=us-east-1 \
+  -p 5052:5052 \
+  registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-vX.Y.Z-ee
+```
 
-さまざまなプロバイダーの設定の詳細については、[サポートされているモデルとハードウェアの要件](supported_models_and_hardware_requirements.md)を参照してください。
+IAMユーザーまたはロールは、Amazon EKSとHelm Chartで設定するものと同様のポリシーを持っている必要があります。
+
+#### Kubernetesデプロイ {#kubernetes-deployments}
+
+Amazon EKS以外のKubernetesクラスターの場合、AWS認証情報を保存するためにKubernetes Secretsを使用できます:
+
+1. Kubernetesシークレットを作成します:
+
+   ```shell
+   kubectl create secret generic aws-credentials \
+     --from-literal=access-key-id=YOUR_ACCESS_KEY_ID \
+     --from-literal=secret-access-key=YOUR_SECRET_ACCESS_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. Helmチャートをシークレットを参照するように設定します:
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_ACCESS_KEY_ID
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: access-key-id
+     - name: AWS_SECRET_ACCESS_KEY
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: secret-access-key
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### AWS Bedrock APIキー {#aws-bedrock-api-keys}
+
+IAM認証情報の代わりにAWS Bedrock APIキーを使用するには:
+
+1. [Bedrock APIキーを作成します](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-generate.html)
+1. APIキーを含むKubernetesシークレットを作成します:
+
+   ```shell
+   kubectl create secret generic bedrock-api-key \
+     --from-literal=token=YOUR_BEDROCK_API_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. AIゲートウェイを設定します（`values.yaml`に追加）:
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_BEARER_TOKEN_BEDROCK
+       valueFrom:
+         secretKeyRef:
+           name: bedrock-api-key
+           key: token
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### プライベートVPCエンドポイント {#private-vpc-endpoints}
+
+VPCでプライベートBedrockエンドポイントを使用するには、`AWS_BEDROCK_RUNTIME_ENDPOINT`環境変数を設定します。
+
+Helmデプロイの場合:
+
+```yaml
+extraEnvironmentVariables:
+  - name: AWS_BEDROCK_RUNTIME_ENDPOINT
+    value: https://bedrock-runtime.us-east-1.amazonaws.com
+```
+
+Dockerデプロイの場合:
+
+```shell
+docker run -d \
+  -e AWS_BEDROCK_RUNTIME_ENDPOINT=https://bedrock-runtime.us-east-1.amazonaws.com \
+  -e AWS_REGION=us-east-1 \
+  # ... other configuration
+```
+
+VPCエンドポイントの場合、形式は次のとおりです: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
+
+### Google Vertex AIでの認証を設定する {#configure-authentication-with-google-vertex-ai}
+
+Google Vertex AIのモデルを使用するには、AIゲートウェイインスタンスを認証する必要があります。以下のいずれかのメカニズムを使用できます:
+
+- Dockerコンテナの起動時に環境変数をエクスポートします。これを行うには、AIゲートウェイコンテナの実行時に以下の環境変数を設定します:
+
+  ```shell
+  GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json
+  VERTEXAI_PROJECT=<gcp-project-id>
+  VERTEXAI_LOCATION=global
+  ```
+
+- Google Vertex AIへのアクセスのために、AIゲートウェイコンテナをCloud Runで実行し、[Cloud Runサービスアカウント](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account)を使用します。
+
+## 関連トピック {#related-topics}
+
+- [サポートされているモデルとハードウェア要件ドキュメント](supported_models_and_hardware_requirements.md)。
+- [Amazon Bedrockでサポートされている基盤モデル](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [AWS IAMのベストプラクティス](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
+- [Amazon Bedrockのセキュリティ](https://docs.aws.amazon.com/bedrock/latest/userguide/security.html)
+- 設定情報については、以下のドキュメントを参照してください:
+  - [Anthropic APIの概要](https://platform.claude.com/docs/en/api/overview)
+  - [OpenAI APIの概要](https://developers.openai.com/api/docs)
+  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)

@@ -162,6 +162,10 @@ describe('wikis/components/wiki_header', () => {
       expect(findSidebarToggle().exists()).toBe(true);
       expect(findSidebarToggle().props('action')).toBe('open');
     });
+
+    it('hides the toggle component on large screens', () => {
+      expect(findSidebarToggle().classes()).toContain('@lg/panel:gl-hidden');
+    });
   });
 
   describe('subscribe button functionality', () => {
@@ -255,20 +259,6 @@ describe('wikis/components/wiki_header', () => {
       findSubscribeButton().vm.$emit('click');
       // there should be no second mutation call
       expect(mutateSpy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('wikiFloatingSidebarToggle feature flag', () => {
-    it('hides the toggle component on large screens when the FF is enabled', () => {
-      buildWrapper({ glFeatures: { wikiFloatingSidebarToggle: true } });
-
-      expect(findSidebarToggle().classes()).toContain('@lg/panel:gl-hidden');
-    });
-
-    it('does not hide the toggle component on large screens when the FF is disabled', () => {
-      buildWrapper({ glFeatures: { wikiFloatingSidebarToggle: false } });
-
-      expect(findSidebarToggle().classes()).not.toContain('@lg/panel:gl-hidden');
     });
   });
 });

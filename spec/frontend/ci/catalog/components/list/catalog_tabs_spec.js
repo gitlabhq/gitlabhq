@@ -2,6 +2,7 @@ import { GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import CatalogTabs from '~/ci/catalog/components/list/catalog_tabs.vue';
 import { SCOPE } from '~/ci/catalog/constants';
 
@@ -64,6 +65,31 @@ describe('Catalog Tabs', () => {
       expect(trimText(findAnalyticsTab().text())).toBe(
         `Analytics ${defaultProps.resourceCounts.analytics}`,
       );
+    });
+
+    describe('internal event tracking', () => {
+      const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      it('tracks click_analytics_tab_on_ci_catalog when analytics tab is clicked', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        triggerTabChange(2);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_analytics_tab_on_ci_catalog',
+          {},
+          undefined,
+        );
+      });
+
+      it('does not track events when other tabs are clicked', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        triggerTabChange(0);
+        triggerTabChange(1);
+
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
     });
 
     it.each`

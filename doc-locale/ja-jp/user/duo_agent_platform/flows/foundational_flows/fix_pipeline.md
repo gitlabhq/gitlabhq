@@ -39,7 +39,8 @@ CI/CDパイプラインの修正フローは、GitLab CI/CDパイプラインの
 
 このフローは、GitLab UIでのみ使用できます。
 
-> [!note] Fix CI/CDパイプラインフローは、サービスアカウントを使用してマージリクエストを作成します。SOC 2、SOX法、ISO 27001、またはFedRAMPの要件がある組織は、適切なピアレビューポリシーが整備されていることを確認してください。詳細については、[マージリクエストに関するコンプライアンス上の考慮事項](../../composite_identity.md#compliance-considerations-for-merge-requests)を参照してください。
+> [!note]
+> Fix CI/CDパイプラインフローは、サービスアカウントを使用してマージリクエストを作成します。SOC 2、SOX法、ISO 27001、またはFedRAMPの要件がある組織は、適切なピアレビューポリシーが整備されていることを確認してください。詳細については、[マージリクエストに関するコンプライアンス上の考慮事項](../../composite_identity.md#compliance-considerations-for-merge-requests)を参照してください。
 
 ## 前提条件 {#prerequisites}
 

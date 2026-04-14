@@ -7,6 +7,8 @@ module WorkItems
 
       override :relate_issuables
       def relate_issuables(work_item)
+        prev_parent = work_item.work_item_parent
+
         link = set_parent(issuable, work_item)
 
         # It's possible to force the relative_position. This is for example used when importing parent links from
@@ -17,7 +19,7 @@ module WorkItems
           link.move_to_start
         end
 
-        create_notes_and_resource_event(work_item, link) if link.save
+        create_notes_and_resource_event(work_item, link, prev_parent) if link.save
 
         link
       end
@@ -27,8 +29,8 @@ module WorkItems
         params[:issuable_references]
       end
 
-      def create_notes_and_resource_event(work_item, link)
-        relate_child_note = create_notes(work_item)
+      def create_notes_and_resource_event(work_item, link, prev_parent)
+        relate_child_note = create_notes(work_item, prev_parent)
 
         ResourceLinkEvent.create(
           user: current_user,

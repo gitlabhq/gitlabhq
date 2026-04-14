@@ -20,9 +20,10 @@
           - if @passkeys.any?
             - @passkeys.each do |passkey|
               %tr
-                %td{ data: { label: _('Name') } }= passkey[:name]
-                %td{ data: { label: s_('ProfilesAuthentication|Added on') } }= l(passkey[:created_at].to_date, format: :admin)
-                %td{ data: { label: s_('ProfilesAuthentication|Last used') } }= passkey[:last_used_at] ? l(passkey[:last_used_at].to_date, format: :admin) : ''
+                - text_subtle = 'color: var(--gl-text-color-subtle)' if !current_user.allow_passkey_authentication?
+                %td{ style: text_subtle, data: { label: _('Name') } }= passkey[:name]
+                %td{ style: text_subtle, data: { label: s_('ProfilesAuthentication|Added on') } }= l(passkey[:created_at].to_date, format: :admin)
+                %td{ style: text_subtle, data: { label: s_('ProfilesAuthentication|Last used') } }= passkey[:last_used_at] ? l(passkey[:last_used_at].to_date, format: :admin) : ''
                 %td{ data: { label: _('Actions') }, class: '!gl-py-3' }
                   .js-two-factor-action-confirm{ data: delete_passkey_data(current_password_required?, passkey[:delete_path], @passkeys.size) }
           - else
@@ -32,13 +33,10 @@
 
           - if !current_user.allow_passkey_authentication?
             %tr
-              %td{ colspan: 4 }
-                = render Pajamas::AlertComponent.new(title: s_('ProfilesAuthentication|Passkeys unavailable'),
-                  dismissible: false,
-                  variant: :warning ) do |c|
-                  = c.with_body do
-                    - doc_link = link_to '', help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'password-and-passkey-authentication'), target: '_blank', rel: 'noopener noreferrer'
-                    - if @passkeys.empty? || !current_user.two_factor_enabled?
-                      = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))
-                    - else
-                      = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. Register your passkeys as a WebAuthn device to continue using them for two-factor authentication. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))
+              %td{ colspan: 4, style: 'line-height:inherit' }
+                %span.gl-text-warning= sprite_icon('warning')
+                - doc_link = link_to '', help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'password-and-passkey-authentication'), target: '_blank', rel: 'noopener noreferrer'
+                - if @passkeys.empty?
+                  = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))
+                - else
+                  = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. Register your passkeys as a WebAuthn device to continue using them for two-factor authentication. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))

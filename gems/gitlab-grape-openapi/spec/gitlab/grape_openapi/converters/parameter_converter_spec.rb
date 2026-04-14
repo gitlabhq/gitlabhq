@@ -74,6 +74,48 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         end
       end
 
+      context 'when parameter name contains version' do
+        let(:route) do
+          double('Route',
+            path: "/:version/projects/:id/merge_requests/:merge_request_iid/versions/:version_id",
+            instance_variable_get: { method: 'GET' })
+        end
+
+        let(:name) { "version_id" }
+
+        it 'correctly identifies as path parameter' do
+          expect(converter.in_value).to eq('path')
+        end
+      end
+
+      context 'when parameter name ends with version' do
+        let(:route) do
+          double('Route',
+            path: "/:version/projects/:id/packages/:package_name/:package_version/:file_name",
+            instance_variable_get: { method: 'GET' })
+        end
+
+        let(:name) { "package_version" }
+
+        it 'correctly identifies as path parameter' do
+          expect(converter.in_value).to eq('path')
+        end
+      end
+
+      context 'when parameter name is a substring of another path parameter' do
+        let(:route) do
+          double('Route',
+            path: "/api/v1/projects/:id/repository/files/:file_path",
+            instance_variable_get: { method: 'GET' })
+        end
+
+        let(:name) { "file" }
+
+        it 'returns query because only file_path is in the path' do
+          expect(converter.in_value).to eq('query')
+        end
+      end
+
       context 'when multiple path parameters exist' do
         let(:route) do
           double(
@@ -924,6 +966,24 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema[:nullable]).to be true
         end
       end
+
+      context 'when parameter is a path parameter' do
+        let(:name) { 'user_id' }
+
+        [
+          { type: 'String' },
+          { type: 'String', allow_blank: true },
+          { type: 'String', allow_blank: false }
+        ].each do |param_options|
+          context "with options #{param_options}" do
+            let(:options) { param_options }
+
+            it 'never adds nullable' do
+              expect(converter.schema[:nullable]).to be_nil
+            end
+          end
+        end
+      end
     end
   end
 
@@ -973,7 +1033,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
             attributes: [:version_prefix],
             options: { min: 1, max: 10 },
             required: false,
-            validator_class: double('LengthValidator')
+            validator_class: double('LengthValidator', name: 'API::LengthValidator')
           }
         ]
       end
@@ -989,7 +1049,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           attributes: [:version_prefix],
           options: { min: 1, max: 10 },
           required: false,
-          validator_class: double('LengthValidator')
+          validator_class: double('LengthValidator', name: 'API::LengthValidator')
         }]
       end
 
@@ -1113,6 +1173,83 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           )
 
           expect(result.schema[:pattern]).to be_nil
+        end
+      end
+
+      context 'when a limit validation is present on a string type' do
+        let(:validations) do
+          [{
+            attributes: [:name],
+            options: 255,
+            validator_class: API::Validations::Validators::Limit
+          }]
+        end
+
+        it 'sets maxLength on string schema' do
+          expect(converter.schema).to eq({ nullable: true, type: 'string', maxLength: 255 })
+        end
+
+        context 'when limit and allow_blank: false are combined' do
+          let(:options) { { type: 'String', allow_blank: false } }
+          let(:validations) do
+            [{
+              attributes: [:name],
+              options: 255,
+              validator_class: API::Validations::Validators::Limit
+            }]
+          end
+
+          it 'sets both minLength and maxLength' do
+            expect(converter.schema).to eq({ type: 'string', minLength: 1, maxLength: 255 })
+          end
+        end
+
+        context 'when limit is zero' do
+          let(:options) { { type: 'String' } }
+          let(:validations) do
+            [{ attributes: [:field], options: 0, validator_class: API::Validations::Validators::Limit }]
+          end
+
+          it 'does not set maxLength' do
+            expect(converter.schema[:maxLength]).to be_nil
+          end
+        end
+
+        context 'when limit is a non-integer' do
+          let(:options) { { type: 'String' } }
+          let(:validations) do
+            [{ attributes: [:field], options: "six", validator_class: API::Validations::Validators::Limit }]
+          end
+
+          it 'does not set maxLength' do
+            expect(converter.schema[:maxLength]).to be_nil
+          end
+        end
+
+        context 'when limit is negative' do
+          let(:options) { { type: 'String' } }
+          let(:validations) do
+            [{ attributes: [:field], options: -1, validator_class: API::Validations::Validators::Limit }]
+          end
+
+          it 'does not set maxLength' do
+            expect(converter.schema[:maxLength]).to be_nil
+          end
+        end
+      end
+
+      context 'when a limit validation is present on a non-string type' do
+        let(:options) { { type: 'Integer' } }
+        let(:validations) do
+          [{
+            attributes: [:count],
+            options: 100,
+            validator_class: API::Validations::Validators::Limit
+          }]
+        end
+
+        it 'does not set maxLength' do
+          expect(converter.schema[:maxLength]).to be_nil
         end
       end
     end

@@ -1,6 +1,7 @@
 <script>
 import { MountingPortal } from 'portal-vue';
-import { SIDEBAR_PORTAL_ID, portalState } from '../constants';
+import { SIDEBAR_PORTAL_ID } from '../constants';
+import { portalState } from '../state';
 
 /**
  * Use this component to render content into the sidebar.

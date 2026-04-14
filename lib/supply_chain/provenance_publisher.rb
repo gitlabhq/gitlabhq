@@ -7,6 +7,7 @@ module SupplyChain
     HASH_READ_CHUNK_SIZE = 1.megabyte
 
     Error = Class.new(StandardError)
+    JwtGenerationError = Class.new(Error)
     AttestationFailure = Class.new(Error)
     InvalidInput = Class.new(Error)
 
@@ -21,12 +22,17 @@ module SupplyChain
         class: self.class.name,
         build_id: @build.id
       }
+
+      raise JwtGenerationError, "Can't generate JWT token" unless id_token
     end
 
     private
 
     def id_token
-      @build.variables["SIGSTORE_ID_TOKEN"]&.value
+      return unless @build.project
+
+      sub_components = @build.project.ci_id_token_sub_claim_components.map(&:to_sym)
+      Gitlab::Ci::JwtV2.for_build(@build, aud: "sigstore", sub_components: sub_components)
     end
     strong_memoize_attr :id_token
 

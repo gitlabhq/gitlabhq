@@ -50,7 +50,7 @@ import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.q
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import GroupRunnersApp from '~/ci/runner/group_runners/group_runners_app.vue';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
   groupRunnersData,
   groupRunnersDataPaginated,
@@ -73,7 +73,7 @@ const mockGroupRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),
@@ -445,10 +445,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('error is reported to sentry', () => {
-      expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Error!'),
-        component: 'GroupRunnersApp',
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error('Error!'));
     });
   });
 

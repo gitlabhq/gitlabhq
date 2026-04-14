@@ -28,6 +28,9 @@ module Gitlab
         if sql = find_sql(exception)
           payload['exception.sql'] = sql
         end
+
+        formatted = Feature.logged_states_for_log
+        payload['exception.feature_flag_states'] = formatted unless formatted.empty?
       end
 
       def find_sql(exception)

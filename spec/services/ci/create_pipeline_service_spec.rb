@@ -704,6 +704,21 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
+    context 'when push options contain ci.no_pipeline' do
+      let(:push_options) do
+        { 'ci' => { 'no_pipeline' => true } }
+      end
+
+      it 'does not create a new pipeline' do
+        result = execute_service(push_options: push_options)
+
+        expect(result.message).to eq('filtered_by_no_pipeline')
+        expect(Ci::Build.all).to be_empty
+        expect(Ci::Pipeline.count).to eq(0)
+        expect(result.payload).not_to be_persisted
+      end
+    end
+
     context 'when there are no jobs for this pipeline' do
       before do
         config = YAML.dump({ test: { script: 'ls', only: ['feature'] } })
@@ -1173,25 +1188,25 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    shared_examples 'when pipeline variables are specified' do
+    context 'when pipeline variables are specified' do
       subject(:pipeline) { execute_service(variables_attributes: variables_attributes).payload }
 
       context 'with valid pipeline variables' do
         let(:variables_attributes) do
-          [{ key: 'first', secret_value: 'world' },
-            { key: 'second', secret_value: 'second_world' }]
+          [{ key: 'first', value: 'world' },
+            { key: 'second', value: 'second_world' }]
         end
 
         it 'creates a pipeline with specified variables' do
-          expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+          expect(pipeline.variables.map { |var| var.slice(:key, :value) })
             .to eq variables_attributes.map(&:with_indifferent_access)
         end
       end
 
       context 'with duplicate pipeline variables' do
         let(:variables_attributes) do
-          [{ key: 'hello', secret_value: 'world' },
-            { key: 'hello', secret_value: 'second_world' }]
+          [{ key: 'hello', value: 'world' },
+            { key: 'hello', value: 'second_world' }]
         end
 
         it 'fails to create the pipeline' do
@@ -1203,11 +1218,11 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       context 'with more than one duplicate pipeline variable' do
         let(:variables_attributes) do
-          [{ key: 'hello', secret_value: 'world' },
-            { key: 'hello', secret_value: 'second_world' },
-            { key: 'single', secret_value: 'variable' },
-            { key: 'other', secret_value: 'value' },
-            { key: 'other', secret_value: 'other value' }]
+          [{ key: 'hello', value: 'world' },
+            { key: 'hello', value: 'second_world' },
+            { key: 'single', value: 'variable' },
+            { key: 'other', value: 'value' },
+            { key: 'other', value: 'other value' }]
         end
 
         it 'fails to create the pipeline' do
@@ -1216,16 +1231,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(pipeline.errors[:base]).to eq(['Duplicate variable names: hello, other'])
         end
       end
-    end
-
-    it_behaves_like 'when pipeline variables are specified'
-
-    context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
-      before do
-        stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
-      end
-
-      it_behaves_like 'when pipeline variables are specified'
     end
 
     describe 'Pipeline for external pull requests' do
@@ -1912,6 +1917,60 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       it 'does not write to p_ci_builds_execution_configs' do
         expect { execute_service }.to not_change { Ci::BuildExecutionConfig.count }
       end
+    end
+  end
+
+  describe '#extra_options' do
+    let(:service) { described_class.new(project, user, ref: ref_name) }
+
+    it 'returns provided content' do
+      result = service.send(:extra_options, content: 'custom content')
+
+      expect(result[:content]).to eq('custom content')
+    end
+
+    it 'returns dry_run as true when provided' do
+      result = service.send(:extra_options, dry_run: true)
+
+      expect(result[:dry_run]).to be true
+    end
+
+    it 'returns linting as true when provided' do
+      result = service.send(:extra_options, linting: true)
+
+      expect(result[:linting]).to be true
+    end
+
+    it 'returns duo_workflow_definition when provided' do
+      definition = { 'key' => 'value' }
+      result = service.send(:extra_options, duo_workflow_definition: definition)
+
+      expect(result[:duo_workflow_definition]).to eq(definition)
+    end
+
+    it 'returns trigger_api_request as true when provided' do
+      result = service.send(:extra_options, trigger_api_request: true)
+
+      expect(result[:trigger_api_request]).to be true
+    end
+
+    it 'returns all provided options' do
+      definition = { 'key' => 'value' }
+      result = service.send(:extra_options,
+        content: 'test content',
+        dry_run: true,
+        linting: true,
+        duo_workflow_definition: definition,
+        trigger_api_request: true
+      )
+
+      expect(result).to include(
+        content: 'test content',
+        dry_run: true,
+        linting: true,
+        duo_workflow_definition: definition,
+        trigger_api_request: true
+      )
     end
   end
 

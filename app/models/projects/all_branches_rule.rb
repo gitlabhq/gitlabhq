@@ -5,7 +5,7 @@ module Projects
     include Projects::CustomBranchRule
 
     def name
-      s_('All branches')
+      _('All branches')
     end
 
     def matching_branches_count

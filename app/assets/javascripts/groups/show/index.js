@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { rootPath } from '~/lib/utils/path_helpers/routes';
 import { resolvers } from './graphql/resolvers';
 import routes from './routes';
 import GroupsShowApp from './components/app.vue';
@@ -13,7 +14,7 @@ export const createRouter = () => {
   const router = new VueRouter({
     routes,
     mode: 'history',
-    base: gon.relative_url_root || '/',
+    base: rootPath(),
   });
 
   return router;

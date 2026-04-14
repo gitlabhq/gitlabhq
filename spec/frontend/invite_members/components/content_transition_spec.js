@@ -1,4 +1,4 @@
-import { groupBy, mapValues } from 'lodash';
+import { groupBy, mapValues } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import ContentTransition from '~/invite_members/components/content_transition.vue';
 

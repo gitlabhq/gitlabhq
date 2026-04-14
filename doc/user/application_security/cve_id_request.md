@@ -13,15 +13,14 @@ description: Vulnerability tracking and security disclosure.
 
 {{< /details >}}
 
-For any public project, you can request a CVE identifier (ID).
+A [Common Vulnerabilities and Exposures ID](https://cve.mitre.org/index.html) (CVE ID) is a unique
+identifier assigned to publicly-disclosed software vulnerabilities. GitLab is a
+[CVE Numbering Authority](<https://cve.mitre.org/cve/cna.html>) (CNA), which means we can assign CVE
+identifiers to vulnerabilities in projects hosted on GitLab.com.
 
-A [CVE](https://cve.mitre.org/index.html) identifier is assigned to a publicly-disclosed software
-vulnerability. GitLab is a [CVE Numbering Authority](https://about.gitlab.com/security/cve/)
-([CNA](https://cve.mitre.org/cve/cna.html)).
-
-Assigning a CVE ID to a vulnerability in your project helps your users stay secure and informed. For
-example, [dependency scanning tools](dependency_scanning/_index.md) can
-detect when vulnerable versions of your project are used as a dependency.
+For public projects, you can request a CVE identifier to keep users informed about security issues.
+For example, GitLab [dependency scanning tools](dependency_scanning/_index.md) can detect when your
+project uses vulnerable versions of a dependency.
 
 A common vulnerability workflow is:
 
@@ -29,16 +28,14 @@ A common vulnerability workflow is:
 1. Reference the assigned CVE identifier in release notes.
 1. Publish the vulnerability's details after the fix is released.
 
-## Prerequisites
+## Submit a CVE ID request
 
-To [submit a CVE ID Request](#submit-a-cve-id-request) the following prerequisites must be met:
+Prerequisites:
 
+- The Maintainer or Owner role for the project.
 - The project is hosted on GitLab.com.
 - The project is public.
-- You are a maintainer of the project.
 - The vulnerability's issue is [confidential](../project/issues/confidential_issues.md).
-
-## Submit a CVE ID request
 
 To submit a CVE ID request:
 

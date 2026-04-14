@@ -1,0 +1,8 @@
+---
+name: delete_label
+description: Grants the ability to delete labels
+permissions:
+  - delete_label
+boundaries:
+  - group
+  - project

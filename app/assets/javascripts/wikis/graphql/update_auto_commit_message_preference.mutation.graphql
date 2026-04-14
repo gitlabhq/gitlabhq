@@ -1,0 +1,9 @@
+# @feature_category: wiki
+
+mutation updateAutoCommitMessagePreference($input: UserPreferencesUpdateInput!) {
+  userPreferencesUpdate(input: $input) {
+    userPreferences {
+      wikiUseAutoCommitMessage
+    }
+  }
+}

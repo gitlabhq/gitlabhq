@@ -39,6 +39,7 @@ module API
         use :pagination
         use :optional_list_params_ee
       end
+      route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get feature_category: :groups_and_projects, urgency: :low do
         owned_only = params[:owned_only] == true
 
@@ -71,6 +72,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the namespace'
       end
+      route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :groups_and_projects, urgency: :low do
         user_namespace = find_namespace!(params[:id])
 
@@ -89,6 +91,7 @@ module API
         requires :id, type: String, desc: "Namespace’s path"
         optional :parent_id, type: Integer, desc: 'The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered.'
       end
+      route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get ':id/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :groups_and_projects, urgency: :low do
         check_rate_limit!(:namespace_exists, scope: current_user)
 

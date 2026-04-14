@@ -3,6 +3,8 @@ key_path: counts.service_usage_data_download_payload_click
 description: Count Download Payload button clicks
 data_category: optional
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: number
 status: active
 time_frame: all

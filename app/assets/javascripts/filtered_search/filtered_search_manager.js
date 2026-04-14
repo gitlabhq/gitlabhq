@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { createFilteredSearchTokenKeys } from '~/filtered_search/issuable_filtered_search_token_keys';
 import { createAlert } from '~/alert';

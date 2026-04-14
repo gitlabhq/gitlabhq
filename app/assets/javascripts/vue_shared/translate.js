@@ -1,4 +1,5 @@
-import { __, n__, s__, sprintf } from '~/locale';
+// relative import is needed due to this file being imported by aliased @vue/compat
+import { __, n__, s__, sprintf } from '../locale';
 
 export default (Vue) => {
   Vue.mixin({

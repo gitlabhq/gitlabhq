@@ -23,6 +23,11 @@ module MergeRequests
 
       @merge_request = merge_request
       @options = options
+
+      # Lease may already be held by another merge with the same source branch.
+      # This is safe - the lease protects downstream MRs (via target_branch_pending_deletion_check!),
+      # and that protection is already in place from the other process.
+      obtain_branch_deletion_lease(merge_request) if delete_source_branch?
       jid = merge_jid
 
       validate!
@@ -38,6 +43,7 @@ module MergeRequests
     rescue MergeError, MergeRequests::MergeStrategies::StrategyError => e
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     ensure
+      release_branch_deletion_lease unless merge_request.merged?
       exclusive_lease(merge_request).cancel
     end
 
@@ -46,6 +52,7 @@ module MergeRequests
     def validate!
       authorization_check!
       error_check!
+      target_branch_pending_deletion_check!
       validate_strategy!
       updated_check!
     end
@@ -58,6 +65,15 @@ module MergeRequests
 
     def validate_strategy!
       @merge_strategy.validate!
+    end
+
+    def target_branch_pending_deletion_check!
+      return unless Feature.enabled?(:prevent_merge_race_condition, @merge_request.project)
+
+      lease_key = MergeRequests::DeleteSourceBranchWorker.lease_key(@merge_request.target_project_id, @merge_request.target_branch)
+      return unless Gitlab::ExclusiveLease.get_uuid(lease_key)
+
+      raise_error(_('The target branch is scheduled for deletion. Please wait for the branch to be retargeted.'))
     end
 
     def updated_check!
@@ -111,7 +127,11 @@ module MergeRequests
       log_info("Post merge finished on JID #{jid} with state #{state}")
 
       if delete_source_branch?
-        MergeRequests::DeleteSourceBranchWorker.perform_async(@merge_request.id, @merge_request.source_branch_sha, branch_deletion_user.id)
+        MergeRequests::DeleteSourceBranchWorker.perform_async(
+          @merge_request.id,
+          @merge_request.source_branch_sha,
+          branch_deletion_user.id
+        )
       end
 
       merge_request_merge_param
@@ -170,6 +190,23 @@ module MergeRequests
       # params-keys are symbols coming from the controller, but when they get
       # loaded from the database they're strings
       params.with_indifferent_access[:sha] == merge_request.diff_head_sha
+    end
+
+    def obtain_branch_deletion_lease(merge_request)
+      return unless Feature.enabled?(:prevent_merge_race_condition, merge_request.project)
+
+      @branch_deletion_lease_uuid = Gitlab::ExclusiveLease.new(source_branch_deletion_lease_key, timeout: MergeRequests::DeleteSourceBranchWorker::LEASE_TIMEOUT).try_obtain
+    end
+
+    def release_branch_deletion_lease
+      return unless @branch_deletion_lease_uuid
+
+      Gitlab::ExclusiveLease.cancel(source_branch_deletion_lease_key, @branch_deletion_lease_uuid)
+      @branch_deletion_lease_uuid = nil
+    end
+
+    def source_branch_deletion_lease_key
+      @source_branch_deletion_lease_key ||= MergeRequests::DeleteSourceBranchWorker.lease_key(@merge_request.source_project_id, @merge_request.source_branch)
     end
 
     def exclusive_lease(merge_request)

@@ -8,7 +8,7 @@ module Authz
 
     class << self
       def config_path
-        Rails.root.join(BASE_PATH, '**/_metadata.yml')
+        Rails.root.join(BASE_PATH, '**/.metadata.yml')
       end
 
       private

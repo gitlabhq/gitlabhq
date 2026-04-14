@@ -17,3 +17,5 @@
         %span= blob.name
   %td
     = number_to_human_size(blob.size)
+  %td
+    = link_button_to nil, raw_project_job_artifacts_path(@project, @build, path: file.path, inline: false), icon: 'download', title: _('Download'), 'aria-label': _('Download'), target: '_blank', download: blob.name

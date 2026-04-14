@@ -19,6 +19,7 @@ Database/AvoidUsingConnectionExecute:
     - 'lib/click_house/migration.rb'
     - 'lib/click_house/migration_support/schema_migration.rb'
     - 'lib/gitlab/database/alter_cell_sequences_range.rb'
+    - 'lib/gitlab/database/alter_legacy_cell_sequences_max_value.rb'
     - 'lib/gitlab/database/async_constraints/validators/base.rb'
     - 'lib/gitlab/database/async_indexes/index_base.rb'
     - 'lib/gitlab/database/async_indexes/index_creator.rb'

@@ -5,10 +5,10 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { saveAlertToLocalStorage } from '~/lib/utils/local_storage_alert';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerQuery from '../graphql/show/runner.query.graphql';
 
 import { I18N_FETCH_ERROR } from '../constants';
-import { captureException } from '../sentry_utils';
 
 import RunnerHeader from './runner_header.vue';
 import RunnerHeaderActions from './runner_header_actions.vue';
@@ -68,7 +68,7 @@ export default {
       }
     },
     reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
   },
 };

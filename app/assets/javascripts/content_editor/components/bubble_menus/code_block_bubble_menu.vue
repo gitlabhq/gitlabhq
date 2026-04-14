@@ -19,6 +19,7 @@ import BubbleMenu from './bubble_menu.vue';
 const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
 
 export default {
+  name: 'CodeBlockBubbleMenu',
   components: {
     BubbleMenu,
     GlCollapsibleListbox,

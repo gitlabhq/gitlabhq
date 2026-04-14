@@ -87,6 +87,62 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
         expect(service.execute).to be_truthy
       end
 
+      describe 'IID pre-allocation' do
+        it 'calls IidPreallocator.from_file with the group and max_iids.json path' do
+          shared = Gitlab::ImportExport::Shared.new(group)
+          allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
+
+          expect(Gitlab::Import::IidPreallocator).to receive(:from_file).with(
+            group,
+            File.join(shared.export_path, 'max_iids.json')
+          )
+
+          service.execute
+        end
+
+        it 'flushes group-scoped InternalId records after import succeeds' do
+          expect(InternalId).to receive(:flush_records!).with(namespace: group)
+
+          service.execute
+        end
+
+        context 'when the import fails' do
+          before do
+            allow_next_instance_of(Gitlab::ImportExport::Group::TreeRestorer) do |restorer|
+              allow(restorer).to receive(:restore).and_return(false)
+            end
+          end
+
+          it 'still flushes group-scoped InternalId records' do
+            expect(InternalId).to receive(:flush_records!).with(namespace: group)
+
+            expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+          end
+        end
+
+        context 'when the group is not persisted' do
+          before do
+            allow(group).to receive(:persisted?).and_return(false)
+          end
+
+          it 'does not flush InternalId records' do
+            expect(InternalId).not_to receive(:flush_records!)
+
+            service.execute
+          end
+        end
+
+        context 'when the group is nil' do
+          it 'does not flush InternalId records' do
+            allow(service).to receive(:group).and_return(nil)
+
+            expect(InternalId).not_to receive(:flush_records!)
+
+            service.send(:flush_iid_records)
+          end
+        end
+      end
+
       it 'tracks the event' do
         service.execute
 

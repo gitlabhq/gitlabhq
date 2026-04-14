@@ -1,0 +1,8 @@
+---
+name: _update_shared_saved_view
+description: Private permission that gates update access to shared (non-private)
+  saved views. Saved views are user-configured filters and sorts on work item
+  lists that can be shared with other members. The saved view policy combines
+  this permission with a visibility check to enable the public
+  update_saved_view permission. Must not be checked directly at enforcement
+  points.

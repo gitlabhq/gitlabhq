@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 const DEFAULT_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 const DYNAMIC_PANEL_SCROLL_CONTAINER_SELECTOR = '.js-dynamic-panel-inner';

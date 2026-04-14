@@ -259,7 +259,7 @@ export default {
           :tabs="tabs"
           scope="deployKeys"
           class="gl-rounded-lg"
-          @onChangeTab="onChangeTab"
+          @on-change-tab="onChangeTab"
         />
       </div>
     </div>

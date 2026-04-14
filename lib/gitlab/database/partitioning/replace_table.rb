@@ -4,23 +4,31 @@ module Gitlab
   module Database
     module Partitioning
       class ReplaceTable
+        include ::Gitlab::Utils::StrongMemoize
+
         DELIMITER = ";\n\n"
 
         attr_reader :original_table, :replacement_table, :replaced_table, :primary_key_columns,
-          :sequence, :original_primary_key, :replacement_primary_key, :replaced_primary_key
+          :original_primary_key, :replacement_primary_key, :replaced_primary_key,
+          :rename_partitions
 
-        def initialize(connection, original_table, replacement_table, replaced_table, primary_key_columns)
+        def initialize(connection, original_table, replacement_table, replaced_table, primary_key_columns, rename_partitions: true)
           @connection = connection
           @original_table = original_table
           @replacement_table = replacement_table
           @replaced_table = replaced_table
           @primary_key_columns = Array(primary_key_columns)
+          @rename_partitions = rename_partitions
 
-          @sequence = default_sequence(original_table, @primary_key_columns.first)
           @original_primary_key = default_primary_key(original_table)
           @replacement_primary_key = default_primary_key(replacement_table)
           @replaced_primary_key = default_primary_key(replaced_table)
         end
+
+        def sequence
+          find_sequence(original_table, primary_key_columns.first)
+        end
+        strong_memoize_attr :sequence
 
         def perform
           yield sql_to_replace_table if block_given?
@@ -34,8 +42,10 @@ module Gitlab
 
         delegate :execute, :quote_table_name, :quote_column_name, to: :connection
 
-        def default_sequence(table, column)
-          "#{table}_#{column}_seq"
+        def find_sequence(table, column)
+          connection.select_value(<<~SQL, nil, [table, column])
+            SELECT pg_get_serial_sequence($1, $2)::regclass
+          SQL
         end
 
         def default_primary_key(table)
@@ -50,18 +60,20 @@ module Gitlab
           statements = []
           first_pk_column = primary_key_columns.first
 
-          statements << alter_column_default(original_table, first_pk_column, expression: nil)
-          statements << alter_column_default(replacement_table, first_pk_column,
-            expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
+          if sequence
+            statements << alter_column_default(original_table, first_pk_column, expression: nil)
+            statements << alter_column_default(replacement_table, first_pk_column,
+              expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
 
-          # If a different user owns the old table, the conversion process will fail to reassign the sequence
-          # ownership to the new parent table (as it will be owned by the current user).
-          # Force the old table to be owned by the same user as the replacement table user in that case.
-          if table_owner(original_table) != table_owner(replacement_table)
-            statements << set_table_owner_statement(original_table, table_owner(replacement_table))
+            # If a different user owns the old table, the conversion process will fail to reassign the sequence
+            # ownership to the new parent table (as it will be owned by the current user).
+            # Force the old table to be owned by the same user as the replacement table user in that case.
+            if table_owner(original_table) != table_owner(replacement_table)
+              statements << set_table_owner_statement(original_table, table_owner(replacement_table))
+            end
+
+            statements << alter_sequence_owned_by(sequence, replacement_table, first_pk_column)
           end
-
-          statements << alter_sequence_owned_by(sequence, replacement_table, first_pk_column)
 
           rename_table_objects(statements, original_table, replaced_table, original_primary_key, replaced_primary_key)
           rename_table_objects(statements, replacement_table, original_table, replacement_primary_key, original_primary_key)
@@ -73,10 +85,10 @@ module Gitlab
           statements << rename_table(old_table, new_table)
           statements << rename_constraint(new_table, old_primary_key, new_primary_key)
 
-          rename_partitions(statements, old_table, new_table)
+          rename_partitions_sql(statements, old_table, new_table) if rename_partitions
         end
 
-        def rename_partitions(statements, old_table_name, new_table_name)
+        def rename_partitions_sql(statements, old_table_name, new_table_name)
           Gitlab::Database::PostgresPartition.for_parent_table(old_table_name).each do |partition|
             new_partition_name = partition.name.sub(/#{old_table_name}/, new_table_name.to_s)
             old_primary_key = default_primary_key(partition.name)

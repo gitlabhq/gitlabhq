@@ -3,7 +3,7 @@
 // can only handle two levels of breadcrumbs, but we have three levels here.
 // So we extended the registry_breadcrumb.vue component with harbor_registry_breadcrumb.vue to support multiple levels of breadcrumbs
 import { GlBreadcrumb } from '@gitlab/ui';
-import { isArray, last } from 'lodash';
+import { isArray, last } from 'lodash-es';
 
 export default {
   components: {

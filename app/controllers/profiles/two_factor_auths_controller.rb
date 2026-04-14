@@ -19,6 +19,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def show
     setup_show_page
+    render(locals: show_view_variables)
   end
 
   def create
@@ -135,6 +136,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   private
+
+  def show_view_variables
+    {}
+  end
 
   def update_current_user_otp!
     current_user.update_otp_secret! if current_user.needs_new_otp_secret?

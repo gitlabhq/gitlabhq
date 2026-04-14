@@ -37,6 +37,10 @@ module Resolvers
 
     alias_method :parent, :object
 
+    before_connection_authorization do |nodes, current_user|
+      ::Preloaders::GroupPolicyPreloader.new(nodes, current_user).execute
+    end
+
     private
 
     def resolve_groups(args)

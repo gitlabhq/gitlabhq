@@ -7,6 +7,7 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
 
   describe 'associations' do
     it { is_expected.to belong_to(:note) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do

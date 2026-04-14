@@ -8,6 +8,7 @@ query searchNamespacesWhereUserCanCreateProjects($search: String) {
         name
         visibility
         webUrl
+        canPushInitialCommit @gl_introduced(version: "18.11.0")
       }
     }
     namespace {
@@ -16,6 +17,7 @@ query searchNamespacesWhereUserCanCreateProjects($search: String) {
       name
       visibility
       webUrl
+      canPushInitialCommit @gl_introduced(version: "18.11.0")
     }
   }
 }

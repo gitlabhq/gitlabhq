@@ -10,8 +10,9 @@ import {
 } from '~/work_items/graphql/cache_utils';
 import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
+import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { apolloProvider, linkedItems } from '~/graphql_shared/issuable_client';
 import {
   childrenWorkItems,
   createWorkItemNoteResponse,
@@ -420,6 +421,98 @@ describe('work items graphql cache utils', () => {
 
       expect(newCounts.countsByState.opened).toBeGreaterThan(oldCounts.countsByState.opened);
       expect(newCounts.countsByState.closed).toBeLessThan(oldCounts.countsByState.closed);
+    });
+  });
+
+  describe('linkedItems reactive variable in widgets merge', () => {
+    const fullPath = 'gitlab-org';
+    const iid = '1';
+    const { cache } = apolloProvider.clients.defaultClient;
+    const originalWriteQuery = cache.writeQuery.bind(cache);
+    const originalExtract = cache.extract.bind(cache);
+    const key = `${fullPath}:${iid}`;
+
+    const mockLinkedItem = (itemId) => ({
+      __typename: 'LinkedWorkItemType',
+      linkId: `gid://gitlab/WorkItems::RelatedWorkItemLink/${itemId}`,
+      linkType: 'relates_to',
+      workItemState: 'OPEN',
+      workItem: {
+        __typename: 'WorkItem',
+        id: `gid://gitlab/WorkItem/${itemId}`,
+        iid: `${itemId}`,
+        confidential: false,
+        namespace: { __typename: 'Namespace', id: 'gid://gitlab/Group/1', fullPath },
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/8',
+          name: 'Epic',
+          iconName: 'work-item-epic',
+        },
+        title: `Item ${itemId}`,
+        state: 'OPEN',
+        createdAt: '2025-01-01T00:00:00Z',
+        closedAt: null,
+        webUrl: `https://example.com/${itemId}`,
+        reference: `${fullPath}#${itemId}`,
+      },
+    });
+
+    const write = (nodes) => {
+      cache.writeQuery({
+        query: workItemLinkedItemsSlimQuery,
+        variables: { fullPath, iid },
+        data: {
+          namespace: {
+            __typename: 'Namespace',
+            id: 'gid://gitlab/Group/1',
+            workItem: {
+              __typename: 'WorkItem',
+              id: 'gid://gitlab/WorkItem/1',
+              widgets: [
+                {
+                  __typename: 'WorkItemWidgetLinkedItems',
+                  type: 'LINKED_ITEMS',
+                  blockedByCount: 0,
+                  blockingCount: 0,
+                  linkedItems: { __typename: 'LinkedWorkItemTypeConnection', nodes },
+                },
+              ],
+            },
+          },
+        },
+      });
+    };
+
+    // `setNewWorkItemCache` tests replace cache.writeQuery with a mock,
+    // so we restore the original to ensure write() works correctly.
+    beforeEach(() => {
+      cache.writeQuery = originalWriteQuery;
+      cache.restore({});
+      linkedItems({});
+    });
+
+    it.each`
+      description                                                                   | writeNodes                                        | evictKey                               | expectedItems
+      ${'populates linkedItems with resolvable items when some are not yet cached'} | ${() => [mockLinkedItem(10), mockLinkedItem(99)]} | ${'WorkItem:gid://gitlab/WorkItem/99'} | ${[{ iid: '10', title: 'Item 10' }]}
+      ${'skips items not yet resolvable in cache without silently failing'}         | ${() => [mockLinkedItem(10)]}                     | ${'WorkItem:gid://gitlab/WorkItem/10'} | ${[]}
+    `('$description', ({ writeNodes, evictKey, expectedItems }) => {
+      write([mockLinkedItem(10)]);
+
+      const spy = jest.spyOn(cache, 'extract');
+      spy.mockImplementation(() => {
+        const data = originalExtract();
+        delete data[evictKey];
+        return data;
+      });
+
+      try {
+        expect(() => write(writeNodes())).not.toThrow();
+      } finally {
+        spy.mockRestore();
+      }
+
+      expect(linkedItems()[key]).toMatchObject(expectedItems);
     });
   });
 });

@@ -1,0 +1,5 @@
+---
+name: _create_dast_pipeline
+description: Private permission that gates the ability to create DAST on-demand
+  scan pipelines. It enables create_pipeline permission when the target pipeline
+  is for a DAST on-demand scan.

@@ -16,8 +16,33 @@ const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 export const buildBlobViewPath = (baseUrl, options) => {
   const { targetPath, branch, filePath } = options;
   const urlObj = new URL(baseUrl);
-  urlObj.pathname = joinPaths(targetPath, '-/blob', branch, filePath);
+  urlObj.pathname = joinPaths(
+    window.gon.relative_url_root || '',
+    targetPath,
+    '-/blob',
+    branch,
+    filePath,
+  );
   return urlObj.toString();
+};
+
+/**
+ * Returns the url to an existing merge request
+ * @param {Object} options - Redirect options
+ * @param {string} options.url - The current URL
+ * @param {string} options.projectPath - The project path
+ * @param {string} options.fromMergeRequestIid - The merge request IID to redirect to
+ */
+export const getUrlToExistingMergeRequest = ({ url, projectPath, fromMergeRequestIid }) => {
+  const urlCopy = new URL(url);
+  urlCopy.pathname = joinPaths(
+    window.gon.relative_url_root || '',
+    projectPath,
+    '/-/merge_requests/',
+    fromMergeRequestIid,
+  );
+  const cleanUrl = removeParams(['from_merge_request_iid'], urlCopy.toString());
+  return cleanUrl;
 };
 
 /**
@@ -28,9 +53,7 @@ export const buildBlobViewPath = (baseUrl, options) => {
  * @param {string} options.fromMergeRequestIid - The merge request IID to redirect to
  */
 export const redirectToExistingMergeRequest = ({ url, projectPath, fromMergeRequestIid }) => {
-  const urlCopy = new URL(url);
-  urlCopy.pathname = joinPaths(projectPath, '/-/merge_requests/', fromMergeRequestIid);
-  const cleanUrl = removeParams(['from_merge_request_iid'], urlCopy.toString());
+  const cleanUrl = getUrlToExistingMergeRequest({ url, projectPath, fromMergeRequestIid });
   visitUrl(cleanUrl);
 };
 
@@ -67,7 +90,11 @@ export const redirectToForkMergeRequest = ({
   targetBranch,
 }) => {
   const urlCopy = new URL(url);
-  urlCopy.pathname = joinPaths(forkProjectPath, '/-/merge_requests/new');
+  urlCopy.pathname = joinPaths(
+    window.gon.relative_url_root || '',
+    forkProjectPath,
+    '/-/merge_requests/new',
+  );
   const mrParams = {
     'merge_request[source_branch]': sourceBranch,
     'merge_request[target_project_id]': upstreamProjectId,

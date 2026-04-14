@@ -68,10 +68,10 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
         expect(find_field('Title').value).to include(merge_request.title)
         expect(find_field('Description').value).to include(discussion.first_note.note)
-        expect(page).to have_text("Creating this issue will resolve the thread in !#{merge_request.iid}")
+        expect(page).to have_text("Creating this Issue will resolve the thread in !#{merge_request.iid}")
 
         # Actually creates an issue for the project
-        expect { click_button 'Create issue' }.to change { project.issues.reload.size }.by(1)
+        expect { click_button 'Create Issue' }.to change { project.issues.reload.size }.by(1)
 
         # Resolves the discussion in the merge request
         discussion.first_note.reload

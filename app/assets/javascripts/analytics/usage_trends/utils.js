@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { masks } from '~/lib/dateformat';
 import { formatDate } from '~/lib/utils/datetime_utility';
 

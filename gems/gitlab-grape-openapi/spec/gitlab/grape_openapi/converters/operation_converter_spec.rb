@@ -304,6 +304,90 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
       end
     end
 
+    context 'with URL-unsafe characters in paths' do
+      let(:api_classes) { [TestApis::UrlUnsafeOperationidApi] }
+
+      it 'generates URL-safe operation IDs for all routes' do
+        operations = routes.map { |r| described_class.convert(r, schema_registry, request_body_registry) }
+        operations.each do |op|
+          expect(op.operation_id).to match(/\A[a-zA-Z0-9]+\z/),
+            "Expected '#{op.operation_id}' to contain only URL-safe characters"
+        end
+      end
+
+      context 'with optional dash segment (-/)' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('(-/)epics')
+          end
+        end
+
+        it 'strips parentheses from operation_id' do
+          expect(operation.operation_id).to eq('getApiV1GroupsIdDashEpics')
+        end
+      end
+
+      context 'with optional parameter segment (/:param)' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('settings_sync')
+          end
+        end
+
+        it 'strips parentheses from operation_id' do
+          expect(operation.operation_id).to eq('getApiV1VscodeSettingsSyncSettingsContextHashV1Manifest')
+        end
+      end
+
+      context 'with escaped parentheses \(\)' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('FindPackagesById')
+          end
+        end
+
+        it 'strips backslashes and parentheses from operation_id' do
+          expect(operation.operation_id).to eq('getApiV1ProjectsProjectIdPackagesNugetV2Findpackagesbyid')
+        end
+      end
+
+      context 'with dollar sign in path' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('$metadata')
+          end
+        end
+
+        it 'strips dollar sign from operation_id' do
+          expect(operation.operation_id).to eq('getApiV1ProjectsIdPackagesNugetV2Metadata')
+        end
+      end
+
+      context 'with parameter adjacent to file extension' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('file_name.tgz')
+          end
+        end
+
+        it 'produces clean operation_id without stray braces' do
+          expect(operation.operation_id).to eq('getApiV1ProjectsIdPackagesHelmChannelChartsFileNameTgz')
+        end
+      end
+
+      context 'with optional ref segment (ref/:ref/)' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin).include?('ref/:ref')
+          end
+        end
+
+        it 'strips parentheses from operation_id' do
+          expect(operation.operation_id).to eq('postApiV1ProjectsIdRefRefTriggerPipeline')
+        end
+      end
+    end
+
     context 'with request body' do
       let(:api_classes) { [TestApis::UsersApi] }
 
@@ -349,7 +433,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
       end
 
-      context 'with route having no params' do
+      context 'with route having no declared params and no path placeholders' do
         let(:route) do
           routes.find do |r|
             r.instance_variable_get(:@pattern).instance_variable_get(:@origin) == '/api/:version/users'
@@ -358,6 +442,45 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
         it 'returns empty array for parameters' do
           expect(operation.parameters).to eq([])
+        end
+      end
+
+      context 'with route having undeclared path placeholders' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) ==
+              '/api/:version/projects/:project_id/users' &&
+              r.instance_variable_get(:@options)[:method] == 'GET'
+          end
+        end
+
+        it 'injects missing path parameters' do
+          expect(operation.parameters.size).to eq(1)
+          param = operation.parameters.first
+          expect(param.name).to eq('project_id')
+          expect(param.in_value).to eq('path')
+          expect(param.required).to be true
+          expect(param.schema).to eq({})
+        end
+      end
+
+      context 'with route having multiple undeclared path placeholders' do
+        let(:route) do
+          routes.find do |r|
+            r.instance_variable_get(:@pattern).instance_variable_get(:@origin) ==
+              '/api/:version/projects/:project_id/merge_requests/:merge_request_id/comments' &&
+              r.instance_variable_get(:@options)[:method] == 'GET'
+          end
+        end
+
+        it 'injects all missing path parameters' do
+          param_names = operation.parameters.map(&:name)
+          expect(param_names).to include('project_id', 'merge_request_id')
+
+          operation.parameters.each do |param|
+            expect(param.in_value).to eq('path')
+            expect(param.required).to be true
+          end
         end
       end
 

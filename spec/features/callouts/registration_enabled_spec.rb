@@ -6,9 +6,9 @@ RSpec.describe 'Registration enabled callout', feature_category: :system_access 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_admin) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:callout_title) { _('Check your sign-up restrictions') }
+  let_it_be(:callout_title) { _('Check the restrictions for new users') }
 
-  context 'when "Sign-up enabled" setting is `true`' do
+  context 'when "Allow new user accounts" setting is `true`' do
     before do
       stub_application_setting(signup_enabled: true)
     end
@@ -34,11 +34,7 @@ RSpec.describe 'Registration enabled callout', feature_category: :system_access 
       end
 
       it 'does not display callout on pages other than root, admin, or dashboard' do
-        # TODO: When removing the feature flag,
-        # we won't need the tests for the issues listing page, since we'll be using
-        # the work items listing page.
-        stub_feature_flags(work_item_planning_view: false)
-        visit project_issues_path(project)
+        visit project_work_items_path(project)
 
         expect(page).not_to have_content callout_title
       end

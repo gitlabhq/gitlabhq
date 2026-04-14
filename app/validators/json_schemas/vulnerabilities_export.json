@@ -40,6 +40,20 @@
       ],
       "description": "Data for rendering vulnerabilities over time in PDF reports"
     },
+    "vulnerabilities_by_age": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Data for rendering vulnerabilities by age in PDF reports"
+    },
+    "vulnerabilities_by_severity_count": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Data for rendering vulnerabilities count by severity in PDF reports"
+    },
     "dashboard_type": {
       "type": [
         "string",

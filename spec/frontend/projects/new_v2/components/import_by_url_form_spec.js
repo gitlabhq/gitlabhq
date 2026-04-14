@@ -2,7 +2,7 @@ import { GlFormInputGroup, GlMultiStepFormTemplate } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -264,17 +264,6 @@ describe('Import Project by URL Form', () => {
         await waitForPromises();
 
         expect($toast.show).toHaveBeenCalledWith(`Connection failed: ${errorMessage}`);
-      });
-    });
-
-    describe('when request fails', () => {
-      it('shows error message', async () => {
-        mockAxios.onPost(mockImportByUrlValidatePath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-        findCheckConnectionButton().vm.$emit('click');
-
-        await waitForPromises();
-
-        expect($toast.show).toHaveBeenCalledWith(expect.stringContaining('Connection failed'));
       });
     });
   });

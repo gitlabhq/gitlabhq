@@ -269,7 +269,7 @@ The same mechanism will be used for `allowed_plans` [soon](https://gitlab.com/gi
 If the project is not on the required plan and a job is targeting such runner,
 it will be failing constantly until the project owner changes the configuration or upgrades the namespace to the required plan.
 
-These two mechanisms are also very SaaS specific and at the same time are quite compute expensive when we consider SaaS' scale.
+Both mechanisms apply only to GitLab.com and consume significant compute resources at scale.
 Doing the check before the job is even transitioned to pending and failing early makes a lot of sense here.
 
 Why we don't handle other cases for pending and drop jobs early?
@@ -277,12 +277,13 @@ In some cases, a job is in pending only because the runner is slow on taking up 
 This is not something that you can know at GitLab level.
 Depending on the runner's configuration and capacity and the size of the queue in GitLab, a job may be taken immediately, or may need to wait.
 
-There may be also other reasons:
+There are other possible reasons:
 
-- you are handling runner maintenance and it's not available for a while at all,
-- you are updating configuration and by mistake, you've messed up the tagging and/or protected flag (or in the case of our SaaS instance runners; you've assigned a wrong cost factor or `allowed_plans` configuration).
+- You are handling runner maintenance, which is temporarily not available.
+- You are updating configuration and, by mistake, you've use the wrong tagging or protected flag.
+- For GitLab.com instance runners, you've assigned a wrong cost factor or `allowed_plans` configuration.
 
-All of that are problems that may be temporary and mostly are not expected to happen and are expected to be detected and fixed early.
+These issues are typically temporary and should be detected and fixed quickly.
 We definitely don't want to drop jobs immediately when one of these conditions is happening.
 Dropping a job only because a runner is at capacity or because there is a temporary unavailability/configuration mistake would be very harmful to users.
 

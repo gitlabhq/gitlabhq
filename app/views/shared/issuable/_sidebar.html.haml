@@ -12,7 +12,7 @@
 - add_page_specific_style 'page_bundles/labels'
 - sidebar_header_classes = '@md/panel:gl-flex @lg/panel:!gl-hidden gl-justify-end' if is_merge_request
 
-%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { auto_collapse: true, always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request)} #{'right-sidebar-merge-requests right-sidebar-collapsed' if is_merge_request}", 'aria-live' => 'polite', 'aria-label': issuable_type }
+%aside.right-sidebar.js-right-sidebar{ data: { testid: 'issuable-sidebar', auto_collapse: true, always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request)} #{'right-sidebar-merge-requests right-sidebar-collapsed' if is_merge_request}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request}" }
     .issuable-sidebar-header{ class: sidebar_header_classes }
       = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle gl-float-right js-sidebar-toggle has-tooltip !gl-border-0" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
@@ -20,7 +20,6 @@
       - if signed_in
         - if !is_merge_request
           .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
-        - if notifications_todos_buttons_enabled?
           .js-sidebar-subscriptions-widget-root
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: "issuable-context-form inline-update js-issuable-update #{'!gl-pr-2' if is_merge_request}" } do |f|
@@ -44,6 +43,10 @@
       - if issuable_sidebar[:supports_milestone]
         .block.milestone{ data: { testid: 'sidebar-milestones' } }
           .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
+
+      - if is_merge_request && Feature.enabled?(:mr_related_work_items, @project, type: :wip)
+        .block.related-work-items{ data: { testid: 'related-work-items-container' } }
+          .js-sidebar-related-work-items-root
 
       - if in_group_context_with_iterations && @project.group.licensed_feature_available?(:iterations)
         .block{ data: { testid: 'iteration-container' } }<

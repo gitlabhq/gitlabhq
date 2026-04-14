@@ -403,6 +403,71 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
   end
 
+  describe '#tagged_packages' do
+    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+
+    context 'when packages match the release tag version' do
+      let_it_be(:matching_package) { create(:generic_package, project: project, version: '1.0.0') }
+
+      it 'returns packages whose version matches the tag without the v prefix' do
+        expect(release.tagged_packages).to contain_exactly(matching_package)
+      end
+    end
+
+    context 'when multiple packages match the release tag version' do
+      let_it_be(:package_a) { create(:generic_package, project: project, version: '1.0.0') }
+      let_it_be(:package_b) { create(:npm_package, project: project, version: '1.0.0') }
+
+      it 'returns all matching packages' do
+        expect(release.tagged_packages).to contain_exactly(package_a, package_b)
+      end
+    end
+
+    context 'when no packages match the release tag version' do
+      let_it_be(:other_package) { create(:generic_package, project: project, version: '2.0.0') }
+
+      it 'returns an empty relation' do
+        expect(release.tagged_packages).to be_empty
+      end
+    end
+
+    context 'when the tag has no v prefix' do
+      let_it_be(:release_no_prefix) { create(:release, project: project, tag: '3.0.0') }
+      let_it_be(:matching_package) { create(:generic_package, project: project, version: '3.0.0') }
+
+      it 'matches packages by version directly' do
+        expect(release_no_prefix.tagged_packages).to contain_exactly(matching_package)
+      end
+    end
+
+    context 'when the tag has an uppercase V prefix' do
+      let_it_be(:release_upper_v) { create(:release, project: project, tag: 'V4.0.0') }
+      let_it_be(:matching_package) { create(:generic_package, project: project, version: '4.0.0') }
+
+      it 'strips the uppercase V prefix and matches packages' do
+        expect(release_upper_v.tagged_packages).to contain_exactly(matching_package)
+      end
+    end
+
+    context 'when the tag is blank' do
+      let(:release_no_tag) { build(:release, project: project, tag: '') }
+
+      it 'returns none' do
+        expect(release_no_tag.tagged_packages).to be_empty
+      end
+    end
+
+    context 'when a package is pending destruction' do
+      let_it_be(:destroyed_package) do
+        create(:generic_package, project: project, version: '1.0.0', status: :pending_destruction)
+      end
+
+      it 'excludes non-displayable packages' do
+        expect(release.tagged_packages).not_to include(destroyed_package)
+      end
+    end
+  end
+
   describe '#related_deployments' do
     let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
     let_it_be(:ref) { release.tag }

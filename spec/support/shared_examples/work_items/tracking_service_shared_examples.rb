@@ -43,3 +43,34 @@ RSpec.shared_examples 'does not track work item event' do |method_to_call = nil|
     end
   end
 end
+
+RSpec.shared_examples 'tracks non work item event' do |user_var, event_name, method_to_call = nil|
+  it "calls TrackingService.track with '#{event_name}' event" do
+    allow(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:track)
+
+    if method_to_call
+      send(method_to_call)
+    else
+      service.execute
+    end
+
+    expect(Gitlab::WorkItems::Instrumentation::TrackingService)
+      .to have_received(:track)
+      .with(
+        event: event_name,
+        properties: hash_including(user: send(user_var))
+      )
+  end
+end
+
+RSpec.shared_examples 'does not track non work item event' do |method_to_call = nil|
+  it 'does not call TrackingService.track' do
+    expect(Gitlab::WorkItems::Instrumentation::TrackingService).not_to receive(:track)
+
+    if method_to_call
+      send(method_to_call)
+    else
+      service.execute
+    end
+  end
+end

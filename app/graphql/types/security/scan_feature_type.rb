@@ -46,6 +46,11 @@ module Types
         null: false,
         description: 'Type of security scan (e.g., sast, dast, secret_detection).'
 
+      field :can_user_configure, # rubocop: disable GraphQL/ExtractType -- no value for now
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether the current user can configure the security scan.'
+
       def security_features
         object[:security_features].presence
       end

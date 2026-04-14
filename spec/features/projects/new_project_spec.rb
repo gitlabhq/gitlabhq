@@ -7,7 +7,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
-    stub_feature_flags(new_project_creation_form: false)
     stub_feature_flags(import_by_url_new_page: false)
   end
 
@@ -37,7 +36,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     let_it_be(:user) { create(:user) }
 
     before do
-      stub_feature_flags(new_project_creation_form: false)
       stub_feature_flags(import_by_url_new_page: false)
       sign_in(user)
     end
@@ -109,7 +107,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     it_behaves_like 'shows correct navigation'
     shared_examples '"New project" page' do
       before do
-        stub_feature_flags(new_project_creation_form: false)
         stub_feature_flags(import_by_url_new_page: false)
       end
 
@@ -508,9 +505,9 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'reports error when inaccessible url is provided' do
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo.com/bar.git').and_return(false)
 
-          fill_in 'project_import_url', with: 'http://foo/bar'
+          fill_in 'project_import_url', with: 'http://foo.com/bar.git'
 
           click_on 'Start import'
           wait_for_requests
@@ -519,9 +516,9 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'initiates import when valid repo url is provided' do
-          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(true)
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo.com/bar.git').and_return(true)
 
-          fill_in 'project_import_url', with: 'http://foo/bar'
+          fill_in 'project_import_url', with: 'http://foo.com/bar.git'
 
           click_on 'Start import'
           wait_for_requests
@@ -573,7 +570,6 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   shared_examples 'has instructions to enable OAuth' do
     context 'when OAuth is not configured' do
       before do
-        stub_feature_flags(new_project_creation_form: false)
         stub_feature_flags(import_by_url_new_page: false)
         sign_in(user)
 

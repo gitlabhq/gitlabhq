@@ -83,14 +83,14 @@ GET /projects/:id/variables/:key
 | --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `key`     | string            | Yes      | Key of a variable. |
-| `filter`  | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. Premium and Ultimate only. |
+| `filter`  | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. |
 
 Example request:
 
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
 ```
 
 Example response:
@@ -107,6 +107,15 @@ Example response:
     "environment_scope": "*",
     "description": null
 }
+```
+
+Example request with `filter`:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1" \
+  --form "filter[environment_scope]=production"
 ```
 
 ## Create a variable
@@ -180,7 +189,7 @@ PUT /projects/:id/variables/:key
 | `value`             | string            | Yes      | Value of a variable. |
 | `description`       | string            | No       | Description of the variable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. Default: `null`. |
 | `environment_scope` | string            | No       | Environment scope of the variable. |
-| `filter`            | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. Premium and Ultimate only. |
+| `filter`            | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. |
 | `masked`            | boolean           | No       | If `true`, indicates the variable is masked. |
 | `protected`         | boolean           | No       | If `true`, indicates the variable is protected. |
 | `raw`               | boolean           | No       | If `true`, indicates the variable is treated as a raw string. When `false`, the variable value is [expanded](../ci/variables/_index.md#allow-cicd-variable-expansion). Default: `true`. |
@@ -191,7 +200,8 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?value=scoped-variable-updated-value&environment_scope=production&filter[environment_scope]=production"
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/NEW_VARIABLE" \
+  --form "value=updated value"
 ```
 
 Example response:
@@ -210,6 +220,17 @@ Example response:
 }
 ```
 
+Example request with `filter`:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1" \
+  --form "value=updated value" \
+  --form "environment_scope=production" \
+  --form "filter[environment_scope]=production"
+```
+
 ## Delete a variable
 
 Deletes a project variable. If there are multiple variables with the same key,
@@ -223,12 +244,21 @@ DELETE /projects/:id/variables/:key
 | --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `key`     | string            | Yes      | Key of a variable. |
-| `filter`  | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. Premium and Ultimate only. |
+| `filter`  | hash              | No       | Filters results when multiple variables share the same key. Possible values: `[environment_scope]`. |
 
 Example request:
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>"
-  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"
+```
+
+Example request with `filter`:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>"
+  --url "https://gitlab.example.com/api/v4/projects/1/variables/SCOPED_VARIABLE_1" \
+  --form "filter[environment_scope]=production"
 ```

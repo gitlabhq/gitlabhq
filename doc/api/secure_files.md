@@ -20,9 +20,9 @@ title: Project-level Secure Files API
 
 Use this API to manage [secure files](../ci/secure_files/_index.md) for a project.
 
-## List project secure files
+## List all secure files for a project
 
-Get list of secure files in a project.
+Lists all secure files for a specified project.
 
 ```plaintext
 GET /projects/:project_id/secure_files
@@ -82,9 +82,9 @@ Example response:
 ]
 ```
 
-## Show secure file details
+## Retrieve details of a secure file
 
-Get the details of a specific secure file in a project.
+Retrieves details of a specified secure file in a project.
 
 ```plaintext
 GET /projects/:project_id/secure_files/:id
@@ -118,9 +118,9 @@ Example response:
 }
 ```
 
-## Create secure file
+## Create a secure file
 
-Create a new secure file.
+Creates a secure file in a specified project.
 
 ```plaintext
 POST /projects/:project_id/secure_files
@@ -158,9 +158,9 @@ Example response:
 }
 ```
 
-## Download secure file
+## Download a secure file
 
-Download the contents of a project's secure file.
+Downloads the contents of a specified secure file in a project.
 
 ```plaintext
 GET /projects/:project_id/secure_files/:id/download
@@ -182,9 +182,9 @@ curl --request GET \
   --output myfile.jks
 ```
 
-## Remove secure file
+## Delete a secure file
 
-Remove a project's secure file.
+Deletes a specified secure file from a project.
 
 ```plaintext
 DELETE /projects/:project_id/secure_files/:id

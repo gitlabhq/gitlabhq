@@ -79,7 +79,7 @@ One of the easiest performance boosts can be achieved using a [larger runner](..
 
 This table shows how increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
 
-Here is an example job definition for API security testing that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the API security testing template.
+Here is an example job definition for API security testing that adds a `tags` section to use the medium GitLab-hosted runner on Linux. The job extends the job definition included through the API security testing template.
 
 ```yaml
 api_security:

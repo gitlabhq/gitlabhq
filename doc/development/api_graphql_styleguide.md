@@ -28,7 +28,7 @@ version, that future node is stripped out from the query.
 
 This does not mitigate the problem on GitLab.com. New GraphQL fields still need to be deployed to GitLab.com by the backend before the frontend.
 
-You can use the `@gl_introduced` directive any field, for example:
+You can use the `@gl_introduced` directive on any field, for example:
 
 <table>
 <thead>
@@ -1567,7 +1567,7 @@ Before you make use of these methods, consider if it would be simpler to either:
 - Write a concern that abstracts out the query.
 
 Using `BaseResolver.single` too freely is an anti-pattern. It can lead to
-non-sensical fields, such as a `Project.mergeRequest` field that just returns
+nonsensical fields, such as a `Project.mergeRequest` field that just returns
 the first MR if no arguments are given. Whenever we derive a single resolver
 from a collection resolver, it must have more restrictive arguments.
 
@@ -1802,7 +1802,7 @@ end
 
 ### Metadata
 
-When using resolvers, they can and should serve as the SSoT for field metadata.
+When using resolvers, they can and should serve as the single source of truth for field metadata.
 All field options (apart from the field name) can be declared on the resolver.
 These include:
 

@@ -1,0 +1,8 @@
+---
+table: ci_runners
+database: ci
+ignored_columns:
+  - token_encrypted
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_ci_runners

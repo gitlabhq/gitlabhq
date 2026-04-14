@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by common_utils
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as commonUtils from '~/lib/utils/common_utils';

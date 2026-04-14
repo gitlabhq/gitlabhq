@@ -32,7 +32,7 @@
     expanded: expanded) do |c|
     - c.with_description do
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-      = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       = render 'groups/runners/settings'
 

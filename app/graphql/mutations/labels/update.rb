@@ -30,7 +30,7 @@ module Mutations
 
         authorize!(label)
 
-        updated_label = ::Labels::UpdateService.new(args).execute(label)
+        updated_label = ::Labels::UpdateService.new(current_user, args).execute(label)
 
         {
           label: updated_label.valid? ? updated_label : nil,

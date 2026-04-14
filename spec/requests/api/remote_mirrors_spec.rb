@@ -8,6 +8,11 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
   let_it_be(:developer) { create(:user) { |u| project.add_developer(u) } }
   let_it_be(:remote_mirror) { create(:remote_mirror, :host_keys, enabled: true, project: project) }
 
+  let(:host_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' }
+  # rubocop:disable Layout/LineLength -- SSH key format requires long lines
+  let(:rsa_key) { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLIp+4ciR2YO9f9rpldc7InNQw/TBUtcNbJ2XR0rr15/5ytz7YM16xXG0Qjx576PNSmqs4gbTrvTuFZak+v1Jx/9deHRq/yqp9f+tv33+iaJGCQCX/+OVY7aWgV2R9YsS7XQ4mnv4XlOTEssib/rGAIT+ATd/GcdYSEOO+dh4O09/6O/jIMGSeP+NNetgn1nPCnLOjrXFZUnUtNDi6EEKeIlrliJjSb7Jr4f7gjvZnv4RskWHHFo8FgAAqt0gOMT6EmKrnypBe2vLGSAXbtkXr01q6/DNPH+n9VA1LTV6v1KN/W5CN5tQV11wRSKiM8g5OEbi86VjJRi2sOuYoXQU1' }
+  # rubocop:enable Layout/LineLength
+
   describe 'GET /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 
@@ -196,6 +201,105 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
         )
       end
 
+      context 'with host_keys parameter' do
+        let(:mirror_url) { 'ssh://git@example.com/foo/bar.git' }
+        let(:request) { post api(route, user), params: { url: mirror_url, host_keys: host_keys } }
+        let(:created_mirror) { RemoteMirror.find(json_response['id']) }
+
+        context 'with a bare key' do
+          let(:host_keys) { [host_key] }
+
+          it 'creates a remote mirror with ssh_known_hosts prepending hostname' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('remote_mirror')
+            expect(created_mirror.ssh_known_hosts).to eq("example.com #{host_key}")
+          end
+        end
+
+        context 'with a bare key and non-standard port URL' do
+          let(:mirror_url) { 'ssh://git@example.com:2222/foo/bar.git' }
+          let(:host_keys) { [host_key] }
+
+          it 'creates a remote mirror with [host]:port format in ssh_known_hosts' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('remote_mirror')
+            expect(created_mirror.ssh_known_hosts).to eq("[example.com]:2222 #{host_key}")
+          end
+        end
+
+        context 'with a full format key' do
+          let(:full_key) { "mirror.example.org #{host_key}" }
+          let(:host_keys) { [full_key] }
+
+          it 'creates a remote mirror preserving the provided hostname' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(created_mirror.ssh_known_hosts).to eq(full_key)
+          end
+        end
+
+        context 'with multiple keys' do
+          let(:host_keys) { [host_key, rsa_key] }
+
+          it 'creates a remote mirror with all keys joined by newlines' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(created_mirror.ssh_known_hosts).to eq("example.com #{host_key}\nexample.com #{rsa_key}")
+          end
+        end
+
+        context 'with form-encoded key where + is decoded to space' do
+          let(:host_keys) { [rsa_key.tr('+', ' ')] }
+
+          it 'restores + characters and creates the mirror successfully' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to match_response_schema('remote_mirror')
+            expect(created_mirror.ssh_known_hosts).to eq("example.com #{rsa_key}")
+          end
+        end
+
+        context 'with invalid host_keys' do
+          let(:host_keys) { ['invalid_key'] }
+
+          it 'returns 400 with error message' do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('Invalid SSH host key')
+          end
+        end
+
+        context 'with mix of valid and invalid host_keys' do
+          let(:host_keys) { [host_key, 'invalid_key'] }
+
+          it 'returns 400 and does not create a mirror' do
+            expect { request }.not_to change { project.remote_mirrors.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('Invalid SSH host key')
+          end
+        end
+
+        context 'with too many host_keys' do
+          let(:host_keys) { Array.new(11, host_key) }
+
+          it 'returns 400 with error message' do
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('too many host keys')
+          end
+        end
+      end
+
       context 'when auth method is invalid' do
         let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'invalid' } }
 
@@ -281,6 +385,99 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
         let(:boundary_object) { project }
         let(:request) do
           put api(route, personal_access_token: pat), params: { enabled: true }
+        end
+      end
+
+      context 'with host_keys parameter' do
+        let(:mirror) { create(:remote_mirror, :host_keys, project: project, url: 'ssh://git@example.com/foo/bar.git') }
+        let(:request) { put api(route, user), params: { host_keys: host_keys } }
+
+        context 'with a bare key' do
+          let(:host_keys) { [host_key] }
+
+          it 'updates ssh_known_hosts prepending hostname from mirror URL' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to eq("example.com #{host_key}")
+          end
+        end
+
+        context 'with a bare key and non-standard port URL' do
+          let(:mirror) do
+            create(:remote_mirror, :host_keys, project: project, url: 'ssh://git@example.com:2222/foo/bar.git')
+          end
+
+          let(:host_keys) { [host_key] }
+
+          it 'updates ssh_known_hosts with [host]:port format' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to eq("[example.com]:2222 #{host_key}")
+          end
+        end
+
+        context 'with a full format key' do
+          let(:full_key) { "mirror.example.org #{host_key}" }
+          let(:host_keys) { [full_key] }
+
+          it 'updates ssh_known_hosts preserving the provided hostname' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to eq(full_key)
+          end
+        end
+
+        context 'with multiple keys' do
+          let(:host_keys) { [host_key, rsa_key] }
+
+          it 'updates ssh_known_hosts with all keys joined by newlines' do
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to eq("example.com #{host_key}\nexample.com #{rsa_key}")
+          end
+        end
+
+        context 'with an empty array' do
+          let(:host_keys) { [] }
+
+          it 'clears ssh_known_hosts' do
+            expect(mirror.ssh_known_hosts).to be_present
+
+            request
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to be_nil
+          end
+        end
+
+        context 'when host_keys is not provided' do
+          it 'does not modify ssh_known_hosts' do
+            original_known_hosts = mirror.ssh_known_hosts
+            expect(original_known_hosts).to be_present
+
+            put api(route, user), params: { enabled: true }
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mirror.reload.ssh_known_hosts).to eq(original_known_hosts)
+          end
+        end
+
+        context 'with invalid host_keys' do
+          let(:host_keys) { ['invalid_key'] }
+
+          it 'returns 400 with error message' do
+            original_known_hosts = mirror.ssh_known_hosts
+
+            request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('Invalid SSH host key')
+            expect(mirror.reload.ssh_known_hosts).to eq(original_known_hosts)
+          end
         end
       end
     end

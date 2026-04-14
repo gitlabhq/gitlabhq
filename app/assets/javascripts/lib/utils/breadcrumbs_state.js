@@ -1,3 +1,6 @@
 import Vue from 'vue';
 
-export const staticBreadcrumbs = Vue.observable({ items: [] });
+export const staticBreadcrumbs = Vue.observable({
+  items: [],
+  hasInjectedBreadcrumbs: false,
+});

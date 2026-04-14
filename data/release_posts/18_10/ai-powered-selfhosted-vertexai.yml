@@ -1,0 +1,19 @@
+---
+features:
+  secondary:
+  - name: "Self-hosted Vertex AI for GitLab Duo Agent Platform"
+    available_in: [premium, ultimate]
+    gitlab_com: false
+    self_managed: true
+    gitlab_dedicated: false
+    gitlab_dedicated_for_government: false
+    documentation_link: 'https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_llm_serving_platforms/#configure-authentication-with-google-vertex-ai'
+    reporter: jordan.janes
+    stage: ai-powered
+    categories:
+    - Self-Hosted Models
+    issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/591604'
+    description: |
+      Vertex AI is now a supported LLM platform within GitLab Duo Agent Platform Self-Hosted.
+
+      Customers can now configure Anthropic models hosted on Vertex AI for use with GitLab Duo Agent Platform features.

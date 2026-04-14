@@ -1,0 +1,32 @@
+---
+features:
+  primary:
+    - name: "Introducing the work items list and saved views"
+      available_in: [core, premium, ultimate]
+      gitlab_com: true
+      self_managed: true
+      gitlab_dedicated: true
+      gitlab_dedicated_for_government: true
+      documentation_link: 'https://docs.gitlab.com/user/work_items/'
+      image_url: '/images/18_10/work_items_list_and_saved_views.png'
+      reporter: mmacfarlane
+      stage: plan
+      categories:
+        - Portfolio Management
+      epic_url: 'https://gitlab.com/groups/gitlab-org/-/work_items/17530'
+      description: |
+        The GitLab planning experience is getting a significant upgrade with the work items list and saved views,
+        bringing together two long-requested capabilities:
+
+        - The work items list combines epics, issues, and other work items into a single unified list,
+          eliminating the need to switch between separate pages for different work item types.
+          This makes it easier to understand relationships across your planning objects.
+
+        - Saved views allow you to create and save customized list configurations, including filters,
+          sort order, and display options. This makes routine checks more efficient, and supports standardized
+          ways of viewing work across your team.
+
+        This is the next step in the GitLab work items journey, a unified architecture designed to deliver
+        consistency and unlock new capabilities across GitLab planning tools.
+
+        Share your thoughts and feedback in [issue 590689](https://gitlab.com/gitlab-org/gitlab/-/work_items/590689).

@@ -20,7 +20,7 @@ module Search
 
     def tabs
       nav = {}
-      Search::Scopes.scope_definitions.each do |scope_key, definition|
+      Search::Scopes.scope_definitions(include_api_only: false).each do |scope_key, definition|
         label = definition[:label]
         label = label.call if label.respond_to?(:call)
 
@@ -53,8 +53,6 @@ module Search
         project.nil?
       when :blobs
         show_code_search_tab?
-      when :issues
-        show_issues_search_tab?
       when :work_items
         show_work_items_search_tab?
       when :merge_requests
@@ -80,7 +78,7 @@ module Search
       {
         milestones: :read_milestone,
         snippets: :read_snippet,
-        issues: :read_issue,
+        issues: :read_issue, # API backward compatibility
         work_items: :read_issue,
         blobs: :read_code,
         commits: :read_code,
@@ -110,18 +108,10 @@ module Search
       tab_enabled_for_project?(:commits)
     end
 
-    def show_issues_search_tab?
-      return false if ::Feature.enabled?(:search_scope_work_item, user)
-      return true if tab_enabled_for_project?(:issues)
-
-      project.nil? && (group.present? || ::Gitlab::CurrentSettings.global_search_issues_enabled?)
-    end
-
     def show_work_items_search_tab?
-      return false unless ::Feature.enabled?(:search_scope_work_item, user)
       return true if tab_enabled_for_project?(:work_items)
 
-      project.nil? && (group.present? || ::Gitlab::CurrentSettings.global_search_issues_enabled?)
+      project.nil? && (group.present? || ::Gitlab::CurrentSettings.global_search_work_items_enabled?)
     end
 
     def show_merge_requests_search_tab?

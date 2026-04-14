@@ -1,0 +1,3 @@
+---
+name: _update_protected_job
+description: Private permission to enable/prevent job update and write abilities

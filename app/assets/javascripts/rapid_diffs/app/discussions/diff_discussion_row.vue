@@ -10,16 +10,9 @@ export default {
   },
   inject: {
     store: { type: Object },
+    filePaths: { type: Object },
   },
   props: {
-    oldPath: {
-      type: String,
-      required: true,
-    },
-    newPath: {
-      type: String,
-      required: true,
-    },
     oldLine: {
       type: Number,
       required: false,
@@ -40,7 +33,7 @@ export default {
       default: false,
     },
   },
-  emits: ['empty', 'highlight', 'clear-highlight'],
+  emits: ['empty', 'highlight', 'clear-highlight', 'start-thread'],
   computed: {
     positions() {
       if (!this.parallel || (this.oldLine && this.newLine && !this.changed)) {
@@ -52,9 +45,26 @@ export default {
       if (!this.parallel) return 3;
       return this.positions.length === 1 ? 4 : 2;
     },
-    collapsed() {
-      return this.positions.every(
-        (p) => !this.store.findDiscussionsForPosition(p).some((d) => !d.hidden),
+    regularDiscussionsByPosition() {
+      return this.positions.map((p) =>
+        this.store.findDiscussionsForPosition(p).filter((d) => !d.isDraft),
+      );
+    },
+    allResolved() {
+      return this.regularDiscussionsByPosition.every((discussions) => {
+        if (!discussions.length) return true;
+        const resolvable = discussions.filter((d) => !d.isForm && d.resolvable);
+        return resolvable.length > 0 && resolvable.every((d) => d.resolved);
+      });
+    },
+    allHidden() {
+      return this.regularDiscussionsByPosition.every((discussions) =>
+        discussions.every((d) => d.hidden),
+      );
+    },
+    hasDrafts() {
+      return this.positions.some((p) =>
+        this.store.findDiscussionsForPosition(p).some((d) => d.isDraft),
       );
     },
     empty() {
@@ -65,30 +75,27 @@ export default {
     empty(value) {
       if (value) this.$emit('empty');
     },
+    allResolved(resolved) {
+      this.positions.forEach((p) => this.store.setPositionDiscussionsHidden(p, resolved));
+    },
   },
   methods: {
     pos(oldLine, newLine) {
-      return { oldPath: this.oldPath, newPath: this.newPath, oldLine, newLine };
+      const { oldPath, newPath } = this.filePaths;
+      return { oldPath, newPath, oldLine, newLine };
     },
     allDiscussionsForPosition(position) {
       return this.store.findDiscussionsForPosition(position);
     },
-    discussionsForGutter(position) {
-      return this.allDiscussionsForPosition(position).filter((d) => !d.isForm);
+    discussionsForGutter(index) {
+      return this.regularDiscussionsByPosition[index].filter((d) => !d.isForm);
     },
     visibleDiscussions(position) {
-      return this.allDiscussionsForPosition(position).filter((d) => !d.hidden);
+      if (this.allHidden) return this.allDiscussionsForPosition(position).filter((d) => d.isDraft);
+      return this.allDiscussionsForPosition(position);
     },
     toggle(expanded) {
       this.positions.forEach((p) => this.store.setPositionDiscussionsHidden(p, expanded));
-    },
-    startThread({ oldPath, newPath, oldLine, newLine }) {
-      const pos = { old_line: oldLine, new_line: newLine, type: null };
-      this.store.addNewLineDiscussionForm({
-        oldPath,
-        newPath,
-        lineRange: { start: pos, end: pos },
-      });
     },
   },
 };
@@ -98,18 +105,20 @@ export default {
   <tr
     data-discussion-row="true"
     class="rd-discussion-row"
-    :data-collapsed="collapsed ? '' : undefined"
+    :data-collapsed="allHidden && !hasDrafts ? '' : undefined"
   >
     <td v-for="(position, index) in positions" :key="index" :colspan="colspan" class="gl-relative">
       <diff-gutter-toggle
-        :class="{ 'gl-ml-[-1px] gl-mt-[-1px]': !collapsed }"
-        :discussions="discussionsForGutter(position)"
+        :class="{ 'gl-ml-[-1px] gl-mt-[-1px]': !allHidden }"
+        :discussions="discussionsForGutter(index)"
+        :expanded="!allHidden"
         @toggle="toggle"
       />
       <diff-line-discussions
         v-if="visibleDiscussions(position).length"
         :discussions="visibleDiscussions(position)"
-        @start-thread="startThread(position)"
+        :collapsed="allHidden"
+        @start-thread="$emit('start-thread', position)"
         @highlight="$emit('highlight', $event)"
         @clear-highlight="$emit('clear-highlight')"
       />

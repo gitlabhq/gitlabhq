@@ -33,6 +33,10 @@ The detection runs automatically after each security scan with no manual trigger
 
 Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [GitLab AI-Powered SAST False Positive Detection and Remediation](https://www.youtube.com/watch?v=kVMM5OFva_U).
+<!-- Video published on 2026-03-20 -->
+
 For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
 <!-- Demo published on 2026-02-17 -->
 
@@ -134,7 +138,7 @@ The false positive flag is removed and the FP confidence score reverts to 0. The
 
 ## Providing feedback
 
-False positive detection is a beta feature and we welcome your feedback. If you encounter issues or have suggestions for improvement, please provide feedback in [issue 583697](https://gitlab.com/gitlab-org/gitlab/-/issues/583697).
+Share your feedback in [issue 583697](https://gitlab.com/gitlab-org/gitlab/-/issues/583697).
 
 ## Related topics
 

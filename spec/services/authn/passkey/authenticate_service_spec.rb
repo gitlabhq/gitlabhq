@@ -45,7 +45,8 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
       challenge: challenge,
       sign_count: passkey_registration.counter + 1,
       allow_credentials: user.passkeys.pluck(:credential_xid),
-      extensions: { "credProps" => { "rk" => true } }
+      extensions: { "credProps" => { "rk" => true } },
+      user_verified: true
     )
   end
 
@@ -108,11 +109,43 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
             challenge: compromised_challenge,
             sign_count: passkey_registration.counter + 1,
             allow_credentials: user.passkeys.pluck(:credential_xid),
-            extensions: { "credProps" => { "rk" => true } }
+            extensions: { "credProps" => { "rk" => true } },
+            user_verified: true
           )
         end
 
         it_behaves_like 'returns authentication failure', message: 'Failed to verify WebAuthn challenge. Try again.'
+      end
+
+      context 'without user presence' do
+        let(:webauthn_authenticate_result) do
+          client.get(
+            challenge: challenge,
+            sign_count: passkey_registration.counter + 1,
+            allow_credentials: user.passkeys.pluck(:credential_xid),
+            extensions: { "credProps" => { "rk" => true } },
+            user_verified: false,
+            user_present: false
+          )
+        end
+
+        it_behaves_like 'returns authentication failure',
+          message: 'Failed to authenticate. Verify your identity with your device.'
+      end
+
+      context 'when user verification was not performed' do
+        let(:webauthn_authenticate_result) do
+          client.get(
+            challenge: challenge,
+            sign_count: passkey_registration.counter + 1,
+            allow_credentials: user.passkeys.pluck(:credential_xid),
+            extensions: { "credProps" => { "rk" => true } },
+            user_verified: false
+          )
+        end
+
+        it_behaves_like 'returns authentication failure',
+          message: 'Failed to authenticate. Verify your identity with your device.'
       end
 
       context 'with an invalid JSON response' do
@@ -127,7 +160,8 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
             challenge: challenge,
             sign_count: passkey_registration.counter - 1,
             allow_credentials: user.passkeys.pluck(:credential_xid),
-            extensions: { "credProps" => { "rk" => true } }
+            extensions: { "credProps" => { "rk" => true } },
+            user_verified: true
           )
         end
 
@@ -148,7 +182,8 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
             challenge: challenge,
             sign_count: 1,
             allow_credentials: [credential_id],
-            extensions: { "credProps" => { "rk" => true } }
+            extensions: { "credProps" => { "rk" => true } },
+            user_verified: true
           )
 
           webauthn_authenticate_result.to_json

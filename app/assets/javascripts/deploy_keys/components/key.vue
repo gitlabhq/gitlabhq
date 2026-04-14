@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlBadge, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { head, tail } from 'lodash';
+import { head, tail } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';

@@ -1,5 +1,6 @@
 description: Permissions that are disabled when a project is pending deletion
 permissions:
+  - _delete_authored_timelog
   - admin_ai_catalog_item
   - admin_approvers
   - admin_build
@@ -69,6 +70,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_timelog
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

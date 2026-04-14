@@ -69,7 +69,7 @@ You can run both services simultaneously by using separate ports for each servic
 
 ### With `gitlab-sshd`
 
-To set up `gitlab-sshd`, see [the `gitlab-sshd` documentation](gitlab_sshd.md).
+For setup information, see [`gitlab-sshd`](gitlab_sshd.md).
 After `gitlab-sshd` is enabled, GitLab Shell and `gitlab-sshd` are configured
 to use fast lookup automatically.
 

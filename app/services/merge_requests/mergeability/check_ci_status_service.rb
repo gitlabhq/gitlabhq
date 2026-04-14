@@ -46,8 +46,17 @@ module MergeRequests
 
       def pipeline_must_succeed?
         merge_request.only_allow_merge_if_pipeline_succeeds? ||
-          (merge_request.auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS &&
-           merge_request.has_ci_enabled?)
+          (auto_merge_strategy_requires_ci? && merge_request.has_ci_enabled?)
+      end
+
+      def auto_merge_strategy_requires_ci?
+        strategies = [::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS]
+
+        if Feature.enabled?(:mwcp_skip_ci_guard, merge_request.project)
+          strategies << ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
+        end
+
+        strategies.include?(merge_request.auto_merge_strategy)
       end
 
       def can_skip_diff_head_pipeline?

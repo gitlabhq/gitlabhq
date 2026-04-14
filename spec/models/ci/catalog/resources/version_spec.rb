@@ -206,6 +206,37 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     end
   end
 
+  describe '.search_by_version' do
+    let_it_be(:release_v2_beta) { create(:release, project: project, tag: '2.0.0-beta') }
+    let_it_be(:v2_0_0_beta) do
+      create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v2_beta, semver: '2.0.0-beta')
+    end
+
+    it 'finds versions matching the search term' do
+      versions = described_class.for_catalog_resources(resource).search_by_version('1.1.0')
+      expect(versions).to contain_exactly(v1_1_0)
+    end
+
+    it 'finds multiple versions with partial match' do
+      versions = described_class.for_catalog_resources(resource).search_by_version('2.0')
+      expect(versions).to contain_exactly(v2_0_0, v2_0_0_beta)
+    end
+
+    it 'is case-insensitive' do
+      versions = described_class.for_catalog_resources(resource).search_by_version('BETA')
+      expect(versions).to contain_exactly(v2_0_0_beta)
+    end
+
+    it 'sanitizes SQL special characters' do
+      expect { described_class.search_by_version('%_%') }.not_to raise_error
+    end
+
+    it 'returns empty result when no versions match' do
+      versions = described_class.for_catalog_resources(resource).search_by_version('9.9.9')
+      expect(versions).to be_empty
+    end
+  end
+
   describe '#name' do
     it 'is equivalent to semver' do
       expect(v1_1_0.name).to eq(v1_1_0.semver.to_s)

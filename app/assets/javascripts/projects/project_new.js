@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import DEFAULT_PROJECT_TEMPLATES from 'any_else_ce/projects/default_project_templates';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { validateImportUrlPath } from '~/lib/utils/path_helpers/import';
 import Tracking from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '../lib/utils/constants';
 import { ENTER_KEY } from '../lib/utils/keys';
@@ -20,7 +21,7 @@ const invalidInputClass = 'gl-field-error-outline';
 const invalidDropdownClass = '!gl-shadow-inner-1-red-400';
 
 const cancelSource = axios.CancelToken.source();
-const endpoint = `${gon.relative_url_root}/import/url/validate`;
+const endpoint = validateImportUrlPath();
 let importCredentialsValidationPromise = null;
 const validateImportCredentials = (url, user, password) => {
   cancelSource.cancel();

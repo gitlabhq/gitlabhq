@@ -1,0 +1,15 @@
+---
+table_name: enabled_foundational_flow_check_results
+classes:
+- Ai::Catalog::EnabledFoundationalFlowCheckResult
+feature_categories:
+- duo_agent_platform
+description: Stores the results of foundational flow checks run for top-level namespaces,
+  including status (success/failure) and message.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226676
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: no_work_needed
+table_size: small

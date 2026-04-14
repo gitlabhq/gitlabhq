@@ -61,7 +61,11 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`auto_duo_code_review_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228487) | GitLab Duo automatic code review enabled setting on group changed | {{< yes >}} | GitLab [18.11](https://gitlab.com/groups/gitlab-org/-/work_items/593018) | Group |
 | [`duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145509) | GitLab Duo Features enabled setting on group or project changed | {{< yes >}} | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/442485) | Group, Project |
+| [`duo_foundational_flows_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228472) | GitLab Duo foundational flows enabled setting on group changed | {{< yes >}} | GitLab [18.11](https://gitlab.com/groups/gitlab-org/-/work_items/593017) | Group |
+| [`duo_remote_flows_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228438) | GitLab Duo remote flows enabled setting on group changed | {{< yes >}} | GitLab [18.11](https://gitlab.com/groups/gitlab-org/-/work_items/593016) | Group |
+| [`enabled_foundational_flows_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228497) | Enabled foundational flows selection on group changed | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/593019) | Group |
 | [`q_onbarding_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175501) | Amazon Q instance settings changed | {{< yes >}} | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/508250) | Instance |
 
 ### Audit events
@@ -328,6 +332,7 @@ Audit event types belong to the following product categories.
 | [`duo_session_resumed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222303) | Duo session is resumed | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
 | [`duo_session_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is started | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
 | [`duo_session_stopped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is stopped | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/581004) | Project |
+| [`third_party_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227761) | A third-party agent access token was generated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/593031) | User |
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< yes >}} | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
@@ -486,6 +491,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`group_force_pages_access_control_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229638) | A group's Pages public access control setting is updated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/595288) | Group |
 | [`project_feature_pages_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's page access level setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369297) | Project |
 
 ### Permissions
@@ -761,6 +767,9 @@ Audit event types belong to the following product categories.
 | [`issue_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is closed using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`issue_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is created using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`issue_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is reopened using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
+| [`label_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228207) | A project or group label is created | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/415036) | Project, Group |
+| [`label_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228207) | A project or group label is deleted | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/415036) | Project, Group |
+| [`label_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228207) | A project or group label is updated | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/issues/415036) | Project, Group |
 | [`project_feature_issues_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's issues access level setting is updated | {{< yes >}} | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
 | [`task_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A task is closed using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`task_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A task is created using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |

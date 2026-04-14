@@ -67,6 +67,7 @@ module WorkItems
       argument :work_item_type_ids,
         [::Types::GlobalIDType[::WorkItems::Type]],
         required: false,
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
         description: 'Filter work items by work item type global IDs.',
         prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 

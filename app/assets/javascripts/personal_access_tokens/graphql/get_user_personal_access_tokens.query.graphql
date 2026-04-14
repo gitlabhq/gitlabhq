@@ -55,14 +55,22 @@ query getUserPersonalAccessTokens(
             access
             namespace {
               id
+              name
               fullName
               fullPath
               webUrl
               avatarUrl
             }
             permissions {
+              name
               action
+              description
+              category
+              categoryName
               resource
+              resourceName
+              resourceDescription
+              boundaries
             }
           }
         }

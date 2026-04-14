@@ -316,7 +316,7 @@ module Gitlab
         def on_hold?
           return false unless on_hold_until
 
-          on_hold_until > Time.zone.now
+          on_hold_until.future?
         end
 
         def to_s

@@ -64,6 +64,11 @@ export default {
       type: String,
       required: true,
     },
+    queryParams: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
 
   data() {
@@ -85,7 +90,8 @@ export default {
 
   computed: {
     iframeUrl() {
-      return buildIframeUrl(this.path, this.o11yUrl);
+      const params = new URLSearchParams(Object.entries(this.queryParams));
+      return buildIframeUrl(this.path, this.o11yUrl, params.toString() ? params : null);
     },
 
     targetPath() {

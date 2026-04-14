@@ -137,7 +137,7 @@ module Types
     field :web_path, GraphQL::Types::String, null: true,
       description: 'Web path of the object.'
 
-    markdown_field :title_html, null: true
+    markdown_field :title_html, null: true, description: "HTML rendering of `title`"
     markdown_field :description_html, null: true
 
     def work_item_type

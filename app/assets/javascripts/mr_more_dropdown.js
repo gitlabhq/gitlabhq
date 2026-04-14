@@ -11,11 +11,9 @@ export const initMrMoreDropdown = () => {
 
   const {
     mergeRequest,
-    projectPath,
     url,
     editUrl,
     isCurrentUser,
-    isLoggedIn,
     canUpdateMergeRequest,
     open,
     merged,
@@ -45,11 +43,9 @@ export const initMrMoreDropdown = () => {
       createElement(MrMoreDropdown, {
         props: {
           mr,
-          projectPath,
           url,
           editUrl,
           isCurrentUser,
-          isLoggedIn: Boolean(isLoggedIn),
           canUpdateMergeRequest,
           open,
           isMerged: merged,

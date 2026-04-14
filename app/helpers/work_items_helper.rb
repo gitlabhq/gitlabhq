@@ -15,8 +15,8 @@ module WorkItemsHelper
   # Minimal data for GraphQL-enabled views, returns only server-provided properties not yet migrated to GraphQL.
   # This method will be removed once all properties are migrated to GraphQL.
   # overridden in EE
-  def work_item_views_only_data(resource_parent, current_user)
-    base_data_legacy_only(resource_parent, current_user)
+  def work_item_views_only_data(resource_parent)
+    base_data_legacy_only(resource_parent)
   end
 
   # overridden in EE
@@ -86,17 +86,15 @@ module WorkItemsHelper
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
       rss_path: rss_path_for(resource_parent),
       calendar_path: calendar_path_for(resource_parent),
-      has_projects: has_group_projects?(resource_parent).to_s,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
+      has_projects: has_group_projects?(resource_parent).to_s
     }
   end
 
-  def base_data_legacy_only(resource_parent, current_user)
+  def base_data_legacy_only(resource_parent)
     {
       full_path: resource_parent.full_path,
-      issues_list_path: issues_path_for(resource_parent),
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
+      router_path: router_path_for(resource_parent)
     }
   end
 
@@ -106,6 +104,10 @@ module WorkItemsHelper
 
   def labels_path_for(resource_parent)
     resource_parent.is_a?(Group) ? group_labels_path(resource_parent) : project_labels_path(resource_parent)
+  end
+
+  def router_path_for(resource_parent)
+    resource_parent.is_a?(Group) ? group_work_items_path(resource_parent) : project_work_items_path(resource_parent)
   end
 
   def rss_path_for(resource_parent)

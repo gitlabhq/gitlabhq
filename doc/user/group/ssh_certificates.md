@@ -19,8 +19,13 @@ SSH certificates are cryptographically signed documents that authenticate a user
 permissions. SSH certificates are issued by a trusted Certificate Authority (CA) and contain
 information such as the user's identity, validity period, and permissions.
 
-If you are a GitLab Self-Managed instance administrator, you should instead use an instance-wide SSH certificate approach configured using the system OpenSSH daemon.
-For more information, see [user lookup with the OpenSSH `AuthorizedPrincipalsCommand`](../../administration/operations/ssh_certificates.md).
+If you are a GitLab Self-Managed instance administrator, you can use an instance-wide
+SSH certificate approach. Choose one of the following methods:
+
+- [Instance-level SSH certificates with `gitlab-sshd`](../../administration/operations/gitlab_sshd_ssh_certificates.md):
+  Configure trusted CA keys directly in `gitlab-sshd` without modifying the system OpenSSH `sshd_config`.
+- [User lookup with the OpenSSH `AuthorizedPrincipalsCommand`](../../administration/operations/ssh_certificates.md):
+  Configure SSH certificates using the system OpenSSH daemon.
 
 The benefits of SSH certificate authentication are:
 
@@ -94,7 +99,7 @@ To add a CA certificate to a group:
    ssh-keygen -f CA
    ```
 
-1. Add the public key to the top-level group using [Group SSH certificates API](../../api/group_ssh_certificates.md#add-a-group-ssh-certificate)
+1. Add the public key to the top-level group using the [group SSH certificates API](../../api/group_ssh_certificates.md#add-a-group-ssh-certificate)
    to grant access to the projects of the group and its subgroups.
 
 ## Issue CA certificates for users
@@ -105,7 +110,7 @@ Prerequisites:
 - The user certificates can only be used to access the projects in the top-level group and its subgroups.
 - A user's username or primary email (`user` or `user@example.com`) must be specified to associate a
   GitLab user with the user certificate.
-- The user must be an [Enterprise User](../enterprise_user/_index.md).
+- The user must be an [enterprise user](../enterprise_user/_index.md).
 
 To issue user certificates, use the private key from the pair you [created earlier](#add-a-ca-certificate-to-a-top-level-group):
 

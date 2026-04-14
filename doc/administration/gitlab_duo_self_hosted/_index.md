@@ -40,7 +40,7 @@ Use GitLab Duo Agent Platform Self-Hosted for on-premise models or private cloud
 
 For customers with an offline license, billing is seat based and you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted) add-on.
 
-For customers with an online license, billing is usage based. You can also use GitLab-managed models in a hybrid deployment.
+For customers with an online license, billing is [usage based](../../subscriptions/gitlab_credits.md). You can also use GitLab-managed models in a hybrid deployment.
 
 Inference data (including code inputs, model prompts, and model responses) does not leave the customer network.
 Anonymized billing metadata (instance ID, call count, anonymized user ID) is sent to GitLab for usage billing.
@@ -72,7 +72,7 @@ or GitLab Duo Pro when GitLab hosts and connects to those models through the clo
 | [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8 and later   | Generally available |
 | **GitLab Duo** | | |
 | [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9 and later   | Generally available |
-| [GitLab Duo Chat (non-agentic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
+| [GitLab Duo Non-Agentic Chat](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
 | [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9 and later   | Generally available |
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
@@ -205,3 +205,4 @@ If you have an offline license, you can set up a fully private infrastructure:
 - [Install the GitLab AI Gateway](../../install/install_ai_gateway.md)
 - [Supported models](supported_models_and_hardware_requirements.md)
 - [Supported platforms](supported_llm_serving_platforms.md)
+- [Tutorial: AWS Bedrock BYOM deployment guide](../../solutions/integrations/aws_bedrock_byom.md)

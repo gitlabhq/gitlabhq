@@ -1,8 +1,10 @@
-query getCiCatalogResourceComponents($fullPath: ID!) {
+# @feature_category: pipeline_composition
+
+query getCiCatalogResourceComponents($fullPath: ID!, $version: String) {
   ciCatalogResource(fullPath: $fullPath) {
     id
     webPath
-    versions(first: 1) {
+    versions(name: $version, first: 1) {
       nodes {
         id
         components {

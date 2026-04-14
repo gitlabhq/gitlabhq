@@ -87,10 +87,10 @@ describe('WorkItemNamespaceListbox', () => {
     const dropdownGroupItem = findDropdownItemFor(namespaceGroupsData[0].fullPath);
 
     expect(dropdownGroupItem.text()).toContain(namespaceGroupsData[0].name);
-    expect(dropdownGroupItem.text()).toContain(namespaceGroupsData[0].path);
+    expect(dropdownGroupItem.text()).toContain(namespaceGroupsData[0].fullName);
 
     expect(dropdownProjectItem.text()).toContain(namespaceProjectsData[0].name);
-    expect(dropdownProjectItem.text()).toContain(namespaceProjectsData[0].namespace.name);
+    expect(dropdownProjectItem.text()).toContain(namespaceProjectsData[0].nameWithNamespace);
   });
 
   it('supports selecting a namespace', async () => {

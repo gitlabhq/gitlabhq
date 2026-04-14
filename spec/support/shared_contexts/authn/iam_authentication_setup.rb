@@ -8,15 +8,16 @@ RSpec.shared_context 'with IAM authentication setup' do
   let(:kid) { 'test-key-id' }
 
   before do
-    stub_iam_service_config(enabled: true, url: iam_service_url, audience: iam_audience)
+    stub_iam_service_config(enabled: true, url: iam_service_url, jwt_audience: iam_audience)
     stub_iam_jwks_endpoint
   end
 
-  def stub_iam_service_config(enabled:, url:, audience: 'gitlab')
-    allow(Gitlab.config.authn.iam_service).to receive_messages(
-      enabled: enabled,
+  def stub_iam_service_config(enabled:, url:, jwt_audience: 'gitlab-rails')
+    allow(Authn::IamAuthService).to receive_messages(
+      enabled?: enabled,
       url: url,
-      audience: audience
+      jwt_audience: jwt_audience,
+      secret: nil
     )
   end
 

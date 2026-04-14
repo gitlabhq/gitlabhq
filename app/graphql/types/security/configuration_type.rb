@@ -29,8 +29,12 @@ module Types
 
       field :can_enable_spp,
         GraphQL::Types::Boolean,
-        null: false,
-        description: 'Whether the current user can enable secret push protection.'
+        null: true,
+        description: 'Whether the current user can enable secret push protection.',
+        deprecated: {
+          reason: 'Automatic enablement of Secret Push Protection for public GitLab.com projects has been discontinued',
+          milestone: '18.11'
+        }
 
       field :container_scanning_for_registry_enabled,
         GraphQL::Types::Boolean,
@@ -60,7 +64,11 @@ module Types
       field :is_gitlab_com,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Whether the instance is GitLab.com.'
+        description: 'Whether the instance is GitLab.com.',
+        deprecated: {
+          reason: 'Automatic enablement of Secret Push Protection for public GitLab.com projects has been discontinued',
+          milestone: '18.11'
+        }
 
       field :latest_pipeline_path,
         GraphQL::Types::String,
@@ -89,8 +97,12 @@ module Types
 
       field :secret_push_protection_licensed,
         GraphQL::Types::Boolean,
-        null: false,
-        description: 'Whether the project has a license for secret push protection.'
+        null: true,
+        description: 'Whether the project has a license for secret push protection.',
+        deprecated: {
+          reason: 'Automatic enablement of Secret Push Protection for public GitLab.com projects has been discontinued',
+          milestone: '18.11'
+        }
 
       field :security_training_enabled,
         GraphQL::Types::Boolean,

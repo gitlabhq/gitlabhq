@@ -131,8 +131,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/policies/merge_request_policy_spec.rb'
     - 'ee/spec/policies/organizations/organization_policy_spec.rb'
     - 'ee/spec/policies/packages/policies/dependency_proxy/group_policy_spec.rb'
-    - 'ee/spec/policies/packages/policies/group_policy_spec.rb'
-    - 'ee/spec/policies/packages/policies/project_policy_spec.rb'
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/policies/project_snippet_policy_spec.rb'
     - 'ee/spec/policies/protected_branch_policy_spec.rb'

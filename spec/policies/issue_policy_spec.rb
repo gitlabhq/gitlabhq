@@ -20,47 +20,44 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   let_it_be(:reporter_from_group_link) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let(:alert_bot) { Users::Internal.in_organization(issue.project.organization).alert_bot }
+  let(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
 
   def permissions(user, issue)
     described_class.new(user, issue)
   end
 
-  shared_examples 'support bot with service desk enabled' do
-    before do
-      allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+  shared_examples 'support bot' do
+    context 'with service desk enabled' do
+      before do
+        allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+        allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-      project.update!(service_desk_enabled: true)
+        project.update!(service_desk_enabled: true)
+      end
+
+      it 'allows support_bot to read issues, create and set metadata on new issues' do
+        expect(permissions(support_bot, issue)).to be_allowed(
+          :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
+          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
+        )
+        expect(permissions(support_bot, issue_no_assignee)).to be_allowed(
+          :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
+          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
+        )
+        expect(permissions(support_bot, new_issue)).to be_allowed(
+          :create_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation
+        )
+      end
     end
 
-    it 'allows support_bot to read issues, create and set metadata on new issues' do
-      expect(permissions(support_bot, issue)).to be_allowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-      )
-      expect(permissions(support_bot, issue_no_assignee)).to be_allowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-      )
-      expect(permissions(support_bot, new_issue)).to be_allowed(
-        :create_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation
-      )
-    end
-  end
+    context 'with service desk disabled' do
+      let(:all_permissions) { described_class.ability_map.map.keys }
 
-  shared_examples 'support bot with service desk disabled' do
-    it 'does not allow support_bot to read issues, create and set metadata on new issues' do
-      expect(permissions(support_bot, issue)).to be_disallowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-      )
-      expect(permissions(support_bot, issue_no_assignee)).to be_disallowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-      )
-      expect(permissions(support_bot, new_issue)).to be_disallowed(
-        :create_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation
-      )
+      it 'prevents all permissions' do
+        expect(permissions(support_bot, issue)).not_to be_allowed(*all_permissions)
+        expect(permissions(support_bot, issue_no_assignee)).not_to be_allowed(*all_permissions)
+        expect(permissions(support_bot, new_issue)).not_to be_allowed(*all_permissions)
+      end
     end
   end
 
@@ -96,7 +93,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   context 'a private project' do
     let_it_be(:project) { create(:project, :private) }
-    let_it_be(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
@@ -227,8 +223,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     it_behaves_like 'alert bot'
-    it_behaves_like 'support bot with service desk disabled'
-    it_behaves_like 'support bot with service desk enabled'
+    it_behaves_like 'support bot'
 
     context 'with confidential issues' do
       let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
@@ -346,8 +341,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
     let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
     let_it_be_with_reload(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
-
-    let_it_be(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
 
     let(:new_issue) { build(:issue, project: project) }
 
@@ -530,26 +523,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       expect(permissions(non_member, new_issue)).to be_allowed(:set_confidentiality)
     end
 
-    it 'allows support_bot to read issues' do
-      # support_bot is still allowed read access in public projects through :public_access permission,
-      # see project_policy public_access rules policy (rule { can?(:public_access) }.policy {...})
-      expect(permissions(support_bot, issue)).to be_allowed(:read_issue, :read_note, :read_issue_iid)
-      expect(permissions(support_bot, issue)).to be_disallowed(
-        :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :move_issue, :clone_issue
-      )
-
-      expect(permissions(support_bot, issue_no_assignee)).to be_allowed(:read_issue, :read_note, :read_issue_iid)
-      expect(permissions(support_bot, issue_no_assignee)).to be_disallowed(
-        :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :move_issue, :clone_issue
-      )
-
-      expect(permissions(support_bot, new_issue)).to be_disallowed(
-        :create_issue, :set_issue_metadata, :set_confidentiality
-      )
-    end
-
+    it_behaves_like 'support bot'
     it_behaves_like 'alert bot'
-    it_behaves_like 'support bot with service desk enabled'
 
     context 'when issues are private' do
       before_all do
@@ -626,8 +601,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
 
       it_behaves_like 'alert bot'
-      it_behaves_like 'support bot with service desk disabled'
-      it_behaves_like 'support bot with service desk enabled'
+      it_behaves_like 'support bot'
     end
 
     context 'with confidential issues' do
@@ -889,13 +863,35 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
         let_it_be(:subgroup) { create(:group, parent: create(:group), crm_settings: crm_settings) }
         let_it_be(:project) { create(:project, group: subgroup) }
 
+        subject { policies }
+
+        context 'for support bot' do
+          let(:user) { support_bot }
+
+          context 'with service desk enabled' do
+            before do
+              allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+              allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+
+              project.update!(service_desk_enabled: true)
+            end
+
+            it { expect_allowed(:read_crm_contacts, :set_issue_crm_contacts) }
+          end
+
+          context 'with service desk disabled' do
+            let(:all_permissions) { described_class.ability_map.map.keys }
+
+            it { expect_disallowed(:read_crm_contacts, :set_issue_crm_contacts) }
+          end
+        end
+
         context 'when custom crm_group guest' do
           it 'is disallowed' do
             subgroup.parent.try(:"add_#{role}", user)
             crm_settings.source_group.add_guest(user)
 
-            expect(policies).to be_disallowed(:read_crm_contacts)
-            expect(policies).to be_disallowed(:set_issue_crm_contacts)
+            expect_disallowed(:read_crm_contacts, :set_issue_crm_contacts)
           end
         end
 
@@ -904,8 +900,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
             subgroup.parent.try(:"add_#{role}", user)
             crm_settings.source_group.try(:"add_#{role}", user)
 
-            expect(policies).to be_allowed(:read_crm_contacts)
-            expect(policies).to be_allowed(:set_issue_crm_contacts)
+            expect_allowed(:read_crm_contacts, :set_issue_crm_contacts)
           end
         end
       end

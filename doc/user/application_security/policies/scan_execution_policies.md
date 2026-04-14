@@ -165,7 +165,8 @@ the following sections and tables provide an alternative.
 | `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
 | `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
 | `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
-| `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
+| `skip_ci`      | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
+| `no_pipeline`  | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. |
 
 ### `skip_ci` type
 
@@ -188,6 +189,22 @@ from bypassing the pipeline execution policies.
 
 > [!note]
 > Scan execution policies that have the rule type `schedule` always ignore the `skip_ci` option. Scheduled scans run at their configured times regardless of whether `[skip ci]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are otherwise skipped.
+
+### `no_pipeline` type
+
+Scan execution policies offer control over who can use the `[no_pipeline]` directive. You can specify certain users or service accounts that are allowed to use `[no_pipeline]` while still ensuring critical security and compliance checks are performed.
+
+Use the `no_pipeline` keyword to specify whether users are allowed to apply the `no_pipeline` directive to not create pipeline on a push.
+When the keyword is not specified, the `no_pipeline` directive is ignored, preventing all users
+from bypassing the pipeline execution policies.
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `no_pipeline` directive for pipelines with enforced pipeline execution policies. |
+| `allowlist`             | `object` | `users` | Specify users who are always allowed to use `no_pipeline` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
+
+> [!note]
+> Scan execution policies that have the rule type `schedule` always ignore the `no_pipeline` option. Scheduled scans run at their configured times regardless of whether `[no_pipeline]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are not created.
 
 ## `pipeline` rule type
 

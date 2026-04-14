@@ -140,6 +140,14 @@ RSpec.shared_examples 'a forbidden' do
   it { is_expected.not_to include(:token) }
 end
 
+RSpec.shared_examples 'a forbidden with denied error' do
+  it_behaves_like 'a forbidden'
+
+  it 'includes access forbidden error message' do
+    expect(subject[:errors]).to contain_exactly(include(code: 'DENIED', message: 'access forbidden'))
+  end
+end
+
 RSpec.shared_examples 'container repository factory' do
   it 'creates a new container repository resource' do
     expect { subject }
@@ -1608,7 +1616,7 @@ RSpec.shared_examples 'a container registry auth service' do
       end
     end
 
-    context 'when CheckRuleExistenceService returns an error' do
+    context 'when CheckRuleExistenceService returns an unauthorized error' do
       let(:current_user) { project_developer }
 
       before do
@@ -1618,19 +1626,14 @@ RSpec.shared_examples 'a container registry auth service' do
         end
       end
 
-      it 'logs a warning before raising' do
-        expect(Gitlab::AuthLogger).to receive(:warn).with(
-          {
-            message: 'Container registry push protection rule check failed',
-            reason: :unauthorized,
-            error_message: 'Unauthorized',
-            repository_path: container_repository_path,
-            project_path: current_project.full_path,
-            username: project_developer.username
-          }
-        )
+      it_behaves_like 'a forbidden with denied error'
 
-        expect { subject }.to raise_error(ArgumentError, 'Unauthorized')
+      context 'when authentication_abilities are for a CI build' do
+        let(:authentication_abilities) do
+          [:build_read_container_image, :build_create_container_image, :build_destroy_container_image]
+        end
+
+        it_behaves_like 'a forbidden with denied error'
       end
 
       context 'when current_user is a deploy token' do
@@ -1641,34 +1644,54 @@ RSpec.shared_examples 'a container registry auth service' do
           { scopes: ["repository:#{container_repository_path}:push"], deploy_token: deploy_token }
         end
 
-        it 'logs a warning with deploy_token_id before raising' do
-          expect(Gitlab::AuthLogger).to receive(:warn).with(
-            {
-              message: 'Container registry push protection rule check failed',
-              reason: :unauthorized,
-              error_message: 'Unauthorized',
-              repository_path: container_repository_path,
-              project_path: current_project.full_path,
-              deploy_token_id: deploy_token.id
-            }
-          )
-
-          expect { subject }.to raise_error(ArgumentError, 'Unauthorized')
-        end
+        it_behaves_like 'a forbidden with denied error'
       end
 
       context 'when project is nil' do
-        it 'logs a warning without project_path before raising' do
+        it 'returns true' do
           service = described_class.new(current_project, current_user, current_params)
 
-          expect(Gitlab::AuthLogger).to receive(:warn).with(
-            {
-              message: 'Container registry push protection rule check failed',
-              reason: :unauthorized,
-              error_message: 'Unauthorized',
-              repository_path: container_repository_path,
-              username: project_developer.username
-            }
+          result = service.send(:protection_rule_for_push_exists?,
+            current_user: project_developer,
+            project: nil,
+            repository_path: container_repository_path)
+          expect(result).to be(true)
+        end
+      end
+    end
+
+    context 'when CheckRuleExistenceService returns an unexpected error' do
+      let(:current_user) { project_developer }
+      let(:unexpected_error_response) do
+        ServiceResponse.error(message: 'Something went wrong', reason: :internal_error)
+      end
+
+      before do
+        allow_next_instance_of(ContainerRegistry::Protection::CheckRuleExistenceService) do |service|
+          allow(service).to receive(:execute).and_return(unexpected_error_response)
+        end
+      end
+
+      it 'logs the error and raises ArgumentError' do
+        expect(Gitlab::AuthLogger).to receive(:error).with(
+          hash_including(
+            message: 'Unexpected error checking container registry push protection rule',
+            reason: :internal_error,
+            error_message: 'Something went wrong'
+          )
+        )
+
+        expect { subject }.to raise_error(ArgumentError, 'Something went wrong')
+      end
+
+      context 'when project is nil' do
+        it 'logs the error and raises ArgumentError' do
+          service = described_class.new(current_project, current_user, current_params)
+
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            hash_including(
+              message: 'Unexpected error checking container registry push protection rule'
+            )
           )
 
           expect do
@@ -1676,7 +1699,29 @@ RSpec.shared_examples 'a container registry auth service' do
               current_user: project_developer,
               project: nil,
               repository_path: container_repository_path)
-          end.to raise_error(ArgumentError, 'Unauthorized')
+          end.to raise_error(ArgumentError, 'Something went wrong')
+        end
+      end
+
+      context 'when current_user is a deploy token' do
+        let_it_be(:deploy_token) { create(:deploy_token, write_registry: true, projects: [current_project]) }
+
+        it 'logs deploy_token_id and raises ArgumentError' do
+          service = described_class.new(current_project, nil, { deploy_token: deploy_token })
+
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            hash_including(
+              message: 'Unexpected error checking container registry push protection rule',
+              deploy_token_id: deploy_token.id
+            )
+          )
+
+          expect do
+            service.send(:protection_rule_for_push_exists?,
+              current_user: deploy_token,
+              project: current_project,
+              repository_path: container_repository_path)
+          end.to raise_error(ArgumentError, 'Something went wrong')
         end
       end
     end

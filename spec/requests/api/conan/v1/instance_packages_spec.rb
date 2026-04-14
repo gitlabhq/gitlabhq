@@ -195,14 +195,6 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
         put api("/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"), headers: headers_with_token
       end
 
-      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
-        let(:boundary_object) { project }
-        let(:request) do
-          put api("/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"),
-            headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
-        end
-      end
-
       it_behaves_like 'workhorse authorize endpoint'
     end
 
@@ -214,15 +206,6 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
         put api("/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}" \
           "/authorize"),
           headers: headers_with_token
-      end
-
-      it_behaves_like 'authorizing granular token permissions', :authorize_conan_package do
-        let(:boundary_object) { project }
-        let(:request) do
-          put api(
-            "/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}/authorize"
-          ), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token))
-        end
       end
 
       it_behaves_like 'workhorse authorize endpoint'

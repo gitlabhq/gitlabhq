@@ -408,3 +408,49 @@
 - - :approve
   - prawn
   - *3
+- - :approve
+  - lightningcss
+  - &4
+    :who: Stanislav Lashmanov <slashmanov@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/work_items/3327
+    :versions: []
+    :when: 2026-03-19 00:00:00.000000000 Z
+- - :approve
+  - lightningcss-android-arm64
+  - *4
+- - :approve
+  - lightningcss-darwin-arm64
+  - *4
+- - :approve
+  - lightningcss-darwin-x64
+  - *4
+- - :approve
+  - lightningcss-freebsd-x64
+  - *4
+- - :approve
+  - lightningcss-linux-arm-gnueabihf
+  - *4
+- - :approve
+  - lightningcss-linux-arm64-gnu
+  - *4
+- - :approve
+  - lightningcss-linux-arm64-musl
+  - *4
+- - :approve
+  - lightningcss-linux-x64-gnu
+  - *4
+- - :approve
+  - lightningcss-linux-x64-musl
+  - *4
+- - :approve
+  - lightningcss-win32-arm64-msvc
+  - *4
+- - :approve
+  - lightningcss-win32-x64-msvc
+  - *4
+- - :permit
+  - MPL-2.0
+  - :who: Stanislav Lashmanov <slashmanov@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/work_items/3327
+    :versions: []
+    :when: 2026-03-17 00:00:00.000000000 Z

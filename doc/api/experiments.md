@@ -20,7 +20,8 @@ Prerequisites:
 
 ## List all experiments
 
-Get a list of all experiments. Each experiment has an `enabled` status that indicates whether the experiment is enabled globally, or only in specific contexts.
+Lists all experiments on the GitLab instance. Each experiment has an `enabled` status that indicates
+whether the experiment is enabled globally, or only in specific contexts.
 
 ```plaintext
 GET /experiments

@@ -153,6 +153,100 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           end
         end
       end
+
+      context 'with creating CI config' do
+        before do
+          allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+            allow(diff).to receive_messages(new_path: '.gitlab-ci.yml', new_file?: true)
+          end
+        end
+
+        let_it_be(:commit_author) { create(:user, email: sample_commit.author_email) }
+
+        it 'tracks the create_ci_config_file event' do
+          expect { subject }
+            .to trigger_internal_events('create_ci_config_file')
+            .with(user: commit_author, project: project, namespace: project.namespace)
+        end
+
+        context 'when the branch is not the main branch' do
+          let(:branch) { 'feature' }
+
+          it 'tracks the event' do
+            expect { subject }
+              .to trigger_internal_events('create_ci_config_file')
+              .with(user: commit_author, project: project, namespace: project.namespace)
+          end
+        end
+
+        context 'when the project has a custom CI config path' do
+          before do
+            project.ci_config_path = 'config/ci.yml'
+
+            allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+              allow(diff).to receive_messages(new_path: 'config/ci.yml', new_file?: true)
+            end
+          end
+
+          it 'tracks the event' do
+            expect { subject }
+              .to trigger_internal_events('create_ci_config_file')
+              .with(user: commit_author, project: project, namespace: project.namespace)
+          end
+        end
+
+        context 'when the CI config file is updated, not created' do
+          before do
+            allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+              allow(diff).to receive_messages(new_path: '.gitlab-ci.yml', new_file?: false)
+            end
+          end
+
+          it 'does not track the event' do
+            expect { subject }
+              .not_to trigger_internal_events('create_ci_config_file')
+          end
+        end
+
+        context 'when a non-CI config file is created' do
+          before do
+            allow_next_instance_of(Gitlab::Git::Diff) do |diff|
+              allow(diff).to receive_messages(new_path: 'README.md', new_file?: true)
+            end
+          end
+
+          it 'does not track the event' do
+            expect { subject }
+              .not_to trigger_internal_events('create_ci_config_file')
+          end
+        end
+
+        context 'when the commit is a merge commit' do
+          before do
+            allow_next_instance_of(Commit) do |c|
+              allow(c).to receive(:merge_commit?).and_return(true)
+            end
+          end
+
+          it 'does not track the event' do
+            expect { subject }
+              .not_to trigger_internal_events('create_ci_config_file')
+          end
+        end
+
+        context 'when the commit author is nil' do
+          before do
+            allow_next_instance_of(Commit) do |c|
+              allow(c).to receive(:author).and_return(nil)
+            end
+          end
+
+          it 'does not track the event' do
+            expect { subject }
+              .not_to trigger_internal_events('create_ci_config_file')
+          end
+        end
+      end
     end
 
     context "with a new default branch" do

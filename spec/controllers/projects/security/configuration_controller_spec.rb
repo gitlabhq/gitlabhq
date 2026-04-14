@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Security::ConfigurationController do
+RSpec.describe Projects::Security::ConfigurationController, feature_category: :security_testing_configuration do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
@@ -48,6 +48,15 @@ RSpec.describe Projects::Security::ConfigurationController do
         expect(sast_feature['available']).to be_truthy
         expect(dast_feature['available']).to be_falsey
       end
+    end
+
+    it 'pushes security_scan_profiles_feature feature flag to the frontend' do
+      allow(controller).to receive(:push_frontend_feature_flag)
+
+      get :show, params: { namespace_id: project.namespace, project_id: project }
+
+      expect(controller).to have_received(:push_frontend_feature_flag)
+        .with(:security_scan_profiles_feature, project.root_ancestor).at_least(:once)
     end
   end
 end

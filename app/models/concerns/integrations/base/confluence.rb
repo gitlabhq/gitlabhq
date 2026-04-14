@@ -49,8 +49,8 @@ module Integrations
           tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
           safe_format(
-            s_("'ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. " \
-              "To re-enable the link to the GitLab wiki, disable this integration."), tag_pair_docs_link, wiki_url:)
+            s_('ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. ' \
+              'To re-enable the link to the GitLab wiki, disable this integration.'), tag_pair_docs_link, wiki_url:)
         else
           s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces ' \
             'the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at ' \

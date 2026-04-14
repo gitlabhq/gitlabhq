@@ -1,12 +1,13 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormGroup, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlForm, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, joinPaths, getParameterByName } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import { createAlert } from '~/alert';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
+import getRelatedMergeRequest from '../graphql/queries/related_merge_request.query.graphql';
 import RefsDropdown from './refs_dropdown.vue';
 import PipelineVariablesForm from './pipeline_variables_form.vue';
 
@@ -17,6 +18,9 @@ const i18n = {
   refsLoadingErrorTitle: s__('Pipeline|Branches or tags could not be loaded.'),
   submitErrorTitle: s__('Pipeline|Pipeline cannot be run.'),
   warningTitle: __('The form contains the following warning:'),
+  mrPipelineDescription: s__(
+    'Pipeline|You are creating a pipeline for merge request %{mergeRequestLink}. The pipeline will run on the merge request source branch.',
+  ),
 };
 
 export default {
@@ -26,6 +30,7 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlLink,
     GlForm,
     GlFormGroup,
     GlSprintf,
@@ -77,6 +82,32 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    relatedMergeRequest: {
+      query: getRelatedMergeRequest,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          iid: this.mergeRequestIid,
+        };
+      },
+      skip() {
+        return !this.mergeRequestIid;
+      },
+      update(data) {
+        const mergeRequest = data?.project?.mergeRequest;
+        if (mergeRequest?.sourceBranch) {
+          this.refValue = { shortName: mergeRequest.sourceBranch };
+        }
+        return mergeRequest;
+      },
+      error() {
+        createAlert({
+          message: s__('Pipelines|An error occurred while fetching the merge request details.'),
+        });
+      },
+    },
+  },
   data() {
     return {
       refValue: {
@@ -95,6 +126,7 @@ export default {
       isWarningDismissed: false,
       submitted: false,
       isSubmitDisabled: false,
+      relatedMergeRequest: null,
     };
   },
   computed: {
@@ -126,6 +158,30 @@ export default {
     warningsSummary() {
       return n__('%d warning found:', '%d warnings found:', this.warnings.length);
     },
+    mergeRequestIid() {
+      const iid = getParameterByName('merge_request_iid');
+      return iid && /^\d+$/.test(iid) ? iid : null;
+    },
+    relatedMergeRequestLoading() {
+      return this.$apollo.queries.relatedMergeRequest?.loading;
+    },
+    mergeRequestPipelinesPath() {
+      return joinPaths(this.relatedMergeRequest.webPath, 'pipelines');
+    },
+    cancelPath() {
+      return this.relatedMergeRequest ? this.mergeRequestPipelinesPath : this.pipelinesPath;
+    },
+    createPipelineInput() {
+      const baseInput = {
+        projectPath: this.projectPath,
+        ref: this.refShortName,
+        variables: this.pipelineVariables,
+        inputs: this.pipelineInputs,
+      };
+      return this.relatedMergeRequest
+        ? { ...baseInput, mergeRequestIid: this.mergeRequestIid }
+        : baseInput;
+    },
   },
   methods: {
     handleValidityChange(isFormValid) {
@@ -141,12 +197,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: createPipelineMutation,
           variables: {
-            input: {
-              projectPath: this.projectPath,
-              ref: this.refShortName,
-              variables: this.pipelineVariables,
-              inputs: this.pipelineInputs,
-            },
+            input: this.createPipelineInput,
           },
         });
 
@@ -154,7 +205,8 @@ export default {
         const totalWarnings = pipeline?.warningMessages?.nodes?.length || 0;
 
         if (pipeline?.path) {
-          visitUrl(pipeline.path);
+          const nextUrl = this.relatedMergeRequest ? this.mergeRequestPipelinesPath : pipeline.path;
+          visitUrl(nextUrl);
         } else if (errors?.length > 0 || pipelineErrors.length || totalWarnings) {
           const warnings = pipeline?.warningMessages?.nodes?.map((node) => node?.content) || '';
           const error = errors[0] || pipelineErrors[0] || '';
@@ -245,7 +297,22 @@ export default {
         </p>
       </details>
     </gl-alert>
-    <div class="gl-flex gl-flex-col gl-gap-5">
+    <gl-alert
+      v-if="relatedMergeRequest"
+      variant="info"
+      :dismissible="false"
+      class="gl-mb-4"
+      data-testid="mr-pipeline-info-alert"
+    >
+      <gl-sprintf :message="$options.i18n.mrPipelineDescription">
+        <template #mergeRequestLink>
+          <gl-link :href="relatedMergeRequest.webPath" data-testid="mr-link"
+            >!{{ mergeRequestIid }}</gl-link
+          >
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+    <div v-if="!relatedMergeRequestLoading" class="gl-flex gl-flex-col gl-gap-5">
       <gl-form-group
         id="pipeline-ref-label"
         :label="s__('Pipeline|Run for branch name or tag')"
@@ -288,7 +355,7 @@ export default {
           :disabled="submitted || isSubmitDisabled"
           >{{ s__('Pipeline|New pipeline') }}</gl-button
         >
-        <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>
+        <gl-button :href="cancelPath" data-testid="cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </div>
   </gl-form>

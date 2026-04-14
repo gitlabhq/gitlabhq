@@ -11,7 +11,7 @@ module Gitlab
           # Not calling Gitlab::CurrentSettings.admin_mode on purpose on sidekiq middleware
           # Only when admin mode application setting is enabled might the admin_mode_user_id be non-nil here
 
-          # Admin mode enabled in the original request or in a nested sidekiq job
+          # Admin mode is active in the original request or in a nested sidekiq job
           admin_mode_user_id = find_admin_user_id
 
           if admin_mode_user_id

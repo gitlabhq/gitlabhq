@@ -23,7 +23,7 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
       end
 
       it 'updates detected_repository_languages flag' do
-        expect { subject.execute }.to change(project, :detected_repository_languages).to(true)
+        expect { subject.execute }.to change { project.detected_repository_languages }.to(true)
       end
     end
 

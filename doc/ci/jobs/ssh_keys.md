@@ -55,8 +55,10 @@ To add an SSH key to your project, add the key as a [file type CI/CD variable](.
 1. Set **Visibility** to **Visible**.
 
    > [!note]
-   > If **Visibility** is set to **Masked** or **Masked and hidden**, you cannot save
-   > SSH keys because they contain whitespace characters.
+   > The visibility setting must be **Visible** because SSH keys contain whitespace characters,
+   > and **Masked** or **Masked and hidden** variables cannot contain whitespace characters.
+   > Never run a command like `cat` or `tee` on the variable because the SSH key is not masked
+   > if it appears in the job log.
 
 1. In the **Key** text box, enter the name of the variable. For example, `SSH_PRIVATE_KEY`.
 1. In the **Value** text box, paste the private key content.

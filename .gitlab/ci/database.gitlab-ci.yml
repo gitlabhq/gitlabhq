@@ -26,7 +26,6 @@ clickhouse:check-schema:
     - .rspec-base
     - .use-pg17-clickhouse25
     - .rails:rules:clickhouse-migration-changes
-  allow_failure: true
   script:
     - !reference [.clickhouse-setup, script]
     - ruby scripts/validate_clickhouse_schema.rb

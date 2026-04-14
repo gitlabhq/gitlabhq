@@ -1,16 +1,9 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlEmptyState,
-  GlLoadingIcon,
-  GlModal,
-  GlLink,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { PIPELINE_ID_KEY } from '~/ci/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import eventHub from '~/ci/event_hub';
@@ -33,7 +26,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 export default {
   components: {
     GlAlert,
-    GlButton,
     GlEmptyState,
     GlLink,
     GlLoadingIcon,
@@ -41,6 +33,7 @@ export default {
     GlSprintf,
     PipelinesTable,
     TablePagination,
+    RunPipelineButton,
   },
   mixins: [PipelinesMixin, glFeatureFlagsMixin()],
   props: {
@@ -416,7 +409,6 @@ export default {
       `Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{ciDocsLinkStart}must be configured%{ciDocsLinkEnd} to run in merge request pipelines
       and you must have %{permissionDocsLinkStart}sufficient permissions%{permissionDocsLinkEnd} in the source project.`,
     ),
-    runPipelineText: s__('Pipeline|Run pipeline'),
     emptyStateTitle: s__('Pipelines|There are currently no pipelines.'),
     pipelineCreationFailed: s__('Pipeline|Pipeline creation failed. Please try again.'),
   },
@@ -488,15 +480,13 @@ export default {
 
         <template #actions>
           <div class="gl-align-middle">
-            <gl-button
+            <run-pipeline-button
               variant="confirm"
-              :loading="showRunPipelineButtonLoader"
-              :disabled="showRunPipelineButtonLoader"
               data-testid="run_pipeline_button"
-              @click="tryRunPipeline"
-            >
-              {{ $options.i18n.runPipelineText }}
-            </gl-button>
+              :is-loading="showRunPipelineButtonLoader"
+              :merge-request-id="mergeRequestId"
+              @run-pipeline="tryRunPipeline"
+            />
           </div>
         </template>
       </gl-empty-state>
@@ -507,40 +497,28 @@ export default {
         v-if="canRenderPipelineButton"
         class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @md/panel:gl-hidden"
       >
-        <gl-button
+        <run-pipeline-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"
-          data-testid="run_pipeline_button_mobile"
-          :loading="showRunPipelineButtonLoader"
-          :disabled="showRunPipelineButtonLoader"
-          @click="tryRunPipeline"
-        >
-          {{ $options.i18n.runPipelineText }}
-        </gl-button>
+          :is-loading="showRunPipelineButtonLoader"
+          :merge-request-id="mergeRequestId"
+          @run-pipeline="tryRunPipeline"
+        />
       </div>
 
       <pipelines-table
         :is-creating-pipeline="isCreatingPipeline"
+        :show-run-pipeline-button="canRenderPipelineButton"
+        :run-pipeline-button-loading="showRunPipelineButtonLoader"
+        :merge-request-id="mergeRequestId"
         :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
         :view-type="viewType"
         class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="cancelPipeline"
-        @refresh-pipelines-table="onRefreshPipelinesTable"
+        @run-pipeline="tryRunPipeline"
+        @job-action-executed="onRefreshPipelinesTable"
         @retry-pipeline="retryPipeline"
-      >
-        <template #table-header-actions>
-          <div v-if="canRenderPipelineButton" class="gl-text-right">
-            <gl-button
-              data-testid="run_pipeline_button"
-              :loading="showRunPipelineButtonLoader"
-              :disabled="showRunPipelineButtonLoader"
-              @click="tryRunPipeline"
-            >
-              {{ $options.i18n.runPipelineText }}
-            </gl-button>
-          </div>
-        </template>
-      </pipelines-table>
+      />
     </div>
 
     <gl-modal

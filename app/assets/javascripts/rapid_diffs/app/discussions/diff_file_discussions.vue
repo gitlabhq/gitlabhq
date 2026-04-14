@@ -1,56 +1,51 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
+import DiffFileDiscussionExpansion from '~/diffs/components/diff_file_discussion_expansion.vue';
 import NoteForm from './note_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
+import DraftNote from './draft_note.vue';
 
 export default {
   name: 'DiffFileDiscussions',
   components: {
+    DiffFileDiscussionExpansion,
     NoteForm,
     DiffDiscussions,
+    DraftNote,
   },
   inject: {
     store: { type: Object },
-    userPermissions: {
-      type: Object,
-    },
-    endpoints: {
-      type: Object,
-    },
-  },
-  props: {
-    oldPath: {
-      type: String,
-      required: true,
-    },
-    newPath: {
-      type: String,
-      required: true,
-    },
+    userPermissions: { type: Object },
+    filePaths: { type: Object },
   },
   emits: ['empty'],
   computed: {
     allDiscussions() {
-      return this.store.findFileDiscussionsForFile({
-        oldPath: this.oldPath,
-        newPath: this.newPath,
-      });
+      return this.store.findAllFileDiscussionsForFile(this.filePaths);
     },
-    discussions() {
-      return this.allDiscussions.filter((d) => !d.isForm);
+    collapsedDiscussions() {
+      return this.allDiscussions.filter((d) => !d.isForm && !d.isDraft && d.hidden);
+    },
+    expandedDiscussions() {
+      return this.allDiscussions.filter((d) => !d.isForm && !d.isDraft && !d.hidden);
+    },
+    drafts() {
+      return this.allDiscussions.filter((d) => d.isDraft);
     },
     formDiscussion() {
       return this.allDiscussions.find((d) => d.isForm);
     },
     autosaveKey() {
-      const path =
-        this.oldPath === this.newPath ? this.oldPath : [this.oldPath, this.newPath].join('-');
+      const { oldPath, newPath } = this.filePaths;
+      const path = oldPath === newPath ? oldPath : [oldPath, newPath].join('-');
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `${window.location.pathname}-${path}-file`;
+    },
+    canStartReview() {
+      return Boolean(this.store.createDraftFileDiscussion);
     },
   },
   watch: {
@@ -74,15 +69,10 @@ export default {
       this.store.removeNewFileDiscussionForm(this.formDiscussion);
     }),
     async saveNote(noteBody) {
-      const {
-        data: { discussion },
-      } = await axios.post(this.endpoints.discussions, {
-        note: {
-          position: this.formDiscussion.position,
-          note: noteBody,
-        },
-      });
-      this.store.replaceDiscussionForm(this.formDiscussion, discussion);
+      await this.store.createFileDiscussion(this.formDiscussion, noteBody);
+    },
+    async saveDraft(noteBody) {
+      await this.store.createDraftFileDiscussion(this.formDiscussion, noteBody);
     },
   },
 };
@@ -90,10 +80,21 @@ export default {
 
 <template>
   <div data-testid="file-discussions">
-    <diff-discussions v-if="discussions.length" :discussions="discussions" />
+    <diff-file-discussion-expansion
+      v-if="collapsedDiscussions.length"
+      :discussions="collapsedDiscussions"
+      class="!gl-px-4"
+      :class="{ 'gl-border-b-0': expandedDiscussions.length === 0 }"
+      @toggle="store.expandFileDiscussions(filePaths.oldPath, filePaths.newPath)"
+    />
+    <diff-discussions v-if="expandedDiscussions.length" :discussions="expandedDiscussions" />
+    <draft-note v-for="discussion in drafts" :key="discussion.id" :draft="discussion.draft" />
     <div
       v-if="formDiscussion"
-      class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-5 gl-py-4"
+      class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-4 gl-py-4"
+      :class="{
+        'gl-border-t': expandedDiscussions.length !== 0 || collapsedDiscussions.length !== 0,
+      }"
       :data-discussion-id="formDiscussion.id"
     >
       <note-form
@@ -102,6 +103,8 @@ export default {
         :note-body="formDiscussion.noteBody"
         :save-button-title="__('Comment')"
         :save-note="saveNote"
+        :save-draft="canStartReview ? saveDraft : null"
+        :has-drafts="Boolean(store.hasDrafts)"
         restore-from-autosave
         @input="store.setDiscussionFormText(formDiscussion, $event)"
         @cancel="cancelReplyForm"

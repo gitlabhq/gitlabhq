@@ -8,6 +8,7 @@ RSpec.describe DesignManagement::Repository, feature_category: :design_managemen
 
   describe 'associations' do
     it { is_expected.to belong_to(:project).inverse_of(:design_management_repository) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do

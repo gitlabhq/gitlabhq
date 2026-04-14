@@ -210,4 +210,13 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
       expect_graphql_errors_to_include("`granular_personal_access_tokens` feature flag is disabled.")
     end
   end
+
+  describe 'granular PAT authorization' do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_personal_access_token do
+      let(:user) { current_user }
+      let(:boundary_object) { :user }
+      let(:authz_mutation) { graphql_mutation(:personalAccessTokenCreate, input, 'errors') }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
+  end
 end

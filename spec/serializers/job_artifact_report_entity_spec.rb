@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe JobArtifactReportEntity do
-  let(:report) { create(:ci_job_artifact, :codequality) }
+RSpec.describe JobArtifactReportEntity, feature_category: :job_artifacts do
+  let(:report) { build_stubbed(:ci_job_artifact, :codequality) }
   let(:entity) { described_class.new(report, request: double) }
 
   describe '#as_json' do

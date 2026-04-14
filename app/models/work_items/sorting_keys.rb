@@ -82,6 +82,14 @@ module WorkItems
       end
       strong_memoize_attr :widgets_sorting_keys
 
+      def order_by_values
+        all.keys.map do |key|
+          col = key.to_s.sub(/_(?:asc|desc)\z/, '')
+          col.in?(%w[created updated]) ? "#{col}_at" : col
+        end.uniq
+      end
+      strong_memoize_attr :order_by_values
+
       def available?(key, widget_list: [])
         key = key.to_sym
         widget_list = Array.wrap(widget_list)

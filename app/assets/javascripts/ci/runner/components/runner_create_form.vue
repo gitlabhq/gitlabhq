@@ -3,7 +3,7 @@ import { GlForm, GlButton } from '@gitlab/ui';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
-import { captureException } from '../sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
   RUNNER_TYPES,
   DEFAULT_ACCESS_LEVEL,
@@ -106,7 +106,7 @@ export default {
     },
     onError(error, isValidationError = false) {
       if (!isValidationError) {
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       }
 
       this.$emit('error', error);

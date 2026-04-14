@@ -5,32 +5,13 @@
 # The point of this job is to ensure that changes in this repository
 # don't break the development flow of contributors.
 gdk-update:
-  image: registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-gdk-installed:main
-  tags:
-    - $GITLAB_LARGE_RUNNER_OPTIONAL
   extends:
     - .default-retry
     - .gdk:rules:gdk-update
+  allow_failure: true
   needs: []
   variables:
     GIT_STRATEGY: none
-    GEM_HOME: /home/gdk/.gitlab-ci-cache/ruby/gem
-    GEM_PATH: /home/gdk/.gitlab-ci-cache/ruby/gem
-    RAILS_ENV: development
-    ENABLE_BOOTSNAP: "false"
-    PUMA_SINGLE_MODE: "true"
-    GDK_DEBUG: "true"
   script:
-    - unset BUNDLER_CHECKSUM_VERIFICATION_OPT_IN
-    - |
-      if [ "$CI_SERVER_HOST" = "gitlab.com" ] && [ "$CI_PROJECT_PATH" = "gitlab-org/security/gitlab" ]; then
-        cd /home/gdk/gdk/gitlab
-        gdk config set repositories.gitaly "https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/gitlab-org/security/gitaly.git"
-        cd /home/gdk/gdk/gitaly
-        git remote set-url origin "https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/gitlab-org/security/gitaly.git"
-      fi
-    - cd /home/gdk/gdk/gitlab
-    - yarn patch-package --reverse || true  # Remove patches from cached node_modules (reapplied during gdk update)
-    - git remote set-url origin "$CI_REPOSITORY_URL"
-    - gdk config set gitlab.default_branch "$CI_COMMIT_SHA"
-    - gdk update
+    - echo "CI job disabled. See https://gitlab.com/gitlab-org/gitlab/-/work_items/596050"
+    - exit 1

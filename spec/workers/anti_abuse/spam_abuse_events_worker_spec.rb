@@ -19,8 +19,15 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
   end
 
   shared_examples 'creates an abuse event with the correct data' do
-    it do
-      expect { worker.perform(params) }.to change { AntiAbuse::Event.count }.from(0).to(1)
+    before do
+      worker.perform(params)
+    end
+
+    it 'creates an abuse event' do
+      expect(AntiAbuse::Event.count).to eq(1)
+    end
+
+    it 'includes the correct attributes' do
       expect(AntiAbuse::Event.last.attributes).to include({
         abuse_report_id: report_id,
         category: "spam",

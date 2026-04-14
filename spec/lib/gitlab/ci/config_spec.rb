@@ -413,6 +413,28 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     end
   end
 
+  context 'when project is nil' do
+    let(:yml) do
+      <<-EOS
+        rspec:
+          script: rspec
+      EOS
+    end
+
+    let(:config) do
+      described_class.new(yml, project: nil, pipeline: nil, sha: nil, user: nil)
+    end
+
+    it 'sets the deadline to TIMEOUT_SECONDS' do
+      expect_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+        allow(instance).to receive(:check_execution_time!)
+        expect(instance).to receive(:set_deadline).with(described_class::TIMEOUT_SECONDS)
+      end
+
+      config
+    end
+  end
+
   context "when using 'include' directive" do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
@@ -598,6 +620,8 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
     context "when it takes too long to evaluate includes" do
       before do
+        stub_feature_flags(ci_config_fetch_timeout_override: false)
+
         allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
           allow(instance).to receive(:check_execution_time!).and_call_original
           allow(instance).to receive(:set_deadline).with(described_class::TIMEOUT_SECONDS).and_call_original
@@ -612,6 +636,36 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
           described_class::ConfigError,
           'Request timed out when fetching configuration files.'
         )
+      end
+    end
+
+    context 'when ci_config_fetch_timeout_override feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_config_fetch_timeout_override: project.root_namespace)
+      end
+
+      it 'sets the deadline to OVERRIDE_TIMEOUT_SECONDS' do
+        expect_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+          allow(instance).to receive(:check_execution_time!)
+          expect(instance).to receive(:set_deadline).with(described_class::OVERRIDE_TIMEOUT_SECONDS)
+        end
+
+        config
+      end
+    end
+
+    context 'when ci_config_fetch_timeout_override feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_config_fetch_timeout_override: false)
+      end
+
+      it 'sets the deadline to TIMEOUT_SECONDS' do
+        expect_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+          allow(instance).to receive(:check_execution_time!)
+          expect(instance).to receive(:set_deadline).with(described_class::TIMEOUT_SECONDS)
+        end
+
+        config
       end
     end
 

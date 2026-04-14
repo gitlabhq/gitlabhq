@@ -96,6 +96,9 @@ export default {
 
       this.$emit('retry-pipeline', this.pipeline);
     },
+    onManualJobPlayed() {
+      this.$emit('job-action-executed', this.pipeline);
+    },
     trackClick(action) {
       this.track(action, { label: TRACKING_CATEGORIES.table });
     },
@@ -118,7 +121,7 @@ export default {
         v-if="hasActions"
         :iid="pipelineIid"
         :full-path="fullPath"
-        @refresh-pipeline-table="$emit('refresh-pipelines-table')"
+        @refresh-pipeline-table="onManualJobPlayed"
       />
 
       <gl-button

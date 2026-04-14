@@ -23,6 +23,7 @@ class DraftNote < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
   belongs_to :merge_request
+  belongs_to :project
 
   validates :merge_request_id, presence: true
   validates :author_id, presence: true, uniqueness: { scope: [:merge_request_id, :discussion_id] }, if: :discussion_id?
@@ -39,6 +40,7 @@ class DraftNote < ApplicationRecord
   }
 
   scope :authored_by, ->(u) { where(author_id: u.id) }
+  before_validation :set_project, prepend: true
 
   delegate :file_path, :file_hash, :file_identifier_hash, to: :diff_file, allow_nil: true
 
@@ -58,10 +60,6 @@ class DraftNote < ApplicationRecord
 
   def self.keep_commits_for_records(records)
     records.find(&:on_diff?)&.keep_around_commits
-  end
-
-  def project
-    merge_request.target_project
   end
 
   # noteable_id and noteable_type methods
@@ -150,5 +148,11 @@ class DraftNote < ApplicationRecord
 
   def commit
     @commit ||= project.commit(commit_id) if commit_id.present?
+  end
+
+  private
+
+  def set_project
+    self.project_id ||= merge_request&.target_project_id
   end
 end

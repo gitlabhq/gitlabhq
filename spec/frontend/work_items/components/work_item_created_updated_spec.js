@@ -43,6 +43,8 @@ describe('work-item-createdUpdated component', () => {
     updateInProgress = false,
     movedToWorkItemUrl = null,
     duplicatedToWorkItemUrl = null,
+    provide = {},
+    features = null,
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       author,
@@ -54,6 +56,7 @@ describe('work-item-createdUpdated component', () => {
       discussionLocked,
       movedToWorkItemUrl,
       duplicatedToWorkItemUrl,
+      features,
     });
 
     successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
@@ -65,6 +68,7 @@ describe('work-item-createdUpdated component', () => {
         workItemIid,
         updateInProgress,
       },
+      provide,
       stubs: {
         GlAvatarLink,
         GlSprintf,
@@ -204,6 +208,20 @@ describe('work-item-createdUpdated component', () => {
       await createComponent({ imported: false });
 
       expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    it('passes useWorkItemFeatures to the query and renders locked badge from features.notes', async () => {
+      await createComponent({
+        provide: { glFeatures: { workItemFeaturesField: true } },
+        features: { notes: { discussionLocked: true, __typename: 'WorkItemWidgetNotes' } },
+      });
+
+      expect(successHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
+      expect(findLockedBadge().exists()).toBe(true);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import { times } from 'lodash-es';
 import { nextTick } from 'vue';
 import { GlFormGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';

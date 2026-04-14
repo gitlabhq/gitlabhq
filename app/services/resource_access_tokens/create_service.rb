@@ -20,7 +20,7 @@ module ResourceAccessTokens
 
       return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
 
-      return error(s_("expires_at is missing")) unless validate_expires_at_field(params)
+      return error(_("expires_at is missing")) unless validate_expires_at_field(params)
 
       response = create_user
 

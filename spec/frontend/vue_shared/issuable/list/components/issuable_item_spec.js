@@ -11,7 +11,6 @@ import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
-import * as utils from '~/work_items/utils';
 import { WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
 import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
@@ -921,17 +920,24 @@ describe('IssuableItem', () => {
       expect(findIssuableCardLinkOverlay().element.tagName).toBe('A');
       expect(findIssuableCardLinkOverlay().attributes('href')).toBe(mockIssuable.webUrl);
     });
+  });
 
-    it('redirects when useIssueView=true', async () => {
+  describe('when item has useIssueView config set to true', () => {
+    const fullPath = 'gitlab-org/gitlab';
+
+    it('uses redirect on row click', async () => {
+      mockWorkItemConfigGetter.mockReturnValue({
+        ...defaultWorkItemConfig,
+        useIssueView: true,
+      });
+
       wrapper = createComponent({
-        provide: {
-          getWorkItemTypeConfiguration: jest.fn().mockReturnValue({
-            ...defaultWorkItemConfig,
-            useIssueView: true,
-          }),
-        },
         preventRedirect: true,
         showCheckbox: false,
+        issuable: { ...mockIssuable, namespace: { fullPath } },
+        provide: {
+          getWorkItemTypeConfiguration: mockWorkItemConfigGetter,
+        },
       });
 
       await findIssuableItemWrapper().trigger('click');
@@ -961,10 +967,8 @@ describe('IssuableItem', () => {
   });
 
   describe('Navigation guards for issues and work items SPA', () => {
-    describe('when canRouterNav should not be called', () => {
+    describe('when useIssueView is true', () => {
       beforeEach(async () => {
-        jest.spyOn(utils, 'canRouterNav');
-
         mockWorkItemConfigGetter.mockReturnValue({
           ...defaultWorkItemConfig,
           useIssueView: true,
@@ -977,13 +981,16 @@ describe('IssuableItem', () => {
             ...mockIssuable,
             workItemType: { name: WORK_ITEM_TYPE_NAME_ISSUE },
           },
+          provide: {
+            getWorkItemTypeConfiguration: mockWorkItemConfigGetter,
+          },
         });
 
         await findIssuableItemWrapper().trigger('click');
       });
 
-      it('does not call canRouterNav when useIssueView is true for an issue', () => {
-        expect(utils.canRouterNav).not.toHaveBeenCalled();
+      it('does not open in drawer when useIssueView is true for an issue', () => {
+        expect(wrapper.emitted('select-issuable')).not.toBeDefined();
       });
     });
   });

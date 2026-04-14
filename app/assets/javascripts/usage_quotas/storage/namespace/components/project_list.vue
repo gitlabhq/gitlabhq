@@ -7,6 +7,7 @@ import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/numb
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { projectUsageQuotasPath } from '~/lib/utils/path_helpers/project';
 import StorageTypeHelpLink from '../../components/storage_type_help_link.vue';
 import StorageTypeWarning from '../../components/storage_type_warning.vue';
 
@@ -78,8 +79,8 @@ export default {
     getHeaderSlotName(key) {
       return `head(${key})`;
     },
-    getUsageQuotasUrl(projectUrl) {
-      return `${projectUrl}/-/usage_quotas`;
+    getUsageQuotasUrl(projectFullPath) {
+      return projectUsageQuotasPath(projectFullPath);
     },
     /**
      * Creates a relative path from a full project path.
@@ -150,7 +151,7 @@ export default {
       />
 
       <gl-link
-        :href="getUsageQuotasUrl(project.webUrl)"
+        :href="getUsageQuotasUrl(project.fullPath)"
         class="js-project-link !gl-text-default gl-break-anywhere"
         data-testid="project-link"
       >

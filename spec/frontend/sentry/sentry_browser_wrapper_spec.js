@@ -38,17 +38,6 @@ describe('SentryBrowserWrapper', () => {
         { 0: mockError },
       );
     });
-
-    it('addBreadcrumb will report to console instead', () => {
-      Sentry.addBreadcrumb(mockBreadcrumb);
-
-      expect(console.debug).toHaveBeenCalledTimes(1);
-      expect(console.debug).toHaveBeenCalledWith(
-        '[Sentry stub]',
-        'addBreadcrumb(...) called with:',
-        { 0: mockBreadcrumb },
-      );
-    });
   });
 
   describe('when _Sentry is defined', () => {

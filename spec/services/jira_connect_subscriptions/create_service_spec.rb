@@ -29,11 +29,49 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
   end
 
   context 'remote user does not have access' do
-    let(:jira_user) { double(jira_admin?: false) }
+    let(:jira_user) do
+      Atlassian::JiraConnect::JiraUser.new(
+        {
+          'groups' => {
+            'items' => [
+              { 'name' => 'jira-users' },
+              { 'name' => 'developers' }
+            ]
+          }
+        }
+      )
+    end
 
-    it_behaves_like 'a failed execution',
-      http_status: 403,
-      message: 'The Jira user is not a site or organization administrator. Check the permissions in Jira and try again.'
+    it_behaves_like 'a failed execution', http_status: 403
+
+    it 'returns an error message listing current groups' do
+      result = subject
+
+      expect(result[:message]).to include('site-admins or org-admins')
+      expect(result[:message]).to include('jira-users, developers')
+      expect(result[:message]).to include(
+        'Check the permissions in Jira and try again.'
+      )
+    end
+  end
+
+  context 'remote user has no groups' do
+    let(:jira_user) do
+      Atlassian::JiraConnect::JiraUser.new(
+        { 'groups' => { 'items' => [] } }
+      )
+    end
+
+    it_behaves_like 'a failed execution', http_status: 403
+
+    it 'returns an error message about missing group membership' do
+      result = subject
+
+      expect(result[:message]).to include(
+        'not a member of any Jira groups'
+      )
+      expect(result[:message]).to include('site-admins, org-admins')
+    end
   end
 
   context 'remote user cannot be retrieved' do
@@ -42,6 +80,23 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
     it_behaves_like 'a failed execution',
       http_status: 403,
       message: 'Could not fetch user information from Jira. Check the permissions in Jira and try again.'
+  end
+
+  context 'when jira_user does not respond to not_an_admin_error_message' do
+    let(:jira_user) { double(:JiraUser, jira_admin?: false, not_an_admin_error_message: nil) }
+
+    it_behaves_like 'a failed execution', http_status: 403
+
+    it 'returns the generic admin error message' do
+      result = subject
+
+      expect(result[:message]).to include(
+        'The Jira user is not a site or organization administrator'
+      )
+      expect(result[:message]).to include(
+        'Check the permissions in Jira and try again.'
+      )
+    end
   end
 
   context 'when user does have access' do

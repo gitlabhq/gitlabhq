@@ -61,6 +61,184 @@ RSpec.describe 'Sessions', feature_category: :system_access do
     end
   end
 
+  context 'with IAM login challenge' do
+    let(:valid_challenge) { 'a' * 64 }
+    let(:iam_service_url) { 'https://iam.example.com' }
+    let(:iam_redirect_url) { "#{iam_service_url}/oauth2/authorize?client_id=test-app&login_verifier=#{'b' * 64}" }
+
+    before do
+      stub_feature_flags(iam_svc_login: true)
+      allow(Authn::IamAuthService).to receive(:enabled?).and_return(true)
+    end
+
+    context 'when storing the challenge' do
+      it 'stores a valid challenge in session' do
+        get new_user_session_path, params: { login_challenge: valid_challenge }
+
+        expect(request.session[:login_challenge]).to eq(valid_challenge)
+      end
+
+      it 'does not store anything when challenge param is missing' do
+        get new_user_session_path
+
+        expect(request.session[:login_challenge]).to be_nil
+      end
+
+      it 'clears a previously stored challenge when revisiting without one' do
+        get new_user_session_path, params: { login_challenge: valid_challenge }
+        get new_user_session_path
+
+        expect(request.session[:login_challenge]).to be_nil
+      end
+
+      context 'when iam_svc_login feature flag is disabled' do
+        before do
+          stub_feature_flags(iam_svc_login: false)
+        end
+
+        it 'does not store the challenge' do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+
+          expect(request.session[:login_challenge]).to be_nil
+        end
+      end
+
+      context 'when IAM service is not enabled' do
+        before do
+          allow(Authn::IamAuthService).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not store the challenge' do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+
+          expect(request.session[:login_challenge]).to be_nil
+        end
+      end
+    end
+
+    shared_context 'with IAM accept challenge succeeding' do
+      before do
+        allow_next_instance_of(Authn::IamService::AcceptLoginChallengeService) do |service|
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.success(payload: { redirect_to: iam_redirect_url })
+          )
+        end
+      end
+    end
+
+    shared_context 'with IAM accept challenge failing' do
+      before do
+        allow_next_instance_of(Authn::IamService::AcceptLoginChallengeService) do |service|
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'IAM login accept failed: HTTP 500', reason: :iam_request_failed)
+          )
+        end
+      end
+    end
+
+    context 'when signing in with a login challenge' do
+      def sign_in_within_iam_challenge_flow
+        get new_user_session_path, params: { login_challenge: valid_challenge }
+        post user_session_path, params: { user: { login: user.username, password: user.password } }
+      end
+
+      context 'when the IAM service accepts the challenge' do
+        include_context 'with IAM accept challenge succeeding'
+
+        it 'redirects to the IAM redirect URL and clears the challenge from session', :aggregate_failures do
+          sign_in_within_iam_challenge_flow
+
+          expect(response).to redirect_to(iam_redirect_url)
+          expect(request.session[:login_challenge]).to be_nil
+        end
+      end
+
+      context 'when the IAM service returns an error' do
+        include_context 'with IAM accept challenge failing'
+
+        it 'falls back to the default redirect path with a flash alert', :aggregate_failures do
+          sign_in_within_iam_challenge_flow
+
+          expect(response).to redirect_to(root_path)
+          expect(flash[:alert]).to eq('An error occurred. Please try again.')
+          expect(request.session[:login_challenge]).to be_nil
+        end
+      end
+
+      context 'when IAM login is not enabled' do
+        before do
+          stub_feature_flags(iam_svc_login: false)
+        end
+
+        it 'redirects normally without calling the IAM service' do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+          post user_session_path, params: { user: { login: user.username, password: user.password } }
+
+          expect(response).to redirect_to(root_path)
+        end
+      end
+
+      context 'when authentication fails' do
+        it 'preserves the challenge from session on failed login' do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+
+          post user_session_path, params: { user: { login: user.username, password: 'wrong_password' } }
+
+          expect(request.session[:login_challenge]).to eq(valid_challenge)
+        end
+
+        context 'when authentication retry succeed' do
+          include_context 'with IAM accept challenge succeeding'
+
+          it 'redirects to the IAM redirect URL and clears the challenge from session' do
+            get new_user_session_path, params: { login_challenge: valid_challenge }
+            post user_session_path, params: { user: { login: user.username, password: 'wrong_password' } }
+            post user_session_path, params: { user: { login: user.username, password: user.password } }
+
+            expect(response).to redirect_to(iam_redirect_url)
+            expect(request.session[:login_challenge]).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'when already authenticated' do
+      before do
+        login_as(user)
+      end
+
+      context 'when the IAM service accepts the challenge' do
+        include_context 'with IAM accept challenge succeeding'
+
+        it 'redirects to the IAM redirect URL and clears the login challenge from session' do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+
+          expect(response).to redirect_to(iam_redirect_url)
+          expect(request.session[:login_challenge]).to be_nil
+        end
+      end
+
+      context 'when the IAM service returns an error' do
+        include_context 'with IAM accept challenge failing'
+
+        it 'falls back to the default redirect with a flash alert', :aggregate_failures do
+          get new_user_session_path, params: { login_challenge: valid_challenge }
+
+          expect(response).to redirect_to(root_path)
+          expect(flash[:alert]).to eq('An error occurred. Please try again.')
+        end
+      end
+    end
+
+    context 'when signing in without a login challenge' do
+      it 'redirects to the default path' do
+        post user_session_path, params: { user: { login: user.username, password: user.password } }
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
   describe 'GET /users/sign_in_path' do
     before do
       stub_feature_flags(two_step_sign_in: true)

@@ -8,6 +8,7 @@ import { renderGlql } from './render_glql';
 import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
+import renderStickyTableHeaders from './render_table_headers';
 
 function initPopovers(elements) {
   if (!elements.length) return;
@@ -18,7 +19,14 @@ function initPopovers(elements) {
     .catch(() => {});
 }
 
-// Render GitLab Flavored Markdown
+// Render GitLab Flavored Markdown.
+//
+// This function handles components originating from backend-rendered GLFM that need
+// frontend work to vivify them.  It is purpose built to co-operate with the Banzai
+// pipeline system in `lib/banzai`, and will not work correctly with HTML generated
+// using other methods (e.g. Marked).  Modifying it to also work with other sources
+// may compromise the security of GitLab, as it affects how we handle the output from
+// the backend.
 export function renderGFM(element) {
   if (!element) {
     return;
@@ -56,4 +64,7 @@ export function renderGFM(element) {
   addAriaLabels(taskListCheckboxEls);
   renderGlql(glqlEls);
   renderImageLightbox(imageEls, element);
+
+  const mdTableEls = arrayFromAll('table:not(.code)');
+  renderStickyTableHeaders(mdTableEls);
 }

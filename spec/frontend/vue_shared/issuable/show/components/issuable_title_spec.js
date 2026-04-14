@@ -55,38 +55,24 @@ describe('IssuableTitle', () => {
 
   describe('template', () => {
     const findTitleEl = (wrapperWithTitle) => wrapperWithTitle.findByTestId('issuable-title');
-    const createComponentWithTitle = (titleHtml) =>
-      createComponent({
+
+    it('renders issuable title with rendered references', async () => {
+      const wrapperWithTitle = createComponent({
         ...mockIssuableShowProps,
         issuable: {
           ...mockIssuable,
-          titleHtml,
+          title: 'Sample with reference #1',
+          titleHtml: 'Sample with reference <a href="example">#1</a>',
         },
       });
-
-    it('renders issuable title with rich text', async () => {
-      const titleHtml = '<b>Sample</b> title';
-
-      const wrapperWithTitle = createComponentWithTitle(titleHtml);
 
       await nextTick();
       const titleEl = findTitleEl(wrapperWithTitle);
 
       expect(titleEl.exists()).toBe(true);
-      expect(titleEl.element.innerHTML.trim()).toBe('<b>Sample</b> title');
-
-      wrapperWithTitle.destroy();
-    });
-
-    it('renders issuable title without rich text', async () => {
-      const titleHtml = '';
-
-      const wrapperWithTitle = createComponentWithTitle(titleHtml);
-
-      await nextTick();
-      const titleEl = findTitleEl(wrapperWithTitle);
-
-      expect(titleEl.element.innerHTML.trim()).toBe('Sample title');
+      expect(titleEl.element.innerHTML.trim()).toBe(
+        'Sample with reference <a href="example">#1</a>',
+      );
 
       wrapperWithTitle.destroy();
     });

@@ -1,4 +1,4 @@
-import { upperFirst, lowerCase } from 'lodash';
+import { upperFirst, lowerCase } from 'lodash-es';
 
 export const extractGroupOrProject = (url = window.location.href) => {
   let fullPath = url

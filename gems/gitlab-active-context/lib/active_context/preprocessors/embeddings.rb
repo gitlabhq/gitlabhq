@@ -10,7 +10,6 @@ module ActiveContext
       class_methods do
         def apply_embeddings(
           refs:,
-          unit_primitive:,
           content_field: :content,
           content_method: nil,
           remove_content: false,
@@ -42,8 +41,7 @@ module ActiveContext
               models = items.first[:models]
               contents = items.map { |item| item[:doc][content_field] }
 
-              embeddings_by_model = generate_embeddings_for_each_model(models: models, contents: contents,
-                unit_primitive: unit_primitive)
+              embeddings_by_model = generate_embeddings_for_each_model(models: models, contents: contents)
 
               # Apply the generated embeddings back to each document
               items.each.with_index do |item, index|
@@ -75,12 +73,9 @@ module ActiveContext
           end
         end
 
-        def generate_embeddings_for_each_model(models:, contents:, unit_primitive:)
+        def generate_embeddings_for_each_model(models:, contents:)
           models.each_with_object({}) do |model, embeddings_by_model|
-            embedding = model.generate_embeddings(
-              contents,
-              unit_primitive: unit_primitive
-            )
+            embedding = model.generate_embeddings(contents)
             embeddings_by_model[model.field] = embedding
           end
         end

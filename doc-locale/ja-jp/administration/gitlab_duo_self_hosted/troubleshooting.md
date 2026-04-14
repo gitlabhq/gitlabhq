@@ -9,7 +9,6 @@ title: セルフホストモデルのトラブルシューティング
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Enterprise
 - 提供形態: GitLab Self-Managed
 
 {{< /details >}}
@@ -32,7 +31,7 @@ title: セルフホストモデルのトラブルシューティング
 - 以下のエンドポイントを把握している:
   - AIゲートウェイがホストされているエンドポイント。
   - モデルがホストされているエンドポイント。
-- GitLabからAIゲートウェイへのリクエストとレスポンスが[`llm.log`](../logs/_index.md#llmlog)に記録されるように[ログを有効化](logging.md#enable-logging)している。
+- GitLabからAIゲートウェイへのリクエストとレスポンスが[`llm.log`](../logs/_index.md#llmlog)に記録されるように[ログを有効化](logging.md#turn-on-logging-for-gitlab-duo-usage-data)している。
 
 GitLab Duoのトラブルシューティングの詳細については、以下を参照してください:
 
@@ -44,7 +43,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
 
 管理者がセルフホストモデルの設定を検証するためのデバッグスクリプトが2つ提供されています。
 
-1. GitLabからAIゲートウェイへの接続をデバッグします。GitLabインスタンスから、[Rakeタスク](../../administration/raketasks/_index.md)を実行します:
+1. GitLabからAIゲートウェイへの接続をデバッグします。GitLabインスタンスから、[Rakeタスク](../raketasks/_index.md)を実行します:
 
    ```shell
    gitlab-rake "gitlab:duo:verify_self_hosted_setup[<username>]"
@@ -101,7 +100,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
 
 トラブルシューティングが完了したら、AIゲートウェイコンテナを停止して、`AIGW_AUTH__BYPASS_EXTERNAL=true`**なし**で再起動します。
 
-> [!warning] 
+> [!warning]
 > 本番環境では認証をバイパスしないでください。
 
 コマンドの出力を検証し、必要に応じて修正します。
@@ -110,7 +109,7 @@ GitLab Duoのトラブルシューティングの詳細については、以下�
 
 ## GitLab Duoヘルスチェックが機能しない {#gitlab-duo-health-check-is-not-working}
 
-[GitLab Duoのヘルスチェックを実行](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo)すると、`401 response from the AI Gateway`のようなエラーが表示される場合があります。
+[GitLab Duoのヘルスチェックを実行](../gitlab_duo/configure/_index.md#run-a-health-check-for-gitlab-duo)すると、`401 response from the AI Gateway`のようなエラーが表示される場合があります。
 
 解決するには、まずGitLab Duoの機能が正しく機能しているかどうかを確認します。たとえば、GitLab Duo Chatにメッセージを送信します。
 
@@ -389,7 +388,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 AIゲートウェイサーバーでログが生成されない場合は、次の手順に従ってトラブルシューティングを行います:
 
-1. [AIログが有効になっている](logging.md#enable-logging)ことを確認します。
+1. [AIログが有効になっている](logging.md#turn-on-logging-for-gitlab-duo-usage-data)ことを確認します。
 1. 次のコマンドを実行して、GitLab Railsログを表示し、エラーがないか確認します:
 
    ```shell
@@ -448,16 +447,16 @@ Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput
 
    **重要**: トラブルシューティング後、このフラグを設定**せずに**GitLabを再起動します。
 
-   > [!warning] 
-   > **Do not use in production**では`CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`を使用しないでください。開発環境は本番環境を忠実に反映する必要があり、隠れたフラグや内部専用の回避策があってはなりません。
+   > [!warning]
+   > **本番環境で`CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`を使用しないでください**。開発環境は本番環境を忠実に反映する必要があり、隠れたフラグや内部専用の回避策があってはなりません。
 
-1. この問題を解決するには、次の手順に従います:
+1. この問題を解決するには:
    - GitLabチームのメンバーである場合は、[`#g_custom_models` Slackチャンネル](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F)を通じて、カスタムモデルチームに連絡してください。
    - お客様の場合は、[GitLabサポート](https://about.gitlab.com/support/)を通じて問題を報告してください。
 
 ## エラー: このワークフローの認証トークンのフェッチ中にエラーが発生しました {#error-an-error-occurred-while-fetching-an-authentication-token-for-this-workflow}
 
-このエラーは、GitLabまたはローカル環境でAgentic Chatを使用しようとすると発生する可能性があります。
+このエラーは、GitLabまたはローカル環境でエージェント型チャットを使用しようとすると発生する可能性があります。
 
 IDEの[GitLab言語サーバー](../../editor_extensions/language_server/_index.md)のログに、次の内容が表示されることもあります:
 
@@ -471,15 +470,7 @@ IDEの[GitLab言語サーバー](../../editor_extensions/language_server/_index.
 
 これは、証明書の問題により、言語サーバーが`direct_access`エンドポイントと通信してJWTトークンを生成できなかったことを意味します。
 
-TLSなしでセルフホストモデルを使用している場合、この問題を解決するには、`DUO_AGENT_PLATFORM_SERVICE_SECURE`を`false`に設定してください。[AIゲートウェイのインストール](../../install/install_ai_gateway.md#start-a-container-from-the-image)を参照してください。
-
-> [!warning]
-> `DUO_AGENT_PLATFORM_SERVICE_SECURE`グローバル設定には既知のイシューがあります。GitLab Duo Agent Platformの機能でクラウドホストモデルとセルフホストモデル（TLSなし）を組み合わせて使用すると、これらのモデルのいずれかが失敗する可能性があります。失敗するかどうかは、`DUO_AGENT_PLATFORM_SERVICE_SECURE`が`true`か`false`かによって異なります。この既知のイシューは、次の機能のモデルに影響します:
->
-> - GitLab Duo Chat（エージェント）
-> - Agentic Chatを除くすべてのエージェント
->
-> これらの機能に選択されたモデルが異なるバックエンドにルーティングされる場合（たとえば、1つのクラウドホストモデルと1つのTLSなしのセルフホストモデル）、それらのいずれかが失敗する可能性があります。詳細については、[イシュー590454](https://gitlab.com/gitlab-org/gitlab/-/issues/590454)を参照してください。
+セルフホストモデルをGitLab Duo Agent Platformに接続するためにTLSを使用しない場合は、この問題を解決するには、GitLab Duo Agent PlatformサービスへのTLS接続を[無効にしてください](configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform)。
 
 ## 関連トピック {#related-topics}
 

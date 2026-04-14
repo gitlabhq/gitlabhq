@@ -222,7 +222,7 @@ export default {
       />
 
       <gl-disclosure-dropdown-item
-        v-if="canExport"
+        v-show="canExport"
         v-gl-modal="$options.exportModalId"
         data-testid="export-as-csv-button"
         :item="exportAsCSV"

@@ -398,7 +398,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
         result = helper.render_wiki_content(wiki_page)
 
         expect(result).to include('>Header<a ')
-        expect(result).to include('</a>&#x000A;</h2>')
+        expect(result).to include('</a></h2>')
       end
     end
 
@@ -498,9 +498,9 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
-        expected = "\n<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
+        expected = "<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
           "<code><span class=\"line\" lang=\"ruby\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>" \
-          "</code></pre>\n"
+          "</code></pre>"
 
         expect(helper.first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
       end

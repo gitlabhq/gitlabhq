@@ -7,7 +7,6 @@ describe('MR More actions sidebar', () => {
 
   const findMoreDropdown = () => wrapper.findByTestId('dropdown-toggle');
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
-  const findNotificationToggle = () => wrapper.find('[data-testid="notification-toggle"]');
   const findEditMergeRequestOption = () => wrapper.find('[data-testid="edit-merge-request"]');
   const findMarkAsReadyAndDraftOption = () =>
     wrapper.find('[data-testid="ready-and-draft-action"]');
@@ -18,7 +17,6 @@ describe('MR More actions sidebar', () => {
 
   const createComponent = ({
     isCurrentUser = true,
-    isLoggedIn = true,
     open = false,
     canUpdateMergeRequest = false,
   } = {}) => {
@@ -31,26 +29,11 @@ describe('MR More actions sidebar', () => {
           iid: 1,
         },
         isCurrentUser,
-        isLoggedIn,
         open,
         canUpdateMergeRequest,
       },
     });
   };
-
-  describe('Notifications toggle', () => {
-    it.each`
-      isLoggedIn | showNotificationToggle
-      ${false}   | ${false}
-      ${true}    | ${true}
-    `("when is isLoggedIn as '$isLoggedIn'", ({ isLoggedIn, showNotificationToggle }) => {
-      createComponent({
-        isLoggedIn,
-      });
-
-      expect(findNotificationToggle().exists()).toBe(showNotificationToggle);
-    });
-  });
 
   describe('Edit/Draft/Reopen MR', () => {
     it('should not have the edit option when `canUpdateMergeRequest` is false', () => {

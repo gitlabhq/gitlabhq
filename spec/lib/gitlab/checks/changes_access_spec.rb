@@ -49,6 +49,54 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
         expect { subject.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
     end
+
+    context 'when changes_access_logging is enabled' do
+      before do
+        stub_feature_flags(changes_access_logging: true)
+      end
+
+      let(:logger_instance) { subject.send(:changes_access_logger) }
+
+      it 'instruments individual checks' do
+        allow(logger_instance).to receive(:instrument).and_call_original
+
+        expect(logger_instance).to receive(:instrument).with(:push_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:branch_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:tag_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:policy_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:commits_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:diff_check).and_call_original.at_least(:once)
+        expect(logger_instance).to receive(:instrument).with(:lfs_check).and_call_original
+        expect(logger_instance).to receive(:instrument).with(:file_size_limit_check).and_call_original
+        expect(logger_instance).to receive(:instrument).with(:integrations_check).and_call_original
+        expect(logger_instance).to receive(:commit).with(status: :ok)
+
+        subject.validate!
+      end
+
+      it 'logs denied status on ForbiddenError' do
+        allow_next_instance_of(Gitlab::Checks::PushCheck) do |instance|
+          allow(instance).to receive(:validate!)
+            .and_raise(Gitlab::GitAccess::ForbiddenError, 'denied')
+        end
+
+        expect(logger_instance).to receive(:commit)
+          .with(status: :denied, error: 'Gitlab::GitAccess::ForbiddenError')
+
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError)
+      end
+
+      context 'when time limit was reached' do
+        let(:logger) { Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout) }
+
+        it 'logs timeout status' do
+          expect(logger_instance).to receive(:commit)
+          .with(status: :timeout, error: 'Gitlab::Checks::TimedLogger::TimeoutError')
+
+          expect { subject.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
+        end
+      end
+    end
   end
 
   describe '#commits' do

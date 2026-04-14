@@ -1401,7 +1401,7 @@ export default {
 Never fire a network request immediately inside an updateQuery for list views. In high-activity environments like CI/CD, many items might update within seconds. Use a debounced batcher to collect IDs and fetch them in a single request.
 
 ```javascript
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { createAlert } from '~/alert';
 import Sentry from '~/sentry/sentry_bundle';
 

@@ -8,6 +8,7 @@ module Enums
       REPORT_FILE_TYPES = {
         sast: %w[sast],
         secret_detection: %w[secret_detection],
+        sarif: %w[sarif],
         test: %w[junit],
         accessibility: %w[accessibility],
         coverage: %w[cobertura jacoco],
@@ -48,7 +49,8 @@ module Enums
         api_fuzzing: 'gl-api-fuzzing-report.json',
         cyclonedx: 'gl-sbom.cdx.json',
         annotations: 'gl-annotations.json',
-        repository_xray: 'gl-repository-xray.json'
+        repository_xray: 'gl-repository-xray.json',
+        sarif: 'gl-sarif-report.sarif'
       }.freeze
 
       INTERNAL_TYPES = {
@@ -94,7 +96,8 @@ module Enums
         requirements: :raw,
         requirements_v2: :raw,
         coverage_fuzzing: :raw,
-        api_fuzzing: :raw
+        api_fuzzing: :raw,
+        sarif: :raw
       }.freeze
 
       DOWNLOADABLE_TYPES = %w[
@@ -122,6 +125,7 @@ module Enums
         requirements_v2
         cluster_image_scanning
         cyclonedx
+        sarif
       ].freeze
 
       def self.non_erasable_file_types
@@ -188,7 +192,8 @@ module Enums
           annotations: 30,
           repository_xray: 31, ## EE-specific
           jacoco: 32,
-          scip: 33 # SCIP data for code navigation
+          scip: 33, # SCIP data for code navigation
+          sarif: 34 ## EE-specific
         }
       end
 

@@ -2,8 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab CI/CD for external repositories
-description: GitHub, Bitbucket, external sources, mirroring, and cross-platform.
+title: CI/CD for external repositories
+description: Use GitLab CI/CD with GitHub, Bitbucket, and other external repositories.
 ---
 
 {{< details >}}

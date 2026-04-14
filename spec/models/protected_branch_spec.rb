@@ -172,7 +172,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
         let(:current_user) { developer }
 
         before do
-          allow(project).to receive(:initial_push_to_default_branch_allowed_for_developer?).and_return(true)
+          allow(project.namespace).to receive(:default_branch_protection_settings)
+            .and_return(Gitlab::Access::BranchProtection.protected_after_initial_push)
         end
 
         it { is_expected.to eq(true) }
@@ -182,7 +183,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
         let(:current_user) { developer }
 
         before do
-          allow(project).to receive(:initial_push_to_default_branch_allowed_for_developer?).and_return(false)
+          allow(project.namespace).to receive(:default_branch_protection_settings)
+            .and_return(Gitlab::Access::BranchProtection.protected_fully)
         end
 
         it { is_expected.to eq(false) }

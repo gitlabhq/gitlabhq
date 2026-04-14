@@ -45,7 +45,7 @@ configure it for your environment.
 To fork the repository:
 
 1. Go to the [Workspaces Infrastructure Setup AWS](https://gitlab.com/gitlab-org/workspaces/examples/workspaces-infrastructure-setup-aws) repository.
-1. Create a fork of the repository. For more information, see [Create a fork](../project/repository/forking_workflow.md#create-a-fork).
+1. [Create a fork](../project/repository/forking_workflow.md#create-a-fork) of the repository.
 
 ## Set up AWS credentials
 
@@ -124,7 +124,7 @@ To prepare your domain and certificates:
    - GitLab Workspaces Proxy Domain. For example, `workspaces.example.dev`.
    - GitLab Workspaces Proxy Wildcard Domain. For example, `*.workspaces.example.dev`.
 
-For more information, see [Generate TLS certificates](set_up_gitlab_agent_and_proxies.md#generate-tls-certificates).
+For more information, see [generate TLS certificates](set_up_gitlab_agent_and_proxies.md#generate-tls-certificates).
 
 ## Create required keys
 
@@ -157,7 +157,7 @@ To create a token for the agent:
 1. Select **Connect a cluster**.
 1. Enter a name for your agent and save for later use. For example, `gitlab-workspaces-agentk-eks`.
 1. Select **Create and register**.
-1. Save the token and KAS address for later use.
+1. Save the token and GitLab Relay (KAS) address for later use.
 1. Select **Continue**.
 
 ## Configure GitLab OAuth
@@ -200,7 +200,7 @@ To configure CI/CD variables:
    | `AWS_ACCESS_KEY_ID`                            | AWS access key ID. |
    | `AWS_SECRET_ACCESS_KEY`                        | AWS secret access key. |
    | `TF_VAR_agent_token`                           | GitLab agent for Kubernetes token. |
-   | `TF_VAR_kas_address`                           | GitLab Kubernetes Agent Server address. Required if on a GitLab Self-Managed instance. For example, `wss://kas.gitlab.com`. |
+   | `TF_VAR_kas_address`                           | GitLab Relay (KAS) address. Required if on a GitLab Self-Managed instance. For example, `wss://kas.gitlab.com`. |
    | `TF_VAR_workspaces_proxy_auth_client_id`       | OAuth application client ID. |
    | `TF_VAR_workspaces_proxy_auth_client_secret`   | OAuth application secret. |
    | `TF_VAR_workspaces_proxy_auth_redirect_uri`    | OAuth callback URL. For example, `https://workspaces.example.dev/auth/callback`. |
@@ -243,7 +243,7 @@ To update the agent configuration:
 
    > [!note]
    > The directory that contains the `config.yaml` file must match the agent name you created in the
-   > [Create a GitLab agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
+   > [create a GitLab agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
 
 1. Update the file with the following required fields:
 
@@ -253,7 +253,7 @@ To update the agent configuration:
      dns_zone: "workspaces.example.dev"  # Replace with your domain
    ```
 
-   For more configuration options, see [Workspace settings](settings.md).
+   For more configuration options, see [workspace settings](settings.md).
 
 1. Commit and push these changes to your repository.
 
@@ -314,7 +314,7 @@ Finally, let's make sure everything is working correctly by creating a test work
 
 To verify your workspace setup:
 
-1. Create a new workspace by following the steps in [Create a workspace](configuration.md#create-a-workspace).
+1. Create a new workspace by following the steps in [create a workspace](configuration.md#create-a-workspace).
 1. From your project, select **Code**.
 1. Select your workspace name.
 1. Interact with the workspace by opening the Web IDE, accessing the terminal, or making changes to project files.
@@ -323,7 +323,7 @@ Congratulations! You've successfully set up GitLab workspaces infrastructure on 
 can now create development workspace environments for their projects.
 
 If you encounter any issues, check the logs for additional details and refer to
-[Troubleshooting workspaces](workspaces_troubleshooting.md) for guidance.
+[troubleshooting workspaces](workspaces_troubleshooting.md) for guidance.
 
 ## Related topics
 

@@ -70,10 +70,16 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
     end
 
     before do
+      # Undefined feature flags can only be mutated in production environment
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+
+      # Mutate undefined feature flags (flags with no YAML definition)
       Feature.enable('feature_1')
       Feature.opt_out('feature_1', opted_out)
       Feature.disable('feature_2')
       Feature.enable('feature_3', Feature.group(:perf_team))
+
+      # Mutate a known feature flag to verify that definition is included in the response
       Feature.enable(known_feature_flag.name)
     end
 
@@ -282,6 +288,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
       context 'when the gate value was set' do
         before do
+          stub_feature_flag_definition(feature_name)
           Feature.enable(feature_name)
         end
 
@@ -290,7 +297,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
             delete api("/features/#{feature_name}", admin, admin_mode: true)
             Feature.reset
           end.to change { Feature.persisted_name?(feature_name) }
-            .and change { Feature.enabled?(feature_name, type: :undefined) }
+            .and change { Feature.enabled?(feature_name) }
 
           expect(response).to have_gitlab_http_status(:no_content)
         end

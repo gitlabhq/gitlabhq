@@ -1,11 +1,5 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButtonGroup, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
@@ -15,17 +9,17 @@ import searchUserProjectsWithIssuesEnabled from './graphql/search_user_projects_
 import { RESOURCE_TYPE_ISSUE, RESOURCE_TYPES, RESOURCE_OPTIONS } from './constants';
 
 export default {
+  name: 'NewResourceDropdown',
   i18n: {
     noMatchesFound: __('No matches found'),
     toggleButtonLabel: __('Toggle project select'),
+    selectProject: __('Select a project'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlLoadingIcon,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
     LocalStorageSync,
+    GlButtonGroup,
+    GlButton,
   },
   props: {
     resourceType: {
@@ -116,38 +110,44 @@ export default {
     hasSelectedProject() {
       return this.selectedProject.webUrl;
     },
-    showNoSearchResultsText() {
-      return !this.projects.length && this.search;
-    },
     selectedProjectForLocalStorage() {
       const { webUrl, name } = this.selectedProject;
-
       return { webUrl, name };
+    },
+    listboxItems() {
+      return this.projects.map((project) => ({
+        value: project.id,
+        text: project.nameWithNamespace || project.name,
+      }));
+    },
+    selectedValue() {
+      return this.selectedProject?.id || null;
     },
   },
   methods: {
-    handleDropdownClick() {
-      if (!this.dropdownHref) {
-        this.$refs.dropdown.show();
-      }
+    onButtonClick() {
+      this.$refs.collapsibleListbox.open();
     },
     handleDropdownShown() {
       if (this.shouldSkipQuery) {
         this.shouldSkipQuery = false;
       }
-      this.$refs.search.focusInput();
     },
-    selectProject(project) {
-      this.selectedProject = project;
+    onSearch(term) {
+      this.search = term?.trim?.() ?? '';
+      if (this.shouldSkipQuery) {
+        this.shouldSkipQuery = false;
+      }
+    },
+    onSelect(value) {
+      this.selectedProject = this.projects.find((project) => project.id === value) || null;
     },
     initFromLocalStorage(storedProject) {
-      // Historically, the selected project was saved with the URL as the `url` property, so we are
-      // falling back to that legacy property if `webUrl` is empty. This ensures that we support
-      // localStorage data that was persisted prior to this change.
       let webUrl = storedProject.webUrl || storedProject.url;
 
-      // The select2 implementation used to include the resource path in the local storage. We
-      // need to clean this up so that we can then re-build a fresh URL in the computed prop.
+      if (!webUrl) {
+        return;
+      }
       webUrl = webUrl.endsWith(this.resourceOptions.path)
         ? webUrl.slice(0, webUrl.length - this.resourceOptions.path.length)
         : webUrl;
@@ -155,7 +155,6 @@ export default {
       webUrl = webUrl.endsWith(dashSuffix)
         ? webUrl.slice(0, webUrl.length - dashSuffix.length)
         : webUrl;
-
       this.selectedProject = { webUrl, name: storedProject.name };
     },
   },
@@ -168,32 +167,31 @@ export default {
     :value="selectedProjectForLocalStorage"
     @input="initFromLocalStorage"
   >
-    <gl-dropdown
-      ref="dropdown"
-      right
-      split
-      :split-href="dropdownHref"
-      :text="dropdownText"
-      :toggle-text="$options.i18n.toggleButtonLabel"
-      variant="confirm"
-      data-testid="new-resource-dropdown"
-      @click="handleDropdownClick"
-      @shown="handleDropdownShown"
-    >
-      <gl-search-box-by-type ref="search" v-model.trim="search" />
-      <gl-loading-icon v-if="$apollo.queries.projects.loading" />
-      <template v-else>
-        <gl-dropdown-item
-          v-for="project of projects"
-          :key="project.id"
-          @click="selectProject(project)"
-        >
-          {{ project.nameWithNamespace || project.name }}
-        </gl-dropdown-item>
-        <gl-dropdown-text v-if="showNoSearchResultsText">
-          {{ $options.i18n.noMatchesFound }}
-        </gl-dropdown-text>
-      </template>
-    </gl-dropdown>
+    <gl-button-group data-testid="new-resource-dropdown">
+      <gl-button
+        :href="dropdownHref"
+        variant="confirm"
+        v-on="dropdownHref ? {} : { click: onButtonClick }"
+      >
+        {{ dropdownText }}
+      </gl-button>
+      <gl-collapsible-listbox
+        ref="collapsibleListbox"
+        class="gl-text-left"
+        placement="bottom-end"
+        variant="confirm"
+        searchable
+        text-sr-only
+        :toggle-text="$options.i18n.selectProject"
+        :no-results-text="$options.i18n.noMatchesFound"
+        :items="listboxItems"
+        :selected="selectedValue"
+        :loading="$apollo.queries.projects.loading"
+        :searching="$apollo.queries.projects.loading"
+        @shown="handleDropdownShown"
+        @search="onSearch"
+        @select="onSelect"
+      />
+    </gl-button-group>
   </local-storage-sync>
 </template>

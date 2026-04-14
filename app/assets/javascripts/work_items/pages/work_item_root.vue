@@ -4,12 +4,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import ZenMode from '~/zen_mode';
 import WorkItemDetail from '../components/work_item_detail.vue';
-import {
-  I18N_WORK_ITEM_ERROR_DELETING,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  NAME_TO_TEXT_MAP,
-  WORK_ITEM_TYPE_NAME_EPIC,
-} from '../constants';
+import { I18N_WORK_ITEM_ERROR_DELETING, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
@@ -55,7 +50,7 @@ export default {
           }
 
           const msg = sprintf(s__('WorkItem|%{workItemType} deleted'), {
-            workItemType: NAME_TO_TEXT_MAP[workItemType],
+            workItemType,
           });
           this.$toast.show(msg);
           visitUrl(
@@ -66,7 +61,7 @@ export default {
           this.error =
             e.message ||
             sprintf(I18N_WORK_ITEM_ERROR_DELETING, {
-              workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+              workItemType: this.workItemType,
             });
         });
     },

@@ -35,6 +35,7 @@ module API
             verify_error_tracking_token!
           end
 
+          route_setting :authorization, skip_granular_token_authorization: :error_tracking_token_auth
           post '/allowed', urgency: :high do
             public_key = params[:public_key]
             project_id = params[:project_id]

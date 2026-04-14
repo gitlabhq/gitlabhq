@@ -38,7 +38,7 @@ describe('PlaceholderUsersStats', () => {
     const helpPageLink = findHelpPageLink();
 
     expect(helpPageLink.props()).toMatchObject({
-      href: 'user/import/mapping/_index',
+      href: 'user/import/mapping/post_migration_mapping',
     });
     expect(helpPageLink.text()).toBe('Learn more');
   });

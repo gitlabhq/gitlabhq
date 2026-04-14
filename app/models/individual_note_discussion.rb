@@ -14,7 +14,7 @@ class IndividualNoteDiscussion < Discussion
   end
 
   def can_convert_to_discussion?
-    noteable.supports_replying_to_individual_notes?
+    !first_note.system? && noteable.supports_replying_to_individual_notes?
   end
 
   def convert_to_discussion!

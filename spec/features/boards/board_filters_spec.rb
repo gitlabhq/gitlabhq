@@ -193,7 +193,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
         expect_filtered_search_dropdown_results(filter_dropdown, 4)
 
         within_testid('filtered-search-input') do
-          click_on 'Incident'
+          click_button 'Incident', match: :first
         end
 
         filter_submit.click

@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integrations do
+RSpec.describe 'Subscriptions Content Security Policy', :with_current_organization, feature_category: :integrations do
   include ContentSecurityPolicyHelpers
 
-  let(:installation) { create(:jira_connect_installation) }
+  let(:installation) { create(:jira_connect_installation, organization: current_organization) }
   let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test') }
   let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
 
@@ -45,7 +45,13 @@ RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integ
     end
 
     context 'when installation has different display_url' do
-      let(:installation) { create(:jira_connect_installation, display_url: 'https://custom.example.com') }
+      let(:installation) do
+        create(
+          :jira_connect_installation,
+          display_url: 'https://custom.example.com',
+          organization: current_organization
+        )
+      end
 
       it 'includes display_url in frame-ancestors' do
         visit jira_connect_subscriptions_path(jwt: jwt)
@@ -55,7 +61,14 @@ RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integ
     end
 
     context 'when installation has same display_url as base_url' do
-      let(:installation) { create(:jira_connect_installation, base_url: 'https://same.jira.com', display_url: 'https://same.jira.com') }
+      let(:installation) do
+        create(
+          :jira_connect_installation,
+          base_url: 'https://same.jira.com',
+          display_url: 'https://same.jira.com',
+          organization: current_organization
+        )
+      end
 
       it 'does not include display_url in frame-ancestors' do
         visit jira_connect_subscriptions_path(jwt: jwt)

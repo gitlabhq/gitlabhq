@@ -15,7 +15,7 @@ module Gitlab
         map %w[--version -v] => :version
         desc 'version', 'Display the version information'
         def version
-          puts "GitLab Backup CLI (#{VERSION})" # rubocop:disable Rails/Output -- CLI output
+          puts "GitLab Backup CLI (#{VERSION})"
         end
 
         desc 'backup', 'Manage repositories, database and files backup creation'

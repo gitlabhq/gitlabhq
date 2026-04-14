@@ -21,6 +21,9 @@
     "block_branch_modification": {
       "type": "boolean"
     },
+    "prevent_editing_approval_rules": {
+      "type": "boolean"
+    },
     "block_group_branch_modification": {
       "oneOf": [
         {

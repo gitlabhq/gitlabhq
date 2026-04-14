@@ -303,5 +303,15 @@ FactoryBot.define do
       user_type { :support_bot }
       username { 'support-bot' }
     end
+
+    factory :project_provisioned_user do
+      transient do
+        project { association(:project) }
+      end
+
+      after(:create) do |user, evaluator|
+        user.user_detail.update!(provisioned_by_project: evaluator.project)
+      end
+    end
   end
 end

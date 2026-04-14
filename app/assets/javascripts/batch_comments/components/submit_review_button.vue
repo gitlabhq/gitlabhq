@@ -1,7 +1,10 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 import { useBatchComments } from '~/batch_comments/store';
+import { useNotes } from '~/notes/store/legacy_notes';
 import DraftsCount from './drafts_count.vue';
 
 export default {
@@ -11,10 +14,25 @@ export default {
     DraftsCount,
   },
   computed: {
-    ...mapState(useBatchComments, ['draftsCount', 'isReviewer', 'shouldAnimateReviewButton']),
+    ...mapState(useNotes, ['isNotesFetched']),
+    ...mapState(useBatchComments, [
+      'draftsCount',
+      'isDraftsFetched',
+      'isReviewer',
+      'shouldAnimateReviewButton',
+    ]),
+    isLoading() {
+      return !this.isNotesFetched || !this.isDraftsFetched;
+    },
   },
   mounted() {
-    this.fetchDrafts();
+    this.fetchDrafts().catch((error) => {
+      createAlert({
+        message: __('An error occurred while fetching pending comments'),
+        captureError: true,
+        error,
+      });
+    });
   },
   methods: {
     ...mapActions(useBatchComments, ['fetchDrafts', 'setDrawerOpened']),
@@ -27,6 +45,8 @@ export default {
     <gl-button
       variant="confirm"
       data-testid="review-drawer-toggle"
+      :disabled="isLoading"
+      :loading="isLoading"
       :class="{
         'motion-safe:gl-animate-[review-btn-animate_300ms_ease-in]': shouldAnimateReviewButton,
       }"

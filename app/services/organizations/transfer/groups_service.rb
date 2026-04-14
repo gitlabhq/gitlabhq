@@ -58,6 +58,7 @@ module Organizations
       def perform_transfer
         transfer_namespaces_and_projects
         transfer_users
+        schedule_ci_runners_transfer
       end
 
       def transfer_namespaces_and_projects
@@ -99,6 +100,16 @@ module Organizations
           users: users,
           new_organization: new_organization
         )
+      end
+
+      def schedule_ci_runners_transfer
+        group_id = group.id
+        old_org_id = old_organization.id
+        new_org_id = new_organization.id
+
+        group.run_after_commit_or_now do
+          ::Ci::Runners::TransferOrganizationWorker.perform_async(group_id, old_org_id, new_org_id)
+        end
       end
 
       def users

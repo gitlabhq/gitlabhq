@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Chat (non-agentic)
+title: GitLab Duo Non-Agentic Chat
 ---
 
 {{< details >}}
@@ -23,8 +23,8 @@ title: GitLab Duo Chat (non-agentic)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for SaaS in GitLab 16.0.
-- Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for GitLab.com in GitLab 16.0.
+- Changed to [beta](../../policy/development_stages_support.md#beta) for GitLab.com in GitLab 16.6.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a beta for GitLab Self-Managed in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
@@ -46,7 +46,7 @@ contextual, conversational AI. This non-agentic Chat:
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
-Learn about the new [GitLab Duo Chat (agentic)](agentic_chat.md).
+Learn about the new [GitLab Duo Agentic Chat](agentic_chat.md).
 
 ## Supported editor extensions
 
@@ -274,9 +274,9 @@ If you have selected code in the editor, this selection is sent along with your 
 
 Prerequisites:
 
-- You've [installed and configured the GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md).
+- You've [installed and configured the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md).
 
-To use GitLab Duo Chat in the GitLab plugin for JetBrains IDEs:
+To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
 
 1. In a JetBrains IDE, open a project.
 1. Open GitLab Duo Chat in either a chat window or an editor window.
@@ -285,7 +285,7 @@ To use GitLab Duo Chat in the GitLab plugin for JetBrains IDEs:
 
 To open GitLab Duo Chat in a chat window, use any of these methods:
 
-- On the right tool window bar, select **GitLab Duo Chat**.
+- On the right tool window bar, select **GitLab Duo Non-Agentic Chat**.
 - From a keyboard shortcut:
   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
   - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
@@ -358,9 +358,9 @@ Prerequisites:
 To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 
 1. Open a project in Eclipse.
-1. Select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
-   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
-   - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
+1. In the upper right corner, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
+   - For Windows and Linux: <kbd>Alt</kbd>+<kbd>D</kbd>
+   - For macOS: <kbd>Option</kbd>+<kbd>D</kbd>
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 ## Configure Chat conversation expiration
@@ -384,6 +384,10 @@ Prerequisites:
    - **After the conversation was last updated**.
    - **After the conversation was created**.
 1. Select **Save changes**.
+
+## IDE shortcuts
+
+When you use Chat in a supported IDE, you can use [keyboard shortcuts](../shortcuts.md#gitlab-duo-chat).
 
 ## Available language models
 

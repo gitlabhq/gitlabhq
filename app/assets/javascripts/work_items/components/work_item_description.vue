@@ -155,6 +155,7 @@ export default {
       workspacePermissions: {},
       markdownPaths: {},
       enableEditFromRedirect: getParameterByName('edit') === 'true',
+      isCancellingEdit: false,
     };
   },
   apollo: {
@@ -455,18 +456,25 @@ export default {
       this.$refs.textarea?.focus();
     },
     async cancelEditing() {
+      if (this.isCancellingEdit) return;
+
       const isDirty = this.descriptionText !== this.workItemDescription?.description;
 
       if (isDirty) {
-        const msg = s__('WorkItem|Are you sure you want to cancel editing?');
+        this.isCancellingEdit = true;
+        try {
+          const msg = s__('WorkItem|Are you sure you want to cancel editing?');
 
-        const confirmed = await confirmAction(msg, {
-          primaryBtnText: __('Discard changes'),
-          cancelBtnText: __('Continue editing'),
-        });
+          const confirmed = await confirmAction(msg, {
+            primaryBtnText: __('Discard changes'),
+            cancelBtnText: __('Continue editing'),
+          });
 
-        if (!confirmed) {
-          return;
+          if (!confirmed) {
+            return;
+          }
+        } finally {
+          this.isCancellingEdit = false;
         }
       }
 

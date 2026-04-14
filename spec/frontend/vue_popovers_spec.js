@@ -1,6 +1,6 @@
 import { GlPopover } from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initVuePopovers from '~/vue_popovers';
 

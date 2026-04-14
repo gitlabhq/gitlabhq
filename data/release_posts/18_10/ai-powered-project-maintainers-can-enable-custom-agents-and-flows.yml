@@ -1,0 +1,20 @@
+---
+features:
+  secondary:
+  - name: "Project Maintainers can enable custom agents and flows"
+    available_in: [premium, ultimate]
+    gitlab_com: true
+    self_managed: true
+    gitlab_dedicated: true
+    gitlab_dedicated_for_government: true
+    add_ons: []
+    documentation_link: 'https://docs.gitlab.com/user/duo_agent_platform/flows/custom/#enable-a-flow'
+    reporter: amandarueda
+    stage: ai-powered
+    categories:
+    - AI Catalog
+    issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/590573'
+    description: |
+      Previously, enabling AI agents and flows from the AI Catalog required top-level group permissions.
+
+      Now, when browsing the AI Catalog at the explore level or project level, project Maintainers can enable agents and flows directly in their projects.

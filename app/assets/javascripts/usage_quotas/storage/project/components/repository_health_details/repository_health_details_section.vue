@@ -78,7 +78,7 @@ export default {
 </script>
 
 <template>
-  <section class="gl-border gl-rounded-lg gl-bg-neutral-10 gl-px-6 gl-py-5 lg:gl-ml-7">
+  <section class="gl-border gl-rounded-lg gl-bg-subtle gl-px-6 gl-py-5 lg:gl-ml-7">
     <template v-if="!projectId">
       <p class="gl-mb-0">{{ s__('UsageQuota|Failed to parse Project ID from Repository.') }}</p>
     </template>

@@ -192,6 +192,9 @@
         "requirements_v2": {
           "$ref": "#/definitions/reportPath"
         },
+        "sarif": {
+          "$ref": "#/definitions/reportPath"
+        },
         "sast": {
           "$ref": "#/definitions/reportPath"
         },

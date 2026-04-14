@@ -243,6 +243,7 @@ module API
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
         mount ::API::CargoProjectPackages
+        mount ::API::Chaos
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ComposerPackages
@@ -357,6 +358,7 @@ module API
         mount ::API::Terraform::Modules::V1::NamespacePackages
         mount ::API::Terraform::Modules::V1::ProjectPackages
         mount ::API::Terraform::State
+        mount ::API::Terraform::StateProtectionRules
         mount ::API::Terraform::StateVersion
         mount ::API::Topics
         mount ::API::Unleash
@@ -368,7 +370,10 @@ module API
         mount ::API::UserCounts
         mount ::API::UserRunners
         mount ::API::WebCommits
-        mount ::API::WorkItems
+        mount ::API::WorkItems::Delete
+        mount ::API::WorkItems::Create
+        mount ::API::WorkItems::List
+        mount ::API::WorkItems::Show
         mount ::API::Wikis
 
         add_open_api_documentation!

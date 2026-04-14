@@ -35,13 +35,14 @@ To set up infrastructure for workspaces, regardless of cloud provider, you must:
 1. In the Kubernetes cluster:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
-1. Complete all steps in the [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
+1. Complete all steps in the [set up the GitLab agent for Kubernetes tutorial](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
-If you use AWS, you can use our OpenTofu tutorial. For more information, see
-[Tutorial: Set up workspaces infrastructure on AWS](set_up_infrastructure.md).
+If you use AWS, you can use our OpenTofu tutorial.
+For more information, see the
+[set up workspaces infrastructure on AWS tutorial](set_up_infrastructure.md).
 
 ## Create a workspace
 
@@ -110,7 +111,8 @@ You also have access to the terminal and can install any necessary dependencies.
 ### Monitor workspace startup progress
 
 When you start a workspace, you can monitor the progress of initialization tasks and `postStart`
-events by checking the workspace logs. For more information, see [Workspace logs directory](_index.md#workspace-logs-directory).
+events by checking the workspace logs.
+For more information, see the [workspace logs directory](_index.md#workspace-logs-directory).
 
 ## Platform compatibility
 
@@ -119,7 +121,7 @@ The platform requirements for workspaces depend on your development needs.
 For basic workspace functionality, workspaces run on any `linux/amd64` Kubernetes cluster that supports
 the GitLab agent for Kubernetes, regardless of the underlying operating system.
 
-To choose a method that fits your platform requirements, see [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
+To choose a method that fits your platform requirements, see [configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
 ## Build and run containers in a workspace
 
@@ -268,7 +270,7 @@ You can update your custom workspace images in two ways.
 If your workspace image is based on the [workspace base image](_index.md#workspace-base-image),
 SSH support is already configured and ready to use. This approach ensures your image has all
 necessary workspace configurations.
-For detailed instructions, see [Create a custom workspace image](create_image.md).
+For more information, see [create a custom workspace image](create_image.md).
 
 If you prefer not to use the workspace base image, you can build from your own base image. If you do
 this, configure SSH support manually in your runtime images:

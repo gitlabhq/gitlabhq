@@ -4,9 +4,9 @@ module Gitlab
   module Redis
     class ActionCable < ::Gitlab::Redis::Wrapper
       class << self
-        # We don't set a fallback as this is to be used during migration only
+        # The data we store on ActionCable used to be stored on SharedState.
         def config_fallback
-          nil
+          SharedState
         end
 
         def active?

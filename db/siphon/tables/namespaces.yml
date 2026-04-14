@@ -1,0 +1,11 @@
+---
+table: namespaces
+database: main
+ignored_columns:
+  - runners_token
+  - saml_discovery_token
+  - runners_token_encrypted
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_namespaces
+    priority: 2

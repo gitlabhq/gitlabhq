@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::BranchesController, feature_category: :integrations do
+RSpec.describe JiraConnect::BranchesController, :with_current_organization, feature_category: :integrations do
   describe '#new' do
     context 'when logged in' do
       let_it_be(:user) { create(:user) }
@@ -60,7 +60,13 @@ RSpec.describe JiraConnect::BranchesController, feature_category: :integrations 
     end
 
     context 'with a valid jwt' do
-      let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://self-managed.gitlab.io') }
+      let_it_be(:installation) do
+        create(:jira_connect_installation,
+          instance_url: 'https://self-managed.gitlab.io',
+          organization: current_organization
+        )
+      end
+
       let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test') }
       let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
       let(:symmetric_jwt) { Atlassian::JiraConnect::Jwt::Symmetric.new(jwt) }
@@ -71,7 +77,7 @@ RSpec.describe JiraConnect::BranchesController, feature_category: :integrations 
       end
 
       context 'when the jira installation is not for a self-managed instance' do
-        let_it_be(:installation) { create(:jira_connect_installation) }
+        let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
 
         it 'redirects to :new' do
           get :route, params: params

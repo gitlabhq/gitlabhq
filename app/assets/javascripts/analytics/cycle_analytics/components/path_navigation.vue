@@ -33,6 +33,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['selected'],
   methods: {
     showPopover({ id }) {
       return id && id !== OVERVIEW_STAGE_ID;

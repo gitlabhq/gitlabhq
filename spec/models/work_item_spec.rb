@@ -689,7 +689,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
   describe '#allowed_work_item_type_change' do
     context "when using the WorkItems::TypesFramework::SytemDefined::Type model" do
-      let_it_be(:all_types) { WorkItems::TypesFramework::SystemDefined::Type.all }
+      let_it_be(:all_types) { ::WorkItems::TypesFramework::Provider.new.all }
 
       it 'is possible to change between all types', :aggregate_failures do
         all_types.each do |type|

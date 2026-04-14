@@ -17,6 +17,10 @@ module QA
       end
 
       it 'by adding a home page to the wiki',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41035',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
         project.visit!
 
@@ -38,6 +42,10 @@ module QA
       end
 
       it 'by adding a second page to the wiki',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41067',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
         wiki.visit!
 

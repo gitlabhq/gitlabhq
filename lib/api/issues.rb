@@ -94,7 +94,7 @@ module API
           desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 any today tomorrow overdue week month next_month_and_previous_two_weeks] << '',
           desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
-        optional :issue_type, type: String, values: ::WorkItems::TypesFilter.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFilter.allowed_types_for_issues.join(', ')}"
+        optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
         use :issues_stats_params
         use :pagination
       end
@@ -110,7 +110,7 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential', allow_blank: false
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
-        optional :issue_type, type: String, values: ::WorkItems::TypesFilter.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFilter.allowed_types_for_issues.join(', ')}"
+        optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
 
         use :optional_issue_params_ee
       end
@@ -313,7 +313,8 @@ module API
 
         use :issue_params
       end
-      route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params
+      route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params,
+        annotations: { readOnlyHint: false, destructiveHint: false }
       route_setting :authorization, permissions: :create_issue, boundary_type: :project
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')

@@ -10,6 +10,7 @@ RSpec.describe AlertManagement::AlertUserMention, feature_category: :incident_ma
     end
 
     it { is_expected.to belong_to(:note) }
+    it { is_expected.to belong_to(:project) }
   end
 
   it_behaves_like 'has user mentions' do

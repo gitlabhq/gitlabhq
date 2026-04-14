@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotificationsHelper do
+RSpec.describe NotificationsHelper, feature_category: :notifications do
   describe 'notification_icon' do
     it { expect(notification_icon(:disabled)).to match('data-testid="notifications-off-icon"') }
     it { expect(notification_icon(:owner_disabled)).to match('data-testid="notifications-off-icon"') }
@@ -14,9 +14,9 @@ RSpec.describe NotificationsHelper do
   end
 
   describe '#notification_icon_level' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:global_setting) { user.global_notification_setting }
-    let(:notification_setting) { create(:notification_setting, level: :watch) }
+    let(:notification_setting) { build_stubbed(:notification_setting, level: :watch) }
 
     it { expect(notification_icon_level(notification_setting, true)).to eq 'owner_disabled' }
     it { expect(notification_icon_level(notification_setting)).to eq 'watch' }

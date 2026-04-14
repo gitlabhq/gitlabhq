@@ -104,19 +104,13 @@ RSpec.shared_examples 'issuable does not support timelog creation service' do
 
   let(:service) { described_class.new(issuable, time_spent, spent_at, summary, user) }
 
-  shared_examples 'error_response' do
+  shared_examples 'error_response' do |message|
     it 'returns an error' do
       is_expected.to be_error
 
-      issuable_type = if issuable.nil?
-                        'Issuable'
-                      else
-                        issuable.base_class_name
-                      end
+      issuable_type = issuable.nil? ? 'Issuable' : issuable.base_class_name
 
-      expect(subject.message).to eq(
-        "#{issuable_type} doesn't exist or you don't have permission to add timelog to it."
-      )
+      expect(subject.message).to eq("#{issuable_type} #{message}")
       expect(subject.http_status).to eq(404)
     end
   end
@@ -124,7 +118,7 @@ RSpec.shared_examples 'issuable does not support timelog creation service' do
   context 'when the user does not have permission' do
     let(:user) { create(:user) }
 
-    it_behaves_like 'error_response'
+    it_behaves_like 'error_response', "doesn't exist or you don't have permission to add timelog to it."
   end
 
   context 'when the user has permissions' do
@@ -134,6 +128,6 @@ RSpec.shared_examples 'issuable does not support timelog creation service' do
       users_container.add_reporter(user)
     end
 
-    it_behaves_like 'error_response'
+    it_behaves_like 'error_response', 'does not support time logs.'
   end
 end

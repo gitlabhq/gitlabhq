@@ -46,6 +46,28 @@ do end up in Google Stackdriver, but it is still harder to search for
 logs there. See the [GitLab.com logging documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging)
 for more details.
 
+## Don't use direct standard output methods
+
+Avoid using `$stdout.puts`, `$stderr.puts`, `$stdout.print`, `$stderr.print`,
+or equivalent calls on `STDOUT`/`STDERR` in application code. These bypass
+structured logging:
+
+1. Output is unstructured plain text, not parseable JSON.
+1. No log level, so messages cannot be filtered or routed.
+1. No contextual metadata (correlation ID, user, project, etc.).
+1. Output is not written to the log files that customers can access for diagnostics
+   (for example, `/var/log/gitlab/` on Omnibus installations).
+
+The community [`Rails/Output`](https://docs.rubocop.org/rubocop-rails/cops_rails.html#railsoutput)
+cop catches bare `puts` and `print`. The custom `Gitlab/DirectStdio` cop
+catches `$stdout.puts`, `$stdout.print`, and equivalent calls on `$stderr`,
+`STDOUT`, and `STDERR`.
+
+For Rake tasks or CLI output, use existing wrapper methods such as those in
+`SystemCheck::Helpers` or `Gitlab::TaskHelpers` rather than writing directly
+to standard output. For application logging, use a
+[structured JSON logger](#use-structured-json-logging).
+
 ## Use structured (JSON) logging
 
 Structured logging solves these problems. Consider the example from an API request:

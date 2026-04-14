@@ -84,14 +84,14 @@ A request made with a composite identity token is authorized only if both are tr
 When a request includes a composite identity OAuth token, the Rails request context overrides `current_user` to the human user extracted from the `user:$ID` scope. While the token itself still belongs to the service account, the user who originated the request is considered the current user. This means:
 
 - Any code that depends on `current_user` runs as the human user.
-- Use `invert_composite_identity` to determine the correct actor for attribution, the result depends on how the identity was linked for the current request.
+- Use `resolve_composite_identity_actor` to determine the correct actor for attribution, the result depends on how the identity was linked for the current request.
 
 ### Attributing actions to the correct actor
 
-Always use `invert_composite_identity` to resolve the actor for any write operation. You do not need to determine the context yourself — it is set automatically at the request boundary:
+Always use `resolve_composite_identity_actor` to resolve the actor for any write operation. You do not need to determine the context yourself — it is set automatically at the request boundary:
 
 ```ruby
-actor = Gitlab::Auth::Identity.invert_composite_identity(current_user)
+actor = Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
 ```
 
 Use the returned `actor` wherever you set authorship (for example: notes, issues/MRs, commits, pipeline user context).
@@ -102,7 +102,7 @@ The method returns the correct actor for the situation:
 - **Human made the request, SA was linked incidentally** (for example, a human assigns an SA as a reviewer): internally tagged as `:permission_check` context. Returns the human. The human is the actor and should be attributed.
 - **No composite identity**: returns `current_user` unchanged.
 
-You never need to call this method differently depending on the scenario — the identity system records the context when the request is authenticated, and `invert_composite_identity` uses it automatically.
+You never need to call this method differently depending on the scenario — the identity system records the context when the request is authenticated, and `resolve_composite_identity_actor` uses it automatically.
 
 Reference: MR [!204010](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204010), MR [!223788](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223788)
 

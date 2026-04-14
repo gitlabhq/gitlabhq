@@ -5,8 +5,13 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
+import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
+import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
+import { initLineRangeSelection } from '~/rapid_diffs/app/init_line_range_selection';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
@@ -15,6 +20,8 @@ jest.mock('~/rapid_diffs/app/file_browser');
 jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 jest.mock('~/rapid_diffs/app/init_compare_versions');
+jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
+jest.mock('~/rapid_diffs/app/init_line_range_selection');
 
 describe('Merge Request Rapid Diffs app', () => {
   let app;
@@ -64,10 +71,12 @@ describe('Merge Request Rapid Diffs app', () => {
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
-    createTestingPinia();
+    createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
     useDiffsView().loadDiffsStats.mockResolvedValue();
     useDiffsList().reloadDiffs.mockResolvedValue();
     useDiffsList().streamRemainingDiffs.mockResolvedValue();
+    useMergeRequestDiscussions().fetchNotesAndDrafts.mockResolvedValue();
     initFileBrowser.mockResolvedValue();
   });
 
@@ -108,10 +117,16 @@ describe('Merge Request Rapid Diffs app', () => {
     expect(useCodeReview().setMrPath).not.toHaveBeenCalled();
   });
 
-  it('fetches notes on init', async () => {
+  it('sets projectPath on legacyDiffs store', async () => {
+    buildApp({ project_path: 'gitlab-org/gitlab' });
+    await app.init();
+    expect(useLegacyDiffs().projectPath).toBe('gitlab-org/gitlab');
+  });
+
+  it('fetches notes and drafts on init', async () => {
     buildApp();
     await app.init();
-    expect(useMergeRequestDiscussions().fetchNotes).toHaveBeenCalled();
+    expect(useMergeRequestDiscussions().fetchNotesAndDrafts).toHaveBeenCalled();
   });
 
   it('initializes compare versions on init', async () => {
@@ -126,5 +141,79 @@ describe('Merge Request Rapid Diffs app', () => {
       document.querySelector('[data-after-browser-toggle]'),
       expect.objectContaining({ versions }),
     );
+  });
+
+  it('initializes new discussion toggle with allowExpandedLines', async () => {
+    buildApp();
+    await app.init();
+    expect(initNewDiscussionToggle).toHaveBeenCalledWith(app.root, { allowExpandedLines: true });
+  });
+
+  it('initializes line range selection', async () => {
+    buildApp();
+    await app.init();
+    expect(initLineRangeSelection).toHaveBeenCalledWith(app.root);
+  });
+
+  describe('scrollToDiffNote', () => {
+    const discussion = {
+      hidden: true,
+      original_position: {
+        old_path: 'file.js',
+        new_path: 'file.js',
+        old_line: 5,
+        new_line: 10,
+      },
+    };
+
+    const mockDiffFile = {
+      data: { oldPath: 'file.js', newPath: 'file.js' },
+      selectLine: jest.fn(),
+    };
+
+    beforeEach(() => {
+      buildApp();
+      jest.spyOn(DiffFile, 'getAll').mockReturnValue([mockDiffFile]);
+      mockDiffFile.selectLine.mockClear();
+    });
+
+    it('selects the line on the matching diff file', () => {
+      app.scrollToDiffNote(discussion);
+      expect(mockDiffFile.selectLine).toHaveBeenCalledWith(5, 10);
+    });
+
+    it('uses line_range end when present', () => {
+      const disc = {
+        ...discussion,
+        original_position: {
+          ...discussion.original_position,
+          line_range: { end: { old_line: 8, new_line: 15 } },
+        },
+      };
+      app.scrollToDiffNote(disc);
+      expect(mockDiffFile.selectLine).toHaveBeenCalledWith(8, 15);
+    });
+
+    it('expands the discussion', () => {
+      app.scrollToDiffNote(discussion);
+      expect(useMergeRequestDiscussions().expandDiscussion).toHaveBeenCalledWith(discussion);
+    });
+
+    it('does not select line when file is not found', () => {
+      jest.spyOn(DiffFile, 'getAll').mockReturnValue([]);
+      app.scrollToDiffNote(discussion);
+      expect(mockDiffFile.selectLine).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setLinkedFile', () => {
+    it('sets linked file data on the diffs list store', () => {
+      buildApp();
+      app.setLinkedFile({ old_path: 'a.js', new_path: 'b.js' });
+      expect(useDiffsList().setLinkedFileData).toHaveBeenCalledWith({
+        old_path: 'a.js',
+        new_path: 'b.js',
+      });
+    });
   });
 });

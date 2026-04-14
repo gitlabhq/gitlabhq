@@ -22,7 +22,8 @@ For teams using Jira for issue tracking while leveraging GitLab for development,
 
 The integration also populates the GitLab **Value Streams Dashboard** (Ultimate only), which provides an overview of key DevSecOps metrics and can be found under **Analyze** > **Analytics dashboards** in your GitLab project or group.
 
-**NOTE**: A similar integration exists for incident replication to generate specific DORA metrics (Change Failure Rate and Time to Restore Service). If you're interested in incident replication, refer to the [Jira Incident Replicator](jira_dora.md).
+> [!note]
+> A similar integration exists for incident replication to generate specific DORA metrics (Change Failure Rate and Time to Restore Service). If you're interested in incident replication, refer to the [Jira Incident Replicator](jira_dora.md).
 
 ## Architecture
 

@@ -1,0 +1,10 @@
+---
+name: ci_reduced_consumption_threshold_for_free_users
+description: Reduces the CI consumption grace period threshold from -1000 to -100 for free and trial users
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/19671
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221811
+rollout_issue_url:
+milestone: '18.11'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

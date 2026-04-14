@@ -83,6 +83,18 @@ exports[`Utils formOptionsGenerator returns an object containing olderThan 1`] =
   },
   {
     "default": false,
+    "key": "ONE_DAY",
+    "label": "1 day",
+    "variable": 1,
+  },
+  {
+    "default": false,
+    "key": "THREE_DAYS",
+    "label": "3 days",
+    "variable": 3,
+  },
+  {
+    "default": false,
     "key": "SEVEN_DAYS",
     "label": "7 days",
     "variable": 7,
@@ -110,6 +122,30 @@ exports[`Utils formOptionsGenerator returns an object containing olderThan 1`] =
     "key": "NINETY_DAYS",
     "label": "90 days",
     "variable": 90,
+  },
+  {
+    "default": false,
+    "key": "ONE_HUNDRED_EIGHTY_DAYS",
+    "label": "180 days",
+    "variable": 180,
+  },
+  {
+    "default": false,
+    "key": "THREE_HUNDRED_SIXTY_FIVE_DAYS",
+    "label": "1 year",
+    "variable": 365,
+  },
+  {
+    "default": false,
+    "key": "SEVEN_HUNDRED_THIRTY_DAYS",
+    "label": "2 years",
+    "variable": 730,
+  },
+  {
+    "default": false,
+    "key": "ONE_THOUSAND_NINETY_FIVE_DAYS",
+    "label": "3 years",
+    "variable": 1095,
   },
 ]
 `;

@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass, feature_categor
       it 'adds an offence if inheriting from ActiveRecord::Migration' do
         expect_offense(<<~RUBY)
           class MyMigration < ActiveRecord::Migration[6.1]
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. Use Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. Use Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/development/migration_style_guide/#migration-helpers-and-versioning.
           end
         RUBY
       end
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass, feature_categor
       it 'adds an offence if inheriting from old version of Gitlab::Database::Migration' do
         expect_offense(<<~RUBY)
           class MyMigration < Gitlab::Database::Migration[2.0]
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. Use Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. Use Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/development/migration_style_guide/#migration-helpers-and-versioning.
           end
         RUBY
       end
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass, feature_categor
         expect_offense(<<~RUBY)
           class MyMigration < Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}]
             include Gitlab::Database::MigrationHelpers
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't include migration helper modules directly. Inherit from Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't include migration helper modules directly. Inherit from Gitlab::Database::Migration[#{described_class::CURRENT_MIGRATION_VERSION}] instead. See https://docs.gitlab.com/development/migration_style_guide/#migration-helpers-and-versioning.
           end
         RUBY
       end

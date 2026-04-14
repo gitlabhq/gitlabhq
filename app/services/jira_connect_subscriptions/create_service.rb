@@ -13,8 +13,7 @@ module JiraConnectSubscriptions
         return error(s_('JiraConnect|Could not fetch user information from Jira. ' \
                         'Check the permissions in Jira and try again.'), 403)
       elsif !can_administer_jira?
-        return error(s_('JiraConnect|The Jira user is not a site or organization administrator. ' \
-                        'Check the permissions in Jira and try again.'), 403)
+        return error(jira_not_an_admin_error_message, 403)
       end
 
       unless namespace && can?(current_user, :create_jira_connect_subscription, namespace)
@@ -28,6 +27,21 @@ module JiraConnectSubscriptions
 
     def can_administer_jira?
       params[:jira_user]&.jira_admin?
+    end
+
+    def jira_not_an_admin_error_message
+      detailed_message = params[:jira_user].not_an_admin_error_message
+
+      if detailed_message
+        format(
+          s_('JiraConnect|%{detailed_message}. ' \
+             'Check the permissions in Jira and try again.'),
+          detailed_message: detailed_message
+        )
+      else
+        s_('JiraConnect|The Jira user is not a site or organization ' \
+           'administrator. Check the permissions in Jira and try again.')
+      end
     end
 
     def create_subscription

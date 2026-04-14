@@ -1,5 +1,8 @@
-- diff_files = conditionally_paginate_diff_files(diffs, paginate: true, page: params[:page], per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Commit|Unable to load diff files')
+- else
+  - diff_files = conditionally_paginate_diff_files(diffs, paginate: true, page: params[:page], per: Projects::CommitController::COMMIT_DIFFS_PER_PAGE)
 
-= render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
+  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: 'is-commit' }
 
-= paginate(diff_files, theme: "gitlab", params: { action: :show })
+  = paginate(diff_files, theme: "gitlab", params: { action: :show })

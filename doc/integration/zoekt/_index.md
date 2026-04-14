@@ -240,6 +240,7 @@ Repositories count:               10
 Tasks count:                      10
   - done: 10
 Tasks pending/processing by type: (none)
+Storage buffer factor:            0.831× [static fallback (FF disabled)]
 
 Feature Flags (Default Values)
 - zoekt_too_many_replicas_event: disabled
@@ -307,6 +308,30 @@ The output includes colored status indicators and shows:
 - Core settings validation and namespace and repository indexing statuses
 - The overall status including a combined health assessment: `HEALTHY`, `DEGRADED`, or `UNHEALTHY`
 - Recommendations for resolving issues
+
+## Perform force reindexing
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/478814) in GitLab 18.10.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Perform force reindexing for the range of projects.
+
+Run this Rake task:
+
+```shell
+gitlab-rake gitlab:zoekt:reindex_projects ID_FROM=10 ID_TO=20
+```
+
+Using the `ID_FROM` and `ID_TO` environment variables, you can force reindex a limited number of projects.
+To reindex just one project keep the `ID_FROM` and `ID_TO` equal to the project ID to be reindexed.
+To reindex all projects omit the environment variables.
 
 ## Pause indexing
 
@@ -709,6 +734,25 @@ Adjust resources based on your specific workload characteristics, including:
 - Frequency of code changes
 - Indexing patterns
 
+### Memory architecture
+
+The webserver and indexer have different memory usage patterns.
+
+The webserver memory-maps index shards from disk into virtual memory.
+The operating system pages shard data in and out of physical memory as searches
+are served. Resident memory usage grows with the active working set.
+Nodes with larger indices or higher query volume require more webserver
+memory to avoid page thrashing and out-of-memory conditions.
+
+The indexer processes Git object data in memory when it builds or rebuilds
+indices. Memory usage spikes when indexing large repositories or when multiple
+tasks run in parallel. You can control peak indexer memory by adjusting the
+[number of parallel processes per indexing task](#set-the-number-of-parallel-processes-per-indexing-task)
+and the [indexing CPU to tasks multiplier](#set-concurrent-indexing-tasks).
+
+On VM and bare metal deployments, the webserver and indexer share the same
+system memory.
+
 ### Nodes
 
 For optimal performance, proper sizing of Zoekt nodes is crucial.
@@ -768,7 +812,6 @@ You can allocate these resources only to the entire node.
 For VM and bare metal deployments:
 
 - Monitor CPU, memory, and disk usage to identify bottlenecks.
-  Both webserver and indexer processes share the same CPU and memory resources.
 - Consider using SSD storage for better indexing performance.
 - Ensure adequate network bandwidth for data transfer between GitLab and Zoekt nodes.
 
@@ -792,12 +835,14 @@ your current repository sizes and replica configuration.
 If you prefer to calculate manually, use:
 
 ```plaintext
-storage_per_replica = sum(repository_git_size) × 3
+storage_per_replica = sum(repository_git_size) × buffer_factor
 total_cluster_storage = storage_per_replica × number_of_replicas
 ```
 
 Where `repository_git_size` is the Git object size for each repository.
 This value does not include LFS objects, wiki, artifacts, or packages.
+And `buffer_factor` is the headroom during initial indexing.
+It could be calculated as `Search::Zoekt::Index.global_buffer_factor` which is mostly `3` by default.
 
 To view `repository_git_size`:
 
@@ -816,6 +861,15 @@ GitLab reserves this buffer internally to ensure Zoekt has headroom during index
 After initial indexing is complete, actual disk usage is typically closer to
 half the `repository_git_size` based on observed GitLab.com data.
 Scale vertically or horizontally only when needed.
+
+You can view the current buffer factor in use by running:
+
+```shell
+sudo gitlab-rake gitlab:zoekt:info
+```
+
+The output includes a `Storage buffer factor` line showing the value the planner
+is currently using and whether it is dynamic or the static fallback.
 
 To monitor Zoekt node storage, see [check indexing status](#check-indexing-status).
 If namespaces are not indexed due to low disk space, add nodes or increase disk capacity.

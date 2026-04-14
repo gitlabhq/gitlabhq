@@ -30,11 +30,14 @@
         "null"
       ]
     },
-    "deletion_scheduled_at": {
+    "deletion_scheduled_by_user_id": {
+      "type": "number"
+    },
+    "transfer_scheduled_at": {
       "type": "string",
       "format": "date-time"
     },
-    "deletion_scheduled_by_user_id": {
+    "transfer_scheduled_by_user_id": {
       "type": "number"
     },
     "transfer_initiated_at": {
@@ -77,7 +80,7 @@
             "deletion_scheduled"
           ]
         },
-        "start_transfer": {
+        "schedule_transfer": {
           "type": "string",
           "enum": [
             "ancestor_inherited",

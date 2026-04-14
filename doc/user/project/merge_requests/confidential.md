@@ -25,7 +25,7 @@ developers receive the same permissions in your fork. This inheritance ensures:
 - Developer users have the needed permissions to view confidential issues and resolve them.
 - You do not need grant individual users access to your fork.
 
-To learn more, see [Patch release runbook for GitLab engineers: Preparing security fixes for a patch release](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md).
+For more information, see the [patch release runbook for GitLab engineers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md).
 
 ## Create a confidential merge request
 

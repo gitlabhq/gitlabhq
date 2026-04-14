@@ -87,7 +87,10 @@ module Gitlab
             interval = DEFAULT_BATCH_VALUES[:interval] if interval < DEFAULT_BATCH_VALUES[:interval]
 
             unless min_cursor.present?
-              min_cursor = [get_column_value(connection, table_name, column_name, 'MIN')]
+              min_cursor = previous_max_cursor(
+                job_class_name, table_name, column_name, job_arguments, org_id: user&.organization_id
+              )
+              min_cursor ||= [get_column_value(connection, table_name, column_name, 'MIN')]
               min_cursor = DEFAULT_BATCH_VALUES[:min_cursor] if min_cursor.compact.empty?
             end
 

@@ -359,22 +359,28 @@ To add a requirement with external controls:
 
 ```graphql
 mutation {
-  complianceFrameworkRequirementCreate(input: {
-    frameworkId: "gid://gitlab/ComplianceManagement::Framework/1",
-    name: "External Approval Requirement",
-    description: "Require external system approval for deployments",
-    externalControls: [{
-      name: "ServiceNow Approval",
-      externalUrl: "https://mycompany.service-now.com/api/approval",
-      hmacSharedSecret: "my-secret-key"
-    }]
-  }) {
+  createComplianceRequirement(
+    input: {
+      complianceFrameworkId: "gid://gitlab/ComplianceManagement::Framework/1",
+      controls: [{
+        controlType: "external",
+        name: "external_control",
+        externalControlName: "ServiceNowApproval",
+        externalUrl: "https://mycompany.service-now.com/api/approval",
+        secretToken: "my-secret-key"
+      }],
+      params: {
+        name: "External Approval Requirement",
+        description: "Require external system approval for deployments"
+      }
+    }
+  ) {
     errors
     requirement {
       id
       name
       description
-      controls {
+      complianceRequirementsControls {
         nodes {
           id
           name
@@ -399,27 +405,35 @@ To update an existing requirement:
 
 ```graphql
 mutation {
-  complianceFrameworkRequirementUpdate(input: {
-    id: "gid://gitlab/ComplianceManagement::Requirement/1",
-    name: "Updated Security Requirement",
-    description: "Updated security scanning requirement with additional controls",
-    controlIds: [
-      "scanner_sast_running",
-      "scanner_dep_scanning_running",
-      "scanner_secret_detection_running",
-      "scanner_container_scanning_running"
-    ]
-  }) {
+  updateComplianceRequirement(input: {
+    id: "gid://gitlab/ComplianceManagement::ComplianceFramework::ComplianceRequirement/1",
+    params: {
+      name: "Updated Security Requirement",
+      description: "Updated security scanning requirement with additional controls"
+    },
+    controls: [{
+        expression: "{\"field\":\"scanner_sast_running\",\"operator\":\"=\",\"value\":true}",
+        name: "scanner_sast_running"
+      },
+      {
+        expression: "{\"field\":\"scanner_dep_scanning_running\",\"operator\":\"=\",\"value\":true}",
+        name: "scanner_dep_scanning_running"
+      },
+      {
+        expression: "{\"field\":\"scanner_secret_detection_running\",\"operator\":\"=\",\"value\":true}",
+        name: "scanner_secret_detection_running"
+      }]
+  })
+  {
     errors
     requirement {
       id
       name
       description
-      controls {
+      complianceRequirementsControls {
         nodes {
           id
           name
-          controlId
         }
       }
     }
@@ -439,8 +453,8 @@ To delete a requirement from a framework:
 
 ```graphql
 mutation {
-  complianceFrameworkRequirementDestroy(input: {
-    id: "gid://gitlab/ComplianceManagement::Requirement/1"
+  destroyComplianceRequirement(input: {
+    id: "gid://gitlab/ComplianceManagement::ComplianceFramework::ComplianceRequirement/1"
   }) {
     errors
   }

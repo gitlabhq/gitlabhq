@@ -12,10 +12,8 @@ module Gitlab
       end
 
       def resolved_ref
-        if full_branch_or_tag_path?
+        if full_branch_or_tag_path? || merge_request_or_workload_path?
           @origin_ref if @repository.ref_exists?(@origin_ref)
-        elsif merge_request_or_workload_path?
-          @origin_ref
         elsif ambiguous?
           nil
         elsif branch_exists?

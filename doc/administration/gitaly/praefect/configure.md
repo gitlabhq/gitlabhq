@@ -948,6 +948,28 @@ You can also appoint an authoritative name server by setting it in this format:
 
 - `dns://[authority_host]:[authority_port]/[host]:[port]`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585789) in GitLab 18.10.
+
+{{< /history >}}
+
+To use service discovery with TLS encryption, use the `dns+tls` scheme:
+
+- `dns+tls:[host]:[port]` (shorthand form)
+- `dns+tls:///[host]:[port]` (note the three slashes)
+- `dns+tls://[authority_host]:[authority_port]/[host]:[port]`
+
+The `dns+tls://` scheme combines DNS-based service discovery with TLS encryption.
+You must configure TLS on your Praefect servers before using this scheme. For more
+information, see [Enable TLS](#enable-tls-support).
+
+Each Praefect endpoint's TLS certificate must include a Subject Alternative Name
+(SAN) that matches the hostname used in `PRAEFECT_SERVICE_DISCOVERY_ADDRESS` below.
+For example, if the address is `dns+tls:///praefect.service.consul:3305`, each
+Praefect node's certificate must have `praefect.service.consul` as a SAN entry.
+Connections fail if the SAN does not match.
+
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}
@@ -961,6 +983,17 @@ You can also appoint an authoritative name server by setting it in this format:
    gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   }
+   ```
+
+   To use TLS, change the scheme to `dns+tls://`:
+
+   ```ruby
+   gitlab_rails['repositories_storages'] = {
+     "default" => {
+       "gitaly_address" => 'dns+tls://DNS_SERVER_ADDRESS:53/PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    }
@@ -982,6 +1015,16 @@ You can also appoint an authoritative name server by setting it in this format:
        storages:
          default:
            gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
+   ```
+
+   To use TLS, change the scheme to `dns+tls://`:
+
+   ```yaml
+   gitlab:
+     repositories:
+       storages:
+         default:
+           gitaly_address: dns+tls://DNS_SERVER_ADDRESS:53/PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305
    ```
 
 1. Save the file and [restart GitLab](../../restart_gitlab.md#self-compiled-installations).

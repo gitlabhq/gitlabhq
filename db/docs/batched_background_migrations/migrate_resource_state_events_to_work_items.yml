@@ -1,0 +1,7 @@
+---
+migration_job_name: MigrateResourceStateEventsToWorkItems
+description: Migrate resource_state_events to use the work_item_id (issue_id) of the Epic, nullifying epic_id.
+feature_category: portfolio_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229713
+milestone: '18.11'
+queued_migration_version: 20260401065448

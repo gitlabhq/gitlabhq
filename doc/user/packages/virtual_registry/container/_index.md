@@ -48,6 +48,7 @@ When using the container virtual registry, remember the following restrictions:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19283) in GitLab 18.10 [with a flag](../../../../administration/feature_flags/_index.md) named `ui_for_container_virtual_registries`.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/582167) in GitLab 18.11 to a flag named `container_virtual_registries`. Feature flag `ui_for_container_virtual_registries` removed.
 
 {{< /history >}}
 

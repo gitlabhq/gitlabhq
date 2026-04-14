@@ -19,9 +19,12 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
     MERMAID
   end
 
+  let(:use_mermaid_v11) { true }
+
   let(:expected_mermaid_graph) do
-    src = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}/-/sandbox/mermaid"
-    %(<iframe src="#{src}" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
+    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}" \
+      '/-/sandbox/mermaid_v'
+    %r{<iframe src="#{Regexp.escape(src_prefix)}\d+" sandbox="allow-scripts allow-popups"}
   end
 
   before_all do
@@ -29,6 +32,7 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
   end
 
   before do
+    stub_feature_flags(use_mermaid_v11: use_mermaid_v11)
     sign_in user
     visit project_edit_blob_path(project, File.join(project.default_branch, 'README.md'))
   end
@@ -68,7 +72,22 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
       wait_for_requests
 
       page.within('.js-markdown-code') do
-        expect(page.html).to include(expected_mermaid_graph)
+        expect(page.html).to match(expected_mermaid_graph)
+      end
+    end
+
+    context 'with use_mermaid_v11 disabled' do
+      let(:use_mermaid_v11) { false }
+
+      it 'renders mermaid graphs with v10 sandbox' do
+        fill_editor(content_mermaid_graph)
+        click_link 'Preview'
+        wait_for_requests
+
+        page.within('.js-markdown-code') do
+          expect(page.html).to include('/-/sandbox/mermaid_v10')
+          expect(page.html).not_to include('/-/sandbox/mermaid_v11')
+        end
       end
     end
   end

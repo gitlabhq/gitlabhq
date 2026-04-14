@@ -1,3 +1,4 @@
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets_extras.fragment.graphql"
 
@@ -48,6 +49,11 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
               }
               ...WorkItemMetadataWidgets
               ...WorkItemMetadataWidgetsExtras
+              ... on WorkItemWidgetHierarchy {
+                parent {
+                  ...WorkItemParentFields
+                }
+              }
             }
           }
         }

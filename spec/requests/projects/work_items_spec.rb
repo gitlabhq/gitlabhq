@@ -104,7 +104,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     context 'for work_items_client_side_boards feature flag' do
       before do
         sign_in(current_user)
-        stub_feature_flags(work_items_client_side_boards: current_user, work_item_planning_view: true)
+        stub_feature_flags(work_items_client_side_boards: current_user)
       end
 
       it 'provides the feature flag set to true' do
@@ -116,7 +116,7 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
 
       context 'when disabled' do
         before do
-          stub_feature_flags(work_items_client_side_boards: false, work_item_planning_view: true)
+          stub_feature_flags(work_items_client_side_boards: false)
         end
 
         it 'provides the feature flag set to false' do

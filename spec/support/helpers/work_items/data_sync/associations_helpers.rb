@@ -10,7 +10,7 @@ module WorkItems
       BASE_ASSOCIATIONS = {
         base_associations: [
           :author, :updated_by, :project, :duplicated_to, :last_edited_by, :closed_by, :work_item_type,
-          :moved_to, :moved_from, :namespace
+          :moved_to, :moved_from, :namespace, :work_item_position
         ]
       }.freeze
 
@@ -29,7 +29,7 @@ module WorkItems
         labels: [:label_links, :labels, :resource_label_events],
         linked_items: [], # linked_work_items
         milestone: [:milestone, :resource_milestone_events],
-        notes: [:notes, :note_authors, :user_note_authors],
+        notes: [:notes, :notes_with_possible_mentions, :note_authors, :user_note_authors],
         notifications: [:sent_notifications, :subscriptions],
         participants: [:user_mentions],
         start_and_due_date: [:dates_source],

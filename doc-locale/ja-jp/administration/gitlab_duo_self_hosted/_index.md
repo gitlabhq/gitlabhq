@@ -26,28 +26,30 @@ title: セルフホストモデル
 
 {{< /history >}}
 
-独自のAIインフラストラクチャをホストして、お好みのLLMでGitLab Duo機能を使用します。セルフホストAIゲートウェイを使用して、すべてのリクエストとレスポンスデータを独自の環境に保持し、外部APIコールを回避して、LLMバックエンドへのリクエストのフルライフサイクルを管理します。
+独自のAIインフラストラクチャをホストすることで、GitLab Duoの各種機能を任意のLLMで動作させることができます。セルフホストAIゲートウェイを使用すると、すべてのリクエストおよびレスポンスデータを自組織環境内に保持し、外部APIに対するコールを実行することなく、LLMバックエンドへのリクエストのライフサイクル全体を管理できます。
 
 ## デプロイオプション {#deployment-options}
 
-さまざまなデプロイオプションでセルフホストモデルを使用できます。
+セルフホストモデルは、複数のデプロイオプションに対応しています。
 
-### GitLab Duo（クラシック） {#gitlab-duo-classic}
+### GitLab Duo Agent Platform {#gitlab-duo-agent-platform}
 
-GitLab Duo Enterpriseをお使いのGitLab Duo（クラシック）機能をお使いのお客様向けのGitLab Duoセルフホスト。使用できるモデルは次のとおりです:
+オンプレミス型モデル、またはGitLab Duo Agent Platform内のプライベートクラウドでホストされるモデルには、GitLab Duo Agent Platform Self-Hostedを使用します。
+
+オフラインライセンスをお持ちのお客様の場合、価格設定はシートベースで、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted)アドオンが必要です。
+
+オンラインライセンスをお持ちのお客様の場合、価格設定は使用量ベースです。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
+
+推論データ（コードの入力、モデルプロンプト、モデル応答を含む）は、顧客ネットワーク外に出ません。匿名化された請求メタデータ（インスタンスID、呼び出し数、匿名化されたユーザーID）は、使用量課金のためにGitLabに送信されます。GitLabは、顧客がどのモデルまたはモデルプロバイダーを使用しているかを捕捉しません。
+
+### GitLab Duo {#gitlab-duo}
+
+GitLab Duo Self-Hostedは、GitLab Duo Enterpriseを利用し、GitLab Duo機能を使用している顧客向けです。使用できるモデルは次のとおりです:
 
 - オンプレミスモデルまたはプライベートクラウドでホストされるモデル
 - ハイブリッドデプロイメントのGitLab管理モデル
 
-このオプションでは、シートベースの価格設定が使用されます。
-
-### GitLab Duo Agent Platform {#gitlab-duo-agent-platform}
-
-GitLab Duo Agent Platformのオンプレミスモデルまたはプライベートクラウドでホストされるモデルを使用するためのGitLab Duo Agent Platform Self-Hosted。
-
-オフラインライセンスをお持ちのお客様の場合、料金はシートベースで、[GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md#gitlab-duo-agent-platform-self-hosted)アドオンが必要です。
-
-オンラインライセンスをお持ちのお客様の場合、料金は使用量に基づきます。ハイブリッドデプロイメントでは、GitLabが管理するモデルも使用できます。
+このオプションはシートベースの価格設定となっています。
 
 ### 機能のバージョンとステータス {#feature-versions-and-status}
 
@@ -56,14 +58,14 @@ GitLab Duo Agent Platformのオンプレミスモデルまたはプライベー�
 - 機能を使用するために必要なGitLabのバージョン。
 - 機能のステータス。デプロイメントの機能ステータスは、機能にリストされているステータスと異なる場合があります。
 
-GitLab Duo Self-HostedでGitLab Duo（クラシック）機能を使用するには、GitLab Duo Enterpriseアドオンが必要です。これは、GitLabがクラウドベースの[AIゲートウェイ](../../administration/gitlab_duo/gateway.md)を介してこれらのモデルをホストおよび接続し、GitLab Duo CoreまたはGitLab Duo Proでこれらの機能を使用できる場合でも適用されます。
+GitLab Duo Self-HostedでGitLab Duo機能を使用するには、GitLab Duo Enterpriseアドオンが必要です。これは、GitLabがクラウドベースの[AIゲートウェイ](../gitlab_duo/gateway.md)を介してこれらのモデルをホストおよび接続し、GitLab Duo CoreまたはGitLab Duo Proでこれらの機能を使用できる場合でも適用されます。
 
 | 機能                                                                                                                                | GitLabバージョン          | ステータス              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
 | [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8以降   | 一般提供 |
-| **GitLab Duo（クラシック）** | | |
-| [コード提案（クラシック）](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9以降   | 一般提供 |
-| [GitLab Duo Chat（クラシック）](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
+| **GitLab Duo** | | |
+| [コード提案](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9以降   | 一般提供 |
+| [GitLab Duo Chat（非エージェント型）](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9以降   | 一般提供 |
 | [コード説明](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9以降   | 一般提供 |
 | [テスト生成](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
 | [コードのリファクタリング](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9以降   | 一般提供 |
@@ -81,25 +83,25 @@ GitLab Duo Self-HostedでGitLab Duo（クラシック）機能を使用するに
 
 ## AIゲートウェイ構成 {#ai-gateway-configurations}
 
-製品オプションを選択したら、AIゲートウェイをLLMに接続する方法を構成します:
+デプロイオプションを選択したら、次にAIゲートウェイのLLM接続を構成します:
 
 - **セルフホストAIゲートウェイとLLM**: AIインフラストラクチャを完全に制御するために、独自のAIゲートウェイとモデルを使用します。
-- **ハイブリッドAIゲートウェイとモデル構成**: 機能ごとに、セルフホストモデルを使用した独自のセルフホストAIゲートウェイ、またはGitLab.com AIゲートウェイとGitLab AIベンダーモデルのいずれかを使用します。
+- **ハイブリッドAIゲートウェイとモデル構成**: 機能ごとに、独自のAIゲートウェイとセルフホストモデルを使用するか、GitLab.comのAIゲートウェイとGitLab管理のモデルを使用します。
 - **デフォルトのGitLab外部ベンダーLLMを使用したGitLab.com AIゲートウェイ**: GitLabが管理するAIインフラストラクチャを使用します。
 
 | 構成               | セルフホストAIゲートウェイ                                                                    | ハイブリッドAIゲートウェイとモデル構成                                                                                                        | GitLab.com AIゲートウェイ                    |
 |-----------------------------|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|
 | インフラストラクチャ要件 | 独自のAIゲートウェイとモデルのホスティングが必要                                           | 独自のAIゲートウェイとモデルのホスティングが必要                                                                                                  | 追加のインフラストラクチャは不要      |
-| モデルオプション               | [サポート対象のセルフホストモデル](supported_models_and_hardware_requirements.md)から選択 | [サポート対象のセルフホストモデル](supported_models_and_hardware_requirements.md)、または各GitLab Duo機能のGitLab AIベンダーモデルから選択 | デフォルトのGitLab AIベンダーモデルを使用 |
-| ネットワーク要件        | 完全に隔離されたネットワークで動作可能                                                    | GitLab AIベンダーモデルを使用するGitLab Duo機能にはインターネット接続が必要                                                          | インターネット接続が必要           |
-| 責任            | インフラストラクチャのセットアップと独自のメンテナンスを実施                               | インフラのセットアップ、独自のメンテナンスを実施し、どの機能がGitLab AIベンダーモデルとAIゲートウェイを使用するかを選択                    | GitLabがセットアップとメンテナンスを実施   |
+| モデルオプション               | [サポート対象のセルフホストモデル](supported_models_and_hardware_requirements.md)から選択 | 各GitLab Duo機能について、[サポートされているセルフホストモデル](supported_models_and_hardware_requirements.md)またはGitLab管理のモデルから選択します。 | デフォルトのGitLab管理モデルを使用します。 |
+| ネットワーク要件        | 完全に隔離されたネットワークで動作可能                                                    | GitLab管理のモデルを使用するGitLab Duo機能にはインターネット接続が必要です。                                                          | インターネット接続が必要           |
+| 責任            | インフラストラクチャのセットアップと独自のメンテナンスを実施                               | インフラストラクチャをセットアップし、独自のメンテナンスを行い、どの機能でGitLab管理モデルとAIゲートウェイを使用するかを選択します。                    | GitLabがセットアップとメンテナンスを実施   |
 
 ### セルフホストAIゲートウェイとLLM {#self-hosted-ai-gateway-and-llms}
 
 完全なセルフホスト設定では、独自のAIゲートウェイをデプロイし、GitLabインフラストラクチャやAIベンダーモデルを使用せずに、自社のインフラストラクチャで[サポートされているLLM](supported_models_and_hardware_requirements.md)のみを使用します。これにより、データとセキュリティを完全に制御できます。
 
-> [!note] 
-> この設定には、セルフホストAIゲートウェイを介して設定されたモデルのみが含まれます。いずれかの機能で[GitLab AIベンダーモデル](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model)を使用する場合、これらの機能はセルフホストゲートウェイではなく、GitLabでホストされているAIゲートウェイに接続されるため、完全にセルフホスト設定ではなく、ハイブリッド設定になります。
+> [!note]
+> この設定には、セルフホストAIゲートウェイを介して設定されたモデルのみが含まれます。いずれかの機能で[GitLab管理モデル](configure_duo_features.md#select-a-gitlab-managed-model-for-a-feature)を使用する場合、それらの機能はセルフホストゲートウェイではなくGitLabホストのAIゲートウェイに接続されるため、完全にセルフホストではなくハイブリッド設定となります。
 
 独自のAIゲートウェイをデプロイしている間も、[AWS Bedrock](https://aws.amazon.com/bedrock/)や[Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)のようなクラウドベースのLLMサービスをモデルバックエンドとして使用でき、セルフホストAIゲートウェイを介して接続し続けることができます。
 
@@ -115,11 +117,11 @@ GitLab Duo Self-HostedでGitLab Duo（クラシック）機能を使用するに
 
 - GitLab 18.3で`ai_self_hosted_vendored_features`[機能フラグ](../feature_flags/_index.md)とともに[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/17192)されました。デフォルトでは無効になっています。
 - GitLab 18.7で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030)になりました。
-- GitLab 18.9で一般提供。機能フラグ`ai_self_hosted_vendored_features`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
+- GitLab 18.9で一般提供になりました。機能フラグ`ai_self_hosted_vendored_features`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595)されました。
 
 {{< /history >}}
 
-このハイブリッド設定では、ほとんどの機能で独自のAIゲートウェイとセルフホストモデルをデプロイしますが、特定の機能を使用するように設定して、GitLab AIベンダーモデルを使用します。機能がGitLab AIベンダーモデルを使用するように設定されている場合、その機能へのリクエストは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイに送信されます。
+このハイブリッド設定では、ほとんどの機能に独自のAIゲートウェイとセルフホストモデルをデプロイしますが、特定の機能ではGitLab管理モデルを使用するように設定します。ある機能がGitLab管理モデルを使用するように設定されている場合、その機能へのリクエストは、セルフホストAIゲートウェイではなく、GitLabホストのAIゲートウェイに送信されます。
 
 このオプションは、以下を可能にすることで柔軟性を提供します:
 
@@ -127,15 +129,11 @@ GitLab Duo Self-HostedでGitLab Duo（クラシック）機能を使用するに
 - GitLabがキュレーションしたモデルを優先する特定の機能には、GitLab管理のベンダーモデルを使用する。
 
 > [!note]
-> 機能がGitLab AI AIベンダーモデルを使用するように構成されている場合:
+> 機能がGitLab管理モデルを使用するように設定されている場合:
 >
 > - これらの機能へのすべての呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
 > - これらの機能にはインターネット接続が必要です。
 > - これは、完全にセルフホストまたは隔離された設定ではありません。
-
-詳細については、以下を参照してください: 
-
-- [GitLab AIベンダーモデルを設定する](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model)
 
 #### GitLab管理モデル {#gitlab-managed-models}
 
@@ -145,8 +143,8 @@ AIネイティブ機能で使用するデフォルトのGitLabモデルを選択
 
 特定のGitLab管理モデルを選択すると、その機能のすべてのリクエストはそのモデルのみを使用します。モデルが利用できなくなった場合、AIゲートウェイへのリクエストは失敗し、別のモデルが選択されるまで、ユーザーはその機能を使用できません。
 
-> [!note] 
-> GitLab管理モデルを使用するように機能を構成する場合:
+> [!note]
+> GitLab管理モデルを使用するように機能を設定する場合:
 >
 > - これらの機能への呼び出しは、セルフホストAIゲートウェイではなく、GitLabでホストされているAIゲートウェイを使用します。
 > - これらの機能にはインターネット接続が必要です。
@@ -172,7 +170,7 @@ GitLab.com AIゲートウェイはデフォルトのEnterprise提供であり、
 
 詳細については、[GitLab.com AIゲートウェイ構成図](configuration_types.md#gitlabcom-ai-gateway)を参照してください。
 
-このインフラストラクチャをセットアップするには、[GitLab Self-ManagedインスタンスでGitLab Duoを設定する方法](../../administration/gitlab_duo/configure/gitlab_self_managed.md)を参照してください。
+このインフラストラクチャをセットアップするには、[GitLab Self-ManagedインスタンスでGitLab Duoを設定する方法](../gitlab_duo/configure/gitlab_self_managed.md)を参照してください。
 
 ## プライベートインフラストラクチャをセットアップする {#set-up-a-private-infrastructure}
 
@@ -185,9 +183,7 @@ GitLab.com AIゲートウェイはデフォルトのEnterprise提供であり、
    - GitLabは、特定の機能とハードウェア要件を備えたサポート対象モデルのマトリックスを提供しています。詳細については、[サポートされているモデルとハードウェア要件](supported_models_and_hardware_requirements.md)を参照してください。
 
 1. [AIゲートウェイをインストール](../../install/install_ai_gateway.md)してGitLab Duo機能にアクセスします。
-
-1. [セルフホストモデルを使用する機能についてGitLabインスタンスを構成します](configure_duo_features.md)。
-
+1. [セルフホストモデルを使用する機能についてGitLabインスタンスを設定します](configure_duo_features.md)。
 1. システムのパフォーマンスを追跡および管理するには、[ロギングを有効](logging.md)にします。
 
 ## 関連トピック {#related-topics}

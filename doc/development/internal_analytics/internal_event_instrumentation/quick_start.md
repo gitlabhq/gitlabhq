@@ -18,13 +18,14 @@ In order to instrument your code with Internal Events Tracking you need to do th
 
 ## Defining event and metrics
 
-To create event and/or metric definitions, use the `internal_events` generator from the `gitlab` directory:
+To create event and/or metric definitions, use the [gitlab_internal_events_cli gem](https://gitlab.com/gitlab-org/analytics-section/product-analytics/analytics-cli#installation).
 
 ```shell
-scripts/internal_events/cli.rb
+> gem install gitlab_internal_events_cli
+> gem exec gitlab-internal-events-cli
 ```
 
-This CLI will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.
+This CLI gem will help you create the correct definition files based on your specific use-case, then provide code examples for instrumentation and testing.
 
 Events should be named in the format of `<action>_<target_of_action>_<where/when>`, valid examples are `create_ci_build` or `click_previous_blame_on_blob_page`.
 
@@ -54,7 +55,7 @@ track_internal_event(
 )
 ```
 
-This method automatically increments all RedisHLL metrics relating to the event `create_ci_build`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
+This method automatically increments all RedisHLL metrics relating to the event `create_ci_build`, and sends a corresponding Snowplow event with all named arguments and standard context (GitLab.com only).
 In addition, the name of the class triggering the event is saved in the `category` property of the Snowplow event.
 
 If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.

@@ -66,6 +66,16 @@ describe('WorkItemBulkEditParent component', () => {
         [workItemsByReferencesQuery, searchHandler],
         [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
       ]),
+      provide: {
+        glFeatures: {
+          workItemConfigurableTypes: true,
+        },
+        workItemTypesConfiguration: [
+          { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+        ],
+      },
       propsData: {
         fullPath: 'group/project',
         isGroup: false,
@@ -134,21 +144,6 @@ describe('WorkItemBulkEditParent component', () => {
         expect(groupWorkItemsHandler).not.toHaveBeenCalled();
       });
 
-      it('excludes incident, test case and ticket when any work item is selected', async () => {
-        createComponent({
-          selectedWorkItemTypesIds: [objectiveTypeId],
-        });
-
-        findListbox().vm.$emit('shown');
-        await waitForPromises();
-
-        expect(projectWorkItemsHandler).toHaveBeenCalledWith(
-          expect.objectContaining({
-            types: expect.not.arrayContaining(['INCIDENT', 'TEST_CASE', 'TICKET']),
-          }),
-        );
-      });
-
       it('does not call project work items query and calls group work items query when an issue is selected', async () => {
         createComponent({
           selectedWorkItemTypesIds: [issueTypeId],
@@ -214,22 +209,6 @@ describe('WorkItemBulkEditParent component', () => {
         await waitForPromises();
 
         expect(groupWorkItemsHandler).toHaveBeenCalled();
-      });
-
-      it('excludes incident, test case and ticket when an objective is selected', async () => {
-        createComponent({
-          props: { isGroup: true },
-          selectedWorkItemTypesIds: [objectiveTypeId],
-        });
-
-        findListbox().vm.$emit('shown');
-        await waitForPromises();
-
-        expect(groupWorkItemsHandler).toHaveBeenCalledWith(
-          expect.objectContaining({
-            types: expect.not.arrayContaining(['INCIDENT', 'TEST_CASE', 'TICKET']),
-          }),
-        );
       });
 
       it('does not call project work items query when it is a group', async () => {

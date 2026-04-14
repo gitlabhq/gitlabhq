@@ -40,7 +40,7 @@ To view the compliance frameworks report:
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To create a new compliance framework from the compliance frameworks report:
 
@@ -55,7 +55,7 @@ To create a new compliance framework from the compliance frameworks report:
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To edit a compliance framework from the compliance frameworks report:
 
@@ -69,7 +69,7 @@ To edit a compliance framework from the compliance frameworks report:
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To delete a compliance framework from the compliance frameworks report:
 
@@ -89,7 +89,7 @@ To delete a compliance framework from the compliance frameworks report:
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To set a compliance framework as [default](../compliance_frameworks/_index.md#default-compliance-frameworks)] from the compliance frameworks report:
 
@@ -120,7 +120,7 @@ Exports the contents of a compliance frameworks report in a group. Reports are t
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To export the standards adherence report for projects in a group:
 

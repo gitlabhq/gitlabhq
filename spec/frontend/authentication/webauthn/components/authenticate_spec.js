@@ -304,20 +304,4 @@ describe('WebAuthnAuthenticate', () => {
       expect(form.classList.contains('hidden')).toBe(false);
     });
   });
-
-  describe('AbortController', () => {
-    beforeEach(() => {
-      createComponent({
-        sendEmailOtpPath: '/users/fallback_to_email_otp',
-        username: 'testuser',
-        emailVerificationData: {
-          username: 'testuser',
-          obfuscatedEmail: 't***@example.com',
-          verifyPath: '/users/sign_in',
-          resendPath: '/users/resend_verification_code',
-          skipPath: null,
-        },
-      });
-    });
-  });
 });

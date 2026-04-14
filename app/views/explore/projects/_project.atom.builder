@@ -6,9 +6,5 @@ xml.entry do
   xml.id      project_url(project)
   xml.updated project.created_at
 
-  if project.description.present?
-    xml.summary(type: "xhtml") do |summary|
-      summary << project.description
-    end
-  end
+  xml.summary markdown_field(project, :description), type: 'html' if project.description.present?
 end

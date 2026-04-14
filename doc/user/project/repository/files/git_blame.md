@@ -43,12 +43,10 @@ To view the blame for a file:
 
 When you select **Blame**, this information is displayed:
 
-![Git blame output](img/file_blame_output_v16_6.png "Blame button output")
+![Git blame output](img/file_blame_output_v18_11.png "Blame button output")
 
-To see the precise date and time of the commit, hover over the date. The vertical bar
-to the left of the user avatar shows the general age of the commit. The newest
-commits have a dark blue bar. As the age of the commit increases, the bar color
-changes to light gray.
+To see the precise date and time of the commit, hover over the date.
+To display a color legend for commit age, see [Show age indicator legend](#show-age-indicator-legend).
 
 ### Blame previous commit
 
@@ -83,11 +81,28 @@ To configure Git blame to ignore specific revisions:
    ```
 
 1. Open a file in the blame view.
-1. Select the **Blame preferences** dropdown list.
-1. Select **Ignore specific revisions**.
+1. Select **Blame preferences** ({{< icon name="preferences" >}}).
+1. Select the **Ignore specific revisions** checkbox.
 
 The blame view refreshes and skips the revisions specified in the `.git-blame-ignore-revs` file,
 showing the previous meaningful changes instead.
+
+### Show age indicator legend
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589722) in GitLab 18.11.
+
+{{< /history >}}
+
+In the inline blame view, you can show or hide the age indicator legend.
+The legend displays a color scale from **Newer** to **Older** to help you interpret the age of each commit.
+
+To show or hide the age indicator legend:
+
+1. Open a file in the blame view.
+1. Select **Blame preferences** ({{< icon name="preferences" >}}).
+1. Select or clear the **Show age indicator legend** checkbox.
 
 ## Related topics
 

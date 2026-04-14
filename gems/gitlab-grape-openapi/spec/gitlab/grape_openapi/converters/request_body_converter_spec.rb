@@ -33,8 +33,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
 
     allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
       .to receive(:new)
-      .with(route: route)
       .and_return(parameter_schema_instance)
+
+    allow(parameter_schema_instance).to receive(:build).and_return({ type: 'string' })
   end
 
   describe '.convert' do
@@ -47,7 +48,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       before do
         allow(parameter_schema_instance)
           .to receive(:build)
-          .with(:name, body_params[:name])
           .and_return({ type: 'string', description: 'User name' })
       end
 
@@ -98,7 +98,9 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
 
           it 'calls ParameterSchema for each body param' do
             request_body
-            expect(parameter_schema_instance).to have_received(:build).with(:name, body_params[:name])
+            expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+              .to have_received(:new)
+              .with(route: route, key: :name, param_options: body_params[:name])
           end
         end
       end
@@ -159,20 +161,33 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         }
       end
 
+      let(:name_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
+      let(:email_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
+      let(:file_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
+
       before do
-        allow(parameter_schema_instance)
-          .to receive(:build)
-          .with(:name, body_params[:name])
+        allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+          .to receive(:new)
+          .with(route: route, key: :name, param_options: body_params[:name])
+          .and_return(name_schema_instance)
+
+        allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+          .to receive(:new)
+          .with(route: route, key: :email, param_options: body_params[:email])
+          .and_return(email_schema_instance)
+
+        allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+          .to receive(:new)
+          .with(route: route, key: :file, param_options: body_params[:file])
+          .and_return(file_schema_instance)
+
+        allow(name_schema_instance).to receive(:build)
           .and_return({ type: 'string', description: 'User name' })
 
-        allow(parameter_schema_instance)
-          .to receive(:build)
-          .with(:email, body_params[:email])
+        allow(email_schema_instance).to receive(:build)
           .and_return({ type: 'string', description: 'User email' })
 
-        allow(parameter_schema_instance)
-          .to receive(:build)
-          .with(:file, body_params[:file])
+        allow(file_schema_instance).to receive(:build)
           .and_return({ type: 'string', format: 'binary', description: 'User email' })
       end
 
@@ -286,8 +301,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
 
       it 'calls ParameterSchema for each body param' do
         request_body
-        expect(parameter_schema_instance).to have_received(:build).with(:name, body_params[:name])
-        expect(parameter_schema_instance).to have_received(:build).with(:email, body_params[:email])
+        expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+          .to have_received(:new)
+          .with(route: route, key: :name, param_options: body_params[:name])
+        expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+          .to have_received(:new)
+          .with(route: route, key: :email, param_options: body_params[:email])
       end
 
       it 'uses schema returned by ParameterSchema in registered schema' do
@@ -336,7 +355,6 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       before do
         allow(parameter_schema_instance)
           .to receive(:build)
-          .with(:name, body_params[:name])
           .and_return({ type: 'string' })
       end
 
@@ -396,32 +414,44 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       }
     end
 
+    let(:name_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
+    let(:count_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
+
     before do
-      allow(parameter_schema_instance)
-        .to receive(:build)
-        .with(:name, body_params[:name])
+      allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+        .to receive(:new)
+        .with(route: route, key: :name, param_options: body_params[:name])
+        .and_return(name_schema_instance)
+
+      allow(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+        .to receive(:new)
+        .with(route: route, key: :count, param_options: body_params[:count])
+        .and_return(count_schema_instance)
+
+      allow(name_schema_instance).to receive(:build)
         .and_return({ type: 'string', description: 'User name' })
 
-      allow(parameter_schema_instance)
-        .to receive(:build)
-        .with(:count, body_params[:count])
+      allow(count_schema_instance).to receive(:build)
         .and_return({ type: 'integer', description: 'Count' })
     end
 
-    it 'creates a single ParameterSchema instance' do
+    it 'creates a ParameterSchema instance per body parameter' do
       request_body
 
       expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
         .to have_received(:new)
-        .with(route: route)
-        .once
+        .with(route: route, key: :name, param_options: body_params[:name])
+
+      expect(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema)
+        .to have_received(:new)
+        .with(route: route, key: :count, param_options: body_params[:count])
     end
 
     it 'calls build for each body parameter' do
       request_body
 
-      expect(parameter_schema_instance).to have_received(:build).with(:name, body_params[:name])
-      expect(parameter_schema_instance).to have_received(:build).with(:count, body_params[:count])
+      expect(name_schema_instance).to have_received(:build)
+      expect(count_schema_instance).to have_received(:build)
     end
 
     it 'assigns returned schemas to properties in registered schema' do

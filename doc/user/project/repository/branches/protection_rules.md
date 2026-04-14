@@ -113,20 +113,23 @@ require approval by a Code Owner before they can be merged.
 Branch protection rules can be set in both groups and projects:
 
 - Group rules apply to all projects in a group and cannot be modified from project settings.
-- Project rules apply only to that specific project.
+- Project rules apply only to the project where they're set.
 
-When both group and project rules exist that match a branch:
+When both group and project rules match a branch, GitLab evaluates all matching rules together:
 
-- All matching rules are evaluated together.
-- The most permissive rule applies for most settings.
+- For most settings, the most permissive rule applies.
 - For [code owner approval](#code-owner-approval), the most restrictive rule applies.
 
-You cannot edit or remove group rules from project settings, but you can add
-additional project rules for the same branch. For example:
+You cannot edit or remove group rules from project settings, but you can add project rules for
+the same branch. The combined evaluation can result in more permissive behavior than the group
+rule alone.
+
+For example:
 
 - A group rule for `main` disallows force push.
-- You can add a project rule for `main` that allows force push.
-- Both rules exist, but the more permissive project rule takes effect for force push settings.
+- A project maintainer adds a project rule for `main` that allows force push.
+- Both rules are evaluated together. The most permissive rule applies,
+  so force push is allowed on that project's `main` branch.
 
 ## Multiple branch rule examples
 

@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
 
     context 'with invalid template name' do
       let(:template) { 'SecretTemplate.yml' }
-      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'SecretTemplate', 'masked' => true }]) }
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'SecretTemplate', masked: true }]) }
       let(:context_params) { { project: project, sha: '12345', user: user, variables: variables } }
 
       it 'returns false' do

@@ -276,7 +276,7 @@ Epic["Epic: When using the application,<br>I need to create an account,<br> so I
     Epic --> Issue3["Issue: When creating my account<br> and entering the required info,<br> I need to finalize creating my account,<br> so I can sign in"]
 ```
 
-You've taken the feature of an unmodified account sign-up for an application and broke it down into
+You've taken the feature of an unmodified account creation for an application and broke it down into
 three discrete stories:
 
 1. Entering an email address.

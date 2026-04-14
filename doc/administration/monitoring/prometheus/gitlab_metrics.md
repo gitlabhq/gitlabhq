@@ -175,7 +175,6 @@ The following metrics are available:
 | `gitlab_transaction_event_patch_hard_limit_bytes_hit_total`                    | Counter   |  13.9 |                                                                         | Counter for diff patch size limit hits |
 | `gitlab_transaction_event_push_branch_total`                                   | Counter   |   9.4 |                                                                         | Counter for all branch pushes |
 | `gitlab_transaction_event_rails_exception_total`                               | Counter   |   9.4 |                                                                         | Counter for number of rails exceptions |
-| `gitlab_transaction_event_receive_email_total`                                 | Counter   |   9.4 | `handler`                                                               | Counter for received emails |
 | `gitlab_transaction_event_remove_branch_total`                                 | Counter   |   9.4 |                                                                         | Counter when a branch is removed for any repository |
 | `gitlab_transaction_event_remove_repository_total`                             | Counter   |   9.4 |                                                                         | Counter when a repository is removed |
 | `gitlab_transaction_event_remove_tag_total`                                    | Counter   |   9.4 |                                                                         | Counter when a tag is remove for any repository |
@@ -432,6 +431,46 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_project_uploads_verification_total`                 | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads to attempt to verify on secondary |
 | `geo_project_uploads_verified`                           | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads successfully verified on secondary |
 | `geo_project_uploads_verification_failed`                | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads that failed verification on secondary |
+| `geo_group_uploads`                                      | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads on primary |
+| `geo_group_uploads_checksum_total`                       | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads to checksum on primary |
+| `geo_group_uploads_checksummed`                          | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads that successfully calculated the checksum on primary |
+| `geo_group_uploads_checksum_failed`                      | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads failed to calculate the checksum on primary |
+| `geo_group_uploads_synced`                               | Gauge     | 18.11 | `url`                                                                                     | Number of syncable group uploads synced on secondary |
+| `geo_group_uploads_failed`                               | Gauge     | 18.11 | `url`                                                                                     | Number of syncable group uploads failed to sync on secondary |
+| `geo_group_uploads_registry`                             | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads in the registry |
+| `geo_group_uploads_verification_total`                   | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads to attempt to verify on secondary |
+| `geo_group_uploads_verified`                             | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads successfully verified on secondary |
+| `geo_group_uploads_verification_failed`                  | Gauge     | 18.11 | `url`                                                                                     | Number of group uploads that failed verification on secondary |
+| `geo_user_uploads`                                       | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads on primary |
+| `geo_user_uploads_checksum_total`                        | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads to checksum on primary |
+| `geo_user_uploads_checksummed`                           | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads that successfully calculated the checksum on primary |
+| `geo_user_uploads_checksum_failed`                       | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads failed to calculate the checksum on primary |
+| `geo_user_uploads_synced`                                | Gauge     | 18.11 | `url`                                                                                     | Number of syncable user uploads synced on secondary |
+| `geo_user_uploads_failed`                                | Gauge     | 18.11 | `url`                                                                                     | Number of syncable user uploads failed to sync on secondary |
+| `geo_user_uploads_registry`                              | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads in the registry |
+| `geo_user_uploads_verification_total`                    | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads to attempt to verify on secondary |
+| `geo_user_uploads_verified`                              | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads successfully verified on secondary |
+| `geo_user_uploads_verification_failed`                   | Gauge     | 18.11 | `url`                                                                                     | Number of user uploads that failed verification on secondary |
+| `geo_design_management_action_uploads`                   | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads on primary |
+| `geo_design_management_action_uploads_checksum_total`    | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads to checksum on primary |
+| `geo_design_management_action_uploads_checksummed`       | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads that successfully calculated the checksum on primary |
+| `geo_design_management_action_uploads_checksum_failed`   | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads failed to calculate the checksum on primary |
+| `geo_design_management_action_uploads_synced`            | Gauge     | 18.11 | `url`                                                                                     | Number of syncable design management action uploads synced on secondary |
+| `geo_design_management_action_uploads_failed`            | Gauge     | 18.11 | `url`                                                                                     | Number of syncable design management action uploads failed to sync on secondary |
+| `geo_design_management_action_uploads_registry`          | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads in the registry |
+| `geo_design_management_action_uploads_verification_total`| Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads to attempt to verify on secondary |
+| `geo_design_management_action_uploads_verified`          | Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads successfully verified on secondary |
+| `geo_design_management_action_uploads_verification_failed`| Gauge     | 18.11 | `url`                                                                                     | Number of design management action uploads that failed verification on secondary |
+| `geo_achievement_uploads`                                | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads on primary |
+| `geo_achievement_uploads_checksum_total`                 | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads to checksum on primary |
+| `geo_achievement_uploads_checksummed`                    | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads that successfully calculated the checksum on primary |
+| `geo_achievement_uploads_checksum_failed`                | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads failed to calculate the checksum on primary |
+| `geo_achievement_uploads_synced`                         | Gauge     | 18.11 | `url`                                                                                     | Number of syncable achievement uploads synced on secondary |
+| `geo_achievement_uploads_failed`                         | Gauge     | 18.11 | `url`                                                                                     | Number of syncable achievement uploads failed to sync on secondary |
+| `geo_achievement_uploads_registry`                       | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads in the registry |
+| `geo_achievement_uploads_verification_total`             | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads to attempt to verify on secondary |
+| `geo_achievement_uploads_verified`                       | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads successfully verified on secondary |
+| `geo_achievement_uploads_verification_failed`            | Gauge     | 18.11 | `url`                                                                                     | Number of achievement uploads that failed verification on secondary |
 | `geo_status_failed_total`                                | Counter   | 10.2  | `url`                                                                                     | Number of times retrieving the status from the Geo Node failed |
 | `geo_terraform_state_versions_checksum_failed`           | Gauge     | 13.5  | `url`                                                                                     | Number of terraform state versions failed to calculate the checksum on primary |
 | `geo_terraform_state_versions_checksum_total`            | Gauge     | 13.12 | `url`                                                                                     | Number of terraform state versions that need to be checksummed on primary |
@@ -459,6 +498,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `gitlab_memwd_violations_handled_total`                  | Counter   | 15.9  |                                                                                           | Total number of times Sidekiq process memory violations were handled |
 | `gitlab_memwd_violations_total`                          | Counter   | 15.9  |                                                                                           | Total number of times a Sidekiq process violated a memory threshold |
 | `gitlab_optimistic_locking_retries`                      | Histogram | 13.10 |                                                                                           | Number of retry attempts to execute optimistic retry lock |
+| `gitlab_transaction_event_receive_email_create_issue_total`                     | Counter   |   12.3 |                                                                                           | Counter for received emails that create an issue |
+| `gitlab_transaction_event_receive_email_create_merge_request_total`             | Counter   |   12.3 |                                                                                           | Counter for received emails that create a merge request |
+| `gitlab_transaction_event_receive_email_create_note_issuable_total`             | Counter   |   12.3 |                                                                                           | Counter for received emails that create a comment on an issue, when the email is not a reply to a notification |
+| `gitlab_transaction_event_receive_email_create_note_total`                      | Counter   |   12.3 |                                                                                           | Counter for received emails that create a comment, when the email is a reply to a notification |
+| `gitlab_transaction_event_receive_email_service_desk_total`                     | Counter   |   12.3 |                                                                                           | Counter for received Service Desk reply emails |
+| `gitlab_transaction_event_receive_email_unsubscribe_total`                      | Counter   |   12.3 |                                                                                           | Counter for unsubscribe emails |
 | `gitlab_transaction_event_remote_mirrors_failed_total`   | Counter   | 10.8  |                                                                                           | Counter for failed remote mirrors |
 | `gitlab_transaction_event_remote_mirrors_finished_total` | Counter   | 10.8  |                                                                                           | Counter for finished remote mirrors |
 | `gitlab_transaction_event_remote_mirrors_running_total`  | Counter   | 10.8  |                                                                                           | Counter for running remote mirrors |
@@ -542,14 +587,23 @@ and the metrics all have these labels:
 - `host` - the host name used to connect to the database.
 - `port` - the port used to connect to the database.
 
-| Metric                                        | Type  | Since | Description |
-|:----------------------------------------------|:------|:------|:------------|
-| `gitlab_database_connection_pool_size`        | Gauge | 13.0  | Total connection pool capacity |
-| `gitlab_database_connection_pool_connections` | Gauge | 13.0  | Current connections in the pool |
-| `gitlab_database_connection_pool_busy`        | Gauge | 13.0  | Connections in use where the owner is still alive |
-| `gitlab_database_connection_pool_dead`        | Gauge | 13.0  | Connections in use where the owner is not alive |
-| `gitlab_database_connection_pool_idle`        | Gauge | 13.0  | Connections not in use |
-| `gitlab_database_connection_pool_waiting`     | Gauge | 13.0  | Threads currently waiting on this queue |
+| Metric                                              | Type  | Since | Description |
+|:----------------------------------------------------|:------|:------|:------------|
+| `gitlab_database_connection_pool_size`              | Gauge | 13.0  | Total connection pool capacity |
+| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Current connections in the pool (= idle + busy + dead) |
+| `gitlab_database_connection_pool_busy`              | Gauge | 13.0  | Connections in use where the owner is still alive |
+| `gitlab_database_connection_pool_dead`              | Gauge | 13.0  | Connections in use where the owner is not alive |
+| `gitlab_database_connection_pool_idle`              | Gauge | 13.0  | Connections created, but not currently in use |
+| `gitlab_database_connection_pool_waiting`           | Gauge | 13.0  | Threads currently waiting on this queue |
+| `gitlab_database_extended_connection_pool_busy`     | Gauge | 17.11 | Connections in use where the owner is still alive, per thread |
+| `gitlab_database_extended_connection_pool_dead`     | Gauge | 17.11 | Connections in use where the owner is not alive, per thread |
+
+The `gitlab_database_extended_connection_pool_busy` and
+`gitlab_database_extended_connection_pool_dead` metrics include a
+`thread_name` label for per-thread granularity. These metrics are
+disabled by default due to high cardinality. To enable them for a
+percentage of pods, use the `per_thread_db_connection_pool_metrics`
+[ops feature flag](../../../development/feature_flags/_index.md).
 
 ## Ruby metrics
 

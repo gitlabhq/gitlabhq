@@ -185,7 +185,8 @@ module API
           check_rate_limit!(:members_delete, scope: [source, current_user])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(current_user).execute(member, skip_subresources: params[:skip_subresources], unassign_issuables: params[:unassign_issuables])
+            ::Members::DestroyService.new(member, current_user: current_user,
+              skip_subresources: params[:skip_subresources], unassign_issuables: params[:unassign_issuables]).execute
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

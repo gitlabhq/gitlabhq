@@ -7,6 +7,7 @@ RSpec.describe Issue::Email, feature_category: :team_planning do
 
   describe 'Associations' do
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'Validations' do

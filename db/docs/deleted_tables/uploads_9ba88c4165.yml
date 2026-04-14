@@ -1,0 +1,21 @@
+---
+table_name: uploads_9ba88c4165
+classes:
+  - Upload
+feature_categories:
+  - code_review_workflow
+  - design_management
+  - importers
+  - portfolio_management
+  - groups_and_projects
+  - source_code_management
+  - team_planning
+description: Temporary partitioned table name used during partitioning migration.
+  Partitioned by model_type for uploads across different models.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+milestone: '17.11'
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+removed_in_milestone: '18.11'

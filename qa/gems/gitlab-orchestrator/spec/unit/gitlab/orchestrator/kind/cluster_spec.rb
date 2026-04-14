@@ -24,7 +24,8 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
         docker_hostname: docker_hostname,
         host_http_port: 80,
         host_ssh_port: 22,
-        host_registry_port: 5000
+        host_registry_port: 5000,
+        kind_image: kind_image
       )
     end
 
@@ -37,6 +38,7 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
     let(:http_container_port) { 30080 }
     let(:ssh_container_port) { 31022 }
     let(:registry_container_port) { 32495 }
+    let(:kind_image) { nil }
 
     before do
       allow(Gitlab::Orchestrator::Helpers::Spinner).to receive(:spin).and_yield
@@ -45,6 +47,7 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
       allow(Open3).to receive(:popen2e).with({}, *%w[
         kind get clusters
       ]).and_return([clusters, command_status])
+
       allow(Open3).to receive(:popen2e).with({}, *[
         "kind",
         "create",
@@ -177,6 +180,31 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
       context "without existing cluster" do
         it "creates cluster with default config" do
           expect { cluster.create }.to output(/Cluster '#{name}' created/).to_stdout
+        end
+      end
+
+      context "with kind_image" do
+        let(:kind_image) { "kindest/node:v1.31.0" }
+
+        before do
+          allow(Open3).to receive(:popen2e).with({}, *[
+            "kind", "create", "cluster",
+            "--name", name,
+            "--wait", "30s",
+            "--config", config_path,
+            "--image", kind_image
+          ]).and_return(["", command_status])
+        end
+
+        it "passes --image flag to kind create cluster command" do
+          expect { cluster.create }.to output(/Cluster '#{name}' created/).to_stdout
+          expect(Open3).to have_received(:popen2e).with({}, *[
+            "kind", "create", "cluster",
+            "--name", name,
+            "--wait", "30s",
+            "--config", config_path,
+            "--image", kind_image
+          ])
         end
       end
 

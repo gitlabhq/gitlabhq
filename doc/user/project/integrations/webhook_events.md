@@ -35,7 +35,7 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 | [Merge request event](#merge-request-events)                                  | A merge request is created, edited, merged, or closed, or a commit is added in the source branch. |
 | [Milestone event](#milestone-events)                                          | A milestone is created, closed, reopened, or deleted. |
 | [Pipeline event](#pipeline-events)                                            | A pipeline status changes. |
-| [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days. |
+| [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in 7, 30, or 60 days. |
 | [Push event](#push-events)                                                    | A push is made to the repository. |
 | [Release event](#release-events)                                              | A release is created, edited, or deleted. |
 | [Tag event](#tag-events)                                                      | Tags are created or deleted in the repository. |
@@ -2655,7 +2655,6 @@ Payload example:
 Access token expiry events trigger before an [access tokens](../../../security/tokens/_index.md) expires.
 These events trigger:
 
-- One day before the token expires
 - Seven days before the token expires
 - 30 days before the token expires (requires configuration)
 - 60 days before the token expires (requires configuration)

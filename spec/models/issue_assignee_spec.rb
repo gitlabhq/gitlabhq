@@ -10,6 +10,7 @@ RSpec.describe IssueAssignee do
   describe 'associations' do
     it { is_expected.to belong_to(:issue).class_name('Issue') }
     it { is_expected.to belong_to(:assignee).class_name('User') }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do

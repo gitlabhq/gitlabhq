@@ -56,7 +56,9 @@ Parameters:
 | `end_date`                  | datetime | no | Return only milestones where `start_date <=` the provided `end_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `start_date` is also provided. Introduced in GitLab 12.8. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/milestones"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/milestones"
 ```
 
 Example Response:

@@ -18,15 +18,15 @@ Every call to this API requires authentication.
 Some scopes are available for [basic search](../user/search/_index.md#available-scopes).
 When [advanced search](../user/search/advanced_search.md#available-scopes) or
 [exact code search](../user/search/exact_code_search.md#available-scopes) is enabled,
-additional scopes are available for [global search](#global-search),
-[group search](#group-search), and [project search](#project-search) APIs.
+additional scopes are available for [global search](#search-an-instance),
+[group search](#search-a-group), and [project search](#search-a-project) operations.
 
 If you want to use basic search instead, see
 [specify a search type](../user/search/_index.md#specify-a-search-type).
 
 The search API supports [offset-based pagination](rest/_index.md#offset-based-pagination).
 
-## Global search
+## Search an instance
 
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.
 The response depends on the requested scope.
@@ -37,17 +37,19 @@ GET /search
 
 | Attribute          | Type             | Required | Description                                                                                                                                                                                                    |
 |--------------------|------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.               |
+| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `issues`, `work_items`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.               |
 | `search`           | string           | Yes      | The search term.                                                                                                                                                                                               |
 | `search_type`      | string           | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
-| `confidential`     | boolean          | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
-| `exclude_forks`    | boolean          | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
-| `regex`            | boolean          | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
-| `fields`           | array of strings | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
-| `include_archived` | boolean          | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
-| `state`            | string           | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
-| `order_by`         | string           | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
-| `sort`             | string           | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `confidential`     | boolean          | No       | Filter by confidentiality. Supports `issues` and `work_items` scopes; other scopes are ignored.                                                                                                                                  |
+| `exclude_forks`      | boolean          | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
+| `regex`              | boolean          | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`             | array of strings | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `include_archived`   | boolean          | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
+| `num_context_lines`  | integer          | No       | Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11. |
+| `state`              | string           | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `type`               | array of strings | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
+| `order_by`           | string           | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`               | string           | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 ### Scope: `projects`
 
@@ -151,6 +153,72 @@ Example response:
 
 > [!note]
 > The `assignee` column is deprecated. It is shown as a single-sized array `assignees` to conform to the GitLab EE API.
+
+### Scope: `work_items`
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=work_items&search=migrate"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+You can filter work items by type using the `type` parameter:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### Scope: `merge_requests`
 
@@ -501,7 +569,7 @@ Example response:
 ]
 ```
 
-## Group search
+## Search a group
 
 Search for a [term](../user/search/_index.md) in the specified group.
 
@@ -514,17 +582,19 @@ GET /groups/:id/search
 | Attribute          | Type              | Required | Description                                                                                                                                                                                                    |
 |--------------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`               | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.                                                                                                                                    |
-| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                 |
+| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `issues`, `work_items`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                 |
 | `search`           | string            | Yes      | The search term.                                                                                                                                                                                               |
 | `search_type`      | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
-| `confidential`     | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
-| `exclude_forks`    | boolean           | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
-| `regex`            | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
-| `fields`           | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
-| `include_archived` | boolean           | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
-| `state`            | string            | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
-| `order_by`         | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
-| `sort`             | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `confidential`     | boolean           | No       | Filter by confidentiality. Supports `issues` and `work_items` scopes; other scopes are ignored.                                                                                                                                  |
+| `exclude_forks`      | boolean           | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
+| `regex`              | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`             | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `include_archived`   | boolean           | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
+| `num_context_lines`  | integer           | No       | Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11. |
+| `state`              | string            | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `type`               | array of strings  | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
+| `order_by`           | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`               | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 The response depends on the requested scope.
 
@@ -630,6 +700,72 @@ Example response:
 
 > [!note]
 > The `assignee` column is deprecated. It is now a single-sized `assignees` array.
+
+### Scope: `work_items`
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=work_items&search=migrate"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+You can filter work items by type using the `type` parameter:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### Scope: `merge_requests`
 
@@ -947,7 +1083,7 @@ Example response:
 ]
 ```
 
-## Project search
+## Search a project
 
 Search for a [term](../user/search/_index.md) in the specified project.
 
@@ -959,17 +1095,19 @@ GET /projects/:id/search
 
 | Attribute      | Type              | Required | Description                                                                                                                                                                                                    |
 |----------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                  |
-| `scope`        | string            | Yes      | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                             |
-| `search`       | string            | Yes      | The search term.                                                                                                                                                                                               |
-| `search_type`  | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
-| `confidential` | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
-| `regex`        | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
-| `fields`       | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
-| `ref`          | string            | No       | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`.                                         |
-| `state`        | string            | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
-| `order_by`     | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
-| `sort`         | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                  |
+| `scope`              | string            | Yes      | The scope to search in. Values include `issues`, `work_items`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                             |
+| `search`             | string            | Yes      | The search term.                                                                                                                                                                                               |
+| `search_type`        | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
+| `confidential`       | boolean           | No       | Filter by confidentiality. Supports `issues` and `work_items` scopes; other scopes are ignored.                                                                                                                                  |
+| `regex`              | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`             | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `num_context_lines`  | integer           | No       | Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11. |
+| `ref`                | string            | No       | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`.                                         |
+| `state`              | string            | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `type`               | array of strings  | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
+| `order_by`           | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`               | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 The response depends on the requested scope.
 
@@ -1040,6 +1178,72 @@ Example response:
 
 > [!note]
 > The `assignee` column is deprecated. It is now a single-sized `assignees` array.
+
+### Scope: `work_items`
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=work_items&search=migrate"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 142,
+    "iid": 9,
+    "project_id": 12,
+    "title": "Migrate to new database",
+    "description": "Database migration task",
+    "state": "opened",
+    "created_at": "2018-03-15T08:12:31.489Z",
+    "updated_at": "2018-03-20T14:22:18.371Z",
+    "closed_at": null,
+    "labels": ["backend"],
+    "milestone": null,
+    "assignees": [{
+      "id": 25,
+      "name": "John Doe",
+      "username": "john.doe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/a1b2c3d4e5f6g7h8i9j0?s=80&d=identicon",
+      "web_url": "http://localhost:3000/john.doe"
+    }],
+    "author": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://localhost:3000/root"
+    },
+    "type": "TASK",
+    "user_notes_count": 2,
+    "upvotes": 1,
+    "downvotes": 0,
+    "due_date": "2018-04-01",
+    "confidential": false,
+    "discussion_locked": null,
+    "web_url": "http://localhost:3000/my-group/my-project/-/work_items/9",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+You can filter work items by type using the `type` parameter:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/12/search?scope=work_items&search=backend&type[]=task&type[]=issue"
+```
 
 ### Scope: `merge_requests`
 

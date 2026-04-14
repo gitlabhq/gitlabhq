@@ -148,4 +148,52 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
       end
     end
   end
+
+  describe '.track', :clean_gitlab_redis_shared_state do
+    let_it_be(:namespace) { create(:namespace) }
+
+    let(:valid_properties) do
+      {
+        user: user,
+        namespace: namespace,
+        project: nil,
+        additional_properties: { property: 'Developer' }
+      }
+    end
+
+    context 'with a valid non-work-item event' do
+      it 'triggers the internal event with the given properties' do
+        expect do
+          described_class.track(
+            event: Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_CREATE,
+            properties: valid_properties
+          )
+        end.to trigger_internal_events('saved_view_create').with(valid_properties)
+      end
+    end
+
+    context 'with a work item event' do
+      it 'does not trigger any event' do
+        expect do
+          described_class.track(
+            event: Gitlab::WorkItems::Instrumentation::EventActions::CREATE,
+            properties: valid_properties
+          )
+        end.not_to trigger_internal_events
+      end
+    end
+
+    context 'when project is present' do
+      it 'passes project through to the internal event' do
+        properties_with_project = valid_properties.merge(project: project)
+
+        expect do
+          described_class.track(
+            event: Gitlab::WorkItems::Instrumentation::EventActions::SAVED_VIEW_UPDATE,
+            properties: properties_with_project
+          )
+        end.to trigger_internal_events('saved_view_update').with(properties_with_project)
+      end
+    end
+  end
 end

@@ -54,7 +54,7 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
           active: false,
           cron: '*/1 * * * *',
           variables_attributes: [
-            { id: pipeline_schedule_variable.id, key: 'bar', secret_value: 'barvalue' }
+            { id: pipeline_schedule_variable.id, key: 'bar', value: 'barvalue' }
           ]
         }
       end
@@ -191,7 +191,7 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
         let(:params) do
           {
             variables_attributes: [
-              { key: 'ABC', secret_value: 'ABC123' }
+              { key: 'ABC', value: 'ABC123' }
             ]
           }
         end

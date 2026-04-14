@@ -54,17 +54,17 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 
 {{< history >}}
 
-- GitLab Duo Chat usage metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/587301) with GitLab Duo Agent chat sessions in GitLab 18.10.
-- Assigned Duo seat engagement metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587298) with GitLab Duo users in GitLab 18.10.
-- Code Suggestions usage metric [updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/592813) to display absolute user count instead of percentage rate in GitLab 18.10.
+- GitLab Duo Chat usage metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/587301) with GitLab Duo Agentic Chat sessions in GitLab 18.10.
+- Assigned GitLab Duo seat engagement metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587298) with GitLab Duo users in GitLab 18.10.
+- GitLab Duo Code Suggestions usage metric [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/592813) from percentage rate to absolute user count in GitLab 18.10.
+- Code Suggestions acceptance rate metric [replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587300) with GitLab Duo agent/flow users in GitLab 18.11.
 
 {{< /history >}}
 
-- **GitLab Duo users**: Number of users that used at least one GitLab Duo feature in the last 30 days.
+- **GitLab Duo users**: Number of users who used at least one GitLab Duo or GitLab Duo Agent Platform feature in the last 30 days.
 - **Code Suggestions users**: Number of users who used Code Suggestions in the last 30 days.
   For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
-- **Code Suggestions acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
-  It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
+- **GitLab Duo agent/flow users**: Number of users who used at least one GitLab Duo agent or flow in the last 30 days.
 - **GitLab Duo Agent chat sessions**: Number of chat sessions initiated in GitLab Duo Agent Platform in the last 30 days.
 
 ## Metric trends
@@ -82,20 +82,20 @@ Upward trends are positive (green) for some metrics (like [deployment frequency]
 
 {{< history >}}
 
-- Duo RCA usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
-- Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
-- Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
-- Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
-- Duo Code Review requests and GitLab Duo Code Review comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573979) in GitLab 18.7.
-- Duo Agent Platform chats and flows [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/583375) in GitLab 18.7.
-- Code Suggestions, Chat (non-agentic), and Root Cause Analysis metrics [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/589605) to display absolute user counts instead of percentage rates in GitLab 18.10.
+- GitLab Duo Root Cause Analysis usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+- GitLab Duo Root Cause Analysis usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
+- GitLab Duo Root Cause Analysis usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
+- GitLab Duo features usage [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207562) in GitLab 18.6.
+- GitLab Duo Code Review requests and comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573979) in GitLab 18.7.
+- GitLab Duo Agent Platform chats and flows [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/583375) in GitLab 18.7.
+- GitLab Duo Code Suggestions, Non-Agentic Chat, and Root Cause Analysis metrics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/589605) from percentage rates to absolute user counts in GitLab 18.10.
 
 {{< /history >}}
 
-- **Feature usage**: Number of contributors who used any GitLab Duo feature.
+- **Feature usage**: Number of users who used at least one GitLab Duo or GitLab Duo Agent Platform feature.
 - **Agent Platform chats**: Number of chat sessions initiated through GitLab Duo Agent Platform.
 - **Agent Platform flows**: Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.
-- **Chat (non-agentic) usage**: Number of users who used Chat (non-agentic).
+- **Non-Agentic Chat usage**: Number of users who used Non-Agentic Chat.
 - **Root Cause Analysis usage**: Number of users who used Root Cause Analysis.
 - **Code Review requests**: Number of Code Review requests made on merge requests.
   This includes requests initiated by both merge request authors and non-authors.
@@ -178,10 +178,10 @@ The **Code generation volume trends** chart displays the volume of code generate
 
 {{< /history >}}
 
-The **GitLab Duo Code Review requests by role** chart displays the number of GitLab Duo Code Review requests over the last 180 days, aggregated by month. The chart shows:
+The **GitLab Duo Code Review requests by role** chart displays the number of Code Review requests over the last 180 days, aggregated by month. The chart shows:
 
-- **Review requests by authors**: Number of GitLab Duo Code Review requests made by the merge request author. This includes code reviews requested automatically through the project setting and manually in the merge request by the author.
-- **Review requests by non-authors**: Number of GitLab Duo Code Review requests made by users other than the merge request author. For example, reviewers who ask GitLab Duo to review the merge request changes.
+- **Review requests by authors**: Number of Code Review requests made by the merge request author. This includes code reviews requested automatically through the project setting and manually in the merge request by the author.
+- **Review requests by non-authors**: Number of Code Review requests made by users other than the merge request author. For example, reviewers who ask GitLab Duo to review the merge request changes.
 
 Higher author adoption indicates teams embracing automated review workflows.
 
@@ -193,10 +193,10 @@ Higher author adoption indicates teams embracing automated review workflows.
 
 {{< /history >}}
 
-The **GitLab Duo Code Review comments sentiment** chart displays the sentiment of GitLab Duo Code Review comments over the last 180 days, measured by positive (👍) and negative (👎) reaction rates. The chart shows:
+The **GitLab Duo Code Review comments sentiment** chart displays the sentiment of Code Review comments over the last 180 days, measured by positive (👍) and negative (👎) reaction rates. The chart shows:
 
-- **Approval rate**: The percentage of GitLab Duo Code Review comments that received positive (👍) reactions.
-- **Disapproval rate**: The percentage of GitLab Duo Code Review comments that received negative (👎) reactions.
+- **Approval rate**: The percentage of Code Review comments that received positive (👍) reactions.
+- **Disapproval rate**: The percentage of Code Review comments that received negative (👎) reactions.
 
 When interpreting your analytics, keep in mind that:
 
@@ -217,7 +217,7 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 - **GitLab Duo Code Suggestions usage by user**: Number of code suggestions accepted, and the code suggestions acceptance rate.
 - **GitLab Duo Code Review usage by user**: Number of code reviews requested as the merge request author from GitLab Duo, and number of reactions (:thumbsup: and :thumbsdown:) to code review comments.
 - **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
-- **GitLab Duo usage by user**: Number of Duo events made by the user.
+- **GitLab Duo usage by user**: Number of GitLab Duo events made by the user.
 
 ## View GitLab Duo and SDLC trends
 

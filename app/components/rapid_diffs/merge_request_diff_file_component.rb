@@ -14,7 +14,15 @@ module RapidDiffs
     end
 
     def extra_file_data
-      { code_review_id: @diff_file.code_review_id }
+      {
+        code_review_id: @diff_file.code_review_id,
+        blob_raw_path: blob_raw_path
+      }
+    end
+
+    def blob_raw_path
+      project = @diff_file.repository.project
+      helpers.project_raw_path(project, helpers.tree_join(@diff_file.content_sha, @diff_file.file_path))
     end
 
     def extra_options

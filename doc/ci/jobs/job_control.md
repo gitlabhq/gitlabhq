@@ -359,8 +359,10 @@ Quotes around the `dependencies` entry are required.
 
 {{< /history >}}
 
-You can use [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) to create
-dependencies between multiple parallelized jobs. You can use two techniques for configuration:
+Use [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) to create
+[job dependencies](../yaml/needs.md) between multiple parallelized jobs.
+
+You can use two techniques for configuration:
 
 - Automatically with [`matrix.` expressions](../yaml/matrix_expressions.md).
 - Manually, as demonstrated below.

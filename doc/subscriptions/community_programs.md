@@ -6,7 +6,15 @@ description: Use GitLab for Education, Open Source, and Startups.
 title: Community programs
 ---
 
-GitLab provides the following community program subscriptions.
+{{< history >}}
+
+- GitLab Credits for community programs introduced in GitLab 18.11.
+
+{{< /history >}}
+
+GitLab provides different community program subscriptions.
+These subscriptions are eligible for Monthly Commitment Pool and On-Demand [credits](gitlab_credits.md), but do not receive included credits.
+You can view your credit usage in the GitLab Credits dashboard.
 
 ## GitLab for Education
 

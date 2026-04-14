@@ -1,9 +1,20 @@
 - page_title _('Import repository')
 
+- ci_cd_only = params[:ci_cd_only].present?
+- git_timeout = time_interval_in_words(::Gitlab.config.gitlab_shell.git_timeout)
+- @repository_mirrors_available = 'false'
+- render_if_exists('import/url/repository_mirrors_data')
+
 = render ::Layouts::PageHeadingComponent.new(_('Import repository'))
 
-= gitlab_ui_form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|
-  = render 'shared/import_form', f: f
-
-  .form-actions
-    = f.submit 'Start import', pajamas_button: true, data: { disable_with: false }
+.js-vue-import-by-url-to-project-root{
+  data: {
+    project_id: @project.id,
+    import_by_url_validate_path: validate_import_url_path,
+    import_from_url: @project.safe_import_url,
+    import_path: project_import_path(@project),
+    git_timeout: git_timeout,
+    ci_cd_only: ci_cd_only.to_s,
+    has_repository_mirrors_feature: @repository_mirrors_available,
+  }
+}

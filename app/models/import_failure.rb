@@ -4,6 +4,7 @@ class ImportFailure < ApplicationRecord
   belongs_to :project
   belongs_to :group
   belongs_to :user
+  belongs_to :organization, class_name: 'Organizations::Organization', optional: true
 
   validates :project, :group, absence: true, if: :user
   validates :project, :user, absence: true, if: :group

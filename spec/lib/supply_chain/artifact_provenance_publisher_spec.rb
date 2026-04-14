@@ -22,6 +22,10 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
       }
     end
 
+    before do
+      allow(Gitlab::Ci::JwtV2).to receive(:for_build).and_return(id_token)
+    end
+
     it 'persists the attestations' do
       expect(result[:status]).to eq(:success)
       expect(result[:message]).to eq(success_message)
@@ -124,19 +128,6 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
 
           expect(result[:message]).to eq(success_message)
         end
-      end
-    end
-
-    context "when the build does not have SIGSTORE_ID_TOKEN" do
-      let(:yaml_variables) do
-        [
-          { key: 'GENERATE_PROVENANCE', value: 'true', public: true }
-        ]
-      end
-
-      it "returns an error" do
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq("Missing required variable SIGSTORE_ID_TOKEN")
       end
     end
 

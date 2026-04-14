@@ -1,4 +1,4 @@
-import { isString, mapValues, reduce, isDate, unescape, isNaN } from 'lodash';
+import { isString, mapValues, reduce, isDate, unescape, isNaN } from 'lodash-es';
 import dateFormat from '~/lib/dateformat';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';

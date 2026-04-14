@@ -22,6 +22,11 @@ RSpec.describe 'PipelineScheduleTakeOwnership', feature_category: :continuous_in
 
   let(:pipeline_schedule_id) { pipeline_schedule.to_global_id.to_s }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :own_pipeline_schedule do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'returns an error if the user is not allowed to take ownership of the schedule' do
     post_graphql_mutation(mutation, current_user: create(:user))
 

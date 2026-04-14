@@ -18,7 +18,7 @@ module Authn
 
         begin
           passkey_credential = WebAuthn::Credential.from_create(Gitlab::Json.safe_parse(@params[:device_response]))
-          passkey_credential.verify(@challenge)
+          passkey_credential.verify(@challenge, user_verification: true)
 
           @passkey_credential = passkey_credential
 
@@ -29,7 +29,7 @@ module Authn
             name: @params[:name],
             user: @user,
             authentication_mode: :passwordless,
-            passkey_eligible: true,
+            passkey_eligible: passkey_eligible?(passkey_credential),
             last_used_at: Time.current
           )
 
@@ -55,6 +55,10 @@ module Authn
       end
 
       private
+
+      def passkey_eligible?(passkey_credential)
+        passkey_credential.client_extension_outputs&.dig("credProps", "rk") != false
+      end
 
       def notify_on_success(user, device_name)
         notification_service.enabled_two_factor(user, :passkey, { device_name: device_name })

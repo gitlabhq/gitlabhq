@@ -17,6 +17,13 @@ module API
         use :mirror_branches_setting_ce
         use :mirror_branches_setting_ee
       end
+
+      params :host_key_params do
+        optional :host_keys, type: Array[String],
+          desc: 'SSH host keys in bare format (ssh-ed25519 AAAA...) ' \
+            'or full known_hosts format (hostname ssh-ed25519 AAAA...). ' \
+            'Bare keys use the hostname from the mirror URL.'
+      end
     end
   end
 end

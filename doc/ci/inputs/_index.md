@@ -253,13 +253,9 @@ when manually passing inputs for:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) in GitLab 18.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_inputs_array_index_operator`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) in GitLab 18.11. Feature flag `ci_inputs_array_index_operator` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Use bracket notation with an index number to access individual elements of an array input.
 Array items are indexed in the order they are defined in the YAML array,
@@ -513,7 +509,6 @@ Use [`include:inputs`](../yaml/_index.md#includeinputs) to set the values for in
 when the included configuration is added to the pipeline, including for:
 
 - [CI/CD components](../components/_index.md)
-- [Custom CI/CD templates](../examples/_index.md#adding-templates-to-your-gitlab-installation)
 - Any other configuration added with `include`.
 
 For example, to include and set the input values for `scan-website-job.yml` from the

@@ -101,6 +101,7 @@ export default {
       default: false,
     },
   },
+  emits: ['handle-update-pagination'],
   data() {
     if (this.pagination) {
       const { sort, direction } = this.pagination;

@@ -74,19 +74,6 @@ RSpec.describe Mutations::WorkItems::SavedViews::Reorder, feature_category: :por
       project.add_planner(current_user)
     end
 
-    context 'when saved views are disabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns an error' do
-        result = mutation.resolve(**arguments)
-
-        expect(result[:saved_view]).to be_nil
-        expect(result[:errors]).to eq(['Saved views are not enabled for this namespace.'])
-      end
-    end
-
     context 'when valid arguments are provided' do
       let!(:user_saved_view1) do
         create(:user_saved_view, user: current_user, saved_view: saved_views[0],

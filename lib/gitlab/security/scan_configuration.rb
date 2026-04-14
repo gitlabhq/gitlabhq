@@ -8,7 +8,8 @@ module Gitlab
 
       attr_reader :type
 
-      def initialize(project:, type:, configured: false)
+      def initialize(user:, project:, type:, configured: false)
+        @user = user
         @project = project
         @type = type
         @configured = configured
@@ -19,6 +20,14 @@ module Gitlab
         # reflected by our license model yet.
         # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/333113
         %i[sast sast_iac secret_detection container_scanning].include?(type)
+      end
+
+      def can_user_configure?
+        permission = Features.data.dig(type, :required_permission_to_configure)
+
+        return false unless permission
+
+        user.can?(permission, project)
       end
 
       def can_enable_by_merge_request?
@@ -43,7 +52,7 @@ module Gitlab
 
       private
 
-      attr_reader :project, :configured
+      attr_reader :user, :project, :configured
 
       def scans_configurable_in_merge_request
         %i[sast sast_iac secret_detection]

@@ -351,8 +351,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       let(:variables) do
         Gitlab::Ci::Variables::Collection.new(
           [
-            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
-            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
+            { key: 'GITLAB_TOKEN', value: 'secret-file1', masked: true },
+            { key: 'GITLAB_TOKEN', value: 'secret-file2', masked: true }
           ])
       end
 

@@ -35,6 +35,46 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
 
       expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).exactly(4).times
     end
+
+    it 'gives each connection its own type map object' do
+      conn_a = initialize_connection
+      conn_b = initialize_connection
+
+      mapping_a = conn_a.send(:type_map).instance_variable_get(:@mapping)
+      mapping_b = conn_b.send(:type_map).instance_variable_get(:@mapping)
+
+      expect(mapping_a).not_to equal(mapping_b)
+    ensure
+      conn_a&.disconnect!
+      conn_b&.disconnect!
+    end
+
+    it 'isolates type map clears between connections' do
+      conn_a = initialize_connection
+      conn_b = initialize_connection
+
+      type_map_b = conn_b.send(:type_map)
+      mapping_b_size_before = type_map_b.instance_variable_get(:@mapping).size
+
+      # Simulate what reload_type_map does internally: clear one connection's map
+      conn_a.send(:type_map).clear
+
+      mapping_b_size_after = type_map_b.instance_variable_get(:@mapping).size
+
+      expect(mapping_b_size_after).to eq(mapping_b_size_before)
+      expect(mapping_b_size_after).to be > 0
+    ensure
+      conn_a&.disconnect!
+      conn_b&.disconnect!
+    end
+
+    it 'still avoids pg_type queries for cached connections' do
+      initialize_connection.disconnect!
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection.disconnect! }
+
+      expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).once
+    end
   end
 
   describe '#reload_type_map' do

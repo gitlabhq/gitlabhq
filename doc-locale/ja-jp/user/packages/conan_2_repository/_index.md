@@ -1,72 +1,63 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Conan 2パッケージレジストリ内のパッケージ
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: パッケージレジストリ内のConan 2パッケージ
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-- ステータス: 実験的機能
+- ステータス: ベータ版
 
 {{< /details >}}
 
 {{< history >}}
 
 - GitLab 18.1で`conan_package_revisions_support`[フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/519741)されました。デフォルトでは無効になっています。
-- GitLab 18.3の[GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14896)で有効になりました。機能フラグ`conan_package_revisions_support`は削除されました。
+- GitLab 18.3で[GitLab.comで有効化](https://gitlab.com/groups/gitlab-org/-/epics/14896)されました。機能フラグ`conan_package_revisions_support`は削除されました。
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> この機能の可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+プロジェクトのパッケージレジストリにConan 2パッケージを公開します。これにより、依存関係として使用する必要がある場合に、いつでもパッケージをインストールできるようになります。
 
-{{< /alert >}}
+> [!warning]
+> GitLab用のConan 2パッケージレジストリは開発中であり、機能が限られているため、本番環境での使用には適していません。この[エピック](https://gitlab.com/groups/gitlab-org/-/epics/8258)では、本番環境で使用できるようになるまでの残りの作業とタイムラインについて詳しく説明します。
 
-{{< alert type="warning" >}}
+Conan 2パッケージをパッケージレジストリに公開するには、パッケージレジストリをリモートとして追加し、それに認証する必要があります。
 
-GitLabのConan 2パッケージレジストリは開発中であり、機能が限られているため、本番環境での使用には適していません。この[エピック](https://gitlab.com/groups/gitlab-org/-/epics/8258)では、本番環境で使用できるようになるまでの残りの作業とタイムラインについて詳しく説明します。
+その後、`conan`コマンドを実行して、パッケージをパッケージレジストリに公開できます。
 
-{{< /alert >}}
+> [!note]
+> ConanレジストリはFIPSに準拠しておらず、FIPSモードが有効になっている場合は無効になります。
 
-{{< alert type="note" >}}
+Conan 2パッケージマネージャークライアントが使用する特定のAPIエンドポイントのドキュメントについては、[Conan v2 API](../../../api/packages/conan_v2.md)を参照してください。
 
-Conan 2レジストリはFIPSに準拠しておらず、FIPSモードが有効になっている場合は無効になります。
+Conan 2パッケージを[ビルドする](../workflows/build_packages.md#conan-2)方法を学びます。
 
-{{< /alert >}}
+## Conanリモートとしてパッケージレジストリを追加 {#add-the-package-registry-as-a-conan-remote}
 
-プロジェクトのパッケージパッケージレジストリにConan 2パッケージを公開します。これにより、依存関係として使用する必要がある場合に、いつでもパッケージをインストールできるようになります。
+`conan`コマンドを実行するには、パッケージレジストリをプロジェクトまたはインスタンス用のConanリモートとして追加する必要があります。その後、パッケージレジストリに対してパッケージを公開したり、パッケージをインストールしたりできます。
 
-GitLabパッケージレジストリにConan 2パッケージを公開するには、パッケージレジストリをリモートとして追加し、認証します。
+### プロジェクトのリモートを追加 {#add-a-remote-for-your-project}
 
-次に、`conan`コマンドを実行して、パッケージレジストリにパッケージを公開できます。
+リモートを設定すると、すべてのコマンドでリモート名を指定することなく、プロジェクト内のパッケージを操作できます。
 
-Conan 2パッケージマネージャークライアントが使用する特定のAPIエンドポイントのドキュメントについては、[Conan v2 API](../../../api/packages/conan_v2.md)を参照してください
-
-[Conan 2パッケージのビルド方法](../workflows/build_packages.md#conan-2)について説明します。
-
-## パッケージレジストリをConanリモートとして追加する {#add-the-package-registry-as-a-conan-remote}
-
-`conan`コマンドを実行するには、プロジェクトまたはインスタンスのConanリモートとしてパッケージレジストリを追加する必要があります。次に、パッケージレジストリとの間でパッケージを公開およびインストールできます。
-
-### プロジェクトのリモートを追加する {#add-a-remote-for-your-project}
-
-すべてのコマンドでリモート名を指定しなくても、プロジェクト内のパッケージを操作できるように、リモートを設定します。
-
-プロジェクトのリモートを設定する場合、パッケージ名は小文字にする必要があります。また、コマンドには、ユーザー名とチャンネルを含む完全なレシピを含める必要があります（例: `package_name/version@user/channel`）。
+プロジェクトのリモートを設定する場合、パッケージ名は小文字にする必要があります。また、コマンドには、ユーザーとチャンネルを含む完全なレシピ（例: `package_name/version@user/channel`）を含める必要があります。
 
 リモートを追加するには:
 
-1. ターミナルで、次のコマンドを実行します:
+1. お使いのターミナルで、このコマンドを実行してください:
 
    ```shell
    conan remote add gitlab https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan
    ```
 
-1. Conan 2コマンドの最後に`--remote=gitlab`を追加して、リモートを使用します。
+1. Conan 2コマンドの末尾に`--remote=gitlab`を追加してリモートを使用します。
 
    例: 
 
@@ -76,7 +67,7 @@ Conan 2パッケージマネージャークライアントが使用する特定�
 
 ## パッケージレジストリに対して認証する {#authenticate-to-the-package-registry}
 
-GitLabでは、パッケージのアップロード、およびプライベートプロジェクトと内部プロジェクトからのパッケージのインストールには、認証が必要です。（ただし、認証なしでパブリックプロジェクトからパッケージをインストールできます）。
+GitLabでは、パッケージのアップロード、およびプライベートまたは内部プロジェクトからのパッケージのインストールに認証が必要です。(ただし、公開プロジェクトからのパッケージは認証なしでインストールできます。)
 
 パッケージレジストリに認証するには、次のいずれかが必要です:
 
@@ -84,45 +75,39 @@ GitLabでは、パッケージのアップロード、およびプライベー�
 - スコープが`read_package_registry`と`write_package_registry`のどちらか、または両方に設定された[デプロイトークン](../../project/deploy_tokens/_index.md)。
 - [CIジョブトークン](#publish-a-conan-2-package-by-using-cicd)。
 
-{{< alert type="note" >}}
+> [!note]
+> 認証されていない場合、プライベートおよび内部プロジェクトのパッケージは非表示になります。プライベートまたは内部プロジェクトのパッケージを認証せずに検索またはダウンロードしようとすると、Conan 2クライアントでエラー`unable to find the package in remote`が表示されます。
 
-認証されていない場合、プライベートプロジェクトと内部プロジェクトからのパッケージは非表示になります。認証なしでプライベートプロジェクトまたは内部プロジェクトからパッケージを検索またはダウンロードしようとすると、Conan 2クライアントでエラー`unable to find the package in remote`が表示されます。
+### GitLabリモートに認証情報を追加 {#add-your-credentials-to-the-gitlab-remote}
 
-{{< /alert >}}
+あなたのトークンをGitLabリモートと関連付けることで、すべてのConan 2コマンドにトークンを明示的に追加する必要がなくなります。
 
-### GitLabリモートに認証情報を追加する {#add-your-credentials-to-the-gitlab-remote}
+前提条件: 
 
-すべてのConan 2コマンドにトークンを明示的に追加する必要がないように、GitLabリモートにトークンを関連付けます。
+- あなたは認証トークンを持っている必要があります。
+- Conanリモートは[設定されている](#add-the-package-registry-as-a-conan-remote)必要があります。
 
-前提要件: 
-
-- 認証トークンが必要です。
-- Conanリモート[が構成されている](#add-the-package-registry-as-a-conan-remote)必要があります。
-
-ターミナルで、次のコマンドを実行します。この例では、リモート名は`gitlab`です。リモートの名前を使用します。
+ターミナルで、このコマンドを実行してください。この例では、リモート名は`gitlab`です。リモートの名前を使用してください。
 
 ```shell
 conan remote login -p <personal_access_token or deploy_token> gitlab <gitlab_username or deploy_token_username>
 ```
 
-`--remote=gitlab`でコマンドを実行すると、リクエストにユーザー名とパスワードが含まれるようになります。
+これで、`--remote=gitlab`を使用してコマンドを実行すると、あなたのユーザー名とパスワードがリクエストに含まれるようになります。
 
-{{< alert type="note" >}}
-
-GitLabでの認証は定期的に期限切れになるため、パーソナルアクセストークンの再入力が必要になる場合があります。
-
-{{< /alert >}}
+> [!note]
+> GitLabでの認証は定期的に期限切れになるため、時々パーソナルアクセストークンを再入力する必要がある場合があります。
 
 ## Conan 2パッケージを公開する {#publish-a-conan-2-package}
 
-GitLabパッケージレジストリにConan 2パッケージを公開して、プロジェクトにアクセスできるすべてのユーザーが依存関係としてパッケージを使用できるようにします。
+プロジェクトにアクセスできる誰もがパッケージを依存として使用できるように、Conan 2パッケージをパッケージレジストリに公開します。
 
-前提要件: 
+前提条件: 
 
-- Conanリモート[が構成されている](#add-the-package-registry-as-a-conan-remote)必要があります。
-- パッケージレジストリでの[認証](#authenticate-to-the-package-registry)を構成する必要があります。
-- ローカル[Conan 2パッケージ](../workflows/build_packages.md#conan-2)が存在する必要があります。
-- [プロジェクトの概要ページ](../../project/working_with_projects.md#find-the-project-id)に表示されるプロジェクトIDが必要です。
+- Conanリモートは[設定されている](#add-the-package-registry-as-a-conan-remote)必要があります。
+- パッケージレジストリでの[認証](#authenticate-to-the-package-registry)を設定する必要があります。
+- ローカルの[Conan 2パッケージ](../workflows/build_packages.md#conan-2)が存在する必要があります。
+- プロジェクトIDを持っている必要があります。これは[プロジェクトの概要ページ](../../project/working_with_projects.md#find-the-project-id)に表示されます。
 
 パッケージを公開するには、`conan upload`コマンドを使用します:
 
@@ -132,9 +117,9 @@ conan upload hello/0.1@mycompany/beta -r gitlab
 
 ## CI/CDを使用してConan 2パッケージを公開する {#publish-a-conan-2-package-by-using-cicd}
 
-[GitLab CI/CD](../../../ci/_index.md)でConan 2コマンドを使用するには、コマンドでパーソナルアクセストークンの代わりに`CI_JOB_TOKEN`を使用できます。
+[GitLab CI/CD](../../../ci/_index.md)でConan 2コマンドを操作するには、コマンド内でパーソナルアクセストークンの代わりに`CI_JOB_TOKEN`を使用できます。
 
-`.gitlab-ci.yml`ファイル内の各Conanコマンドで`CONAN_LOGIN_USERNAME`および`CONAN_PASSWORD`を指定できます。例: 
+各Conanコマンドとともに`CONAN_LOGIN_USERNAME`と`CONAN_PASSWORD`を`.gitlab-ci.yml`ファイルに指定できます。例: 
 
 ```yaml
 create_package:
@@ -148,24 +133,24 @@ create_package:
   environment: production
 ```
 
-CIファイルのベースとして使用する適切なConan 2イメージを作成するには、[公式ガイド](https://docs.conan.io/2.17/examples/runners/docker/basic.html)に従ってください。
+[公式ガイド](https://docs.conan.io/2.17/examples/runners/docker/basic.html)に従って、CIファイルのベースとして使用する適切なConan 2イメージを作成してください。
 
-### 同じレシピでパッケージを再公開する {#re-publishing-a-package-with-the-same-recipe}
+### 同じレシピのパッケージを再公開する {#re-publishing-a-package-with-the-same-recipe}
 
-既存のパッケージと同じレシピ（`package-name/version@user/channel`）を持つパッケージを公開すると、Conanはそれらが既にサーバーにあるため、アップロードをスキップします。
+既存のパッケージと同じレシピ（`package-name/version@user/channel`）を持つパッケージを公開すると、Conanはすでにサーバーに存在するためアップロードをスキップします。
 
 ## Conan 2パッケージをインストールする {#install-a-conan-2-package}
 
-依存関係として使用できるように、パッケージレジストリからConan 2パッケージをインストールします。プロジェクトのスコープからパッケージをインストールできます。複数のパッケージが同じレシピを持つ場合、パッケージをインストールすると、最後に公開されたパッケージが取得されます。
+Conan 2パッケージをパッケージレジストリからインストールすると、それを依存として使用できます。プロジェクトのスコープからパッケージをインストールできます。複数のパッケージが同じレシピを持つ場合、パッケージをインストールすると、最も最近公開されたパッケージが取得するされます。
 
-Conan 2パッケージは、多くの場合、`conanfile.txt`ファイルを使用して依存関係としてインストールされます。
+Conan 2パッケージは、`conanfile.txt`ファイルを使用して依存としてインストールされることがよくあります。
 
-前提要件: 
+前提条件: 
 
-- Conanリモート[が構成されている](#add-the-package-registry-as-a-conan-remote)必要があります。
-- プライベートプロジェクトと内部プロジェクトの場合は、パッケージレジストリで[認証](#authenticate-to-the-package-registry)を構成する必要があります。
+- Conanリモートは[設定されている](#add-the-package-registry-as-a-conan-remote)必要があります。
+- プライベートおよび内部プロジェクトの場合、パッケージレジストリでの[認証](#authenticate-to-the-package-registry)を設定する必要があります。
 
-1. [Conan 2パッケージ](../workflows/build_packages.md#conan-2)ガイドに従って、別のパッケージを作成します。プロジェクトのルートで、`conanfile.txt`という名前のファイルを作成します。
+1. [Conan 2パッケージ](../workflows/build_packages.md#conan-2)ガイドに従って、別のパッケージを作成してください。プロジェクトのルートに、`conanfile.txt`というファイルを作成します。
 
 1. Conanレシピをファイルの`[requires]`セクションに追加します:
 
@@ -180,47 +165,41 @@ Conan 2パッケージは、多くの場合、`conanfile.txt`ファイルを使�
    mkdir build && cd build
    ```
 
-1. `conanfile.txt`にリストされている依存関係をインストールします:
+1. `conanfile.txt`にリストされている依存をインストールします:
 
    ```shell
    conan install ../conanfile.txt
    ```
 
-{{< alert type="note" >}}
-
-このチュートリアルで作成したパッケージをインストールしようとすると、パッケージが既に存在するため、インストールコマンドは無効になります。既存のパッケージをローカルで削除してから、再試行するには、このコマンドを使用します:
-
-```shell
-conan remove hello/0.1@mycompany/beta
-```
-
-{{< /alert >}}
+> [!note]
+> このチュートリアルで作成したパッケージをインストールしようとしても、そのパッケージはすでに存在するため、インストールコマンドは効果がありません。このコマンドを使用して、既存のパッケージをローカルで削除してから、もう一度試してください:
+>
+> ```shell
+> conan remove hello/0.1@mycompany/beta
+> ```
 
 ## Conan 2パッケージを削除する {#remove-a-conan-2-package}
 
 GitLabパッケージレジストリからConan 2パッケージを削除するには、2つの方法があります。
 
-- コマンドラインから、Conan 2クライアントを使用します:
+- コマンドラインから、Conan 2クライアントを使用:
 
   ```shell
   conan remove hello/0.1@mycompany/beta --remote=gitlab
   ```
 
-  それ以外の場合、パッケージはお客様のローカルシステムのキャッシュからのみ削除されるため、このコマンドにはリモートを明示的に含める必要があります。
+  このコマンドにはリモートを明示的に含める必要があります。そうしないと、パッケージはローカルシステムキャッシュからのみ削除されます。
 
-  {{< alert type="note" >}}
-
-  このコマンドは、すべてのレシピとバイナリパッケージファイルをパッケージレジストリから削除します。
-
-  {{< /alert >}}
+  > [!note]
+  > このコマンドは、すべてのレシピおよびバイナリパッケージファイルをパッケージレジストリから削除します。
 
 - GitLabユーザーインターフェースから:
 
-  プロジェクトの**デプロイ** > **パッケージレジストリ**に移動します。**リポジトリを削除** ({{< icon name="remove" >}})を選択して、パッケージを削除します。
+  プロジェクトの**デプロイ** > **パッケージレジストリ**に移動します。パッケージを、**リポジトリを削除** ({{< icon name="remove" >}}) を選択して削除します。
 
 ## パッケージレジストリでConan 2パッケージを検索する {#search-for-conan-2-packages-in-the-package-registry}
 
-パッケージ名の一部または全部、あるいは正確なレシピで検索するには、`conan search`コマンドを実行します。
+完全または部分的なパッケージ名、または正確なレシピで検索するには、`conan search`コマンドを実行します。
 
 - 特定のパッケージ名を持つすべてのパッケージを検索するには:
 
@@ -228,34 +207,33 @@ GitLabパッケージレジストリからConan 2パッケージを削除する�
   conan search hello --remote=gitlab
   ```
 
-- `he`で始まるすべてのパッケージのように、部分的な名前を検索するには:
+- 部分名（例: `he`で始まるすべてのパッケージ）で検索するには:
 
   ```shell
   conan search "he*" --remote=gitlab
   ```
 
-検索のスコープは、Conanリモート構成によって異なります。アクセス許可がある限り、検索にはターゲットプロジェクト内のすべてのパッケージが含まれます。
+検索のスコープは、Conanリモートの設定によって異なります。アクセス権限がある限り、検索にはターゲットプロジェクト内のすべてのパッケージが含まれます。
 
-{{< alert type="note" >}}
+検索結果の制限は500パッケージで、結果は最も最近公開されたパッケージによってソートされます。
 
-検索結果の上限は500個のパッケージであり、結果は最も新しく公開されたパッケージ順にソートされます。
-
-{{< /alert >}}
+> [!note]
+> パッケージを検索する場合、Conan v2 CLIは、Conan v2でアップロードされたパッケージの詳細のみを表示します。Conan v1でアップロードされたパッケージは検索結果に表示されますが、その詳細は表示されません。これは、Conan v2が`recipe_hash`フィールドのないパッケージ参照を期待しているためです。このフィールドはConan v1でアップロードされたパッケージには存在します。
 
 ## Conan 2パッケージをダウンロードする {#download-a-conan-2-package}
 
-`conan download`コマンドを使用する設定を使用せずに、Conan 2パッケージのレシピとバイナリをローカルキャッシュにダウンロードできます。
+Conan 2パッケージのレシピとバイナリを、`conan download`コマンドを使用する設定なしでローカルキャッシュにダウンロードできます。
 
-前提要件: 
+前提条件: 
 
-- Conanリモート[が構成されている](#add-the-package-registry-as-a-conan-remote)必要があります。
-- プライベートプロジェクトと内部プロジェクトの場合は、パッケージレジストリで[認証](#authenticate-to-the-package-registry)を構成する必要があります。
+- Conanリモートは[設定されている](#add-the-package-registry-as-a-conan-remote)必要があります。
+- プライベートおよび内部プロジェクトの場合、パッケージレジストリでの[認証](#authenticate-to-the-package-registry)を設定する必要があります。
 
 ### すべてのバイナリパッケージをダウンロードする {#download-all-binary-packages}
 
-パッケージレジストリから、レシピに関連付けられているすべてのバイナリパッケージをダウンロードできます。
+パッケージレジストリから、レシピに関連付けられたすべてのバイナリパッケージをダウンロードできます。
 
-すべてのバイナリパッケージをダウンロードするには、次のコマンドを実行します:
+すべてのバイナリパッケージをダウンロードするには、次のコマンドを実行してください:
 
 ```shell
 conan download hello/0.1@mycompany/beta --remote=gitlab
@@ -263,9 +241,9 @@ conan download hello/0.1@mycompany/beta --remote=gitlab
 
 ### レシピファイルをダウンロードする {#download-recipe-files}
 
-任意のバイナリパッケージなしで、レシピファイルのみをダウンロードできます。
+バイナリパッケージなしでレシピファイルのみをダウンロードできます。
 
-レシピファイルをダウンロードするには、次のコマンドを実行します:
+レシピファイルをダウンロードするには、次のコマンドを実行してください:
 
 ```shell
 conan download hello/0.1@mycompany/beta --remote=gitlab --only-recipe
@@ -273,9 +251,9 @@ conan download hello/0.1@mycompany/beta --remote=gitlab --only-recipe
 
 ### 特定のバイナリパッケージをダウンロードする {#download-a-specific-binary-package}
 
-そのパッケージ参照（Conan 2ドキュメントでは`package_id`と呼ばれます）を参照して、単一のバイナリパッケージをダウンロードできます。
+パッケージ参照（Conan 2のドキュメントでは`package_id`として知られています）を参照することで、単一のバイナリパッケージをダウンロードできます。
 
-特定のバイナリパッケージをダウンロードするには、次のコマンドを実行します:
+特定のバイナリパッケージをダウンロードするには、次のコマンドを実行してください:
 
 ```shell
 conan download Hello/0.1@foo+bar/stable:<package_reference> --remote=gitlab
@@ -285,23 +263,23 @@ conan download Hello/0.1@foo+bar/stable:<package_reference> --remote=gitlab
 
 GitLab Conanリポジトリは、次のConan 2 CLIコマンドをサポートしています:
 
-- `conan upload`: お客様のレシピとパッケージファイルをパッケージレジストリにアップロードします。
-- `conan install`: `conanfile.txt`ファイルの使用を含め、パッケージレジストリからConan 2パッケージをインストールします。
-- `conan download`: 設定を使用せずに、パッケージレシピとバイナリをローカルキャッシュにダウンロードします。
-- `conan search`: パブリックパッケージ、および表示する権限があるプライベートパッケージについて、パッケージレジストリを検索します。
-- `conan list`: 既存のレシピ、リビジョン、またはパッケージをリストします。
+- `conan upload`: レシピとパッケージファイルをパッケージレジストリにアップロードします。
+- `conan install`: Conan 2パッケージをパッケージレジストリからインストールします。これには`conanfile.txt`ファイルの使用が含まれます。
+- `conan download`: パッケージのレシピとバイナリを、設定を使用せずにローカルキャッシュにダウンロードします。
+- `conan search`: 公開パッケージ、および表示権限のあるプライベートパッケージをパッケージレジストリで検索します。
+- `conan list`: 既存のレシピ、リビジョン、またはパッケージをリスト表示します。
 - `conan remove`: パッケージレジストリからパッケージを削除します。
 
 ## Conanリビジョン {#conan-revisions}
 
-Conanリビジョンは、パッケージレジストリにパッケージの不変性を提供します。バージョンを変更せずにレシピまたはパッケージに変更を加えると、Conanはこれらの変更を追跡するための一意の識別子（リビジョン）を計算します。
+Conanリビジョンは、パッケージレジストリでパッケージの不変性を提供します。レシピまたはパッケージをバージョンを変更せずに変更すると、Conanはこれらの変更を追跡するための固有識別子（リビジョン）を計算します。
 
 ### リビジョンの種類 {#types-of-revisions}
 
-Conanは、次の2つの種類のリビジョンを使用します:
+Conanは2種類のリビジョンを使用します:
 
-- **Recipe revisions (RREV)**（レシピリビジョン（RREV））: レシピがエクスポートされるときに生成されます。デフォルトでは、Conanはレシピマニフェストのチェックサムハッシュを使用してレシピリビジョンを計算します。
-- **Package revisions (PREV)**（パッケージリビジョン（PREV））: パッケージのビルド時に生成されます。Conanは、パッケージコンテンツのハッシュを使用してパッケージリビジョンを計算します。
+- **Recipe revisions (RREV)**: レシピがエクスポートするされるときに生成されます。デフォルトでは、Conanはレシピマニフェストのチェックサムハッシュを使用してレシピリビジョンを計算します。
+- **Package revisions (PREV)**リビジョン（PREV）: パッケージがビルドするされるときに生成されます。Conanはパッケージコンテンツのハッシュを使用してパッケージリビジョンを計算します。
 
 ### 参照リビジョン {#reference-revisions}
 
@@ -310,29 +288,29 @@ Conanは、次の2つの種類のリビジョンを使用します:
 | 参照 | 説明 |
 | --- | --- |
 | `lib/1.0@conan/stable` | `lib/1.0@conan/stable`の最新のRREV。 |
-| `lib/1.0@conan/stable#RREV` | `lib/1.0@conan/stable`の特定RREV。 |
+| `lib/1.0@conan/stable#RREV` | `lib/1.0@conan/stable`の特定のRREV。 |
 | `lib/1.0@conan/stable#RREV:PACKAGE_REFERENCE` | 特定のRREVに属するバイナリパッケージ。 |
 | `lib/1.0@conan/stable#RREV:PACKAGE_REFERENCE#PREV` | 特定のRREVに属するバイナリパッケージリビジョンPREV。 |
 
 ### リビジョンをアップロードする {#upload-revisions}
 
-すべてのリビジョンとそのバイナリをGitLabパッケージレジストリにアップロードするには:
+すべてのリビジョンとそれらのバイナリをGitLabパッケージレジストリにアップロードするには:
 
 ```shell
 conan upload "hello/0.1@mycompany/beta#*" --remote=gitlab
 ```
 
-複数のリビジョンをアップロードすると、最も古いリビジョンから最新のリビジョンへアップロードされます。相対的な順序はレジストリに保持されます。
+複数のリビジョンをアップロードすると、古いものから新しいものへとアップロードされます。相対的な順序はレジストリで保持されます。
 
-### リビジョンを一覧表示する {#list-revisions}
+### リビジョンをリスト表示する {#list-revisions}
 
-Conan 2で特定のレシピのすべてのリビジョンをリストするには:
+Conan 2で特定のレシピのすべてのリビジョンをリスト表示するには:
 
 ```shell
 conan list "hello/0.1@mycompany/beta#*" --remote=gitlab
 ```
 
-このコマンドは、指定されたレシピで使用可能なすべてのリビジョンを、リビジョンハッシュおよび作成日とともに表示します。
+このコマンドは、指定されたレシピで使用可能なすべてのリビジョンを、リビジョンハッシュと作成日とともに表示します。
 
 特定のリビジョンの詳細情報を取得するには:
 
@@ -340,42 +318,42 @@ conan list "hello/0.1@mycompany/beta#*" --remote=gitlab
 conan list "hello/0.1@mycompany/beta#revision_hash:*#*" --remote=gitlab
 ```
 
-このコマンドは、特定のリビジョンで使用可能な特定のバイナリパッケージとパッケージリビジョンを示します。
+このコマンドは、特定のバイナリパッケージと、そのリビジョンで利用可能なパッケージリビジョンを表示します。
 
-### リビジョンを使用してパッケージを削除する {#delete-packages-with-revisions}
+### リビジョンを持つパッケージを削除する {#delete-packages-with-revisions}
 
-さまざまなレベルの粒度でパッケージを削除できます:
+パッケージは、異なる粒度レベルで削除できます:
 
-#### 特定レシピのリビジョンを削除する {#delete-a-specific-recipe-revision}
+#### 特定のレシピリビジョンを削除する {#delete-a-specific-recipe-revision}
 
-特定レシピのリビジョンとそれに関連付けられているすべてのバイナリパッケージを削除するには:
+特定のレシピリビジョンとそれに関連付けられたすべてのバイナリパッケージを削除するには:
 
 ```shell
 conan remove "hello/0.1@mycompany/beta#revision_hash" --remote=gitlab
 ```
 
-#### 特定レシピのリビジョンのパッケージを削除する {#delete-packages-for-a-specific-recipe-revision}
+#### 特定のレシピリビジョンのパッケージを削除する {#delete-packages-for-a-specific-recipe-revision}
 
-特定レシピのリビジョンに関連付けられているすべてのパッケージを削除するには:
+特定のレシピリビジョンに関連付けられたすべてのパッケージを削除するには:
 
 ```shell
 conan remove "hello/0.1@mycompany/beta#revision_hash:*" --remote=gitlab
 ```
 
-#### リビジョンで特定のパッケージを削除する {#delete-a-specific-package-in-a-revision}
+#### リビジョン内の特定のパッケージを削除する {#delete-a-specific-package-in-a-revision}
 
-レシピリビジョンの特定のパッケージを削除するには、次を使用します:
+レシピリビジョン内の特定のパッケージを削除するには、次を使用できます:
 
 ```shell
 conan remove "package_name/version@user/channel#revision_hash:package_id" --remote=gitlab
 ```
 
-### イミュータブルなリビジョンのワークフロー {#immutable-revisions-workflow}
+### イミュータブルなリビジョンワークフロー {#immutable-revisions-workflow}
 
-リビジョンはイミュータブルであるように設計されています。レシピまたはそのコードを変更する場合:
+リビジョンはイミュータブルであるように設計されています。レシピまたはそのソースcodeを修正する場合:
 
-- レシピをエクスポートすると、新しいレシピリビジョンが作成されます。
-- 以前のレシピリビジョンに属する既存のバイナリは含まれていません。新しいレシピリビジョンの新しいバイナリをビルドする必要があります。
-- パッケージをインストールすると、リビジョンを指定しない限り、Conan 2は自動的に最新のリビジョン取得します。
+- レシピをエクスポートするすると、新しいレシピリビジョンが作成されます。
+- 以前のレシピリビジョンに属する既存のバイナリは含まれません。新しいレシピリビジョン用に新しいバイナリをビルドするする必要があります。
+- パッケージをインストールすると、Conan 2はリビジョンを指定しない限り、自動的に最新のリビジョンを取得するします。
 
-パッケージバイナリの場合、レシピリビジョンおよびパッケージ参照ごとに1つのパッケージリビジョンのみを含める必要があります（Conan 2ドキュメントでは`package_id`と呼ばれます）。同じレシピリビジョンとパッケージIDの複数のパッケージリビジョンは、パッケージが不必要に再ビルドされたことを示します。
+パッケージのバイナリの場合、レシピリビジョンおよびパッケージ参照（Conan 2ドキュメントでは`package_id`として知られています）ごとに1つのパッケージリビジョンのみを含める必要があります。同じレシピリビジョンとパッケージIDに対して複数のパッケージリビジョンが存在する場合、そのパッケージが不必要に再ビルドするされたことを示します。

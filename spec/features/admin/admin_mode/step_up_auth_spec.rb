@@ -45,7 +45,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
           additional_info: additional_info_success_step_up_auth)
 
         expect(page).to have_current_path admin_root_path, ignore_query: true
-        expect(page).to have_content('Admin mode enabled')
+        expect(page).to have_content('Admin mode is active.')
       end
 
       it 'user enters admin mode, leaves admin mode and cannot re-enter admin mode without re-authentication' do
@@ -53,14 +53,10 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
           additional_info: additional_info_success_step_up_auth)
 
         expect(page).to have_current_path admin_root_path, ignore_query: true
-        expect(page).to have_content('Admin mode enabled')
+        expect(page).to have_content('Admin mode is active.')
 
         # Leave admin mode
-        find_by_testid('user-menu-toggle').click
-        click_link('Leave Admin Mode', href: destroy_admin_session_path)
-
-        wait_for_requests
-        expect(page).to have_text 'Admin mode disabled'
+        leave_admin_mode
 
         # Attempt to access the admin area again
         visit admin_root_path
@@ -75,7 +71,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
           additional_info: additional_info_success_step_up_auth)
 
         expect(page).to have_current_path admin_root_path, ignore_query: true
-        expect(page).to have_content('Admin mode enabled')
+        expect(page).to have_content('Admin mode is active.')
 
         # Go to non-admin page
         visit root_path
@@ -86,7 +82,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
         visit admin_root_path
         wait_for_requests
         expect(page).to have_current_path admin_root_path, ignore_query: true
-        expect(page).not_to have_content('Admin mode enabled')
+        expect(page).not_to have_content('Admin mode is active.')
       end
 
       context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
@@ -99,7 +95,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
             additional_info: additional_info_success_step_up_auth)
 
           expect(page).to have_current_path admin_root_path, ignore_query: true
-          expect(page).to have_content('Admin mode enabled')
+          expect(page).to have_content('Admin mode is active.')
         end
       end
     end
@@ -127,7 +123,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
             additional_info: additional_info_rejected_step_up_auth)
 
           expect(page).to have_current_path admin_root_path
-          expect(page).to have_content('Admin mode enabled')
+          expect(page).to have_content('Admin mode is active.')
         end
       end
     end
@@ -149,7 +145,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
             additional_info: additional_info_success_step_up_auth)
 
           expect(page).to have_current_path admin_root_path
-          expect(page).to have_content('Admin mode enabled')
+          expect(page).to have_content('Admin mode is active.')
         end
       end
 

@@ -1,4 +1,4 @@
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 
 /**
  * Serializes a value for storage in localStorage

@@ -1922,6 +1922,18 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
+    describe '.with_possible_mentions' do
+      let_it_be(:note_with_mention) { create(:note, note: 'Hey @john, please review') }
+      let_it_be(:note_without_mention) { create(:note, note: 'No mentions here') }
+
+      it 'includes notes containing @' do
+        notes_with_possible_mentions = described_class.with_possible_mentions
+
+        expect(notes_with_possible_mentions).to include(note_with_mention)
+        expect(notes_with_possible_mentions).not_to include(note_without_mention)
+      end
+    end
+
     describe '.with_suggestions' do
       it 'returns the correct note' do
         note_with_suggestion = create(:note, suggestions: [create(:suggestion)])

@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { __, s__ } from '~/locale';
 
@@ -190,6 +190,34 @@ export const FIND_AND_REPLACE = {
   id: 'editing.findAndReplace',
   description: s__('MarkdownEditor|Find and replace'),
   defaultKeys: ['mod+f'],
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE_NEXT = {
+  id: 'editing.findAndReplaceNext',
+  description: s__('MarkdownEditor|Find next'),
+  defaultKeys: ['f3'],
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE_PREV = {
+  id: 'editing.findAndReplacePrev',
+  description: s__('MarkdownEditor|Find previous'),
+  defaultKeys: ['shift+f3'],
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE_REPLACE = {
+  id: 'editing.findAndReplaceReplace',
+  description: s__('MarkdownEditor|Replace'),
+  defaultKeys: ['alt+r'],
+  customizable: false,
+};
+
+export const FIND_AND_REPLACE_REPLACE_ALL = {
+  id: 'editing.findAndReplaceReplaceAll',
+  description: s__('MarkdownEditor|Replace all'),
+  defaultKeys: ['alt+a'],
   customizable: false,
 };
 

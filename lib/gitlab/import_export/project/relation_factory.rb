@@ -42,7 +42,7 @@ module Gitlab
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_commits_metadata: 'MergeRequest::CommitsMetadata',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
-                      work_item_type: 'WorkItems::Type',
+                      work_item_type: 'WorkItems::TypesFramework::SystemDefined::Type',
                       work_item_description: 'WorkItems::Description',
                       user_contributions: 'User',
                       squash_option: 'Projects::BranchRules::SquashOption' }.freeze
@@ -53,8 +53,6 @@ module Gitlab
 
         PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
-        # TODO: check how the WorkItems::Type is being used here and if it needs to stay in the array
-        # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
         EXISTING_OBJECT_RELATIONS = %i[
           milestone
           milestones
@@ -74,11 +72,9 @@ module Gitlab
           MergeRequest::DiffCommitUser
           MergeRequest::CommitsMetadata
           MergeRequestDiffCommit
-          WorkItems::Type
+          WorkItems::TypesFramework::SystemDefined::Type
         ].freeze
 
-        # TODO: check how the WorkItems::Type is being used here and if it needs to stay in the array
-        # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
         RELATIONS_WITH_REWRITABLE_USERNAMES = %i[
           milestones
           milestone
@@ -92,7 +88,6 @@ module Gitlab
           epic
           snippets
           snippet
-          WorkItems::Type
         ].freeze
 
         def create
@@ -217,6 +212,7 @@ module Gitlab
           @relation_hash['relative_position'] = compute_relative_position
 
           issue_type = @relation_hash.delete('issue_type')
+
           if issue_type
             type = ::WorkItems::TypesFramework::Provider.new(@importable).find_by_base_type(issue_type)
             @relation_hash['work_item_type'] ||= type
@@ -290,7 +286,10 @@ module Gitlab
               hash['project'] = @importable
             end
 
-            hash[importable_class_name] = @importable if relation_class.reflect_on_association(importable_class_name.to_sym)
+            if relation_class.try(:reflect_on_association, importable_class_name.to_sym)
+              hash[importable_class_name] = @importable
+            end
+
             hash.delete(importable_column_name)
           end
 

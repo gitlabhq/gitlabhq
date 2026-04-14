@@ -131,4 +131,87 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
 
     it_behaves_like 'a service returning aggregate analytics'
   end
+
+  context 'when filtering by subgroups' do
+    let_it_be(:group, freeze: true) { create(:group) }
+    let_it_be(:subgroup1, freeze: true) { create(:group, parent: group) }
+    let_it_be(:subgroup2, freeze: true) { create(:group, parent: group) }
+    let_it_be(:subgroup3, freeze: true) { create(:group, parent: group) }
+    let_it_be(:sub_project1, freeze: true) { create(:project, group: subgroup1) }
+    let_it_be(:sub_project2, freeze: true) { create(:project, group: subgroup2) }
+    let_it_be(:sub_project3, freeze: true) { create(:project, group: subgroup3) }
+    let_it_be(:current_user, freeze: true) { create(:user, reporter_of: group) }
+
+    let(:container) { group }
+    let(:status_groups) { [:any] }
+    let(:from_time) { starting_time }
+    let(:to_time) { ending_time }
+
+    let(:service) do
+      described_class.new(
+        current_user: current_user,
+        container: container,
+        from_time: from_time,
+        to_time: to_time,
+        status_groups: status_groups,
+        subgroup_full_paths: subgroup_full_paths
+      )
+    end
+
+    before do
+      insert_ci_pipelines_to_click_house([
+        create_pipeline(sub_project1, :success, 1.day.before(ending_time), 30.minutes),
+        create_pipeline(sub_project1, :failed, 2.days.before(ending_time), 1.hour),
+        create_pipeline(sub_project2, :success, 3.days.before(ending_time), 45.minutes),
+        create_pipeline(sub_project3, :failed, 4.days.before(ending_time), 20.minutes)
+      ])
+    end
+
+    context 'when filtering by specific subgroups' do
+      let(:subgroup_full_paths) { [subgroup1.full_path, subgroup2.full_path] }
+
+      it 'returns analytics only for pipelines in the specified subgroups' do
+        expect(result).to be_success
+        expect(result.payload[:aggregate]).to eq(count: { any: 3 })
+      end
+    end
+
+    context 'when filtering by a single subgroup' do
+      let(:subgroup_full_paths) { [subgroup1.full_path] }
+
+      it 'returns analytics only for pipelines in the specified subgroup' do
+        expect(result).to be_success
+        expect(result.payload[:aggregate]).to eq(count: { any: 2 })
+      end
+
+      context 'and a specific status_group' do
+        let(:subgroup_full_paths) { [subgroup1.full_path] }
+        let(:status_groups) { [:success, :failed] }
+
+        it 'returns analytics filtered by both subgroup and status' do
+          expect(result).to be_success
+          expect(result.payload[:aggregate]).to eq(count: { success: 1, failed: 1 })
+        end
+      end
+    end
+
+    context 'when no subgroups are specified' do
+      let(:subgroup_full_paths) { [] }
+
+      it 'returns analytics for all pipelines in the group' do
+        expect(result).to be_success
+        expect(result.payload[:aggregate]).to eq(count: { any: 4 })
+      end
+    end
+
+    context 'when container is a project' do
+      let(:container) { sub_project1 }
+      let(:subgroup_full_paths) { [subgroup1.full_path] }
+
+      it 'ignores subgroup_full_paths and returns project analytics' do
+        expect(result).to be_success
+        expect(result.payload[:aggregate]).to eq(count: { any: 2 })
+      end
+    end
+  end
 end

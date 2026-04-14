@@ -2,6 +2,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
 #import "~/work_items/graphql/timelog.fragment.graphql"
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 
 fragment BaseWorkItemWidgets on WorkItemWidget {
   type
@@ -76,20 +77,7 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
     parent {
-      id
-      iid
-      title
-      confidential
-      namespace {
-        id
-        fullPath
-      }
-      webUrl
-      workItemType {
-        id
-        name
-        iconName
-      }
+      ...WorkItemParentFields
     }
   }
   ... on WorkItemWidgetLabels {

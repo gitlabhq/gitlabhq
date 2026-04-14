@@ -56,10 +56,11 @@ export default {
   computed: {
     isCodeSuggestion() {
       return (
-        this.node.attrs.isCodeSuggestion &&
-        this.contentEditor.codeSuggestionsConfig?.canSuggest &&
-        this.contentEditor.codeSuggestionsConfig?.diffFile
+        this.node.attrs.isCodeSuggestion && this.contentEditor.codeSuggestionsConfig?.canSuggest
       );
+    },
+    canExpandSuggestion() {
+      return Boolean(this.contentEditor.codeSuggestionsConfig.blobRawPath);
     },
     classList() {
       return this.isCodeSuggestion
@@ -70,10 +71,9 @@ export default {
       return langParamsToLineOffset(this.node.attrs.langParams);
     },
     absoluteLineOffset() {
-      if (!this.contentEditor.codeSuggestionsConfig) return [0, 0];
-
-      const { new_line: n } = this.contentEditor.codeSuggestionsConfig.line;
-      return toAbsoluteLineOffset(this.lineOffset, n);
+      const { lineRange } = this.contentEditor.codeSuggestionsConfig;
+      if (!lineRange) return [0, 0];
+      return toAbsoluteLineOffset(this.lineOffset, lineRange.end);
     },
     disableDecrementLineStart() {
       return this.absoluteLineOffset[0] <= 1;
@@ -90,7 +90,7 @@ export default {
   },
   async mounted() {
     if (this.isCodeSuggestion) {
-      await this.updateAllLines();
+      if (this.contentEditor.codeSuggestionsConfig.blobRawPath) await this.updateAllLines();
       this.updateCodeSuggestion();
     }
 
@@ -103,10 +103,8 @@ export default {
   },
   methods: {
     async updateAllLines() {
-      const { diffFile } = this.contentEditor.codeSuggestionsConfig;
-      this.allLines = (await memoizedGet(diffFile.view_path.replace('/blob/', '/raw/'))).split(
-        '\n',
-      );
+      const rawPath = this.contentEditor.codeSuggestionsConfig.blobRawPath;
+      this.allLines = (await memoizedGet(rawPath)).split('\n');
     },
     updateCodeSuggestion() {
       this.deletedLines = appendNewlines(getLines(this.absoluteLineOffset, this.allLines));
@@ -191,7 +189,10 @@ export default {
             {{ __('Suggested change') }}
           </div>
 
-          <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2 gl-whitespace-nowrap gl-pl-3">
+          <div
+            v-if="canExpandSuggestion"
+            class="gl-flex gl-flex-wrap gl-items-center gl-gap-2 gl-whitespace-nowrap gl-pl-3"
+          >
             <gl-sprintf :message="__('From line %{line1} to %{line2}')">
               <template #line1>
                 <div class="gl-mx-1 gl-flex gl-rounded-base gl-bg-subtle">

@@ -33,7 +33,8 @@ GET /groups/:id
 | `with_custom_attributes` | ブール値        | いいえ       | レスポンスに[カスタム属性](custom_attributes.md)を含めます（管理者のみ）。 |
 | `with_projects`          | ブール値        | いいえ       | 指定されたグループに属するプロジェクトの詳細を含めます（デフォルトは`true`）。（非推奨。[v5で削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/213797)です。グループ内のすべてのプロジェクトの詳細を取得するには、[グループのプロジェクトをリストする](#list-projects)を使用します）。 |
 
-> [!note]レスポンスの`projects`および`shared_projects`属性は非推奨となり、API v5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/213797)です。グループ内のすべてのプロジェクトの詳細を取得するには、[グループのプロジェクトをリスト](#list-projects)または[グループの共有プロジェクトをリスト](#list-shared-projects)を使用します。
+> [!note]
+> レスポンスの`projects`および`shared_projects`属性は非推奨となり、API v5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/213797)です。グループ内のすべてのプロジェクトの詳細を取得するには、[グループのプロジェクトをリスト](#list-projects)または[グループの共有プロジェクトをリスト](#list-shared-projects)を使用します。
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -579,7 +580,8 @@ GET /groups/:id/projects
 ]
 ```
 
-> [!note]グループ内のプロジェクトとグループに共有されているプロジェクトを区別するために、`namespace`属性を使用できます。プロジェクトがグループに共有されている場合、その`namespace`はリクエストの対象であるグループとは異なります。
+> [!note]
+> グループ内のプロジェクトとグループに共有されているプロジェクトを区別するために、`namespace`属性を使用できます。プロジェクトがグループに共有されている場合、その`namespace`はリクエストの対象であるグループとは異なります。
 
 ### 共有プロジェクトのリストを取得する {#list-shared-projects}
 
@@ -1258,7 +1260,8 @@ GET /groups/:id/invited_groups
 
 ### グループを作成する {#create-a-group}
 
-> [!note] GitLab SaaSでは、親グループのないグループを作成するにはGitLab UIを使用する必要があります。APIを使用してこの操作を行うことはできません。
+> [!note]
+> GitLab SaaSでは、親グループのないグループを作成するにはGitLab UIを使用する必要があります。APIを使用してこの操作を行うことはできません。
 
 新しいプロジェクトグループを作成します。これは、グループを作成できるユーザーのみが利用できます。
 
@@ -1385,7 +1388,8 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/:id"
 ```
 
-> [!note]サブスクリプションにリンクされているGitLab.comグループは削除できません。最初に、別のグループとの[サブスクリプションをリンク](../subscriptions/manage_subscription.md#link-subscription-to-a-group)する必要があります。
+> [!note]
+> サブスクリプションにリンクされているGitLab.comグループは削除できません。最初に、別のグループとの[サブスクリプションをリンク](../subscriptions/manage_subscription.md#link-subscription-to-a-group)する必要があります。
 
 #### グループを完全に削除する {#delete-a-group-permanently}
 
@@ -1711,7 +1715,8 @@ curl --request GET \
 
 プロジェクトを別のグループネームスペースに転送します。または、代わりに[プロジェクトを新しいネームスペースに転送する](projects.md#transfer-a-project-to-a-new-namespace)エンドポイントを使用します。
 
-> [!note]プロジェクトのリポジトリにタグ付けされたパッケージが存在する場合、転送処理が失敗する可能性があります。
+> [!note]
+> プロジェクトのリポジトリにタグ付けされたパッケージが存在する場合、転送処理が失敗する可能性があります。
 
 前提条件: 
 
@@ -1784,7 +1789,8 @@ DELETE /groups/:id/share/:group_id
 
 {{< /history >}}
 
-> [!flag] `web_based_commit_signing_enabled`属性の可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+> [!flag]
+> `web_based_commit_signing_enabled`属性の可用性は機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
 指定されたグループの属性を更新します。
 
@@ -1848,7 +1854,8 @@ PUT /groups/:id
 | `only_allow_merge_if_all_discussions_are_resolved`  | ブール値           | いいえ       | すべてのディスカッションが解決するされた場合にのみマージリクエストのマージを許可します。グループに対して有効になっている場合、グループ内のすべてのプロジェクトに適用されます。PremiumおよびUltimateのみです。 |
 | `allow_personal_snippets`                           | ブール値           | いいえ       | このグループのエンタープライズユーザーがパーソナルスニペットを作成できるようにします。無効にすると、エンタープライズユーザーは個人のネームスペースでのスニペット作成が制限されます。 |
 
-> [!note]レスポンスの`projects`および`shared_projects`属性は非推奨となり、API v5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/213797)です。グループ内のすべてのプロジェクトの詳細を取得するには、[グループのプロジェクトをリスト](#list-projects)または[グループの共有プロジェクトをリスト](#list-shared-projects)を使用します。
+> [!note]
+> レスポンスの`projects`および`shared_projects`属性は非推奨となり、API v5で[削除される予定](https://gitlab.com/gitlab-org/gitlab/-/issues/213797)です。グループ内のすべてのプロジェクトの詳細を取得するには、[グループのプロジェクトをリスト](#list-projects)または[グループの共有プロジェクトをリスト](#list-shared-projects)を使用します。
 
 ```shell
 curl --request PUT \

@@ -55,7 +55,7 @@ import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import {
   allRunnersData,
@@ -76,7 +76,7 @@ const mockRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
 const mockUsersSearchAllHandler = jest.fn();
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),
@@ -733,10 +733,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('error is reported to sentry', () => {
-      expect(captureException).toHaveBeenCalledWith({
-        error: new Error('Error!'),
-        component: 'AdminRunnersApp',
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error('Error!'));
     });
   });
 

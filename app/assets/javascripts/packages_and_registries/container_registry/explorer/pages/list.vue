@@ -8,7 +8,7 @@ import {
   GlAlert,
   GlSkeletonLoader,
 } from '@gitlab/ui';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';

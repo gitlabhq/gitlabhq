@@ -1124,4 +1124,33 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
       end
     end
   end
+
+  describe "#move_child_to_new_parent" do
+    let(:child) { create(:work_item, project: project) }
+    let(:new_parent) { create(:work_item, project: project) }
+
+    subject { service.move_child_to_new_parent(child, new_parent) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'moved' }
+    end
+
+    it 'sets the moved text' do
+      child_type = child.issue_type.humanize(capitalize: false)
+      expect(subject.note).to eq "moved child #{child_type} ##{child.iid} to ##{new_parent.iid}"
+    end
+
+    context 'when child and parent are in different namespaces' do
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:other_project) { create(:project, group: other_group) }
+      let(:new_parent) { create(:work_item, project: other_project) }
+
+      it 'sets the moved text using full reference' do
+        child_type = child.issue_type.humanize(capitalize: false)
+        expect(subject.note).to eq(
+          "moved child #{child_type} #{child.to_reference(full: true)} to #{new_parent.to_reference(full: true)}"
+        )
+      end
+    end
+  end
 end

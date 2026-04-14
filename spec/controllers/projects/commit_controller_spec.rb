@@ -182,6 +182,39 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         expect(response).to be_ok
       end
     end
+
+    context 'when gitaly is not available' do
+      let(:commit_sha) { commit.id }
+
+      before do
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:commit_by).and_raise(GRPC::Unavailable)
+        end
+      end
+
+      context 'when graceful_gitaly_degradation is enabled' do
+        before do
+          stub_feature_flags(graceful_gitaly_degradation: true)
+        end
+
+        it 'returns 503 and sets gitaly_unavailable' do
+          go(id: commit_sha)
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(assigns(:gitaly_unavailable)).to be true
+        end
+      end
+
+      context 'when graceful_gitaly_degradation is disabled' do
+        before do
+          stub_feature_flags(graceful_gitaly_degradation: false)
+        end
+
+        it 'raises the error' do
+          expect { go(id: commit_sha) }.to raise_error(GRPC::Unavailable)
+        end
+      end
+    end
   end
 
   describe 'POST revert' do

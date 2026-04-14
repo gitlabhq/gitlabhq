@@ -1,0 +1,9 @@
+---
+name: ci_no_pipeline_push_option
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/28369
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163329
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497112
+milestone: '18.11'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

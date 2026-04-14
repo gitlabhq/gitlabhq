@@ -97,12 +97,14 @@ module BulkImports
       def metadata
         response = begin
           with_error_handling do
-            Import::Clients::HTTP.get(resource_url(:version), options)
-          end
-        rescue BulkImports::NetworkError
-          # `version` endpoint is not available, try `metadata` endpoint instead
-          with_error_handling do
             Import::Clients::HTTP.get(resource_url(:metadata), options)
+          end
+        rescue BulkImports::NetworkError => e
+          raise unless e.response.nil? || e.response.code == 404
+
+          # `metadata` endpoint is not available, try `version` endpoint instead
+          with_error_handling do
+            Import::Clients::HTTP.get(resource_url(:version), options)
           end
         end
 

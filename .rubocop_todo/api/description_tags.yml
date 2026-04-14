@@ -3,7 +3,6 @@
 API/DescriptionTags:
   Exclude:
     - 'ee/lib/api/code_suggestions.rb'
-    - 'ee/lib/api/group_repository_storage_moves.rb'
     - 'ee/lib/api/internal/ai/x_ray/scan.rb'
     - 'ee/lib/api/internal/search/zoekt.rb'
     - 'ee/lib/ee/api/internal/kubernetes.rb'

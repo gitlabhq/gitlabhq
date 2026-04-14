@@ -8,7 +8,7 @@ import {
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
-import { get as getPropValueByPath, isEmpty } from 'lodash';
+import { get as getPropValueByPath, isEmpty } from 'lodash-es';
 import { produce } from 'immer';
 import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';

@@ -42,4 +42,4 @@ If an authenticated user declines the terms, they are signed out.
 
 When enabled, it adds a mandatory checkbox to the sign up page for new users:
 
-![Sign-up form with a mandatory terms acceptance checkbox](img/sign_up_terms_v11_0.png)
+![New account form with a mandatory terms acceptance checkbox](img/sign_up_terms_v11_0.png)

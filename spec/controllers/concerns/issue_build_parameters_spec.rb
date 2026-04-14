@@ -74,7 +74,8 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
     end
 
     before do
-      allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue incident task])
+      allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue
+        incident task])
     end
 
     it 'allowed fields', :aggregate_failures do
@@ -199,7 +200,8 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       end
 
       before do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue incident task])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue
+          incident task])
       end
 
       it 'returns the issue parameters' do
@@ -230,7 +232,8 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       end
 
       before do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue incident task])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue
+          incident task])
       end
 
       it 'uses top-level issue_type when nested issue_type is not present' do
@@ -240,7 +243,8 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       end
 
       it 'removes issue_type if not allowed' do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue task])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue
+          task])
 
         result = issue_build_params.issue_params
 
@@ -259,7 +263,8 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       end
 
       before do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue incident task])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue
+          incident task])
       end
 
       it 'uses nested issue_type' do
@@ -269,7 +274,7 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       end
 
       it 'removes nested issue_type if not allowed' do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue])
 
         result = issue_build_params.issue_params
 
@@ -281,7 +286,7 @@ RSpec.describe IssueBuildParameters, feature_category: :team_planning do
       let(:params_hash) { {} }
 
       before do
-        allow(WorkItems::TypesFilter).to receive(:allowed_types_for_issues).and_return(%w[issue])
+        allow(WorkItems::TypesFramework::Provider).to receive(:unfiltered_base_types_for_issues).and_return(%w[issue])
       end
 
       it 'returns empty ActionController::Parameters with default assignee_ids' do

@@ -354,6 +354,38 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 	return nil
 }
 
+// MergeFromFile merges file-based configuration into the current config,
+// applying defaults for health check and load shedding.
+func (c *Config) MergeFromFile(file *Config, prometheusListenAddr string) error {
+	c.MetricsListener = file.MetricsListener
+	if prometheusListenAddr != "" {
+		if c.MetricsListener != nil {
+			return fmt.Errorf("configFile: both prometheusListenAddr and metrics_listener can't be specified")
+		}
+		c.MetricsListener = &ListenerConfig{Network: "tcp", Addr: prometheusListenAddr}
+	}
+
+	c.Redis = file.Redis
+	c.Sentinel = file.Sentinel
+	c.ObjectStorageCredentials = file.ObjectStorageCredentials
+	c.ImageResizerConfig = file.ImageResizerConfig
+	c.AltDocumentRoot = file.AltDocumentRoot
+	c.ShutdownTimeout = file.ShutdownTimeout
+	c.TrustedCIDRsForXForwardedFor = file.TrustedCIDRsForXForwardedFor
+	c.TrustedCIDRsForPropagation = file.TrustedCIDRsForPropagation
+	c.Listeners = file.Listeners
+	c.HealthCheckListener = file.HealthCheckListener
+	c.LoadSheddingConfig = file.LoadSheddingConfig
+
+	c.ApplyHealthCheckDefaults()
+	c.ApplyLoadSheddingDefaults()
+
+	c.CircuitBreakerConfig = file.CircuitBreakerConfig
+	c.AdoptCfRayHeader = file.AdoptCfRayHeader
+
+	return nil
+}
+
 // ApplyHealthCheckDefaults applies default values to health check configuration
 func (c *Config) ApplyHealthCheckDefaults() {
 	if c.HealthCheckListener == nil {

@@ -1,4 +1,4 @@
-import { isEqual, orderBy } from 'lodash';
+import { isEqual, orderBy } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths, queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';

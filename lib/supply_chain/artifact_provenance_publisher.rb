@@ -7,8 +7,6 @@ module SupplyChain
     end
 
     def publish
-      return ServiceResponse.error(message: "Missing required variable SIGSTORE_ID_TOKEN") unless id_token
-
       reader = SupplyChain::ArtifactsReader.new(@build)
 
       all_successful = true

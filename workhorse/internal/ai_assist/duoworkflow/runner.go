@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"slices"
 	"time"
@@ -24,6 +25,20 @@ const wsWriteDeadline = 60 * time.Second
 const wsCloseTimeout = 5 * time.Second
 const wsStopWorkflowTimeout = 10 * time.Second
 
+// wsPingInterval controls how often the server sends WebSocket ping frames to
+// the client. This keeps the connection alive through load-balancer idle
+// timeouts and provides early detection of silently-dropped TCP connections.
+// The value must be less than any intermediate idle-connection timeout (GKE's
+// default is 30s for HTTP/1.1 upgrades).
+const wsPingInterval = 20 * time.Second
+
+// wsPongTimeout is the read deadline set after each pong (or at startup before
+// the first ping). If no pong arrives within this window, ReadMessage returns a
+// timeout error and the connection is treated as dead. It is longer than
+// wsPingInterval to tolerate one missed pong before declaring the connection
+// broken.
+const wsPongTimeout = wsPingInterval + 10*time.Second
+
 type capability string
 
 const (
@@ -31,6 +46,7 @@ const (
 	capabilityIncrementalStreaming capability = "incremental_streaming"
 	capabilityShellCommand         capability = "shell_command"
 	capabilityReadFileChunked      capability = "read_file_chunked"
+	capabilityCommandTimeout       capability = "command_timeout"
 
 	// Server capabilities
 	capabilityAdvancedSearch   capability = "advanced_search"
@@ -49,6 +65,7 @@ var ClientCapabilities = []capability{
 	capabilityIncrementalStreaming,
 	capabilityShellCommand,
 	capabilityReadFileChunked,
+	capabilityCommandTimeout,
 }
 
 // ServerCapabilities defines the list of allowed server capabilities that
@@ -83,6 +100,7 @@ type websocketConn interface {
 	WriteControl(int, []byte, time.Time) error
 	SetReadDeadline(time.Time) error
 	SetWriteDeadline(time.Time) error
+	SetPongHandler(h func(appData string) error)
 	Close() error
 }
 
@@ -153,10 +171,19 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 }
 
 func (r *runner) Execute(ctx context.Context) error {
-	errCh := make(chan error, 2)
+	// Register the pong handler before any goroutine calls ReadMessage.
+	// In gorilla/websocket, pong frames are dispatched inside ReadMessage, so
+	// if a pong arrives before SetPongHandler is called the default no-op
+	// handler runs and the read deadline is never reset.
+	r.conn.SetPongHandler(func(string) error {
+		return r.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
+	})
+
+	errCh := make(chan error, 3) // one slot per goroutine: WS reader, agent reader, pinger
 
 	go r.handleWebSocketMessages(errCh)
 	go r.handleAgentMessages(ctx, errCh)
+	go r.pingWebSocket(ctx, errCh, wsPingInterval)
 
 	// Unfortunately the lock is acquired in handleWebSocketMessage.  This is
 	// because the workflowID is not known until after we see the startReq. But
@@ -172,12 +199,49 @@ func (r *runner) Execute(ctx context.Context) error {
 	return <-errCh
 }
 
+// pingWebSocket sends periodic WebSocket ping frames. It sets an initial read
+// deadline before the first ping fires; after that the pong handler (registered
+// in Execute) resets the deadline on every pong reply. A missing pong causes
+// ReadMessage to return a timeout error which terminates handleWebSocketMessages.
+func (r *runner) pingWebSocket(ctx context.Context, errCh chan<- error, interval time.Duration) {
+	// Set the initial read deadline before any ping is sent. Subsequent resets
+	// are handled by the pong handler registered in Execute().
+	if err := r.conn.SetReadDeadline(time.Now().Add(wsPongTimeout)); err != nil {
+		errCh <- fmt.Errorf("pingWebSocket: failed to set initial read deadline: %w", err)
+		return
+	}
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			if err := r.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(wsWriteDeadline)); err != nil {
+				stopErr := r.stopWorkflow("WORKHORSE_WEBSOCKET_PING_FAILED", err)
+				errCh <- fmt.Errorf("pingWebSocket: failed to send ping: %w", stopErr)
+				return
+			}
+		}
+	}
+}
+
 func (r *runner) handleWebSocketMessages(errCh chan<- error) {
 	for {
 		_, message, err := r.conn.ReadMessage()
 		if err != nil {
 			if e, ok := err.(*websocket.CloseError); ok && slices.Contains(normalClosureErrCodes, e.Code) {
 				reason := fmt.Sprintf("WORKHORSE_WEBSOCKET_CLOSE_%d", e.Code)
+				stopErr := r.stopWorkflow(reason, err)
+				errCh <- fmt.Errorf("handleWebSocketMessages: %v", stopErr)
+				return
+			}
+
+			var netErr net.Error
+			if errors.As(err, &netErr) && netErr.Timeout() {
+				reason := "WORKHORSE_WEBSOCKET_PONG_TIMEOUT"
 				stopErr := r.stopWorkflow(reason, err)
 				errCh <- fmt.Errorf("handleWebSocketMessages: %v", stopErr)
 				return
@@ -328,7 +392,7 @@ func intersectServerCapabilities(fromServer []string) []string {
 
 func (r *runner) acquireWorkflowLock(startReq *pb.StartWorkflowRequest) error {
 	r.workflowID = startReq.WorkflowID
-	r.workflowDefinition = startReq.WorkflowDefinition
+	r.workflowDefinition = startReq.WorkflowDefinition //lint:ignore SA1019 deprecated but still used by workhorse
 
 	if r.workflowID == "" {
 		log.WithRequest(r.originalReq).Error("No workflow ID provided in StartWorkflowRequest")
@@ -412,6 +476,12 @@ func (r *runner) sendActionToWs(action *pb.Action) error {
 		}
 
 		return fmt.Errorf("sendActionToWs: failed to send WS message: %v", err)
+	}
+
+	// Clear the write deadline after a successful write so it does not affect
+	// subsequent operations (including reads on the same net.Conn).
+	if deadlineErr := r.conn.SetWriteDeadline(time.Time{}); deadlineErr != nil {
+		return fmt.Errorf("sendActionToWs: failed to clear write deadline: %v", deadlineErr)
 	}
 
 	return nil

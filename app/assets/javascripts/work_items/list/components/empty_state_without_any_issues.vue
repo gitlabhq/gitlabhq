@@ -11,6 +11,12 @@ import searchProjectsQuery from '../graphql/search_projects.query.graphql';
 
 export default {
   name: 'EmptyStateWithoutAnyIssues',
+  i18n: {
+    title: s__('WorkItem|Track bugs, plan features, and organize your efforts with work items'),
+    description: s__(
+      'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+    ),
+  },
   emptyStateSvg,
   issuesHelpPagePath: helpPagePath('user/project/issues/_index'),
   jiraIntegrationPath: helpPagePath('integration/jira/_index'),
@@ -31,8 +37,7 @@ export default {
     'showNewIssueLink',
     'signInPath',
     'groupId',
-    'isProject',
-    'workItemPlanningViewEnabled',
+    'isGroup',
     'hasEpicsFeature',
   ],
   props: {
@@ -59,27 +64,10 @@ export default {
       };
     },
     showNewProjectButton() {
-      const canCreateGroupLevelWorkItems = this.workItemPlanningViewEnabled && this.hasEpicsFeature;
+      const canCreateGroupLevelWorkItems = this.hasEpicsFeature;
       return (
-        this.canCreateProjects &&
-        !this.isProject &&
-        !this.hasProjects &&
-        !canCreateGroupLevelWorkItems
+        this.canCreateProjects && this.isGroup && !this.hasProjects && !canCreateGroupLevelWorkItems
       );
-    },
-    title() {
-      return this.workItemPlanningViewEnabled
-        ? s__('WorkItem|Track bugs, plan features, and organize your efforts with work items')
-        : s__('Issues|Track bugs, plan features, and organize your work with issues');
-    },
-    description() {
-      return this.workItemPlanningViewEnabled
-        ? s__(
-            'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-          )
-        : s__(
-            'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-          );
     },
   },
   methods: {
@@ -96,13 +84,13 @@ export default {
   <div
     v-if="isLoggedIn"
     data-testid="signed-in-empty-state-block"
-    :data-track-action="isProject && 'render'"
-    :data-track-label="isProject && 'project_issues_empty_list'"
+    :data-track-action="!isGroup && 'render'"
+    :data-track-label="!isGroup && 'project_issues_empty_list'"
   >
     <div>
       <gl-empty-state
-        :title="title"
-        :description="description"
+        :title="$options.i18n.title"
+        :description="$options.i18n.description"
         :svg-path="$options.emptyStateSvg"
         data-testid="issuable-empty-state"
       >
@@ -148,8 +136,8 @@ export default {
           {{ s__('JiraService|Using Jira for issue tracking?') }}
           <gl-link
             :href="$options.jiraIntegrationPath"
-            :data-track-action="isProject && 'click_jira_int_project_issues_empty_list_page'"
-            :data-track-label="isProject && 'jira_int_project_issues_empty_list'"
+            :data-track-action="!isGroup && 'click_jira_int_project_issues_empty_list_page'"
+            :data-track-label="!isGroup && 'jira_int_project_issues_empty_list'"
           >
             {{ s__('JiraService|See integration options') }}
           </gl-link>

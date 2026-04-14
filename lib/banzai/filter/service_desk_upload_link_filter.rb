@@ -35,7 +35,8 @@ module Banzai
                            filename_in_text
                          end
 
-        final_element = Nokogiri::HTML::DocumentFragment.parse("<strong>#{final_filename}</strong>")
+        final_element = doc.document.create_element('strong')
+        final_element.content = final_filename
         parent.replace(final_element)
       end
     end

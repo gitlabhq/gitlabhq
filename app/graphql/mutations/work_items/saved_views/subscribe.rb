@@ -30,10 +30,6 @@ module Mutations
         def resolve(id:)
           saved_view = authorized_find!(id: id)
 
-          unless saved_view.namespace.owner_entity.work_items_consolidated_list_enabled?(current_user)
-            return { saved_view: nil, errors: [_('Saved views are not enabled for this namespace.')] }
-          end
-
           subscription = ::WorkItems::SavedViews::UserSavedView.subscribe(user: current_user, saved_view: saved_view)
 
           if subscription

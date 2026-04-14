@@ -1,7 +1,7 @@
 import { GlTable, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';

@@ -452,6 +452,29 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'when SHA strings are passed directly' do
+      let(:merge_commit_diff_mode) { nil }
+      let(:sha_strings) { commits }
+
+      subject { described_class.new(repository).find_changed_paths(sha_strings, merge_commit_diff_mode: merge_commit_diff_mode).as_json }
+
+      include_examples 'includes paths different in any parent'
+
+      include_examples 'uses requests format'
+
+      context 'when commit has an empty SHA' do
+        let(:sha_strings) { ['0000000000000000000000000000000000000000'] }
+
+        it 'does not send RPC request' do
+          expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+          returned_value = described_class.new(repository).find_changed_paths(sha_strings)
+
+          expect(returned_value).to eq([])
+        end
+      end
+    end
+
     context 'when commit sha is not set' do
       let(:empty_commit) { build(:commit, project: project, sha: nil) }
 
@@ -870,6 +893,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         client.commit_count(revision, path: path)
       end
     end
+
+    context 'with whitespace-only path' do
+      it 'includes the path in the request' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: [revision.b],
+            first_parent: false,
+            path: ' '.b
+          ), kind_of(Hash))
+          .and_return(double(count: 1))
+
+        expect(client.commit_count(revision, path: ' ')).to eq(1)
+      end
+    end
   end
 
   describe '#find_commit' do
@@ -1232,6 +1271,21 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         .and_return([])
 
       client.find_commits(message_regex: '^foo')
+    end
+
+    it 'sends an RPC request with a whitespace-only path' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        order: 'NONE',
+        paths: [' '.b],
+        global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false)
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
+        .with(request, kind_of(Hash)).and_return([])
+
+      client.find_commits(order: 'default', path: ' ')
     end
   end
 

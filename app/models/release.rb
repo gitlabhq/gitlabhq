@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Release < ApplicationRecord
+  TAG_VERSION_PREFIX_REGEX = /\Av/i
   include Presentable
   include CacheMarkdownField
   include Importable
@@ -167,6 +168,17 @@ class Release < ApplicationRecord
       .where('environment_id IN (SELECT * FROM available_environments)')
       .where(ref: tag)
       .with_environment_page_associations
+  end
+
+  def tagged_packages
+    return Packages::Package.none if tag.blank?
+
+    version = tag.sub(TAG_VERSION_PREFIX_REGEX, '')
+
+    Packages::Package
+      .for_projects(project_id)
+      .displayable
+      .with_version(version)
   end
 
   private

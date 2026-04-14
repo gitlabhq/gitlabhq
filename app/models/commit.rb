@@ -21,10 +21,6 @@ class Commit
   participant :author
   participant :committer
   participant :notes_with_associations
-
-  attr_accessor :redacted_description_html
-  attr_accessor :redacted_title_html
-  attr_accessor :redacted_full_title_html
   attr_reader :container
 
   delegate :repository, to: :container
@@ -159,7 +155,7 @@ class Commit
     end
   end
 
-  attr_accessor :raw
+  attr_accessor :redacted_description_html, :redacted_title_html, :redacted_full_title_html, :raw
 
   def initialize(raw_commit, container)
     raise "Nil as raw commit passed" unless raw_commit
@@ -599,7 +595,7 @@ class Commit
   end
 
   def first_diffs_slice(limit, diff_options = {})
-    diffs(diff_options.merge(max_files: limit)).diff_files
+    diffs(diff_options.merge(max_files: limit))
   end
 
   private

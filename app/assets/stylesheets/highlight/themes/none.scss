@@ -255,73 +255,73 @@ $none-code-mark: #d3e3f4;
     }
   }
 
-  .c { color: $gl-color-neutral-800; } /* Comment */
-  .err { color: $gl-color-neutral-800; } /* Error */
-  .g { color: $gl-color-neutral-800; } /* Generic */
-  .k { color: $gl-color-neutral-800; } /* Keyword */
-  .l { color: $gl-color-neutral-800; } /* Literal */
-  .n { color: $gl-color-neutral-800; } /* Name */
-  .o { color: $gl-color-neutral-800; } /* Operator */
-  .x { color: $gl-color-neutral-800; } /* Other */
-  .p { color: $gl-color-neutral-800; } /* Punctuation */
-  .cm { color: $gl-color-neutral-800; } /* Comment.Multiline */
-  .cp { color: $gl-color-neutral-800; } /* Comment.Preproc */
-  .c1 { color: $gl-color-neutral-800; } /* Comment.Single */
-  .cs { color: $gl-color-neutral-800; } /* Comment.Special */
-  .cd { color: $gl-color-neutral-800; } /* Comment.Doc */
-  .ge { color: $gl-color-neutral-800; } /* Generic.Emph */
-  .gr { color: $gl-color-neutral-800; } /* Generic.Error */
-  .gh { color: $gl-color-neutral-800; } /* Generic.Heading */
-  .go { color: $gl-color-neutral-800; } /* Generic.Output */
-  .gp { color: $gl-color-neutral-800; } /* Generic.Prompt */
-  .gs { color: $gl-color-neutral-800; } /* Generic.Strong */
-  .gu { color: $gl-color-neutral-800; } /* Generic.Subheading */
-  .gt { color: $gl-color-neutral-800; } /* Generic.Traceback */
-  .kc { color: $gl-color-neutral-800; } /* Keyword.Constant */
-  .kd { color: $gl-color-neutral-800; } /* Keyword.Declaration */
-  .kn { color: $gl-color-neutral-800; } /* Keyword.Namespace */
-  .kp { color: $gl-color-neutral-800; } /* Keyword.Pseudo */
-  .kr { color: $gl-color-neutral-800; } /* Keyword.Reserved */
-  .kt { color: $gl-color-neutral-800; } /* Keyword.Type */
-  .ld { color: $gl-color-neutral-800; } /* Literal.Date */
-  .m { color: $gl-color-neutral-800; } /* Literal.Number */
-  .s { color: $gl-color-neutral-800; } /* Literal.String */
-  .na { color: $gl-color-neutral-800; } /* Name.Attribute */
-  .nb { color: $gl-color-neutral-800; } /* Name.Builtin */
-  .nc { color: $gl-color-neutral-800; } /* Name.Class */
-  .no { color: $gl-color-neutral-800; } /* Name.Constant */
-  .nd { color: $gl-color-neutral-800; } /* Name.Decorator */
-  .ni { color: $gl-color-neutral-800; } /* Name.Entity */
-  .ne { color: $gl-color-neutral-800; } /* Name.Exception */
-  .nf { color: $gl-color-neutral-800; } /* Name.Function */
-  .nl { color: $gl-color-neutral-800; } /* Name.Label */
-  .nn { color: $gl-color-neutral-800; } /* Name.Namespace */
-  .nx { color: $gl-color-neutral-800; } /* Name.Other */
-  .py { color: $gl-color-neutral-800; } /* Name.Property */
-  .nt { color: $gl-color-neutral-800; } /* Name.Tag */
-  .nv { color: $gl-color-neutral-800; } /* Name.Variable */
-  .ow { color: $gl-color-neutral-800; } /* Operator.Word */
-  .w { color: $gl-color-neutral-800; } /* Text.Whitespace */
-  .mf { color: $gl-color-neutral-800; } /* Literal.Number.Float */
-  .mh { color: $gl-color-neutral-800; } /* Literal.Number.Hex */
-  .mi { color: $gl-color-neutral-800; } /* Literal.Number.Integer */
-  .mo { color: $gl-color-neutral-800; } /* Literal.Number.Oct */
-  .sb { color: $gl-color-neutral-800; } /* Literal.String.Backtick */
-  .sc { color: $gl-color-neutral-800; } /* Literal.String.Char */
-  .sd { color: $gl-color-neutral-800; } /* Literal.String.Doc */
-  .s2 { color: $gl-color-neutral-800; } /* Literal.String.Double */
-  .se { color: $gl-color-neutral-800; } /* Literal.String.Escape */
-  .sh { color: $gl-color-neutral-800; } /* Literal.String.Heredoc */
-  .si { color: $gl-color-neutral-800; } /* Literal.String.Interpol */
-  .sx { color: $gl-color-neutral-800; } /* Literal.String.Other */
-  .sr { color: $gl-color-neutral-800; } /* Literal.String.Regex */
-  .s1 { color: $gl-color-neutral-800; } /* Literal.String.Single */
-  .ss { color: $gl-color-neutral-800; } /* Literal.String.Symbol */
-  .bp { color: $gl-color-neutral-800; } /* Name.Builtin.Pseudo */
-  .vc { color: $gl-color-neutral-800; } /* Name.Variable.Class */
-  .vg { color: $gl-color-neutral-800; } /* Name.Variable.Global */
-  .vi { color: $gl-color-neutral-800; } /* Name.Variable.Instance */
-  .il { color: $gl-color-neutral-800; } /* Literal.Number.Integer.Long */
+  .c { color: $gl-color-neutral-800; } // Comment
+  .err { color: $gl-color-neutral-800; } // Error
+  .g { color: $gl-color-neutral-800; } // Generic
+  .k { color: $gl-color-neutral-800; } // Keyword
+  .l { color: $gl-color-neutral-800; } // Literal
+  .n { color: $gl-color-neutral-800; } // Name
+  .o { color: $gl-color-neutral-800; } // Operator
+  .x { color: $gl-color-neutral-800; } // Other
+  .p { color: $gl-color-neutral-800; } // Punctuation
+  .cm { color: $gl-color-neutral-800; } // Comment.Multiline
+  .cp { color: $gl-color-neutral-800; } // Comment.Preproc
+  .c1 { color: $gl-color-neutral-800; } // Comment.Single
+  .cs { color: $gl-color-neutral-800; } // Comment.Special
+  .cd { color: $gl-color-neutral-800; } // Comment.Doc
+  .ge { color: $gl-color-neutral-800; } // Generic.Emph
+  .gr { color: $gl-color-neutral-800; } // Generic.Error
+  .gh { color: $gl-color-neutral-800; } // Generic.Heading
+  .go { color: $gl-color-neutral-800; } // Generic.Output
+  .gp { color: $gl-color-neutral-800; } // Generic.Prompt
+  .gs { color: $gl-color-neutral-800; } // Generic.Strong
+  .gu { color: $gl-color-neutral-800; } // Generic.Subheading
+  .gt { color: $gl-color-neutral-800; } // Generic.Traceback
+  .kc { color: $gl-color-neutral-800; } // Keyword.Constant
+  .kd { color: $gl-color-neutral-800; } // Keyword.Declaration
+  .kn { color: $gl-color-neutral-800; } // Keyword.Namespace
+  .kp { color: $gl-color-neutral-800; } // Keyword.Pseudo
+  .kr { color: $gl-color-neutral-800; } // Keyword.Reserved
+  .kt { color: $gl-color-neutral-800; } // Keyword.Type
+  .ld { color: $gl-color-neutral-800; } // Literal.Date
+  .m { color: $gl-color-neutral-800; } // Literal.Number
+  .s { color: $gl-color-neutral-800; } // Literal.String
+  .na { color: $gl-color-neutral-800; } // Name.Attribute
+  .nb { color: $gl-color-neutral-800; } // Name.Builtin
+  .nc { color: $gl-color-neutral-800; } // Name.Class
+  .no { color: $gl-color-neutral-800; } // Name.Constant
+  .nd { color: $gl-color-neutral-800; } // Name.Decorator
+  .ni { color: $gl-color-neutral-800; } // Name.Entity
+  .ne { color: $gl-color-neutral-800; } // Name.Exception
+  .nf { color: $gl-color-neutral-800; } // Name.Function
+  .nl { color: $gl-color-neutral-800; } // Name.Label
+  .nn { color: $gl-color-neutral-800; } // Name.Namespace
+  .nx { color: $gl-color-neutral-800; } // Name.Other
+  .py { color: $gl-color-neutral-800; } // Name.Property
+  .nt { color: $gl-color-neutral-800; } // Name.Tag
+  .nv { color: $gl-color-neutral-800; } // Name.Variable
+  .ow { color: $gl-color-neutral-800; } // Operator.Word
+  .w { color: $gl-color-neutral-800; } // Text.Whitespace
+  .mf { color: $gl-color-neutral-800; } // Literal.Number.Float
+  .mh { color: $gl-color-neutral-800; } // Literal.Number.Hex
+  .mi { color: $gl-color-neutral-800; } // Literal.Number.Integer
+  .mo { color: $gl-color-neutral-800; } // Literal.Number.Oct
+  .sb { color: $gl-color-neutral-800; } // Literal.String.Backtick
+  .sc { color: $gl-color-neutral-800; } // Literal.String.Char
+  .sd { color: $gl-color-neutral-800; } // Literal.String.Doc
+  .s2 { color: $gl-color-neutral-800; } // Literal.String.Double
+  .se { color: $gl-color-neutral-800; } // Literal.String.Escape
+  .sh { color: $gl-color-neutral-800; } // Literal.String.Heredoc
+  .si { color: $gl-color-neutral-800; } // Literal.String.Interpol
+  .sx { color: $gl-color-neutral-800; } // Literal.String.Other
+  .sr { color: $gl-color-neutral-800; } // Literal.String.Regex
+  .s1 { color: $gl-color-neutral-800; } // Literal.String.Single
+  .ss { color: $gl-color-neutral-800; } // Literal.String.Symbol
+  .bp { color: $gl-color-neutral-800; } // Name.Builtin.Pseudo
+  .vc { color: $gl-color-neutral-800; } // Name.Variable.Class
+  .vg { color: $gl-color-neutral-800; } // Name.Variable.Global
+  .vi { color: $gl-color-neutral-800; } // Name.Variable.Instance
+  .il { color: $gl-color-neutral-800; } // Literal.Number.Integer.Long
 }
 
 #conflicts {

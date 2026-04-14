@@ -55,10 +55,14 @@ module API
         tags ['storage_moves']
         success code: 202
       end
+
+      # rubocop:disable API/ParameterValuesProc -- storage shards are instance-specific
       params do
         requires :source_storage_name, type: String, desc: 'The source storage shard', values: -> { Gitlab.config.repositories.storages.keys }
         optional :destination_storage_name, type: String, desc: 'The destination storage shard', values: -> { Gitlab.config.repositories.storages.keys }
       end
+      # rubocop:enable API/ParameterValuesProc
+
       route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :instance
       post do
         ::Projects::ScheduleBulkRepositoryShardMovesService.enqueue(

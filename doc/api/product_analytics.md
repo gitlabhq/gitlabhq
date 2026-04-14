@@ -35,9 +35,9 @@ Use this API to track user behavior and application usage.
 > [!note]
 > Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).
 
-## Send query request to Cube
+## Create a Cube query request
 
-Generate an access token that can be used to query the Cube API. For example:
+Creates a query request to the Cube API and generates an access token.
 
 ```plaintext
 POST /projects/:id/product_analytics/request/load
@@ -116,9 +116,9 @@ The body of the load request must be a valid Cube query.
 }
 ```
 
-## Send metadata request to Cube
+## Retrieve Cube metadata
 
-Return Cube Metadata for the Analytics data. For example:
+Retrieves Cube metadata for analytics data.
 
 ```plaintext
 GET /projects/:id/product_analytics/request/meta

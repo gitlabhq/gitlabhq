@@ -31,6 +31,12 @@ RSpec.describe 'PipelineScheduleDelete', feature_category: :continuous_integrati
       project.add_maintainer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_pipeline_schedule do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when success' do
       it do
         post_graphql_mutation(mutation, current_user: current_user)

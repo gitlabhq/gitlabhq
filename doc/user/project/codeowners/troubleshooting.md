@@ -15,7 +15,7 @@ title: Troubleshooting Code Owners
 
 When working with Code Owners, you might encounter the following issues.
 
-For more information about how the Code Owners feature handles errors, see [Error handling](advanced.md#error-handling).
+For more information about how the Code Owners feature handles errors, see [error handling](advanced.md#error-handling).
 
 ## Validate your CODEOWNERS file
 

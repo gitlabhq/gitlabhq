@@ -133,6 +133,18 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
         end
       end
 
+      context "valid branch, whitespace-only path" do
+        let(:id) { 'master/ /' }
+
+        it 'redirects when whitespace-only path does not exist' do
+          allow(project.repository).to receive(:tree).and_return(instance_double(Tree, entries: []))
+
+          request
+          expect(assigns(:path)).to eq(' ')
+          expect(subject).to redirect_to("/#{project.full_path}/-/tree/master")
+        end
+      end
+
       context "invalid branch, valid path" do
         let(:id) { 'invalid-branch/encoding/' }
 

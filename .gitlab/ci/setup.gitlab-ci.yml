@@ -215,7 +215,6 @@ detect-system-tests-duo-experiment:
     expire_in: 7d
     paths:
       - ${GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH}
-      - tmp/.duo_last_prompt.txt
       - tmp/.duo_last_output.txt
       - duo_feature_specs.json
     when: always

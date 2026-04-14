@@ -187,7 +187,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
 
       params = { namespace_id: project.namespace, project_id: project, hook: hook_params }
 
-      expect { post :create, params: params }.to change(ProjectHook, :count).by(1)
+      expect { post :create, params: params }.to change { ProjectHook.count }.by(1)
 
       project_hook = ProjectHook.order_id_desc.take
 

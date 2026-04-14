@@ -63,6 +63,13 @@ RSpec.describe 'Delete an upload', feature_category: :navigation do
     let(:extra_params) { { project_path: project.full_path } }
 
     it_behaves_like 'upload deletion'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_markdown_upload do
+      let(:user) { maintainer }
+      let(:boundary_object) { project }
+      let(:authz_mutation) { graphql_mutation(:uploadDelete, params) { 'errors' } }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   context 'when deleting group upload' do
@@ -71,5 +78,12 @@ RSpec.describe 'Delete an upload', feature_category: :navigation do
     let(:extra_params) { { group_path: group.full_path } }
 
     it_behaves_like 'upload deletion'
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_markdown_upload do
+      let(:user) { maintainer }
+      let(:boundary_object) { group }
+      let(:authz_mutation) { graphql_mutation(:uploadDelete, params) { 'errors' } }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
   end
 end

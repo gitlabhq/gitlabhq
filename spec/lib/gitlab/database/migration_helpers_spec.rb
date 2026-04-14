@@ -591,6 +591,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#cleanup_concurrent_column_type_change' do
     it 'cleans up the type changing procedure' do
+      expect(model).to receive(:with_lock_retries).ordered.and_yield
+
       expect(model).to receive(:cleanup_concurrent_column_rename)
         .with('users', 'username', 'username_for_type_change')
 
@@ -641,6 +643,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           limit: nil
         ).and_return(true)
 
+        expect(model).to receive(:with_lock_retries).ordered.and_yield
+
         expect(model).to receive(:rename_column)
           .with(:users, :old, temp_column)
 
@@ -668,6 +672,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           type_cast_function: :custom_type_cast_function,
           limit: 8
         ).and_return(true)
+
+        expect(model).to receive(:with_lock_retries).ordered.and_yield
 
         expect(model).to receive(:rename_column)
           .with(:users, :old, temp_column)

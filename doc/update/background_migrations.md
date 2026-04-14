@@ -158,6 +158,11 @@ sudo gitlab-rake gitlab:background_migrations:resume[main_85]
 
 {{< /history >}}
 
+> [!warning]
+> This task executes the migration synchronously in the foreground. The migration runs until completion
+> or failure. This can take a significant amount of time for large migrations and may impact database
+> performance. Use this task during maintenance windows when possible.
+
 To execute a specific background migration immediately:
 
 ```shell
@@ -178,11 +183,6 @@ Executing background migration `ci_10`...
 Done.
 ```
 
-> [!warning]
-> This task executes the migration synchronously in the foreground. The migration runs until completion
-> or failure. This can take a significant amount of time for large migrations and may impact database
-> performance. Use this task during maintenance windows when possible.
-
 The task prompts for confirmation before executing. If the migration fails to complete, check the
 migration status with `gitlab:background_migrations:show[<migration_id>]` for more details.
 
@@ -193,6 +193,11 @@ migration status with `gitlab:background_migrations:show[<migration_id>]` for mo
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211674) in GitLab 18.7.
 
 {{< /history >}}
+
+> [!warning]
+> This task executes all unfinished migrations synchronously in the foreground. This can take a very
+> long time and significantly impact database performance. Only use this task during planned maintenance
+> windows. The task continues even if individual migrations fail, but reports failures in the output.
 
 To execute all unfinished background migrations across all databases:
 
@@ -230,11 +235,6 @@ Do not remove the two-space nesting.
   [ci_10]: Start.
   [ci_10]: Done.
   ```
-
-> [!warning]
-> This task executes all unfinished migrations synchronously in the foreground. This can take a very
-> long time and significantly impact database performance. Only use this task during planned maintenance
-> windows. The task continues even if individual migrations fail, but reports failures in the output.
 
 The task:
 

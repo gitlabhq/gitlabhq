@@ -3,6 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
 export default {
+  name: 'TakeOwnershipModal',
   modalId: 'pipeline-take-ownership-modal',
   i18n: {
     takeOwnership: s__('PipelineSchedules|Take ownership'),

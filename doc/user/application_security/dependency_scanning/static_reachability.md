@@ -70,7 +70,7 @@ Prerequisites:
       managers, see the
       [dependency scanning analyzer documentation](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files).
   - JavaScript and TypeScript:
-    - Repository must contain lock files
+    - Repository must contain lockfiles
       [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)
       by the dependency scanning analyzer.
   - Java:
@@ -129,7 +129,7 @@ reachability analysis cannot always definitively determine package usage.
 
 Dependencies are marked as not found when:
 
-- They appear in lock files but are not imported in the code.
+- They appear in lockfiles but are not imported in the code.
 - They are in excluded directories (for example, configured with `DS_EXCLUDED_PATHS`).
 - They are tools included for local usage only, such as coverage testing or linting packages.
 
@@ -147,7 +147,7 @@ In this example, the graph file `pipdeptree.json` is outside the excluded direct
 to identify the dependencies listed in the file. However, the source code that imports the
 `requests` dependency is in an excluded directory, so static reachability analysis doesn't check its
 reachability. As a result, the `requests` dependency is labeled as **Not found**. In other words,
-this occurs when the lock file is outside the excluded directory but the code that imports the
+this occurs when the lockfile is outside the excluded directory but the code that imports the
 dependency is inside it.
 
 ## Supported languages and package managers
@@ -182,7 +182,7 @@ language.
      widely-depended-upon packages in Maven Central.
 1. Use `maven.graph.json` files as described in the
    [Maven](dependency_scanning_sbom/_index.md#maven) instructions.
-1. Use dependency lock files as described in the [Gradle](dependency_scanning_sbom/_index.md#gradle)
+1. Use dependency lockfiles as described in the [Gradle](dependency_scanning_sbom/_index.md#gradle)
    instructions.
 
 ## Offline environment

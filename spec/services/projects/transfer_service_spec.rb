@@ -552,6 +552,23 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     end
   end
 
+  context 'when target namespace has a conflicting ProjectNamespace from a deleted project' do
+    let!(:deleted_project) { create(:project, name: project.name, group: group) }
+
+    before do
+      group.add_owner(user)
+      deleted_project.update_columns(pending_delete: true, name: "#{project.name}-deleted", path: "#{project.path}-deleted")
+    end
+
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace].first).to include('recently deleted')
+    end
+  end
+
   context 'target namespace matches current namespace' do
     let(:group) { user.namespace }
 
@@ -897,6 +914,46 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     context 'with a different root_ancestor' do
       it 'deletes issue contacts' do
         expect { execute_transfer }.to change { CustomerRelations::IssueContact.count }.by(-2)
+      end
+    end
+  end
+
+  describe '#schedule_async_transfer' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:new_namespace) { create(:group) }
+
+    subject(:service) { described_class.new(project, user) }
+
+    before_all do
+      project.add_owner(user)
+      new_namespace.add_owner(user)
+    end
+
+    it 'transitions project namespace to transfer_scheduled and enqueues the worker' do
+      expect(Projects::TransferWorker).to receive(:perform_async).with(
+        project.id,
+        new_namespace.id,
+        user.id
+      )
+
+      expect(service.schedule_async_transfer(new_namespace)).to be true
+
+      project_namespace = project.project_namespace.reload
+      expect(project_namespace.state).to eq('transfer_scheduled')
+      expect(project_namespace.state_metadata['transfer_target_parent_id']).to eq(new_namespace.id)
+    end
+
+    context 'when the state transition fails' do
+      before do
+        project.project_namespace.update_column(:state, Namespace.states[:creation_in_progress])
+      end
+
+      it 'returns false with an error and does not enqueue the worker' do
+        expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+        expect(service.schedule_async_transfer(new_namespace)).to be false
+        expect(service.error).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
       end
     end
   end

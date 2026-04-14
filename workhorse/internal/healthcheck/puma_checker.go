@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
@@ -23,6 +24,7 @@ type PumaReadinessChecker struct {
 	logger         *logrus.Logger
 	successChecker OptimizedReadinessChecker // Interface for both recording and checking success
 	skipInterval   time.Duration             // Duration to skip checks if recent success
+	probeDuration  *prometheus.HistogramVec  // Histogram of readiness probe HTTP response times; nil if not configured
 }
 
 // PumaReadinessResponse represents the JSON response from Puma's readiness endpoint
@@ -44,6 +46,13 @@ func WithSuccessChecker(successChecker OptimizedReadinessChecker) PumaReadinessC
 func WithSkipInterval(interval time.Duration) PumaReadinessCheckerOption {
 	return func(p *PumaReadinessChecker) {
 		p.skipInterval = interval
+	}
+}
+
+// WithProbeDurationHistogram configures a histogram for recording readiness probe HTTP response times
+func WithProbeDurationHistogram(h *prometheus.HistogramVec) PumaReadinessCheckerOption {
+	return func(p *PumaReadinessChecker) {
+		p.probeDuration = h
 	}
 }
 
@@ -156,6 +165,14 @@ func (p *PumaReadinessChecker) checkReadinessEndpointHealth(ctx context.Context,
 	result.Details["readiness_endpoint"] = readinessHealthy
 	result.Details["readiness_duration_s"] = readinessDuration.Seconds()
 	result.Details["readiness_last_scrape_time"] = time.Now().UTC().Format(time.RFC3339)
+
+	if p.probeDuration != nil {
+		resultLabel := "ok"
+		if !readinessHealthy || readinessErr != nil {
+			resultLabel = "error"
+		}
+		p.probeDuration.WithLabelValues(resultLabel).Observe(readinessDuration.Seconds())
+	}
 
 	if readinessErr != nil {
 		result.Error = readinessErr

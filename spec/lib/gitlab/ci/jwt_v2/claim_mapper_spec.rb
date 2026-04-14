@@ -7,8 +7,7 @@ RSpec.describe Gitlab::Ci::JwtV2::ClaimMapper, feature_category: :continuous_int
   let_it_be(:pipeline) { build_stubbed(:ci_pipeline, ref: 'test-branch-for-claim-mapper', sha: sha) }
 
   let(:source) { :unknown_source }
-  let(:url) { 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml' }
-  let(:project_config) { instance_double(Gitlab::Ci::ProjectConfig, url: url, source: source) }
+  let(:project_config) { instance_double(Gitlab::Ci::ProjectConfig, source: source) }
 
   let(:base_url) { "#{Settings.build_server_fqdn}/#{pipeline.project.full_path}" }
   let(:ci_config_ref_uri) { "#{base_url}//.gitlab-ci.yml@refs/heads/test-branch-for-claim-mapper" }
@@ -54,7 +53,7 @@ RSpec.describe Gitlab::Ci::JwtV2::ClaimMapper, feature_category: :continuous_int
       with_them do
         it 'uses mapper' do
           mapper_class = described_class::MAPPER_FOR_CONFIG_SOURCE[source]
-          expect_next_instance_of(mapper_class, project_config, pipeline) do |instance|
+          expect_next_instance_of(mapper_class, pipeline) do |instance|
             expect(instance).to receive(:to_h).and_return(result)
           end
 

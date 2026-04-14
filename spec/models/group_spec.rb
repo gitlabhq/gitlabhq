@@ -37,6 +37,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads) }
+    it { is_expected.to have_many(:provisioned_user_details).inverse_of(:provisioned_by_group) }
+    it { is_expected.to have_many(:provisioned_users) }
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_one(:deletion_schedule) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
@@ -4280,27 +4282,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_items_consolidated_list_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_item_planning_view }
-      let(:feature_flag_method) { :work_items_consolidated_list_enabled? }
-    end
-  end
-
   describe '#use_work_item_url?' do
-    where(:consolidated_list, :legacy_url, :result) do
-      false | false | false
-      false | true | false
-      true | false | true
-      true | true | false
+    where(:legacy_url, :result) do
+      false | true
+      true  | false
     end
 
     with_them do
       before do
-        stub_feature_flags(
-          work_item_planning_view: consolidated_list,
-          work_item_legacy_url: legacy_url
-        )
+        stub_feature_flags(work_item_legacy_url: legacy_url)
       end
 
       subject(:use_work_item_url?) { group.use_work_item_url? }
@@ -4332,6 +4322,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
       let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
+  describe '#use_mermaid_v11_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :use_mermaid_v11 }
+      let(:feature_flag_method) { :use_mermaid_v11_feature_flag_enabled? }
     end
   end
 

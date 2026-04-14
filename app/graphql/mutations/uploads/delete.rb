@@ -9,6 +9,11 @@ module Mutations
       include Mutations::ResolvesResourceParent
 
       authorize :destroy_upload
+      authorize_granular_token permissions: :delete_markdown_upload,
+        boundaries: [
+          { boundary_argument: :project_path, boundary_type: :project },
+          { boundary_argument: :group_path, boundary_type: :group }
+        ]
 
       argument :secret, GraphQL::Types::String,
         required: true,

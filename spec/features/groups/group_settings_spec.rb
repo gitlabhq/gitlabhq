@@ -168,6 +168,10 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
     let(:namespace_select) { find_by_testid('transfer-group-namespace-select') }
     let(:confirm_modal) { find_by_testid('confirm-danger-modal') }
 
+    before do
+      stub_feature_flags(groups_and_projects_async_transfer: false)
+    end
+
     shared_examples 'can transfer the group' do
       before do
         selected_group.add_owner(user)
@@ -179,7 +183,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         visit edit_group_path(selected_group)
 
         within_testid('transfer-locations-dropdown') do
-          click_button _('Select parent group')
+          click_button s_('NamespaceTransfer|Select namespace')
           fill_in _('Search'), with: target_group&.name || ''
           wait_for_requests
           click_button(target_group&.name || 'No parent group')
@@ -407,7 +411,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
       it 'allows delayed deletion' do
         remove_with_confirm('Delete', group.path)
 
-        expect(page).to have_content "This group and all its data will be permanently deleted on #{permanent_deletion_date_formatted}."
+        expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
       end
     end
 

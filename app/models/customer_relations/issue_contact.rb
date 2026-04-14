@@ -7,6 +7,7 @@ class CustomerRelations::IssueContact < ApplicationRecord
 
   belongs_to :issue, optional: false, inverse_of: :customer_relations_contacts
   belongs_to :contact, optional: false, inverse_of: :issue_contacts
+  belongs_to :namespace
 
   validate :contact_belongs_to_crm_group
 

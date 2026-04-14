@@ -95,6 +95,7 @@ export default {
       return `${this.pipelineName} - ${status}`;
     },
     graphqlEtag() {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- /api/graphql is an ETag resource identifier, not a navigational URL
       return graphqlEtagPipelinePath('/api/graphql', this.pipelineId);
     },
     isLoading() {

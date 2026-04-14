@@ -9,6 +9,7 @@ module Types
       include ::UsersHelper
 
       authorize :read_organization_user
+      authorize_granular_token permissions: :read_organization_user, boundary: :instance, boundary_type: :instance
 
       alias_method :organization_user, :object
 

@@ -9,13 +9,17 @@ module Ci
     STATUS_TO_STATUS_GROUP = STATUS_GROUP_TO_STATUSES.flat_map { |k, v| v.product([k]) }.to_h
 
     ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
+    MAX_SUBGROUP_PATHS = 10
 
-    attr_reader :current_user, :container, :from_time, :to_time, :source, :ref, :status_groups, :duration_percentiles
+    attr_reader :current_user, :container, :from_time, :to_time, :source, :ref, :status_groups,
+      :duration_percentiles, :subgroup_full_paths
 
+    # rubocop:disable Metrics/ParameterLists -- All keyword args with defaults
     def initialize(
       current_user:, container:, from_time:, to_time:,
-      source: nil, ref: nil, status_groups: [:any], duration_percentiles: []
+      source: nil, ref: nil, status_groups: [:any], duration_percentiles: [], subgroup_full_paths: []
     )
+      # rubocop:enable Metrics/ParameterLists
       @current_user = current_user
       @container = container
       @from_time = from_time || 1.week.ago.utc
@@ -24,6 +28,7 @@ module Ci
       @source = source
       @ref = ref
       @duration_percentiles = duration_percentiles
+      @subgroup_full_paths = subgroup_full_paths
     end
 
     def execute
@@ -53,10 +58,17 @@ module Ci
 
     def base_query
       query = clickhouse_model.for_container(container).within_dates(from_time, to_time)
+      query = query.for_subgroups(resolve_subgroups) if subgroup_full_paths.present?
       query = query.for_source(source) if source
       query = query.for_ref(ref_and_associated_reserved_refs(container, ref, source)) if ref
 
       query
+    end
+
+    def resolve_subgroups
+      return [] unless subgroup_full_paths.present? && container.is_a?(::Group)
+
+      ::Group.where_full_path_in(subgroup_full_paths).within(container.traversal_ids)
     end
 
     def duration_percentile_symbols

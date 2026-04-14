@@ -13,7 +13,6 @@ module Tasks
               duplicate_name: [],
               duplicate_raw_permission: {},
               file: {},
-              missing_resource_metadata: [],
               resource_metadata_schema: {},
               category_metadata_schema: {},
               empty_resource_directory: [],
@@ -93,12 +92,6 @@ module Tasks
               resource_identifier = "#{category}/#{resource}"
               assignable_resource = ::Authz::PermissionGroups::Resource.get(resource_identifier)
 
-              unless assignable_resource
-                violations[:missing_resource_metadata] <<
-                  "#{PERMISSION_DIR}/#{category}/#{resource}/"
-                next
-              end
-
               @resource_metadata_schema_validator ||= JSONSchemer.schema(
                 Rails.root.join("#{PERMISSION_DIR}/resource_metadata_schema.json")
               )
@@ -123,12 +116,12 @@ module Tasks
           end
 
           def validate_empty_resource_directories
-            # Check resource directories (inside category directories) for having only _metadata.yml
+            # Check resource directories (inside category directories) for having only .metadata.yml
             violations[:empty_resource_directory] = find_empty_directories("#{PERMISSION_DIR}/*/*/")
           end
 
           def validate_empty_category_directories
-            # Check category directories for having only _metadata.yml with no resource subdirectories
+            # Check category directories for having only .metadata.yml with no resource subdirectories
             violations[:empty_category_directory] = find_empty_parent_directories("#{PERMISSION_DIR}/*/")
           end
 
@@ -149,15 +142,33 @@ module Tasks
           end
 
           def format_all_errors
-            out = format_schema_errors
-            out += format_error_list(:duplicate_name)
+            out = format_schema_errors { |name| assignable_source_path(name) }
+            out += format_duplicate_name_errors
             out += format_duplicate_raw_permission_errors
             out += format_file_errors
-            out += format_error_list(:missing_resource_metadata)
-            out += format_schema_errors(:resource_metadata_schema)
-            out += format_schema_errors(:category_metadata_schema)
+            out += format_schema_errors(:resource_metadata_schema) { |id| metadata_path(id) }
+            out += format_schema_errors(:category_metadata_schema) { |id| metadata_path(id) }
             out += format_error_list(:empty_resource_directory)
             out + format_error_list(:empty_category_directory)
+          end
+
+          def metadata_path(identifier)
+            "#{PERMISSION_DIR}/#{identifier}/.metadata.yml"
+          end
+
+          def format_duplicate_name_errors
+            return '' if violations[:duplicate_name].empty?
+
+            out = "#{error_messages[:duplicate_name]}\n\n"
+
+            violations[:duplicate_name].each do |name|
+              sources = assignable_source_paths_by_name(name)
+              out += "  - #{name}"
+              out += " (#{sources.join(', ')})" if sources.any?
+              out += "\n"
+            end
+
+            "#{out}\n"
           end
 
           def format_duplicate_raw_permission_errors
@@ -167,10 +178,24 @@ module Tasks
 
             violations[:duplicate_raw_permission].keys.sort.each do |raw_permission|
               assignable_names = violations[:duplicate_raw_permission][raw_permission]
-              out += "  - #{raw_permission}: found in #{assignable_names.sort.join(', ')}\n"
+              sources = assignable_names.sort.map do |name|
+                "#{name} (#{assignable_source_path(name)})"
+              end
+              out += "  - #{raw_permission}: found in #{sources.join(', ')}\n"
             end
 
             "#{out}\n"
+          end
+
+          def assignable_source_path(name)
+            permission = ::Authz::PermissionGroups::Assignable.all[name.to_sym]
+            relative_path(permission.source_file)
+          end
+
+          def assignable_source_paths_by_name(name)
+            ::Authz::PermissionGroups::Assignable.all.values
+              .select { |p| p.name == name }
+              .map { |p| relative_path(p.source_file) }
           end
 
           def error_messages
@@ -185,9 +210,6 @@ module Tasks
                 "\n#{assignable_permissions_link(anchor: 'important-constraints')}",
               file: "The following permission definitions do not exist at the expected path." \
                 "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
-              missing_resource_metadata:
-                "The following assignable permission resource directories are missing a _metadata.yml file." \
-                "\n#{assignable_permissions_link(anchor: 'when-do-you-need-metadata-files')}",
               resource_metadata_schema:
                 "The following assignable permission resource metadata file failed schema validation." \
                 "\n#{assignable_permissions_link(anchor: 'when-do-you-need-metadata-files')}",
@@ -195,11 +217,11 @@ module Tasks
                 "The following assignable permission category metadata file failed schema validation." \
                 "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
               empty_resource_directory:
-                "The following resource directories contain only a _metadata.yml file with no permission definitions." \
+                "The following resource directories contain only a .metadata.yml file with no permission definitions." \
                 "\nEither add permission definitions or remove the directory." \
                 "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
               empty_category_directory:
-                "The following category directories contain only a _metadata.yml file with no resource " \
+                "The following category directories contain only a .metadata.yml file with no resource " \
                 "subdirectories.\nEither add resource subdirectories or remove the directory." \
                 "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}"
             }

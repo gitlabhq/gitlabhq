@@ -9,6 +9,9 @@ module Evidences
     expose :created_at
     expose :project, using: Evidences::ProjectEntity
     expose :milestones, using: Evidences::MilestoneEntity
+    expose :packages, using: Evidences::PackageEntity do |release, _options|
+      release.tagged_packages
+    end
   end
 end
 

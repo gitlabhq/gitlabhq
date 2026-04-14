@@ -197,7 +197,7 @@ module Gitlab
 
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
-        request.path = encode_binary(options[:path]) if options[:path].present?
+        request.path = encode_binary(options[:path]) if options[:path] && !options[:path].empty?
         request.max_count = options[:max_count] if options[:max_count].present?
 
         gitaly_client_call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
@@ -520,7 +520,7 @@ module Gitlab
         request.author   = encode_binary(options[:author]) if options[:author]
         request.order    = options[:order].upcase.sub('DEFAULT', 'NONE') if options[:order].present?
 
-        request.paths = encode_repeated(Array(options[:path])) if options[:path].present?
+        request.paths = encode_repeated(Array(options[:path])) if options[:path] && !options[:path].empty?
 
         response = gitaly_client_call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
@@ -724,6 +724,13 @@ module Gitlab
 
             Gitaly::FindChangedPathsRequest::Request.new(
               commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: object.sha)
+            )
+          when String
+            next unless Gitlab::Git.commit_id?(object)
+            next if Gitlab::Git.blank_ref?(object)
+
+            Gitaly::FindChangedPathsRequest::Request.new(
+              commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: object)
             )
           end
         end

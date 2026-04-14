@@ -48,7 +48,7 @@ Composite identity is used when flows and agents execute on runners. This list i
 - External agents.
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`.
 
-Composite identity does not apply to GitLab Duo Chat (agentic) in the UI and IDE.
+Composite identity does not apply to GitLab Duo Agentic Chat in the UI and IDE.
 
 ## How composite identity works
 
@@ -98,7 +98,7 @@ Because these are different token types with different scopes, the CI/CD job has
 
 ## Compliance considerations for merge requests
 
-When a flow creates a merge request, the merge request is attributed to the service account instead of the human user who triggered the flow. This attribution model might conflict with compliance frameworks that require segregation of duties, including:
+When a flow creates a merge request, the merge request is attributed to the human user who triggered the flow instead of the service account. This is done to adhere to compliance frameworks that require segregation of duties, including:
 
 - SOC 2 (System and Organization Controls 2)
 - SOX (Sarbanes-Oxley Act)
@@ -115,5 +115,3 @@ is considered the author because:
 - The human user directed the service account to create the changes.
 - From a compliance perspective, prompting an AI system to write code is equivalent to writing the code yourself.
 - The service account acts as a proxy for the human user's intent.
-
-Organizations subject to compliance requirements should [turn off foundational flows](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off) that create merge requests.

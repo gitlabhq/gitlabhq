@@ -41,6 +41,24 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from './constants';
+import {
+  CLOSED_AT_ASC,
+  CLOSED_AT_DESC,
+  CREATED_ASC,
+  CREATED_DESC,
+  DUE_DATE_ASC,
+  DUE_DATE_DESC,
+  MILESTONE_DUE_ASC,
+  MILESTONE_DUE_DESC,
+  POPULARITY_ASC,
+  POPULARITY_DESC,
+  START_DATE_ASC,
+  START_DATE_DESC,
+  TITLE_ASC,
+  TITLE_DESC,
+  UPDATED_ASC,
+  UPDATED_DESC,
+} from './list/constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
 
@@ -55,12 +73,14 @@ export const findAssigneesWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
 
 export const findAwardEmojiWidget = (workItem) =>
+  workItem?.features?.awardEmoji ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
 
 export const findColorWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_COLOR);
 
 export const findCrmContactsWidget = (workItem) =>
+  workItem?.features?.crmContacts ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CRM_CONTACTS);
 
 export const findCurrentUserTodosWidget = (workItem) =>
@@ -106,6 +126,7 @@ export const findMilestoneWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
 
 export const findNotesWidget = (workItem) =>
+  workItem?.features?.notes ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTES);
 
 export const findStartAndDueDateWidget = (workItem) =>
@@ -605,8 +626,8 @@ export const saveHiddenMetadataKeysToLocalStorage = (key, hiddenKeys) => {
   }
 };
 
-export const getHiddenMetadataKeysFromLocalStorage = (key) => {
-  if (!AccessorUtilities.canUseLocalStorage()) return [];
+export const getHiddenMetadataKeysFromLocalStorage = (key, defaultHiddenKeys = []) => {
+  if (!AccessorUtilities.canUseLocalStorage()) return defaultHiddenKeys;
 
   const stored = localStorage.getItem(key);
 
@@ -614,11 +635,11 @@ export const getHiddenMetadataKeysFromLocalStorage = (key) => {
     try {
       return JSON.parse(stored);
     } catch {
-      return [];
+      return defaultHiddenKeys;
     }
   }
 
-  return [];
+  return defaultHiddenKeys;
 };
 
 export const isCurrentViewWorkItem = () => {
@@ -657,3 +678,67 @@ export const isCurrentViewWorkItem = () => {
     'projects:issues:show',
   ].includes(page);
 };
+
+export const getSortValue = (item, sortKey) => {
+  switch (sortKey) {
+    case CREATED_ASC:
+    case CREATED_DESC:
+      return new Date(item.createdAt);
+    case UPDATED_ASC:
+    case UPDATED_DESC:
+      return new Date(item.updatedAt);
+    case CLOSED_AT_ASC:
+    case CLOSED_AT_DESC:
+      return item.closedAt ? new Date(item.closedAt) : null;
+    case TITLE_ASC:
+    case TITLE_DESC:
+      return item.title?.toLowerCase() || '';
+    case POPULARITY_ASC:
+    case POPULARITY_DESC:
+      return findAwardEmojiWidget(item)?.upvotes || null;
+    case MILESTONE_DUE_ASC:
+    case MILESTONE_DUE_DESC: {
+      const dueDate = findMilestoneWidget(item)?.milestone?.dueDate;
+      return dueDate ? new Date(dueDate) : null;
+    }
+    case DUE_DATE_ASC:
+    case DUE_DATE_DESC: {
+      const dueDate = findStartAndDueDateWidget(item)?.dueDate;
+      return dueDate ? new Date(dueDate) : null;
+    }
+    case START_DATE_ASC:
+    case START_DATE_DESC: {
+      const startDate = findStartAndDueDateWidget(item)?.startDate;
+      return startDate ? new Date(startDate) : null;
+    }
+    default:
+      return null;
+  }
+};
+
+export function sortWorkItems(workItems, sortKey, resolveWorkItemSortValue) {
+  const isDescending = sortKey.endsWith('_DESC');
+
+  return [...workItems].sort((workItem1, workItem2) => {
+    const workItem1Value = resolveWorkItemSortValue(workItem1, sortKey);
+    const workItem2Value = resolveWorkItemSortValue(workItem2, sortKey);
+    // Handle null values - always keep them at the end
+    if (workItem1Value === null && workItem2Value === null) return 0;
+    if (workItem1Value === null) return 1;
+    if (workItem2Value === null) return -1;
+
+    // Compare values
+    let comparison = 0;
+    if (workItem1Value < workItem2Value) {
+      comparison = -1;
+    } else if (workItem1Value > workItem2Value) {
+      comparison = 1;
+    }
+
+    return isDescending ? -comparison : comparison;
+  });
+}
+
+export function getSortedWorkItems(workItems, sortKey) {
+  return sortWorkItems(workItems, sortKey, getSortValue);
+}

@@ -26,6 +26,11 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     it { is_expected.to allow_value([]).for(:target_platforms) }
     it { is_expected.to validate_length_of(:issue_branch_template).is_at_most(255) }
 
+    it 'validates length of mr_default_title_template' do
+      is_expected.to validate_length_of(:mr_default_title_template)
+        .is_at_most(Project::MAX_MR_TITLE_TEMPLATE_LENGTH)
+    end
+
     it 'validates the length of merge_request_title_regex_description' do
       is_expected.to validate_length_of(:merge_request_title_regex_description)
         .is_at_most(Project::MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION)
@@ -275,18 +280,60 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
       settings_attribute_name: :web_based_commit_signing_enabled
   end
 
-  describe '#code_owner_reviewer_auto_assignment_enabled?', feature_category: :code_review_workflow do
+  describe '#automatic_rebase_available?', feature_category: :code_review_workflow do
+    let(:project) { create(:project) }
+    let(:project_setting) { project.project_setting }
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(rebase_on_merge_automatic: false)
+        project_setting.update!(automatic_rebase_enabled: true)
+      end
+
+      it 'returns false' do
+        expect(project_setting.automatic_rebase_available?).to be(false)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(rebase_on_merge_automatic: project)
+      end
+
+      context 'when automatic_rebase_enabled is false' do
+        before do
+          project_setting.update!(automatic_rebase_enabled: false)
+        end
+
+        it 'returns false' do
+          expect(project_setting.automatic_rebase_available?).to be(false)
+        end
+      end
+
+      context 'when automatic_rebase_enabled is true' do
+        before do
+          project_setting.update!(automatic_rebase_enabled: true)
+        end
+
+        it 'returns true' do
+          expect(project_setting.automatic_rebase_available?).to be(true)
+        end
+      end
+    end
+  end
+
+  describe '#reviewer_auto_assignment_enabled?', feature_category: :code_review_workflow do
     let_it_be(:project) { create(:project) }
     let(:project_setting) { project.project_setting }
 
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(auto_assign_code_owner_reviewers: false)
-        project_setting.update!(code_owner_reviewer_assignment_strategy: 'all_members')
+        project_setting.update!(reviewer_assignment_strategy: 'code_owners')
       end
 
       it 'returns false' do
-        expect(project_setting.code_owner_reviewer_auto_assignment_enabled?).to be(false)
+        expect(project_setting.reviewer_auto_assignment_enabled?).to be(false)
       end
     end
 
@@ -297,21 +344,21 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
       context 'when strategy is disabled' do
         before do
-          project_setting.update!(code_owner_reviewer_assignment_strategy: 'disabled')
+          project_setting.update!(reviewer_assignment_strategy: 'disabled')
         end
 
         it 'returns false' do
-          expect(project_setting.code_owner_reviewer_auto_assignment_enabled?).to be(false)
+          expect(project_setting.reviewer_auto_assignment_enabled?).to be(false)
         end
       end
 
-      context 'when strategy is all_members' do
+      context 'when strategy is code_owners' do
         before do
-          project_setting.update!(code_owner_reviewer_assignment_strategy: 'all_members')
+          project_setting.update!(reviewer_assignment_strategy: 'code_owners')
         end
 
         it 'returns true' do
-          expect(project_setting.code_owner_reviewer_auto_assignment_enabled?).to be(true)
+          expect(project_setting.reviewer_auto_assignment_enabled?).to be(true)
         end
       end
     end

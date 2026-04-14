@@ -93,12 +93,6 @@ RSpec.describe API::GroupPlaceholderReassignments, feature_category: :importers 
     end
 
     it_behaves_like 'it has authentication and authorization requirements'
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_placeholder_reassignment do
-      let(:boundary_object) { group }
-      let(:user) { group_owner }
-      let(:request) { post api(url, personal_access_token: pat), headers: workhorse_headers }
-    end
   end
 
   describe 'POST /groups/:id/placeholder_reassignments' do

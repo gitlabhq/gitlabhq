@@ -40,8 +40,9 @@ Run your test with `rspec` as usual.
 bundle exec rspec spec/features/abuse_report_spec.rb
 ```
 
-**Note:** When you visit your local instance on your browser, it is also running Vue 3 (`@vue/compat`). This
-allows you to test your feature in Vue 3 manually.
+> [!note]
+> When you visit your local instance on your browser, it is also running Vue 3 (`@vue/compat`).
+> This allows you to test your feature in Vue 3 manually.
 
 ### Running the system test suite with Vue 3 for your MR
 

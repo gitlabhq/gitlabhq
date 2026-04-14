@@ -7,13 +7,13 @@
 RSpec.shared_examples 'a Taskable' do
   describe 'with multiple tasks' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         * [ ] Task 1
         * [x] Task 2
         * [x] Task 3
         * [ ] Task 4
         * [ ] Task 5
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do
@@ -37,7 +37,7 @@ RSpec.shared_examples 'a Taskable' do
 
   describe 'with nested tasks' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         - [ ] Task a
           - [x] Task a.1
           - [ ] Task a.2
@@ -48,7 +48,7 @@ RSpec.shared_examples 'a Taskable' do
           1. [ ] Task 1.2
         1. [x] Task 2
           1. [x] Task 2.1
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do
@@ -61,9 +61,9 @@ RSpec.shared_examples 'a Taskable' do
 
   describe 'with an incomplete task' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         * [ ] Task 1
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do
@@ -76,13 +76,13 @@ RSpec.shared_examples 'a Taskable' do
 
   describe 'with tasks that are not formatted correctly' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         [ ] task 1
         [ ] task 2
 
         - [ ]task 1
         -[ ] task 2
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do
@@ -95,9 +95,9 @@ RSpec.shared_examples 'a Taskable' do
 
   describe 'with a complete task' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         * [x] Task 1
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do
@@ -110,7 +110,7 @@ RSpec.shared_examples 'a Taskable' do
 
   describe 'with tasks in blockquotes' do
     before do
-      subject.description = <<-EOT.strip_heredoc
+      subject.description = <<~TEXT
         > - [ ] Task a
         > > - [x] Task a.1
 
@@ -118,7 +118,7 @@ RSpec.shared_examples 'a Taskable' do
         1. [ ] Task 1
         1. [x] Task 2
         >>>
-      EOT
+      TEXT
     end
 
     it 'returns the correct task status' do

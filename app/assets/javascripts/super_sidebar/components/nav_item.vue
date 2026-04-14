@@ -80,7 +80,10 @@ export default {
   computed: {
     pillData() {
       if (this.item.pill_count_field) {
-        return this.asyncCount[this.item.pill_count_field];
+        const countField = this.item.pill_count_field;
+        const hasAsyncCount = Object.prototype.hasOwnProperty.call(this.asyncCount, countField);
+
+        return hasAsyncCount ? this.asyncCount[countField] : '-';
       }
       return this.item.pill_count;
     },

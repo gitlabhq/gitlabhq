@@ -15,20 +15,29 @@ title: Saved views
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 18.9 [with flags](../../administration/feature_flags/_index.md) named `work_items_saved_views` and `work_item_planning_view`.
-  Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 18.9.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Saved views are custom filter combinations for your list of work items that you can reuse and share.
 Create multiple views for different workflows, like filters for assignee, status, or priority, and switch between them quickly.
 Each view also saves your list's [display options](_index.md#configure-list-display-preferences),
-including which fields to show or how items are sorted. Keep views private for personal use or share them with your team.
+including which fields to show or how items are sorted.
+
+## Saved view visibility
+
+When you create a saved view, you control who can see, use, and change it.
+
+Private views:
+
+- Are visible to only the creator of the view.
+- Cannot be edited or used by other users.
+
+Shared views:
+
+- Are visible to all members of the group or project.
+- Can be added and used by other members.
+- Can be edited by members who meet the [prerequisites](#edit-a-saved-view).
 
 ## Create a saved view
 
@@ -46,7 +55,9 @@ To create a saved view:
 1. Enter a title.
 1. Optional. Enter a description.
    This field can help others find the view and learn what it is for.
-1. Under **Visibility**, select **Private** or **Shared**.
+1. Under **Visibility**, select either:
+   - **Private**. Private views are visible only to you.
+   - **Shared**. Shared views are visible to all members of the group or project.
 1. Select **Create view**.
 
 The view is created and added above the filter bar, to the right of your other saved views (if there are any).

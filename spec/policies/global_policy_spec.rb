@@ -181,6 +181,20 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
+  describe 'admin_service_accounts', feature_category: :system_access do
+    subject { described_class.new(admin_user, [user]) }
+
+    it { is_expected.to be_disallowed(:admin_service_accounts) }
+
+    context 'when admin mode enabled', :enable_admin_mode do
+      it { is_expected.to be_allowed(:admin_service_accounts) }
+    end
+
+    context 'when admin mode disabled' do
+      it { is_expected.to be_disallowed(:admin_service_accounts) }
+    end
+  end
+
   shared_examples 'access allowed when terms accepted' do |ability|
     it { is_expected.to be_disallowed(ability) }
 

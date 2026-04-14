@@ -18,16 +18,15 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "activerecord", ">= 6.1", "< 8"
-  spec.add_runtime_dependency "activesupport", ">= 6.1", "< 8"
-  spec.add_runtime_dependency "gitlab_quality-test_tooling", ">= 3.8", "< 4"
-  spec.add_runtime_dependency "rspec", "~> 3.0"
+  spec.add_dependency "activerecord", ">= 6.1", "< 8"
+  spec.add_dependency "activesupport", ">= 6.1", "< 8"
+  spec.add_dependency "gitlab_quality-test_tooling", ">= 3.8", "< 4"
+  spec.add_dependency "rspec", "~> 3.0"
+  spec.add_dependency "test-prof", "~> 1.5"
 
   spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "gitlab-styles", "~> 14.0.0"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"
   spec.add_development_dependency "rspec-rails", "~> 6.0.1"
-  spec.add_development_dependency "rubocop", "~> 1.50"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.22"
 end

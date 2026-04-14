@@ -129,7 +129,8 @@ describe('GroupsShowApp', () => {
       tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
       eventTracking: {},
       shouldUpdateActiveTabCountFromTabQuery: false,
-      userPreferencesSortKey: 'projectsSort',
+      userPreferencesSortKey: null,
+      sortStorageKey: 'group_projects',
     });
   });
 

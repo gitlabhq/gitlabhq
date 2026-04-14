@@ -3,7 +3,7 @@
 /* global emitSidebarEvent */
 
 import $ from 'jquery';
-import { escape, template, uniqBy } from 'lodash';
+import { escape, template, uniqBy } from 'lodash-es';
 import { AJAX_USERS_SELECT_PARAMS_MAP } from '~/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';

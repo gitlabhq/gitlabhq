@@ -148,6 +148,7 @@ exceptions:
   - LTS
   - LTSS
   - LVM
+  - MCP
   - MIME
   - MIT
   - MITRE

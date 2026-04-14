@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 
 import { I18N_FETCH_ERROR } from '~/ci/runner/constants';
@@ -80,7 +80,7 @@ export default {
         };
       },
       error(error) {
-        captureException({ error, component: this.$options.name });
+        captureException(error);
 
         this.$emit('error', { error, message: I18N_FETCH_ERROR });
       },

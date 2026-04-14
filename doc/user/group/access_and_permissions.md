@@ -283,13 +283,25 @@ Group links can be created by using either a CN or a filter. To create these gro
 - In GitLab 16.7 and earlier, group Owners cannot add members to or remove members from the group. The LDAP server is considered the single source of truth for group membership for all users who have signed in with LDAP credentials.
 - In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) or [group members API](../../api/group_members.md#add-a-group-member) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
 
-When a user belongs to two LDAP groups configured for the same GitLab group, GitLab assigns them the
-higher of the two associated roles.
-For example:
+When a user belongs to multiple LDAP groups configured for the same GitLab group, GitLab assigns
+them the higher of the two associated roles. For example:
 
 - User is a member of LDAP groups `Owner` and `Dev`.
 - The GitLab Group is configured with these two LDAP groups.
-- When group sync is completed, the user is granted the Owner role as this is the higher of the two LDAP group roles.
+- When group sync is completed, the user is granted the `Owner` role as this is the higher of the two LDAP group roles.
+
+With custom roles, the same logic applies when the roles have different base access levels. For example:
+
+- If user is a member of LDAP groups `Developer` and `Developer + admin_vulnerability`
+- The user is granted `Developer + admin_vulnerability` as this is the higher of the two LDAP group roles.
+
+When two custom roles share the same base access level, GitLab cannot determine a higher role by
+rank alone. Instead, the custom role from the earliest-created group link takes precedence.
+For example:
+
+- If a user is a member of LDAP groups `Developer + admin_vulnerability` and `Developer + admin_merge_request`
+- Both roles share the `Developer` base access level.
+- The user is granted whichever LDAP group link was created earlier.
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
@@ -300,13 +312,6 @@ You can use a workaround to [manage project access through LDAP groups](../proje
 
 ### Create group links with a CN
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 To create group links with LDAP group CN:
 
 <!-- vale gitlab_base.Spelling = NO -->
@@ -314,36 +319,26 @@ To create group links with LDAP group CN:
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
 1. In the **LDAP Group cn** field, begin typing the CN of the group. There is a dropdown list with matching CNs in the configured `group_base`. Select your CN from this list.
-1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles/_index.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom member role](../custom_roles/_index.md) for users synced in this group.
 1. Select **Add Synchronization**.
+
+GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
 ### Create group links with a filter
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 To create group links with an LDAP user filter:
 
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP user filter`.
 1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
-1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles/_index.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom member role](../custom_roles/_index.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
+GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
+
 ### Remove group links
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Active synchronization**.
@@ -353,13 +348,6 @@ To create group links with an LDAP user filter:
 > When you remove LDAP group syncing, the existing memberships and role assignment are retained.
 
 ### Override user permissions
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

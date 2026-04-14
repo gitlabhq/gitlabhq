@@ -1,26 +1,31 @@
 -# no_container is needed here because of full width side-by-side diff view
 - @no_container = true
 - add_to_breadcrumbs _('Commits'), project_commits_path(@project)
-- breadcrumb_title @commit.short_id
-- container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
-- page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
-- page_description  @commit.description
-- add_page_specific_style 'page_bundles/pipelines'
-- add_page_specific_style 'page_bundles/design_management'
 
-.container-fluid{ class: [container_class] }
-  = render "commit_box"
-  = render "ci_menu"
-  = render "projects/diffs/diffs",
-    diffs: @diffs,
-    environment: @environment,
-    diff_page_context: "is-commit",
-    page: pagination_params[:page],
-    paginate_diffs: true,
-    paginate_diffs_per_page: Projects::CommitController::COMMIT_DIFFS_PER_PAGE
+- if @gitaly_unavailable
+  - page_title        _('Commits')
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Commit|Unable to load commit')
+- else
+  - breadcrumb_title @commit.short_id
+  - container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
+  - page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
+  - page_description  @commit.description
+  - add_page_specific_style 'page_bundles/pipelines'
+  - add_page_specific_style 'page_bundles/design_management'
 
-  .limited-width-notes
-    = render "shared/notes/notes_with_form", :autocomplete => true
-    - if can_collaborate_with_project?(@project)
-      = render "projects/commit/change", type: 'revert', commit: @commit
-      = render "projects/commit/change", type: 'cherry-pick', commit: @commit
+  .container-fluid{ class: [container_class] }
+    = render "commit_box"
+    = render "ci_menu"
+    = render "projects/diffs/diffs",
+      diffs: @diffs,
+      environment: @environment,
+      diff_page_context: "is-commit",
+      page: pagination_params[:page],
+      paginate_diffs: true,
+      paginate_diffs_per_page: Projects::CommitController::COMMIT_DIFFS_PER_PAGE
+
+    .limited-width-notes
+      = render "shared/notes/notes_with_form", :autocomplete => true
+      - if can_collaborate_with_project?(@project)
+        = render "projects/commit/change", type: 'revert', commit: @commit
+        = render "projects/commit/change", type: 'cherry-pick', commit: @commit

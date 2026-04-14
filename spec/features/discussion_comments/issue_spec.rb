@@ -16,14 +16,14 @@ RSpec.describe 'Thread Comments Issue', :js, feature_category: :source_code_mana
 
   it 'clicking "Comment & close issue" will post a comment and close the issue, and reopen issue' do
     fill_in 'Add a reply', with: 'Close me!'
-    click_button 'Comment & close issue'
+    click_button 'Comment & close Issue'
 
     expect(page).to have_css('.note', text: 'Close me!')
     expect(page).to have_css('.system-note', text: "#{user.name} closed")
     expect(page).to have_css('.gl-badge', text: 'Closed')
 
     fill_in 'Add a reply', with: 'Reopen me!'
-    click_button 'Comment & reopen issue'
+    click_button 'Comment & reopen Issue'
 
     expect(page).to have_css('.note', text: 'Reopen me!')
     expect(page).to have_css('.system-note', text: "#{user.name} reopened")

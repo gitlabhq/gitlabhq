@@ -151,6 +151,30 @@ RSpec.describe ActiveContext::Adapter do
     end
   end
 
+  describe 'ActiveContext.separator' do
+    context 'when adapter is nil' do
+      before do
+        allow(described_class).to receive(:current).and_return(nil)
+      end
+
+      it 'returns the default separator' do
+        expect(ActiveContext.separator).to eq(ActiveContext::Databases::Concerns::Adapter::DEFAULT_SEPARATOR)
+      end
+    end
+
+    context 'when adapter is present' do
+      let(:adapter) { double('Adapter', separator: '-') }
+
+      before do
+        allow(described_class).to receive(:current).and_return(adapter)
+      end
+
+      it 'returns the adapter separator' do
+        expect(ActiveContext.separator).to eq('-')
+      end
+    end
+  end
+
   describe '.reset' do
     it 'clears the adapter instance' do
       described_class.instance_variable_set(:@current, double('Adapter'))

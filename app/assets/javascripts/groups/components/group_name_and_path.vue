@@ -10,7 +10,7 @@ import {
   GlButtonGroup,
   GlCollapsibleListbox,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 import { s__, __ } from '~/locale';
 import { getGroupPathAvailability } from '~/rest_api';

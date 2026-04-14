@@ -12,7 +12,7 @@ import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_sele
 import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import { modelToUpdateMutationVariables } from 'ee_else_ce/ci/runner/runner_update_form_utils';
-import { captureException } from '../sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
   DEFAULT_ACCESS_LEVEL,
   ACCESS_LEVEL_NOT_PROTECTED,
@@ -136,7 +136,7 @@ export default {
     },
     onError(error, isValidationError = false) {
       if (!isValidationError) {
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       }
 
       createAlert({ message: error.message });

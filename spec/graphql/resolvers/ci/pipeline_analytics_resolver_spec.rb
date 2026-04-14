@@ -140,6 +140,37 @@ RSpec.describe Resolvers::Ci::PipelineAnalyticsResolver, :click_house, feature_c
       let(:legacy_fields) { [] } # Legacy fields are not exposed for groups
 
       it_behaves_like 'returns the pipeline analytics for a given container'
+
+      context 'with subgroup_full_paths argument' do
+        let_it_be(:subgroup1, freeze: true) { create(:group, parent: group) }
+        let_it_be(:subgroup2, freeze: true) { create(:group, parent: group) }
+
+        it 'passes subgroup_full_paths to services' do
+          paths = [subgroup1.full_path, subgroup2.full_path]
+
+          expect(::Ci::CollectAggregatePipelineAnalyticsService).to receive(:new)
+            .with(hash_including(subgroup_full_paths: paths))
+            .and_call_original
+
+          resolve_statistics(container, { subgroup_full_paths: paths })
+        end
+
+        it 'passes nil subgroup_full_paths when not provided' do
+          expect(::Ci::CollectAggregatePipelineAnalyticsService).to receive(:new)
+            .with(hash_including(subgroup_full_paths: nil))
+            .and_call_original
+
+          resolve_statistics(container, {})
+        end
+
+        it 'configures length validation on subgroup_full_paths' do
+          argument = described_class.arguments['subgroupFullPaths']
+          validator = argument.instance_variable_get(:@own_validators).first
+
+          expect(validator).to be_a(GraphQL::Schema::Validator::LengthValidator)
+          expect(validator.instance_variable_get(:@maximum)).to eq(described_class::MAX_SUBGROUP_PATHS)
+        end
+      end
     end
   end
 end

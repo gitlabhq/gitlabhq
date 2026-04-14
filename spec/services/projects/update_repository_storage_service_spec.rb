@@ -383,7 +383,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             result = subject.execute
 
             expect(result).to be_success
-          end.not_to change(repository_storage_move, :state)
+          end.not_to change { repository_storage_move.state }
         end
       end
 
@@ -395,7 +395,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             result = subject.execute
 
             expect(result).to be_success
-          end.not_to change(repository_storage_move, :state)
+          end.not_to change { repository_storage_move.state }
         end
       end
     end

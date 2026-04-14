@@ -282,17 +282,31 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'returns IDE path for the given MR if MR is not merged' do
-      expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{project.full_path}/merge_requests/#{merge_request.iid}")
+      expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{project.full_path}?merge_request_id=#{merge_request.iid}")
+    end
+
+    it 'returns IDE path with file path for the given MR in the same project' do
+      expect(helper.ide_merge_request_path(merge_request, 'path/to/file.rb')).to eq("/-/ide/project/#{project.full_path}/-/path/to/file.rb?merge_request_id=#{merge_request.iid}")
     end
 
     context 'when the MR comes from a fork' do
       include ProjectForksHelper
 
-      let(:forked_project) { fork_project(project, nil, repository: true) }
-      let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
+      let_it_be(:forked_project, reload: true) { fork_project(project, nil, repository: true) }
+      let_it_be(:merge_request, reload: true) { create(:merge_request, source_project: forked_project, target_project: project) }
 
       it 'returns IDE path for MR in the forked repo with target project included as param' do
-        expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{forked_project.full_path}/merge_requests/#{merge_request.iid}?target_project=#{CGI.escape(project.full_path)}")
+        params = { merge_request_id: merge_request.iid, target_project: project.full_path }
+        expected_query = params.to_query
+
+        expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{forked_project.full_path}?#{expected_query}")
+      end
+
+      it 'returns IDE path with file path for MR in the forked repo with target project included as param' do
+        params = { merge_request_id: merge_request.iid, target_project: project.full_path }
+        expected_query = params.to_query
+
+        expect(helper.ide_merge_request_path(merge_request, 'path/to/file.rb')).to eq("/-/ide/project/#{forked_project.full_path}/-/path/to/file.rb?#{expected_query}")
       end
     end
 

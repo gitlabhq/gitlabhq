@@ -1,0 +1,20 @@
+---
+release_number: "GitLab 18.10 Release"
+title: "GitLab 18.10 released with agentic SAST FP detection and free-tier credits"
+author: "Christina Lohr"
+author_gitlab: lohrc
+categories: releases
+image_title: '/images/X_Y/X_Y-cover-image.ext' # dont think we need anymore
+description:
+  Today, we are excited to announce the release of GitLab 18.10 with SAST false positive detection with GitLab Duo Agent Platform, credits for free tier users, passwordless sign-in with passkeys, work items list and saved views, and much more!
+
+  These are just a few highlights from the 60+ improvements in this release. Read on to check out all of the great updates below.
+
+  To the wider GitLab community, thank you for the 212 contributions you provided to GitLab 18.10! At GitLab, everyone can contribute and we couldn't have done it without you!
+twitter_image: '/images/X_Y/X_Y-cover-image.ext' # dont think we need anymore
+layout: release
+featured: yes
+# header_layout_dark: true #uncomment if the cover image is dark
+# release_number_dark: true #uncomment if you want a dark release number
+# release_number_image: "/images/X_Y/X_Y-release-number-image.svg" # uncomment if you want a svg image to replace the release number that normally overlays the background image
+---

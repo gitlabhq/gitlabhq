@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 
 const blobsDefault = [];

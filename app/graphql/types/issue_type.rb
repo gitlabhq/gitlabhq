@@ -184,7 +184,7 @@ module Types
       description: 'Work items linked to the issue.', extras: [:lookahead],
       experiment: { milestone: '17.8' }
 
-    markdown_field :title_html, null: true
+    markdown_field :title_html, null: true, description: "HTML rendering of `title`"
     markdown_field :description_html, null: true
 
     def author

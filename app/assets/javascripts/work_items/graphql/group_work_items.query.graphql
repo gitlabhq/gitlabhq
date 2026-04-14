@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query groupWorkItems(
   $searchTerm: String
   $fullPath: ID!
@@ -9,6 +10,7 @@ query groupWorkItems(
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
   $useWorkItemFeatures: Boolean = false
+  $workItemTypeIds: [WorkItemsTypeID!]
 ) {
   namespace: group(fullPath: $fullPath) {
     id
@@ -19,6 +21,7 @@ query groupWorkItems(
       in: $in
       includeAncestors: $includeAncestors
       includeDescendants: $includeDescendants
+      workItemTypeIds: $workItemTypeIds
     ) @include(if: $searchByText) {
       nodes {
         id
@@ -65,6 +68,7 @@ query groupWorkItems(
       types: $types
       includeAncestors: $includeAncestors
       includeDescendants: $includeDescendants
+      workItemTypeIds: $workItemTypeIds
     ) @include(if: $searchByIid) {
       nodes {
         id

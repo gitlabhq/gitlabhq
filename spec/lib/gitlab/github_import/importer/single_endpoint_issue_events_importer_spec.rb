@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter, feature_category: :importers do
   let(:client) { Gitlab::GithubImport::Client.new('token') }
   let_it_be(:project) { create(:project, :import_started, import_source: 'foo/bar') }
-  let!(:issuable) { create(:issue, project: project) }
+  let!(:issuable) { create(:issue, project: project, imported_from: :github) }
   let(:parallel) { true }
 
   subject { described_class.new(project, client, parallel: parallel) }
@@ -81,6 +81,28 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     end
   end
 
+  describe '#issues_collection' do
+    it 'returns all project issues excluding already imported parents' do
+      local_issue = create(:issue, project: project, imported_from: :none)
+
+      collection_ids = subject.issues_collection.ids
+
+      expect(collection_ids).to include(issuable.id, local_issue.id)
+    end
+  end
+
+  describe '#merge_requests_collection' do
+    it 'returns all project merge requests excluding already imported parents' do
+      github_mr = create(:merge_request, source_project: project, target_project: project, imported_from: :github)
+      local_mr = create(:merge_request, source_project: project, target_project: project,
+        source_branch: 'other-branch', imported_from: :none)
+
+      collection_ids = subject.merge_requests_collection.ids
+
+      expect(collection_ids).to include(github_mr.id, local_mr.id)
+    end
+  end
+
   describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:event_name) { 'closed' }
     let(:event_1) do
@@ -148,7 +170,9 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     end
 
     context 'with merge requests' do
-      let!(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+      let!(:issuable) do
+        create(:merge_request, source_project: project, target_project: project, imported_from: :github)
+      end
 
       it 'imports each merge request event page by page' do
         counter = 0
@@ -168,6 +192,38 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
         end
         expect(counter).to eq 2
       end
+    end
+
+    shared_examples 'ignores locally-created issuables' do
+      it 'does not fetch events for the locally-created issuables' do
+        counter = 0
+        subject.each_object_to_import { counter += 1 }
+
+        # 2 pages of 1 event each for the GitHub-imported issuable only
+        expected_event_count = 2
+        expect(counter).to eq(expected_event_count)
+      end
+    end
+
+    context 'when a locally-created issue exists alongside imported ones' do
+      before do
+        create(:issue, project: project, imported_from: :none)
+      end
+
+      include_examples 'ignores locally-created issuables'
+    end
+
+    context 'when a locally-created merge request exists alongside imported ones' do
+      let!(:issuable) do
+        create(:merge_request, source_project: project, target_project: project, imported_from: :github)
+      end
+
+      before do
+        create(:merge_request, source_project: project, target_project: project,
+          source_branch: 'other-branch', imported_from: :none)
+      end
+
+      include_examples 'ignores locally-created issuables'
     end
 
     context 'when page key set stores an URL' do

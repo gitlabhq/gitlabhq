@@ -38,14 +38,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       end
     end
 
-    describe 'GET #starred' do
-      it 'redirects to active projects with stars_desc sort' do
-        get :starred
-
-        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
-      end
-    end
-
     describe 'GET #topic' do
       context 'when topic does not exist' do
         it 'renders a 404 error' do
@@ -140,7 +132,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   end
 
   shared_examples 'avoids N+1 queries' do
-    [:index, :trending, :starred].each do |endpoint|
+    [:index, :trending].each do |endpoint|
       describe "GET #{endpoint}" do
         render_views
 

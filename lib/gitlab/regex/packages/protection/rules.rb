@@ -28,6 +28,18 @@ module Gitlab
             @protection_rules_pypi_package_name_pattern_regex ||=
               %r{\A(?:\*|#{Gitlab::Regex.package_name_regex('*')})\z}
           end
+
+          # Regex for Terraform module package name patterns in protection rules.
+          # Accepts names in `module_name/module_system` format with optional wildcards.
+          #
+          # Examples:
+          #   - '*' (matches all packages)
+          #   - 'my-module/aws*' (matches with wildcard at end)
+          #   - '*/aws' (matches any module name with system 'aws')
+          def self.protection_rules_terraform_module_package_name_pattern_regex
+            @protection_rules_terraform_module_package_name_pattern_regex ||=
+              %r{\A(?:\*|[-a-z0-9*]+/[-a-z0-9*]+)\z}
+          end
         end
       end
     end

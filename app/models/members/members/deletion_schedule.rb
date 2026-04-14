@@ -9,5 +9,12 @@ module Members
     belongs_to :scheduled_by, class_name: 'User', optional: false
 
     validates :user, uniqueness: { scope: :namespace_id, message: 'already scheduled for deletion' }
+    validates :ip_address, ip_address: true
+
+    class << self
+      def exists_for?(namespace, user)
+        where(namespace: namespace, user: user).exists?
+      end
+    end
   end
 end

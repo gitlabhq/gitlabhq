@@ -2,7 +2,10 @@
 
 module Labels
   class UpdateService < Labels::BaseService
-    def initialize(params = {})
+    attr_reader :current_user
+
+    def initialize(current_user = nil, params = {})
+      @current_user = current_user
       @params = params.to_h.dup.with_indifferent_access
     end
 
@@ -30,3 +33,5 @@ module Labels
     end
   end
 end
+
+Labels::UpdateService.prepend_mod_with('Labels::UpdateService')

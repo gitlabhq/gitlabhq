@@ -404,6 +404,26 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
       end
     end
   end
+
+  describe 'granular token authorization' do
+    let(:query) do
+      <<~GRAPHQL
+        query {
+          runners {
+            nodes {
+              id
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+      let(:user) { create(:user, :admin) }
+      let(:boundary_object) { :instance }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+  end
 end
 
 RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
@@ -441,6 +461,28 @@ RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
       expect(edges).to contain_exactly(a_graphql_entity_for(web_url: web_url, edit_url: edit_web_url))
     end
   end
+
+  describe 'granular token authorization' do
+    let(:query) do
+      <<~GRAPHQL
+        query {
+          group(fullPath: "#{group.full_path}") {
+            runners(type: GROUP_TYPE) {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_group, :read_runner] do
+      let(:user) { create(:user, owner_of: group) }
+      let(:boundary_object) { group }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+  end
 end
 
 RSpec.describe 'Project.runners', feature_category: :fleet_visibility do
@@ -476,6 +518,28 @@ RSpec.describe 'Project.runners', feature_category: :fleet_visibility do
       edit_web_url = edit_project_runner_url(project, runner)
 
       expect(edges).to contain_exactly(a_graphql_entity_for(web_url: web_url, edit_url: edit_web_url))
+    end
+  end
+
+  describe 'granular token authorization' do
+    let(:query) do
+      <<~GRAPHQL
+        query {
+          project(fullPath: "#{project.full_path}") {
+            runners(type: PROJECT_TYPE) {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_runner] do
+      let(:user) { create(:user, maintainer_of: project) }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
   end
 end

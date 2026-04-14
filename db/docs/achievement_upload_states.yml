@@ -1,0 +1,12 @@
+---
+table_name: achievement_upload_states
+description: Separate table for Achievement Upload verification states
+introduced_by_url:
+milestone: '18.11'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::AchievementUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces

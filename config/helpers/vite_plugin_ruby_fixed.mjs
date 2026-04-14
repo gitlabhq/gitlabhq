@@ -1,6 +1,6 @@
 import RubyPlugin from 'vite-plugin-ruby';
 
-const [rubyPlugin, ...rest] = RubyPlugin.default();
+const [rubyPlugin, ...rest] = RubyPlugin();
 
 /**
  * A fixed version of vite-plugin-ruby
@@ -12,16 +12,23 @@ const [rubyPlugin, ...rest] = RubyPlugin.default();
  * See the issue for details: https://github.com/ElMassimo/vite_ruby/issues/237
  */
 export function FixedRubyPlugin() {
-
   return [
     {
       ...rubyPlugin,
       name: 'vite-plugin-ruby-fixed',
-      config: (...args) => {
-        const originalConfig = rubyPlugin.config(...args);
+      config(...args) {
+        const originalConfig = rubyPlugin.config.call(this, ...args);
+        const { rolldownOptions, ...restBuild } = originalConfig.build ?? {};
         return {
           ...originalConfig,
           resolve: undefined,
+          build: {
+            ...restBuild,
+            rolldownOptions: {
+              ...rolldownOptions,
+              output: undefined,
+            },
+          },
         };
       },
     },

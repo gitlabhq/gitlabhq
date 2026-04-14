@@ -14,7 +14,7 @@ description: Configuration for the GitLab.com instance.
 {{< /details >}}
 
 These settings are used on GitLab.com, and are available to
-[GitLab SaaS](https://about.gitlab.com/pricing/) customers.
+[GitLab.com](https://about.gitlab.com/pricing/) customers.
 
 See some of these settings on the
 [instance configuration page for GitLab.com](https://gitlab.com/help/instance_configuration).
@@ -50,7 +50,7 @@ If you are near or over the repository size limit, you can:
 To back up an entire project on GitLab.com, you can export it:
 
 - [Through the UI](../project/settings/import_export.md).
-- [Through the API](../../api/project_import_export.md#schedule-an-export). You
+- [Through the API](../../api/project_import_export.md#export-a-project). You
   can also use the API to programmatically upload exports to a storage platform,
   such as Amazon S3.
 
@@ -288,10 +288,10 @@ which GitLab you use:
 
 ### Import placeholder user limits
 
-Imports into GitLab.com limit the number of [placeholder users](../import/mapping/_index.md#placeholder-users)
+Imports into GitLab.com limit the number of [placeholder users](../import/mapping/post_migration_mapping.md#placeholder-users)
 for each top-level namespace. The limits differ depending on your plan and seat count.
 For more information, see the
-[table of placeholder user limits for GitLab.com](../import/mapping/_index.md#placeholder-user-limits).
+[table of placeholder user limits for GitLab.com](../import/mapping/post_migration_mapping.md#placeholder-user-limits).
 
 ## IP range
 
@@ -473,7 +473,7 @@ The following table describes the rate limits for GitLab.com:
 | GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                       |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
-| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute      |
+| GitLab package hosting system requests for an IP address (introduced in GitLab 16.11) | 3,000 requests each minute      |
 | GitLab repository files | 500 requests each minute        |
 | User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute        |
 | User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute        |
@@ -685,6 +685,10 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 When the rate limit is reached, all webhooks in the namespace are temporarily disabled and
 automatically re-enabled in the next minute.
+
+When rate limited, a badge appears next to the webhook in the webhook list. On the webhook edit
+page, a message states how many times per minute the namespace limit was exceeded and when webhooks
+are re-enabled.
 
 ### Security policy limits
 

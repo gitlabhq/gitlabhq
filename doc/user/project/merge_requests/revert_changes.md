@@ -39,11 +39,12 @@ Prerequisites:
 - Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
   set in your project's **Settings** > **Merge requests**.
 
-  [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22236), you can revert
-  fast-forwarded commits from the GitLab UI if either:
+  In GitLab 16.9 and later, you can revert fast-forwarded commits from the GitLab UI if either:
 
   - The commits are squashed, or
   - The merge request contains a single commit.
+
+For more information, see [issue 22236](https://gitlab.com/gitlab-org/gitlab/-/issues/22236).
 
 To revert merge request `Example`:
 
@@ -103,7 +104,7 @@ To do this:
 
 When you revert a merge commit, the branch you merged to (often `main`) is always the
 first parent. To revert a merge commit to a different parent, you must revert the commit from
-the command line, see [Revert and undo changes with Git](../../../topics/git/undo.md#revert-a-merge-commit-to-a-different-parent).
+the command line, see [revert and undo changes with Git](../../../topics/git/undo.md#revert-a-merge-commit-to-a-different-parent).
 
 ## Redact text from repository
 

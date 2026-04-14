@@ -195,6 +195,63 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
         end
       end
     end
+
+    context "when events span a DST boundary in the contributor's timezone" do
+      let(:travel_time) { Time.utc(2026, 3, 29, 14, 0, 0) }
+
+      before do
+        contributor.timezone = 'Europe/Berlin'
+      end
+
+      it "assigns events to the correct date using DST-aware conversion" do
+        Event.create!(
+          project: public_project,
+          action: :created,
+          target: create(:issue, project: public_project, author: contributor),
+          author: contributor,
+          created_at: Time.utc(2026, 3, 28, 22, 30, 0)
+        )
+
+        Event.create!(
+          project: public_project,
+          action: :created,
+          target: create(:issue, project: public_project, author: contributor),
+          author: contributor,
+          created_at: Time.utc(2026, 3, 28, 23, 30, 0)
+        )
+
+        dates = calendar(contributor).activity_dates
+
+        expect(dates[Date.new(2026, 3, 28)]).to eq(1)
+        expect(dates[Date.new(2026, 3, 29)]).to eq(1)
+      end
+
+      it "is consistent between activity_dates and events_by_date" do
+        Event.create!(
+          project: public_project,
+          action: :created,
+          target: create(:issue, project: public_project, author: contributor),
+          author: contributor,
+          created_at: Time.utc(2026, 3, 28, 22, 30, 0)
+        )
+
+        Event.create!(
+          project: public_project,
+          action: :created,
+          target: create(:issue, project: public_project, author: contributor),
+          author: contributor,
+          created_at: Time.utc(2026, 3, 28, 23, 30, 0)
+        )
+
+        dates = calendar(contributor).activity_dates
+
+        dates.each do |date, count|
+          events = calendar(contributor).events_by_date(date)
+          expect(events.count).to eq(count),
+            "Mismatch on #{date}: activity_dates=#{count}, events_by_date=#{events.count}"
+        end
+      end
+    end
   end
 
   describe '#events_by_date' do

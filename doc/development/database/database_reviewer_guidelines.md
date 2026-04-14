@@ -88,5 +88,5 @@ We are doing reviews to help the rest of the GitLab team and, at the same time, 
 to more use cases, get a lot of insights and hone our database and data management skills.
 
 If you are feeling overwhelmed, think you are at capacity, and are unable to accept any more
-reviews until some have been completed, communicate this through your GitLab status by setting
-the `:red_circle:` emoji and mentioning that you are at capacity in the status text.
+reviews until some have been completed, notify the merge request author with a comment on the merge request and
+reassign the review to another available reviewer using [Reviewer roulette](../code_review.md#reviewer-roulette).

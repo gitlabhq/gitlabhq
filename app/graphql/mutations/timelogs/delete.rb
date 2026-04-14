@@ -10,7 +10,7 @@ module Mutations
         required: true,
         description: 'Global ID of the timelog.'
 
-      authorize :admin_timelog
+      authorize :delete_timelog
 
       def resolve(id:)
         timelog = authorized_find!(id: id)

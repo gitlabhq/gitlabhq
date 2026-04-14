@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Branch do
+RSpec.describe Gitlab::Git::Branch, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
 
@@ -38,6 +38,34 @@ RSpec.describe Gitlab::Git::Branch do
         expect(subject).to eq(branch)
 
         expect(repository).not_to have_received(:find_branch).with(branch)
+      end
+    end
+  end
+
+  describe '.from_ref' do
+    let(:commit) { repository.commit('master') }
+    let(:ref) { Gitlab::Git::Ref.new(repository, 'refs/heads/master', commit.sha, nil) }
+
+    context 'without commit' do
+      subject { described_class.from_ref(repository, ref) }
+
+      it 'creates a branch with correct name, target and repository' do
+        expect(subject).to be_a(described_class)
+        expect(subject.name).to eq('master')
+        expect(subject.target).to eq(commit.sha)
+        expect(subject.dereferenced_target).to be_nil
+      end
+    end
+
+    context 'with commit' do
+      subject { described_class.from_ref(repository, ref, commit: commit) }
+
+      it 'creates a branch with hydrated dereferenced_target' do
+        expect(subject).to be_a(described_class)
+        expect(subject.name).to eq('master')
+        expect(subject.target).to eq(commit.sha)
+        expect(subject.dereferenced_target).to eq(commit)
+        expect(subject.dereferenced_target.sha).to eq(commit.sha)
       end
     end
   end

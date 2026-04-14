@@ -83,6 +83,45 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
             expect(env[API::Helpers::API_USER_ENV]).to eq({ user_id: subject.id, username: subject.username })
           end
+
+          context "when endpoint is not AI/DAP-related (/user)" do
+            before do
+              env['api.endpoint'] = instance_double(Grape::Endpoint)
+              allow(env['api.endpoint']).to receive(:namespace).and_return("/user")
+            end
+
+            it 'sets the environment with data of the current user without global id' do
+              subject
+
+              expect(env[API::Helpers::API_USER_ENV]).to eq(
+                {
+                  user_id: subject.id,
+                  username: subject.username
+                }
+              )
+            end
+          end
+
+          ['/code_suggestions/direct_access', '/ai/third_party_agents/direct_access'].each do |endpoint|
+            context "when endpoint is AI/DAP-related (#{endpoint})" do
+              before do
+                env['api.endpoint'] = instance_double(Grape::Endpoint)
+                allow(env['api.endpoint']).to receive(:namespace).and_return(endpoint)
+              end
+
+              it 'sets the environment with data of the current user and its global id' do
+                subject
+
+                expect(env[API::Helpers::API_USER_ENV]).to eq(
+                  {
+                    user_id: subject.id,
+                    username: subject.username,
+                    global_user_id: Gitlab::GlobalAnonymousId.user_id(subject)
+                  }
+                )
+              end
+            end
+          end
         end
 
         context "HEAD request" do
@@ -389,7 +428,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
     end
   end
 
-  describe '.set_current_organization', :without_current_organization do
+  describe '.set_current_organization' do
     context 'when user argument is omitted' do
       before do
         allow(self).to receive(:current_user).and_return(user)

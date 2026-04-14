@@ -234,7 +234,7 @@ RSpec.describe Gitlab::Git::Conflict::Parser do
           .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end
 
-      # All text from Rugged has an encoding of ASCII_8BIT, so force that in
+      # Git data comes with an encoding of ASCII_8BIT, so force that in
       # these strings.
       context 'when the file contains UTF-8 characters' do
         it 'does not raise' do

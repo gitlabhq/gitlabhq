@@ -21,7 +21,7 @@ title: Guidelines for implementing Enterprise Edition features
    the [main repository](https://gitlab.com/gitlab-org/gitlab)
 1. **EE licensed**: when
    you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
-1. **GitLab.com SaaS**: when you [simulate SaaS](#simulate-a-saas-instance)
+1. **GitLab.com**: when you [simulate SaaS](#simulate-a-saas-instance)
 1. **CE**: in any of the states above, when you [simulate CE](#simulate-a-ce-instance-with-a-licensed-gdk)
 
 ## Feature implementation decision flow
@@ -94,7 +94,7 @@ This diagram shows the four main implementation layers:
 - **CE (Green)**: Community Edition features with no licensing requirements.
   If your target audience is **free users on GitLab.com**, follow the **SaaS** decision path
 - **EE (Orange)**: Enterprise Edition features requiring Premium/Ultimate licenses
-- **SaaS (Pink)**: Features exclusive to GitLab.com SaaS instances
+- **SaaS (Pink)**: Features exclusive to GitLab.com instances
 - **Dedicated (Blue)**: Features that behave differently on GitLab Dedicated instances
 
 Key decision points:

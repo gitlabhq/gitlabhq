@@ -145,7 +145,7 @@ follow these steps:
 
 ### User mapping fails despite matching names
 
-[For user mapping to work](mapping/_index.md), the username in the Bitbucket account settings must match the public name
+[For user mapping to work](mapping/post_migration_mapping.md), the username in the Bitbucket account settings must match the public name
 in the Atlassian account settings.
 
 If these names match but user mapping still fails, the user might have modified their Bitbucket username after connecting

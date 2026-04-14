@@ -25,3 +25,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GlobalAnonymousId.prepend_mod

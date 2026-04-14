@@ -7,6 +7,9 @@ query getJob($fullPath: ID!, $id: JobID!) {
     job(id: $id) {
       ...BaseCiJob
       manualJob
+      inputsSpec {
+        name
+      }
       name
       detailedStatus {
         ...CiIcon

@@ -6,20 +6,6 @@ description: Set up Code Suggestions in your IDE.
 title: Set up Code Suggestions
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- Changed to include GitLab Duo Core in GitLab 18.0.
-
-{{< /history >}}
-
 You can use GitLab Duo Code Suggestions in several different IDEs.
 
 To set up Code Suggestions, follow the instructions for your IDE.
@@ -57,12 +43,14 @@ To confirm, open your IDE and verify if Code Suggestions works.
 
 To verify that Code Suggestions is turned on in VS Code:
 
-1. In VS Code, go to **Settings** > **Extensions** > **GitLab**.
-1. Select **Manage** ({{< icon name="settings" >}}).
-1. Ensure that **GitLab** > **Duo Code Suggestions: Enabled** is selected.
-1. Optional. For **GitLab** > **Duo Code Suggestions: Enabled Supported Languages**,
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Ensure that the checkbox under **GitLab › Duo Code Suggestions: Enabled** is selected.
+1. Optional. Under **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
    select the languages you want to suggest or generate code for.
-1. Optional. For **GitLab** > **Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
+1. Optional. Under **GitLab › Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
 
 ### Visual Studio
 
@@ -162,9 +150,11 @@ The process for turning off Code Suggestions is different for each IDE.
 
 To turn off Code Suggestions in VS Code:
 
-1. Go to **Code** > **Settings** > **Extensions**.
-1. Select **Manage** ({{< icon name="settings" >}}) > **Settings**.
-1. Clear the **GitLab Duo Code Suggestions** checkbox.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Code Suggestions: Enabled**, clear the checkbox.
 
 Instead, you can [set `gitlab.duoCodeSuggestions.enabled` to `false` in the VS Code `settings.json` file](../../../../editor_extensions/visual_studio_code/settings.md#extension-settings).
 

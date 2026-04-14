@@ -22,8 +22,6 @@ RSpec.describe 'Project Work Items Calendar Feed', feature_category: :team_plann
     let!(:work_item) { create(:work_item, author: user, project: project) }
 
     before do
-      stub_feature_flags(work_item_planning_view: true)
-
       project.add_developer(user)
     end
 

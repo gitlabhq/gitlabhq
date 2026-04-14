@@ -181,16 +181,10 @@ export default {
         return !isDropdownVariantSidebar(this.variant) || !this.iid;
       },
       variables() {
-        const queryVariables = {
+        return {
           iid: this.iid,
           fullPath: this.fullPath,
         };
-
-        if (this.issuableType === TYPE_TEST_CASE) {
-          queryVariables.types = ['TEST_CASE'];
-        }
-
-        return queryVariables;
       },
       update(data) {
         return data.namespace?.issuable;

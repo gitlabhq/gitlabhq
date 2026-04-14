@@ -13,11 +13,6 @@ RSpec.describe 'Canonical link', feature_category: :workspaces do
   let_it_be(:project_request) { project_url(project) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     sign_in(user)
   end
 
@@ -39,16 +34,6 @@ RSpec.describe 'Canonical link', feature_category: :workspaces do
 
   it_behaves_like 'does not show canonical link' do
     let(:request_url) { issue_request }
-  end
-
-  it_behaves_like 'shows canonical link' do
-    let(:request_url) { issue_request + '/' }
-    let(:expected_url) { issue_request }
-  end
-
-  it_behaves_like 'shows canonical link' do
-    let(:request_url) { project_issues_url(project) + "/?state=opened" }
-    let(:expected_url) { project_issues_url(project, state: 'opened') }
   end
 
   it_behaves_like 'does not show canonical link' do

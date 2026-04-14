@@ -3,14 +3,14 @@ query namespaceGroupsForLinksWidget($fullPath: ID!, $groupSearch: String) {
     id
     name
     avatarUrl
-    path
+    fullName
     fullPath
     descendantGroups(search: $groupSearch, includeParentDescendants: true) {
       nodes {
         id
         name
         avatarUrl
-        path
+        fullName
         fullPath
       }
     }

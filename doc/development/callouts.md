@@ -57,8 +57,8 @@ After adding a new callout ID to any of the enum files above, you must update th
 bundle exec rake gitlab:graphql:compile_docs
 ```
 
-**NOTE**: do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential
-number.
+> [!note]
+> Do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential number.
 
 ### Deprecating a callout
 

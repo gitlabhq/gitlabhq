@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import {

@@ -84,6 +84,23 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
       end
     end
 
+    context 'when ORDER BY uses SQL literals (Arel.sql)' do
+      let(:nodes) do
+        ClickHouse::Client::QueryBuilder
+          .new('events')
+          .select(:id)
+          .order(Arel.sql('created_at'), :asc)
+          .order(Arel.sql('updated_at'), :desc)
+          .order(Arel.sql('id'), :asc)
+      end
+
+      let(:arguments) { { after: encoded_cursor(ordered_events[0]), first: 2 } }
+
+      it 'paginates correctly using the literal column names for cursor encoding and conditions' do
+        expect(connection.nodes.pluck("id")).to eq(ordered_events[1..2].map(&:id))
+      end
+    end
+
     context 'when clickhouse connection is not passed via context' do
       let(:context_values) { {} }
 
@@ -155,6 +172,20 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
       expected = date.to_s
 
       expect(encoded_cursor({ 'value' => date })).to eq(encode(%({"value":"#{expected}"})))
+    end
+
+    context 'when order expression is a SQL literal (Arel.sql)' do
+      let(:nodes) { ClickHouse::Client::QueryBuilder.new('events').order(Arel.sql('value'), :asc) }
+
+      it 'encodes numeric values using the literal string as the cursor key' do
+        expect(encoded_cursor({ 'value' => 1 })).to eq(encode('{"value":1}'))
+      end
+
+      it 'encodes datetime value using the literal string as the cursor key' do
+        time = Time.current
+        expected = time.utc.strftime(described_class::TIME_PATTERN)
+        expect(encoded_cursor({ 'value' => time })).to eq(encode(%({"value":"#{expected}"})))
+      end
     end
 
     context 'when cursor value is unsupported' do

@@ -21,13 +21,24 @@ stages:
 
 workflow:
   name: '$PIPELINE_NAME'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
+    - when: always
 
 dont-interrupt-me:
-  extends: .rules:dont-interrupt
   stage: .pre
+  image: alpine:latest
   interruptible: false
+  variables:
+    GIT_STRATEGY: none
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ci/yaml/#interruptible."
+  rules:
+    - if: $CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"
+      when: manual
+      allow_failure: true
 
 .base-predictive:
   needs:

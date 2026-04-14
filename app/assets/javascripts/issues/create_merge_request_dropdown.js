@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import {
   init as initConfidentialMergeRequest,
   isConfidentialIssue,

@@ -5,10 +5,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/container_registry/container_repository_protection_rules.html
+  documentation_link: https://docs.gitlab.com/user/packages/container_registry/container_repository_protection_rules/
   image_url: https://about.gitlab.com/images/17_8/protected_containers.png
   published_at: 2025-01-16
-  release: 17.8
+  release: "17.8"
 
 - name: List the deployments related to a release
   description: |
@@ -17,10 +17,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/releases/
+  documentation_link: https://docs.gitlab.com/user/project/releases/
   image_url: https://about.gitlab.com/images/17_8/list_the_deployments_related_to_a_release.png
   published_at: 2025-01-16
-  release: 17.8
+  release: "17.8"
 
 - name: Machine learning model experiments tracking in GA
   description: |
@@ -29,10 +29,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/ml/experiment_tracking/
+  documentation_link: https://docs.gitlab.com/user/project/ml/experiment_tracking/
   image_url: https://img.youtube.com/vi/jkZq3SYm7a8/hqdefault.jpg
   published_at: 2025-01-16
-  release: 17.8
+  release: "17.8"
 
 - name: Large M2 Pro hosted runners on macOS (Beta)
   description: |
@@ -41,7 +41,7 @@
   self-managed: false
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/runners/hosted_runners/macos.html
+  documentation_link: https://docs.gitlab.com/ci/runners/hosted_runners/macos/
   image_url: https://about.gitlab.com/images/17_8/rocket_m2pro.png
   published_at: 2025-01-16
-  release: 17.8
+  release: "17.8"

@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: counts.projects_with_packages_cleanup_policy_keep_n_duplicated_package_files_set_to_20
+description: A count of projects with the packages cleanup policy set to keep 20 duplicated package files
+product_group: package_registry
+product_categories:
+- package_registry
+value_type: number
+status: active
+time_frame: all
+data_source: database
+instrumentation_class: DistinctCountProjectsWithPackagesCleanupPolicyMetric
+options:
+  keep_n_duplicated_package_files: '20'
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "18.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226824

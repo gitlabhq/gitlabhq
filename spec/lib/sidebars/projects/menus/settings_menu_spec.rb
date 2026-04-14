@@ -25,7 +25,9 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
   end
 
   describe 'Menu items' do
-    subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
+    let(:menu) { described_class.new(context) }
+
+    subject { menu.renderable_items.find { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
       it { is_expected.not_to be_nil }
@@ -70,7 +72,7 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
     describe 'CI/CD' do
       let(:item_id) { :ci_cd }
 
-      describe 'when project or its ancestor is archived' do
+      context 'when project or its ancestor is archived' do
         before do
           allow(project).to receive(:self_or_ancestors_archived?).and_return(true)
         end
@@ -78,10 +80,18 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
         it { is_expected.to be_nil }
       end
 
-      describe 'when project and ancestors are not archived' do
+      context 'when project and ancestors are not archived' do
         it { is_expected.not_to be_nil }
 
-        describe 'when the user does not have access' do
+        context 'when the user cannot admin_project but can read_runners' do
+          before do
+            allow(menu).to receive(:can?).with(user, :read_runners, project).and_return(true)
+          end
+
+          it { is_expected.not_to be_nil }
+        end
+
+        context 'when the user does not have access' do
           let(:user) { nil }
 
           it { is_expected.to be_nil }

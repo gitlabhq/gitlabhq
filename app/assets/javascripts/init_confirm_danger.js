@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 import { parseBoolean } from './lib/utils/common_utils';
 import ConfirmDanger from './vue_shared/components/confirm_danger/confirm_danger.vue';
 

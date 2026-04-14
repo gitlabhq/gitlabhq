@@ -71,6 +71,9 @@ describe('Incidents List', () => {
             incidents: {
               loading,
             },
+            workItemTypesConfiguration: {
+              loading,
+            },
           },
         },
       },

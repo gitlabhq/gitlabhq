@@ -155,73 +155,120 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
   end
 
   describe "#process" do
-    context 'when the merge request does not have a ci config' do
+    let(:merge_request) do
+      create(:merge_request,
+        merge_when_pipeline_succeeds: true,
+        merge_user: user,
+        auto_merge_enabled: true,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+        source_branch: 'feature', target_branch: 'master',
+        source_project: project, target_project: project)
+    end
+
+    subject(:process) { service.process(merge_request) }
+
+    context 'with CI pipeline in various states' do
       before do
-        allow(mr_merge_if_green_enabled).to receive(:has_ci_enabled?).and_return(false)
+        project.update!(only_allow_merge_if_pipeline_succeeds: true)
+
+        create(:ci_pipeline,
+          status: pipeline_status,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha,
+          project: project,
+          head_pipeline_of: merge_request)
+        merge_request.update_head_pipeline
+        project.update!(allow_merge_on_skipped_pipeline: allow_skipped)
       end
 
-      context 'when the merge request is mergable' do
-        it 'calls the merge worker' do
-          expect(mr_merge_if_green_enabled)
-            .to receive(:merge_async)
-            .with(mr_merge_if_green_enabled.merge_user_id, mr_merge_if_green_enabled.merge_params)
-
-          service.process(mr_merge_if_green_enabled)
-        end
+      where(:pipeline_status, :allow_skipped, :expected_merge) do
+        :success | false | true
+        :failed  | false | false
+        :running | false | false
+        :skipped | true  | true
+        :skipped | false | false
       end
 
-      context 'when the merge request is not mergeable' do
-        it 'does not call the merge worker' do
-          expect(mr_merge_if_green_enabled).to receive(:mergeable?).and_return(false)
-          expect(mr_merge_if_green_enabled).not_to receive(:merge_async)
+      with_them do
+        it 'merges or blocks based on pipeline state and project settings' do
+          if expected_merge
+            expect(merge_request).to receive(:merge_async)
+          else
+            expect(merge_request).not_to receive(:merge_async)
+          end
 
-          service.process(mr_merge_if_green_enabled)
+          process
         end
       end
     end
 
-    context 'when the merge request has a ci config' do
+    context 'when the head pipeline is nil and CI is enabled' do
       before do
-        allow(mr_merge_if_green_enabled).to receive(:has_ci_enabled?).and_return(true)
+        project.update!(only_allow_merge_if_pipeline_succeeds: true)
+        create(:ci_pipeline, project: project)
       end
 
-      context 'when the pipeline has not succeeded' do
+      it 'does not merge' do
+        expect(merge_request).not_to receive(:merge_async)
+
+        process
+      end
+    end
+
+    context 'when the merge request is not mergeable' do
+      before do
+        merge_request.update!(title: merge_request.draft_title)
+      end
+
+      it 'does not call the merge worker' do
+        expect(merge_request).not_to receive(:merge_async)
+
+        process
+      end
+    end
+
+    context 'when mwcp_skip_ci_guard feature flag is disabled' do
+      before do
+        stub_feature_flags(mwcp_skip_ci_guard: false)
+      end
+
+      context 'when CI is enabled and pipeline has not succeeded' do
         before do
-          allow(mr_merge_if_green_enabled).to receive(:diff_head_pipeline_success?).and_return(false)
+          project.update!(only_allow_merge_if_pipeline_succeeds: true)
+
+          create(:ci_pipeline, :skipped,
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            project: project,
+            head_pipeline_of: merge_request)
+          merge_request.update_head_pipeline
+
+          project.update!(allow_merge_on_skipped_pipeline: true)
         end
 
-        it 'does not call the merge worker' do
-          expect(mr_merge_if_green_enabled).not_to receive(:merge_async)
+        it 'blocks merge due to the early CI guard even when skipped pipelines are allowed' do
+          expect(merge_request).not_to receive(:merge_async)
 
-          service.process(mr_merge_if_green_enabled)
+          process
         end
       end
 
-      context 'when the pipeline has succeeded' do
+      context 'when CI is enabled and pipeline has succeeded' do
         before do
-          allow(mr_merge_if_green_enabled).to receive(:diff_head_pipeline_success?).and_return(true)
-          allow_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |check|
-            allow(check).to receive(:mergeable_ci_state?).and_return(true)
-          end
+          project.update!(only_allow_merge_if_pipeline_succeeds: true)
+
+          create(:ci_pipeline, :success,
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            project: project,
+            head_pipeline_of: merge_request)
+          merge_request.update_head_pipeline
         end
 
-        context 'when the merge request is mergable' do
-          it 'calls the merge worker' do
-            expect(mr_merge_if_green_enabled)
-              .to receive(:merge_async)
-              .with(mr_merge_if_green_enabled.merge_user_id, mr_merge_if_green_enabled.merge_params)
+        it 'calls the merge worker' do
+          expect(merge_request).to receive(:merge_async)
 
-            service.process(mr_merge_if_green_enabled)
-          end
-        end
-
-        context 'when the merge request is not mergeable' do
-          it 'does not call the merge worker' do
-            expect(mr_merge_if_green_enabled).to receive(:mergeable?).and_return(false)
-            expect(mr_merge_if_green_enabled).not_to receive(:merge_async)
-
-            service.process(mr_merge_if_green_enabled)
-          end
+          process
         end
       end
     end

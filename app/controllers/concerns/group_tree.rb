@@ -8,8 +8,8 @@ module GroupTree
     groups = groups.sort_by_attribute(@sort = safe_params[:sort])
 
     if search_descendants?
-      pagination_resource = filtered_groups(groups)
-      @groups = groups_with_ancestors(pagination_resource)
+      pagination_resource = filtered_groups_with_id_only(groups)
+      @groups = groups_with_ancestors(pagination_resource.map(&:id))
     elsif safe_params[:parent_id].present?
       @groups = subgroups(groups)
     else
@@ -46,18 +46,18 @@ module GroupTree
     paginate(query)
   end
 
-  def filtered_groups(groups)
-    paginate(groups.search(safe_params[:filter]))
+  def filtered_groups_with_id_only(groups)
+    paginate(groups.select(:id).search(safe_params[:filter]))
   end
 
-  def groups_with_ancestors(groups)
+  def groups_with_ancestors(group_ids)
     # We find the ancestors by ID of the search results here.
     # Otherwise the ancestors would also have filters applied,
     # which would cause them not to be preloaded.
     #
     # Pagination needs to be applied before loading the ancestors to
     # make sure ancestors are not cut off by pagination.
-    ancestors = Group.where(id: groups.pluck('namespaces.id')).self_and_ancestors
+    ancestors = Group.where(id: group_ids).self_and_ancestors
     ancestors = ancestors.self_or_ancestors_inactive if inactive?
     ancestors.with_selects_for_list
   end

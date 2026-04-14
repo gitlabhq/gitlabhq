@@ -11,15 +11,14 @@ RSpec.describe 'projects/new', feature_category: :groups_and_projects do
     assign(:project, project)
     assign(:namespace, namespace)
 
-    stub_feature_flags(new_project_creation_form: false)
-
     allow(view).to receive_messages(
       current_user: user,
       import_sources_enabled?: false,
       remote_mirror_setting_enabled?: false,
       brand_new_project_guidelines: nil,
       push_to_create_project_command: '',
-      namespace_id_from: nil
+      namespace_id_from: nil,
+      can_push_initial_commit_to_namespace?: true
     )
   end
 
@@ -31,7 +30,7 @@ RSpec.describe 'projects/new', feature_category: :groups_and_projects do
     it 'sets the correct page title' do
       render
 
-      expect(view).to have_received(:page_title).with(_('Create a new project'))
+      expect(view).to have_received(:page_title).with(_('New project'))
     end
   end
 end

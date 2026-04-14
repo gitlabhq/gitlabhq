@@ -218,12 +218,12 @@ they cannot access their primary email address.
 Configure GDK to match GitLab.com:
 
 ```ruby
-# Admin > Settings > General > Sign-up restrictions
+# Admin > Settings > General > New user account restrictions
 ApplicationSetting.current.update!(
   require_admin_approval_after_user_signup: false,
   email_confirmation_setting: 'hard' )
 
-# Admin > Settings > General > Sign-in restrictions
+# Admin > Settings > General > New user account restrictions
 ApplicationSetting.current.update!(
   anti_abuse_settings: {
     require_email_verification_on_account_locked: true

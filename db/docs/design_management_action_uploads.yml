@@ -2,6 +2,7 @@
 table_name: design_management_action_uploads
 classes:
 - DesignManagement::Action
+- Geo::DesignManagementActionUpload
 - Upload
 feature_categories:
 - design_management

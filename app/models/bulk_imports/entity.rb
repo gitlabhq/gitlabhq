@@ -19,6 +19,10 @@
 # Groups and Projects.
 class BulkImports::Entity < ApplicationRecord
   include AfterCommitQueue
+  include Gitlab::Utils::StrongMemoize
+
+  GROUP_ENTITY_SOURCE_TYPE = 'group_entity'
+  PROJECT_ENTITY_SOURCE_TYPE = 'project_entity'
 
   self.table_name = 'bulk_import_entities'
 
@@ -123,13 +127,14 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def pipelines
-    @pipelines ||= case source_type
-                   when 'group_entity'
-                     BulkImports::Groups::Stage.new(self).pipelines
-                   when 'project_entity'
-                     BulkImports::Projects::Stage.new(self).pipelines
-                   end
+    stage_classes = {
+      GROUP_ENTITY_SOURCE_TYPE => BulkImports::Groups::Stage,
+      PROJECT_ENTITY_SOURCE_TYPE => BulkImports::Projects::Stage
+    }
+
+    stage_classes[source_type].new(self).pipelines
   end
+  strong_memoize_attr :pipelines
 
   def pipeline_exists?(name)
     pipelines.any? { _1[:pipeline].to_s == name.to_s }
@@ -189,11 +194,11 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def project?
-    source_type == 'project_entity'
+    source_type == PROJECT_ENTITY_SOURCE_TYPE
   end
 
   def group?
-    source_type == 'group_entity'
+    source_type == GROUP_ENTITY_SOURCE_TYPE
   end
 
   def update_service

@@ -137,6 +137,7 @@ class Issue < ApplicationRecord
     autosave: true
 
   has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
+  has_one :work_item_position, class_name: 'WorkItems::Position', inverse_of: :work_item
 
   alias_method :escalation_status, :incident_management_issuable_escalation_status
 
@@ -312,10 +313,6 @@ class Issue < ApplicationRecord
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
-
-  scope :with_work_item_type, -> {
-    joins(:work_item_type)
-  }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
   before_validation :ensure_work_item_description, if: :importing?
@@ -923,11 +920,7 @@ class Issue < ApplicationRecord
   #
   # Overridden in EE (For OKRs and Epics)
   def show_as_work_item?
-    return false if require_legacy_views?
-    return true if group_level?
-    return true if work_item_type&.task?
-
-    resource_parent.work_items_consolidated_list_enabled?
+    !require_legacy_views?
   end
 
   # Legacy views/workflows only

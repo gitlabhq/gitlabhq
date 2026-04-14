@@ -31,7 +31,6 @@ module Ci
     validates :variable_type, inclusion: { in: VARIABLE_TYPES }
     validates :raw, inclusion: { in: [true, false] }
 
-    alias_attribute :secret_value, :value
     alias_method :raw?, :raw
 
     # Required for auth check in Types::Ci::PipelineManualVariableType

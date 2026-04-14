@@ -50,6 +50,28 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
     end
   end
 
+  describe '#icon_name' do
+    context 'when work_item_type is present' do
+      before do
+        work_item.work_item_type_id = system_defined_type.id
+      end
+
+      it 'delegates to work_item_type' do
+        expect(work_item.icon_name).to eq(system_defined_type.icon_name)
+      end
+    end
+
+    context 'when work_item_type is nil' do
+      before do
+        work_item.work_item_type_id = nil
+      end
+
+      it 'returns nil' do
+        expect(work_item.icon_name).to be_nil
+      end
+    end
+  end
+
   describe '#work_item_type=' do
     context 'when we set a db work_item_type' do
       it 'sets the work_item_type_id' do

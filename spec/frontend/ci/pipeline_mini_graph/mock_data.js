@@ -79,6 +79,7 @@ export const pipelineStage = {
   detailedStatus: {
     __typename: 'DetailedStatus',
     id: 'success-409-409',
+    name: 'SUCCESS',
     icon: 'status_success',
     label: 'passed',
     tooltip: 'passed',

@@ -3,12 +3,11 @@
   padding: 0 15px;
   border: 1px solid transparent;
   border-radius: 0;
-  position: fixed;
-  left: 0;
   width: 100%;
   text-align: center;
   margin: 0;
   z-index: 1000;
+  overflow: hidden;
 
   p {
     @include str-truncated(100%);
@@ -19,28 +18,11 @@
 }
 
 .header-message {
-  top: 0;
   height: $system-header-height;
   line-height: $system-header-height;
 }
 
 .footer-message {
-  bottom: 0;
   height: $system-footer-height;
   line-height: $system-footer-height;
-}
-
-.with-performance-bar {
-  .header-message {
-    top: $performance-bar-height;
-  }
-}
-
-.fullscreen-layout {
-  .header-message,
-  .footer-message {
-    position: static;
-    top: auto;
-    bottom: auto;
-  }
 }

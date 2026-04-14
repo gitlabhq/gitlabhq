@@ -6,6 +6,10 @@ module Mcp
       class GraphqlCreateWorkItemNoteService < GraphqlService
         register_version '0.1.0', {
           description: 'Create a new note (comment) on a GitLab work item',
+          annotations: {
+            readOnlyHint: false,
+            destructiveHint: false
+          },
           input_schema: {
             type: 'object',
             properties: {

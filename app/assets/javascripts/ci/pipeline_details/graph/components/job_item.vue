@@ -260,9 +260,13 @@ export default {
       return (this.isRetryableBridge && !this.skipRetryModal) || this.hasManualConfirmationMessage;
     },
     manualConfirmationMessage() {
-      return sprintf(__('Custom confirmation message: %{message}'), {
-        message: this.job.status.action.confirmationMessage,
-      });
+      return sprintf(
+        __('Custom confirmation message: %{message}'),
+        {
+          message: this.job.status.action.confirmationMessage,
+        },
+        false,
+      );
     },
     jobActionTooltipText() {
       const { group } = this.status;

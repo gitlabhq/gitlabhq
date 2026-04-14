@@ -6,8 +6,8 @@ import {
   SP_SHOW_TRACK_EVENT,
   SP_SHOW_TRACK_VALUE,
   SP_HELP_CONTENT,
-  SP_HELP_URL,
   SP_ICON_NAME,
+  SP_HELP_URL,
 } from '../constants';
 import MrWidgetIcon from './mr_widget_icon.vue';
 

@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import { __, s__, sprintf } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
@@ -15,6 +16,7 @@ const JOB_NAME_HEADER = __('Name');
 const STAGE_HEADER = __('Stage');
 
 export default {
+  name: 'FailedJobsList',
   components: {
     GlAlert,
     GlLink,
@@ -74,6 +76,7 @@ export default {
       },
       error(e) {
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
+        reportToSentry(this.$options.name, e);
       },
     },
   },
@@ -104,8 +107,9 @@ export default {
 
       try {
         await this.$apollo.queries.failedJobs.refetch();
-      } catch {
+      } catch (err) {
         createAlert({ message: this.$options.i18n.fetchError });
+        reportToSentry(this.$options.name, err);
       } finally {
         this.isLoadingMore = false;
       }

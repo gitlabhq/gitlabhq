@@ -1,5 +1,5 @@
 import { GlKeysetPagination } from '@gitlab/ui';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import currentUserOrganizationsGraphQlResponse from 'test_fixtures/graphql/organizations/current_user_organizations.query.graphql.json';
 import OrganizationsList from '~/organizations/shared/components/list/organizations_list.vue';

@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import SidebarHeader from '~/ci/job_details/components/sidebar/sidebar_header.vue';
 import JobRetryButton from '~/ci/job_details/components/sidebar/job_sidebar_retry_button.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
-import { mockFullPath, mockId, mockJobResponse } from '../../mock_data';
+import { mockFullPath, mockId, mockJobResponse, mockJobWithInputsResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -46,8 +46,9 @@ describe('Sidebar Header', () => {
     props = {},
     restJob = {},
     provide = { ...defaultProvide },
+    jobQueryResponse = mockJobResponse,
   } = {}) => {
-    const getJobQueryResponse = jest.fn().mockResolvedValue(mockJobResponse);
+    const getJobQueryResponse = jest.fn().mockResolvedValue(jobQueryResponse);
 
     const requestHandlers = [[getJobQuery, getJobQueryResponse]];
 
@@ -121,6 +122,23 @@ describe('Sidebar Header', () => {
         expect(findForceCancelButton().exists()).toBe(true);
         expect(findForceCancelButton().attributes('href')).toBe('force_cancel/path');
       });
+    });
+  });
+
+  describe('retry button with inputs', () => {
+    it('passes hasInputs as false when job has no inputs', async () => {
+      await createComponentWithApollo({ restJob: { retry_path: 'retry/path' } });
+
+      expect(findRetryButton().props('hasInputs')).toBe(false);
+    });
+
+    it('passes hasInputs as true when job has inputs', async () => {
+      await createComponentWithApollo({
+        restJob: { retry_path: 'retry/path' },
+        jobQueryResponse: mockJobWithInputsResponse,
+      });
+
+      expect(findRetryButton().props('hasInputs')).toBe(true);
     });
   });
 });

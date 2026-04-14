@@ -20,6 +20,7 @@ export default () => {
   }
 
   const {
+    allowScopedLabels,
     fieldName,
     fullPath,
     initialLabels,
@@ -37,7 +38,7 @@ export default () => {
       allowLabelCreate: true,
       allowLabelEdit: true,
       allowLabelRemove: true,
-      allowScopedLabels: true,
+      allowScopedLabels: parseBoolean(allowScopedLabels),
       attrWorkspacePath: fullPath,
       fieldName,
       fullPath,

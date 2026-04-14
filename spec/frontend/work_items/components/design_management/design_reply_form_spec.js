@@ -287,6 +287,15 @@ describe('Design reply form component', () => {
 
       expect(wrapper.emitted('cancel-form')).toBeUndefined();
     });
+
+    it('does not open a second confirmation modal when Escape is pressed multiple times rapidly', () => {
+      findTextarea().setValue(mockComment);
+
+      findTextarea().trigger('keydown.esc');
+      findTextarea().trigger('keydown.esc');
+
+      expect(confirmAction).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('when component is destroyed', () => {

@@ -9,6 +9,7 @@ module Tooling
       MATCH = %r{\A\+\s+((\S*\.)?((bulk_)?(insert|update|upsert|delete|destroy)(_all)?)|scope\s+:)\b}
       SCOPE_BODY_MATCH = %r{\A\+\s*\.}
 
+      ONCE_PER_FILE = true
       REPLACEMENT = nil
       DOCUMENTATION_LINK = 'https://docs.gitlab.com/development/database_review/#preparation-when-using-bulk-update-operations'
       FIND_SQL_DOCUMENTATION_LINK = 'https://docs.gitlab.com/development/database_review/#tips-for-finding-the-sql-executed-by-the-application'

@@ -6,6 +6,7 @@ module ResourceEvents
 
     belongs_to :user, optional: true
     belongs_to :issue
+    belongs_to :namespace
 
     validates :issue, presence: true
 

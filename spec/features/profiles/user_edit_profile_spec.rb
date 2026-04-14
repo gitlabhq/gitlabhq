@@ -36,7 +36,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab :tada:'
     fill_in 'user_job_title', with: 'Frontend Engineer'
-    fill_in 'user_user_detail_organization', with: 'GitLab'
+    fill_in 'user_company', with: 'GitLab'
     submit_settings
 
     expect(user.reload).to have_attributes(
@@ -45,7 +45,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       website_url: 'http://testurl.com',
       bio: 'I <3 GitLab :tada:',
       job_title: 'Frontend Engineer',
-      user_detail_organization: 'GitLab'
+      company: 'GitLab'
     )
 
     expect(find('#user_location').value).to eq 'Ukraine'
@@ -53,7 +53,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   it 'does not set secondary emails without user input' do
-    fill_in 'user_user_detail_organization', with: 'GitLab'
+    fill_in 'user_company', with: 'GitLab'
     submit_settings
 
     user.reload
@@ -560,7 +560,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     context 'when job title and organziation are entered' do
       it "shows job title and organzation on user's profile" do
         fill_in 'user_job_title', with: 'Frontend Engineer'
-        fill_in 'user_user_detail_organization', with: 'GitLab - work info test'
+        fill_in 'user_company', with: 'GitLab - work info test'
         submit_settings
 
         visit_user
@@ -582,7 +582,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
     context 'when only organization is entered' do
       it "shows only organization on user's profile" do
-        fill_in 'user_user_detail_organization', with: 'GitLab - work info test'
+        fill_in 'user_company', with: 'GitLab - work info test'
         submit_settings
 
         visit_user

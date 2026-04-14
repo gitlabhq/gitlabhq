@@ -246,21 +246,29 @@ RSpec.describe Gitlab::Database::AlterCellSequencesRange, feature_category: :dat
           let(:sequence_name) { saturating_sequence_1 }
           let(:sequence_names) { [sequence_name] }
 
+          let(:original_min_value) { 1 }
+
           before do
-            # Set the sequence to have a START value >= minval first, then advance past minval
-            connection.execute("ALTER SEQUENCE #{sequence_name} START #{minval}")
+            # Set up a legacy cell sequence: explicit min_value, start at minval, and advance past it
+            connection.execute("ALTER SEQUENCE #{sequence_name} MINVALUE #{original_min_value} START #{minval}")
             connection.execute("SELECT setval('#{sequence_name}', #{minval + 10})")
             execute
           end
 
-          it 'sets only boundaries without restarting the sequence' do
+          it 'sets only maxval without restarting the sequence' do
             sequence = connection.execute(
               "SELECT * FROM pg_sequences WHERE sequencename = '#{sequence_name}'"
             ).first
 
-            seq_min, seq_max = sequence.values_at('min_value', 'max_value')
+            expect(sequence['max_value']).to eq(maxval)
+          end
 
-            expect([seq_min, seq_max]).to eq([minval, maxval])
+          it 'does not change min_value' do
+            sequence = connection.execute(
+              "SELECT * FROM pg_sequences WHERE sequencename = '#{sequence_name}'"
+            ).first
+
+            expect(sequence['min_value']).to eq(original_min_value)
           end
 
           it 'logs that RESTART is being skipped' do

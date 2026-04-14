@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import getJiraImportDetailsQuery from '../queries/get_jira_import_details.query.graphql';
 import { isInProgress, extractJiraProjectsOptions } from '../utils/jira_import_utils';
 import JiraImportForm from './jira_import_form.vue';

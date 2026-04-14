@@ -10,8 +10,8 @@ import initCopyToClipboard, {
 } from '~/behaviors/copy_to_clipboard';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
   uniqueId: (prefix) => (prefix ? `${prefix}1` : 1),
 }));
 

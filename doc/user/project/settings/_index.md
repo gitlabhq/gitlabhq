@@ -189,3 +189,16 @@ To configure these webhooks to also trigger 60 days and 30 days before a token e
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Add additional webhook triggers for project access token expiration** checkbox.
 1. Select **Save changes**.
+
+## Turn off CI/CD for a project
+
+If your project doesn't use CI/CD, you can turn it off.
+This removes the CI/CD banner from merge requests.
+
+To turn off CI/CD:
+
+1. In the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn off the **CI/CD** toggle.
+1. Select **Save changes**.

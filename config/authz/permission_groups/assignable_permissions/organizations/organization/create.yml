@@ -1,0 +1,7 @@
+---
+name: create_organization
+description: Grants the ability to create organizations
+boundaries:
+  - instance
+permissions:
+  - create_organization

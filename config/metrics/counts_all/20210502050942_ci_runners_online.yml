@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.ci_runners_online
 description: Total online Runners of all types
-product_group: runner
+product_group: runner_core
 product_categories:
 - fleet_visibility
 - runner_core

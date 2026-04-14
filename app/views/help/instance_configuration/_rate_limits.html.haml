@@ -42,6 +42,8 @@
           = render 'help/instance_configuration/rate_limit_row', title: _('Raw blob requests'), rate_limit: rate_limits[:raw_blob]
           = render 'help/instance_configuration/rate_limit_row', title: _('Pipeline creation requests per project, commit, and user'), rate_limit: rate_limits[:pipeline_creation]
           = render 'help/instance_configuration/rate_limit_row', title: _('Git SSH operations'), rate_limit: rate_limits[:git_ssh_operations]
+          - if Gitlab.ee?
+            = render 'help/instance_configuration/rate_limit_row', title: _('Incident management inbound alert requests'), rate_limit: rate_limits[:incident_management_notification]
 
     %h2#files-api-rate-limits= _('Files API rate limits')
     %p

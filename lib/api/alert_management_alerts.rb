@@ -25,6 +25,7 @@ module API
           ]
           tags %w[alert_management]
         end
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
         post 'authorize' do
           authorize!(:upload_alert_management_metric_image, find_project_alert(request.params[:alert_iid]))
 

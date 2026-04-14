@@ -19,6 +19,19 @@ module QA
               element 'severity-block-container'
             end
 
+            def expand_right_sidebar
+              wait_for_requests
+              # Wait for initRightSidebar's 300ms setTimeout to fully collapse the sidebar
+              wait_until(reload: false, max_duration: 2, sleep_interval: 0.1) do
+                has_selector?('.right-sidebar.right-sidebar-collapsed', wait: 0)
+              end
+              retry_until(sleep_interval: 1, message: "Retry until right sidebar is expanded") do
+                find('.js-sidebar-toggle').click unless has_selector?('.right-sidebar.right-sidebar-expanded', wait: 0)
+
+                has_selector?('.right-sidebar.right-sidebar-expanded', wait: 0)
+              end
+            end
+
             def has_label?(label)
               wait_labels_block_finish_loading do
                 has_element?('selected-label-content', label_name: label)
@@ -50,6 +63,9 @@ module QA
                 end
               end
             end
+
+            # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
+            def close_dap_panel_if_exists; end
           end
         end
       end

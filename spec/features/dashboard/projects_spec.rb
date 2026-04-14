@@ -205,7 +205,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
       wait_for_requests
 
       within_testid("projects-list-item-#{project_with_topics.id}") do
-        expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
+        expect(page).to have_link('topic1', href: topic_organization_explore_projects_path(organization_path: current_organization.path, topic_name: 'topic1'))
       end
     end
   end

@@ -14,7 +14,7 @@ RSpec.shared_examples 'sends git audit streaming event' do
     let(:project) { create(:project, :public, :repository, namespace: group) }
 
     before do
-      create(:external_audit_event_destination, group: group)
+      create(:audit_events_group_external_streaming_destination, group: group)
       project.add_developer(user)
     end
 
@@ -39,7 +39,7 @@ RSpec.shared_examples 'sends git audit streaming event' do
     let(:project) { create(:project, :private, :repository, namespace: group) }
 
     before do
-      create(:external_audit_event_destination, group: group)
+      create(:audit_events_group_external_streaming_destination, group: group)
       project.add_developer(user)
       sign_in(user)
     end

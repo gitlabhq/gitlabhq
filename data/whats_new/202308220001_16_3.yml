@@ -2,31 +2,31 @@
   description: |  # Do not modify this line, instead modify the lines below.
     The [Value Streams Dashboard](https://about.gitlab.com/blog/2023/06/12/getting-started-with-value-streams-dashboard/) has been enhanced with new metrics: **Merge request (MR) throughput** and **Total closed issues** (Velocity). In GitLab, **MR throughput** is a count of the number of merge requests merged per month, and **Total closed issues** is the number of flow items closed at a point in time.
 
-    With these metrics, you can identify low or high productivity months and the efficiency of [merge request and code review processes](https://docs.gitlab.com/ee/user/analytics/merge_request_analytics.html). You can then gauge whether the [Value Stream delivery](https://docs.gitlab.com/ee/user/group/value_stream_analytics/) is accelerating or not.
+    With these metrics, you can identify low or high productivity months and the efficiency of [merge request and code review processes](https://docs.gitlab.com/user/analytics/merge_request_analytics/). You can then gauge whether the [Value Stream delivery](https://docs.gitlab.com/user/group/value_stream_analytics/) is accelerating or not.
 
     Over time, the metrics accumulate historical data from MRs and issues. Teams can use the data to determine if delivery rates are accelerating or need improvement, and provide more accurate estimates or forecasts for how much work they can deliver.
   stage: Plan
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html
+  documentation_link: https://docs.gitlab.com/user/analytics/value_streams_dashboard/
   image_url: https://about.gitlab.com/images/16_3/16.3_vsd.mr_iss.png
   published_at: 2023-08-22
-  release: 16.3
+  release: "16.3"
 
 - name: More powerful GitLab SaaS runners on Linux
   description: |  # Do not modify this line, instead modify the lines below.
-    Having recently upgraded all of our Linux SaaS runners, we are now introducing `xlarge` and `2xlarge` [SaaS runners on Linux](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html). Equipped with 16 and 32 vCPUs respectively and fully integrated with GitLab CI/CD, these runners will allow you to build and test your application faster than ever before.
+    Having recently upgraded all of our Linux SaaS runners, we are now introducing `xlarge` and `2xlarge` [SaaS runners on Linux](https://docs.gitlab.com/ci/runners/saas/linux_saas_runner/). Equipped with 16 and 32 vCPUs respectively and fully integrated with GitLab CI/CD, these runners will allow you to build and test your application faster than ever before.
 
     We are determined to provide the industry's fastest CI/CD build speed and look forward to seeing teams achieve even shorter feedback cycles and ultimately deliver software faster.
   stage: Verify
   self-managed: false
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html
+  documentation_link: https://docs.gitlab.com/ci/runners/saas/linux_saas_runner/
   image_url: https://about.gitlab.com/images/16_3/larger-runners.png
   published_at: 2023-08-22
-  release: 16.3
+  release: "16.3"
 
 - name: Additional filtering for scan result policies
   description: |  # Do not modify this line, instead modify the lines below.
@@ -40,10 +40,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/merge_request_approval_policies.html
+  documentation_link: https://docs.gitlab.com/user/application_security/policies/merge_request_approval_policies/
   image_url: https://about.gitlab.com/images/16_3/security-policy-filters-compressed.png
   published_at: 2023-08-22
-  release: 16.3
+  release: "16.3"
 
 - name: Connect to a workspace with SSH
   description: |  # Do not modify this line, instead modify the lines below.
@@ -54,10 +54,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/workspace/configuration.html#connect-to-a-workspace-with-ssh
+  documentation_link: https://docs.gitlab.com/user/workspace/configuration/#connect-to-a-workspace-with-ssh
   image_url: https://about.gitlab.com/images/16_3/create-workspace-ssh.png
   published_at: 2023-08-22
-  release: 16.3
+  release: "16.3"
 
 - name: Flux sync status visualization
   description: |  # Do not modify this line, instead modify the lines below.
@@ -68,7 +68,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html#flux-sync-status
+  documentation_link: https://docs.gitlab.com/ci/environments/kubernetes_dashboard/#flux-sync-status
   image_url: https://about.gitlab.com/images/16_3/flux-badges.png
   published_at: 2023-08-22
-  release: 16.3
+  release: "16.3"

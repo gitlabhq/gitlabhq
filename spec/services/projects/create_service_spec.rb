@@ -515,17 +515,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
-  context 'wiki_enabled creates repository directory' do
-    context 'wiki_enabled true creates wiki repository directory' do
-      it do
+  context 'wiki_enabled' do
+    context 'true' do
+      it 'creates wiki repository directory' do
         project = create_project(user, opts)
 
         expect(wiki_repo(project).exists?).to be_truthy
       end
     end
 
-    context 'wiki_enabled false does not create wiki repository directory' do
-      it do
+    context 'false' do
+      it 'does not create wiki repository directory' do
         opts[:wiki_enabled] = false
         project = create_project(user, opts)
 

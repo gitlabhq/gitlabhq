@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
                 context 'when file is empty' do
                   let(:params) { { artifact: 'secret_stuff/generated.yml', job: 'generator' } }
-                  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_stuff', 'masked' => true }]) }
+                  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret_stuff', masked: true }]) }
                   let(:context) do
                     Gitlab::Ci::Config::External::Context.new(parent_pipeline: parent_pipeline, variables: variables)
                   end

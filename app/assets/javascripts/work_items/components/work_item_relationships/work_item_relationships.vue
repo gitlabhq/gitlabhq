@@ -19,7 +19,6 @@ import {
 import {
   LINKED_CATEGORIES_MAP,
   LINKED_ITEMS_ANCHOR,
-  NAME_TO_TEXT_MAP,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_METADATA_LOCALSTORAGEKEY,
   WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED,
@@ -194,7 +193,7 @@ export default {
         ),
         { itemCount: this.linkedWorkItemsCount },
       );
-      return sprintf(message, { workItemType: NAME_TO_TEXT_MAP[this.workItemType] });
+      return sprintf(message, { workItemType: this.workItemType });
     },
     openRelatesToLinks() {
       return this.displayableLinks(this.linksRelatesTo);
@@ -414,7 +413,6 @@ export default {
         :work-item-iid="workItemIid"
         :work-item-full-path="workItemFullPath"
         :children-ids="childrenIds"
-        :work-item-type="workItemType"
         :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
         @submitted="hideLinkItemForm"
         @cancel="hideLinkItemForm"

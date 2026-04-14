@@ -20,7 +20,7 @@
     to support the integration. Since then, Mattermost has significantly matured its own packaging and deployment
     options, and adoption of the bundled Mattermost among GitLab customers has remained relatively low.
 
-    With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.cloudron.io/topic/14298/upcoming-removal-of-gitlab-sso-in-mattermost-v11-suggestion-for-cloudron).
+    With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.mattermost.com/t/mattermost-v11-changes-in-free-offerings/25126).
     Given this change, the maturity of Mattermost standalone deployment options, and the low adoption in our customer
     base, we are removing Mattermost from the Linux package.
 

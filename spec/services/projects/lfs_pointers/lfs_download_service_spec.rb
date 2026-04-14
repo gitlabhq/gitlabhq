@@ -25,7 +25,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
   end
 
   shared_examples 'lfs temporal file is removed' do
-    it do
+    it 'removes temporary file when process is completed' do
       subject.execute
 
       expect(File.exist?(subject.send(:tmp_filename))).to be false
@@ -33,7 +33,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
   end
 
   shared_examples 'no lfs object is created' do
-    it do
+    it 'keeps the same lfs object count' do
       expect { subject.execute }.not_to change { LfsObject.count }
     end
 

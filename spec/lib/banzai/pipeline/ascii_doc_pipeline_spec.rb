@@ -82,7 +82,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         'image with onerror' => {
           input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
           output: <<~TEXT
-            <div>\n<p><span><a class="no-attachment-icon" href="https://localhost.com/image.png" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=\'Alt text" onerror="alert(7)\' decoding="async" class="lazy" data-src="https://localhost.com/image.png"></a></span></p>\n</div>
+            <div>\n<p><span><a class="no-attachment-icon" href="https://localhost.com/image.png" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Alt text&quot; onerror=&quot;alert(7)" decoding="async" class="lazy" data-src="https://localhost.com/image.png"></a></span></p>\n</div>
           TEXT
         }
       }
@@ -101,10 +101,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code">
-          <pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre>
-          <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
-          </div>
+          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
           </div>
           </div>
         HTML
@@ -151,7 +148,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <div class="admonitionblock">
           <table>
-          <tr>
+          <tbody><tr>
           <td class="icon">
           <i class="fa icon-note" title="Note"></i>
           </td>
@@ -159,7 +156,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           An admonition paragraph, like this note, grabs the reader’s attention.
           </td>
           </tr>
-          </table>
+          </tbody></table>
           </div>
         HTML
 
@@ -254,8 +251,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <h1>Title</h1>
           <div>
-          <h2 id="user-content-first-section">
-          <a class="anchor" href="#user-content-first-section"></a>First section</h2>
+          <h2 id="user-content-first-section"><a class="anchor" href="#user-content-first-section"></a>First section</h2>
           <div>
           <div>
           <p>This is the first section.</p>
@@ -263,8 +259,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           </div>
           </div>
           <div>
-          <h2 id="user-content-second-section">
-          <a class="anchor" href="#user-content-second-section"></a>Second section</h2>
+          <h2 id="user-content-second-section"><a class="anchor" href="#user-content-second-section"></a>Second section</h2>
           <div>
           <div>
           <p>This is the second section.</p>
@@ -272,8 +267,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           </div>
           </div>
           <div>
-          <h2 id="user-content-thunder">
-          <a class="anchor" href="#user-content-thunder"></a>Thunder ⚡ !</h2>
+          <h2 id="user-content-thunder"><a class="anchor" href="#user-content-thunder"></a>Thunder ⚡ !</h2>
           <div>
           <div>
           <p>This is the third section.</p>
@@ -378,10 +372,7 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         output = <<~HTML
           <div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code">
-          <pre data-canonical-lang="js" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
-          <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
-          </div>
+          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="js" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
           </div>
           </div>
         HTML
@@ -408,14 +399,11 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
           <div>
           <div>class.cpp</div>
           <div>
-          <div class="gl-relative markdown-code-block js-markdown-code">
-          <pre data-canonical-lang="c++" class="code highlight js-syntax-highlight language-cpp" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
+          <div class="gl-relative markdown-code-block js-markdown-code"><pre data-canonical-lang="c++" class="code highlight js-syntax-highlight language-cpp" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
           <span id="LC2" class="line" lang="cpp"></span>
           <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
           <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
-          <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre>
-          <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
-          </div>
+          <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>
           </div>
           </div>
         HTML
@@ -429,11 +417,11 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
         input = <<~ADOC
           [stem]
           ++++
-          \sqrt{4} = 2
+          \\sqrt{4} = 2
           ++++
         ADOC
 
-        output = "<div>\n<div>\n\\$ qrt{4} = 2\\$\n</div>\n</div>"
+        output = "<div>\n<div>\n\\$\\sqrt{4} = 2\\$\n</div>\n</div>"
 
         expect(render(input, context)).to include(output)
       end
@@ -454,14 +442,14 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
 
           [stem]
           ++++
-          \sqrt{4} = 2
+          \\sqrt{4} = 2
           ++++
 
           another part
 
           [latexmath]
           ++++
-          \beta_x \gamma
+          \\beta_x \\gamma
           ++++
 
           stem:[2+2] is 4
@@ -469,7 +457,8 @@ RSpec.describe Banzai::Pipeline::AsciiDocPipeline, feature_category: :wiki do
 
         expect(render(input, context))
           .to include('<pre data-math-style="display" class="js-render-math" v-pre="true"><code>' \
-            '<span id="LC1" class="line" lang="plaintext">eta_x gamma</span></code></pre>')
+            '<span id="LC1" class="line" lang="plaintext">\beta_x \gamma</span></code></pre>' \
+            '<copy-code></copy-code><insert-code-snippet></insert-code-snippet>')
         expect(render(input, context))
           .to include('<p><code data-math-style="inline" class="js-render-math">2+2</code> is 4</p>')
       end

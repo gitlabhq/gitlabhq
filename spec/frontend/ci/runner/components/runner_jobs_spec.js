@@ -11,7 +11,7 @@ import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 import RunnerJobsTable from '~/ci/runner/components/runner_jobs_table.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import RunnerJobsEmptyState from '~/ci/runner/components/runner_jobs_empty_state.vue';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/ci/runner/constants';
 
 import runnerJobsQuery from '~/ci/runner/graphql/show/runner_jobs.query.graphql';
@@ -19,7 +19,7 @@ import runnerJobsQuery from '~/ci/runner/graphql/show/runner_jobs.query.graphql'
 import { runnerJobsData } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockRunnerId = '1';
 const mockRunnerGraphQLId = convertToGraphQLId(TYPENAME_CI_RUNNER, mockRunnerId);
@@ -165,10 +165,7 @@ describe('RunnerJobs', () => {
     });
 
     it('reports an error', () => {
-      expect(captureException).toHaveBeenCalledWith({
-        component: 'RunnerJobs',
-        error: expect.any(Error),
-      });
+      expect(captureException).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });

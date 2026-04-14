@@ -1,0 +1,9 @@
+# @feature_category: user_profile
+mutation deleteAchievement($input: AchievementsDeleteInput!) {
+  achievementsDelete(input: $input) {
+    achievement {
+      id
+    }
+    errors
+  }
+}

@@ -1,5 +1,4 @@
 <script>
-import { throttle } from 'lodash-es';
 import {
   keysFor,
   MR_NEXT_UNRESOLVED_DISCUSSION,
@@ -12,18 +11,12 @@ import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
   mixins: [discussionNavigation],
-  data() {
-    return {
-      jumpToNext: throttle(() => this.jumpToNextDiscussion({ behavior: 'auto' }), 200),
-      jumpToPrevious: throttle(() => this.jumpToPreviousDiscussion({ behavior: 'auto' }), 200),
-    };
-  },
   created() {
     eventHub.$on('jumpToFirstUnresolvedDiscussion', this.jumpToFirstUnresolvedDiscussion);
   },
   mounted() {
-    Mousetrap.bind(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION), this.jumpToNext);
-    Mousetrap.bind(keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION), this.jumpToPrevious);
+    Mousetrap.bind(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION), this.jumpToNextDiscussion);
+    Mousetrap.bind(keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION), this.jumpToPreviousDiscussion);
   },
   beforeDestroy() {
     Mousetrap.unbind(keysFor(MR_NEXT_UNRESOLVED_DISCUSSION));

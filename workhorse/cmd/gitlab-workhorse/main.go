@@ -154,32 +154,9 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 		return nil, nil, fmt.Errorf("configFile: %v", err)
 	}
 
-	cfg.MetricsListener = cfgFromFile.MetricsListener
-	if boot.prometheusListenAddr != "" {
-		if cfg.MetricsListener != nil {
-			return nil, nil, fmt.Errorf("configFile: both prometheusListenAddr and metrics_listener can't be specified")
-		}
-		cfg.MetricsListener = &config.ListenerConfig{Network: "tcp", Addr: boot.prometheusListenAddr}
+	if err := cfg.MergeFromFile(cfgFromFile, boot.prometheusListenAddr); err != nil {
+		return nil, nil, err
 	}
-
-	cfg.Redis = cfgFromFile.Redis
-	cfg.Sentinel = cfgFromFile.Sentinel
-	cfg.ObjectStorageCredentials = cfgFromFile.ObjectStorageCredentials
-	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
-	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
-	cfg.ShutdownTimeout = cfgFromFile.ShutdownTimeout
-	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
-	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
-	cfg.Listeners = cfgFromFile.Listeners
-	cfg.HealthCheckListener = cfgFromFile.HealthCheckListener
-	cfg.LoadSheddingConfig = cfgFromFile.LoadSheddingConfig
-
-	// Apply default health check configuration if not provided
-	cfg.ApplyHealthCheckDefaults()
-	cfg.ApplyLoadSheddingDefaults()
-
-	cfg.CircuitBreakerConfig = cfgFromFile.CircuitBreakerConfig
-	cfg.AdoptCfRayHeader = cfgFromFile.AdoptCfRayHeader
 
 	return boot, cfg, nil
 }
@@ -331,20 +308,15 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	shutdownCh := make(chan struct{})
 	upgradedConnsManager := &upstream.UpgradedConnsManager{}
-	up := upstream.NewUpstream(
-		cfg,
-		accessLogger,
-		watchKeyFn,
-		rdb,
-		healthCheckServer,
-		shutdownCh,
-		upgradedConnsManager,
-	)
-
-	// Apply load shedding middleware if configured
-	if loadShedder != nil {
-		up = loadshedding.Middleware(loadShedder, accessLogger)(up)
-	}
+	up := upstream.NewUpstream(cfg, upstream.Dependencies{
+		AccessLogger:         accessLogger,
+		WatchKeyHandler:      watchKeyFn,
+		Rdb:                  rdb,
+		HealthCheckServer:    healthCheckServer,
+		ShutdownChan:         shutdownCh,
+		UpgradedConnsManager: upgradedConnsManager,
+		LoadShedder:          loadShedder,
+	})
 
 	srv := &http.Server{Handler: wrapRaven(up)}
 

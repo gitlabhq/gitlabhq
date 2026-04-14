@@ -39,6 +39,7 @@ module Users
 
       migrate_authored_todos
       migrate_issues
+      migrate_saved_views
       migrate_merge_requests
       migrate_notes
       migrate_abuse_reports
@@ -79,6 +80,11 @@ module Users
     def migrate_issues
       batched_migrate(Issue, :author_id)
       batched_migrate(Issue, :last_edited_by_id)
+    end
+
+    def migrate_saved_views
+      batched_migrate(WorkItems::SavedViews::SavedView, :created_by_id)
+      batched_migrate(WorkItems::SavedViews::SavedView, :updated_by_id)
     end
 
     def migrate_merge_requests

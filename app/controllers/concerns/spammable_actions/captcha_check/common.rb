@@ -7,7 +7,7 @@ module SpammableActions
 
       private
 
-      def with_captcha_check_common(spammable:, captcha_render_lambda:, &block)
+      def with_captcha_check_common(spammable:, captcha_render_lambda:)
         # If the Spammable indicates that CAPTCHA is not necessary (either due to it not being flagged
         # as spam, or if spam/captcha is disabled for some reason), then we will go ahead and
         # yield to the block containing the action's original behavior, then return.

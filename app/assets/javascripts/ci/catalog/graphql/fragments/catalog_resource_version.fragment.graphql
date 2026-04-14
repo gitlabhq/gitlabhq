@@ -1,0 +1,14 @@
+# @feature_category: pipeline_composition
+
+fragment CatalogResourceVersionFields on CiCatalogResourceVersion {
+  id
+  name
+  path
+  createdAt
+  author {
+    id
+    name
+    state
+    webUrl
+  }
+}

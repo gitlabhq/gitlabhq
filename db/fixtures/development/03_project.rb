@@ -126,10 +126,10 @@ class Gitlab::Seeder::Projects
         organization: organization
       )
       group.description = FFaker::Lorem.sentence
+      group.build_namespace_settings
       group.save!
 
       group.add_owner(User.first)
-      group.create_namespace_settings
     end
 
     project_path.gsub!(".git", "")

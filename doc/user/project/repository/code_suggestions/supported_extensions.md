@@ -3,23 +3,8 @@ stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Code Suggestions supports multiple editors and languages.
-title: Supported extensions and languages for Code Suggestions
+title: Supported extensions and languages
 ---
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Changed to include GitLab Duo Core in GitLab 18.0.
-
-{{< /history >}}
 
 Code Suggestions is available in the following editor extensions and
 for the following languages.
@@ -103,16 +88,15 @@ Code Suggestions works with infrastructure-as-code interfaces, including:
 You can customize your coding experience in VS Code by enabling or disabling Code Suggestions for specific supported languages.
 You can do this by editing your `settings.json` file directly, or from the VS Code user interface:
 
-1. In VS Code, open the extension settings for **GitLab**:
-   1. In the top bar, go to **Code** > **Settings** > **Extensions**.
-   1. Search for **GitLab** in the list, and select **Manage** ({{< icon name="settings" >}}).
-   1. Select **Extension Settings**.
-1. In your **User** settings, find the section titled **AI Assisted Code Suggestions: Enabled Supported Languages**.
-1. To enable Code Suggestions for a language, select its checkbox.
-1. To disable Code Suggestions for a language, clear its checkbox.
-1. Your changes are automatically saved, and take effect immediately.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Find the **GitLab › Duo Code Suggestions: Enabled Supported Languages** section.
+1. Select the languages you want to suggest or generate code for.
+1. Your changes save automatically and take effect immediately.
 
-When you disable Code Suggestions for a language, the GitLab Duo icon changes to show that suggestions are disabled
+When you turn off Code Suggestions for a language, the GitLab Duo icon changes to show that suggestions are not available
 for this language.
 
 ## Add support for more languages
@@ -137,13 +121,12 @@ To do this:
 1. Find your desired language in the list of
    [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
    You need the **Identifier** for your languages in a later step.
-1. In VS Code, open the extension settings for **GitLab**:
-   1. In the top bar, go to **Code** > **Settings** > **Extensions**.
-   1. Search for **GitLab** in the list, and select **Manage** ({{< icon name="settings" >}}).
-   1. Select **Extension Settings**.
-   1. In your **User** settings, find
-      **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
-1. In **Item**, add the identifier for each language you want to support. Identifiers should be
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Code Suggestions: Additional Languages**, select **Add Item**.
+1. Enter the identifier for each language you want to support. Identifiers should be
    lowercase, like `html` or `powershell`. Don't add leading periods from file suffixes to each identifier.
 1. Select **OK**.
 
@@ -154,7 +137,7 @@ To do this:
 Prerequisites:
 
 - You have installed and enabled the
-  [GitLab plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/_index.md).
+  [GitLab Duo plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/_index.md).
 - You have completed the [Jetbrains extension setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup)
   instructions, and authorized the extension to access your GitLab account.
 
@@ -182,7 +165,7 @@ Prerequisites:
 
 To do this:
 
-1. In your Eclipse bottom menu, select the GitLab icon.
+1. In the Eclipse bottom toolbar, select the GitLab icon.
 1. Select **Show Settings**.
 1. Scroll down to the **Code Suggestions Enabled Languages** section.
 1. In **Additional Languages**, add a comma-separated list of language identifiers. Don't

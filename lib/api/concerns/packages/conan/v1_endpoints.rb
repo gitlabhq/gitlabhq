@@ -33,7 +33,8 @@ module API
             end
 
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-            route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: true
+            route_setting :authorization, skip_job_token_policies: true,
+              skip_granular_token_authorization: :public_endpoint
 
             get 'ping', urgency: :default do
               header 'X-Conan-Server-Capabilities', x_conan_server_capabilities_header.join(',')
@@ -390,7 +391,7 @@ module API
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :admin_packages,
-                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
+                  skip_granular_token_authorization: :workhorse_pre_authorization
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!
@@ -442,7 +443,7 @@ module API
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :admin_packages,
-                  permissions: :authorize_conan_package, boundary: -> { project }, boundary_type: :project
+                  skip_granular_token_authorization: :workhorse_pre_authorization
 
                 put 'authorize', urgency: :low do
                   verify_checksum_deploy_header!

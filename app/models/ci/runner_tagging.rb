@@ -3,6 +3,7 @@
 module Ci
   class RunnerTagging < Ci::ApplicationRecord
     include BulkInsertSafe
+    include EachBatch
 
     MAX_NAME_LENGTH = 255
 

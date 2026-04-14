@@ -148,7 +148,7 @@ For more information, see the [Okta configuration example](example_saml_config.m
 
 ### OneLogin
 
-OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-now.com/support?id=kb_article&sys_id=08e6b9d9879a6990c44486e5cebb3556&kb_category=50984e84db738300d5505eea4b961913).
+OneLogin supports its own [GitLab.com application](https://onelogin.service-now.com/support?id=kb_article&sys_id=08e6b9d9879a6990c44486e5cebb3556&kb_category=50984e84db738300d5505eea4b961913).
 
 To set up OneLogin as your identity provider:
 
@@ -220,6 +220,82 @@ The following GitLab settings correspond to the Keycloak fields.
       1. Note the value of the `<ds:X509Certificate>` tag.
       1. Copy the value to a separate file and convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3). To do this, add `-----BEGIN CERTIFICATE-----` at the beginning of the file and `-----END CERTIFICATE-----` at the end of the file as new lines.
       1. [Calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
+
+### AWS IAM Identity Center
+
+> [!note]
+> AWS IAM Identity Center (formerly AWS Single Sign-On) is not a GitLab-tested identity provider.
+> GitLab provides the following information based on customer-reported configurations.
+> If you have questions about configuring the SAML integration in AWS IAM Identity Center,
+> contact [AWS Support](https://aws.amazon.com/contact-us/).
+
+AWS IAM Identity Center defaults to IdP-initiated login. To link your existing GitLab account,
+you must configure SP-initiated login. For more information, see
+[SP-initiated login](#sp-initiated-login).
+
+To set up SSO with AWS IAM Identity Center as your identity provider:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **SAML SSO**, and note the values on this page.
+1. In the AWS IAM Identity Center console,
+   [set up a custom SAML 2.0 application](https://docs.aws.amazon.com/singlesignon/latest/userguide/customermanagedapps-set-up-your-own-app-saml2.html).
+   When prompted for metadata values, enter the following:
+
+   | GitLab setting                           | AWS IAM Identity Center field      |
+   | ---------------------------------------- | ---------------------------------- |
+   | **Assertion consumer service URL**       | **Application ACS URL**            |
+   | **Identifier**                           | **Application SAML audience**      |
+
+1. To enable SP-initiated sign-in, set the **Application start URL** to your
+   **GitLab single sign-on URL** (on the GitLab **SAML SSO** settings page).
+
+1. Under **Attribute mappings**, configure the following:
+
+   | Attribute      | Value                | Format        |
+   | -------------- | -------------------- | ------------- |
+   | **Subject**    | `${user:email}`      | `unspecified` |
+   | **email**      | `${user:email}`      | `unspecified` |
+   | **first_name** | `${user:givenName}`  | `unspecified` |
+   | **last_name**  | `${user:familyName}` | `unspecified` |
+
+   > [!warning]
+   > You must set the **Subject** (NameID) format to `unspecified`. Setting the format to `persistent` or `transient`
+   > causes authentication errors for existing GitLab users attempting to link their accounts.
+
+1. Under **IAM Identity Center SAML metadata**, copy the **IAM Identity Center sign-in URL**
+   and download the certificate.
+   
+1. On your terminal, generate a SHA1 fingerprint from the
+   downloaded certificate:
+
+   ```shell
+   openssl x509 -noout -fingerprint -sha1 -inform pem -in <path-to-downloaded-cert.pem>
+   ```
+
+1. In GitLab, on the group **SAML SSO** settings page, complete the following fields:
+   - **Identity provider single sign-on URL**: Enter the **IAM Identity Center sign-in URL**.
+   - **Certificate fingerprint**: Enter the SHA1 fingerprint value.
+
+1. In AWS IAM Identity Center, assign users to the GitLab application.
+   To link existing GitLab accounts, users must sign in from the **GitLab single sign-on URL**
+   or the **Application start URL**.
+
+For more information, see the
+[AWS IAM Identity Center configuration example](example_saml_config.md#aws-iam-identity-center).
+
+#### SP-initiated login
+
+When a user signs in through their identity provider dashboard (IdP-initiated login), the SAML
+response does not include an `InResponseTo` attribute. GitLab requires this attribute to link
+a SAML identity to an existing account.
+
+AWS IAM Identity Center defaults to IdP-initiated login. If the **Application start URL** is not
+configured, existing users see the error `Request to link SAML account must be authorized`
+when they try to sign in.
+
+To avoid this, set the **Application start URL** to your **GitLab single sign-on URL**.
+This ensures users start the login flow from GitLab, so the `InResponseTo` attribute is
+present in the SAML response.
 
 ### Configure assertions
 
@@ -588,7 +664,7 @@ For example, to unlink the `MyOrg` account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. In the **Service sign-in** section, select **Disconnect** next to the connected account.
 
 ## SSO enforcement
@@ -708,7 +784,7 @@ For example:
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
 - [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/the-ultimate-guide-to-enabling-saml/)
-- [Authentication comparison between SaaS and GitLab Self-Managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
+- [Authentication comparison between GitLab.com and GitLab Self-Managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 - [SAML Group Sync](group_sync.md)
 

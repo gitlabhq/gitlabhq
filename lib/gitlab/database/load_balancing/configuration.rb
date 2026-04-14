@@ -82,7 +82,7 @@ module Gitlab
           # To support this scenario, we always attempt to read the pool size
           # from the model's configuration.
           @model.connection_db_config.configuration_hash[:pool] ||
-            Database.default_pool_size
+            Gitlab::Database::LoadBalancing.default_pool_size
         end
 
         # Returns `true` if the use of load balancing replicas should be
@@ -91,7 +91,7 @@ module Gitlab
         # This is disabled for Rake tasks to ensure e.g. database migrations
         # always produce consistent results.
         def load_balancing_enabled?
-          return false if Gitlab::Runtime.rake?
+          return false unless Gitlab::Database::LoadBalancing.enabled
 
           hosts.any? || service_discovery_enabled?
         end
@@ -99,7 +99,7 @@ module Gitlab
         # This is disabled for Rake tasks to ensure e.g. database migrations
         # always produce consistent results.
         def service_discovery_enabled?
-          return false if Gitlab::Runtime.rake?
+          return false unless Gitlab::Database::LoadBalancing.enabled
 
           service_discovery[:record].present?
         end

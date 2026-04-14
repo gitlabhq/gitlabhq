@@ -28,11 +28,12 @@ module MembershipActions
     # !! is used in case unassign_issuables contains empty string which would result in nil
     unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(destroy_option_params[:unassign_issuables])
 
-    Members::DestroyService.new(current_user).execute(
+    Members::DestroyService.new(
       member,
+      current_user: current_user,
       skip_subresources: skip_subresources,
       unassign_issuables: unassign_issuables
-    )
+    ).execute
 
     respond_to do |format|
       format.html do
@@ -86,7 +87,7 @@ module MembershipActions
   # rubocop: disable CodeReuse/ActiveRecord
   def leave
     member = members_and_requesters.find_by!(user_id: current_user.id)
-    Members::DestroyService.new(current_user).execute(member, skip_subresources: member.request?)
+    Members::DestroyService.new(member, current_user: current_user, skip_subresources: member.request?).execute
 
     notice =
       if member.request?

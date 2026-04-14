@@ -511,6 +511,32 @@ in parentheses evaluate first. For example:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
+### Negate expressions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219430) in GitLab 18.11.
+
+{{< /history >}}
+
+You can use the `!` operator to negate an expression, or a part of an expression.
+For example:
+
+- `if: "!$VAR1"`: True when the variable is empty or undefined.
+- `if: !($VAR1 == "my variable")`: True when the variable value does not match `my variable`.
+- `if: $VAR1 && !$VAR2`: True when `VAR1` exists and isn't empty, and `VAR2` doesn't exist or is empty.
+- `if: !($VAR1 || $VAR2)`: True only when both variables don't exist or are empty.
+- `if: !($VAR1 && $VAR2)`: True when either variable doesn't exist or is empty.
+
+> [!warning]
+> The `!` operator checks if a variable is empty or undefined, not whether its value is `false` or `0`. For example:
+>
+> - `!"false"` evaluates to `false` because the string `"false"` is not empty (non-empty strings are truthy).
+> - `!"0"` also evaluates to `false` because the string is not empty.
+> - `!""` evaluates to `true` because the string is empty (empty strings are falsy).
+>
+> To check specific values, use comparison operators, for example `!($VAR == "false")` or `!($VAR == "0")`.
+
 ## Migrate from `only` or `except` to `rules`
 
 Use `rules` and CI/CD variable expressions to reproduce the same behavior as the deprecated

@@ -148,7 +148,13 @@ RSpec.describe ActiveContext::Concerns::Queue do
     end
   end
 
-  describe '.redis_key' do
+  describe '.limit_throughput?' do
+    it 'returns `false` by default' do
+      expect(mock_queue_class.limit_throughput?).to be(false)
+    end
+  end
+
+  describe '#redis_key' do
     it 'returns the correct Redis key' do
       expect(mock_queue_class.redis_key).to eq('mockmodule:{test_queue}')
     end

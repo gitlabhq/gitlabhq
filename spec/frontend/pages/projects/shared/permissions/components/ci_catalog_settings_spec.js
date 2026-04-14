@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -55,6 +55,8 @@ describe('CiCatalogSettings', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findSettingsLink = () => wrapper.findByTestId('settings-link');
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findCiCatalogSettings = () => wrapper.findByTestId('ci-catalog-settings');
 
@@ -255,6 +257,30 @@ describe('CiCatalogSettings', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'There was a problem fetching the CI/CD Catalog setting.',
       });
+    });
+  });
+
+  describe('with no project description specified', () => {
+    beforeEach(async () => {
+      ciCatalogSettingsResponse.mockResolvedValue(
+        generateCatalogSettingsResponse(false, { description: null }),
+      );
+      await createComponent();
+    });
+
+    it('disabled the toggle', () => {
+      expect(findToggle().props('disabled')).toBe(true);
+    });
+
+    it('shows the warning icon and text', () => {
+      expect(findIcon().props('name')).toBe('warning');
+      expect(wrapper.text()).toContain(
+        'To set the project as a catalog resource, provide a brief description in the project settings.',
+      );
+    });
+
+    it('provides link to the description setting section', () => {
+      expect(findSettingsLink().attributes('href')).toBe(`/${fullPath}/edit#js-general-settings`);
     });
   });
 });

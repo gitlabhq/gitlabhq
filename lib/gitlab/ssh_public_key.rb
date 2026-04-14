@@ -66,6 +66,17 @@ module Gitlab
       end
     end
 
+    # Extracts the algorithm and key data from a key string, handling optional
+    # hostname/options prefixes (known_hosts or authorized_keys format).
+    # Returns a hash with :prefix, :algorithm, :key_data keys, or nil if no
+    # supported algorithm is found.
+    def self.extract_key_parts(key_text)
+      match = key_text.to_s.match(/(.*?)\s*(#{supported_algorithms.join('|')})\s*(.*)/)
+      return unless match
+
+      { prefix: match[1].strip, algorithm: match[2], key_data: match[3].strip }
+    end
+
     attr_reader :key_text, :key
 
     def initialize(key_text)

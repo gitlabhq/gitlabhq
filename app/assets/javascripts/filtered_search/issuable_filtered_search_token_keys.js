@@ -1,4 +1,4 @@
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'lodash-es';
 import { __ } from '~/locale';
 import {
   TOKEN_TITLE_ASSIGNEE,

@@ -2,46 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_license, type: :controller, feature_category: :team_planning do
-  include JavaScriptFixturesHelpers
-
-  let(:user) { create(:user, feed_token: 'feedtoken:coldfeed') }
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let(:project) { create(:project_empty_repo, namespace: namespace, path: 'issues-project') }
-
-  render_views
-
-  before do
-    stub_feature_flags(work_item_planning_view: false)
-    project.add_maintainer(user)
-    sign_in(user)
-  end
-
-  after do
-    remove_repository(project)
-  end
-
-  it 'issues/open-issue.html' do
-    render_issue(create(:issue, project: project))
-  end
-
-  it 'issues/closed-issue.html' do
-    render_issue(create(:closed_issue, project: project))
-  end
-
-  private
-
-  def render_issue(issue)
-    get :show, params: {
-      namespace_id: project.namespace.to_param,
-      project_id: project,
-      id: issue.to_param
-    }
-
-    expect(response).to be_successful
-  end
-end
-
 RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request, feature_category: :team_planning do
   include ApiHelpers
   include JavaScriptFixturesHelpers

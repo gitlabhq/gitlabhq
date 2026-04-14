@@ -1,4 +1,4 @@
-import { isMatch } from 'lodash';
+import { isMatch } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import { getDisplayName } from '../utils';
 

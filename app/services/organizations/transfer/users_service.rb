@@ -27,7 +27,9 @@ module Organizations
 
           ["User", "Project", "Group", "AbuseReport", "GitlabSubscriptions::AddOnPurchase",
             "GitlabSubscriptions::SeatAssignment", "GitlabSubscriptions::UserAddOnAssignment", "Authz::AdminRole",
-            "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet"]
+            "Authz::GranularScope", "Authz::PersonalAccessTokenGranularScope",
+            "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet", "ImportFailure",
+            "Clusters::Cluster"]
         end
       end
 
@@ -103,6 +105,7 @@ module Organizations
           update_users(user_ids)
           update_user_projects(user_ids)
           update_todos(user_ids)
+          update_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
         end
@@ -200,6 +203,21 @@ module Organizations
       end
 
       # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
+      def update_granular_scopes(user_ids)
+        token_ids = PersonalAccessToken.where(user_id: user_ids, organization_id: old_organization.id).select(:id)
+        join_table_scope = Authz::PersonalAccessTokenGranularScope.where(personal_access_token_id: token_ids)
+
+        update_organization_id_for(Authz::PersonalAccessTokenGranularScope) do |relation|
+          relation.where(personal_access_token_id: token_ids)
+        end
+
+        granular_scope_ids = join_table_scope.select(:granular_scope_id)
+
+        update_organization_id_for(Authz::GranularScope) do |relation|
+          relation.where(id: granular_scope_ids)
+        end
+      end
+
       def update_personal_snippet_notes(user_ids)
         personal_snippets = PersonalSnippet.where(author_id: user_ids)
 

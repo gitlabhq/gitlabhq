@@ -22,7 +22,7 @@
           = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }
 
   %td{ data: { label: _('Created') } }
-    = html_escape(s_('Created %{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at) }
+    = html_escape(_('Created %{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at) }
 
   %td{ class: '!gl-py-4 gl-text-right', data: { label: _('Actions') } }
     = render Pajamas::ButtonComponent.new(href: revoke_user_settings_gpg_key_path(key),

@@ -15,16 +15,12 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     project.add_member(user, :maintainer)
     project.add_member(user_rock, :maintainer)
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
-    visit project_issues_path(project)
+    visit project_work_items_path(project)
   end
 
   describe 'editing a single token' do
@@ -44,7 +40,8 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
       expect_suggestion_count 1
     end
 
-    it 'ends editing mode when document is clicked' do
+    it 'ends editing mode when document is clicked',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/40862' do
       find('body').click(x: 0, y: 0)
 
       expect_empty_search_term

@@ -91,6 +91,8 @@ import {
   savedViewFilters,
   NEW_SAVED_VIEWS_GID,
   SAVED_VIEW_SEARCH_DELIMITER,
+  SAVED_VIEW_SORT_RELATIVE_POSITION,
+  SAVED_VIEW_SORT_NAME_ASC,
 } from '~/work_items/list/constants';
 import createSavedViewMutation from '~/work_items/list/graphql/create_saved_view.mutation.graphql';
 import updateSavedViewMutation from '~/work_items/list/graphql/update_saved_view.mutation.graphql';
@@ -442,7 +444,7 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
     )
     .reduce((acc, [key, value]) => {
       // Here the delimited search values are again formatted into array for filter tokens
-      if (key === 'search' && value.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
+      if (key === 'search' && value?.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
         const { operator, type } = savedViewFilters[key];
         const searchTokens = value.split(SAVED_VIEW_SEARCH_DELIMITER);
         searchTokens.forEach((data) => {
@@ -843,6 +845,17 @@ export function updateUpvotesCount({ list, workItem, namespace = BoardType.proje
   });
 }
 
+const removeSavedViewFromCache = (savedViews, savedView) => {
+  const index = savedViews.findIndex(({ id }) => id === savedView.id);
+  if (index !== -1) savedViews.splice(index, 1);
+};
+
+const updateSavedViewInCache = (savedViews, savedView) => {
+  const index = savedViews.findIndex(({ id }) => id === savedView.id);
+  // eslint-disable-next-line no-param-reassign
+  if (index !== -1) savedViews[index] = savedView;
+};
+
 // Manually update the saved views Apollo cache since its
 // fields differ from the mutation, causing automatic cache updates to fail.
 const updateSavedViewsQueryCache = ({
@@ -853,39 +866,30 @@ const updateSavedViewsQueryCache = ({
   action = 'create', // 'create', 'update', or 'remove'
   subscribedOnly,
 }) => {
-  const variables = {
-    fullPath: namespacePath,
-    subscribedOnly,
-    ...(subscribedOnly && { sort: 'RELATIVE_POSITION' }),
-  };
+  const sort = subscribedOnly ? SAVED_VIEW_SORT_RELATIVE_POSITION : SAVED_VIEW_SORT_NAME_ASC;
 
   const query = {
     query: getSubscribedSavedViewsQuery,
-    variables,
+    variables: { fullPath: namespacePath, subscribedOnly, sort },
   };
 
   const sourceData = cache.readQuery(query);
-
-  if (!sourceData) {
-    return;
-  }
+  if (!sourceData) return;
 
   const newData = produce(sourceData, (draftState) => {
     const { savedView } = responseData[mutationKey];
-    const { nodes: savedViews } = draftState.namespace.savedViews;
+    const savedViews = draftState.namespace.savedViews.nodes;
 
     if (action === 'remove') {
-      const index = savedViews.findIndex(({ id }) => id === savedView.id);
-      if (index !== -1) {
-        savedViews.splice(index, 1);
-      }
+      removeSavedViewFromCache(savedViews, savedView);
     } else if (action === 'update') {
-      const index = savedViews.findIndex(({ id }) => id === savedView.id);
-      if (index !== -1) {
-        savedViews[index] = savedView;
-      }
+      updateSavedViewInCache(savedViews, savedView);
     } else if (action === 'create') {
       savedViews.push(savedView);
+    }
+
+    if (sort === SAVED_VIEW_SORT_NAME_ASC) {
+      savedViews.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
     }
   });
 
@@ -946,7 +950,7 @@ export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) =
       variables: {
         fullPath,
         subscribedOnly,
-        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+        sort: subscribedOnly ? SAVED_VIEW_SORT_RELATIVE_POSITION : SAVED_VIEW_SORT_NAME_ASC,
       },
     };
 
@@ -982,7 +986,7 @@ export const handleEnforceSubscriptionLimit = async ({
     variables: {
       fullPath: namespacePath,
       subscribedOnly: true,
-      sort: 'RELATIVE_POSITION',
+      sort: SAVED_VIEW_SORT_RELATIVE_POSITION,
     },
     fetchPolicy: 'cache-only',
   });
@@ -1056,22 +1060,24 @@ export const saveSavedView = async ({
   // A space cannot be used as the delimiter since search terms may contain spaces.
   const updatedSavedViewFilters = {
     ...filters,
-    search: Array.isArray(filters.search)
-      ? filters.search.join(SAVED_VIEW_SEARCH_DELIMITER)
-      : filters.search,
   };
+  if (filters.search) {
+    updatedSavedViewFilters.search = Array.isArray(filters.search)
+      ? filters.search.join(SAVED_VIEW_SEARCH_DELIMITER)
+      : filters.search;
+  }
 
   const commonInput =
     isEdit && isForm
       ? {
           name,
           description,
-          private: isPrivate,
+          isPrivate,
         }
       : {
           name,
           description,
-          private: isPrivate,
+          isPrivate,
           filters: updatedSavedViewFilters,
           displaySettings,
           sort,
@@ -1126,15 +1132,15 @@ export const saveSavedView = async ({
     update: (cache, { data: responseData }) => {
       if (!responseData || responseData[mutationKey].errors?.length) return;
 
-      if (!isEdit) {
-        updateSavedViewsCache({
-          cache,
-          responseData,
-          mutationKey,
-          namespacePath,
-          isEdit,
-        });
-      } else {
+      updateSavedViewsCache({
+        cache,
+        responseData,
+        mutationKey,
+        namespacePath,
+        isEdit,
+      });
+
+      if (isEdit) {
         updateNamespaceSavedViewQueryCache({
           cache,
           savedView: responseData[mutationKey].savedView,
@@ -1167,7 +1173,7 @@ export const updateCacheAfterSubscribe = (cache, view, fullPath) => {
       variables: {
         fullPath,
         subscribedOnly,
-        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+        sort: subscribedOnly ? SAVED_VIEW_SORT_RELATIVE_POSITION : SAVED_VIEW_SORT_NAME_ASC,
       },
     };
 
@@ -1241,7 +1247,7 @@ export const updateCacheAfterViewReorder = ({
       variables: {
         fullPath,
         subscribedOnly,
-        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+        sort: subscribedOnly ? SAVED_VIEW_SORT_RELATIVE_POSITION : SAVED_VIEW_SORT_NAME_ASC,
       },
     };
 

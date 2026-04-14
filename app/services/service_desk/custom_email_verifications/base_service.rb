@@ -40,7 +40,7 @@ module ServiceDesk
       def error_not_verified(error_identifier)
         log_info(error_message: error_identifier.to_s)
         ServiceResponse.error(
-          message: _('ServiceDesk|Custom email address could not be verified.'),
+          message: s_('ServiceDesk|Custom email address could not be verified.'),
           reason: error_identifier.to_s
         )
       end

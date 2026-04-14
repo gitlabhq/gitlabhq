@@ -30,6 +30,22 @@ RSpec.describe WebauthnRegistration, feature_category: :system_access do
           .is_greater_than_or_equal_to(0)
           .is_less_than_or_equal_to(4294967295)
     end
+
+    context 'for passwordless authentication mode' do
+      let(:credential) { build(:webauthn_registration, authentication_mode: :passwordless) }
+
+      it 'ensures that the credential is passkey eligible' do
+        credential.passkey_eligible = true
+        expect(credential).to be_valid
+
+        credential.passkey_eligible = false
+        expect(credential).to be_invalid
+        expect(credential.errors[:base]).to include('This credential is not passkey eligible')
+
+        credential.authentication_mode = :second_factor
+        expect(credential).to be_valid
+      end
+    end
   end
 
   describe 'enums' do

@@ -29,7 +29,7 @@ Follow this tutorial to learn how to use the different interface elements to nav
 In the upper-right corner, there are several shortcuts. Use these shortcuts to create new items, and to view your
 profile, your list of issues, merge requests, and to-do items.
 
-![Shortcuts in new navigation.](img/top_nav_v18_10.png)
+![Shortcuts in new navigation.](img/top_nav_v18_11.png)
 
 The left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
@@ -38,9 +38,9 @@ To switch to other areas of the left sidebar, use **Search or go to** in the top
 The rest of the left sidebar is populated based on the option you choose. For example,
 if you're in a project, the sidebar is project-specific.
 
-On the right, the GitLab Duo sidebar has buttons to access GitLab Duo Chat, sessions, and suggestions.
+On the right, the GitLab Duo sidebar has buttons to access GitLab Duo Chat and related sessions.
 
-![GitLab Duo sidebar.](img/paneled_view_duo_sidebar_v18_10.png)
+![GitLab Duo sidebar.](img/paneled_view_duo_sidebar_v18_11.png)
 
 ## Find your project
 
@@ -52,11 +52,11 @@ To start, we will find the project we want to work on.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
-   ![Search bar to find your projects and frequently visited projects.](img/search_projects_v18_3.png)
+   ![Search bar to find your projects and frequently visited projects.](img/search_projects_v18_11.png)
 
 The left sidebar now shows project-specific options.
 
-![Project-specific options](img/sidebar_v18_10.png)
+![Project-specific options](img/sidebar_v18_11.png)
 
 ## Pin frequently used items
 
@@ -65,11 +65,11 @@ You can pin menu items if you tend to use them frequently.
 1. Expand the sections until you are viewing the item you want to pin.
 1. Hover over and select the pin ({{< icon name="thumbtack" >}}).
 
-   ![A selected pin icon.](img/pin_v18_3.png)
+   ![A selected pin icon.](img/pin_v18_11.png)
 
 The item is displayed in the **Pinned** section:
 
-![An item in the Pinned section.](img/sidebar_v18_10_pinned.png)
+![An item in the Pinned section.](img/sidebar_v18_11_pinned.png)
 
 > [!note]
 > The items you pin while you're viewing a project are different than the items you pin while viewing a group.
@@ -79,7 +79,7 @@ The item is displayed in the **Pinned** section:
 In the left sidebar, you can also choose a more focused view into the areas you have access to.
 Select **Search or go to** and then select **Your work**.
 
-![The search bar and the Your work item.](img/your_work_v18_3.png)
+![The search bar and the Your work item.](img/your_work_v18_11.png)
 
 Then, in the left sidebar, **Your work** is displayed.
 
@@ -95,9 +95,9 @@ To open the item in the full page view, either:
 If there's enough screen space, the details panel opens next to the list or board you open it from.
 On smaller screens, the detail panel covers the list or board panel.
 
-![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_10.png)
+![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_11.png)
 
-![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_10.png)
+![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_11.png)
 
 ### Set preference for opening work items in a panel
 
@@ -115,7 +115,7 @@ Your preference is saved and applies across GitLab.
 
 The **Admin** area is available in the upper-right corner:
 
-![The Admin area button in the new navigation.](img/admin_area_v18_6.png)
+![The Admin area button in the new navigation.](img/admin_area_v18_11.png)
 
 ## Access What's new
 

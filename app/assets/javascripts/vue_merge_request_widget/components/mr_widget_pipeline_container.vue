@@ -1,5 +1,10 @@
 <script>
+import { reportToSentry } from '~/ci/utils';
 import { sanitize } from '~/lib/dompurify';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import MrPipelineUpdated from '../subscriptions/mr_pipeline_updated.subscription.graphql';
 import ArtifactsApp from './artifacts_list_app.vue';
 import DeploymentList from './deployment/deployment_list.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -23,6 +28,7 @@ export default {
     MergeTrainPositionIndicator: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -32,6 +38,32 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+  },
+  apollo: {
+    $subscribe: {
+      // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+      pipelineStatuses: {
+        query: MrPipelineUpdated,
+        variables() {
+          return {
+            // crucial to use the computed property `this.pipeline` for variables
+            // since it handles merge pipelines and normal pipelines
+            pipelineId: convertToGraphQLId(TYPENAME_CI_PIPELINE, this.pipeline?.id),
+          };
+        },
+        skip() {
+          return !this.pipeline?.id || !this.glFeatures.mrWidgetPipelineSubscription;
+        },
+        result({ data }) {
+          if (!data.ciPipelineStatusUpdated) return;
+
+          this.mr.setPipelineStatusData(data.ciPipelineStatusUpdated, this.isPostMerge);
+        },
+        error(err) {
+          reportToSentry(this.$options.name, err);
+        },
+      },
     },
   },
   computed: {

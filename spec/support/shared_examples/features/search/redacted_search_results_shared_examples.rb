@@ -324,7 +324,7 @@ RSpec.shared_examples 'a redacted search results' do
 end
 
 RSpec.shared_examples "redaction limits N+1 queries" do |limit:|
-  it 'does not exceed the query limit' do
+  it 'does not exceed the query limit', :request_store do
     # issuing the query to remove the data loading call
     unredacted_results.to_a
 

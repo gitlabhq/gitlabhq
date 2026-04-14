@@ -9,7 +9,7 @@
   documentation_link: https://docs.gitlab.com/user/analytics/duo_and_sdlc_trends/
   image_url: https://about.gitlab.com/images/18_7/DAP_flow_metrics_dashboard.png
   published_at: 2025-12-18
-  release: 18.7
+  release: "18.7"
 
 - name: "Separate model selection for Agentic Chat and agents"
   description: |
@@ -22,7 +22,7 @@
   documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/#select-a-model-for-a-feature
   image_url: https://about.gitlab.com/images/18_7/SelectionChat.png
   published_at: 2025-12-18
-  release: 18.7
+  release: "18.7"
 
 - name: "Dynamic input options in CI/CD pipelines"
   description: |
@@ -36,4 +36,4 @@
   documentation_link: https://docs.gitlab.com/ci/inputs/#define-conditional-input-options-with-specinputsrules
   image_url: https://img.youtube.com/vi/vkHDGa65XcY/hqdefault.jpg
   published_at: 2025-12-18
-  release: 18.7
+  release: "18.7"

@@ -1,6 +1,7 @@
 ---
 table_name: user_uploads
 classes:
+- Geo::UserUpload
 - Upload
 - User
 feature_categories:

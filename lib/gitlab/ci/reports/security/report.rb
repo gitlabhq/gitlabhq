@@ -5,7 +5,7 @@ module Gitlab
     module Reports
       module Security
         class Report
-          attr_reader :created_at, :type, :findings, :identifiers
+          attr_reader :created_at, :type, :findings, :identifiers, :scanners
           attr_accessor :pipeline, :scanned_resources, :errors,
             :analyzer, :version, :schema_validation_status, :warnings,
             :scan, :scanner
@@ -20,6 +20,7 @@ module Gitlab
             @created_at = created_at
             @findings = []
             @identifiers = {}
+            @scanners = {}
             @scanned_resources = []
             @errors = []
             @warnings = []
@@ -47,6 +48,10 @@ module Gitlab
 
           def add_identifier(identifier)
             identifiers[identifier.key] ||= identifier
+          end
+
+          def add_scanner(scanner)
+            scanners[scanner.external_id] ||= scanner
           end
 
           def add_finding(finding)

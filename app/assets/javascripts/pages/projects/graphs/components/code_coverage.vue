@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/src/charts';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';

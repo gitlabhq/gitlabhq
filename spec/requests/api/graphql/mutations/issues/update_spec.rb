@@ -7,7 +7,7 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
@@ -53,6 +53,36 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['issue']).to include(input)
       expect(mutation_response['issue']).to include('discussionLocked' => true)
+    end
+
+    context 'when setting milestone with a global id' do
+      let_it_be(:milestone) { create(:milestone, project: project) }
+
+      let(:input_params) do
+        { project_path: project.full_path, iid: issue.iid.to_s, milestoneId: milestone.to_global_id.to_s }
+      end
+
+      let(:mutation) do
+        graphql_mutation(:update_issue, input_params) do
+          <<~QL
+              issue {
+                milestone {
+                  id
+                }
+              }
+              errors
+          QL
+        end
+      end
+
+      it 'updates the milestone' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { issue.reload.milestone_id }.from(nil).to(milestone.id)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['issue']['milestone']['id']).to eq(milestone.to_global_id.to_s)
+      end
     end
 
     context 'when issue_type is updated' do

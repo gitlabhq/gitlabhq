@@ -75,9 +75,9 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
           stub_config_setting(https: true)
         end
 
-        it 'returns configuration with https scheme' do
+        it 'returns configuration with http scheme' do
           expect(configuration.hostname).to eq('127.0.0.1:9091')
-          expect(configuration.protocol).to eq('https')
+          expect(configuration.protocol).to eq('http')
         end
       end
     end

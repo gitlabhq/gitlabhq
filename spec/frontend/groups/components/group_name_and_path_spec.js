@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';

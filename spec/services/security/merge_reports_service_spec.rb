@@ -189,6 +189,14 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     expect(merged_report.scanner).to eq(scanner_3)
   end
 
+  it 'copies all scanners from source reports into the scanner registry' do
+    report_1.add_scanner(scanner_1)
+    report_2.add_scanner(scanner_2)
+    report_3.add_scanner(scanner_3)
+
+    expect(merged_report.scanners.values).to contain_exactly(scanner_1, scanner_2, scanner_3)
+  end
+
   it 'copies identifiers into target report and eliminates duplicates' do
     expect(merged_report.identifiers.values).to(
       contain_exactly(

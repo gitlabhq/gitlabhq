@@ -108,4 +108,55 @@ describe('content_editor/extensions/table', () => {
     jest.advanceTimersByTime(1001);
     expect(mockAlert).not.toHaveBeenCalled();
   });
+
+  describe('sticky headers', () => {
+    beforeEach(() => {
+      initialDoc = doc(
+        table(
+          tableRow(tableHeader(p('This is')), tableHeader(p('a table'))),
+          tableRow(tableCell(p('this is')), tableCell(p('the first row'))),
+        ),
+      );
+    });
+
+    afterEach(() => {
+      delete window.gon;
+    });
+
+    describe('when feature flag is enabled', () => {
+      beforeEach(() => {
+        window.gon = { features: { editorStickyTableHeaders: true } };
+      });
+
+      it('wraps table in div with data-sticky-header attribute', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).toContain('data-sticky-header');
+      });
+
+      it('includes table element', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).toContain('<table>');
+      });
+
+      it('includes tbody element', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).toContain('<tbody>');
+      });
+    });
+
+    describe('when feature flag is disabled', () => {
+      beforeEach(() => {
+        window.gon = { features: { editorStickyTableHeaders: false } };
+      });
+
+      it('wraps table in div without data-sticky-header attribute', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).not.toContain('data-sticky-header');
+      });
+    });
+  });
 });

@@ -104,7 +104,7 @@ const GraphiQLLogo = React.createElement(
 function apolloFetcher(graphQLParams, { headers }) {
   const isIntrospectionQuery =
     graphQLParams.query.includes('__schema') ||
-    graphQLParams.query.includes('__type') ||
+    /__type(?!name)/.test(graphQLParams.query) ||
     graphQLParams.query === getIntrospectionQuery();
 
   if (introspectionResult && isIntrospectionQuery) {

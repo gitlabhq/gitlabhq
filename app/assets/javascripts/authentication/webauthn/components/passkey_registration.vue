@@ -48,9 +48,9 @@ export default {
       this.onRegister();
     } else {
       const message = isSecureContext()
-        ? s__("Add passkey|Your browser doesn't support passkeys.")
+        ? s__("AddPasskey|Your browser doesn't support passkeys.")
         : s__(
-            'Add passkey|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details.',
+            'AddPasskey|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details.',
           );
       this.setDangerAlert(message);
     }
@@ -104,7 +104,7 @@ export default {
       <gl-form method="post" :action="path" class="gl-col-5">
         <gl-form-group
           v-if="passwordRequired"
-          :description="s__('Add passkey|Verify your password to add the passkey')"
+          :description="s__('AddPasskey|Verify your password to add the passkey')"
           :label="__('Current password')"
           label-for="passkey-registration-current-password"
         >
@@ -118,8 +118,8 @@ export default {
         </gl-form-group>
 
         <gl-form-group
-          :description="s__('Add passkey|Add a name to help you identify the passkey later')"
-          :label="s__('Add passkey|Passkey name')"
+          :description="s__('AddPasskey|Add a name to help you identify the passkey later')"
+          :label="s__('AddPasskey|Passkey name')"
           label-for="device-name"
         >
           <gl-form-input
@@ -136,7 +136,7 @@ export default {
 
         <div class="gl-flex gl-gap-3">
           <gl-button type="submit" :disabled="disabled" variant="confirm">{{
-            s__('Add passkey|Add passkey')
+            s__('AddPasskey|Add passkey')
           }}</gl-button>
           <gl-button data-testid="cancel-btn" :href="twoFactorAuthPath">{{
             __('Cancel')

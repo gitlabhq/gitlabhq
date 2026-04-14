@@ -19,7 +19,16 @@ module WorkItems
         link
       end
 
-      def create_notes(work_item)
+      def create_notes(work_item, prev_parent = nil)
+        if prev_parent && prev_parent != issuable
+          SystemNoteService.move_child_to_new_parent(
+            prev_parent: prev_parent,
+            child: work_item,
+            new_parent: issuable,
+            author: current_user
+          )
+        end
+
         SystemNoteService.relate_work_item(issuable, work_item, current_user)
       end
 

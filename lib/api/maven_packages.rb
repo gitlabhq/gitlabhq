@@ -242,7 +242,7 @@ module API
         requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.maven_file_name_regex, documentation: { example: 'mypkg-1.0-SNAPSHOT.pom' }
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
-      route_setting :authorization, job_token_policies: :admin_packages
+      route_setting :authorization, job_token_policies: :admin_packages, skip_granular_token_authorization: :workhorse_pre_authorization
       put ':id/packages/maven/*path/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_upload!
 

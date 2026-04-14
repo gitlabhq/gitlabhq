@@ -9,13 +9,13 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/merge_request_approval_policies.html'
+  documentation_link: 'https://docs.gitlab.com/user/application_security/policies/merge_request_approval_policies/'
   image_url: 'https://img.youtube.com/vi/jfbNo5IE-2s/hqdefault.jpg'
   published_at: 2022-11-22
-  release: 15.6
+  release: "15.6"
 - name: "Git abuse rate limiting"
   description: |
-    In GitLab 15.6, we're introducing [Git abuse rate limiting](https://docs.gitlab.com/ee/user/group/reporting/git_abuse_rate_limit.html).
+    In GitLab 15.6, we're introducing [Git abuse rate limiting](https://docs.gitlab.com/user/group/reporting/git_abuse_rate_limit/).
       Enable this feature to automatically notify administrators when a user downloads
       or clones more than a specified number of repositories in a group or any of its
       subgroups within a given time frame.
@@ -28,10 +28,10 @@
   self-managed: true
   gitlab-com: false
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/group/reporting/git_abuse_rate_limit.html'
+  documentation_link: 'https://docs.gitlab.com/user/group/reporting/git_abuse_rate_limit/'
   image_url: 'https://about.gitlab.com/images/15_6/git-abuse-rate-limiting.png'
   published_at: 2022-11-22
-  release: 15.6
+  release: "15.6"
 - name: "DAST API analyzer for on-demand DAST API scans"
   description: |
     With GitLab 15.6, the DAST API analyzer is now being used for GitLab on-demand DAST API scans.
@@ -53,10 +53,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast_api/'
+  documentation_link: 'https://docs.gitlab.com/user/application_security/dast_api/'
   image_url: 'https://about.gitlab.com/images/15_6/on_demand_api_security.png'
   published_at: 2022-11-22
-  release: 15.6
+  release: "15.6"
 - name: "Support for special characters in CI/CD variables"
   description: |
     Previously, it was difficult to use the $ character in a CI/CD variable because $ normally signifies the
@@ -67,10 +67,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#variablesexpand'
+  documentation_link: 'https://docs.gitlab.com/ci/yaml/#variablesexpand'
   image_url: 'https://about.gitlab.com/images/15_6/special_character_support.png'
   published_at: 2022-11-22
-  release: 15.6
+  release: "15.6"
 - name: "CI/CD variable support in rules:exists configuration"
   description: |
     The more complex your .gitlab-ci.yml configuration is, the more difficult it is to maintain and scale. By
@@ -81,7 +81,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#rulesexists'
+  documentation_link: 'https://docs.gitlab.com/ci/yaml/#rulesexists'
   image_url: 'https://about.gitlab.com/images/15_6/variable_support_rule_exists.png'
   published_at: 2022-11-22
-  release: 15.6
+  release: "15.6"

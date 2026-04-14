@@ -1,4 +1,6 @@
+# @feature_category: pipeline_composition
 #import "~/ci/catalog/graphql/fragments/catalog_resource.fragment.graphql"
+#import "~/ci/catalog/graphql/fragments/catalog_resource_version.fragment.graphql"
 
 query getCatalogResources(
   $scope: CiCatalogResourceScope
@@ -28,6 +30,17 @@ query getCatalogResources(
     }
     nodes {
       ...CatalogResourceFields
+      versions(first: 1) {
+        nodes {
+          ...CatalogResourceVersionFields
+          components {
+            nodes {
+              id
+              name
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -5,6 +5,7 @@ import { GlToast } from '@gitlab/ui';
 import createDefaultClient from '~/lib/graphql';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteLabelModal from './components/delete_label_modal.vue';
 import LabelActions from './components/label_actions.vue';
 import PromoteLabelModal from './components/promote_label_modal.vue';
@@ -75,7 +76,8 @@ export function initLabelActions(el) {
           editPath,
           promotePath,
           destroyPath,
-          isArchived: archived === 'true',
+          isArchived: parseBoolean(archived),
+          labelsArchiveEnabled: archived !== undefined,
         },
       });
     },
@@ -100,13 +102,11 @@ export function initLabels() {
     }
   });
 
-  if (window.gon?.features?.labelsArchive) {
-    function removeLabelSuccessCallback(labelId) {
-      document.querySelector(`[data-id="${labelId}"]`)?.classList?.add('!gl-hidden');
-    }
-
-    eventHub.$on(EVENT_ARCHIVE_LABEL_SUCCESS, removeLabelSuccessCallback);
+  function removeLabelSuccessCallback(labelId) {
+    document.querySelector(`[data-id="${labelId}"]`)?.classList?.add('!gl-hidden');
   }
+
+  eventHub.$on(EVENT_ARCHIVE_LABEL_SUCCESS, removeLabelSuccessCallback);
 
   initLabelsActions();
 }

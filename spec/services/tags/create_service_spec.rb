@@ -48,10 +48,6 @@ RSpec.describe Tags::CreateService, feature_category: :source_code_management do
     end
 
     context 'when tag name contains invalid characters' do
-      before do
-        stub_feature_flags(git_ref_validator_custom_validation: true)
-      end
-
       it 'returns an error' do
         response = service.execute("\x7f", 'master', 'Foo')
 

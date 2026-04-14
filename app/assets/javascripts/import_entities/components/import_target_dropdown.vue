@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce, isNull } from 'lodash';
+import { debounce, isNull } from 'lodash-es';
 
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';

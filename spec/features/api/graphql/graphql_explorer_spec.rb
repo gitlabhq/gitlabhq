@@ -9,10 +9,9 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     sign_in(user)
   end
 
-  # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
-  # the IntrospectionQuery has changed and we should update our cache to match.
-  # It is stored in `app/graphql/cached_introspection_query.rb#query_string`
-  it 'executes the expected introspection query' do
+  # In production environments introspection returns a static document
+  # test and dev environments it executes a live introspection query
+  it 'executes the expected introspection query in a non production environment' do
     expect(GitlabSchema).to receive(:execute).and_wrap_original do |method, query, **kwargs|
       expect(query.squish).to eq(CachedIntrospectionQuery.query_string)
 
@@ -94,6 +93,24 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     GraphqlTriggers.work_item_updated(work_item)
 
     expect_response('"workItemUpdated": { "title": "My new title" }')
+  end
+
+  it 'allows user to execute a query containing __typename' do
+    visit '/-/graphql-explorer'
+
+    fill_in_editor('query { currentUser { id __typename } }')
+    click_execute_button
+
+    expect_response(%("currentUser": { "id": "#{user.to_gid}", "__typename": "CurrentUser" }))
+  end
+
+  it 'executes a query containing __type as an introspection query' do
+    visit '/-/graphql-explorer'
+
+    fill_in_editor('query { __type(name: "User") { name kind } }')
+    click_execute_button
+
+    expect_response('"__type": { "name": "User", "kind": "INTERFACE" }')
   end
 
   def fill_in_editor(text)

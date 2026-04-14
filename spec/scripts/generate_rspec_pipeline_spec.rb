@@ -153,10 +153,65 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
           )
         end
 
-        it 'generates the pipeline config with max parallelization of 50' do
+        it 'generates the pipeline config with max parallelization of MAX_NODES_COUNT' do
           subject.generate!
 
-          expect(File.read("#{pipeline_template.path}.yml")).to eq("rspec migration:\n  parallel: 50")
+          expect(File.read("#{pipeline_template.path}.yml"))
+            .to eq("rspec migration:\n  parallel: #{described_class::MAX_NODES_COUNT}")
+        end
+      end
+
+      context 'when active test levels exceed GITLAB_MAX_NEEDS_COUNT' do
+        before do
+          stub_const("#{described_class}::GITLAB_MAX_NEEDS_COUNT", 1)
+        end
+
+        it 'raises with a clear message instead of looping forever' do
+          expect { subject.generate! }.to raise_error(
+            RuntimeError,
+            /Cannot enforce needs limit/
+          )
+        end
+      end
+
+      context 'when total parallelization across test levels exceeds GITLAB_MAX_NEEDS_COUNT' do
+        let(:rspec_files_content) do
+          migration_files = Array.new(44) { |i| "spec/migrations/#{i}_spec.rb" }.join(' ')
+          system_files = Array.new(10) { |i| "spec/features/#{i}_spec.rb" }.join(' ')
+          "#{migration_files} #{system_files}"
+        end
+
+        before do
+          stub_const(
+            "#{described_class}::DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS",
+            described_class::OPTIMAL_TEST_JOB_DURATION_IN_SECONDS
+          )
+        end
+
+        it 'reduces the largest level parallelization to stay within the needs limit' do
+          subject.generate!
+
+          content = File.read("#{pipeline_template.path}.yml")
+          # migration reduced from 44 to 40 so that 40 + 10 = 50 == GITLAB_MAX_NEEDS_COUNT
+          expect(content).to include("rspec migration:\n  parallel: 40")
+          expect(content).to include("rspec system:\n  parallel: 10")
+        end
+
+        context 'when two levels tie for the largest parallelization' do
+          let(:rspec_files_content) do
+            migration_files = Array.new(44) { |i| "spec/migrations/#{i}_spec.rb" }.join(' ')
+            system_files = Array.new(44) { |i| "spec/features/#{i}_spec.rb" }.join(' ')
+            "#{migration_files} #{system_files}"
+          end
+
+          it 'distributes the reduction across both levels and reaches exactly GITLAB_MAX_NEEDS_COUNT' do
+            subject.generate!
+
+            content = File.read("#{pipeline_template.path}.yml")
+            # overflow = 88 - 50 = 38; per_level_decrement = ceil(38/2) = 19; each: 44 - 19 = 25
+            expect(content).to include("rspec migration:\n  parallel: 25")
+            expect(content).to include("rspec system:\n  parallel: 25")
+          end
         end
       end
     end

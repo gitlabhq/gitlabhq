@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlModal, GlSprintf, GlAlert, GlCollapse, GlIcon, GlButton } from '@gitlab/ui';
-import { uniqueId, isEmpty } from 'lodash';
+import { uniqueId, isEmpty } from 'lodash-es';
 import { importProjectMembers } from '~/api/projects_api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';

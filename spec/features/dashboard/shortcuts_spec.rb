@@ -22,7 +22,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
     it 'navigates to pages' do
       find('body').send_keys([:shift, 'I'])
 
-      check_page_title('Issues')
+      check_page_title('Work items')
 
       find('body').send_keys([:shift, 'M'])
 
@@ -75,18 +75,6 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
       find('body').send_keys([:shift, 'P'])
 
       expect(page).to have_content(s_('Projects|Browse projects to learn from and contribute to.'))
-    end
-
-    context 'when `explore_groups_vue` flag is disabled' do
-      before do
-        stub_feature_flags(explore_groups_vue: false)
-      end
-
-      it 'navigates to explore groups page' do
-        find('body').send_keys([:shift, 'G'])
-
-        expect(page).to have_content(_('No public or internal groups'))
-      end
     end
   end
 

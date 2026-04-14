@@ -378,12 +378,19 @@ Valid values for `keep_n` (number of tags kept per image name) when using the AP
 
 Valid values for `older_than` (days until tags are automatically removed) when using the API are:
 
+- `1d`
+- `3d`
 - `7d`
 - `14d`
 - `30d`
+- `60d`
 - `90d`
+- `180d`
+- `365d`
+- `730d`
+- `1095d`
 
-See the API documentation for further details: [Edit project API](../../../api/projects.md#edit-a-project).
+See the API documentation for further details: [Edit project API](../../../api/projects.md#update-a-project).
 
 ### Use with external container registries
 

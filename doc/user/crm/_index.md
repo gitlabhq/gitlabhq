@@ -26,10 +26,10 @@ description: Customer management, organizations, contacts, and permissions.
 > [!note]
 > This feature is not under active development, but
 > [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
-> To determine if the feature meets your needs, see the open issues in [epic 5323](https://gitlab.com/groups/gitlab-org/-/epics/5323).
+> To determine if the feature meets your needs, see the open work items in [epic 5323](https://gitlab.com/groups/gitlab-org/-/epics/5323).
 
 With customer relations management (CRM) you can create a record of contacts
-(individuals) and organizations (companies) and relate them to issues.
+(individuals) and organizations (companies) and relate them to work items.
 
 By default, contacts and organizations can only be created for top-level groups.
 To create contacts and organizations in other groups, [assign the group as a contact source](#configure-the-contact-source).
@@ -42,8 +42,8 @@ For more information about what is planned for the future, see [issue 2256](http
 | Permission                         | Guest | Planner | Group Reporter | Group Developer, Maintainer, and Owner |
 |------------------------------------|-------|---------|----------------|----------------------------------------|
 | View contacts/organizations        |       | ✓       | ✓              | ✓                                      |
-| View issue contacts                |       | ✓       | ✓              | ✓                                      |
-| Add/remove issue contacts          |       | ✓       | ✓              | ✓                                      |
+| View work item contacts            |       | ✓       | ✓              | ✓                                      |
+| Add/remove work item contacts      |       | ✓       | ✓              | ✓                                      |
 | Create/edit contacts/organizations |       |         |                | ✓                                      |
 
 ## Enable customer relations management (CRM)
@@ -74,7 +74,7 @@ To enable customer relations management in a group or subgroup:
 
 {{< /history >}}
 
-By default, contacts are sourced from an issue's top-level group.
+By default, contacts are sourced from a work item's top-level group.
 
 The contact source for a group will apply to all subgroups,
 unless they have a contact source configured.
@@ -100,8 +100,6 @@ To view a group's contacts:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
-
-![Contacts list](crm_contacts_v14_10.png)
 
 ### Create a contact
 
@@ -141,8 +139,8 @@ contacts using the GraphQL API.
 
 Each contact can be in one of two states:
 
-- **Active**: contacts in this state can be added to an issue.
-- **Inactive**: contacts in this state cannot be added to an issue.
+- **Active**: contacts in this state can be added to a work item.
+- **Inactive**: contacts in this state cannot be added to a work item.
 
 To change the state of a contact:
 
@@ -165,8 +163,6 @@ To view a group's organizations:
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
-
-![Organizations list](crm_organizations_v14_10.png)
 
 ### Create an organization
 
@@ -204,73 +200,71 @@ To edit an existing organization:
 You can also [edit](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationupdate)
 organizations using the GraphQL API.
 
-## Issues
+## Tickets
 
-If you use [Service Desk](../project/service_desk/_index.md) and create issues from emails,
-issues are linked to contacts matching the email addresses in the sender and CC of the email.
+If you use [Service Desk](../project/service_desk/_index.md) and create tickets from emails,
+tickets are linked to contacts matching the email addresses in the sender and CC of the email.
 
-### View issues linked to a contact
+### View work items linked to a contact
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
-To view a contact's issues, select a contact from the issue sidebar, or:
+To view a contact's work items, select a contact from the work item sidebar, or:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
-1. Next to the contact whose issues you wish to view, select **View issues** ({{< icon name="issues" >}}).
+1. Next to the contact whose work items you wish to view, select **View work items** ({{< icon name="work-items" >}}).
 
-### View issues linked to an organization
+### View work items linked to an organization
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
-To view an organization's issues:
+To view an organization's work items:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
-1. Next to the organization whose issues you wish to view, select **View issues** ({{< icon name="issues" >}}).
+1. Next to the organization whose work items you wish to view, select **View work items** ({{< icon name="work-items" >}}).
 
-### View contacts linked to an issue
+### View contacts linked to a work item
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
-You can view contacts associated with an issue in the right sidebar.
+You can view contacts associated with a work item in the right sidebar.
 
 To view a contact's details, hover over the contact's name.
 
-![Issue contacts](issue_crm_contacts_v14_6.png)
-
-You can also view issue contacts using the
+You can also view work item contacts using the
 [GraphQL](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationcreate)
 API.
 
-### Add contacts to an issue
+### Add contacts to a work item
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
-To add [active](#change-the-state-of-a-contact) contacts to an issue use the [`/add_contacts` quick action](../project/quick_actions.md#add_contacts) with `[contact:address@example.com]`.
+To add [active](#change-the-state-of-a-contact) contacts to a work item use the [`/add_contacts` quick action](../project/quick_actions.md#add_contacts) with `[contact:address@example.com]`.
 
-You can also add, remove, or replace issue contacts using the
+You can also add, remove, or replace work item contacts using the
 [GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
 API.
 
-### Remove contacts from an issue
+### Remove contacts from a work item
 
 Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
-To remove contacts from an issue use the [`/remove_contacts` quick action](../project/quick_actions.md#remove_contacts) with `[contact:address@example.com]`.
+To remove contacts from a work item use the [`/remove_contacts` quick action](../project/quick_actions.md#remove_contacts) with `[contact:address@example.com]`.
 
-You can also add, remove, or replace issue contacts using the
+You can also add, remove, or replace work item contacts using the
 [GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
 API.
 
@@ -290,7 +284,7 @@ When you use the `/add_contacts` quick action, follow it with `[contact:` and an
 /add_contacts [contact:
 ```
 
-When you use the `/remove_contacts` quick action, follow it with `[contact:` and an autocomplete list with the contacts added to the issue appears:
+When you use the `/remove_contacts` quick action, follow it with `[contact:` and an autocomplete list with the contacts added to the work item appears:
 
 ```plaintext
 /remove_contacts [contact:
@@ -298,22 +292,22 @@ When you use the `/remove_contacts` quick action, follow it with `[contact:` and
 
 ## Moving objects with CRM entries
 
-When you move an issue or project and the **parent group contact source matches**,
-issues retain their contacts.
+When you move a work item or project and the **parent group contact source matches**,
+work items retain their contacts.
 
-When you move an issue or project and the **parent group contact source changes**,
-issues lose their contacts.
+When you move a work item or project and the **parent group contact source changes**,
+work items lose their contacts.
 
 When you move a group with a [contact source configured](#configure-the-contact-source)
-or it's **contact source remains unchanged**,
-issues retain their contacts.
+or its **contact source remains unchanged**,
+work items retain their contacts.
 
 When you move a group and its **contact source changes**:
 
 - All unique contacts and organizations are migrated to the new top-level group.
 - Contacts that already exist (by email address) are deemed duplicates and deleted.
 - Organizations that already exist (by name) are deemed duplicates and deleted.
-- All issues retain their contacts or are updated to point at contacts with the same email address.
+- All work items retain their contacts or are updated to point at contacts with the same email address.
 
 If you do not have permission to create contacts and organizations in the new
 top-level group, the group transfer fails.

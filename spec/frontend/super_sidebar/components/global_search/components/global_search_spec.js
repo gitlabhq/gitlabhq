@@ -158,9 +158,8 @@ describe('GlobalSearchModal', () => {
     findGlobalSearchInput().find('[data-testid="search-input-field"]');
 
   describe('template', () => {
-    beforeEach(() => {
-      useMockLocationHelper();
-    });
+    useMockLocationHelper();
+
     describe('always renders', () => {
       beforeEach(() => {
         createComponent();

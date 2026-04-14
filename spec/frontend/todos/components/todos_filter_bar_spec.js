@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlSorting, GlFilteredSearch, GlAlert } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';

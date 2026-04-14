@@ -631,7 +631,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 {{< /history >}}
 
-The number of [placeholder users](../user/import/mapping/_index.md#placeholder-users) created during an import can be limited per top-level namespace.
+The number of [placeholder users](../user/import/mapping/post_migration_mapping.md#placeholder-users) created during an import can be limited per top-level namespace.
 
 The default limit for [GitLab Self-Managed](../subscriptions/manage_subscription.md) is `0` (unlimited).
 
@@ -1051,7 +1051,7 @@ Plan.default.actual_limits.update!(pages_file_entries: 100)
 
 ### Number of custom domains per GitLab Pages website
 
-The total number of custom domains per GitLab Pages website is limited to `150` for [GitLab.com](../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage).
+The total number of custom domains per GitLab Pages website is limited to `150` for [GitLab.com](../subscriptions/manage_seats.md#gitlabcom-billing-and-usage).
 
 The default limit for [GitLab Self-Managed](../subscriptions/manage_subscription.md) is `0` (unlimited).
 To set a limit on your instance, use the
@@ -1268,6 +1268,7 @@ Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189131) in GitLab 18.0.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/577314) in GitLab 18.11.
 
 {{< /history >}}
 

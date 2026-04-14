@@ -12,7 +12,12 @@ require_relative '../tooling/quality/test_level'
 class GenerateRspecPipeline
   SKIP_PIPELINE_YML_FILE = ".gitlab/ci/overrides/skip.yml"
   TEST_LEVELS = %i[migration background_migration unit integration system].freeze
-  MAX_NODES_COUNT = 50 # Maximum parallelization allowed by GitLab
+  # 44 matches the highest parallelization used in the full (non-predictive) pipeline (unit tests).
+  # Predictive pipelines run a subset of files, so they will never need more than this.
+  MAX_NODES_COUNT = 44
+  # GitLab limits `needs:` to 50 entries total. The artifact-collector needs one entry per
+  # parallel instance across all active test-level jobs, so the sum must not exceed this.
+  GITLAB_MAX_NEEDS_COUNT = 50
 
   OPTIMAL_TEST_JOB_DURATION_IN_SECONDS = 600 # 10 MINUTES
   SETUP_DURATION_IN_SECONDS = 180.0 # 3 MINUTES
@@ -113,13 +118,50 @@ class GenerateRspecPipeline
   def rspec_files_per_test_level
     @rspec_files_per_test_level ||= begin
       all_remaining_rspec_files = all_rspec_files.dup
-      TEST_LEVELS.each_with_object(Hash.new { |h, k| h[k] = {} }) do |test_level, memo|
+      result = TEST_LEVELS.each_with_object(Hash.new { |h, k| h[k] = {} }) do |test_level, memo|
         memo[test_level][:files] = all_remaining_rspec_files
           .grep(test_level_service.regexp(test_level, true))
           .tap { |files| files.each { |file| all_remaining_rspec_files.delete(file) } }
         memo[test_level][:parallelization] = optimal_nodes_count(test_level, memo[test_level][:files])
       end
+
+      enforce_needs_limit!(result)
     end
+  end
+
+  # GitLab's `needs:` keyword is limited to GITLAB_MAX_NEEDS_COUNT entries per job.
+  # Since the artifact-collector needs one entry per parallel instance of each active test-level
+  # job, we trim the largest parallelizations until the total fits within the limit.
+  def enforce_needs_limit!(result)
+    loop do
+      active_levels = result.select { |_, config| config[:files].any? }
+      total = active_levels.sum { |_, config| config[:parallelization] }
+      break if total <= GITLAB_MAX_NEEDS_COUNT
+
+      overflow = total - GITLAB_MAX_NEEDS_COUNT
+      max_parallelization = active_levels.map { |_, config| config[:parallelization] }.max
+      largest_levels = active_levels.select do |_, config|
+        config[:parallelization] == max_parallelization && config[:parallelization] > 1
+      end
+
+      if largest_levels.empty?
+        raise "Cannot enforce needs limit: all #{active_levels.size} active test levels are already " \
+              "at parallelization 1 but total (#{total}) still exceeds " \
+              "GITLAB_MAX_NEEDS_COUNT (#{GITLAB_MAX_NEEDS_COUNT}). " \
+              "Lower parallelization so the total needs count fits within the limit."
+      end
+
+      per_level_decrement = [(overflow.to_f / largest_levels.size).ceil, 1].max
+
+      largest_levels.each do |level, config|
+        new_parallelization = [config[:parallelization] - per_level_decrement, 1].max
+        info "Reducing #{level} parallelization from #{config[:parallelization]} " \
+             "to #{new_parallelization} to stay within the #{GITLAB_MAX_NEEDS_COUNT}-entry needs limit."
+        result[level][:parallelization] = new_parallelization
+      end
+    end
+
+    result
   end
 
   def optimal_nodes_count(test_level, rspec_files)

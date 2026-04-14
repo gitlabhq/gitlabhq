@@ -8,28 +8,99 @@ RSpec.describe Layouts::IndexLayout, feature_category: :design_system do
   let(:alerts_content) { 'Alert message' }
   let(:content) { 'Default content' }
 
-  it 'renders with heading and description props' do
-    render_inline described_class.new(heading: heading, description: description)
+  describe 'PageHeading' do
+    describe 'heading' do
+      it 'renders when heading prop is provided' do
+        render_inline described_class.new(heading: heading)
 
-    expect(page).to have_css('h1.gl-heading-1', text: heading)
-    expect(page).to have_css('.gl-text-subtle', text: description)
-  end
+        expect(page).to have_css('[data-testid="page-heading"]', text: heading)
+      end
 
-  it 'renders alerts and content slots' do
-    render_inline described_class.new(heading: heading) do |c|
-      c.with_alerts { alerts_content }
-      content
+      it 'renders when heading slot is provided' do
+        render_inline described_class.new do |c|
+          c.with_heading { 'Custom Heading' }
+        end
+
+        expect(page).to have_css('[data-testid="page-heading"]', text: 'Custom Heading')
+      end
     end
 
-    expect(page).to have_css('[data-testid="index-layout-alerts"]', text: alerts_content)
-    expect(page).to have_css('[data-testid="index-layout-content"]', text: content)
-  end
+    describe 'description' do
+      it 'renders description when prop provided' do
+        render_inline described_class.new(heading: heading, description: description)
 
-  it 'does not render alerts section when empty' do
-    render_inline described_class.new(heading: heading) do
-      content
+        expect(page).to have_css('[data-testid="page-heading-description"]', text: description)
+      end
+
+      it 'renders description when slot provided' do
+        render_inline described_class.new(heading: heading) do |c|
+          c.with_description { 'Test description' }
+        end
+
+        expect(page).to have_css('[data-testid="page-heading-description"]', text: 'Test description')
+      end
+
+      it 'does not render when no description prop or slot is provided' do
+        render_inline described_class.new(heading: heading)
+
+        expect(page).not_to have_css('[data-testid="page-heading-description"]')
+      end
     end
 
-    expect(page).not_to have_css('[data-testid="index-layout-alerts"]')
+    describe 'actions' do
+      it 'renders actions when slot provided' do
+        render_inline described_class.new(heading: heading) do |c|
+          c.with_actions { 'Test action' }
+        end
+
+        expect(page).to have_css('[data-testid="page-heading-actions"]', text: 'Test action')
+      end
+
+      it 'does not render when no actions slot is provided' do
+        render_inline described_class.new(heading: heading)
+
+        expect(page).not_to have_css('[data-testid="page-heading-actions"]')
+      end
+    end
+  end
+
+  describe 'page_heading_sr_only' do
+    it 'does not apply gl-sr-only class by default' do
+      render_inline described_class.new(heading: heading)
+      expect(page).not_to have_css('.gl-sr-only')
+    end
+
+    it 'applies gl-sr-only class when page_heading_sr_only is true' do
+      render_inline described_class.new(heading: heading, page_heading_sr_only: true)
+      expect(page).to have_css('.gl-sr-only')
+    end
+  end
+
+  describe 'slots' do
+    describe 'alerts' do
+      it 'renders alerts container when slot is provided' do
+        render_inline described_class.new(heading: heading) do |c|
+          c.with_alerts { alerts_content }
+        end
+
+        expect(page).to have_css('[data-testid="index-layout-alerts"]', text: alerts_content)
+      end
+
+      it 'does not render alerts container when slots are not provided' do
+        render_inline described_class.new(heading: heading)
+
+        expect(page).not_to have_css('[data-testid="index-layout-alerts"]')
+      end
+    end
+
+    describe 'default' do
+      it 'renders body when default slot is provided' do
+        render_inline described_class.new(heading: heading) do
+          content
+        end
+
+        expect(page).to have_css('[data-testid="index-layout-content"]', text: content)
+      end
+    end
   end
 end

@@ -127,6 +127,9 @@ describe('sorterFor', () => {
     ${'MergeRequestAuthor'}   | ${'author'}   | ${'username'}
     ${'MergeRequestReviewer'} | ${'reviewer'} | ${'username'}
     ${'MergeRequestAssignee'} | ${'assignee'} | ${'username'}
+    ${'Pipeline'}             | ${'pipeline'} | ${'name'}
+    ${'CiJob'}                | ${'job'}      | ${'name'}
+    ${'CiStage'}              | ${'stage'}    | ${'name'}
   `('sorts by $sortField for $__typename', ({ __typename, field, sortField }) => {
     const items = [
       { [field]: { __typename, [sortField]: 'foo' } },

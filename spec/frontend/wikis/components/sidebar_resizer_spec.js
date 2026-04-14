@@ -44,6 +44,17 @@ describe('SidebarResizer component', () => {
     expect(sidebarContainer.classList.contains('gl-hidden')).toBe(false);
   });
 
+  it('enables transitions after mount', () => {
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+
+    createComponent();
+
+    expect(window.requestAnimationFrame).toHaveBeenCalled();
+    expect(sidebar.classList).toContain('transition-enabled');
+
+    window.requestAnimationFrame.mockRestore();
+  });
+
   it('updates sidebar width when PanelResizer emits update:size', async () => {
     createComponent();
 

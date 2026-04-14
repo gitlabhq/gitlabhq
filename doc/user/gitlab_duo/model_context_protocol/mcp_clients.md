@@ -26,22 +26,24 @@ title: GitLab MCP clients
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) from experiment to beta in GitLab 18.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19716) in GitLab Duo CLI 8.81.0 during the GitLab 18.11 release.
 
 {{< /history >}}
 
 The Model Context Protocol (MCP) provides a standardized way for GitLab Duo features
 to securely connect to different external data sources and tools.
 
-MCP is supported in:
+MCP is supported in the following environments:
 
 - Visual Studio Code (VS Code) and VSCodium
 - JetBrains IDEs
+- The command line, through the GitLab Duo CLI
 
-The same MCP configuration file works across all supported IDEs.
+The same MCP configuration file works across all supported IDEs and the GitLab Duo CLI.
 
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
-- [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
 - The [Software Development Flow](../../duo_agent_platform/flows/foundational_flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
@@ -61,27 +63,38 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP client](https://g
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
+- For Visual Studio Code (VS Code) or VSCodium:
+  - Install and set up [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.35.6 or later.
+- For JetBrains IDEs:
+  - Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md) 3.14.0 or later.
+- For your command line:
+  - Meet the [prerequisites for the GitLab Duo CLI](../../gitlab_duo_cli/_index.md#prerequisites).
+  - Install and configure the [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli)
+    8.81.0 or later.
 
-For Visual Studio Code (VS Code) or VSCodium:
-
-- Install [VS Code](https://code.visualstudio.com/download) or [VSCodium](https://vscodium.com/).
-- Install and set up the GitLab for VS Code extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
-  or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-  - For MCP support, install version 6.28.2 and later.
-  - For workspace and user configuration, install version 6.35.6 and later.
-
-For JetBrains IDEs:
-
-- Install a JetBrains IDE.
-- Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md).
+For more information about extension support, see [version compatibility](#version-compatibility).
 
 ## Allow external MCP tools
 
-To allow the IDE to access external MCP tools:
+Allow the IDE to access external MCP tools in the top-level group where GitLab Duo is configured.
+
+### On GitLab.com
+
+To allow your local environment to access external MCP tools on GitLab.com:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
+1. Under **External MCP tools**, select the **Allow external MCP tools** checkbox.
+1. Select **Save changes**.
+
+### On GitLab Self-Managed
+
+To allow your local environment to access external MCP tools on GitLab Self-Managed:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
 1. Under **External MCP tools**, select the **Allow external MCP tools** checkbox.
 1. Select **Save changes**.
 
@@ -92,10 +105,10 @@ The GitLab Language Server loads and merges the configuration files.
 
 ### Version compatibility
 
-| GitLab for VS Code version | MCP features available |
-|-----------------------------------|------------------------|
-| 6.28.2 - 6.35.5  | Basic MCP support, with no workspace or user configuration |
-| 6.35.6 and later | Full MCP support, including workspace and user configuration |
+| MCP support | GitLab for VS Code | GitLab Duo plugin <br>for JetBrains IDEs | GitLab Duo CLI |
+|------------------------|-----------------------------------|------------------------|------------------------|
+| Basic (no workspace or user configuration) | 6.28.2 or later | 3.10.0 or later |  |
+| Full (with workspace and user configuration) | 6.35.6 or later | 3.14.0 or later | 8.81.0 or later |
 
 ### Create workspace configuration
 
@@ -108,7 +121,7 @@ To set up workspace configuration:
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
-1. Restart your IDE.
+1. Restart your IDE or the GitLab Duo CLI.
 
 ### Create user configuration
 
@@ -117,19 +130,54 @@ workspaces, but any workspace settings for the same server override the user con
 
 To set up user configuration:
 
-1. In VSCodium or VS Code, open the Command Palette by pressing
-   <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
-   <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. Run the command `GitLab MCP: Open User Settings (JSON)` to create and open the user configuration file.
+1. Create a configuration file:
+
+   {{< tabs >}}
+
+   {{< tab title="VS Code or VSCodium" >}}
+
+   1. In your IDE, open the Command Palette:
+      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   1. Run the command `GitLab MCP: Open User Settings (JSON)`.
+
+   {{< /tab >}}
+
+   {{< tab title="JetBrains IDEs" >}}
+
+   - Create an `mcp.json` file in your home directory:
+     - For Linux or macOS, at `~/.gitlab/duo/mcp.json`.
+     - For Windows, at `%APPDATA%\GitLab\duo\mcp.json`.
+
+       For example, `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`.
+
+   If you have set one of the following environment variables, create the file in a different location:
+
+   - For `GLAB_CONFIG_DIR`, at `$GLAB_CONFIG_DIR/duo/mcp.json`.
+   - For `XDG_CONFIG_HOME`, at `$XDG_CONFIG_HOME/gitlab/duo/mcp.json`.
+
+   {{< /tab >}}
+
+   {{< tab title="GitLab Duo CLI" >}}
+
+   - Create an `mcp.json` file in your home directory:
+     - For Linux or macOS, at `~/.gitlab/duo/mcp.json`.
+     - For Windows, at `%APPDATA%\GitLab\duo\mcp.json`.
+
+       For example, `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`.
+
+   If you have set one of the following environment variables, create the file in a different location:
+
+   - For `GLAB_CONFIG_DIR`, at `$GLAB_CONFIG_DIR/duo/mcp.json`.
+   - For `XDG_CONFIG_HOME`, at `$XDG_CONFIG_HOME/gitlab/duo/mcp.json`.
+
+   {{< /tab >}}
+   {{< /tabs >}}
+
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
-1. Restart your IDE.
-
-For JetBrains IDEs, or to manually create the file in VS Code, use this location:
-
-- Windows: `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`
-- All other operating systems: `~/.gitlab/duo/mcp.json`
+1. Restart your IDE or the GitLab Duo CLI.
 
 ### Configuration format
 
@@ -296,8 +344,8 @@ For more information about available tools, see the
 
 Prerequisites:
 
-- Have the GitLab for VS Code extension 6.55.0 or later installed.
-- Have at least one MCP server configured in your user or workspace configuration.
+- GitLab for VS Code extension 6.55.0 or later.
+- At least one MCP server configured in your user or workspace configuration.
 
 To view the status of your configured MCP servers:
 

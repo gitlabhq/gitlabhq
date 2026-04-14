@@ -33,11 +33,7 @@ describe('PipelineStageDropdown', () => {
     stage: pipelineStage,
   };
 
-  const createComponent = ({
-    pipelineStageHandler = pipelineStageResponse,
-    props = {},
-    flags = {},
-  } = {}) => {
+  const createComponent = ({ pipelineStageHandler = pipelineStageResponse, props = {} } = {}) => {
     const handlers = [[getPipelineStageJobsQuery, pipelineStageHandler]];
     const mockApollo = createMockApollo(handlers);
 
@@ -49,12 +45,6 @@ describe('PipelineStageDropdown', () => {
     mockApollo.defaultClient.setRequestHandler(stageJobsUpdatedSubscription, subscriptionHandler);
 
     wrapper = mountExtended(PipelineStageDropdown, {
-      provide: {
-        glFeatures: {
-          pipelineMiniGraphSubscription: false,
-          ...flags,
-        },
-      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -140,11 +130,14 @@ describe('PipelineStageDropdown', () => {
       expect(wrapper.emitted('mini-graph-stage-click')).toHaveLength(1);
     });
 
-    it('has fired the stage query', async () => {
+    it('reactively fetches fresh data when the dropdown opens', async () => {
       await createComponent();
       await clickStageDropdown();
       const { stage } = defaultProps;
 
+      const { stageJobs } = wrapper.vm.$apollo.queries;
+
+      expect(stageJobs.options.fetchPolicy).toBe('cache-and-network');
       expect(pipelineStageResponse).toHaveBeenCalledWith({ id: stage.id });
     });
 
@@ -263,37 +256,6 @@ describe('PipelineStageDropdown', () => {
     });
   });
 
-  describe('polling', () => {
-    beforeEach(async () => {
-      pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
-      await createComponent();
-      await clickStageDropdown();
-      await waitForPromises();
-    });
-
-    it('starts polling when dropdown is open', () => {
-      expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(8000);
-
-      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
-    });
-
-    it('stops polling when dropdown is closed', async () => {
-      expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(8000);
-
-      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
-
-      await clickStageDropdown();
-
-      jest.advanceTimersByTime(8000);
-
-      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe('merge train message', () => {
     it('does not display a message if the pipeline is not part of a merge train', async () => {
       await createComponent();
@@ -314,9 +276,7 @@ describe('PipelineStageDropdown', () => {
 
   describe('subscription', () => {
     beforeEach(async () => {
-      await createComponent({
-        flags: { pipelineMiniGraphSubscription: true },
-      });
+      await createComponent();
     });
 
     it('calls subscription with correct variables', async () => {
@@ -349,16 +309,6 @@ describe('PipelineStageDropdown', () => {
       await waitForPromises();
 
       expect(findJobDropdownItems().at(0).props('job').detailedStatus.group).toBe('pending');
-    });
-
-    it('stops polling immediately if real-time feature flag is enabled', async () => {
-      const stopPollingSpy = jest.spyOn(wrapper.vm.$apollo.queries.stageJobs, 'stopPolling');
-
-      await clickStageDropdown();
-
-      await waitForPromises();
-
-      expect(stopPollingSpy).toHaveBeenCalled();
     });
 
     it('updates the job icon when the subscription receives a new status', async () => {

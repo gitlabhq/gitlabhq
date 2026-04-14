@@ -1,0 +1,36 @@
+.sentry-set-commits: &sentry-set-commits
+  stage: notify
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3.21
+  rules:
+    - if: '$SENTRY_AUTH_TOKEN == null || $SENTRY_AUTH_TOKEN == ""'
+      when: never
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://github.com/getsentry/sentry-cli/releases/download/${CLI_VERSION}/sentry-cli-linux-x64-${CLI_VERSION}.tgz" -o /tmp/sentry-cli.tgz
+    - echo "${CLI_CHECKSUM}  /tmp/sentry-cli.tgz" | sha256sum -c -
+    - tar -xzf /tmp/sentry-cli.tgz --strip-components=2 -C /usr/local/bin package/bin/sentry-cli
+    - chmod +x /usr/local/bin/sentry-cli
+    - SHORT_SHA=$(echo "$CI_COMMIT_SHA" | cut -c1-11)
+  script:
+    - sentry-cli releases set-commits "$SHORT_SHA" --commit "${SENTRY_REPO}@${CI_COMMIT_BEFORE_SHA}..${CI_COMMIT_SHA}"
+  allow_failure: true
+
+.sentry-variables: &sentry-variables
+  SENTRY_URL: 'https://new-sentry.gitlab.net/'
+  SENTRY_ORG: 'gitlab'
+  SENTRY_REPO: 'GitLab.org / GitLab'
+  CLI_VERSION: '3.3.3'
+  CLI_CHECKSUM: 'b0dd4538d81b1baf49abe0094ac725d7124bc38ff3a2835ada0b504ab92ea119'
+
+sentry-set-commits-backend:
+  <<: *sentry-set-commits
+  variables:
+    <<: *sentry-variables
+    SENTRY_PROJECT: 'gitlabcom'
+
+sentry-set-commits-frontend:
+  <<: *sentry-set-commits
+  variables:
+    <<: *sentry-variables
+    SENTRY_PROJECT: 'gitlabcom-clientside'

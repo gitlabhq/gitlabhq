@@ -99,12 +99,12 @@ describe('linked_file utilities', () => {
       expect(result.searchParams.get('file_path')).toBe('app/models/user.rb');
     });
 
-    it('sets hash when fileId is provided', () => {
+    it('sets hash when hash is provided', () => {
       const url = new URL('https://example.com/merge_requests/1');
       const result = withLinkedFileUrlParams(url, {
         oldPath: 'app/models/user.rb',
         newPath: 'app/models/user.rb',
-        fileId: 'abc123',
+        hash: 'abc123',
       });
 
       expect(result.hash).toBe('#abc123');

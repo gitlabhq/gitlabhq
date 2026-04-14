@@ -1,12 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { debounce, isEqual, unescape } from 'lodash-es';
+import { debounce, isEqual } from 'lodash-es';
 import { createAlert } from '~/alert';
 import GLForm from '~/gl_form';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
-import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -14,10 +13,6 @@ import { MARKDOWN_EDITOR_READY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
-
-function cleanUpLine(content) {
-  return unescape(stripHtml(content).replace(/\\n/g, '%br').replace(/\n/g, ''));
-}
 
 export default {
   components: {
@@ -93,35 +88,20 @@ export default {
       required: false,
       default: () => ({}),
     },
-    line: {
+    codeSuggestionsConfig: {
       type: Object,
       required: false,
-      default: null,
-    },
-    lines: {
-      type: Array,
-      required: false,
-      default: () => [],
+      default: () => ({ lines: [], lineType: '', canSuggest: false, showPopover: false }),
     },
     note: {
       type: Object,
       required: false,
       default: () => ({}),
     },
-    canSuggest: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     helpPagePath: {
       type: String,
       required: false,
       default: '',
-    },
-    showSuggestPopover: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     showCommentToolBar: {
       type: Boolean,
@@ -173,34 +153,7 @@ export default {
       return this.referencedUsers.length >= referencedUsersThreshold;
     },
     lineContent() {
-      if (this.lines.length) {
-        return this.lines
-          .map((line) => {
-            const { rich_text: richText, text } = line;
-
-            if (text) {
-              return text;
-            }
-
-            return cleanUpLine(richText);
-          })
-          .join('\\n');
-      }
-
-      if (this.line) {
-        const { rich_text: richText, text } = this.line;
-
-        if (text) {
-          return text;
-        }
-
-        return cleanUpLine(richText);
-      }
-
-      return '';
-    },
-    lineType() {
-      return this.line ? this.line.type : '';
+      return this.codeSuggestionsConfig.lines.join('\\n');
     },
     addMultipleToDiscussionWarning() {
       return sprintf(
@@ -214,7 +167,7 @@ export default {
       );
     },
     suggestionsStartIndex() {
-      return Math.max(this.lines.length - 1, 0);
+      return Math.max(this.codeSuggestionsConfig.lines.length - 1, 0);
     },
   },
   watch: {
@@ -391,9 +344,9 @@ export default {
         :editor-ai-actions="editorAiActions"
         :preview-markdown="previewMarkdown"
         :line-content="lineContent"
-        :can-suggest="canSuggest"
+        :can-suggest="codeSuggestionsConfig.canSuggest"
         :enable-preview="enablePreview"
-        :show-suggest-popover="showSuggestPopover"
+        :show-suggest-popover="codeSuggestionsConfig.showPopover"
         :suggestion-start-index="suggestionsStartIndex"
         :uploads-path="uploadsPath"
         :markdown-preview-path="markdownPreviewPath"
@@ -433,19 +386,17 @@ export default {
           :aria-label="__('Exit full screen')"
           ><gl-icon variant="subtle" :size="24" name="minimize"
         /></a>
-        <div class="gl-border-t">
-          <markdown-toolbar
-            v-if="!immersive"
-            :markdown-docs-path="markdownDocsPath"
-            :can-attach-file="canAttachFile"
-            :show-comment-tool-bar="showCommentToolBar"
-            :show-content-editor-switcher="showContentEditorSwitcher"
-            :class="{ showContentEditorSwitcher: 'gl-border-t' }"
-            @enableContentEditor="$emit('enableContentEditor')"
-          >
-            <template #toolbar><slot name="toolbar"></slot></template>
-          </markdown-toolbar>
-        </div>
+        <markdown-toolbar
+          v-if="!immersive"
+          :markdown-docs-path="markdownDocsPath"
+          :can-attach-file="canAttachFile"
+          :show-comment-tool-bar="showCommentToolBar"
+          :show-content-editor-switcher="showContentEditorSwitcher"
+          :class="{ 'gl-border-t': showContentEditorSwitcher }"
+          @enableContentEditor="$emit('enableContentEditor')"
+        >
+          <template #toolbar><slot name="toolbar"></slot></template>
+        </markdown-toolbar>
       </div>
     </div>
     <div
@@ -456,7 +407,7 @@ export default {
       <suggestions
         v-if="hasSuggestion"
         :note-html="markdownPreview"
-        :line-type="lineType"
+        :line-type="codeSuggestionsConfig.lineType"
         :disabled="true"
         :suggestions="suggestions"
         :help-page-path="helpPagePath"

@@ -208,7 +208,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/snippets/blobs_controller.rb'
     - 'app/controllers/snippets/notes_controller.rb'
     - 'app/controllers/terraform/services_controller.rb'
-    - 'app/finders/admin/projects_finder.rb'
     - 'app/finders/merge_request/metrics_finder.rb'
     - 'app/finders/packages/package_file_finder.rb'
     - 'app/finders/packages/tags_finder.rb'

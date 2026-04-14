@@ -138,13 +138,24 @@ class PreMergeChecks
 
     # Allow predictive pipelines for spec-only changes
     return if pipeline.name.include?('spec-only')
-    return unless pipeline.name.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
+    return unless predictive_pipeline_type?(pipeline.name)
 
     fail_check! <<~MSG
       Expected latest pipeline (#{pipeline.web_url}) not to be a predictive pipeline! Pipeline name was "#{pipeline.name}".
 
       Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
     MSG
+  end
+
+  def predictive_pipeline_type?(pipeline_name)
+    types_match = pipeline_name
+      .match(/\[(.*?)\]/)
+      &.[](1)
+      &.split(/,\s*/)
+      &.find { |section| section.start_with?("types:") }
+    return false unless types_match
+
+    types_match.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
   end
 
   def target_branch_is_stable_branch?

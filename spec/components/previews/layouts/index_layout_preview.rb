@@ -19,6 +19,17 @@ module Layouts
           'Custom <i>Heading</i> with Markup'.html_safe
         end
 
+        c.with_actions do
+          c.safe_join([
+            c.render(Pajamas::ButtonComponent.new(variant: :confirm)) do
+              'Primary action'
+            end,
+            c.render(Pajamas::ButtonComponent.new(variant: :default)) do
+              'Secondary action'
+            end
+          ])
+        end
+
         c.with_description do
           'Custom <i>description</i> information with Markup. <a href="#">Learn more</a>'.html_safe
         end
@@ -48,6 +59,20 @@ module Layouts
           ])
         end
 
+        tag.p('Index layout default slot.')
+      end
+    end
+
+    # @param heading text
+    # @param description text
+    # @param page_heading_sr_only toggle
+    def page_heading_sr_only(
+      heading: 'Page Title',
+      description: 'This is a page description',
+      page_heading_sr_only: true
+    )
+      render(::Layouts::IndexLayout.new(heading: heading, description: description,
+        page_heading_sr_only: page_heading_sr_only)) do
         tag.p('Index layout default slot.')
       end
     end

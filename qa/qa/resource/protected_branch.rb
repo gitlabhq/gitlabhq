@@ -67,7 +67,7 @@ module QA
       end
 
       def self.unprotect_via_api!(&block)
-        self.remove_via_api!(&block)
+        remove_via_api!(&block)
       end
 
       # Remove the branch protection after confirming that it exists

@@ -135,9 +135,9 @@ and too varied, you should review the
 [account and limit settings documentation](../administration/settings/account_and_limit_settings.md)
 and apply changes to enforce your own policies.
 
-### Sign-up restrictions
+### New account restrictions
 
-Ensure open sign-up is disabled on your hardened instance. Ensure the **Sign-up enabled** checkbox is not selected.
+Ensure new user accounts cannot be created on your hardened instance by ensuring the **Allow new user accounts** checkbox is cleared.
 
 In **Email confirmation settings**, ensure that **Hard** is selected. User verification
 of their email address is now enforced before access is granted.
@@ -152,11 +152,11 @@ should be complex, so ensure that all four of these checkboxes are selected:
 - **Require symbols**
 
 If all of your users belong to the same organization that uses a specific domain for
-email addresses, then list that domain in **Allowed domains for sign-ups**. This
+email addresses, then list that domain in **Domains allowed for new users**. This
 prevents those with email addresses in other domains from signing up.
 
 For more detailed information, see
-[sign-up restrictions](../administration/settings/sign_up_restrictions.md).
+[new user account restrictions](../administration/settings/sign_up_restrictions.md).
 
 ### Sign-in restrictions
 

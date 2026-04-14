@@ -8,6 +8,7 @@ import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { findNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -26,6 +27,7 @@ export default {
     ConfidentialityBadge,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     fullPath: {
       type: String,
@@ -96,6 +98,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       skip() {

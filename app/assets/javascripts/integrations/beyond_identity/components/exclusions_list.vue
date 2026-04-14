@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
-import { differenceBy } from 'lodash';
+import { differenceBy } from 'lodash-es';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';

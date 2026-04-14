@@ -67,7 +67,7 @@ describe('NpmInstallation', () => {
   describe('endpoint type selector', () => {
     it('has the endpoint type selector', () => {
       expect(findEndPointTypeSector().exists()).toBe(true);
-      expect(findEndPointTypeSector().vm.$attrs.checked).toBe(INSTANCE_PACKAGE_ENDPOINT_TYPE);
+      expect(findEndPointTypeSector().props().checked).toBe(INSTANCE_PACKAGE_ENDPOINT_TYPE);
       expect(findEndPointTypeSector().props()).toMatchObject({
         options: [
           { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: 'Instance-level' },

@@ -13,7 +13,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
       expect(described_class::STATE_MEMORY_CONFIG).to eq({
         schedule_deletion: :cancel_deletion,
         start_deletion: :reschedule_deletion,
-        start_transfer: [:complete_transfer, :cancel_transfer]
+        schedule_transfer: [:complete_transfer, :cancel_transfer]
       })
     end
 

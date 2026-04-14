@@ -115,11 +115,9 @@ RSpec.shared_examples 'Rapid Diffs application' do
     end
 
     it 'collapses all files' do
+      expect(page).to have_css('diff-file details[open]', visible: :all)
       find('button[aria-label="Collapse all files"]').click
-      all('diff-file').each do |diff_file|
-        details = diff_file.find('details', visible: :all)
-        expect(details[:open]).to eq('false')
-      end
+      expect(page).to have_no_css('diff-file details[open]', visible: :all)
     end
   end
 

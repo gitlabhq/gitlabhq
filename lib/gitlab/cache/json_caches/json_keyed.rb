@@ -15,7 +15,7 @@ module Gitlab
 
           begin
             read_value = backend.read(cache_key(key))
-            read_value = Gitlab::Json.parse(read_value.to_s) unless read_value.nil?
+            read_value = Gitlab::Json.safe_parse(read_value.to_s) unless read_value.nil?
             raw_value = read_value if read_value.is_a?(Hash)
           rescue JSON::ParserError
           end
@@ -26,7 +26,7 @@ module Gitlab
 
         def read_raw(key)
           value = backend.read(cache_key(key))
-          value = Gitlab::Json.parse(value.to_s) unless value.nil?
+          value = Gitlab::Json.safe_parse(value.to_s) unless value.nil?
           value[strategy_key_component] if value.is_a?(Hash)
         rescue JSON::ParserError
           nil

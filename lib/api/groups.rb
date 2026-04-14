@@ -690,6 +690,7 @@ module API
         requires :organization_id, type: Integer, desc: 'The ID of the organization to transfer the group to'
       end
       route_setting :authorization, permissions: :transfer_group, boundary_type: :group
+      route_setting :lifecycle, :experiment
       post ':id/transfer_to_organization', feature_category: :groups_and_projects do
         group = find_group!(params[:id])
 

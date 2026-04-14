@@ -43,7 +43,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
       get :commits, defaults: { tab: 'commits' }
       get :pipelines, defaults: { tab: 'pipelines' }
       get :diffs, to: 'merge_requests#rapid_diffs', defaults: { tab: 'diffs' },
-        constraints: ->(params) { params[:rapid_diffs] == 'true' }
+        constraints: ->(req) { req.params[:rapid_diffs] == 'true' || req.cookies['rapid_diffs_enabled'] == 'true' }
       get :diffs, to: 'merge_requests#diffs', defaults: { tab: 'diffs' }
     end
 

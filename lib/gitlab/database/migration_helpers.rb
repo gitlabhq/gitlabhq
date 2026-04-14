@@ -390,7 +390,7 @@ module Gitlab
             limit: limit
           )
 
-          transaction do
+          with_lock_retries do
             # This has to be performed in a transaction as otherwise we might
             # have inconsistent data.
             rename_column(table, column, temp_column)

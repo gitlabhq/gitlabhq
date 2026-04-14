@@ -14,38 +14,12 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
     sign_in(user)
   end
 
-  shared_examples 'requires feature flag' do
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(observability_sass_features: false)
-      end
-
-      it 'returns 404' do
-        subject
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
-  shared_examples 'requires permissions' do
-    context 'without proper permissions' do
-      before do
-        group.members.find_by(user: user).destroy!
-      end
-
-      it 'returns 403' do
-        subject
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-  end
-
   describe "GET /show" do
     subject(:get_setup_page) { get group_observability_setup_path(group, params) }
 
     let(:params) { {} }
 
-    include_examples 'requires feature flag'
+    include_examples 'observability requires feature flag'
 
     context 'when feature flag is enabled' do
       before do
@@ -127,7 +101,7 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
         end
       end
 
-      include_examples 'requires permissions'
+      include_examples 'observability requires permissions'
     end
   end
 end

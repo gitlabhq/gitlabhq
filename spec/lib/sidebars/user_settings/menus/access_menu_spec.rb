@@ -10,20 +10,10 @@ RSpec.describe Sidebars::UserSettings::Menus::AccessMenu, feature_category: :nav
   describe 'Menu Items' do
     subject(:items) { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
 
-    describe 'Password menu', feature_category: :system_access do
-      let(:item_id) { :password }
+    describe 'Password and authentication menu', feature_category: :system_access do
+      let(:item_id) { :password_and_authentication }
 
-      context 'when the user can change the password' do
-        it { is_expected.to be_present }
-      end
-
-      context 'when the user can not change the password' do
-        before do
-          allow(user).to receive(:allow_password_authentication?).and_return(false)
-        end
-
-        it { is_expected.not_to be_present }
-      end
+      it { is_expected.to be_present }
     end
 
     describe 'Personal access tokens menu', feature_category: :system_access do

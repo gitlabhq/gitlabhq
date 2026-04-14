@@ -2,7 +2,7 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { debounce, uniqBy } from 'lodash';
+import { debounce, uniqBy } from 'lodash-es';
 import {
   I18N_NO_RESULTS_MESSAGE,
   I18N_BRANCH_HEADER,

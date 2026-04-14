@@ -28,6 +28,7 @@ import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   findAssigneesWidget,
+  findCrmContactsWidget,
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
@@ -40,8 +41,6 @@ import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared
 import {
   I18N_WORK_ITEM_ERROR_CREATING,
   i18n,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  NAME_TO_TEXT_MAP,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
   NEW_WORK_ITEM_IID,
@@ -58,8 +57,6 @@ import {
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
-  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_CUSTOM_FIELDS,
   CUSTOM_FIELDS_TYPE_NUMBER,
   CUSTOM_FIELDS_TYPE_TEXT,
@@ -132,9 +129,6 @@ export default {
     },
     projectNamespaceFullPath: {
       default: '',
-    },
-    workItemPlanningViewEnabled: {
-      default: false,
     },
     hasEpicsFeature: {
       default: false,
@@ -427,7 +421,7 @@ export default {
       return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
     },
     relatedItemType() {
-      return NAME_TO_TEXT_LOWERCASE_MAP[this.relatedItem?.type];
+      return this.relatedItem?.type;
     },
     workItemAssignees() {
       return findAssigneesWidget(this.workItem);
@@ -461,10 +455,7 @@ export default {
       // detail view instead. Since the legacy view doesn't support setting a parent
       // we need to hide this attribute here until the migration has been finished.
       // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-      if (
-        this.workItemTypeConfiguration?.isIncidentManagement ||
-        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT
-      ) {
+      if (this.workItemTypeConfiguration?.isIncidentManagement) {
         return false;
       }
 
@@ -475,14 +466,14 @@ export default {
       return Boolean(this.workItemHierarchy);
     },
     workItemCrmContacts() {
-      return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
+      return findCrmContactsWidget(this.workItem);
     },
     workItemTypesForSelect() {
       return this.workItemTypes
         .filter((workItemType) => workItemType.name !== WORK_ITEM_TYPE_NAME_TICKET)
         .map((workItemType) => ({
           value: workItemType.id,
-          text: NAME_TO_TEXT_MAP[workItemType.name],
+          text: workItemType.name,
         }));
     },
     selectedWorkItemType() {
@@ -516,12 +507,12 @@ export default {
     },
     createErrorText() {
       return sprintf(I18N_WORK_ITEM_ERROR_CREATING, {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
     createWorkItemText() {
       return sprintf(s__('WorkItem|Create %{workItemType}'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
     makeConfidentialText() {
@@ -534,7 +525,7 @@ export default {
     },
     titleText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
     canUpdate() {
@@ -624,7 +615,7 @@ export default {
           ? this.$options.i18n.resolveOneThreadText
           : this.$options.i18n.resolveAllThreadsText;
       return sprintf(warning, {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
       });
     },
     isFormFilled() {
@@ -655,10 +646,9 @@ export default {
       );
     },
     shouldDatesRollup() {
-      const canRollUp = this.workItemTypeConfiguration?.widgetDefinitions?.find(
+      return this.workItemTypeConfiguration?.widgetDefinitions?.find(
         (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
       )?.canRollUp;
-      return canRollUp || this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
@@ -690,10 +680,7 @@ export default {
         : this.groupPath;
     },
     shouldShowNamespaceSelector() {
-      if (this.workItemPlanningViewEnabled) {
-        return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
-      }
-      return false;
+      return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
     },
     workItemWidgetsAutoSaveKey() {
       return getNewWorkItemWidgetsAutoSaveKey({
@@ -767,6 +754,8 @@ export default {
     },
     handleKeydown(e) {
       if (isMetaEnterKeyPair(e) && !this.loading) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         this.createWorkItem();
       }
     },
@@ -830,6 +819,12 @@ export default {
       this.$emit('changeType', this.selectedWorkItemTypeName);
     },
     async updateDraftData(type, value) {
+      // loading is set to true at the start of createWorkItem and intentionally
+      // never reset on success because the component is destroyed shortly after.
+      // This prevents async draft writes from re-populating localStorage after
+      // clearAutosaveDraft has already cleared it.
+      if (this.loading) return;
+
       if (type === 'title') {
         this.localTitle = value;
         this.validate();
@@ -844,6 +839,7 @@ export default {
         return;
       }
 
+      // This flag is used in `updateDraftData` and in `handleUpdateWidgetDraft`
       this.loading = true;
 
       const workItemCreateInput = {
@@ -1014,12 +1010,12 @@ export default {
 
         setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
 
+        this.clearAutosaveDraft();
+
         this.$emit('work-item-created', {
           workItem: data.workItemCreate.workItem,
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
-
-        this.clearAutosaveDraft();
       } catch (error) {
         this.error = error.message || this.createErrorText;
         this.loading = false;
@@ -1027,6 +1023,9 @@ export default {
       }
     },
     async handleUpdateWidgetDraft(input) {
+      // See comment in updateDraftData for why we guard on this.loading
+      if (this.loading) return;
+
       try {
         await this.$apollo.mutate({
           mutation: updateNewWorkItemMutation,
@@ -1048,9 +1047,9 @@ export default {
     },
     handleCancelClick() {
       /*
-      If any form field is filled or has a non-default value, ask user to confirm
-      if they want to discard the draft
-    */
+       * If any form field is filled or has a non-default value, ask user to confirm
+       * if they want to discard the draft
+       */
       if (this.isFormFilled) {
         this.$emit('confirmCancel');
       } else {
@@ -1279,7 +1278,6 @@ export default {
                   :group-path="selectedProjectGroupPath"
                   :full-path="selectedProjectFullPath"
                   :parent="workItemParent"
-                  :is-group="isGroup"
                   :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
                   @updateWidgetDraft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"

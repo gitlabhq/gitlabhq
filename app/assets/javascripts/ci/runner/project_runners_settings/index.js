@@ -25,13 +25,18 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
   const {
     projectId,
     canCreateRunner,
+    canAssignRunners,
+    canUnassignRunners,
     canCreateRunnerForGroup,
+    canToggleGroupRunners,
+    groupRunnersEnabled,
     groupRunnersPath,
     allowRegistrationToken,
     registrationToken,
     newProjectRunnerPath,
     projectFullPath,
 
+    canToggleInstanceRunners,
     instanceRunnersEnabled,
     instanceRunnersDisabledAndUnoverridable,
     instanceRunnersUpdatePath,
@@ -46,6 +51,11 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
     provide: {
       projectId,
       canCreateRunnerForGroup: parseBoolean(canCreateRunnerForGroup),
+      canToggleGroupRunners: parseBoolean(canToggleGroupRunners),
+      isGroupRunnersEnabled: parseBoolean(groupRunnersEnabled),
+      canToggleInstanceRunners: parseBoolean(canToggleInstanceRunners),
+      canAssignRunners: parseBoolean(canAssignRunners),
+      canUnassignRunners: parseBoolean(canUnassignRunners),
       groupRunnersPath,
     },
     render(h) {

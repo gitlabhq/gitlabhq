@@ -67,6 +67,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       "$EMPTY_VARIABLE !~ /var.*/"                                  | true
       "$UNDEFINED_VARIABLE !~ /var.*/"                              | true
       "$PRESENT_VARIABLE !~ /VAR.*/i"                               | false
+      "!$UNDEFINED_VARIABLE"                                        | true
+      "!$PRESENT_VARIABLE"                                          | false
+      '!"false"'                                                    | false
+      '!null'                                                       | true
+      '!""'                                                         | true
+      '!"0"'                                                        | false
+      '!($PRESENT_VARIABLE == "my variable")'                       | false
+      '!("my variable" == $PRESENT_VARIABLE)'                       | false
 
       '$PRESENT_VARIABLE && "string"'          | 'string'
       '$PRESENT_VARIABLE && $PRESENT_VARIABLE' | 'my variable'
@@ -90,6 +98,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       '$PRESENT_VARIABLE && $UNDEFINED_VARIABLE'                   | nil
       '$UNDEFINED_VARIABLE && $EMPTY_VARIABLE'                     | nil
       '$UNDEFINED_VARIABLE && $PRESENT_VARIABLE'                   | nil
+      '!($UNDEFINED_VARIABLE && $PRESENT_VARIABLE)'                | true
 
       '$FULL_PATH_VARIABLE =~ /^\/a\/full\/path\/variable\/value$/ && $PATH_VARIABLE =~ /path\/variable/'      | true
       '$FULL_PATH_VARIABLE =~ /^\/a\/bad\/path\/variable\/value$/ && $PATH_VARIABLE =~ /path\/variable/'       | false
@@ -121,6 +130,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       '("string" == ("test" || "string"))'                         | false
       '("string" == "test" || "string")'                           | "string"
       '("string" == ("string" || (("1" == "1") && ("2" == "3"))))' | true
+
+      '!($PRESENT_VARIABLE =~ /^content.*/ || $UNDEFINED) && ($EMPTY_VARIABLE == "" || $PATH_VARIABLE)' | true
+      '($PRESENT_VARUABLE =~ /^content.*/ || $PATH_VARIABLE =~ /value$/) && !$UNDEFINED_VARIABLE' | true
     end
 
     context 'with input references' do
@@ -167,6 +179,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       "$UNDEFINED_VARIABLE =~ /var.*/"     | false
       "$PRESENT_VARIABLE !~ /var.*/"       | false
       "$UNDEFINED_VARIABLE !~ /var.*/"     | true
+      '""'                                 | false
+      '!""'                                | true
+      '"false"'                            | true
+      '!"false"'                           | false
+      'null'                               | false
+      '!null'                              | true
+      '"0"'                                | true
+      '!"0"'                               | false
     end
 
     with_them do

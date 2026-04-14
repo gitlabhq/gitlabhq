@@ -160,21 +160,23 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
   end
 
   context 'work item types', :request_store, feature_category: :team_planning do
-    it 'returns the correct type by base type' do
-      task_type = described_class.new(WorkItems::Type, { 'base_type' => 'task' }).find
-      incident_type = described_class.new(WorkItems::Type, { 'base_type' => 'incident' }).find
-      default_type = described_class.new(WorkItems::Type, { 'base_type' => 'bad_input' }).find
+    let(:type_klass) { WorkItems::TypesFramework::SystemDefined::Type }
 
-      expect(task_type).to eq(WorkItems::Type.default_by_type(:task))
-      expect(incident_type).to eq(WorkItems::Type.default_by_type(:incident))
-      expect(default_type).to eq(WorkItems::Type.default_by_type(:issue))
+    it 'returns the correct type by base type' do
+      task_type = described_class.new(type_klass, { 'base_type' => 'task' }).find
+      incident_type = described_class.new(type_klass, { 'base_type' => 'incident' }).find
+      default_type = described_class.new(type_klass, { 'base_type' => 'bad_input' }).find
+
+      expect(task_type).to eq(type_klass.find_by_type(:task))
+      expect(incident_type).to eq(type_klass.find_by_type(:incident))
+      expect(default_type).to eq(type_klass.find_by_type(:issue))
     end
 
     it 'caches the results' do
-      builder = described_class.new(WorkItems::Type, { 'base_type' => 'task' })
+      builder = described_class.new(type_klass, { 'base_type' => 'task' })
 
       # Make sure finder works
-      expect(builder.find).to be_a(WorkItems::Type)
+      expect(builder.find).to be_a(type_klass)
 
       query_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         builder.find

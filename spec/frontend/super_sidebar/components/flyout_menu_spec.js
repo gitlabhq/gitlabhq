@@ -1,12 +1,15 @@
 import { autoUpdate } from '@floating-ui/dom';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import FlyoutMenu, { FLYOUT_PADDING } from '~/super_sidebar/components/flyout_menu.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('@floating-ui/dom');
-jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), throttle: jest.fn((fn) => fn) }));
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
+  throttle: jest.fn((fn) => fn),
+}));
 
 describe('FlyoutMenu', () => {
   const targetId = 'section-1';

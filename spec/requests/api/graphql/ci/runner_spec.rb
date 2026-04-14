@@ -1253,4 +1253,63 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       end
     end
   end
+
+  describe 'granular token authorization', :aggregate_failures do
+    context 'with a project runner' do
+      let(:query) do
+        <<~GRAPHQL
+          query {
+            runner(id: "#{active_project_runner.to_global_id}") {
+              id
+            }
+          }
+        GRAPHQL
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+        let(:user) { create(:user, developer_of: project1) }
+        let(:boundary_object) { project1 }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'with a group runner' do
+      let_it_be(:group1) { create(:group) }
+      let_it_be(:active_group_runner2) { create(:ci_runner, :group, groups: [group1]) }
+
+      let(:query) do
+        <<~GRAPHQL
+          query {
+            runner(id: "#{active_group_runner2.to_global_id}") {
+              id
+            }
+          }
+        GRAPHQL
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+        let(:user) { create(:user, developer_of: group1) }
+        let(:boundary_object) { group1 }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'with an instance runner' do
+      let(:query) do
+        <<~GRAPHQL
+          query {
+            runner(id: "#{active_instance_runner.to_global_id}") {
+              id
+            }
+          }
+        GRAPHQL
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :read_runner do
+        let(:user) { create(:user, :admin) }
+        let(:boundary_object) { :instance }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
+  end
 end

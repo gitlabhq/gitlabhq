@@ -5,8 +5,14 @@ import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import FeatureCardBadge from '~/security_configuration/components/feature_card_badge.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import { REPORT_TYPE_SAST, REPORT_TYPE_SAST_IAC } from '~/vue_shared/security_reports/constants';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { manageViaMRErrorMessage } from '../constants';
 import { makeFeature } from './utils';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+}));
 
 describe('FeatureCard component', () => {
   let feature;
@@ -30,16 +36,9 @@ describe('FeatureCard component', () => {
 
   const findBadge = () => wrapper.findComponent(FeatureCardBadge);
 
-  const findEnableLinks = () =>
-    findLinks({
-      text: `Enable ${feature.shortName ?? feature.name}`,
-      href: feature.configurationPath,
-    });
+  const findEnableLinks = () => findLinks({ text: `Enable ${feature.shortName ?? feature.name}` });
   const findConfigureLinks = () =>
-    findLinks({
-      text: `Configure ${feature.shortName ?? feature.name}`,
-      href: feature.configurationPath,
-    });
+    findLinks({ text: `Configure ${feature.shortName ?? feature.name}` });
   const findManageViaMr = () => wrapper.findComponent(ManageViaMr);
   const findConfigGuideLinks = () =>
     findLinks({ text: 'Configuration guide', href: feature.configurationHelpPath });
@@ -48,7 +47,7 @@ describe('FeatureCard component', () => {
 
   const findFeatureStatus = () => wrapper.findByTestId('feature-status');
 
-  const expectAction = (action) => {
+  const expectAction = (action, canUserConfigure, configurationPath) => {
     const expectEnableAction = action === 'enable';
     const expectConfigureAction = action === 'configure';
     const expectCreateMrAction = action === 'create-mr';
@@ -58,14 +57,24 @@ describe('FeatureCard component', () => {
 
     if (expectEnableAction) {
       expect(enableLinks).toHaveLength(1);
-      expect(enableLinks.at(0).props('category')).toBe('primary');
+      const button = enableLinks.at(0);
+      expect(button.props('category')).toBe('primary');
+      expect(button.props('disabled')).toBe(!canUserConfigure);
+
+      button.vm.$emit('click');
+      expect(visitUrl).toHaveBeenCalledWith(configurationPath);
     }
 
     const configureLinks = findConfigureLinks();
 
     if (expectConfigureAction) {
       expect(configureLinks).toHaveLength(1);
-      expect(configureLinks.at(0).props('category')).toBe('primary');
+      const button = configureLinks.at(0);
+      expect(button.props('category')).toBe('primary');
+      expect(button.props('disabled')).toBe(!canUserConfigure);
+
+      button.vm.$emit('click');
+      expect(visitUrl).toHaveBeenCalledWith(configurationPath);
     }
 
     const manageViaMr = findManageViaMr();
@@ -142,18 +151,21 @@ describe('FeatureCard component', () => {
 
   describe('actions', () => {
     describe.each`
-      context                                            | type                | available | configured | configurationHelpPath | configurationPath | canEnableByMergeRequest | action
-      ${'unavailable'}                                   | ${REPORT_TYPE_SAST} | ${false}  | ${false}   | ${'/help'}            | ${null}           | ${false}                | ${null}
-      ${'available, no configurationHelpPath'}           | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${null}               | ${null}           | ${false}                | ${null}
-      ${'available'}                                     | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${false}                | ${'guide'}
-      ${'configured'}                                    | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${null}           | ${false}                | ${'guide'}
-      ${'available, can enable by MR'}                   | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${true}                 | ${'create-mr'}
-      ${'available, can enable by MR, unknown type'}     | ${'foo'}            | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${true}                 | ${'guide'}
-      ${'configured, can enable by MR'}                  | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${null}           | ${true}                 | ${'guide'}
-      ${'available with config path'}                    | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${false}                | ${'enable'}
-      ${'available with config path, can enable by MR'}  | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${true}                 | ${'enable'}
-      ${'configured with config path'}                   | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${'foo'}          | ${false}                | ${'configure'}
-      ${'configured with config path, can enable by MR'} | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${'foo'}          | ${true}                 | ${'configure'}
+      context                                                                   | type                | available | configured | configurationHelpPath | configurationPath | canEnableByMergeRequest | canUserConfigure | action
+      ${'unavailable'}                                                          | ${REPORT_TYPE_SAST} | ${false}  | ${false}   | ${'/help'}            | ${null}           | ${false}                | ${true}          | ${null}
+      ${'available, no configurationHelpPath'}                                  | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${null}               | ${null}           | ${false}                | ${true}          | ${null}
+      ${'available'}                                                            | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${false}                | ${true}          | ${'guide'}
+      ${'configured'}                                                           | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${null}           | ${false}                | ${true}          | ${'guide'}
+      ${'available, can enable by MR'}                                          | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${true}                 | ${true}          | ${'create-mr'}
+      ${'available, can enable by MR, unknown type'}                            | ${'foo'}            | ${true}   | ${false}   | ${'/help'}            | ${null}           | ${true}                 | ${true}          | ${'guide'}
+      ${'configured, can enable by MR'}                                         | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${null}           | ${true}                 | ${true}          | ${'guide'}
+      ${'available with config path'}                                           | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${false}                | ${true}          | ${'enable'}
+      ${'available with config path, user cannot configure'}                    | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${false}                | ${false}         | ${'enable'}
+      ${'available with config path, can enable by MR'}                         | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${true}                 | ${true}          | ${'enable'}
+      ${'available with config path, can enable by MR, user cannot configure'}  | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'/help'}            | ${'foo'}          | ${true}                 | ${false}         | ${'enable'}
+      ${'configured with config path'}                                          | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${'foo'}          | ${false}                | ${true}          | ${'configure'}
+      ${'configured with config path, can enable by MR'}                        | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${'foo'}          | ${true}                 | ${true}          | ${'configure'}
+      ${'configured with config path, can enable by MR, user cannot configure'} | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'/help'}            | ${'foo'}          | ${false}                | ${false}         | ${'configure'}
     `(
       'given $context feature',
       ({
@@ -163,6 +175,7 @@ describe('FeatureCard component', () => {
         configurationHelpPath,
         configurationPath,
         canEnableByMergeRequest,
+        canUserConfigure,
         action,
       }) => {
         beforeEach(() => {
@@ -173,12 +186,13 @@ describe('FeatureCard component', () => {
             configurationHelpPath,
             configurationPath,
             canEnableByMergeRequest,
+            canUserConfigure,
           });
           createComponent({ feature });
         });
 
         it(`shows ${action} action`, () => {
-          expectAction(action);
+          expectAction(action, canUserConfigure, configurationPath);
         });
       },
     );

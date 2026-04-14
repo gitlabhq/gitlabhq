@@ -22,9 +22,11 @@ title: GitLabクレジットと使用量課金
 
 GitLabクレジットは、従量制課金のための標準化された消費通貨です。クレジットは[GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)で使用され、使用アクションごとに一定数のクレジットが消費されます。
 
-[GitLab Duo ProおよびEnterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise)とそれに関連する[GitLab Duo（Classic）機能](../user/gitlab_duo/feature_summary.md)は、使用量に基づいて課金されることはなく、GitLabクレジットを消費しません。
+[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise)および関連する[GitLab Duo機能](../user/gitlab_duo/feature_summary.md)は、使用量に基づいて請求対象ではなく、GitLabクレジットを消費しません。
 
-クレジットは、クレジット倍率表に記載されているとおり、使用する機能とモデルに基づいて計算されます。お客様は、[一般的に利用可能](../policy/development_stages_support.md#generally-available)な機能に対して課金されます。
+クレジットは、クレジット倍率表に記載されているとおり、使用する機能とモデルに基づいて計算されます。課金されるのは、[一般提供されている](../policy/development_stages_support.md#generally-available)機能に対してです。
+
+課金は、プロジェクトレベルではなく、ルートネームスペースまたはトップレベルグループレベルで行われます。クレジットの使用量は、どのプロジェクトで機能を使用しているかにかかわらず、アクションを実行したユーザーに帰属します。ルートネームスペースまたはトップレベルグループ内のすべての使用量は、課金目的で統合されます。
 
 GitLabでは、次の3つの方法でクレジットを取得できます:
 
@@ -58,7 +60,7 @@ GitLabアカウントチームを通じて、いつでもコミットメント�
 クレジットは購入後すぐに利用可能になり、毎月1日にリセットされます。未使用のクレジットは翌月に繰り越されません。
 
 > [!note]
-> 月間コミットメントプールを購入すると、オンデマンドのGitLabクレジットの使用を含む、使用量課金の条件に同意したことになります。
+> 月間コミットメントプールを購入すると、オンデマンドのGitLabクレジットの使用を含む、使用量課金の利用規約に同意したとみなされます。条件に同意すると、オンデマンド課金はサブスクリプションの残りの期間およびその後のセルフサービス更新の間アクティブなままになり、オプトアウトすることはできません。
 
 ## オンデマンドGitLabクレジット {#on-demand-credits}
 
@@ -66,9 +68,9 @@ GitLabアカウントチームを通じて、いつでもコミットメント�
 
 オンデマンドGitLabクレジットは、使用されたGitLabクレジットあたり1ドルのリスト価格で消費されます。
 
-オンデマンドクレジットは、従量制課金の利用規約に同意した後に使用できます。この規約は、月間コミットメントを購入する際、またはGitLabクレジットダッシュボードで直接同意できます。使用量課金条件に同意することにより、現在の月次請求期間にすでに発生しているすべてのオンデマンド料金、および今後発生するオンデマンド料金を支払うことに同意したことになります。
+オンデマンドクレジットは、使用量課金の利用規約に同意した後に使用できます。この規約は、月間コミットメントを購入する際、またはGitLabクレジットダッシュボードで直接同意できます。従量制課金の利用規約に同意することにより、現在の月次請求期間にすでに発生しているすべてのオンデマンド料金、および今後発生するオンデマンド料金の支払いに同意したとみなされます。
 
-使用量課金条件に同意していない場合、GitLab Duo Agent Platformを使用したり、オンデマンドGitLabクレジットを消費したりすることはできません。月間コミットメントを購入するか、従量制課金の利用規約に同意することで、GitLab Duo Agent Platformへのアクセスを再開できます。
+使用量課金の利用規約に同意していない場合、GitLab Duo Agent Platformを使用したり、オンデマンドGitLabクレジットを消費したりすることはできません。月間コミットメントを購入するか、使用量課金の利用規約に同意することで、GitLab Duo Agent Platformへのアクセスを再開できます。
 
 たとえば、あるサブスクリプションで月あたり50クレジットの月間コミットメントがあるとします。その月に75クレジットを使用した場合、最初の50クレジットは月間コミットメントプールから消費され、残りの25クレジットはオンデマンド利用分として請求されます。
 
@@ -78,17 +80,51 @@ GitLabクレジットは、次の順序で消費されます:
 
 1. 各ユーザーのプランに含まれるクレジットが最初に使用されます。
 1. プランに含まれるクレジットがすべて消費された後、月間コミットメントプールのクレジットが使用されます。
-1. その他の利用可能なクレジット（プランに含まれるクレジットおよび該当する場合は月間コミットメントプール）がすべて消費され、従量制課金の利用規約に同意している場合、オンデマンドクレジットが使用されます。
+1. その他の利用可能なクレジット（プランに含まれるクレジットおよび該当する場合は月間コミットメントプール）がすべて消費され、使用量課金の利用規約に同意している場合、オンデマンドクレジットが使用されます。
 
-## 一時的な評価GitLabクレジット {#temporary-evaluation-credits}
+## 一時的な評価用のGitLabクレジット {#temporary-evaluation-credits}
 
-月間コミットメントプールを購入していない場合、またはオンデマンドGitLabクレジットの使用量課金条件に同意していない場合は、無料の一時的なプールをリクエストしてGitLab Duo Agent Platform機能を評価できます。
+月間コミットメントプールを購入していない場合、またはオンデマンドGitLabクレジットの使用量課金の利用規約に同意していない場合は、GitLab Duo Agent Platform機能の評価を目的として、無料の一時的なプールをリクエストすることができます。
 
-GitLabクレジットは、評価をリクエストしたユーザーの数に基づいて割り当てられ、それらのユーザーの共有プールに追加されます。GitLabクレジットは30日間有効で、期限が切れると使用できません。
+GitLabクレジットは、評価をリクエストしたユーザーの数に基づいて割り当てられ、それらのユーザーの共有プールに追加されます。GitLabクレジットは30日間有効で、期限が切れると使用できなくなります。
 
 GitLabクレジットをリクエストするには、[セールスチームにお問い合わせください](https://about.gitlab.com/sales/)。
 
-Freeプランをご利用で、GitLabクレジットを試したい場合は、[Ultimateトライアル](free_trials.md)を開始できます。
+なお、Freeプランの利用中にGitLabクレジットを試したい場合は、[Ultimateトライアル](free_trials.md)を開始するという選択肢もあります。
+
+## FreeティアのGitLab.comの場合 {#for-the-free-tier-on-gitlabcom}
+
+{{< details >}}
+
+- プラン: Free
+- 提供形態: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 18.10で[導入](https://gitlab.com/groups/gitlab-org/-/work_items/20165)されました。
+
+{{< /history >}}
+
+FreeティアのGitLab.comユーザーは、グループネームスペース向けの月間コミットメントプールのGitLabクレジットを購入できます。これにより、PremiumまたはUltimateサブスクリプションを必要とせずに、一連のGitLab Duo Agent Platform機能にアクセスできます。
+
+クレジットを購入した後、次の機能を使用できます:
+
+- [GitLab Duo Chat (エージェント型)](../user/gitlab_duo_chat/agentic_chat.md)
+- [AIカタログ](../user/duo_agent_platform/ai_catalog.md)
+- [カスタムエージェント](../user/duo_agent_platform/agents/custom.md)
+- [プランナーエージェント](../user/duo_agent_platform/agents/foundational_agents/planner.md)
+- [カスタムフロー](../user/duo_agent_platform/flows/custom.md)
+- [ソフトウェア開発フロー](../user/duo_agent_platform/flows/foundational_flows/software_development.md)
+- [デベロッパーフロー](../user/duo_agent_platform/flows/foundational_flows/developer.md)
+- [CI/CDパイプライン修正フロー](../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md)
+- [GitLab CI/CD変換フロー](../user/duo_agent_platform/flows/foundational_flows/convert_to_gitlab_ci.md)
+- [コードレビューフロー](../user/duo_agent_platform/flows/foundational_flows/code_review.md)
+- [GitLab MCPクライアント](../user/gitlab_duo/model_context_protocol/mcp_clients.md)
+- [コード提案](../user/duo_agent_platform/code_suggestions/_index.md)
+
+Freeネームスペースのオンデマンド使用量は、暦月あたり$25,000に制限されています。この制限に達すると、オンデマンド使用量は自動的にオフになり、翌月の初めにリセットされます。
 
 ## GitLabクレジットを購入する {#buy-gitlab-credits}
 
@@ -100,7 +136,7 @@ Freeプランをご利用で、GitLabクレジットを試したい場合は、[
 
 前提条件: 
 
-- 請求先アカウントの管理者である必要があります。
+- 請求先アカウントマネージャーである必要があります。
 
 1. [カスタマーポータル](https://customers.gitlab.com/)にサインインします。
 1. 関連するサブスクリプションカードで、**GitLabクレジットダッシュボード**を選択します。
@@ -117,9 +153,22 @@ Freeプランをご利用で、GitLabクレジットを試したい場合は、[
 
 - グループのオーナーのロールを持っている必要があります。
 
+PremiumおよびUltimateプランの場合:
+
 1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
 1. **設定** > **GitLabクレジット**を選択します。
 1. **月間コミットを購入**または**月間コミット数を増やす**を選択します。
+1. カスタマーポータルフォームで、購入するGitLabクレジットの数を入力します。
+1. **Review order**を選択します。GitLabクレジット数、顧客情報、および支払い方法が正しいことを確認します。
+1. **購入を確認**を選択します。
+
+Freeティアの場合:
+
+1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
+1. **設定** > **請求**を選択します。
+1. 次の場合:
+   - トライアル中ではない場合: GitLabクレジットカードで、**クレジットを購入**または**クレジットを増やす**を選択します。
+   - アクティブなトライアル中である場合: GitLabクレジットカードで、**月間コミットを購入**または**クレジットを増やす**を選択します。
 1. カスタマーポータルフォームで、購入するGitLabクレジットの数を入力します。
 1. **Review order**を選択します。GitLabクレジット数、顧客情報、および支払い方法が正しいことを確認します。
 1. **購入を確認**を選択します。
@@ -152,9 +201,9 @@ GitLabクレジットは、カスタマーポータルのサブスクリプシ�
 
 ### モデル {#models}
 
-次の表は、モデルごとに1 GitLabクレジットあたりの実行可能リクエスト数を示しています。新しいモデルや、より複雑なモデルほど倍率が高く、より多くのクレジットを必要とします。
+次の表に、さまざまな[モデル](../user/duo_agent_platform/model_selection.md)で1つのGitLabクレジットを使用して実行できるリクエストの数を示します。新しいモデルや、より複雑なモデルほど倍率が高く、より多くのクレジットを必要とします。モデルが呼び出されるたびに、リクエストが実行されます。
 
-セルフホストモデルの場合、[サポート](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models)されているモデルまたは[互換性](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models)のあるモデルであれば、1つのGitLabクレジットで8つのリクエストを実行できます。
+セルフホストモデルの場合、[サポート](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models)されているモデルまたは[互換性](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models)のあるモデルであれば、1つのGitLabクレジットで8リクエストを消費します。
 
 基本的なインテグレーションを備えた低クレジット消費モデル:
 
@@ -162,7 +211,6 @@ GitLabクレジットは、カスタマーポータルのサブスクリプシ�
 |-------|------------------------|
 | `claude-3-haiku` | 8.0 |
 | `codestral-2501` | 8.0 |
-| `gemini-2.0-flash-lite` | 8.0 |
 | `gemini-2.5-flash` | 8.0 |
 | `gpt-5-mini` | 8.0 |
 
@@ -170,22 +218,20 @@ GitLabクレジットは、カスタマーポータルのサブスクリプシ�
 
 | モデル | 1クレジットあたりのリクエスト数 |
 |-------|------------------------|
-| `claude-4.5-haiku`（デフォルトエージェント型チャットモデル） | 6.7 |
+| `claude-4.5-haiku` | 6.7 |
 | `gpt-5-codex` | 3.3|
 | `gpt-5` | 3.3 |
 | `gpt-5.2` | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4` <sup>1</sup> (デフォルトモデル) | 2.0 |
+| `claude-sonnet-4` <sup>1</sup> | 2.0 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
-| `claude-sonnet-4.6` <sup>1</sup> | 2.0 |
+| `claude-sonnet-4.6` | 2.0 |
 | `claude-opus-4.5` | 1.2 |
-| `claude-opus-4.6` <sup>1</sup> | 1.2 |
+| `claude-opus-4.6`  | 1.2 |
 | `claude-sonnet-4` <sup>2</sup> | 1.1 |
 | `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
-| `claude-sonnet-4.6` <sup>2</sup> | 1.1 |
 | `gpt-5.2-codex` | 0.8 |
-| `claude-opus-4.6` <sup>2</sup> | 0.7 |
 | `gpt-5.1-codex` | 0.6 |
 
 **脚注**: 
@@ -195,13 +241,17 @@ GitLabクレジットは、カスタマーポータルのサブスクリプシ�
 
 ### 機能 {#features}
 
-次の表は、固定モデルを使用する機能について、1 GitLabクレジットあたりの実行可能リクエストの数を示しています。
+次の表に、さまざまな機能で1つのGitLabクレジットを使用して実行できるリクエストの数を示します。この価格設定は、機能で利用可能なすべてのモデル (セルフホストモデルを含む) に適用されます。
 
 | 機能 | 1クレジットあたりのリクエスト数 |
 |---------|---------------------------|
 | [GitLab Duoコード提案](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
+| コードレビューフロー | 4 |
+| SAST誤検出判定フロー | 1 |
 
-[GitLab Duo Chat (エージェント型)](../user/gitlab_duo_chat/agentic_chat.md)は固定モデルを使用しないため、GitLabクレジットのコストはリクエストに選択されたモデルによって異なります。デフォルトモデル（`claude-4.5-haiku`）を使用すると、1つのGitLabクレジットで6.7リクエストを実行できます。
+[GitLab Duo Chat (エージェント型)](../user/gitlab_duo_chat/agentic_chat.md)は固定モデルを使用しないため、クレジット費用はリクエスト用に選択されたモデルによって異なります。[デフォルト](../user/duo_agent_platform/model_selection.md#default-models)モデルを使用すると、1つのクレジットで6.7件のリクエストを行うことができます。
+
+GitLab Duo Chat (エージェント型) に送信される各メッセージは、1つの請求対象リクエストとしてカウントされます。1つの会話ウィンドウには複数のメッセージを含めることができ、そのため複数の請求対象リクエストを含めることができます。
 
 ## GitLabクレジットダッシュボード {#gitlab-credits-dashboard}
 
@@ -215,12 +265,13 @@ GitLabクレジットは、カスタマーポータルのサブスクリプシ�
 {{< history >}}
 
 - GitLab 18.7で導入されました。
+- GitLab 18.10でソート結果が[導入](https://gitlab.com/groups/gitlab-org/-/work_items/21008)されました。
 
 {{< /history >}}
 
 GitLabクレジットダッシュボードには、GitLabクレジットの使用状況に関する情報が表示されます。このダッシュボードを使用して、クレジットの消費状況を監視し、トレンドを追跡し、使用パターンを特定できます。
 
-ダッシュボード上の使用済みクレジットは、利用可能なクレジット残高から消費された量を表します。超過分（オンデマンドクレジット）については、従量制課金の利用規約に同意している場合、使用済みクレジットは後日請求されるオンデマンド利用分を表します。
+ダッシュボード上の使用済みクレジットは、利用可能なクレジット残高から消費された量を表します。超過分（オンデマンドクレジット）については、使用量課金の利用規約に同意している場合、使用済みクレジットは後日請求されるオンデマンド利用分を表します。
 
 クレジットの消費管理を支援するため、GitLabは次の情報を管理者およびサブスクリプションオーナーにメールで送信します:
 
@@ -230,7 +281,7 @@ GitLabクレジットダッシュボードには、GitLabクレジットの使�
 ダッシュボードには、カスタマーポータルとGitLabからアクセスできます。
 
 > [!note]
-> 使用状況データはリアルタイムで表示されません。データは定期的にダッシュボードに同期されるため、使用状況データは実際の消費から数時間以内に反映されます。そのため、ダッシュボードには最近の使用状況が表示されますが、過去数時間以内に行われた操作が反映されていない場合があります。
+> 使用状況データはリアルタイムでは表示されません。データは定期的にダッシュボードに同期されるため、使用状況データは実際の消費から数時間以内に反映されます。そのため、ダッシュボードには最近の使用状況が表示されますが、過去数時間以内に行われた操作が反映されていない場合があります。
 
 ### カスタマーポータル {#in-customers-portal}
 
@@ -252,6 +303,7 @@ GitLab内のGitLabクレジットダッシュボードでは、組織内のク�
 
 - 組織の使用状況: GitLabインスタンスまたはグループ全体におけるクレジット使用量の合計
 - ユーザー別の詳細なクレジット使用状況: 各ユーザーが使用したクレジット数
+- ユーザー詳細ビュー: 各ユーザーの個別の使用状況イベント。GitLab Duo Agent Platformセッションの詳細へのリンク付き。
 
 ### GitLabクレジットダッシュボードを表示する {#view-the-gitlab-credits-dashboard}
 
@@ -265,6 +317,7 @@ GitLab内のGitLabクレジットダッシュボードでは、組織内のク�
 
 1. [カスタマーポータル](https://customers.gitlab.com/)にサインインします。
 1. サブスクリプションカードで、**GitLabクレジットダッシュボード**を選択します。
+1. オプション。結果を**ユーザー**または**使用したクレジットの合計**でソートするには、それぞれの列を選択します。
 
 {{< /tab >}}
 
@@ -276,6 +329,7 @@ GitLab内のGitLabクレジットダッシュボードでは、組織内のク�
 
 1. 上部のバーで**検索または移動先**を選択し、トップレベルグループを見つけます。
 1. **設定** > **GitLabクレジット**を選択します。
+1. オプション。結果を**ユーザー**または**使用したクレジットの合計**でソートするには、それぞれの列を選択します。
 
 {{< /tab >}}
 
@@ -288,9 +342,45 @@ GitLab内のGitLabクレジットダッシュボードでは、組織内のク�
 
 1. 右上隅で、**管理者**を選択します。
 1. **GitLabクレジット**を選択します。
+1. オプション。結果を**ユーザー**または**使用したクレジットの合計**でソートするには、それぞれの列を選択します。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
 デフォルトでは、GitLabクレジットダッシュボードに個々のユーザーデータは表示されません。表示するには、[グループ](../user/group/manage.md#display-gitlab-credits-user-data)または[インスタンス](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data)の設定でこの設定を有効にする必要があります。
+
+### ユーザーのクレジット使用状況の詳細を表示 {#view-user-credit-usage-details}
+
+{{< history >}}
+
+- GitLab Duo Agent Platformセッションの詳細へのリンクがGitLab 18.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/579139)されました。
+
+{{< /history >}}
+
+ユーザーごとの使用状況イベントを詳細ビューで表示するには:
+
+1. GitLabクレジットダッシュボードで、**ユーザーごとの使用状況**タブを選択します。
+1. **ユーザー**列で、表示したいユーザーを選択します。
+1. セッションの詳細を表示するには、**アクション**列で、表示したいアクションを選択します。
+
+> [!note]
+> セッションリンクは、プロジェクトでトリガーされ、関連するセッションIDを持つGitLab Duo Agent Platformの使用状況イベントでのみ利用可能です。グループでトリガーされた使用状況イベント、レガシーイベント、およびAgent Platform外のアクションにはリンクがありません。
+
+### 使用状況データをエクスポート {#export-usage-data}
+
+{{< history >}}
+
+- GitLab 18.10で[導入](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504)されました。
+
+{{< /history >}}
+
+サブスクリプションのクレジット使用状況データをカスタマーポータルでCSVファイルとしてエクスポートすることができます。CSVファイルには、現在の月の各日に使用された使用状況イベントとクレジットが一覧表示されます。
+
+前提条件: 
+
+- 請求先アカウントマネージャーである必要があります。
+
+1. [カスタマーポータル](https://customers.gitlab.com/)にサインインします。
+1. サブスクリプションカードで、**GitLabクレジットダッシュボード**を選択します。
+1. **Export usage data**を選択します。

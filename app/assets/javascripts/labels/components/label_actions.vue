@@ -64,6 +64,11 @@ export default {
       required: false,
       default: false,
     },
+    labelsArchiveEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -73,9 +78,6 @@ export default {
   computed: {
     tooltipTitle() {
       return this.isTooltipVisible ? this.$options.i18n.labelActions : '';
-    },
-    labelsArchiveEnabled() {
-      return Boolean(window.gon?.features?.labelsArchive);
     },
     actionItems() {
       const items = [
@@ -95,6 +97,7 @@ export default {
         });
       }
 
+      // we don't want to show the archive buttons in the admin label index view
       if (this.labelsArchiveEnabled) {
         items.push({
           text: this.$options.i18n[this.isArchived ? 'unarchive' : 'archive'],

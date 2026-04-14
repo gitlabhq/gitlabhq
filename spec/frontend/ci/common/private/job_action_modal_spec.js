@@ -24,11 +24,9 @@ describe('JobActionModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   it('shows modal', () => {
+    createComponent();
+
     expect(findModal().props()).toMatchObject({
       actionCancel: { text: 'Cancel' },
       actionPrimary: { text: 'Yes, run test_job' },
@@ -38,10 +36,21 @@ describe('JobActionModal', () => {
   });
 
   it('displays the custom message', () => {
-    expect(findModal().text()).toContain(defaultProps.customMessage);
+    createComponent();
+
+    expect(findModal().text()).toContain('This is a custom message');
+  });
+
+  it('displays quotes in custom message correctly', () => {
+    createComponent({ props: { customMessage: "This is a custom message with 'quotes'." } });
+
+    expect(findModal().text()).toContain("This is a custom message with 'quotes'.");
+    expect(findModal().text()).not.toContain('&#39;');
   });
 
   it('emits change event when modal visibility changes', async () => {
+    createComponent();
+
     await findModal().vm.$emit('change', true);
     expect(wrapper.emitted('change')).toEqual([[true]]);
   });

@@ -23,7 +23,8 @@ module Authn
         passkey_credential.verify(
           @challenge,
           public_key: stored_passkey_credential.public_key,
-          sign_count: stored_passkey_credential.counter
+          sign_count: stored_passkey_credential.counter,
+          user_verification: true
         )
 
         @user = find_matching_user_with_passkey(stored_passkey_credential)

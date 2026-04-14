@@ -38,6 +38,15 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
 
         described_class.invoke
       end
+
+      it 'executes async index destruction prior to any reindexing actions' do
+        stub_feature_flags(database_async_index_creation: true)
+
+        expect(Gitlab::Database::AsyncIndexes).to receive(:drop_pending_indexes!).ordered.exactly(databases_count).times
+        expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+
+        described_class.invoke
+      end
     end
 
     context 'when async index creation is disabled' do
@@ -49,6 +58,14 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         described_class.invoke
       end
 
+      it 'does not execute async index destruction' do
+        stub_feature_flags(database_async_index_creation: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:drop_pending_indexes!)
+
+        described_class.invoke
+      end
+
       it 'does not execute async index creation when disable ddl flag is enabled' do
         stub_feature_flags(disallow_database_ddl_feature_flags: true)
 
@@ -56,13 +73,14 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
 
         described_class.invoke
       end
-    end
 
-    it 'executes async index destruction prior to any reindexing actions' do
-      expect(Gitlab::Database::AsyncIndexes).to receive(:drop_pending_indexes!).ordered.exactly(databases_count).times
-      expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+      it 'does not execute async index destruction when disable ddl flag is enabled' do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
 
-      described_class.invoke
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:drop_pending_indexes!)
+
+        described_class.invoke
+      end
     end
 
     context 'calls automatic reindexing' do

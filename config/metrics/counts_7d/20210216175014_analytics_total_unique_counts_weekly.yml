@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.analytics.analytics_total_unique_counts_weekly
 description: The number of unique users who visited any analytics feature by week
 product_group: optimize
+product_categories:
+- product_analytics
 value_type: number
 status: active
 time_frame: 7d

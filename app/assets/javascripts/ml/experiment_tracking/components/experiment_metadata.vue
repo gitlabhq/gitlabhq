@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GlTableLite } from '@gitlab/ui';
 import { s__ } from '~/locale';
 

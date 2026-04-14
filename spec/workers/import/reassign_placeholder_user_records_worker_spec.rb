@@ -109,9 +109,9 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
   end
 
   describe '#sidekiq_retries_exhausted' do
-    it 'logs the failure and sets the source user status to failed', :aggregate_failures do
-      exception = StandardError.new('Some error')
+    let(:exception) { StandardError.new('Some error') }
 
+    it 'logs the failure', :aggregate_failures do
       expect(::Import::Framework::Logger).to receive(:error).with({
         message: 'Failed to reassign placeholder user',
         error: exception.message,
@@ -120,8 +120,13 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
       })
 
       described_class.sidekiq_retries_exhausted_block.call({ 'args' => job_args }, exception)
+    end
+
+    it 'sets the source user status to failed and sets its reassignment_error', :aggregate_failures do
+      described_class.sidekiq_retries_exhausted_block.call({ 'args' => job_args }, exception)
 
       expect(import_source_user.reload).to be_failed
+      expect(import_source_user.reload.reassignment_error).to eq('Some error')
     end
   end
 end

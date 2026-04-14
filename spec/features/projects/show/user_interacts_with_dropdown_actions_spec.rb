@@ -6,7 +6,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
   feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, :repository, group: group) }
-  let_it_be(:selector) { 'groups-projects-more-actions-dropdown' }
+  let_it_be(:selector) { 'projects-list-item-actions' }
 
   context 'when a user is signed in' do
     let_it_be_with_reload(:user) { create(:user) }
@@ -23,7 +23,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
         within_testid(selector) do
           expect(page).not_to have_content('Leave project')
           expect(page).to have_content("Copy project ID: #{project.id}")
-          expect(page).not_to have_content('Project settings')
+          expect(page).not_to have_content('Edit')
         end
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
           within_testid(selector) do
             expect(page).to have_content('Leave project')
             expect(page).to have_content("Copy project ID: #{project.id}")
-            expect(page).not_to have_content('Project settings')
+            expect(page).not_to have_content('Edit')
           end
         end
       end
@@ -58,7 +58,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
           within_testid(selector) do
             expect(page).to have_content('Leave project')
             expect(page).to have_content("Copy project ID: #{project.id}")
-            expect(page).to have_content('Project settings')
+            expect(page).to have_content('Edit')
           end
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
           within_testid(selector) do
             expect(page).not_to have_content('Leave project')
             expect(page).to have_content("Copy project ID: #{project.id}")
-            expect(page).not_to have_content('Project settings')
+            expect(page).not_to have_content('Edit')
           end
         end
       end
@@ -94,7 +94,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
           within_testid(selector) do
             expect(page).not_to have_content('Leave project')
             expect(page).to have_content("Copy project ID: #{project.id}")
-            expect(page).to have_content('Project settings')
+            expect(page).to have_content('Edit')
           end
         end
       end
@@ -112,7 +112,7 @@ RSpec.describe 'Project > Show > User interacts with dropdown actions',
       within_testid(selector) do
         expect(page).not_to have_content('Leave project')
         expect(page).to have_content("Copy project ID: #{project.id}")
-        expect(page).not_to have_content('Project settings')
+        expect(page).not_to have_content('Edit')
       end
     end
   end

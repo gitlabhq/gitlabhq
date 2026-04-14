@@ -1,0 +1,9 @@
+---
+name: mwcp_skip_ci_guard
+description: Remove redundant CI guard in auto-merge process to fix skipped pipeline handling
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226657
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594568
+milestone: '18.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

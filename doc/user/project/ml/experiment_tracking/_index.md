@@ -61,7 +61,7 @@ on how to use GitLab as a backend for the MLflow Client.
 
 ## Explore model runs
 
-To list the current active experiments, either go to `https/-/ml/experiments` or:
+To list the current active experiments:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Model experiments**.

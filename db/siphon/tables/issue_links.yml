@@ -1,0 +1,12 @@
+---
+table: issue_links
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_issue_links
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - namespace_id

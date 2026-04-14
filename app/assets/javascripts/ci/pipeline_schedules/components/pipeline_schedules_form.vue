@@ -30,6 +30,7 @@ const NEW_EVENT_LABEL = 'new_pipeline_schedule';
 const EVENT_PROPERTY = 'form_submission';
 
 export default {
+  name: 'PipelineSchedulesForm',
   components: {
     GlButton,
     GlForm,

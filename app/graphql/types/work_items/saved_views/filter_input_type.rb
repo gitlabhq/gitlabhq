@@ -159,7 +159,14 @@ module Types
           ::Types::TimeType,
           required: false,
           description: 'Filter value for updated before filter.'
+        argument :work_item_type_ids,
+          [::Types::GlobalIDType[::WorkItems::Type]],
+          required: false,
+          validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+          description: 'Filter value for work item type global IDs.',
+          prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
+        validates mutually_exclusive: [:issue_types, :work_item_type_ids]
         validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
         validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
         validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]

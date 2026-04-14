@@ -1,11 +1,11 @@
 ---
 stage: AI-powered
 group: Duo Chat
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Duo Chatのトラブルシューティング
 ---
 
-GitLab Duo Chatを使用する場合、次の問題が発生する可能性があります。
+GitLab Duo Chatの使用中に、次の問題が発生することがあります。
 
 ## **GitLab Duo Chat**ボタンが表示されない {#the-gitlab-duo-chat-button-is-not-displayed}
 
@@ -17,7 +17,7 @@ GitLab Duo Chatを有効にした後、ボタンが表示されるまでに数�
 
 これで問題が解決しない場合は、次のトラブルシューティングドキュメントも確認してください:
 
-- [GitLab Duoコード提案](../project/repository/code_suggestions/troubleshooting.md)。
+- [GitLab Duoコード提案](../duo_agent_platform/code_suggestions/troubleshooting.md)。
 - [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md)。
 - [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md)。
 - [JetBrains IDE](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md)。
@@ -32,7 +32,7 @@ GitLab Duo Chatを有効にした後、ボタンが表示されるまでに数�
 
 このエラーは、Chatが質問に答えるための関連ドキュメントを見つけられない場合に発生します。これは、検索クエリが利用可能なドキュメントと一致しない場合、またはドキュメント検索機能に問題がある場合に発生する可能性があります。
 
-質問を絞り込むには、もう一度試すか、[GitLab Duo Chatのベストプラクティスドキュメント](best_practices.md)を参照してください。
+もう一度試すか、[GitLab Duo Chatのベストプラクティスドキュメント](best_practices.md)を参照して、質問を改良してください。
 
 ## `Error M3002` {#error-m3002}
 
@@ -40,7 +40,7 @@ GitLab Duo Chatを有効にした後、ボタンが表示されるまでに数�
 
 このエラーは、GitLab Duoが[オフ](../gitlab_duo/turn_on_off.md)になっているプロジェクトまたはグループに属する項目について質問した場合に発生します。
 
-GitLab Duoがオンになっていない場合、グループまたはプロジェクト内の項目（イシュー、エピック、マージリクエストなど）に関する情報をGitLab Duo Chatで処理できません。
+GitLab Duoがオンになっていない場合、GitLab Duo Chatは、グループまたはプロジェクト内の項目（イシュー、エピック、マージリクエストなど）に関する情報を処理できません。
 
 ## `Error M3003` {#error-m3003}
 
@@ -48,8 +48,8 @@ GitLab Duoがオンになっていない場合、グループまたはプロジ�
 
 このエラーは、以下の場合に発生します:
 
-- アクセス権のない項目（イシュー、エピック、マージリクエストなど）、または存在しない項目についてGitLab Duo Chatに質問しました。
-- セッションがタイムアウトしました。
+- アクセス権のない項目（イシュー、エピック、マージリクエストなど）、または存在しない項目についてGitLab Duo Chatに質問した。
+- セッションがタイムアウトした。
 
 アクセスできる項目について、もう一度質問してみてください。問題が解決しない場合は、セッションのタイムアウトが原因である可能性があります。GitLab Duo Chatの使用を続行するには、再度サインインしてください。詳細については、[GitLab Duoの可用性を制御する](../gitlab_duo/turn_on_off.md)を参照してください。
 
@@ -142,7 +142,7 @@ GitLab Duoがオンになっていない場合、グループまたはプロジ�
 
 - GitLabコード内のバグが原因のクライアント側のエラー。
 - Anthropicコード内のバグが原因のサーバー側のエラー。
-- HTTPリクエストがAIゲートウェイに到達しませんでした。
+- AIゲートウェイに到達しなかったHTTPリクエスト。
 
 エラーの理由をより明確にするための[イシューが存在](https://gitlab.com/gitlab-org/gitlab/-/issues/479465)します。
 
@@ -152,9 +152,9 @@ GitLab Duoがオンになっていない場合、グループまたはプロジ�
 
 ### GitLab Duo Self-Hosted {#gitlab-duo-self-hosted}
 
-GitLab Duo Self-HostedでChatを使用しているときにこのエラーが発生した場合、AIゲートウェイへの接続に問題が発生しました。
+GitLab Duo Self-Hostedでチャットを使用しているときにこのエラーが発生した場合、AIゲートウェイへの接続に問題がありました。
 
-これを解決するには、[セルフホストデバッグスクリプト](../../administration/gitlab_duo_self_hosted/troubleshooting.md#use-debugging-scripts)を使用して、AIゲートウェイがGitLabインスタンスからアクセス可能で、期待どおりに動作していることを確認してください。
+これを解決するには、[セルフホスト型デバッグスクリプト](../../administration/gitlab_duo_self_hosted/troubleshooting.md#use-debugging-scripts)を使用して、GitLabインスタンスからAIゲートウェイにアクセスでき、期待どおりに機能していることを確認します。
 
 問題が解決しない場合は、GitLabサポートチームに問題を報告してください。
 
@@ -162,9 +162,9 @@ GitLab Duo Self-HostedでChatを使用しているときにこのエラーが発
 
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`というエラーが表示されることがあります。
 
-このエラーは、AIゲートウェイからイベントが返されなかったか、GitLabがイベントを解析できなかった場合に発生します。
+このエラーは、AIゲートウェイからイベントが返されないか、GitLabがイベントを解析するのに失敗した場合に発生します。
 
-もう一度リクエストを試すか、エラーがないか[AIゲートウェイログ](../../administration/gitlab_duo_self_hosted/logging.md)を確認してください。
+もう一度リクエストを試すか、[AIゲートウェイログ](../../administration/gitlab_duo_self_hosted/logging.md)を表示し、エラーがないか確認してください。
 
 ## `Error A1003` {#error-a1003}
 
@@ -176,7 +176,7 @@ GitLab Duo Self-HostedでChatを使用しているときにこのエラーが発
 
 GitLab Duo Self-HostedでChatを使用しているときにこの問題が発生した場合は、ストリーミングが機能しているかどうかを確認してください:
 
-1. AIゲートウェイコンテナで、次のコマンドを実行します:
+1. AIゲートウェイコンテナ内で、次のコマンドを実行します:
 
    ```shell
    curl --request 'POST' \
@@ -213,9 +213,9 @@ GitLab Duo Self-HostedでChatを使用しているときにこの問題が発生
 
    ストリーミングが機能している場合、チャンク化された応答が表示されるはずです。機能していない場合、応答は空になります。
 
-1. これがモデルデプロイの問題であるかどうかを確認するには、[AIゲートウェイログ](../../administration/gitlab_duo_self_hosted/logging.md)で特定のエラーメッセージを確認してください。
+1. これがモデルのデプロイに関するイシューであるかどうかを確認するには、特定のエラーメッセージについて[AIゲートウェイのログ](../../administration/gitlab_duo_self_hosted/logging.md)を確認します。
 
-1. 接続を検証するには、AIゲートウェイコンテナで`AIGW_CUSTOM_MODELS__DISABLE_STREAMING`環境変数を設定して、ストリーミングを無効にします:
+1. 接続を検証するには、AIゲートウェイコンテナで`AIGW_CUSTOM_MODELS__DISABLE_STREAMING`環境変数を設定してストリーミングを無効にします:
 
    ```shell
    docker run .... -e AIGW_CUSTOM_MODELS__DISABLE_STREAMING=true ...
@@ -225,7 +225,7 @@ GitLab Duo Self-HostedでChatを使用しているときにこの問題が発生
 
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`というエラーが表示されることがあります。
 
-このエラーは、AIゲートウェイ処理でエラーが発生した場合に表示されます。リクエストを再試行してください。
+このエラーは、AIゲートウェイの処理中にエラーが発生した場合に発生します。リクエストを再試行してください。
 
 ## `Error A1005` {#error-a1005}
 
@@ -263,7 +263,7 @@ GitLab Duo Self-HostedでChatを使用しているときにこの問題が発生
 
 このエラーは、ReActエージェントで不明なエラーが発生した場合に発生します。リクエストを再試行してください。
 
-問題が解決しない場合は、[GitLabサポートチームに問題をレポートしてください](https://about.gitlab.com/support/)。
+問題が解決しない場合は、[GitLabサポートチームに問題を報告してください](https://about.gitlab.com/support/)。
 
 ## `Error G3001` {#error-g3001}
 
@@ -277,40 +277,54 @@ GitLab Duo Self-HostedでChatを使用しているときにこの問題が発生
 
 このエラーは、複数のGitLab Duoネームスペースに所属していて、デフォルトのネームスペースを選択していない場合に発生します。
 
-これを解決するには、[デフォルトのGitLab Duoネームスペースを設定](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)します。
+これを解決するには、[デフォルトのGitLab Duoネームスペースを設定](../profile/preferences.md#set-a-default-gitlab-duo-namespace)します。
 
-## Agentic Chat固有の問題 {#agentic-chat-specific-issues}
+## チャットの応答内のリンクは選択できません {#links-in-chat-responses-are-not-selectable}
 
-### GitLabクレジットが不足しています {#not-enough-gitlab-credits}
+GitLab Duo Chatは、外部ウェブサイトおよびサードパーティドメインのURLを選択可能なリンクとして応答に表示しません。
 
-GitLabクレジットを使い果たしたため、Agentic Chatへのアクセスを失う可能性があります。
+チャットは代わりに、これらの種類のURLをリンクテキストのみを表示するコード形式のテキストに変換します。宛先URLは表示されません。
+
+この制限は、AI応答で生成される可能性のある悪意のあるリンクからユーザーを保護するのに役立ちます。
+
+チャットは、応答で次の種類のリンクを選択可能として表示します:
+
+- `docs.gitlab.com`のGitLabドキュメントへのリンク。
+- `gitlab.com`へのリンク。GitLabプロジェクト、イシュー、マージリクエストなどが含まれますが、これらに限定されません。
+- GitLabインスタンス内の相対URL。
+
+## GitLab Duo Agentic Chatに固有のイシュー {#issues-specific-to-gitlab-duo-agentic-chat}
+
+### GitLabクレジットの不足 {#not-enough-gitlab-credits}
+
+GitLabクレジットを使い果たしたため、チャットにアクセスできなくなる可能性があります。
 
 この問題を解決するには、次のいずれかを実行します:
 
-- [GitLabクレジットをもっと購入する](../../subscriptions/gitlab_credits.md#buy-gitlab-credits)。
-- 従来のチャットに切り替えます。切り替えると、新しい会話が開始されます。以前のAgentic Chatの会話は引き続き表示できますが、読み取り専用です。
+- [GitLabクレジットをさらに購入する](../../subscriptions/gitlab_credits.md#buy-gitlab-credits)。
+- 非エージェント型チャットに切り替えます。切り替えると、新しい会話が開始されます。以前のエージェント型チャットの会話は引き続き表示できますが、読み取り専用です。
 
 ### 応答時間が遅い {#slow-response-times}
 
-Agentic Chatは、リクエストの処理と応答において、従来のチャットよりも時間がかかる場合があります。
+Agentic Chatは、処理とリクエストへの応答において、非エージェント型チャットよりも遅くなる可能性があります。
 
-この問題が発生するのは、Agentic Chatが情報を収集するために複数のAPIコールを実行するため、応答に時間がかかる場合があるためです。
+このイシューは、エージェント型チャットが情報を収集するために複数のAPIコールを行うため、応答に大幅に時間がかかる可能性があるために発生します。
 
 ### 権限の制限 {#limited-permissions}
 
-Agentic Chatは、GitLabユーザーがアクセスを許可されているのと同じリソースにアクセスできます。Agentic Chatがリクエストに回答するために必要なリソースにアクセスできない場合は、[ユーザーのアクセス許可](../permissions.md)を確認してください。
+Agentic Chatは、GitLabユーザーがアクセス権限を持っているリソースと同じリソースにアクセスできます。エージェント型チャットがリクエストに答えるのに必要なリソースにアクセスできない場合は、[ユーザー権限](../permissions.md)を確認してください。
 
 ### 検索の制限 {#search-limitations}
 
-Agentic Chatは、セマンティック検索ではなく、キーワードに基づく検索を使用します。Agentic Chatは、検索で使用されている正確なキーワードが含まれていない関連コンテンツを見逃す可能性があります。
+Agentic Chatは、セマンティック検索ではなく、キーワードに基づく検索を使用します。Agentic Chatは、検索で使用される正確なキーワードを含まない関連コンテンツを見逃す可能性があります。
 
 ## ヘッダーの不一致の問題 {#header-mismatch-issue}
 
-特定のエラーコードなしで、`I'm sorry, I can't generate a response. Please try again`というエラーが表示される場合があります。
+特定のエラーコードなしで、`I'm sorry, I can't generate a response. Please try again`というエラーが表示されることがあります。
 
-Sidekiqログをチェックして、次のエラーコード: `Header mismatch 'X-Gitlab-Instance-Id'`が見つかるかどうかを確認してください。
+Sidekiqログをチェックして、エラー`Header mismatch 'X-Gitlab-Instance-Id'`が見つかるかどうかを確認してください。
 
-このエラーが表示された場合は、それを解決するために、GitLabサポートチームに連絡して、ライセンスの新しいアクティベーションコードを送信するように依頼してください。
+このエラーが表示された場合は、解決するために、GitLabサポートチームに連絡して、ライセンスの新しいアクティベーションコードを送信するように依頼してください。
 
 詳細については、[イシュー103](https://gitlab.com/gitlab-com/enablement-sub-department/section-enable-request-for-help/-/issues/103)を参照してください。
 

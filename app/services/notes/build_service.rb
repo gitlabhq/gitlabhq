@@ -14,6 +14,7 @@ module Notes
         discussion = find_discussion(in_reply_to_discussion_id)
 
         return discussion_not_found unless discussion && can?(executing_user, :create_note, discussion.noteable)
+        return system_note_reply_error if discussion.first_note.system?
 
         discussion = discussion.convert_to_discussion! if discussion.can_convert_to_discussion?
 
@@ -53,7 +54,7 @@ module Notes
     def new_note(params, discussion)
       note = Note.new(params)
       note.project = project
-      note.author = Gitlab::Auth::Identity.invert_composite_identity(current_user)
+      note.author = Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
 
       parent_confidential = discussion&.confidential?
       can_set_confidential = can?(current_user, :mark_note_as_internal, note)
@@ -76,6 +77,12 @@ module Notes
     def discussion_not_found
       note = Note.new
       note.errors.add(:base, _('Discussion to reply to cannot be found'))
+      note
+    end
+
+    def system_note_reply_error
+      note = Note.new
+      note.errors.add(:base, _('Replies to system notes are not allowed'))
       note
     end
   end

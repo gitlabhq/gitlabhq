@@ -124,7 +124,7 @@ module Gitlab
 
     def cache_issues_count?
       @store_in_redis_cache &&
-        (!group_issues_list? || group_issues_count_cacheable?) &&
+        !group_issues_list? &&
         finder.class <= IssuesFinder &&
         parent_group.present? &&
         !params_include_filters?
@@ -137,10 +137,6 @@ module Gitlab
     def group_issues_list?
       # [group_work_items => epics] which are excluded only on the group issues page
       finder.params[:exclude_group_work_items] != false
-    end
-
-    def group_issues_count_cacheable?
-      Feature.enabled?(:cached_state_counts_for_group_issues, parent_group)
     end
 
     def filter_by_issue_type?

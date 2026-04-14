@@ -10,6 +10,7 @@ module GitlabRoutingHelper
   include ::Routing::ProjectsHelper
   include ::Routing::Projects::MembersHelper
   include ::Routing::Groups::MembersHelper
+  include ::Routing::Groups::ObservabilityHelper
   include ::Routing::MembersHelper
   include ::Routing::ArtifactsHelper
   include ::Routing::PipelineSchedulesHelper

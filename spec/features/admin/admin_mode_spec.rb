@@ -75,12 +75,6 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
         enable_admin_mode!(admin, use_ui: true)
       end
 
-      it 'contains link to leave admin mode' do
-        open_user_menu
-        click_link('Leave Admin Mode', href: destroy_admin_session_path)
-        expect(page).to have_text 'Admin mode disabled'
-      end
-
       it 'can open pages not in admin scope' do
         open_user_menu
 
@@ -102,7 +96,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
         end
 
         it 'can leave admin mode' do
-          gitlab_disable_admin_mode
+          leave_admin_mode
 
           open_user_menu
 

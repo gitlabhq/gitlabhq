@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
+import NoteSuggestions from '~/rapid_diffs/app/discussions/note_suggestions.vue';
 import NoteAttachment from '~/notes/components/note_attachment.vue';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
@@ -24,6 +25,7 @@ describe('NoteBody', () => {
   const findNoteEditedText = () => wrapper.findComponent(NoteEditedText);
   const findAwardsList = () => wrapper.findComponent(AwardsList);
   const findNoteAttachment = () => wrapper.findComponent(NoteAttachment);
+  const findNoteSuggestions = () => wrapper.findComponent(NoteSuggestions);
 
   beforeEach(() => {
     defaultProps = {
@@ -226,6 +228,30 @@ describe('NoteBody', () => {
       });
       findAwardsList().vm.$emit('award', 'thumbsup');
       expect(wrapper.emitted('award')).toStrictEqual([['thumbsup']]);
+    });
+  });
+
+  describe('suggestions', () => {
+    const createNoteWithSuggestion = () => ({
+      ...defaultProps.note,
+      suggestions: [{ id: 1, appliable: true, applied: false }],
+    });
+
+    it('renders NoteSuggestions when note has suggestions', () => {
+      const note = createNoteWithSuggestion();
+      createComponent({ note });
+      expect(findNoteSuggestions().exists()).toBe(true);
+      expect(findNoteSuggestions().props('note')).toBe(note);
+    });
+
+    it('does not render NoteSuggestions when note has no suggestions', () => {
+      createComponent();
+      expect(findNoteSuggestions().exists()).toBe(false);
+    });
+
+    it('does not render NoteSuggestions when editing', () => {
+      createComponent({ note: createNoteWithSuggestion(), isEditing: true });
+      expect(findNoteSuggestions().exists()).toBe(false);
     });
   });
 

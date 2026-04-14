@@ -2,31 +2,41 @@
 import {
   GlAvatarLabeled,
   GlButton,
+  GlDisclosureDropdown,
   GlEmptyState,
   GlKeysetPagination,
   GlLoadingIcon,
+  GlModal,
+  GlSprintf,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { logError } from '~/lib/logger';
+import { getFirstPropertyValue } from '~/lib/utils/common_utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { NEW_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
 import getMoreUniqueUsers from './graphql/get_more_unique_users.query.graphql';
+import deleteAchievementMutation from './graphql/delete_achievement.mutation.graphql';
 import AwardButton from './award_button.vue';
 
 const ENTRIES_PER_PAGE = 20;
 
 export default {
+  name: 'AchievementsApp',
   components: {
     AwardButton,
     PageHeading,
     CrudComponent,
     GlAvatarLabeled,
     GlButton,
+    GlDisclosureDropdown,
     GlEmptyState,
     GlKeysetPagination,
     GlLoadingIcon,
+    GlModal,
+    GlSprintf,
     UserAvatarList,
   },
   inject: {
@@ -50,6 +60,8 @@ export default {
   data() {
     return {
       achievements: [],
+      achievementToDelete: null,
+      showDeleteModal: false,
       cursor: {
         first: ENTRIES_PER_PAGE,
         after: null,
@@ -92,6 +104,12 @@ export default {
         groupFullPath: this.groupFullPath,
         ...this.cursor,
       };
+    },
+    deleteModalTitle() {
+      if (!this.achievementToDelete) return '';
+      return sprintf(s__('Achievements|Delete %{name}?'), {
+        name: this.achievementToDelete.name,
+      });
     },
   },
   methods: {
@@ -163,6 +181,45 @@ export default {
         [achievementId]: isLoading,
       };
     },
+    achievementActions(achievement) {
+      return [
+        {
+          text: this.$options.i18n.deleteAchievement,
+          variant: 'danger',
+          action: () => {
+            this.achievementToDelete = achievement;
+            this.showDeleteModal = true;
+          },
+        },
+      ];
+    },
+    async confirmDelete() {
+      const achievement = this.achievementToDelete;
+      if (!achievement) return;
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: deleteAchievementMutation,
+          variables: {
+            input: { achievementId: achievement.id },
+          },
+          refetchQueries: [getGroupAchievements],
+        });
+
+        const { errors } = getFirstPropertyValue(data);
+        if (errors?.length) {
+          this.$toast.show(errors[0]);
+        } else {
+          this.$toast.show(s__('Achievements|Achievement has been deleted.'));
+        }
+      } catch (e) {
+        logError(e);
+        this.$toast.show(s__('Achievements|Failed to delete achievement. Please try again.'));
+      } finally {
+        this.achievementToDelete = null;
+        this.showDeleteModal = false;
+      }
+    },
   },
   i18n: {
     title: s__('Achievements|Achievements'),
@@ -170,13 +227,41 @@ export default {
     newAchievement: s__('Achievements|New achievement'),
     notYetAwarded: s__('Achievements|Not yet awarded.'),
     users: s__('Achievements|%{userCount} awarded users'),
+    deleteAchievement: s__('Achievements|Delete achievement'),
+    deleteModalBody: s__(
+      'Achievements|Are you sure you want to delete %{name}? This action cannot be undone.',
+    ),
   },
   NEW_ROUTE_NAME,
+  deleteModal: {
+    actionPrimary: {
+      text: s__('Achievements|Delete achievement'),
+      attributes: { variant: 'danger' },
+    },
+    actionCancel: {
+      text: s__('Achievements|Cancel'),
+    },
+  },
 };
 </script>
 
 <template>
   <div class="gl-flex gl-flex-col">
+    <gl-modal
+      v-model="showDeleteModal"
+      modal-id="delete-achievement-modal"
+      :title="deleteModalTitle"
+      :action-primary="$options.deleteModal.actionPrimary"
+      :action-cancel="$options.deleteModal.actionCancel"
+      @primary="confirmDelete"
+      @canceled="achievementToDelete = null"
+    >
+      <gl-sprintf v-if="achievementToDelete" :message="$options.i18n.deleteModalBody">
+        <template #name>
+          <strong>{{ achievementToDelete.name }}</strong>
+        </template>
+      </gl-sprintf>
+    </gl-modal>
     <gl-empty-state
       v-if="!isLoading && !achievements.length"
       :title="$options.i18n.emptyStateTitle"
@@ -215,8 +300,22 @@ export default {
             :sub-label="achievement.description"
           />
         </template>
-        <template v-if="canAwardAchievement" #actions>
-          <award-button :achievement-id="achievement.id" :achievement-name="achievement.name" />
+        <template #actions>
+          <award-button
+            v-if="canAwardAchievement"
+            :achievement-id="achievement.id"
+            :achievement-name="achievement.name"
+          />
+          <gl-disclosure-dropdown
+            v-if="canAdminAchievement"
+            icon="ellipsis_v"
+            category="tertiary"
+            no-caret
+            :toggle-text="$options.i18n.deleteAchievement"
+            text-sr-only
+            :items="achievementActions(achievement)"
+            data-testid="achievement-actions-dropdown"
+          />
         </template>
         <div class="mb-2 gl-text-sm gl-text-subtle">
           {{ awardedUsers(achievement.uniqueUsers.count) }}

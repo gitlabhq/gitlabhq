@@ -62,7 +62,7 @@ module AuthenticatesWithTwoFactorForAdminMode
 
   def enable_admin_mode
     if current_user_mode.enable_admin_mode!(skip_password_validation: true)
-      redirect_to redirect_path, notice: _('Admin mode enabled')
+      redirect_to redirect_path, notice: _('Admin mode is active.')
     else
       invalid_login_redirect
     end

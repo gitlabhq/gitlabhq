@@ -1,7 +1,7 @@
 import { InMemoryCache } from '@apollo/client/core';
 import { removeClientSetsFromDocument } from '@apollo/client/utilities';
 import { createMockClient as createMockApolloClient } from 'mock-apollo-client';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { print, Kind } from 'graphql';
 import VueApollo from 'vue-apollo';
 import possibleTypes from '~/graphql_shared/possible_types.json';

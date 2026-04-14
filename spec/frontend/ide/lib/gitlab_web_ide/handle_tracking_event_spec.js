@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash';
+import { snakeCase } from 'lodash-es';
 import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
 import { mockTracking } from 'helpers/tracking_helper';

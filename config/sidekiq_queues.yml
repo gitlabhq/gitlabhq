@@ -225,6 +225,8 @@
   - 1
 - - bulk_imports_user_contributions_export
   - 1
+- - cells_claims_verification
+  - 1
 - - chaos
   - 2
 - - chat_notification
@@ -260,6 +262,8 @@
 - - ci_runners_export_usage_csv
   - 1
 - - ci_runners_process_runner_version_update
+  - 1
+- - ci_runners_transfer_organization
   - 1
 - - ci_safe_disable_pipeline_variables
   - 1
@@ -403,6 +407,8 @@
   - 1
 - - dependencies_export
   - 1
+- - dependency_management_security_update_scheduler
+  - 1
 - - dependency_proxy
   - 1
 - - dependency_proxy_blob
@@ -506,6 +512,8 @@
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
 - - gitlab_subscriptions_cart_abandonment
+  - 1
+- - gitlab_subscriptions_cart_abandonment_credits_purchase
   - 1
 - - gitlab_subscriptions_gitlab_com_duo_core_todo_notification
   - 1
@@ -1103,6 +1111,8 @@
   - 1
 - - security_project_tracked_contexts_create_or_update_default_tracked_context
   - 1
+- - security_project_tracked_contexts_reindex_vulnerabilities_on_default_branch_change
+  - 1
 - - security_project_tracked_contexts_update_default_context
   - 1
 - - security_recreate_orchestration_configuration
@@ -1112,6 +1122,8 @@
 - - security_scan_execution_policies_create_pipeline
   - 1
 - - security_scan_execution_policies_rule_schedule
+  - 1
+- - security_scan_execution_policies_run_schedule
   - 1
 - - security_scan_profiles_attach
   - 1
@@ -1256,6 +1268,8 @@
 - - vulnerabilities_archival_export_purge
   - 1
 - - vulnerabilities_auto_dismiss
+  - 1
+- - vulnerabilities_auto_severity_override
   - 1
 - - vulnerabilities_consistency_check
   - 1

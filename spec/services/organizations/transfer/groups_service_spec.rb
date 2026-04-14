@@ -479,6 +479,16 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           end
         end
       end
+
+      context 'for runner transfers' do
+        it 'enqueues TransferOrganizationWorker with correct arguments' do
+          expect(Ci::Runners::TransferOrganizationWorker).to receive(:perform_async).with(
+            group.id, old_organization.id, new_organization.id
+          )
+
+          service.execute
+        end
+      end
     end
 
     context 'when group is not root' do
@@ -532,6 +542,12 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       it 'does not update organization_id' do
         expect { service.execute }.not_to change { group_in_new_org.reload.organization_id }
+      end
+
+      it 'does not enqueue TransferOrganizationWorker' do
+        expect(Ci::Runners::TransferOrganizationWorker).not_to receive(:perform_async)
+
+        service.execute
       end
     end
 
@@ -819,7 +835,43 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
-      context 'with visibility level changes that would have been made' do
+      context "with runner records" do
+        let_it_be(:ci_tag) { create(:ci_tag, name: "rollback-tag") }
+        let_it_be_with_refind(:group_runner) do
+          create(:ci_runner, :online, runner_type: :group_type, groups: [group])
+        end
+
+        let_it_be_with_refind(:group_runner_manager) do
+          create(:ci_runner_machine, runner: group_runner)
+        end
+
+        let_it_be_with_refind(:group_runner_tagging) do
+          create(:ci_runner_tagging, runner: group_runner, tag: ci_tag)
+        end
+
+        let_it_be_with_refind(:project_runner) do
+          create(:ci_runner, :online, runner_type: :project_type, projects: [project])
+        end
+
+        let_it_be_with_refind(:project_runner_manager) do
+          create(:ci_runner_machine, runner: project_runner)
+        end
+
+        let_it_be_with_refind(:project_runner_tagging) do
+          create(:ci_runner_tagging, runner: project_runner, tag: ci_tag)
+        end
+
+        it_behaves_like "rolls back organization_id updates" do
+          let(:records) do
+            [
+              group_runner, group_runner_manager, group_runner_tagging,
+              project_runner, project_runner_manager, project_runner_tagging
+            ]
+          end
+        end
+      end
+
+      context "with visibility level changes that would have been made" do
         let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
         let_it_be_with_refind(:public_subgroup) do
           create(:group, :public, parent: group, organization: old_organization)
@@ -848,6 +900,12 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       it 'does not update user organization due to transaction failure' do
         expect { service.execute }.not_to change { user.reload.organization_id }
+      end
+
+      it 'does not enqueue TransferOrganizationWorker' do
+        expect(Ci::Runners::TransferOrganizationWorker).not_to receive(:perform_async)
+
+        service.execute
       end
     end
 

@@ -10,7 +10,7 @@ module ProtectedRefs
     end
 
     def access_levels
-      ce_style_access_level
+      role_based_access_level + deploy_key_access_levels
     end
 
     private
@@ -21,15 +21,29 @@ module ProtectedRefs
     end
 
     def use_default_access_level?(params)
-      true
+      allowed_to_params = params[:"allowed_to_#{type}"]
+      return true if allowed_to_params.blank?
+
+      deploy_key_entries(allowed_to_params).blank?
     end
 
-    def ce_style_access_level
+    def role_based_access_level
       access_level = params[:"#{type}_access_level"]
 
       return [] unless access_level
 
       [{ access_level: access_level }]
+    end
+
+    def deploy_key_access_levels
+      allowed_to_params = params[:"allowed_to_#{type}"]
+      return [] if allowed_to_params.blank?
+
+      deploy_key_entries(allowed_to_params)
+    end
+
+    def deploy_key_entries(allowed_to_params)
+      allowed_to_params.select { |entry| entry[:deploy_key_id].present? }
     end
   end
 end

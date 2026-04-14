@@ -13,6 +13,8 @@ module Gitlab
             validates :config, type: Hash, allowed_keys: ALLOWED_KEYS
 
             validate do
+              next unless config.is_a?(Hash)
+
               errors.add(:base, 'must have a default value') if config[:default].nil?
             end
           end

@@ -10,17 +10,12 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     project.add_maintainer(user)
   end
 
   context 'when user not logged in' do
     before do
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
     end
 
     it 'does not exist my-reaction dropdown item' do
@@ -32,9 +27,9 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
 
   context 'when user logged in' do
     before do
+      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
-
-      visit project_issues_path(project)
+      visit project_work_items_path(project, sort: 'created_date')
     end
 
     describe 'behavior' do
@@ -45,7 +40,7 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
       it 'opens when the search bar is first focused' do
         expect_visible_suggestions_list
 
-        find('body').click
+        find('.issuable-list-container').click
 
         expect_hidden_suggestions_list
       end

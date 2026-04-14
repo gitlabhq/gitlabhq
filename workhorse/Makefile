@@ -24,6 +24,8 @@ BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
 OS := $(shell uname | tr A-Z a-z)
 ARCH ?= $(shell uname -m | sed -e 's/x86_64/amd64/' | sed -e 's/aarch64/arm64/')
 
+LABKIT_VALIDATE_VERSION := v2.0.0-20260325011833-45bdfd4bfc9f
+
 GOLANGCI_LINT_VERSION := 2.3.1
 GOLANGCI_LINT_ARCH ?= ${ARCH}
 GOLANGCI_LINT_FILE := _support/bin/golangci-lint-${GOLANGCI_LINT_VERSION}
@@ -211,3 +213,8 @@ deps-check:
 		echo "go.mod and go.sum are modified, please commit them";\
 		exit 1; \
 	fi;
+
+.PHONY: validate-log-fields
+validate-log-fields:
+	$(call message,$@)
+	go run gitlab.com/gitlab-org/labkit/v2/cmd/validate-log-fields@$(LABKIT_VALIDATE_VERSION) .

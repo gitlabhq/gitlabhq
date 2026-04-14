@@ -18,6 +18,7 @@ module Mutations
         description: "Project that was updated."
 
       authorize :admin_project
+      authorize_granular_token permissions: :update_page, boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:, value:)
         project = authorized_find!(project_path)

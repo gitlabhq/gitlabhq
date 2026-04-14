@@ -21,6 +21,18 @@ The current development focus is achieving **feature parity** for organizations.
 Guidance on building new features on organizations, or migrating existing features from top-level group to organizations, will come in the future.
 Please contact the team on Slack (`#g_organizations`) if you wish to informally discuss this.
 
+### Available and planned support for implementing organizations
+
+The Organizations team are implementing changes which will automatically include support for:
+
+- Application level Organization Isolation: There will be an ActiveRecord extension that will take care of [Organization Scoping](https://gitlab.com/groups/gitlab-org/-/work_items/19414). This is provisionally planned for availability and usage in early FY27-Q2.
+- Sidekiq: there is no need to pass `organization_id` to Sidekiq worker parameters: Sidekiq workers will inherit the Current Organization from the scheduling context
+- Events / Logging: similar to User, Project or Namespace, Organization will be included
+- Routing: Enabling / disabling organization based URL's (`/o/<organization>` prefix) will be available.
+- Organization availability in tests
+
+Teams do not need to implement these, unless there are specific reasons.
+
 ## Database table design
 
 See the [sharding guidelines](sharding/_index.md).
@@ -31,16 +43,28 @@ The application maps incoming requests to an organization through `Current.organ
 
 ### Where `Current.organization` is available
 
-`Current.organization` is available in:
+`Current.organization` is available in the following contexts. Some are set up automatically, while others require you to call `set_current_organization` explicitly.
 
-- Controllers
-- GraphQL
-- Grape API endpoints (use the `set_current_organization` helper)
-- Sidekiq
+Set automatically (platform-wide):
+
+- Controllers — `ApplicationController` includes a `before_action :set_current_organization` that runs for every request.
+- GraphQL — `GraphqlController` inherits from `ApplicationController`, so the same `before_action` applies automatically.
+- Sidekiq — set from the organization context captured when the job is enqueued.
+
+Requires developer setup:
+
+- Grape API endpoints — `Current.organization` is not set automatically. Call the `set_current_organization` helper in a `before` block for each API class that needs it:
+
+  ```ruby
+  before do
+    authenticate_non_get!
+    set_current_organization
+  end
+  ```
 
 ### Passing organization context
 
-When creating or updating records, pass the organization context using `Current.organization`:
+If there is application logic that needs the `Current.organization`, it should be passed from the request layer:
 
 ```ruby
 # In controllers
@@ -50,29 +74,11 @@ def create
     group_params.with_defaults(organization_id: Current.organization.id)
   ).execute
 end
-
-# In GraphQL mutations
-def resolve(args)
-  args[:organization_id] = Current.organization.id
-  # ...
-end
-
-# In finders
-@snippets = SnippetsFinder.new(
-  current_user,
-  organization_id: Current.organization.id,
-  author: current_user
-).execute
 ```
 
 ### Scoping queries to organizations
 
-Ensure queries are scoped to the current organization:
-
-```ruby
-@labels = Label.in_organization(organization).templates
-@topic = Projects::Topic.in_organization(organization.id).find_by_name(topic_name)
-```
+There will be a ActiveRecord extension that will provide Organization Scoping.
 
 ## Organization routing
 

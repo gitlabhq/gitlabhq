@@ -1,9 +1,9 @@
-import { range as rge, throttle } from 'lodash';
+import { range as rge, throttle } from 'lodash-es';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { getInputValue, setInputValue, createForm } from './helper';
 
-jest.mock('lodash', () => {
-  const lodash = jest.requireActual('lodash');
+jest.mock('lodash-es', () => {
+  const lodash = jest.requireActual('lodash-es');
   return {
     ...lodash,
     throttle: jest.fn((fn) => fn),
@@ -59,7 +59,7 @@ describe('DirtySubmitForm', () => {
 
   describe('throttling tests', () => {
     beforeEach(() => {
-      throttle.mockImplementation(jest.requireActual('lodash').throttle);
+      throttle.mockImplementation(jest.requireActual('lodash-es').throttle);
     });
 
     it('throttles updates when rapid changes are made to a single form element', () => {

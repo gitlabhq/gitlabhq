@@ -67,11 +67,7 @@ export const I18N_BULK_DELETE_ERROR = s__(
 export const I18N_BULK_DELETE_CONFIRMATION_TOAST = (count) =>
   n__('Artifacts|%d selected artifact deleted', 'Artifacts|%d selected artifacts deleted', count);
 
-export const INITIAL_CURRENT_PAGE = 1;
-export const INITIAL_PREVIOUS_PAGE_CURSOR = '';
-export const INITIAL_NEXT_PAGE_CURSOR = '';
 export const JOBS_PER_PAGE = 20;
-export const INITIAL_LAST_PAGE_SIZE = null;
 
 export const ARCHIVE_FILE_TYPE = 'ARCHIVE';
 export const METADATA_FILE_TYPE = 'METADATA';

@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 

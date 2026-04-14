@@ -271,11 +271,6 @@ module TimeboxesHelper
     message.html_safe
   end
 
-  def milestone_work_items_icon
-    resource_parent = @project || @group
-    resource_parent&.work_items_consolidated_list_enabled?(current_user) ? 'work-items' : 'work-item-issue'
-  end
-
   private
 
   def milestone_visible_issues_count(milestone)
@@ -301,7 +296,7 @@ module TimeboxesHelper
   end
 
   def use_work_items_for_issues?(type, resource_parent)
-    type == :issues && resource_parent&.work_items_consolidated_list_enabled?(current_user)
+    type == :issues
   end
 end
 

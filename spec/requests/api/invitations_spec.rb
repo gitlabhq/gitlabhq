@@ -684,7 +684,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 422 for a valid request if the resource was not destroyed' do
         allow_next_instance_of(::Members::DestroyService) do |instance|
-          allow(instance).to receive(:execute).with(invite).and_return(invite)
+          allow(instance).to receive(:execute).and_return(invite)
         end
 
         delete invite_api(source, maintainer, invite.invite_email)

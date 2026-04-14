@@ -16,6 +16,14 @@
       "type": "integer",
       "minimum": 7,
       "maximum": 90
+    },
+    "secret_push_protection_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "secret_push_protection_enforced": {
+      "type": "boolean",
+      "default": false
     }
   },
   "additionalProperties": false

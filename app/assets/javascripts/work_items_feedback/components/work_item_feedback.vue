@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlPopover, GlLink } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { ROUTES } from '../../work_items/constants';
 

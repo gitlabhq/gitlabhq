@@ -379,7 +379,7 @@ describe('Create work item component', () => {
     it('renders with the current namespace selected by default', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+        provide: { hasEpicsFeature: true },
       });
       await resolveAll();
 
@@ -388,23 +388,17 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                   | isGroup  | fromGlobalMenu | hasEpicsFeature | workItemPlanningViewEnabled | expected
-      ${'group list page'}       | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
-      ${'project global menu'}   | ${false} | ${true}        | ${false}        | ${true}                     | ${true}
-      ${'EE with epics'}         | ${true}  | ${false}       | ${true}         | ${true}                     | ${true}
-      ${'disabled feature flag'} | ${true}  | ${false}       | ${false}        | ${false}                    | ${false}
+      scenario                 | isGroup  | fromGlobalMenu | hasEpicsFeature | expected
+      ${'group list page'}     | ${true}  | ${false}       | ${true}         | ${true}
+      ${'project global menu'} | ${false} | ${true}        | ${false}        | ${true}
+      ${'EE with epics'}       | ${true}  | ${false}       | ${true}         | ${true}
+      ${'CE group no epics'}   | ${true}  | ${false}       | ${false}        | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({
-        isGroup,
-        fromGlobalMenu,
-        hasEpicsFeature,
-        workItemPlanningViewEnabled,
-        expected,
-      }) => {
+      async ({ isGroup, fromGlobalMenu, hasEpicsFeature, expected }) => {
         createComponent({
           props: { isGroup, fromGlobalMenu },
-          provide: { workItemPlanningViewEnabled, hasEpicsFeature },
+          provide: { hasEpicsFeature },
         });
 
         await resolveAll();
@@ -415,7 +409,7 @@ describe('Create work item component', () => {
     it('updates available work item types when new namespace is selected', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+        provide: { hasEpicsFeature: true },
       });
       await resolveAll();
 
@@ -552,7 +546,7 @@ describe('Create work item component', () => {
       await resolveAll();
 
       expect(findSelect().exists()).toBe(false);
-      expect(findFormTitle().text()).toBe('New epic');
+      expect(findFormTitle().text()).toBe('New Epic');
     });
 
     it('emits "changeType" with the type name when "selectedWorkItemTypeId" changes', async () => {
@@ -739,7 +733,7 @@ describe('Create work item component', () => {
       await updateWorkItemTitle();
       await submitCreateForm();
 
-      expect(findAlert().text()).toBe('Something went wrong when creating epic. Please try again.');
+      expect(findAlert().text()).toBe('Something went wrong when creating Epic. Please try again.');
     });
 
     it('shows an alert on mutation error', async () => {
@@ -846,35 +840,32 @@ describe('Create work item component', () => {
         expect(findLabelsWidget().exists()).toBe(true);
       });
 
-      it('renders the dates widget', () => {
-        expect(findDatesWidget().props('shouldRollUp')).toBe(true);
-      });
-
       it('renders the work item CRM contacts widget', () => {
         expect(findCrmContactsWidget().exists()).toBe(true);
       });
     });
 
-    describe('with canRollUp=true', () => {
-      beforeEach(async () => {
-        createComponent({
-          provide: {
-            getWorkItemTypeConfiguration: () => ({
-              widgetDefinitions: [
-                {
-                  type: WIDGET_TYPE_START_AND_DUE_DATE,
-                  canRollUp: false,
-                },
-              ],
-            }),
-          },
-        });
-        await resolveAll();
-      });
+    describe('with canRollUp config', () => {
+      it.each([true, false])(
+        'renders the dates widget with shouldRollUp %s when canRollUp is %s',
+        async (canRollUp) => {
+          createComponent({
+            provide: {
+              getWorkItemTypeConfiguration: jest.fn().mockReturnValue({
+                widgetDefinitions: [
+                  {
+                    type: WIDGET_TYPE_START_AND_DUE_DATE,
+                    canRollUp,
+                  },
+                ],
+              }),
+            },
+          });
+          await resolveAll();
 
-      it('renders the dates widget', () => {
-        expect(findDatesWidget().props('shouldRollUp')).toBe(true);
-      });
+          expect(findDatesWidget().props('shouldRollUp')).toBe(canRollUp);
+        },
+      );
     });
 
     it('uses the description prop as the initial description value when defined', async () => {
@@ -945,13 +936,22 @@ describe('Create work item component', () => {
       it('renders the work item assignees widget from features', () => {
         expect(findAssigneesWidget().exists()).toBe(true);
       });
+
+      it('renders the work item CRM contacts widget from features', () => {
+        expect(findCrmContactsWidget().exists()).toBe(true);
+      });
     });
   });
 
   describe('Create work item widgets for Incident work item type', () => {
-    describe('default', () => {
+    describe('with isIncidentManagement=true', () => {
       beforeEach(async () => {
-        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT } });
+        createComponent({
+          props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT },
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ isIncidentManagement: true }),
+          },
+        });
         await resolveAll();
       });
 
@@ -977,21 +977,6 @@ describe('Create work item component', () => {
 
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
-      });
-
-      it('does not renders the work item parent widget', () => {
-        expect(findParentWidget().exists()).toBe(false);
-      });
-    });
-
-    describe('with isIncidentManagement=true', () => {
-      beforeEach(async () => {
-        createComponent({
-          provide: {
-            getWorkItemTypeConfiguration: () => ({ isIncidentManagement: true }),
-          },
-        });
-        await resolveAll();
       });
 
       it('does not renders the work item parent widget', () => {
@@ -1077,7 +1062,7 @@ describe('Create work item component', () => {
 
     it('renders the correct text for the checkbox', () => {
       expect(findRelatesToCheckbox().text()).toMatchInterpolatedText(
-        'Mark this item as related to: epic #1',
+        'Mark this item as related to: Epic #1',
       );
     });
 
@@ -1138,7 +1123,7 @@ describe('Create work item component', () => {
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
-      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create Epic');
     });
 
     it('shows buttons on left and sticky when not isModal', async () => {
@@ -1147,7 +1132,7 @@ describe('Create work item component', () => {
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
-      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create Epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
 
@@ -1176,18 +1161,77 @@ describe('Create work item component', () => {
       await updateWorkItemTitle();
     });
 
-    it('should call handleKeydown method when keydown event is triggered with CTRL', () => {
-      const event = new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true });
-      document.dispatchEvent(event);
+    it.each`
+      key       | keyOptions
+      ${'CTRL'} | ${{ key: 'Enter', ctrlKey: true }}
+      ${'CMD'}  | ${{ key: 'Enter', metaKey: true }}
+    `(
+      'creates work item and stops $key+Enter from propagating to other handlers',
+      ({ keyOptions }) => {
+        const event = new KeyboardEvent('keydown', { cancelable: true, ...keyOptions });
+        jest.spyOn(event, 'preventDefault');
+        jest.spyOn(event, 'stopImmediatePropagation');
+        document.dispatchEvent(event);
 
-      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+        expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(event.stopImmediatePropagation).toHaveBeenCalled();
+      },
+    );
+  });
+
+  describe('when saving work item during create', () => {
+    it('skips updateDraftData when loading is true', async () => {
+      createComponent();
+      await resolveAll();
+      await updateWorkItemTitle();
+
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+      wrapper.find('form').trigger('submit');
+
+      apolloProvider.defaultClient.mutate.mockClear();
+      findTitleInput().vm.$emit('updateDraft', 'new title');
+      await nextTick();
+
+      expect(apolloProvider.defaultClient.mutate).not.toHaveBeenCalledWith(
+        expect.objectContaining({ mutation: updateNewWorkItemMutation }),
+      );
     });
 
-    it('should call handleKeydown method when keydown event is triggered with CMD', () => {
-      const event = new KeyboardEvent('keydown', { key: 'Enter', metaKey: true });
-      document.dispatchEvent(event);
+    it('skips handleUpdateWidgetDraft when loading is true', async () => {
+      createComponent();
+      await resolveAll();
+      await updateWorkItemTitle();
 
-      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+      wrapper.find('form').trigger('submit');
+
+      apolloProvider.defaultClient.mutate.mockClear();
+      findAssigneesWidget().vm.$emit('updateWidgetDraft', { assignees: [] });
+      await nextTick();
+
+      expect(apolloProvider.defaultClient.mutate).not.toHaveBeenCalledWith(
+        expect.objectContaining({ mutation: updateNewWorkItemMutation }),
+      );
+    });
+
+    it('clears autosave draft before emitting work-item-created', async () => {
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
+      await resolveAll();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      const clearedAt = clearDraft.mock.invocationCallOrder[0];
+      const emittedAt = wrapper.emitted('work-item-created').length;
+
+      expect(clearDraft).toHaveBeenCalled();
+      expect(emittedAt).toBe(1);
+      expect(clearedAt).toBeDefined();
     });
   });
 
@@ -1361,7 +1405,7 @@ describe('Create work item component', () => {
 
       it('renders text', () => {
         expect(findResolveDiscussionSection().text()).toMatchInterpolatedText(
-          'Creating this issue will resolve the thread in !1 (discussion 1224)',
+          'Creating this Issue will resolve the thread in !1 (discussion 1224)',
         );
       });
 
@@ -1407,7 +1451,7 @@ describe('Create work item component', () => {
       beforeEach(async () => {
         createComponent({
           props: { isGroup: true },
-          provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
+          provide: { hasEpicsFeature: true },
         });
         await resolveAll();
       });

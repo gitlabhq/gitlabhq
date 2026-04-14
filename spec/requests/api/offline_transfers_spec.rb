@@ -18,7 +18,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     it_behaves_like '404 response'
   end
 
-  describe 'POST /offline_exports' do
+  describe 'POST /offline_exports', :with_current_organization do
     let(:bucket) { 'exports' }
     let(:entity_params) { [{ 'full_path' => 'group/subgroup' }, { 'full_path' => 'group/project' }] }
     let(:aws_s3_credentials) do

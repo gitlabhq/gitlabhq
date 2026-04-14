@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe AwardEmojiHelper do
+RSpec.describe AwardEmojiHelper, feature_category: :team_planning do
   describe '.toggle_award_url' do
     subject { helper.toggle_award_url(awardable) }
 
     context 'note on personal snippet' do
-      let(:snippet) { create(:personal_snippet) }
-      let(:note) { create(:note_on_personal_snippet, noteable: snippet) }
+      let(:snippet) { build_stubbed(:personal_snippet) }
+      let(:note) { build_stubbed(:note_on_personal_snippet, noteable: snippet) }
       let(:awardable) { note }
 
       subject { helper.toggle_award_url(note) }
@@ -21,7 +21,7 @@ RSpec.describe AwardEmojiHelper do
     end
 
     context 'note on project item' do
-      let(:note) { create(:note_on_project_snippet) }
+      let(:note) { build_stubbed(:note_on_project_snippet) }
       let(:awardable) { note }
 
       it 'returns correct url' do
@@ -34,7 +34,7 @@ RSpec.describe AwardEmojiHelper do
     end
 
     context 'personal snippet' do
-      let(:snippet) { create(:personal_snippet) }
+      let(:snippet) { build_stubbed(:personal_snippet) }
       let(:awardable) { snippet }
 
       it 'returns correct url' do
@@ -45,7 +45,7 @@ RSpec.describe AwardEmojiHelper do
     end
 
     context 'merge request' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { build_stubbed(:merge_request) }
       let(:awardable) { merge_request }
 
       it 'returns correct url' do
@@ -58,7 +58,7 @@ RSpec.describe AwardEmojiHelper do
     end
 
     context 'issue' do
-      let(:issue) { create(:issue) }
+      let(:issue) { build_stubbed(:issue) }
       let(:awardable) { issue }
 
       it 'returns correct url' do

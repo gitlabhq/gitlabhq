@@ -257,7 +257,7 @@ After enabling SAST, you can:
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 You can review vulnerabilities in a pipeline:
 
@@ -283,7 +283,7 @@ In Ultimate, you can also download the security scan results:
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Build** > **Pipelines**.

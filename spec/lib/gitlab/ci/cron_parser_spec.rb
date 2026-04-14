@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration do
   shared_examples_for "returns time in the future" do
-    it { is_expected.to be > Time.now }
+    it { is_expected.to be_future }
   end
 
   shared_examples_for "returns time in the past" do
-    it { is_expected.to be < Time.now }
+    it { is_expected.to be_past }
   end
 
   shared_examples_for 'when cron and cron_timezone are valid' do |returns_time_for_epoch|

@@ -1,5 +1,5 @@
 import { FaviconOverlayManager } from '@gitlab/favicon-overlay';
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 // FaviconOverlayManager is a glorious singleton/static class. Let's start to encapsulate that with this helper.
 const getDefaultFaviconManager = memoize(async () => {

@@ -72,7 +72,7 @@ These are not recommendations.
      ['resource_boundary!=cpu&urgency=high', 'high-urgency'],
      # Route all database, gitaly and global search workers that are throttled to `throttled` queue
      ['feature_category=database,gitaly,global_search&urgency=throttled', 'throttled'],
-     # Route all workers having contact with outside world to a `network-intenstive` queue
+     # Route all workers having contact with outside world to a `network-intensive` queue
      ['has_external_dependencies=true|feature_category=hooks|tags=network', 'network-intensive'],
      # Wildcard matching, route the rest to `default` queue
      ['*', 'default']

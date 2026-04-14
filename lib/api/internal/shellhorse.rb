@@ -49,6 +49,7 @@ module API
             end
           end
 
+          route_setting :authorization, skip_granular_token_authorization: :gitlab_shared_secret_auth
           post '/git_audit_event', feature_category: :source_code_management do
             unless COMMANDS_TO_AUDIT.include?(params[:action])
               break response_with_status(code: 400, success: false, message: "No valid action specified")

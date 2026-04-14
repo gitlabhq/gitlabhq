@@ -115,6 +115,26 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           end
         end
       end
+
+      context 'when ignore_case is true' do
+        let(:params) do
+          { search: "MAST", ref_type: :branches, ignore_case: true }
+        end
+
+        it 'matches branches case-insensitively' do
+          expect(subject.map(&:name)).to include("master")
+        end
+      end
+
+      context 'when ignore_case is false' do
+        let(:params) do
+          { search: "MAST", ref_type: :branches, ignore_case: false }
+        end
+
+        it 'does not match branches with different case' do
+          expect(subject.map(&:name)).not_to include("master")
+        end
+      end
     end
 
     describe 'Wildcard search' do
@@ -447,6 +467,36 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
+    end
+  end
+
+  describe '#next_cursor' do
+    subject(:next_cursor) { finder.next_cursor }
+
+    context 'when execute has not been called' do
+      let(:params) { { ref_type: :branches } }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with pagination' do
+      let(:params) { { ref_type: :tags, per_page: 2 } }
+
+      before do
+        finder.execute
+      end
+
+      it { is_expected.to be_present }
+    end
+
+    context 'without pagination' do
+      let(:params) { { ref_type: :tags } }
+
+      before do
+        finder.execute
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

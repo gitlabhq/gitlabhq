@@ -166,6 +166,22 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         end
       end
 
+      context "valid branch, whitespace-only file that exists" do
+        let_it_be(:project) { create(:project, :repository) }
+        let(:id) { 'master/ ' }
+
+        before do
+          project.add_maintainer(user)
+          project.repository.create_file(
+            user, ' ', 'content',
+            message: 'Add file with space name', branch_name: 'master'
+          )
+          request
+        end
+
+        it { is_expected.to respond_with(:success) }
+      end
+
       context 'when branch has only empty commits' do
         let(:id) { 'empty-branch' }
 

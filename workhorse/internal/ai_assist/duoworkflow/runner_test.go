@@ -24,15 +24,21 @@ import (
 )
 
 type mockWebSocketConn struct {
-	readMessages      [][]byte
-	writeMessages     [][]byte
-	readIndex         int
-	readError         error
-	writeError        error
-	closeError        error
-	writeControlError error
-	setDeadlineError  error
-	blockCh           chan bool
+	readMessages       [][]byte
+	writeMessages      [][]byte
+	readDeadlinesMu    sync.Mutex
+	readDeadlines      []time.Time
+	writeDeadlines     []time.Time
+	readIndex          int
+	readError          error
+	writeError         error
+	closeError         error
+	writeControlError  error
+	setDeadlineError   error
+	clearDeadlineError error
+	blockCh            chan bool
+	pongHandlerMu      sync.Mutex
+	pongHandler        func(string) error
 }
 
 func (m *mockWebSocketConn) ReadMessage() (int, []byte, error) {
@@ -67,12 +73,39 @@ func (m *mockWebSocketConn) WriteControl(_ int, _ []byte, _ time.Time) error {
 	return m.writeControlError
 }
 
-func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
+func (m *mockWebSocketConn) SetReadDeadline(t time.Time) error {
+	m.readDeadlinesMu.Lock()
+	defer m.readDeadlinesMu.Unlock()
+	m.readDeadlines = append(m.readDeadlines, t)
 	return m.setDeadlineError
 }
 
-func (m *mockWebSocketConn) SetWriteDeadline(_ time.Time) error {
+func (m *mockWebSocketConn) getReadDeadlines() []time.Time {
+	m.readDeadlinesMu.Lock()
+	defer m.readDeadlinesMu.Unlock()
+	result := make([]time.Time, len(m.readDeadlines))
+	copy(result, m.readDeadlines)
+	return result
+}
+
+func (m *mockWebSocketConn) SetWriteDeadline(t time.Time) error {
+	m.writeDeadlines = append(m.writeDeadlines, t)
+	if t.IsZero() {
+		return m.clearDeadlineError
+	}
 	return m.setDeadlineError
+}
+
+func (m *mockWebSocketConn) SetPongHandler(h func(string) error) {
+	m.pongHandlerMu.Lock()
+	defer m.pongHandlerMu.Unlock()
+	m.pongHandler = h
+}
+
+func (m *mockWebSocketConn) getPongHandler() func(string) error {
+	m.pongHandlerMu.Lock()
+	defer m.pongHandlerMu.Unlock()
+	return m.pongHandler
 }
 
 type mockWorkflowStream struct {
@@ -578,6 +611,14 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 	}
 }
 
+// timeoutError implements net.Error with Timeout() returning true,
+// simulating the i/o timeout produced when a WebSocket pong deadline expires.
+type timeoutError struct{}
+
+func (e *timeoutError) Error() string   { return "i/o timeout" }
+func (e *timeoutError) Timeout() bool   { return true }
+func (e *timeoutError) Temporary() bool { return false }
+
 func TestRunner_Execute_with_close_errors(t *testing.T) {
 	tests := []struct {
 		name           string
@@ -593,6 +634,11 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 			name:           "websocket going away",
 			wsReadError:    &websocket.CloseError{Code: websocket.CloseGoingAway},
 			expectedReason: "WORKHORSE_WEBSOCKET_CLOSE_1001",
+		},
+		{
+			name:           "websocket pong timeout",
+			wsReadError:    &timeoutError{},
+			expectedReason: "WORKHORSE_WEBSOCKET_PONG_TIMEOUT",
 		},
 	}
 
@@ -689,21 +735,21 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		},
 		{
 			name:               "start request with supported and unsupported ClientCapabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "read_file_chunked", "unsupported_capability"]}}`),
-			clientCapabilities: []string{"shell_command", "incremental_streaming", "read_file_chunked"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "read_file_chunked", "command_timeout", "unsupported_capability"]}}`),
+			clientCapabilities: []string{"shell_command", "incremental_streaming", "read_file_chunked", "command_timeout"},
 			expectedErrMsg:     "",
 		},
 		{
 			name:               "start request with server capabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked"]}}`),
-			clientCapabilities: []string{"shell_command", "read_file_chunked", "advanced_search"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked", "command_timeout"]}}`),
+			clientCapabilities: []string{"shell_command", "read_file_chunked", "command_timeout", "advanced_search"},
 			serverCapabilities: []string{"advanced_search"},
 			expectedErrMsg:     "",
 		},
 		{
 			name:               "start request without server capabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked"]}}`),
-			clientCapabilities: []string{"shell_command", "read_file_chunked"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked", "command_timeout"]}}`),
+			clientCapabilities: []string{"shell_command", "read_file_chunked", "command_timeout"},
 			serverCapabilities: []string{},
 			expectedErrMsg:     "",
 		},
@@ -1026,14 +1072,14 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 			URI:     server.Addr,
 			Headers: map[string]string{},
 			Secure:  false,
-		}, "test-agent")
+		}, "test-agent", "")
 		require.NoError(t, err)
 
 		cloudClient, err := NewClient(&api.DuoWorkflowServiceConfig{
 			URI:     server.Addr,
 			Headers: map[string]string{},
 			Secure:  false,
-		}, "test-agent")
+		}, "test-agent", "")
 		require.NoError(t, err)
 
 		mockConn := &mockWebSocketConn{}
@@ -1062,7 +1108,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 			URI:     server.Addr,
 			Headers: map[string]string{},
 			Secure:  false,
-		}, "test-agent")
+		}, "test-agent", "")
 		require.NoError(t, err)
 
 		mockConn := &mockWebSocketConn{}
@@ -1090,7 +1136,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 			URI:     server.Addr,
 			Headers: map[string]string{},
 			Secure:  false,
-		}, "test-agent")
+		}, "test-agent", "")
 		require.NoError(t, err)
 
 		mockConn := &mockWebSocketConn{}
@@ -1179,11 +1225,12 @@ func TestRunner_closeWebSocketConnection(t *testing.T) {
 
 func TestRunner_sendActionToWs(t *testing.T) {
 	tests := []struct {
-		name             string
-		action           *pb.Action
-		writeError       error
-		setDeadlineError error
-		expectedErrMsg   string
+		name               string
+		action             *pb.Action
+		writeError         error
+		setDeadlineError   error
+		clearDeadlineError error
+		expectedErrMsg     string
 	}{
 		{
 			name: "successful send",
@@ -1223,13 +1270,27 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			setDeadlineError: errors.New("set write deadline failed"),
 			expectedErrMsg:   "sendActionToWs: failed to set write deadline: set write deadline failed",
 		},
+		{
+			name: "clear write deadline error",
+			action: &pb.Action{
+				RequestID: "req-clear",
+				Action: &pb.Action_RunCommand{
+					RunCommand: &pb.RunCommandAction{
+						Program: "ls",
+					},
+				},
+			},
+			clearDeadlineError: errors.New("clear write deadline failed"),
+			expectedErrMsg:     "sendActionToWs: failed to clear write deadline: clear write deadline failed",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockConn := &mockWebSocketConn{
-				writeError:       tt.writeError,
-				setDeadlineError: tt.setDeadlineError,
+				writeError:         tt.writeError,
+				setDeadlineError:   tt.setDeadlineError,
+				clearDeadlineError: tt.clearDeadlineError,
 			}
 
 			testURL, _ := url.Parse("http://example.com")
@@ -1248,6 +1309,10 @@ func TestRunner_sendActionToWs(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.Len(t, mockConn.writeMessages, 1)
+				// Verify the write deadline was set and then cleared.
+				require.Len(t, mockConn.writeDeadlines, 2)
+				require.False(t, mockConn.writeDeadlines[0].IsZero(), "first call should set a non-zero deadline")
+				require.True(t, mockConn.writeDeadlines[1].IsZero(), "second call should clear the deadline")
 			}
 		})
 	}
@@ -1820,4 +1885,162 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "failed to receive from cloud service")
 	})
+}
+
+func TestRunner_pingWebSocket(t *testing.T) {
+	t.Run("sends ping and sets read deadline", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+
+		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq: req,
+			conn:        mockConn,
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		errCh := make(chan error, 1)
+
+		// Replace WriteControl with a version that signals and then cancels.
+		// We do this by running pingWebSocket with a very short interval using
+		// a test-specific runner that wraps the mock.
+		pingSent := make(chan struct{})
+		wrappedConn := &pingTrackingConn{
+			mockWebSocketConn: mockConn,
+			onPing: func() {
+				select {
+				case pingSent <- struct{}{}:
+				default:
+				}
+				cancel() // stop the goroutine after the first ping
+			},
+		}
+		r.conn = wrappedConn
+
+		go r.pingWebSocket(ctx, errCh, 10*time.Millisecond)
+
+		select {
+		case <-pingSent:
+			// ping was sent — verify a read deadline was set on the mock
+			assert.NotEmpty(t, mockConn.getReadDeadlines(), "expected read deadline to be set before ping")
+		case err := <-errCh:
+			t.Fatalf("unexpected error from pingWebSocket: %v", err)
+		case <-time.After(5 * time.Second):
+			t.Fatal("timed out waiting for ping to be sent")
+		}
+	})
+
+	t.Run("pong handler resets read deadline", func(t *testing.T) {
+		mockConn := &mockWebSocketConn{}
+		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
+
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq: req,
+			conn:        mockConn,
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		// Register the pong handler before launching any goroutine, mirroring
+		// what Execute() does. pingWebSocket no longer calls SetPongHandler
+		// itself, so we must set it up here.
+		r.conn.SetPongHandler(func(string) error {
+			return r.conn.SetReadDeadline(time.Now().Add(wsPongTimeout))
+		})
+
+		errCh := make(chan error, 1)
+		// Use a long interval so no pings fire during the test; we only care
+		// about the pong handler behavior.
+		go r.pingWebSocket(ctx, errCh, time.Hour)
+
+		// The pong handler is already registered synchronously above, so invoke
+		// it directly and verify it extends the read deadline.
+		before := len(mockConn.getReadDeadlines())
+		err := mockConn.getPongHandler()("test")
+		require.NoError(t, err)
+		deadlines := mockConn.getReadDeadlines()
+		require.Greater(t, len(deadlines), before, "pong handler should have extended the read deadline")
+		lastDeadline := deadlines[len(deadlines)-1]
+		assert.True(t, lastDeadline.After(time.Now()), "read deadline should be in the future")
+	})
+
+	t.Run("stops workflow and returns error when WriteControl fails", func(t *testing.T) {
+		writeErr := fmt.Errorf("network gone")
+		wrappedConn := &pingTrackingConn{
+			mockWebSocketConn: &mockWebSocketConn{
+				writeControlError: writeErr,
+			},
+		}
+		mockWf := &mockWorkflowStream{}
+
+		testURL, _ := url.Parse("http://example.com")
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		req, _ := http.NewRequestWithContext(ctx, "GET", "/duo", nil)
+		r := &runner{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    testURL,
+			},
+			originalReq: req,
+			conn:        wrappedConn,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
+		}
+
+		errCh := make(chan error, 1)
+		go r.pingWebSocket(ctx, errCh, 10*time.Millisecond)
+
+		// Wait for the StopWorkflow event to be sent, then cancel the context
+		// so stopWorkflow unblocks and pingWebSocket can send to errCh.
+		require.Eventually(t, func() bool {
+			return len(mockWf.getSendEvents()) == 1
+		}, 2*time.Second, 10*time.Millisecond)
+
+		stopEvent := mockWf.getSendEvents()[0].GetStopWorkflow()
+		require.NotNil(t, stopEvent)
+		assert.Equal(t, "WORKHORSE_WEBSOCKET_PING_FAILED", stopEvent.Reason)
+
+		cancel()
+
+		select {
+		case err := <-errCh:
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "failed to send ping")
+		case <-time.After(5 * time.Second):
+			t.Fatal("timed out waiting for error from pingWebSocket")
+		}
+	})
+}
+
+// pingTrackingConn wraps mockWebSocketConn and calls onPing when WriteControl
+// is called with a PingMessage, allowing tests to observe ping sends.
+type pingTrackingConn struct {
+	*mockWebSocketConn
+	onPing func()
+}
+
+func (p *pingTrackingConn) WriteControl(msgType int, data []byte, deadline time.Time) error {
+	if msgType == websocket.PingMessage && p.onPing != nil {
+		p.onPing()
+	}
+	return p.mockWebSocketConn.WriteControl(msgType, data, deadline)
+}
+
+func (p *pingTrackingConn) SetPongHandler(h func(string) error) {
+	p.mockWebSocketConn.SetPongHandler(h)
 }

@@ -11,6 +11,7 @@ module Mutations
         description: "Indicates the new onboarding_complete state of the project's Pages metadata."
 
       authorize :admin_project
+      authorize_granular_token permissions: :update_page, boundary_argument: :project_path, boundary_type: :project
 
       def resolve(project_path:)
         project = authorized_find!(project_path)

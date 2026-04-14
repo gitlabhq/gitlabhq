@@ -11,6 +11,21 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     project.add_reporter(user)
   end
 
+  describe 'organization_id propagation to NotesFinder' do
+    let!(:issue) { create(:issue, project: project, author: user) }
+
+    it 'passes organization_id to NotesFinder' do
+      expect(NotesFinder).to receive(:new).with(
+        user,
+        hash_including(organization_id: user.organization.id)
+      ).and_call_original
+
+      get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   context 'when there are cross-reference system notes' do
     let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
     let(:notes_in_response) { json_response }

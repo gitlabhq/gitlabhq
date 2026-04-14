@@ -36,7 +36,7 @@ module OauthApplications
   end
 
   def permitted_params
-    %i[name redirect_uri scopes confidential]
+    %i[name redirect_uri scopes confidential device_code_enabled]
   end
 
   def application_params

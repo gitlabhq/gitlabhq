@@ -65,6 +65,20 @@ To delete an account manager:
 1. Next to the account manager, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Delete account manager**.
 
+### Account manager permissions
+
+When you designate an account manager, you grant that individual access to your GitLab account
+with the same permissions you have. This authorization stays in effect until you change or revoke
+it using GitLab tools or another method GitLab allows.
+
+You are responsible for all actions taken by your account manager during the designation period,
+including content created or published under your name, regardless of whether you directed or
+were aware of those specific actions.
+
+Your account manager is subject to the GitLab Terms of Use when acting on your behalf. GitLab
+may suspend or revoke an account manager's access if there is credible evidence of a violation
+of the GitLab Terms of Use.
+
 ## Account successor
 
 A designated account successor can assume permanent ownership of your GitLab account in the event

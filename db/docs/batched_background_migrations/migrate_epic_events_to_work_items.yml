@@ -1,0 +1,7 @@
+---
+migration_job_name: MigrateEpicEventsToWorkItems
+description: Migrate events to use the work_item_id (issue_id) of the Epic instead of the legacy Epic ID. Changes target_type from 'Epic' to 'WorkItem' and target_id from epic.id to epic.issue_id.
+feature_category: portfolio_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229509
+milestone: '18.11'
+queued_migration_version: 20260330134732

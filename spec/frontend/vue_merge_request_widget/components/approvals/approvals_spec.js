@@ -288,8 +288,20 @@ describe('MRWidget approvals', () => {
             return nextTick();
           });
 
-          it('calls service approve', () => {
-            expect(service.approveMergeRequest).toHaveBeenCalled();
+          it('calls service approve with publish_review false when no drafts', () => {
+            expect(service.approveMergeRequest).toHaveBeenCalledWith({ publish_review: false });
+          });
+        });
+
+        describe('when user has pending drafts', () => {
+          beforeEach(() => {
+            useBatchComments().drafts = [{ id: 1 }];
+            findAction().vm.$emit('click');
+            return nextTick();
+          });
+
+          it('calls service approve with publish_review', () => {
+            expect(service.approveMergeRequest).toHaveBeenCalledWith({ publish_review: true });
           });
         });
 

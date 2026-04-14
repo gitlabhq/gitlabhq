@@ -181,7 +181,7 @@ RSpec.describe Gitlab::IssuablesCountForState do
             finder.params[:exclude_group_work_items] = true
           end
 
-          it_behaves_like 'calculating counts for issuables'
+          it_behaves_like 'calculating counts without caching'
         end
 
         context 'with issue_types filter on group issues page' do
@@ -215,30 +215,12 @@ RSpec.describe Gitlab::IssuablesCountForState do
       it_behaves_like 'calculating counts for issuables'
       it_behaves_like 'calculating counts with filters'
 
-      context 'when on group issues page and cached_state_counts_for_group_issues feature flag is disabled' do
-        before do
-          stub_feature_flags(cached_state_counts_for_group_issues: false)
-          finder.params[:exclude_group_work_items] = true
-        end
-
-        it_behaves_like 'calculating counts without caching'
-      end
-
-      context 'when on group epics page and cached_state_counts_for_group_issues feature flag is disabled' do
-        before do
-          stub_feature_flags(cached_state_counts_for_group_issues: false)
-          finder.params[:exclude_group_work_items] = false
-        end
-
-        it_behaves_like 'calculating counts for issuables'
-      end
-
       context 'when on group issues page (exclude_group_work_items is true)' do
         before do
           finder.params[:exclude_group_work_items] = true
         end
 
-        it_behaves_like 'calculating counts for issuables'
+        it_behaves_like 'calculating counts without caching'
       end
 
       context 'when on group epics page (exclude_group_work_items is false)' do
@@ -254,16 +236,12 @@ RSpec.describe Gitlab::IssuablesCountForState do
       let(:finder) { ::WorkItems::WorkItemsFinder.new(user, params) }
       let(:cache_key) { ['group', group&.id, 'work_items'] }
 
+      before do
+        finder.params[:exclude_group_work_items] = false
+      end
+
       it_behaves_like 'calculating counts for issuables'
       it_behaves_like 'calculating counts with filters'
-
-      context 'when on consolidated list page and cached_state_counts_for_group_issues feature flag is disabled' do
-        before do
-          stub_feature_flags(cached_state_counts_for_group_issues: false)
-        end
-
-        it_behaves_like 'calculating counts without caching'
-      end
     end
 
     context 'with Merge Requests' do

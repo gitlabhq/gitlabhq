@@ -9,19 +9,13 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   describe 'behavior' do
     before do
       project.add_maintainer(user)
+      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
 
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
     end
 
     it 'loads all the assignees when opened' do
@@ -42,9 +36,10 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
   describe 'selecting from dropdown without Ajax call' do
     before do
       project.add_maintainer(user)
+      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
 
-      visit project_issues_path(project)
+      visit project_work_items_path(project)
 
       Gitlab::Testing::RequestBlockerMiddleware.block_requests!
       select_tokens 'Assignee', '='
@@ -92,11 +87,12 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
       create(:group_group_link, shared_group: subgroup, shared_with_group: invited_to_group_group)
       create(:project_group_link, project: subgroup_project, group: invited_to_project_group)
 
+      create(:callout, user: subgroup_user, feature_name: :work_items_onboarding_modal)
       sign_in(subgroup_user)
     end
 
     it 'shows inherited, direct, and invited group members including descendent members', :aggregate_failures do
-      visit issues_group_path(subgroup)
+      visit group_work_items_path(subgroup)
 
       select_tokens 'Assignee', '='
 
@@ -106,7 +102,7 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
       expect(page).to have_text subsubgroup_user.name
       expect(page).to have_text invited_to_project_group_user.name
 
-      visit project_issues_path(subgroup_project)
+      visit project_work_items_path(subgroup_project)
 
       select_tokens 'Assignee', '='
 

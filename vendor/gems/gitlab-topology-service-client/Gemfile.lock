@@ -24,7 +24,7 @@ GEM
     ast (2.4.3)
     base64 (0.3.0)
     bigdecimal (4.0.1)
-    binding_of_caller (1.0.1)
+    binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
@@ -82,17 +82,18 @@ GEM
     rspec-mocks (3.13.7)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-parameterized (1.0.2)
-      rspec-parameterized-core (< 2)
-      rspec-parameterized-table_syntax (< 2)
-    rspec-parameterized-core (1.0.1)
+    rspec-parameterized (2.0.1)
+      rspec-parameterized-core (>= 2, < 3)
+      rspec-parameterized-table_syntax (>= 2, < 3)
+    rspec-parameterized-core (2.0.1)
       parser
+      prism
       proc_to_ast (>= 0.2.0)
       rspec (>= 2.13, < 4)
       unparser
-    rspec-parameterized-table_syntax (1.0.1)
-      binding_of_caller
-      rspec-parameterized-core (< 2)
+    rspec-parameterized-table_syntax (2.1.1)
+      binding_of_caller (>= 2)
+      rspec-parameterized-core (>= 2, < 3)
     rspec-support (3.13.7)
     rubocop (1.68.0)
       json (~> 2.3)
@@ -155,7 +156,7 @@ DEPENDENCIES
   gitlab-styles (~> 13.0.1)
   gitlab-topology-service-client!
   rspec (~> 3.0)
-  rspec-parameterized (~> 1.0.2)
+  rspec-parameterized (~> 2.0.1)
   rubocop (~> 1.21)
 
 CHECKSUMS
@@ -163,7 +164,7 @@ CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
-  binding_of_caller (1.0.1) sha256=2b2902abff4246ddcfbc4da9b69bc4a019e22aeb300c2ff6289a173d4b90b29a
+  binding_of_caller (2.0.0) sha256=e53eebf8428a85587aede7b43a83e7419eb85b8b690938a96aa330d03052d517
   concurrent-ruby (1.3.6) sha256=6b56837e1e7e5292f9864f34b69c5a2cbc75c0cf5338f1ce9903d10fa762d5ab
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   debug_inspector (1.2.0) sha256=9bdfa02eebc3da163833e6a89b154084232f5766087e59573b70521c77ea68a2
@@ -193,9 +194,9 @@ CHECKSUMS
   rspec-core (3.13.6) sha256=a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.7) sha256=0979034e64b1d7a838aaaddf12bf065ea4dc40ef3d4c39f01f93ae2c66c62b1c
-  rspec-parameterized (1.0.2) sha256=b456dec0091924175ac13963e173cdbaa2ab3e1581a405a948addc34e3f3f4c2
-  rspec-parameterized-core (1.0.1) sha256=31819939c433f58b59f83d1bcd08697ca74ea7e44e2a207f7445934f88461aab
-  rspec-parameterized-table_syntax (1.0.1) sha256=ffead8f21f0711b3cdf8b74386f2ef7ac93b39c40b60658a5eda97072580f2fc
+  rspec-parameterized (2.0.1) sha256=5507c3bde0e0f1d6c7183e4936ddf1646a898c00db20c12d03984a8ea25a567c
+  rspec-parameterized-core (2.0.1) sha256=4f93067b89b8043357e0589d9302a9c856f100e498faf7e49df9094aa3e5211a
+  rspec-parameterized-table_syntax (2.1.1) sha256=59cc68506162adef218b59952bf62142fd25079d01061f4ff115dcddd91a49df
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
   rubocop (1.68.0) sha256=07df508504d81e97174e8d21030f25d52c1be7ee8615939db43f3b377ea6c12b
   rubocop-ast (1.49.0) sha256=49c3676d3123a0923d333e20c6c2dbaaae2d2287b475273fddee0c61da9f71fd

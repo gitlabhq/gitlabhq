@@ -62,7 +62,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
     let(:job_name) { "test_background_migration" }
     let(:last_migration_file) { "db/post_migrate/20200331140101_queue_test_background_migration.rb" }
-    let(:chatops_command) { %r{/chatops run batched_background_migrations status \d+ --database main} }
+    let(:chatops_command) { %r{/chatops gitlab run batched_background_migrations status \d+ --database main} }
 
     subject(:description) { keep.change_description(migration_record, job_name, last_migration_file) }
 

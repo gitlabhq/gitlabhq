@@ -638,3 +638,82 @@ export const mockDeployment = {
   status: SUCCESS,
   environment_available: true,
 };
+
+export const mockPipelineSubscription = {
+  id: 'gid://gitlab/Ci::Pipeline/1027',
+  active: true,
+  status: 'RUNNING',
+  detailedStatus: {
+    name: 'RUNNING',
+    favicon:
+      '/assets/ci_favicons/favicon_status_running-9c635b2419a8e1ec991c993061b89cc5aefc0743bb238ecd0c381e7741a70e8c.png',
+    group: 'running',
+    label: 'running',
+    tooltip: 'running',
+    id: 'running-1027-1027',
+    icon: 'status_running',
+    text: 'Running',
+    detailsPath: '/root/ci-project/-/pipelines/1027',
+    __typename: 'DetailedStatus',
+  },
+  stages: {
+    nodes: [
+      {
+        id: 'gid://gitlab/Ci::Stage/1296',
+        status: 'success',
+        detailedStatus: {
+          name: 'SUCCESS',
+          favicon:
+            '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png',
+          group: 'success',
+          label: 'passed',
+          tooltip: 'passed',
+          id: 'success-1296-1296',
+          icon: 'status_success',
+          text: 'Passed',
+          detailsPath: '/root/ci-project/-/pipelines/1027#build',
+          __typename: 'DetailedStatus',
+        },
+        __typename: 'CiStage',
+      },
+      {
+        id: 'gid://gitlab/Ci::Stage/1297',
+        status: 'running',
+        detailedStatus: {
+          name: 'RUNNING',
+          favicon:
+            '/assets/ci_favicons/favicon_status_running-9c635b2419a8e1ec991c993061b89cc5aefc0743bb238ecd0c381e7741a70e8c.png',
+          group: 'running',
+          label: 'running',
+          tooltip: 'running',
+          id: 'running-1297-1297',
+          icon: 'status_running',
+          text: 'Running',
+          detailsPath: '/root/ci-project/-/pipelines/1027#test',
+          __typename: 'DetailedStatus',
+        },
+        __typename: 'CiStage',
+      },
+      {
+        id: 'gid://gitlab/Ci::Stage/1298',
+        status: 'success',
+        detailedStatus: {
+          name: 'SUCCESS',
+          favicon:
+            '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png',
+          group: 'success',
+          label: 'passed',
+          tooltip: 'passed',
+          id: 'success-1298-1298',
+          icon: 'status_success',
+          text: 'Passed',
+          detailsPath: '/root/ci-project/-/pipelines/1027#deploy',
+          __typename: 'DetailedStatus',
+        },
+        __typename: 'CiStage',
+      },
+    ],
+    __typename: 'CiStageConnection',
+  },
+  __typename: 'Pipeline',
+};

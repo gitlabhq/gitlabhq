@@ -6,12 +6,54 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _create_dast_pipeline
+  - _run_dast_pipeline
   - access_security_and_compliance
   - admin_security_attributes
+  - admin_vulnerability
+  - admin_vulnerability_external_issue_link
+  - admin_vulnerability_issue_link
+  - apply_security_scan_profiles
   - cancel_build
   - create_build
+  - create_on_demand_dast_scan
+  - create_vulnerability_archive_export
+  - create_vulnerability_export
+  - edit_on_demand_dast_scan
+  - enable_container_scanning_for_registry
+  - enable_secret_push_protection
+  - manage_project_security_exclusions
+  - read_on_demand_dast_scan
+  - read_project_security_dashboard
+  - read_project_security_exclusions
   - read_runners
+  - read_secret_push_protection_info
   - read_security_configuration
+  - read_security_inventory
+  - read_security_project_tracked_ref
+  - read_security_resource
+  - read_security_scan_profiles
+  - read_security_settings
+  - update_on_demand_dast_scan
+  - update_security_setting
 group:
   permissions: []
-  raw_permissions: []
+  raw_permissions:
+  - admin_compliance_framework
+  - admin_compliance_pipeline_configuration
+  - admin_external_audit_events
+  - admin_security_attributes
+  - admin_vulnerability
+  - apply_security_scan_profiles
+  - enable_secret_push_protection
+  - modify_security_policy
+  - read_compliance_adherence_report
+  - read_compliance_dashboard
+  - read_compliance_violations_report
+  - read_dependency
+  - read_group_audit_events
+  - read_licenses
+  - read_security_inventory
+  - read_security_orchestration_policies
+  - read_security_scan_profiles
+  - update_security_orchestration_policy_project

@@ -320,6 +320,16 @@ describe('Work item comment form component', () => {
     });
   });
 
+  it('does not open a second confirmation dialog when cancel is triggered multiple times rapidly', () => {
+    jest.spyOn(autosave, 'getDraft').mockImplementation(() => draftComment);
+    createComponent();
+
+    findMarkdownEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: ESC_KEY }));
+    findMarkdownEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: ESC_KEY }));
+
+    expect(confirmViaGlModal.confirmAction).toHaveBeenCalledTimes(1);
+  });
+
   describe('keydown with `Up` arrow key', () => {
     const triggerKeydown = async (commentText) => {
       findMarkdownEditor().vm.$emit('input', commentText);

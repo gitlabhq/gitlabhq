@@ -14,6 +14,7 @@ export const JOB_SUCCESS = 'SUCCESS';
 export const FILE_TYPE_ARCHIVE = 'ARCHIVE';
 
 /* i18n */
+export const ACTIONS_BROWSE_ARTIFACTS = __('Browse artifacts');
 export const ACTIONS_DOWNLOAD_ARTIFACTS = __('Download artifacts');
 export const ACTIONS_START_NOW = s__('DelayedJobs|Start now');
 export const ACTIONS_UNSCHEDULE = s__('DelayedJobs|Unschedule');

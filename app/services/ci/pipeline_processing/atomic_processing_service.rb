@@ -116,14 +116,21 @@ module Ci
 
         ::Deployments::CreateForJobService.new.execute(job)
 
-        Gitlab::OptimisticLocking.retry_lock_with_transaction(job, name: 'atomic_processing_update_job') do |subject|
-          Ci::ProcessBuildService.new(project, subject.user)
-            .execute(subject, previous_status)
-
-          # update internal representation of job
-          # to make the status change of job to be taken into account during further processing
-          @collection.set_job_status(job.id, job.status, job.lock_version)
+        if Feature.enabled?(:ci_pipeline_processing_atomic_processing_service_plain_retry_lock, project)
+          Gitlab::OptimisticLocking.retry_lock(job, name: 'atomic_processing_update_job') do |subject|
+            Ci::ProcessBuildService.new(project, subject.user)
+              .execute(subject, previous_status)
+          end
+        else
+          Gitlab::OptimisticLocking.retry_lock_with_transaction(job, name: 'atomic_processing_update_job') do |subject|
+            Ci::ProcessBuildService.new(project, subject.user)
+              .execute(subject, previous_status)
+          end
         end
+
+        # update internal representation of job
+        # to make the status change of job to be taken into account during further processing
+        @collection.set_job_status(job.id, job.status, job.lock_version)
       end
 
       def status_of_previous_jobs(job)

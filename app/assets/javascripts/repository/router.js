@@ -1,4 +1,4 @@
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';

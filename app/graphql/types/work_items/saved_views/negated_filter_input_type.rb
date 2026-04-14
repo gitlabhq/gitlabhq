@@ -57,7 +57,14 @@ module Types
           as: :issue_types,
           description: 'Filter value for not types filter.',
           required: false
+        argument :work_item_type_ids,
+          [::Types::GlobalIDType[::WorkItems::Type]],
+          required: false,
+          validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+          description: 'Filter value for not work item type global IDs filter.',
+          prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
+        validates mutually_exclusive: [:issue_types, :work_item_type_ids]
         validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       end
     end

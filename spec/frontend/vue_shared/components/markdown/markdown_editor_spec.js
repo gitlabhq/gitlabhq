@@ -168,11 +168,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findMarkdownField().text()).not.toContain('Switch to rich text editing');
   });
 
-  it('passes down any additional props to markdown field component', () => {
+  it('passes codeSuggestionsConfig as a single prop to markdown field component', () => {
     const codeSuggestionsConfig = {
-      line: { text: 'hello world', richText: 'hello world' },
-      lines: [{ text: 'hello world', richText: 'hello world' }],
+      lines: ['hello world'],
+      lineType: 'new',
       canSuggest: true,
+      showPopover: false,
     };
 
     buildWrapper({
@@ -183,7 +184,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       },
     });
 
-    expect(findMarkdownField().props()).toMatchObject(codeSuggestionsConfig);
+    expect(findMarkdownField().props('codeSuggestionsConfig')).toEqual(codeSuggestionsConfig);
     expect(findMarkdownField().vm.$attrs).toMatchObject({
       myCustomProp: 'myCustomValue',
 
@@ -383,7 +384,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   it('renders data on textarea for can suggest', () => {
-    buildWrapper({ propsData: { codeSuggestionsConfig: { canSuggest: true } } });
+    buildWrapper({ propsData: { codeSuggestionsConfig: { canSuggest: true, lines: [] } } });
 
     expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });

@@ -482,6 +482,16 @@ module Ci
       end
     end
 
+    def self.retryable_pipeline_keys(items)
+      where([:commit_id, :partition_id] => items)
+        .latest
+        .failed_or_canceled
+        .group(:commit_id, :partition_id)
+        .count
+        .keys
+        .to_set
+    end
+
     def self.build_matchers(project)
       unique_params = [
         :protected,
@@ -530,6 +540,19 @@ module Ci
     # TODO: remove this method with `ci_builds_metadata`
     def self.has_any_job_definition?
       left_joins(:job_definition_instance).limit(1).pick(:job_id).present?
+    end
+
+    def self.any_stuck?(pending_builds)
+      return false if pending_builds.empty?
+
+      projects_by_id = Project.where(id: pending_builds.map(&:project_id).uniq).index_by(&:id)
+
+      pending_builds.any? do |build|
+        project = projects_by_id[build.project_id]
+        next true unless project
+
+        !project.any_online_runners? { |runner| runner.match_build_if_online?(build) }
+      end
     end
 
     def needs_maintainer_role_for_artifact_access?
@@ -1346,7 +1369,7 @@ module Ci
       return false unless user
       return false unless project.ci_separated_caches
 
-      project.team.max_member_access(user.id) >= Gitlab::Access::MAINTAINER
+      Ability.allowed?(user, :use_protected_cache, project)
     end
 
     def harbor_integration
@@ -1385,7 +1408,6 @@ module Ci
     def prepare_pending_build_args
       return unless project
       return unless status_event_transition&.to == 'pending'
-      return unless Feature.enabled?(:precompute_pending_build_args, project, type: :gitlab_com_derisk)
 
       @pending_build_args = ::Ci::PendingBuild.args_from_build(self)
     end

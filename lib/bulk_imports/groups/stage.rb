@@ -28,6 +28,11 @@ module BulkImports
             pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
             stage: 0
           },
+          max_iids: {
+            pipeline: BulkImports::Common::Pipelines::MaxIidsPipeline,
+            minimum_source_version: '18.11.0',
+            stage: 1
+          },
           group_attributes: {
             pipeline: BulkImports::Groups::Pipelines::GroupAttributesPipeline,
             stage: 1

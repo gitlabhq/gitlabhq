@@ -29,43 +29,25 @@ describe('issuableInitialDataById', () => {
 
 describe('isLegacyIssueType', () => {
   it('returns true for incident type', () => {
-    const incidentData = { issueType: 'incident' };
+    const incidentData = { isIncidentManagement: true };
     expect(isLegacyIssueType(incidentData)).toBe(true);
   });
 
   it('returns true for service desk issue', () => {
-    const serviceDeskData = {
-      issueType: 'issue',
-      authorUsername: 'support-bot',
-    };
+    const serviceDeskData = { isServiceDesk: true };
     expect(isLegacyIssueType(serviceDeskData)).toBe(true);
   });
 
-  it('returns false for regular issue', () => {
+  it('returns false when both false', () => {
     const regularIssueData = {
-      issueType: 'issue',
-      authorUsername: 'regular-user',
+      isIncidentManagement: false,
+      isServiceDesk: false,
     };
     expect(isLegacyIssueType(regularIssueData)).toBe(false);
   });
 
-  it('returns false for undefined data', () => {
-    expect(isLegacyIssueType(undefined)).toBe(false);
-  });
-
-  it('returns false for null data', () => {
-    expect(isLegacyIssueType(null)).toBe(false);
-  });
-
-  it('returns false for empty object', () => {
-    expect(isLegacyIssueType({})).toBe(false);
-  });
-
-  it('returns false when only issueType is present', () => {
-    expect(isLegacyIssueType({ issueType: 'issue' })).toBe(false);
-  });
-
-  it('returns false when only authorUsername is present', () => {
-    expect(isLegacyIssueType({ authorUsername: 'support-bot' })).toBe(false);
+  it('returns undefined when non-existent', () => {
+    const regularIssueData = {};
+    expect(isLegacyIssueType(regularIssueData)).toBe(undefined);
   });
 });

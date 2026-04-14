@@ -45,7 +45,7 @@ for how to proceed.
 We also log Ruby and Rails deprecation warnings into a dedicated log file, `log/deprecation_json.log`. It provides
 clues when there is code that is not adequately covered by tests and hence would slip past `DeprecationToolkitEnv`.
 
-For GitLab SaaS, GitLab team members can inspect these log events in Kibana (`https://log.gprd.gitlab.net/goto/f7cebf1ff05038d901ba2c45925c7e01`).
+For GitLab.com, GitLab team members can inspect these log events in Kibana (`https://log.gprd.gitlab.net/goto/f7cebf1ff05038d901ba2c45925c7e01`).
 
 ## Git bisect against Rails
 

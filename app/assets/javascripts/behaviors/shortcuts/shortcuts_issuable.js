@@ -10,6 +10,7 @@ import {
   ISSUABLE_EDIT_DESCRIPTION,
   MR_COPY_SOURCE_BRANCH_NAME,
   ISSUABLE_COPY_REF,
+  WORK_ITEM_TOGGLE_SIDEBAR,
 } from './keybindings';
 
 export default class ShortcutsIssuable {
@@ -37,6 +38,7 @@ export default class ShortcutsIssuable {
       [ISSUE_MR_CHANGE_MILESTONE, () => ShortcutsIssuable.openSidebarDropdown('milestone')],
       [ISSUABLE_CHANGE_LABEL, () => ShortcutsIssuable.openSidebarDropdown('labels')],
       [ISSUABLE_EDIT_DESCRIPTION, ShortcutsIssuable.editIssue],
+      [WORK_ITEM_TOGGLE_SIDEBAR, ShortcutsIssuable.toggleSidebar],
       [MR_COPY_SOURCE_BRANCH_NAME, () => this.copyBranchName()],
       [ISSUABLE_COPY_REF, () => this.copyIssuableRef()],
     ]);
@@ -46,6 +48,12 @@ export default class ShortcutsIssuable {
     // Need to click the element as on issues, editing is inline
     // on merge request, editing is on a different page
     document.querySelector('.js-issuable-edit').click();
+
+    return false;
+  }
+
+  static toggleSidebar() {
+    document.querySelector('.js-sidebar-toggle')?.click();
 
     return false;
   }

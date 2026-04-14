@@ -78,7 +78,8 @@ export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath(
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
 
-export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date (optional)');
+export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date');
+export const GRANT_TEMPORARY_ACCESS = s__('InviteMembersModal|Grant temporary access');
 export const MEMBER_INVITE_MESSAGE_SUCCESSFUL = s__(
   'InviteMembersModal|Members were successfully added.',
 );
@@ -93,7 +94,7 @@ export const READ_MORE_TEXT = s__(
   `InviteMembersModal|Invited members are assigned the selected role or the role they have in the group, whichever is lower. Learn more about %{linkStart}roles%{linkEnd}.`,
 );
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
-  `InviteMembersModal|From this date onward, the user can no longer access the group or project. Learn more about %{linkStart}access%{linkEnd}.`,
+  `InviteMembersModal|After this date, the user cannot access the group or project. %{linkStart}Learn more about access%{linkEnd}.`,
 );
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');

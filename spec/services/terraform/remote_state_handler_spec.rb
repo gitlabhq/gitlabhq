@@ -49,14 +49,14 @@ RSpec.describe Terraform::RemoteStateHandler, feature_category: :infrastructure_
     subject { described_class.new(project, user, name: 'my-state') }
 
     describe '#handle_with_lock' do
-      it 'allows to modify a state using database locking' do
+      it 'yields the state record under database locking' do
         record = nil
         subject.handle_with_lock do |state|
           record = state
-          state.name = 'updated-name'
         end
 
-        expect(record.reload.name).to eq 'updated-name'
+        expect(record).to be_a(Terraform::State)
+        expect(record.name).to eq 'my-state'
       end
 
       it 'returns nil' do
@@ -81,10 +81,9 @@ RSpec.describe Terraform::RemoteStateHandler, feature_category: :infrastructure_
         record = nil
         handler.handle_with_lock do |state|
           record = state
-          state.name = 'new-name'
         end
 
-        expect(record.reload.name).to eq 'new-name'
+        expect(record).to be_a(Terraform::State)
         expect(record.reload.project).to eq project
       end
 

@@ -23,7 +23,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
       flash[:alert] = _("You are not allowed to unlink your primary login account")
     end
 
-    redirect_to profile_account_path
+    redirect_to profile_two_factor_auth_path
   end
 
   def generate_support_pin

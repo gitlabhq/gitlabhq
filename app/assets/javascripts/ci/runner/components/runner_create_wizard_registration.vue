@@ -16,6 +16,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
 import {
   DOCKER_HELP_URL,
@@ -24,7 +25,6 @@ import {
   CREATION_STATE_FINISHED,
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
 } from '../constants';
-import { captureException } from '../sentry_utils';
 import OperatingSystemInstruction from './registration/wizard_operating_system_instruction.vue';
 import GoogleCloudRegistrationInstructions from './registration/google_cloud_registration_instructions.vue';
 import GkeRegistrationInstructions from './registration/gke_registration_instructions.vue';
@@ -92,7 +92,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
       pollInterval() {
         if (this.isRunnerRegistered) {

@@ -11,7 +11,7 @@
   documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#gitLab-duo-agent-platform
   image_url: https://about.gitlab.com/images/18_9/ai-powered-selfhosted-duo-agent-platform.png
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"
 
 - name: "Vulnerability resolution with GitLab Duo Agent Platform (Beta)"
   description: |
@@ -29,7 +29,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/flows/foundational_flows/agentic_sast_vulnerability_resolution/
   image_url: https://about.gitlab.com/images/18_9/sast_vulnerability_resolution_with_duo.png
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"
 
 - name: "Navigate repositories with collapsible file tree"
   description: |
@@ -45,7 +45,7 @@
   documentation_link: https://docs.gitlab.com/user/project/repository/files/file_tree_browser/
   image_url: https://about.gitlab.com/images/18_9/create-repository-file-tree-navigation.png
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"
 
 - name: "Include CI/CD inputs from a file"
   description: |
@@ -60,7 +60,7 @@
   documentation_link: https://docs.gitlab.com/ci/inputs/#use-inputs-from-external-files
   image_url: https://about.gitlab.com/images/18_9/inputs_file.png
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"
 
 - name: "Web-based commit signing on GitLab.com"
   description: |
@@ -76,7 +76,7 @@
   documentation_link: https://docs.gitlab.com/user/project/repository/signed_commits/web_commits/
   image_url: https://about.gitlab.com/images/18_9/create-web-commit-signing-gitlab-com.png
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"
 
 - name: "Container virtual registry now available (Beta)"
   description: |
@@ -91,4 +91,4 @@
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/user/packages/virtual_registry/container/
   published_at: 2026-02-19
-  release: 18.9
+  release: "18.9"

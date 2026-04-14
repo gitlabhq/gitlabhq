@@ -79,11 +79,6 @@
     }
   }
 
-  .header-message,
-  .footer-message {
-    position: static !important;
-  }
-
   // Quick search overlay
   #super-sidebar-search-modal {
     @apply gl-pt-0;
@@ -291,7 +286,13 @@
       }
 
       .container-fluid {
-        @apply gl-px-2 lg:gl-px-3;
+        --container-padding-x: #{$gl-spacing-scale-2};
+        padding-left: var(--container-padding-x);
+        padding-right: var(--container-padding-x);
+
+        @container content-panels (width >= #{map.get($breakpoints, 'lg')}) {
+          --container-padding-x: #{$gl-spacing-scale-3};
+        }
       }
 
       // Hide alert wrapper if it's empty
@@ -611,7 +612,7 @@
     .detail-page-description,
     .merge-request-tabs-container {
       &.is-merge-request {
-        max-width: $fixed-layout-width - ($gl-padding-12 * 2) !important;
+        max-width: calc(#{$fixed-layout-width} - (var(--container-padding-x) * 2)) !important;
       }
     }
   }

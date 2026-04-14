@@ -46,6 +46,7 @@ module API
       optional :message_background_color, type: String, desc: 'Background color for the system header / footer bar'
       optional :message_font_color, type: String, desc: 'Font color for the system header / footer bar'
       optional :email_header_and_footer_enabled, type: Boolean, desc: 'Add header and footer to all outgoing emails if enabled'
+      optional :site_name, type: String, desc: 'Last part of the webpage title. Defaults to empty.'
     end
     route_setting :authorization, permissions: :update_application_appearance, boundary_type: :instance
     put "application/appearance" do

@@ -468,7 +468,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user_mode.enable_admin_mode!(skip_password_validation: true)
       track_event(current_user, oauth['provider'], 'succeeded')
 
-      redirect_to stored_location_for(:redirect) || admin_root_path, notice: _('Admin mode enabled')
+      redirect_to stored_location_for(:redirect) || admin_root_path, notice: _('Admin mode is active.')
     end
   end
 

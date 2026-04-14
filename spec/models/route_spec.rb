@@ -12,6 +12,18 @@ RSpec.describe Route do
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ROUTES,
     claiming_attributes: [:path]
 
+  describe '.cells_claims_scope' do
+    let!(:top_level_route) { create(:group, path: 'top-level').route }
+    let!(:sub_route) { create(:group, parent: create(:group), path: 'child').route }
+
+    it 'returns only top-level routes without a slash in the path' do
+      scope = described_class.cells_claims_scope
+
+      expect(scope).to include(top_level_route)
+      expect(scope).not_to include(sub_route)
+    end
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:source) }
     it { is_expected.to belong_to(:namespace) }

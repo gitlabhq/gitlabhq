@@ -9,7 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/correlation"
@@ -63,13 +62,13 @@ func TestRouting(t *testing.T) {
 	)
 
 	shutdownChan := make(chan struct{})
-	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
+	u := newUpstream(config.Config{}, testDependencies(t, withShutdownChan(shutdownChan)), func(u *upstream) {
 		u.Routes = []routeEntry{
 			handle(u, foobar),
 			handle(u, quxbaz),
 			handle(u, main),
 		}
-	}, nil, nil, nil, shutdownChan, nil)
+	})
 	ts := httptest.NewServer(u)
 	defer ts.Close()
 
@@ -477,7 +476,7 @@ func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFea
 	}
 	cfg := newUpstreamConfig(railsServerURL)
 	shutdownChan := make(chan struct{})
-	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes, nil, nil, nil, shutdownChan, nil)
+	upstreamHandler := newUpstream(*cfg, testDependencies(t, withShutdownChan(shutdownChan)), myConfigureRoutes)
 	ws := httptest.NewServer(upstreamHandler)
 
 	t.Cleanup(func() {
@@ -569,11 +568,11 @@ func TestAdoptCfRayHeaderCorrelation(t *testing.T) {
 			})
 
 			shutdownChan := make(chan struct{})
-			upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), func(u *upstream) {
+			upstreamHandler := newUpstream(*cfg, testDependencies(t, withShutdownChan(shutdownChan)), func(u *upstream) {
 				u.Routes = []routeEntry{
 					u.route("", routeMetadata{}, handler),
 				}
-			}, nil, nil, nil, shutdownChan, nil)
+			})
 
 			// Create a test request
 			req := httptest.NewRequest("GET", "/", nil)

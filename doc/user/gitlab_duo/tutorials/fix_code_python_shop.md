@@ -21,7 +21,7 @@ This tutorial is part one in a series, and guides you through creating and debug
 a [Python](https://www.python.org/) web application with a database backend
 that meets these requirements.
 
-You'll use [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
+You'll use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
 and [GitLab Duo Code Suggestions](../../duo_agent_platform/code_suggestions/_index.md)
 to help you:
 
@@ -63,7 +63,9 @@ Depending on your subscription add-on, you can use Chat in the GitLab UI, the We
 #### Use Chat in the GitLab UI
 
 1. In the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+1. On the GitLab Duo sidebar, select **Add new chat** ({{< icon name="pencil-square" >}}).
+1. From the dropdown list, select an agent.
+
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It might take a few seconds for the interactive AI chat to produce an answer.
@@ -123,7 +125,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat
 To use Code Suggestions:
 
 1. Open your Git project in a
-   [supported IDE](../../duo_agent_platform/code_suggestions/supported_extensions.md#supported-editor-extensions).
+   [supported IDE](../../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions).
 1. Add the project as a remote of your local repository using
    [`git remote add`](../../../topics/git/commands.md#git-remote-add).
 1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
@@ -341,7 +343,7 @@ what you're configuring and why.
 
    If you want to ask Chat what to adjust, do so in the IDE in the `setup.py`
    file, instead of in the GitLab UI. This provides Chat with
-   [the context you're working in](../../duo_agent_platform/context.md#gitlab-duo-chat-agentic),
+   [the context you're working in](../../duo_agent_platform/context.md#gitlab-duo-agentic-chat),
    including the `setup.py` file you just created.
 
    ```plaintext

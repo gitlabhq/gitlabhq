@@ -29,7 +29,7 @@ export default () => {
     groupContactsPath,
     groupFullPath,
     groupId,
-    groupIssuesPath,
+    groupWorkItemsPath,
     textQuery,
   } = el.dataset;
 
@@ -50,7 +50,7 @@ export default () => {
       groupContactsPath,
       groupFullPath,
       groupId,
-      groupIssuesPath,
+      groupWorkItemsPath,
       textQuery,
     },
     render(createElement) {

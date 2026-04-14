@@ -17,18 +17,7 @@ ee/app/models/cloud_connector/keys.rb:
 - create_new_key!
 - trim!
 - truncated_pem
-ee/app/models/concerns/ee/issuable_link.rb:
-- blocked_issuables_for_collection
-ee/app/models/concerns/ee/vulnerability_flag_helpers.rb:
-- vulnerability_flags_for
-ee/app/models/concerns/geo/blob_replicator_strategy.rb:
-- consume_event_created
-- consume_event_deleted
-ee/app/models/concerns/geo/repository_replicator_strategy.rb:
-- consume_event_created
-- consume_event_deleted
 ee/app/models/concerns/geo/verifiable_replicator.rb:
-- consume_event_checksum_succeeded
 - secondary_checksum
 ee/app/models/concerns/product_analytics_helpers.rb:
 - product_analytics_funnels
@@ -73,7 +62,6 @@ ee/app/models/ee/project.rb:
 - search_by_visibility
 - group_ldap_synced?
 - upstream_projects_count
-- downstream_projects_count
 ee/app/models/ee/project_member.rb:
 - provisioned_by_this_group?
 ee/app/models/ee/user.rb:
@@ -81,8 +69,6 @@ ee/app/models/ee/user.rb:
 ee/app/models/ee/user_preference.rb:
 - distinct_eligible_duo_add_on_assignments
 - no_eligible_duo_add_on_assignments?
-ee/app/models/ee/vulnerability.rb:
-- report_type_order
 ee/app/models/geo/container_repository_registry.rb:
 - pluck_container_repository_key
 ee/app/models/geo/tracking_base.rb:
@@ -114,7 +100,6 @@ app/helpers/ci/catalog/resources_helper.rb:
 - can_view_namespace_catalog?
 - js_ci_catalog_data
 app/helpers/ci/runners_helper.rb:
-- runner_status_icon
 - runner_link
 app/helpers/events_helper.rb:
 - event_feed_title
@@ -183,8 +168,6 @@ app/models/concerns/integrations/base/harbor.rb:
 - supported_event_actions
 app/models/concerns/integrations/base/integration.rb:
 - instance_exists_for?
-app/models/concerns/integrations/base/issue_tracker.rb:
-- enabled_in_gitlab_config
 app/models/concerns/mentionable.rb:
 - referenced_projects
 - referenced_group_users
@@ -226,7 +209,6 @@ app/models/concerns/user_mention_behaviour.rb:
 app/models/event.rb:
 - created_target?
 - note_target_id
-- recent_repository_update?
 app/models/group.rb:
 - get_ids_by_ids_or_paths
 - blocked_owners
@@ -253,14 +235,12 @@ app/models/namespace.rb:
 app/models/organizations/isolation_record.rb:
 - not_isolated?
 app/models/project.rb:
-- has_auto_devops_implicitly_disabled?
 - import_scheduled?
 - updating_remote_mirror?
 - issue_exists?
 - enable_ci
 - valid_runners_token?
 - storage_upgradable?
-- deploy_token_create_url
 app/models/todo.rb:
 - unmergeable?
 - merge_train_removed?
@@ -277,14 +257,9 @@ ee/app/models/ai/duo_code_review.rb:
 - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:
 - any_group_with_ai_available?
-app/models/ci/stage.rb:
-- update_legacy_status
 ee/app/helpers/ee/projects_helper.rb:
 - paid_duo_tier_for_project
 ee/app/models/virtual_registries/cache/entry.rb:
 - mark_as_pending_destruction
 ee/app/models/work_items/statuses/system_defined/lifecycle.rb:
 - find_available_status_by_name
-app/helpers/projects_helper.rb:
-- show_auto_devops_implicitly_enabled_banner?
-- show_mobile_devops_project_promo?

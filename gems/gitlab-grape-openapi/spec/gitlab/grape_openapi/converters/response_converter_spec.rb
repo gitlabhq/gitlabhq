@@ -6,8 +6,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
   let(:route) { instance_double(Grape::Router::Route) }
 
   before do
-    allow(route).to receive(:instance_variable_get).with(:@options).and_return(options)
-    allow(route).to receive_messages(options: options, http_codes: http_codes)
+    allow(route).to receive_messages(
+      options: options,
+      http_codes: http_codes,
+      path: '/api/:version/resource(.:format)'
+    )
   end
 
   describe '#convert' do
@@ -18,16 +21,16 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'returns success response with entity' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
-
-        expect(result).to eq(
-          '200' => {
-            description: 'OK',
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
+        expect(success_results).to eq(
+          { '200' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
-            }
-          }
+            },
+            description: 'OK'
+          } }
         )
       end
     end
@@ -39,17 +42,55 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'returns response with specified code and entity' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '201' => {
-            description: 'Created',
+        expect(success_results).to eq(
+          { '201' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
+            },
+            description: 'Created'
+          } }
+        )
+      end
+
+      context 'with example' do
+        let(:options) do
+          { method: 'GET', entity: { code: 200, model: entity_class, example: { id: 1, name: 'Jane' } } }
+        end
+
+        it 'includes example in the response content' do
+          result = described_class.new(route, schema_registry).convert
+
+          expect(result['200'][:content]['application/json'][:example]).to eq({ id: 1, name: 'Jane' })
+        end
+      end
+
+      context 'with examples' do
+        let(:options) do
+          {
+            method: 'GET',
+            entity: {
+              code: 200,
+              model: entity_class,
+              examples: {
+                'NewUser' => { summary: 'A new user', value: { id: 1, name: 'Jane' } },
+                'AdminUser' => { summary: 'An admin user', value: { id: 2, name: 'Bob', admin: true } }
+              }
             }
           }
-        )
+        end
+
+        it 'includes examples in the response content' do
+          result = described_class.new(route, schema_registry).convert
+
+          expect(result['200'][:content]['application/json'][:examples]).to eq(
+            'NewUser' => { summary: 'A new user', value: { id: 1, name: 'Jane' } },
+            'AdminUser' => { summary: 'An admin user', value: { id: 2, name: 'Bob', admin: true } }
+          )
+        end
       end
     end
 
@@ -60,9 +101,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'returns response without content' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '204' => { description: 'No Content' }
+        expect(success_results).to eq(
+          { '204' => { description: 'No Content' } }
         )
       end
     end
@@ -74,9 +116,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'returns response without content' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '200' => { description: 'OK' }
+        expect(success_results).to eq(
+          { '200' => { description: 'OK' } }
         )
       end
     end
@@ -95,31 +138,33 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
 
-        expect(result.keys).to contain_exactly('200', '400', '401', '404')
-        expect(result['200']).to eq(
-          description: 'OK',
-          content: {
-            'application/json' => {
-              schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
+        expect(result).to eq(
+          '200' => {
+            description: 'OK',
+            content: {
+              'application/json' => {
+                schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
+              }
             }
-          }
+          },
+          '400' => { description: 'Bad request' },
+          '401' => { description: 'Unauthorized' },
+          '404' => { description: 'Not found' }
         )
-        expect(result['400']).to eq({ description: 'Bad request' })
-        expect(result['401']).to eq({ description: 'Unauthorized' })
-        expect(result['404']).to eq({ description: 'Not found' })
       end
     end
 
-    context 'without entity and without http_codes' do
+    context 'with GET request without entity and without http_codes' do
       let(:options) { { method: 'GET' } }
       let(:http_codes) { [] }
 
-      it 'returns default response without content' do
+      it 'infers 200 response without content' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '200' => { description: 'OK' }
+        expect(success_results).to eq(
+          { '200' => { description: 'OK' } }
         )
       end
     end
@@ -131,16 +176,17 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'infers 201 status code' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '201' => {
-            description: 'Created',
+        expect(success_results).to eq(
+          { '201' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
-            }
-          }
+            },
+            description: 'Created'
+          } }
         )
       end
     end
@@ -152,16 +198,17 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'infers 204 status code' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '204' => {
-            description: 'No Content',
+        expect(success_results).to eq(
+          { '204' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
-            }
-          }
+            },
+            description: 'No Content'
+          } }
         )
       end
     end
@@ -184,59 +231,99 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       end
     end
 
-    context 'with File as entity (non-Grape::Entity)' do
+    context 'when GET request and File as entity (non-Grape::Entity)' do
       let(:options) { { method: 'GET', entity: File } }
       let(:http_codes) { [] }
 
-      it 'returns response without content' do
+      it 'infers 200 response without content' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '200' => { description: 'OK' }
+        expect(success_results).to eq(
+          { '200' => { description: 'OK' } }
         )
       end
     end
 
-    context 'with entity as Array of Classes' do
+    context 'when GET request with entity as Array of Classes' do
       let(:options) { { method: 'GET', entity: [entity_class] } }
       let(:http_codes) { [] }
 
-      it 'returns response with entity' do
+      it 'infers 200 response with entity' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '200' => {
-            description: 'OK',
+        expect(success_results).to eq(
+          { '200' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
-            }
-          }
+            },
+            description: 'OK'
+          } }
         )
       end
     end
 
-    context 'with entity as Array with Hash containing model' do
+    context 'when POST request with entity as Array with Hash containing model' do
       let(:options) { { method: 'POST', entity: [{ code: 201, model: entity_class }] } }
       let(:http_codes) { [] }
 
-      it 'returns response with specified code and entity' do
+      it 'infers 201 response with specified code and entity' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result).to eq(
-          '201' => {
-            description: 'Created',
+        expect(success_results).to eq(
+          { '201' => {
             content: {
               'application/json' => {
                 schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
               }
-            }
-          }
+            },
+            description: 'Created'
+          } }
         )
+      end
+
+      context 'with example' do
+        let(:options) do
+          { method: 'POST', entity: [{ code: 201, model: entity_class, example: { id: 1, name: 'Jane' } }] }
+        end
+
+        it 'includes example in the response content' do
+          result = described_class.new(route, schema_registry).convert
+
+          expect(result['201'][:content]['application/json'][:example]).to eq({ id: 1, name: 'Jane' })
+        end
+      end
+
+      context 'with examples' do
+        let(:options) do
+          {
+            method: 'POST',
+            entity: [{
+              code: 201,
+              model: entity_class,
+              examples: {
+                'NewUser' => { summary: 'A new user', value: { id: 1, name: 'Jane' } },
+                'AdminUser' => { summary: 'An admin user', value: { id: 2, name: 'Bob', admin: true } }
+              }
+            }]
+          }
+        end
+
+        it 'includes examples in the response content' do
+          result = described_class.new(route, schema_registry).convert
+
+          expect(result['201'][:content]['application/json'][:examples]).to eq(
+            'NewUser' => { summary: 'A new user', value: { id: 1, name: 'Jane' } },
+            'AdminUser' => { summary: 'An admin user', value: { id: 2, name: 'Bob', admin: true } }
+          )
+        end
       end
     end
 
@@ -247,17 +334,91 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ResponseConverter do
       it 'returns responses for both formats' do
         converter = described_class.new(route, schema_registry)
         result = converter.convert
+        success_results = result.select { |k, _| k.to_i.between?(200, 299) }
 
-        expect(result.keys).to contain_exactly('200', '204')
-        expect(result['200']).to eq(
-          description: 'OK',
-          content: {
-            'application/json' => {
-              schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
-            }
-          }
+        expect(success_results).to eq(
+          { '200' => {
+              content: {
+                'application/json' => {
+                  schema: { '$ref': '#/components/schemas/TestEntitiesUserEntity' }
+                }
+              }, description: 'OK'
+            },
+            '204' => { description: 'No content' } }
         )
-        expect(result['204']).to eq({ description: 'No content' })
+      end
+    end
+
+    describe 'failure response inference' do
+      context 'with GET request' do
+        let(:options) { { method: 'GET', entity: entity_class } }
+        let(:http_codes) { [] }
+
+        context 'with no params and no resource path parameters' do
+          it 'does not infer any failure codes' do
+            result = described_class.new(route, schema_registry).convert
+            expect(result.keys.select { |k| k.to_i.between?(400, 499) }).to be_empty
+          end
+        end
+
+        context 'with declared params and no resource path parameters' do
+          before do
+            allow(route).to receive(:options).and_return(options.merge(params: { id: { required: true } }))
+          end
+
+          it 'infers 400 only' do
+            result = described_class.new(route, schema_registry).convert
+            expect(result.keys.select { |k| k.to_i.between?(400, 499) }).to contain_exactly('400')
+          end
+        end
+
+        context 'with resource path parameters and no declared params' do
+          before do
+            allow(route).to receive(:path).and_return('/api/:version/resource/:id(.:format)')
+          end
+
+          it 'infers 404 only' do
+            result = described_class.new(route, schema_registry).convert
+            expect(result.keys.select { |k| k.to_i.between?(400, 499) }).to contain_exactly('404')
+          end
+        end
+
+        context 'with both declared params and resource path parameters' do
+          before do
+            allow(route).to receive_messages(
+              options: options.merge(params: { id: { required: true } }),
+              path: '/api/:version/resource/:id(.:format)'
+            )
+          end
+
+          it 'infers 400 and 404' do
+            result = described_class.new(route, schema_registry).convert
+            expect(result['400']).to eq({ description: 'Bad Request' })
+            expect(result['404']).to eq({ description: 'Not Found' })
+          end
+        end
+      end
+
+      context 'with POST request' do
+        let(:options) { { method: 'POST', entity: entity_class } }
+        let(:http_codes) { [] }
+
+        context 'with no declared params and no resource path parameters' do
+          it 'infers 400 from HTTP method alone' do
+            result = described_class.new(route, schema_registry).convert
+            expect(result.keys.select { |k| k.to_i.between?(400, 499) }).to contain_exactly('400')
+          end
+        end
+      end
+
+      context 'when http_codes is explicitly provided' do
+        let(:options) { { method: 'POST', entity: entity_class } }
+        let(:http_codes) { [{ code: 422, message: 'Unprocessable' }] }
+
+        it 'uses explicit codes and does not infer' do
+          result = described_class.new(route, schema_registry).convert
+          expect(result.keys.select { |k| k.to_i.between?(400, 499) }).to contain_exactly('422')
+        end
       end
     end
   end

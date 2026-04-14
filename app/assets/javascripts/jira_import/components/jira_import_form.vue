@@ -14,7 +14,7 @@ import {
   GlSprintf,
   GlTableLite,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import getJiraUserMappingMutation from '../queries/get_jira_user_mapping.mutation.graphql';

@@ -132,7 +132,7 @@ module API
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
         end
 
-        route_setting :authorization, permissions: :authorize_helm_chart, boundary_type: :project
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
         post "api/:channel/charts/authorize" do
           authorize_workhorse!(
             subject: authorized_user_project,

@@ -130,7 +130,7 @@ To administer all users from the **Admin** area's Users page:
    - User **access level**.
    - Whether **two-factor authentication** is enabled or disabled.
    - User **state**.
-   - Whether the user **type** is [placeholder](../user/import/mapping/_index.md#placeholder-users).
+   - Whether the user **type** is [placeholder](../user/import/mapping/post_migration_mapping.md#placeholder-users).
 
 1. Optional. In the user search field, enter text, then press <kbd>Enter</kbd>. This case-insensitive
    text search applies partial matching to name, username, and email.
@@ -158,7 +158,7 @@ To impersonate a user:
   1. In the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
   1. In the upper right, select **Impersonate**.
-  1. To stop impersonating, in the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito" >}}).
+  1. To stop impersonating, in the upper-right corner, select **Stop impersonating** ({{< icon name="incognito" >}}).
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](compliance/audit_event_reports.md#user-impersonation).
@@ -226,7 +226,7 @@ calculated daily. User changes made after the last update are not reflected. The
 - Blocked users
 - Total users
 
-GitLab billing is based on the number of [billable users](../subscriptions/manage_users_and_seats.md#billable-users).
+GitLab billing is based on the number of [billable users](../subscriptions/manage_seats.md#billable-users).
 
 ### Add email to user
 

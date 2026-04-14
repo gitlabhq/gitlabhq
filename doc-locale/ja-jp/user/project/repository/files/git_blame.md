@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Gitファイルのblameに関するドキュメント。
+description: Gitファイルblameのドキュメント。
 title: Gitファイルblame
 ---
 
@@ -15,33 +15,33 @@ title: Gitファイルblame
 
 [Git blame](https://git-scm.com/docs/git-blame)は、ファイル内のすべての行に関する詳細情報（最終更新時刻、作成者、コミットハッシュなど）を提供します。
 
-## ファイルのblameを表示 {#view-blame-for-a-file}
+## ファイルごとのblameを表示 {#view-blame-for-a-file}
 
 {{< history >}}
 
-- ファイルビューでのblameの直接表示は、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/430950)され、`inline_blame`という名前の[フラグ](../../../../administration/feature_flags/_index.md)が付けられました。デフォルトでは無効になっています。
+- ファイルビューで直接blameを表示する機能は、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/430950)されました。[フラグ](../../../../administration/feature_flags/_index.md)名は`inline_blame`です。デフォルトでは無効になっています。
 
 {{< /history >}}
 
 前提条件: 
 
-- ファイルには判読可能なテキストコンテンツが含まれている必要があります。GitLab UIは、`git blame`の結果を、`.rb`、`.js`、`.md`、`.txt`、`.yml`などのテキストファイル形式で表示します。画像やPDFなどのバイナリファイルはサポートされていません。
+- ファイルには読み取り可能なテキストコンテンツが含まれている必要があります。GitLab UIは、`git blame`の結果を`.rb`、`.js`、`.md`、`.txt`、`.yml`などのテキストファイル形式で表示します。画像やPDFなどのバイナリファイルはサポートされていません。
 
 ファイルのblameを表示するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. 左サイドバーで、**コード** > **リポジトリ**を選択します。
-1. 確認するファイルを選択します。
+1. レビューしたいファイルを選択します。
 1. 次のいずれかの操作を行います:
-   - 現在のファイルの表示を変更するには、ファイルのヘッダーで**Blame**を選択します。
+   - 現在のファイルのビューを変更するには、ファイルヘッダーで**Blame**を選択します。
    - 完全なblameページを開くには、右上隅で**Blame**を選択します。
-1. 見たい行に移動します。
+1. 表示したい行に移動します。
 
 **Blame**を選択すると、この情報が表示されます:
 
-![Git blame出力](img/file_blame_output_v16_6.png "Blameボタン出力")
+![Git blame出力](img/file_blame_output_v16_6.png "blameボタンの出力")
 
-コミットの正確な日時を確認するには、日付にカーソルを合わせます。ユーザーアバターの左にある垂直バーは、コミットの一般的な経過時間を示します。最新のコミットには濃い青色のバーが表示されます。コミットの経過時間が長くなるにつれて、バーの色は明るい灰色に変わります。
+コミットの正確な日時を確認するには、日付にカーソルを合わせます。ユーザーアバターの左側にある縦棒は、コミットのおおよその経過時間を示します。最新のコミットには濃い青色のバーが表示されます。コミットの経過時間が長くなるにつれて、バーの色は薄い灰色に変化します。
 
 ### 前のコミットのblame {#blame-previous-commit}
 
@@ -49,11 +49,11 @@ title: Gitファイルblame
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. 左サイドバーで、**コード** > **リポジトリ**を選択します。
-1. 確認するファイルを選択します。
-1. 右上隅で**Blame**を選択し、見たい行に移動します。
-1. **この変更前のblameを表示**（{{< icon name="doc-versions" >}}）を選択し、表示したい変更が見つかるまで繰り返します。
+1. レビューしたいファイルを選択します。
+1. 右上隅で**Blame**を選択し、表示したい行に移動します。
+1. 表示したい変更が見つかるまで、**この変更前のblameを表示** ({{< icon name="doc-versions" >}}) を選択します。
 
-### 特定のリビジョンを無視する {#ignore-specific-revisions}
+### 特定の改訂版を無視する {#ignore-specific-revisions}
 
 {{< history >}}
 
@@ -63,9 +63,9 @@ title: Gitファイルblame
 
 {{< /history >}}
 
-Git blameで特定のリビジョンを無視するように設定するには:
+Git blameが特定の改訂版を無視するように設定するには:
 
-1. あなたのリポジトリのルートに、`.git-blame-ignore-revs`ファイルを作成します。
+1. ローカルのリポジトリのルートに、`.git-blame-ignore-revs`ファイルを作成します。
 1. 無視したいコミットハッシュを1行に1つずつ追加します。例: 
 
    ```plaintext
@@ -77,11 +77,11 @@ Git blameで特定のリビジョンを無視するように設定するには:
 1. **Blame環境設定**ドロップダウンリストを選択します。
 1. **特定のリビジョンを無視する**を選択します。
 
-blameビューは更新され、`.git-blame-ignore-revs`ファイルで指定されたリビジョンをスキップし、代わりに以前の重要な変更を表示します。
+blameビューが更新され、`.git-blame-ignore-revs`ファイルで指定されたリビジョンはスキップされ、以前の重要な変更が表示されます。
 
 ## 関連トピック {#related-topics}
 
 - [Gitファイルblame REST API](../../../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)
 - [一般的なGitコマンド](../../../../topics/git/commands.md)
-- [Gitを使用したファイル管理](../../../../topics/git/file_management.md)
+- [Gitでのファイル管理](../../../../topics/git/file_management.md)
 - [ファイルツリーブラウザー](file_tree_browser.md)

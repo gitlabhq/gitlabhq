@@ -5,6 +5,8 @@ module Resolvers
     class CommitsResolver < BaseResolver
       type Types::Repositories::CommitType.connection_type, null: true
 
+      include LooksAhead
+
       argument :ref, GraphQL::Types::String,
         required: true,
         description: 'Branch or tag to search for commits.'
@@ -29,7 +31,7 @@ module Resolvers
 
       alias_method :repository, :object
 
-      def resolve(**arguments)
+      def resolve_with_lookahead(**arguments)
         first = arguments.delete(:first)
         page_token = arguments.delete(:after)
         limit = compute_limit(first)
@@ -37,6 +39,7 @@ module Resolvers
         return empty_result if limit <= 0
 
         response = repository.list_commits(**list_commits_arguments(arguments, limit, page_token))
+        response.load_tags if node_selection&.selects?(:tags)
         commits = response.commits.to_a
 
         # Determine if there's a next page by checking if we got more commits than requested

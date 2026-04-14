@@ -18,14 +18,14 @@ RSpec.shared_examples 'PATCH #update updates variables' do
   let(:variable_attributes) do
     { id: variable.id,
       key: variable.key,
-      secret_value: variable.value,
+      value: variable.value,
       protected: variable.protected?.to_s,
       raw: (!variable.raw?).to_s }
   end
 
   let(:new_variable_attributes) do
     { key: 'new_key',
-      secret_value: 'dummy_value',
+      value: 'dummy_value',
       protected: 'false',
       raw: 'true' }
   end
@@ -36,7 +36,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
   context 'with invalid new variable parameters' do
     let(:variables_attributes) do
       [
-        variable_attributes.merge(secret_value: 'other_value'),
+        variable_attributes.merge(value: 'other_value'),
         new_variable_attributes.merge(key: '...?')
       ]
     end
@@ -60,7 +60,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
     let(:variables_attributes) do
       [
         new_variable_attributes,
-        new_variable_attributes.merge(secret_value: 'other_value')
+        new_variable_attributes.merge(value: 'other_value')
       ]
     end
 
@@ -82,7 +82,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
   context 'with valid new variable parameters' do
     let(:variables_attributes) do
       [
-        variable_attributes.merge(secret_value: 'other_value', description: 'other_description'),
+        variable_attributes.merge(value: 'other_value', description: 'other_description'),
         new_variable_attributes
       ]
     end

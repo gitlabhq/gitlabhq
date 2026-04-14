@@ -17,6 +17,7 @@ RSpec.describe CustomerRelations::IssueContact, feature_category: :team_planning
   describe 'associations' do
     it { is_expected.to belong_to(:issue).required }
     it { is_expected.to belong_to(:contact).required }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'factory' do

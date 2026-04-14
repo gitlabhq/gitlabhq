@@ -208,6 +208,27 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
       it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
       it { expect(subject.reload.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
+
+      it 'does not make additional Gitaly calls when accessing diffs after preload', :request_store do
+        mr_diff = merge_request.merge_request_diffs.build
+        mr_diff.preload_gitaly_data
+
+        initial_count = Gitlab::GitalyClient.get_request_count
+
+        collection = mr_diff.send(:compare_diffs_preloaded)
+        collection.to_a
+
+        expect(Gitlab::GitalyClient.get_request_count).to eq(initial_count)
+      end
+
+      context 'when compare_diffs_preloaded returns nil' do
+        it 'does not raise an error' do
+          mr_diff = merge_request.merge_request_diffs.build
+          allow(mr_diff).to receive(:compare_diffs_preloaded).and_return(nil)
+
+          expect { mr_diff.preload_gitaly_data }.not_to raise_error
+        end
+      end
     end
   end
 
@@ -2220,14 +2241,14 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       )
     end
 
-    it 'class #paginated_diffs with limit and options' do
+    it 'calls #paginated_diffs with limit and options' do
       expect(merge_request_diff)
         .to receive(:paginated_diffs)
         .with(1, 5, { expanded: true })
         .and_return(paginated_diffs)
 
       expect(merge_request_diff.first_diffs_slice(5, expanded: true))
-        .to eq(['paginated diffs'])
+        .to eq(paginated_diffs)
     end
   end
 
@@ -2264,6 +2285,52 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
 
         it { expect(merge_request_diff.partition_enabled?).to be false }
+      end
+    end
+  end
+
+  describe '#ensure_commit_shas' do
+    let(:merge_request) { create(:merge_request) }
+
+    subject { merge_request.merge_request_diffs.build }
+
+    before do
+      subject.ensure_commit_shas
+    end
+
+    it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
+    it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+    it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
+
+    context 'when diff_type is merge_head', :sidekiq_inline do
+      subject do
+        MergeRequests::MergeToRefService
+          .new(project: merge_request.project, current_user: merge_request.author)
+          .execute(merge_request)
+
+        merge_request.build_merge_head_diff
+      end
+
+      it { expect(subject.head_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.head_sha) }
+      it { expect(subject.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
+
+      context 'when head_commit_sha and base_commit_sha are set' do
+        it 'does not call merge_ref_head on merge_request' do
+          expect(subject.merge_request).not_to receive(:merge_ref_head)
+
+          subject.ensure_commit_shas
+        end
+      end
+    end
+
+    context 'when diff_type is regular' do
+      context 'when head_commit_sha and base_commit_sha are set' do
+        it 'does not call find_base_sha or source_branch_sha on merge_request' do
+          expect(subject.merge_request).not_to receive(:source_branch_sha)
+          expect(subject).not_to receive(:find_base_sha)
+
+          subject.ensure_commit_shas
+        end
       end
     end
   end

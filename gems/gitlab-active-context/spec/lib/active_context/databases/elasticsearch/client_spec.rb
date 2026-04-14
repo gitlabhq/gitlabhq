@@ -9,7 +9,12 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
 
   describe '#search' do
     let(:elasticsearch_client) { instance_double(Elasticsearch::Client) }
-    let(:search_response) { { 'hits' => { 'total' => 5, 'hits' => [] } } }
+    let(:search_response) do
+      { 'hits' => { 'total' => 5,
+                    'hits' => [{ '_source' => { 'id' => 1 } }, { '_source' => { 'id' => 2 } },
+                      { '_source' => { 'id' => 3 } }] } }
+    end
+
     let(:query) { ActiveContext::Query.filter(project_id: 1) }
 
     before do
@@ -27,6 +32,17 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
         index: 'test',
         body: hash_including(_source: { includes: ['*', 'embedding_v1', 'embedding_v2'] })
       )
+      client.search(collection: collection, query: query, user: user)
+    end
+
+    it 'logs search duration and result count' do
+      expect(ActiveContext::Logger).to receive(:info).with(
+        message: 'ActiveContext client search completed',
+        collection: collection,
+        duration_s: be_a(Float),
+        result_count: 3
+      )
+
       client.search(collection: collection, query: query, user: user)
     end
   end

@@ -20,6 +20,12 @@
         "type": "integer"
       }
     },
+    "work_item_type_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
     "author_ids": {
       "type": "array",
       "items": {
@@ -258,6 +264,12 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "work_item_type_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
           }
         },
         "health_status_filter": {

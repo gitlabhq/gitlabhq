@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
-import { first } from 'lodash';
+import { first } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';

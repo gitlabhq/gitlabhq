@@ -2,13 +2,11 @@
 import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  NAME_TO_TEXT_MAP,
-  ALLOWED_CONVERSION_TYPES,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
@@ -28,7 +26,7 @@ export default {
     GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['hasSubepicsFeature'],
+  inject: ['hasSubepicsFeature', 'getWorkItemTypeConfiguration'],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -77,11 +75,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    allowedConversionTypesEE: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     epicFieldNote: {
       type: String,
@@ -137,25 +130,25 @@ export default {
     },
   },
   computed: {
-    allowedConversionTypes() {
+    supportedConversionTypes() {
       return (
-        this.workItemTypes
-          .find((type) => type.name === this.workItemType)
-          ?.supportedConversionTypes.filter(({ name }) => {
-            // API is returning Incident, Requirement, Test Case, and Ticket in addition to required work items
-            // As these types are not migrated, they are filtered out on the frontend
-            // They will be added to the list as they are migrated
-            // Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/498656#note_2263177119
-            return ALLOWED_CONVERSION_TYPES.includes(name);
-          })
-          .concat(this.allowedConversionTypesEE) ?? []
+        this.workItemTypes.find((type) => type.name === this.workItemType)
+          ?.supportedConversionTypes ?? []
       );
     },
     selectOptions() {
-      const selectOptions = this.allowedConversionTypes.map((item) => ({
-        text: item.text || NAME_TO_TEXT_MAP[item.name],
-        value: item.id,
-      }));
+      const selectOptions = this.supportedConversionTypes.map((item) => {
+        const isGroupWorkItemType = this.getWorkItemTypeConfiguration(
+          item.name,
+        )?.isGroupWorkItemType;
+
+        return {
+          text: isGroupWorkItemType
+            ? `${item.name} ${s__('WorkItem|(Promote to group)')}`
+            : item.name,
+          value: item.id,
+        };
+      });
       selectOptions.unshift({
         text: __('Select type'),
         value: null,
@@ -296,7 +289,7 @@ export default {
       try {
         const {
           data: {
-            workItemConvert: { errors },
+            workItemConvert: { workItem, errors },
           },
         } = await this.$apollo.mutate({
           mutation: convertWorkItemMutation,
@@ -312,6 +305,13 @@ export default {
           return;
         }
         this.$toast.show(s__('WorkItem|Type changed.'));
+
+        // Incidents need to be shown in the legacy view, until they're migrated to work items
+        if (this.getWorkItemTypeConfiguration(workItem.workItemType.name)?.isIncidentManagement) {
+          visitUrl(workItem.webUrl);
+          return;
+        }
+
         this.$emit('workItemTypeChanged');
         this.hide();
       } catch (error) {
@@ -333,7 +333,7 @@ export default {
         return;
       }
 
-      this.selectedWorkItemType = this.allowedConversionTypes.find((item) => item.id === id);
+      this.selectedWorkItemType = this.supportedConversionTypes.find((item) => item.id === id);
 
       if (this.selectedWorkItemType.name === WORK_ITEM_TYPE_NAME_EPIC) {
         this.typeFieldNote = this.epicFieldNote;
@@ -353,8 +353,8 @@ export default {
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
           {
-            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name],
-            parentWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.parentWorkItemType],
+            workItemType: this.selectedWorkItemType.name,
+            parentWorkItemType: this.parentWorkItemType,
           },
         );
 
@@ -368,8 +368,8 @@ export default {
             'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
           ),
           {
-            workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemType.name],
-            childItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.allowedChildTypes?.[0]?.name],
+            workItemType: this.selectedWorkItemType.name,
+            childItemType: this.allowedChildTypes?.[0]?.name,
           },
         );
 
@@ -392,7 +392,7 @@ export default {
           s__(
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
-          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name] },
+          { workItemType: this.selectedWorkItemType.name },
         );
       }
     },

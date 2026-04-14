@@ -60,7 +60,7 @@ module Gitlab
             @pdf.restore_graphics_state
 
             @pdf.text_box(
-              s_('Project security status'),
+              _('Project security status'),
               at: [0, @pdf.bounds.top - 10],
               width: @pdf.bounds.right,
               align: :center,
@@ -69,7 +69,7 @@ module Gitlab
             )
 
             @pdf.text_box(
-              s_('Projects are graded based on the highest severity vulnerability present'),
+              _('Projects are graded based on the highest severity vulnerability present'),
               at: [0, @pdf.bounds.top - 40],
               width: @pdf.bounds.right,
               align: :center,
@@ -130,8 +130,8 @@ module Gitlab
         end
 
         def svg_headers(title_y:, description_y:)
-          title = s_("Project security status")
-          description = s_("Projects are graded based on the highest severity vulnerability present")
+          title = _("Project security status")
+          description = _("Projects are graded based on the highest severity vulnerability present")
 
           <<~SVG
             <text x="20" y="#{title_y}" class="header-text">#{title}</text>

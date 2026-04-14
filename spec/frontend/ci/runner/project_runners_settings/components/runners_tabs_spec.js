@@ -1,13 +1,12 @@
 import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import { GlTabs } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 
 import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
 
 import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_tab.vue';
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
-import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
 import GroupRunnersToggle from '~/ci/runner/project_runners_settings/components/group_runners_toggle.vue';
 
 import ProjectRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/project_runners_tab_empty_state.vue';
@@ -20,14 +19,21 @@ import { projectRunnersData } from 'jest/ci/runner/mock_data';
 const mockRunner = projectRunnersData.data.project.runners.edges[0].node;
 
 const error = new Error('Test error');
+const defaultProvide = {
+  canAssignRunners: true,
+  canUnassignRunners: true,
+  canToggleGroupRunners: true,
+  canToggleInstanceRunners: true,
+  isGroupRunnersEnabled: true,
+};
 
 describe('RunnersTabs', () => {
   let wrapper;
   let mockRefresh;
   let mockShowToast;
 
-  const createComponent = ({ props, runner = mockRunner } = {}) => {
-    wrapper = shallowMount(RunnersTabs, {
+  const createComponent = ({ props, runner = mockRunner, provide } = {}) => {
+    wrapper = shallowMountExtended(RunnersTabs, {
       propsData: {
         projectFullPath: 'group/project',
         instanceRunnersEnabled: true,
@@ -37,6 +43,7 @@ describe('RunnersTabs', () => {
         instanceRunnersGroupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
         ...props,
       },
+      provide: { ...defaultProvide, ...provide },
       stubs: {
         RunnersTab: {
           props: RunnersTab.props,
@@ -64,10 +71,9 @@ describe('RunnersTabs', () => {
   };
 
   const findTabs = () => wrapper.findComponent(GlTabs);
+  const findRunnerTab = (testid) => wrapper.findByTestId(testid);
   const findRunnerTabs = () => wrapper.findAllComponents(RunnersTab);
-  const findRunnerTabAt = (i) => findRunnerTabs().at(i);
-  const findRunnerToggleAssignButtonAt = (i) =>
-    findRunnerTabAt(i).findComponent(RunnerToggleAssignButton);
+  const findRunnerToggleAssignButton = (testid) => wrapper.findByTestId(testid);
 
   beforeEach(() => {
     mockRefresh = jest.fn();
@@ -86,19 +92,29 @@ describe('RunnersTabs', () => {
 
   describe('Assigned project runners tab', () => {
     it('renders the tab content', () => {
-      expect(findRunnerTabAt(0).props()).toMatchObject({
+      expect(findRunnerTab('project-runners-tab').props()).toMatchObject({
         title: 'Assigned project runners',
         runnerType: PROJECT_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(0).findComponent(ProjectRunnersTabEmptyState).exists()).toBe(true);
+      expect(
+        findRunnerTab('project-runners-tab').findComponent(ProjectRunnersTabEmptyState).exists(),
+      ).toBe(true);
     });
 
     it('renders unassign button', () => {
-      expect(findRunnerToggleAssignButtonAt(0).props()).toEqual({
+      expect(findRunnerToggleAssignButton('runner-unassign-button').props()).toEqual({
         projectFullPath: 'group/project',
         runner: mockRunner,
         assigns: false,
+      });
+    });
+
+    describe('canUnassignRunners is false', () => {
+      it('does not render unassign button', () => {
+        createComponent({ runner: mockRunner, provide: { canUnassignRunners: false } });
+
+        expect(findRunnerToggleAssignButton('runner-unassign-button').exists()).toBe(false);
       });
     });
 
@@ -109,7 +125,7 @@ describe('RunnersTabs', () => {
         runner: mockRunner2,
       });
 
-      expect(findRunnerToggleAssignButtonAt(0).exists()).toBe(true);
+      expect(findRunnerToggleAssignButton('runner-unassign-button').exists()).toBe(true);
     });
 
     it('does not render unassign button for owner project', () => {
@@ -119,18 +135,20 @@ describe('RunnersTabs', () => {
         },
       });
 
-      expect(findRunnerToggleAssignButtonAt(0).exists()).toBe(false);
+      expect(findRunnerToggleAssignButton('runner-unassign-button').exists()).toBe(false);
     });
 
     it('emits an error event', () => {
-      findRunnerTabAt(0).vm.$emit('error', error);
+      findRunnerTab('project-runners-tab').vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
 
     describe('when runner is unassigned', () => {
       beforeEach(async () => {
-        findRunnerToggleAssignButtonAt(0).vm.$emit('done', { message: 'Runner unassigned.' });
+        findRunnerToggleAssignButton('runner-unassign-button').vm.$emit('done', {
+          message: 'Runner unassigned.',
+        });
         await nextTick();
       });
 
@@ -148,32 +166,46 @@ describe('RunnersTabs', () => {
 
   describe('Available project runners tab', () => {
     it('renders the tab content', () => {
-      expect(findRunnerTabAt(1).props()).toMatchObject({
+      expect(findRunnerTab('other-project-runners-tab').props()).toMatchObject({
         title: 'Other available project runners',
         runnerType: PROJECT_TYPE,
         projectFullPath: 'group/project',
         useAssignableQuery: true,
       });
-      expect(findRunnerTabAt(1).findComponent(AssignableRunnersTabEmptyState).exists()).toBe(true);
+      expect(
+        findRunnerTab('other-project-runners-tab')
+          .findComponent(AssignableRunnersTabEmptyState)
+          .exists(),
+      ).toBe(true);
     });
 
     it('renders assign button', () => {
-      expect(findRunnerToggleAssignButtonAt(1).props()).toEqual({
+      expect(findRunnerToggleAssignButton('runner-assign-button').props()).toEqual({
         projectFullPath: 'group/project',
         runner: mockRunner,
         assigns: true,
       });
     });
 
+    describe('canAssignRunners is false', () => {
+      it('does not render assign button', () => {
+        createComponent({ runner: mockRunner, provide: { canAssignRunners: false } });
+
+        expect(findRunnerToggleAssignButton('runner-assign-button').exists()).toBe(false);
+      });
+    });
+
     it('emits an error event', () => {
-      findRunnerTabAt(1).vm.$emit('error', error);
+      findRunnerTab('other-project-runners-tab').vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
 
     describe('when runner is assigned', () => {
       beforeEach(async () => {
-        findRunnerToggleAssignButtonAt(0).vm.$emit('done', { message: 'Runner assigned.' });
+        findRunnerToggleAssignButton('runner-unassign-button').vm.$emit('done', {
+          message: 'Runner assigned.',
+        });
         await nextTick();
       });
 
@@ -191,37 +223,67 @@ describe('RunnersTabs', () => {
 
   describe('Group tab', () => {
     it('renders the tab content', () => {
-      expect(findRunnerTabAt(2).props()).toMatchObject({
+      expect(findRunnerTab('group-runners-tab').props()).toMatchObject({
         title: 'Group',
         runnerType: GROUP_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(2).text()).toContain(
+      expect(findRunnerTab('group-runners-tab').text()).toContain(
         'These runners are shared across projects in this group.',
       );
-      expect(findRunnerTabAt(2).findComponent(GroupRunnersToggle).exists()).toBe(true);
-      expect(findRunnerTabAt(2).findComponent(GroupRunnersTabEmptyState).exists()).toBe(true);
+      expect(findRunnerTab('group-runners-tab').findComponent(GroupRunnersToggle).exists()).toBe(
+        true,
+      );
+
+      const emptyState =
+        findRunnerTab('group-runners-tab').findComponent(GroupRunnersTabEmptyState);
+      expect(emptyState.exists()).toBe(true);
+      expect(emptyState.props('groupRunnersEnabled')).toBe(true);
+    });
+
+    describe('when isGroupRunnersEnabled is false', () => {
+      it('renders GroupRunnersTabEmptyState with correct groupRunnersEnabled prop value', () => {
+        createComponent({ runner: mockRunner, provide: { isGroupRunnersEnabled: false } });
+
+        const emptyState =
+          findRunnerTab('group-runners-tab').findComponent(GroupRunnersTabEmptyState);
+        expect(emptyState.props('groupRunnersEnabled')).toBe(false);
+      });
+    });
+
+    describe('canToggleGroupRunners is false', () => {
+      it('does not render toggle', () => {
+        createComponent({ runner: mockRunner, provide: { canToggleGroupRunners: false } });
+
+        expect(findRunnerTab('group-runners-tab').findComponent(GroupRunnersToggle).exists()).toBe(
+          false,
+        );
+      });
     });
 
     it('updates list and empty state on toggle', async () => {
-      findRunnerTabAt(2).findComponent(GroupRunnersToggle).vm.$emit('change', false);
+      findRunnerTab('group-runners-tab')
+        .findComponent(GroupRunnersToggle)
+        .vm.$emit('change', false);
       await nextTick();
 
       expect(mockRefresh).toHaveBeenCalledTimes(1);
       expect(mockRefresh).toHaveBeenCalledWith('Group');
       expect(
-        findRunnerTabAt(2).findComponent(GroupRunnersTabEmptyState).props('groupRunnersEnabled'),
+        findRunnerTab('group-runners-tab')
+          .findComponent(GroupRunnersTabEmptyState)
+          .props('groupRunnersEnabled'),
       ).toBe(false);
     });
 
     it('emits an error event from toggle', () => {
-      findRunnerTabAt(2).findComponent(GroupRunnersToggle).vm.$emit('error', error);
+      findRunnerTab('group-runners-tab').findComponent(GroupRunnersToggle).vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
 
     it('emits an error event', () => {
-      findRunnerTabAt(2).vm.$emit('error', error);
+      findRunnerTab('group-runners-tab').vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });
@@ -229,16 +291,20 @@ describe('RunnersTabs', () => {
 
   describe('Instance tab', () => {
     it('renders the tab content', () => {
-      expect(findRunnerTabAt(3).props()).toMatchObject({
+      expect(findRunnerTab('instance-runners-tab').props()).toMatchObject({
         title: 'Instance',
         runnerType: INSTANCE_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(3).findComponent(InstanceRunnersTabEmptyState).exists()).toBe(true);
+      expect(
+        findRunnerTab('instance-runners-tab').findComponent(InstanceRunnersTabEmptyState).exists(),
+      ).toBe(true);
     });
 
     it('shows instance runners toggle', () => {
-      expect(findRunnerTabAt(3).findComponent(InstanceRunnersToggle).props()).toEqual({
+      expect(
+        findRunnerTab('instance-runners-tab').findComponent(InstanceRunnersToggle).props(),
+      ).toEqual({
         groupName: 'My group',
         groupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
         isDisabledAndUnoverridable: false,
@@ -247,19 +313,33 @@ describe('RunnersTabs', () => {
       });
     });
 
+    describe('canToggleInstanceRunners is false', () => {
+      it('does not render toggle', () => {
+        createComponent({ runner: mockRunner, provide: { canToggleInstanceRunners: false } });
+
+        expect(
+          findRunnerTab('instance-runners-tab').findComponent(InstanceRunnersToggle).exists(),
+        ).toBe(false);
+      });
+    });
+
     it('updates list and empty state on toggle', async () => {
-      findRunnerTabAt(3).findComponent(InstanceRunnersToggle).vm.$emit('change', false);
+      findRunnerTab('instance-runners-tab')
+        .findComponent(InstanceRunnersToggle)
+        .vm.$emit('change', false);
       await nextTick();
 
       expect(mockRefresh).toHaveBeenCalledTimes(1);
       expect(mockRefresh).toHaveBeenCalledWith('Instance');
-      expect(findRunnerTabAt(3).findComponent(InstanceRunnersToggle).props('isEnabled')).toBe(
-        false,
-      );
+      expect(
+        findRunnerTab('instance-runners-tab')
+          .findComponent(InstanceRunnersToggle)
+          .props('isEnabled'),
+      ).toBe(false);
     });
 
     it('emits an error event', () => {
-      findRunnerTabAt(3).vm.$emit('error', error);
+      findRunnerTab('instance-runners-tab').vm.$emit('error', error);
 
       expect(wrapper.emitted().error[0]).toEqual([error]);
     });

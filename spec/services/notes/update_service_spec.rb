@@ -407,60 +407,40 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
     end
 
     context 'notifications' do
-      context 'when email_on_added_mentions feature flag is enabled' do
-        before do
-          stub_feature_flags(email_on_added_mentions: true)
-        end
-
-        context 'when the note changes to include a new user mention' do
-          it 'sends a notification for the new mention' do
-            expect_next_instance_of(NotificationService::Async) do |async_service|
-              expect(async_service).to receive(:new_mentions_in_note).with(note, [user3], user)
-            end
-
-            update_note({ note: "New note #{user2.to_reference} #{user3.to_reference}" })
+      context 'when the note changes to include a new user mention' do
+        it 'sends a notification for the new mention' do
+          expect_next_instance_of(NotificationService::Async) do |async_service|
+            expect(async_service).to receive(:new_mentions_in_note).with(note, [user3], user)
           end
-        end
 
-        context 'when the note does not change mentions' do
-          it 'does not send a notification' do
-            expect(NotificationService).not_to receive(:new)
-
-            update_note({ note: "Old note #{user2.to_reference}" })
-          end
-        end
-
-        context 'when the note text does not change' do
-          it 'does not send a notification' do
-            expect(NotificationService).not_to receive(:new)
-
-            update_note({ note: note.note })
-          end
-        end
-
-        context 'when current_user cannot trigger notifications' do
-          it 'does not send a notification' do
-            blocked_user = create(:user, :blocked)
-            project.add_maintainer(blocked_user)
-
-            expect(NotificationService).not_to receive(:new)
-
-            described_class.new(project, blocked_user, note: "New note #{user2.to_reference} #{user3.to_reference}").execute(note)
-          end
+          update_note({ note: "New note #{user2.to_reference} #{user3.to_reference}" })
         end
       end
 
-      context 'when email_on_added_mentions feature flag is disabled' do
-        before do
-          stub_feature_flags(email_on_added_mentions: false)
+      context 'when the note does not change mentions' do
+        it 'does not send a notification' do
+          expect(NotificationService).not_to receive(:new)
+
+          update_note({ note: "Old note #{user2.to_reference}" })
         end
+      end
 
-        context 'when the note changes to include a new user mention' do
-          it 'does not send a notification' do
-            expect(NotificationService).not_to receive(:new)
+      context 'when the note text does not change' do
+        it 'does not send a notification' do
+          expect(NotificationService).not_to receive(:new)
 
-            update_note({ note: "New note #{user2.to_reference} #{user3.to_reference}" })
-          end
+          update_note({ note: note.note })
+        end
+      end
+
+      context 'when current_user cannot trigger notifications' do
+        it 'does not send a notification' do
+          blocked_user = create(:user, :blocked)
+          project.add_maintainer(blocked_user)
+
+          expect(NotificationService).not_to receive(:new)
+
+          described_class.new(project, blocked_user, note: "New note #{user2.to_reference} #{user3.to_reference}").execute(note)
         end
       end
     end

@@ -22,7 +22,8 @@ title: GitLab Pagesカスタムドメイン
 - [カスタムルートドメインまたはサブドメイン](#set-up-a-custom-domain)を追加します。
 - [SSL/TLS証明書](#add-an-ssltls-certificate-to-pages)を追加します。
 
-> [!warning] [最も一般的なパブリックメールドメイン](../../../group/access_and_permissions.md#restrict-group-access-by-domain)は検証できません。
+> [!warning]
+> [最も一般的なパブリックメールドメイン](../../../group/access_and_permissions.md#restrict-group-access-by-domain)は検証できません。
 
 ## カスタムドメインを設定する {#set-up-a-custom-domain}
 
@@ -64,17 +65,18 @@ Pagesに新しいドメインを追加すると、GitLabは検証コードを表
 - DNSレコードタイプ: `TXT`
 - 値: `gitlab-pages-verification-code=00112233445566778899aabbccddeeff`（GitLabからの実際のコードを使用）
 
-> [!note] Cloudflareなどの一部のDNSプロバイダーは、ドメイン名を名前フィールドまたはホストフィールドに自動的に追加します。プロバイダーがこれを行う場合は、ルートドメインの場合は`_gitlab-pages-verification-code`、サブドメインの場合は`_gitlab-pages-verification-code.subdomain`のみを入力します。
+> [!note]
+> Cloudflareなどの一部のDNSプロバイダーは、名前フィールドやホストフィールドにドメイン名を自動的に追加するものがあります。プロバイダーがこれを行う場合は、ルートドメインの場合は`_gitlab-pages-verification-code`、サブドメインの場合は`_gitlab-pages-verification-code.subdomain`のみを入力します。
 
 ### ステップ3: DNSレコードを設定する {#step-3-set-up-dns-records}
 
 Pagesサイトで使用するドメインのタイプに従ってDNSレコードを設定するには、次のいずれかを選択します:
 
-- [ルートドメインの場合](#for-root-domains)
-- [サブドメインの場合](#for-subdomains)
-- [ルートドメインとサブドメインの両方の場合](#for-both-root-and-subdomains)
+- [ルートドメイン](#root-domains)
+- [サブドメイン](#subdomains)
+- [ルートドメインとサブドメインの両方](#both-root-and-subdomains)
 
-#### ルートドメインの場合 {#for-root-domains}
+#### ルートドメイン {#root-domains}
 
 ルートドメイン（`example.com`）には、以下が必要です:
 
@@ -95,9 +97,10 @@ GitLab.comのプロジェクトの場合、IPv4アドレスは`35.185.44.232`、
 
 ![GitLab Pagesサーバーに追加されたAレコードを示すDNS設定画面。](img/dns_add_new_a_record_v11_2.png)
 
-> [!warning] ルートドメインに`A`または`AAAA`レコードの代わりにDNSアペックス`CNAME`レコードを使用しないでください。ルートドメインの[`MX` DNSレコード](dns_concepts.md#mx-record)を設定した場合、このメソッドはおそらく機能しません。
+> [!warning]
+> ルートドメインに`A`または`AAAA`レコードの代わりにDNSアペックス`CNAME`レコードを使用しないでください。ルートドメインの[`MX` DNSレコード](dns_concepts.md#mx-record)を設定した場合、このメソッドはおそらく機能しません。
 
-#### サブドメインの場合 {#for-subdomains}
+#### サブドメイン {#subdomains}
 
 サブドメイン（`subdomain.example.com`）には、以下が必要です:
 
@@ -111,7 +114,7 @@ GitLab.comのプロジェクトの場合、IPv4アドレスは`35.185.44.232`、
 
 ユーザーまたはプロジェクトのWebサイトであるかどうかにかかわらず、DNSレコードは、パスなしで、Pagesドメイン（`namespace.gitlab.io`）を指定する必要があります。
 
-#### ルートドメインとサブドメインの両方の場合 {#for-both-root-and-subdomains}
+#### ルートドメインとサブドメインの両方 {#both-root-and-subdomains}
 
 たとえば、ルートドメインとサブドメインの両方を同じWebサイト（`example.com`や`www.example.com`など）に指定するには、以下が必要です:
 
@@ -134,9 +137,8 @@ Cloudflareを使用している場合は、[Cloudflareを使用して`www.domain
 
 - `domain.com`をGitLab Pagesサイトに指定する場合は、`CNAME`レコードを使用しないでください。代わりに`A`レコードを使用してください。
 - デフォルトのPagesドメインの後に特殊文字を追加しないでください。たとえば、`subdomain.domain.com`を`namespace.gitlab.io/`に指定しないでください。一部のドメインホスティングプロバイダーは、末尾のドット（`namespace.gitlab.io.`）をリクエストする場合があります。
-- GitLab.comのGitLab Pages IPは、2017年に[変更されました](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)。
-- GitLab.comのGitLab Pages IPは、2018年に[変更されました](https://about.gitlab.com/blog/gcp-move-update/#gitlab-pages-and-custom-domains)（`52.167.214.135`から`35.185.44.232`）。
-- IPv6サポートは、2023年にGitLab.comに[追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/214718)。
+- 2018年にGitLab.comのGitLab Pages IPが`52.167.214.135`から`35.185.44.232`に[変更](https://about.gitlab.com/blog/gcp-move-update/#gitlab-pages-and-custom-domains)されました。
+- 2023年にGitLab.comにIPv6サポートが[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/214718)されました。
 
 ### ステップ4: ドメインの所有権を確認する {#step-4-verify-the-domains-ownership}
 
@@ -144,14 +146,15 @@ Cloudflareを使用している場合は、[Cloudflareを使用して`www.domain
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**編集**（{{< icon name="pencil" >}}）を選択します。
+1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
 1. **検証ステータス**で、**検証を再試行する**（{{< icon name="retry" >}}）を選択します。
 
 ![ドメインの検証を再試行するオプションを示すGitLab Pagesの設定。](img/retry_domain_verification_v18_8.png)
 
 ドメインがアクティブになると、Webサイトがドメイン名で使用できるようになります。
 
-> [!warning] ドメイン検証が有効になっているGitLabインスタンスでは、GitLabは検証されていないドメインを7日後にプロジェクトから削除します。
+> [!warning]
+> ドメイン検証が有効になっているGitLabインスタンスでは、GitLabは検証されていないドメインを7日後にプロジェクトから削除します。
 
 追加の注意点:
 
@@ -217,17 +220,18 @@ SSL/TLS証明書の概要については、[GitLab PagesのSSL/TLS証明書](ssl
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**編集**（{{< icon name="pencil" >}}）を選択します。
+1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
 1. **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにします。
 1. 証明書フィールドに入力します。
 1. **変更を保存**を選択します。
 
 証明書フィールドに入力する場合:
 
-- **証明書（PEM）**に、PEM証明書を貼り付けます。証明書に個別の中間証明書が必要な場合は、同じフィールドに貼り付け、空白行で区切ります。詳細については、[Cloudflare証明書を使用してGitLab Pagesを設定する](https://about.gitlab.com/blog/setting-up-gitlab-pages-with-cloudflare-certificates/)を参照してください。
+- **証明書 (PEM)**に、PEM証明書を貼り付けます。証明書に個別の中間証明書が必要な場合は、同じフィールドに貼り付け、空白行で区切ります。詳細については、[Cloudflare証明書でGitLab Pagesを設定する](https://about.gitlab.com/blog/setting-up-gitlab-pages-with-cloudflare-certificates/)を参照してください。
 - 秘密キーフィールドに、秘密キーを貼り付けます。
 
-> [!note] 通常のテキストエディタで証明書または暗号化キーを開かないでください。Sublime Text、Dreamweaver、またはVS Codeのようなコードエディタを使用してください。
+> [!note]
+> 通常のテキストエディタで証明書または暗号化キーを開かないでください。Sublime Text、Dreamweaver、またはVS Codeのようなコードエディタを使用してください。
 
 ## GitLab Pages WebサイトにHTTPSを強制する {#force-https-for-gitlab-pages-websites}
 
@@ -237,7 +241,7 @@ HTTPSを強制するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. **HTTPSを強制（有効な証明書が必要）**チェックボックスを選択します。
+1. **HTTPSを強制 (有効な証明書が必要)**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 GitLab Pagesの前にCloudflare CDNを使用する場合は、SSL接続設定を`flexible`ではなく`full`に設定します。詳細については、[Cloudflare CDNの手順](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef)を参照してください。
@@ -256,7 +260,7 @@ GitLab Pagesの前にCloudflare CDNを使用する場合は、SSL接続設定を
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**編集**（{{< icon name="pencil" >}}）を選択します。
+1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
 
 ## カスタムドメインを削除する {#delete-a-custom-domain}
 
@@ -266,7 +270,7 @@ GitLab Pagesの前にCloudflare CDNを使用する場合は、SSL接続設定を
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**ドメインの消去**（{{< icon name="remove" >}}）を選択します。
+1. ドメイン名の横にある**ドメインの消去** ({{< icon name="remove" >}}) を選択します。
 1. プロンプトが表示されたら、**ドメインの消去**を選択します。
 
 ## トラブルシューティング {#troubleshooting}

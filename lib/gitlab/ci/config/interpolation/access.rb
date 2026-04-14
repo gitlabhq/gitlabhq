@@ -46,17 +46,13 @@ module Gitlab
 
           private
 
-          def array_indexing_enabled?
-            ::Feature.enabled?(:ci_inputs_array_index_operator) # rubocop:disable Gitlab/FeatureFlagWithoutActor
-          end
-
           def evaluate!
             raise ArgumentError, 'access path invalid' unless valid?
 
             @value ||= objects.inject(@ctx) do |memo, segment|
               break if @errors.any?
 
-              if array_indexing_enabled? && segment.include?('[')
+              if segment.include?('[')
                 evaluate_indexed_segment(memo, segment)
               else
                 evaluate_key_segment(memo, segment)

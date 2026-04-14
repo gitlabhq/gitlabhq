@@ -123,16 +123,19 @@ class SearchController < ApplicationController
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
-    @scope = params[:scope]
-    @search_type = search_type
-    @search_level = search_service.level
+    autocomplete_scope = params[:scope]
+
+    # @scope, @search_type, @search_level are not meaningful for autocomplete SLI
+    @scope = nil
+    @search_type = nil
+    @search_level = nil
 
     # Cache the response on the frontend
     expires_in 1.minute
 
     results = nil
     @global_search_duration_s = Benchmark.realtime do
-      results = search_autocomplete_opts(term, filter: @filter, scope: @scope)
+      results = search_autocomplete_opts(term, filter: @filter, scope: autocomplete_scope)
     end
 
     render json: Gitlab::Json.dump(results)

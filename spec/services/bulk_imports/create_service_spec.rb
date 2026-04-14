@@ -45,7 +45,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   let(:source_entity_identifier) { ERB::Util.url_encode(params[0][:source_full_path]) }
   let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[0][:source_type]) }
 
-  subject { described_class.new(user, params, credentials, fallback_organization:) }
+  subject(:service) { described_class.new(user, params, credentials, fallback_organization:) }
 
   describe '#execute' do
     context 'when gitlab version is 15.5 or higher' do
@@ -61,7 +61,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
 
         it 'rescues the error and raises a ServiceResponse::Error' do
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -69,16 +69,13 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
       end
 
-      context 'when the resource is not found  while validating the source_full_path' do
+      context 'when the resource is not found while validating the source_full_path' do
         before do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client)
-              .to receive(:validate_instance_version!)
-              .and_return(true)
-
-            allow(client)
-              .to receive(:validate_import_scopes!)
-              .and_return(true)
+            allow(client).to receive_messages(
+              validate_instance_version!: true,
+              validate_import_scopes!: true
+            )
           end
         end
 
@@ -89,7 +86,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
              .and_return({ 'data' => { 'group' => nil } })
           end
 
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -101,8 +98,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       context 'when direct transfer status query returns a 403' do
         before do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:validate_instance_version!).and_return(true)
-            allow(client).to receive(:validate_import_scopes!).and_return(true)
+            allow(client).to receive_messages(
+              validate_instance_version!: true,
+              validate_import_scopes!: true
+            )
           end
 
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
@@ -118,7 +117,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
             .to_return(status: 403)
 
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -129,8 +128,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       context 'when direct transfer setting query returns a 404' do
         it 'raises a ServiceResponse::Error' do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:validate_instance_version!).and_return(true)
-            allow(client).to receive(:validate_import_scopes!).and_return(true)
+            allow(client).to receive_messages(
+              validate_instance_version!: true,
+              validate_import_scopes!: true
+            )
           end
 
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
@@ -144,7 +145,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
             .to_return(status: 404)
 
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -159,8 +160,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       context 'when direct transfer setting query raises any other NetworkError' do
         it 'raises a ServiceResponse::Error' do
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:validate_instance_version!).and_return(true)
-            allow(client).to receive(:validate_import_scopes!).and_return(true)
+            allow(client).to receive_messages(
+              validate_instance_version!: true,
+              validate_import_scopes!: true
+            )
           end
 
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
@@ -174,7 +177,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
             .to_return(status: 408)
 
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -191,7 +194,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
               .and_raise(BulkImports::Error.scope_or_url_validation_failure)
           end
 
-          result = subject.execute
+          result = service.execute
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
@@ -204,25 +207,26 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
       context 'when token validation succeeds' do
         before do
-          allow(subject).to receive(:validate!).and_return(true)
+          allow(service).to receive(:validate!).and_return(true)
 
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:instance_version).and_return(source_version[:version])
-            allow(client).to receive(:instance_enterprise).and_return(false)
+            allow(client).to receive_messages(
+              instance_version: source_version[:version],
+              instance_enterprise: false
+            )
           end
 
           parent_group.add_owner(user)
         end
 
         it 'creates bulk import' do
-          expect { subject.execute }.to change { BulkImport.count }.by(1)
+          expect { service.execute }.to change { BulkImport.count }.by(1)
 
           last_bulk_import = BulkImport.last
 
           expect(last_bulk_import.user).to eq(user)
           expect(last_bulk_import.source_version).to eq(source_version[:version])
-          expect(last_bulk_import.user).to eq(user)
-          expect(last_bulk_import.source_enterprise).to eq(false)
+          expect(last_bulk_import.source_enterprise).to be false
 
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
@@ -230,19 +234,11 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             label: 'bulk_import_group',
             extra: { source_equals_destination: false }
           )
-
-          expect_snowplow_event(
-            category: 'BulkImports::CreateService',
-            action: 'create',
-            label: 'import_access_level',
-            user: user,
-            extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
-          )
         end
 
         context 'when a destination_namespace is provided' do
           it 'uses the organization of the provided namespace for the bulk import entities' do
-            expect { subject.execute }.to change { BulkImports::Entity.count }
+            expect { service.execute }.to change { BulkImports::Entity.count }
 
             last_bulk_import = BulkImports::Entity.last
 
@@ -264,7 +260,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           it 'uses the fallback_organization for the bulk import entities' do
-            expect { subject.execute }.to change { BulkImports::Entity.count }
+            expect { service.execute }.to change { BulkImports::Entity.count }
 
             last_bulk_import = BulkImports::Entity.last
 
@@ -274,7 +270,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           it 'does not look up the empty namespace' do
             expect(Group).not_to receive(:find_by_full_path).with('')
 
-            subject.execute
+            service.execute
           end
         end
 
@@ -307,7 +303,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           it 'returns unsuccessful ServiceResponse' do
-            result = subject.execute
+            result = service.execute
 
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
@@ -343,7 +339,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           it 'returns success ServiceResponse' do
-            result = subject.execute
+            result = service.execute
 
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_success
@@ -356,7 +352,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           it 'tracks the same instance migration' do
-            expect { subject.execute }.to change { BulkImport.count }.by(1)
+            expect { service.execute }.to change { BulkImport.count }.by(1)
 
             expect_snowplow_event(
               category: 'BulkImports::CreateService',
@@ -374,7 +370,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_projects) { false }
 
             it 'sets false' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_projects)).to contain_exactly(false, false, false)
             end
@@ -384,7 +380,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_projects) { true }
 
             it 'sets true' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_projects)).to contain_exactly(true, true, true)
             end
@@ -394,7 +390,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_projects) { nil }
 
             it 'sets true' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_projects)).to contain_exactly(true, true, true)
             end
@@ -408,7 +404,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_memberships) { false }
 
             it 'sets false' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_memberships)).to contain_exactly(false, false, false)
             end
@@ -418,7 +414,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_memberships) { true }
 
             it 'sets true' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_memberships)).to contain_exactly(true, true, true)
             end
@@ -428,11 +424,47 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             let(:migrate_memberships) { nil }
 
             it 'sets true' do
-              subject.execute
+              service.execute
 
               expect(import.entities.pluck(:migrate_memberships)).to contain_exactly(true, true, true)
             end
           end
+        end
+      end
+
+      context 'when destination validation fails' do
+        before do
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            allow(client).to receive_messages(
+              validate_instance_version!: true,
+              validate_import_scopes!: true
+            )
+          end
+
+          allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
+            allow(client)
+              .to receive(:execute)
+                    .and_return({
+                      'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
+                    })
+          end
+
+          stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
+            .to_return(
+              status: 200
+            )
+
+          allow_next_instance_of(Import::Framework::DestinationValidator) do |destination_validator|
+            allow(destination_validator).to receive(:validate!).and_raise(BulkImports::Error, 'invalid destination')
+          end
+        end
+
+        it 'returns the destination validation error as a service response' do
+          response = service.execute
+
+          expect(response).to be_a(ServiceResponse)
+          expect(response).to be_error
+          expect(response.message).to eq('invalid destination')
         end
       end
     end
@@ -447,8 +479,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
       before do
         allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-          allow(instance).to receive(:instance_version).and_return(source_version)
-          allow(instance).to receive(:instance_enterprise).and_return(false)
+          allow(instance).to receive_messages(
+            instance_version: source_version,
+            instance_enterprise: false
+          )
 
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
             allow(client)
@@ -473,14 +507,14 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       end
 
       it 'creates bulk import' do
-        expect { subject.execute }.to change { BulkImport.count }.by(1)
+        expect { service.execute }.to change { BulkImport.count }.by(1)
 
         last_bulk_import = BulkImport.last
 
         expect(last_bulk_import.user).to eq(user)
         expect(last_bulk_import.source_version).to eq(source_version.to_s)
         expect(last_bulk_import.user).to eq(user)
-        expect(last_bulk_import.source_enterprise).to eq(false)
+        expect(last_bulk_import.source_enterprise).to be false
 
         expect_snowplow_event(
           category: 'BulkImports::CreateService',
@@ -499,15 +533,15 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       end
 
       it 'enables importer_user_mapping' do
-        subject.execute
+        service.execute
 
-        expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(true)
+        expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to be true
       end
 
       it 'enqueues SourceUsersAttributesWorker' do
         expect(Import::BulkImports::SourceUsersAttributesWorker).to receive(:perform_async)
 
-        subject.execute
+        service.execute
       end
 
       context 'on the same instance' do
@@ -516,7 +550,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
 
         it 'tracks the same instance migration' do
-          expect { subject.execute }.to change { BulkImport.count }.by(1)
+          expect { service.execute }.to change { BulkImport.count }.by(1)
 
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
@@ -528,21 +562,21 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       end
 
       it 'creates bulk import entities' do
-        expect { subject.execute }.to change { BulkImports::Entity.count }.by(3)
+        expect { service.execute }.to change { BulkImports::Entity.count }.by(3)
       end
 
       it 'creates bulk import configuration' do
-        expect { subject.execute }.to change { BulkImports::Configuration.count }.by(1)
+        expect { service.execute }.to change { BulkImports::Configuration.count }.by(1)
       end
 
       it 'enqueues BulkImportWorker' do
         expect(BulkImportWorker).to receive(:perform_async)
 
-        subject.execute
+        service.execute
       end
 
       it 'returns success ServiceResponse' do
-        result = subject.execute
+        result = service.execute
 
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_success
@@ -551,7 +585,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
       it 'returns ServiceResponse with error if validation fails' do
         params[0][:source_full_path] = nil
 
-        result = subject.execute
+        result = service.execute
 
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_error
@@ -578,7 +612,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
           it 'defines access_level from parent namespace membership' do
             parent_group.add_guest(user)
-            subject.execute
+            service.execute
 
             expect_snowplow_event(
               category: 'BulkImports::CreateService',
@@ -593,7 +627,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         it 'defines access_level as not a member' do
           parent_group.members.delete_all
 
-          subject.execute
+          service.execute
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
             action: 'create',
@@ -617,7 +651,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
           it 'defines access_level from destination_namespace' do
             destination_group.add_developer(user)
-            subject.execute
+            service.execute
 
             expect_snowplow_event(
               category: 'BulkImports::CreateService',
@@ -642,7 +676,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           it 'defines access_level as owner' do
-            subject.execute
+            service.execute
 
             expect_snowplow_event(
               category: 'BulkImports::CreateService',
@@ -665,10 +699,12 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           allow(BulkImports::Clients::HTTP).to receive(:new).and_return(http_client)
           allow(BulkImports::Clients::Graphql).to receive(:new).and_return(graphql_client)
 
-          allow(http_client).to receive(:instance_version).and_return(status: 200)
-          allow(http_client).to receive(:instance_enterprise).and_return(false)
-          allow(http_client).to receive(:validate_instance_version!).and_return(source_version)
-          allow(http_client).to receive(:validate_import_scopes!).and_return(true)
+          allow(http_client).to receive_messages(
+            instance_version: { status: 200 },
+            instance_enterprise: false,
+            validate_instance_version!: source_version,
+            validate_import_scopes!: true
+          )
         end
 
         context 'when the source_type is a group' do
@@ -703,7 +739,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
               expect(http_client).to receive(:get).with("/groups/12345/export_relations/status")
 
-              subject.execute
+              service.execute
             end
           end
         end
@@ -740,267 +776,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
               expect(http_client).to receive(:get).with("/projects/12345/export_relations/status")
 
-              subject.execute
-            end
-          end
-        end
-      end
-
-      describe '#validate_destination_namespace' do
-        before do
-          allow(subject).to receive(:validate!).and_return(true)
-        end
-
-        context 'when the destination_namespace does not exist' do
-          let(:params) do
-            [
-              {
-                source_type: 'group_entity',
-                source_full_path: 'full/path/to/source',
-                destination_slug: 'destination-slug',
-                destination_namespace: 'destination-namespace',
-                migrate_projects: migrate_projects,
-                migrate_memberships: migrate_memberships
-              }
-            ]
-          end
-
-          it 'returns ServiceResponse with an error message' do
-            result = subject.execute
-
-            expect(result).to be_a(ServiceResponse)
-            expect(result).to be_error
-            expect(result.message)
-              .to eq("Import failed. 'destination-namespace' is invalid, " \
-                     "or you do not have permission.")
-          end
-        end
-
-        context 'when the user does not have permission to create subgroups' do
-          let(:params) do
-            [
-              {
-                source_type: 'group_entity',
-                source_full_path: 'full/path/to/source',
-                destination_slug: 'destination-slug',
-                destination_namespace: parent_group.path,
-                migrate_projects: migrate_projects,
-                migrate_memberships: migrate_memberships
-              }
-            ]
-          end
-
-          it 'returns ServiceResponse with an error message' do
-            parent_group.members.delete_all
-
-            result = subject.execute
-
-            expect(result).to be_a(ServiceResponse)
-            expect(result).to be_error
-            expect(result.message)
-            .to eq("Import failed. '#{parent_group.path}' is invalid, " \
-                   "or you do not have permission.")
-          end
-        end
-
-        context 'when the user does not have permission to create projects' do
-          let(:params) do
-            [
-              {
-                source_type: 'project_entity',
-                source_full_path: 'full/path/to/source',
-                destination_slug: 'destination-slug',
-                destination_namespace: parent_group.path,
-                migrate_projects: migrate_projects,
-                migrate_memberships: migrate_memberships
-              }
-            ]
-          end
-
-          it 'returns ServiceResponse with an error message' do
-            parent_group.members.delete_all
-
-            result = subject.execute
-
-            expect(result).to be_a(ServiceResponse)
-            expect(result).to be_error
-            expect(result.message)
-              .to eq("Import failed. '#{parent_group.path}' is invalid, " \
-                     "or you do not have permission.")
-          end
-        end
-      end
-
-      describe '#validate_destination_slug' do
-        context 'when the destination_slug is invalid' do
-          let(:params) do
-            [
-              {
-                source_type: 'group_entity',
-                source_full_path: 'full/path/to/source',
-                destination_slug: 'destin-*-ation-slug',
-                destination_namespace: parent_group.path,
-                migrate_projects: migrate_projects,
-                migrate_memberships: migrate_memberships
-              }
-            ]
-          end
-
-          it 'returns ServiceResponse with an error message' do
-            result = subject.execute
-
-            expect(result).to be_a(ServiceResponse)
-            expect(result).to be_error
-            expect(result.message)
-              .to eq(
-                "Import failed. The destination URL " \
-                "can only include non-accented letters, digits, '_', '-' and '.'. " \
-                "It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'."
-              )
-          end
-        end
-      end
-
-      describe '#validate_destination_full_path' do
-        before do
-          allow(subject).to receive(:validate!).and_return(true)
-        end
-
-        context 'when the source_type is a group' do
-          context 'when the provided destination_slug already exists in the destination_namespace' do
-            let_it_be(:existing_subgroup) { create(:group, path: 'existing-subgroup', parent_id: parent_group.id) }
-            let_it_be(:existing_subgroup_2) { create(:group, path: 'existing-subgroup_2', parent_id: parent_group.id) }
-            let(:params) do
-              [
-                {
-                  source_type: 'group_entity',
-                  source_full_path: 'full/path/to/source',
-                  destination_slug: existing_subgroup.path,
-                  destination_namespace: parent_group.path,
-                  migrate_projects: migrate_projects,
-                  migrate_memberships: migrate_memberships
-                }
-              ]
-            end
-
-            it 'returns ServiceResponse with an error message' do
-              result = subject.execute
-
-              expect(result).to be_a(ServiceResponse)
-              expect(result).to be_error
-              expect(result.message)
-                .to eq(
-                  "Import failed. 'parent-group/existing-subgroup' already exists. " \
-                  "Change the destination and try again."
-                )
-            end
-          end
-
-          context 'when the destination_slug conflicts with an existing top-level namespace' do
-            let_it_be(:existing_top_level_group) { create(:group, path: 'top-level-group') }
-            let(:params) do
-              [
-                {
-                  source_type: 'group_entity',
-                  source_full_path: 'full/path/to/source',
-                  destination_slug: existing_top_level_group.path,
-                  destination_namespace: '',
-                  migrate_projects: migrate_projects,
-                  migrate_memberships: migrate_memberships
-                }
-              ]
-            end
-
-            it 'returns ServiceResponse with an error message' do
-              result = subject.execute
-
-              expect(result).to be_a(ServiceResponse)
-              expect(result).to be_error
-              expect(result.message)
-                .to eq(
-                  "Import failed. 'top-level-group' already exists. " \
-                  "Change the destination and try again."
-                )
-            end
-          end
-
-          context 'when the destination_slug does not conflict with an existing top-level namespace' do
-            let(:params) do
-              [
-                {
-                  source_type: 'group_entity',
-                  source_full_path: 'full/path/to/source',
-                  destination_slug: 'new-group',
-                  destination_namespace: parent_group.path,
-                  migrate_projects: migrate_projects,
-                  migrate_memberships: migrate_memberships
-                }
-              ]
-            end
-
-            it 'returns success ServiceResponse' do
-              result = subject.execute
-
-              expect(result).to be_a(ServiceResponse)
-              expect(result).to be_success
-            end
-          end
-        end
-
-        context 'when the source_type is a project' do
-          context 'when the provided destination_slug already exists in the destination_namespace' do
-            let_it_be(:existing_group) { create(:group, path: 'existing-group') }
-            let_it_be(:existing_project) { create(:project, path: 'existing-project', parent_id: existing_group.id) }
-            let(:params) do
-              [
-                {
-                  source_type: 'project_entity',
-                  source_full_path: 'full/path/to/source',
-                  destination_slug: existing_project.path,
-                  destination_namespace: existing_group.path,
-                  migrate_projects: migrate_projects,
-                  migrate_memberships: migrate_memberships
-                }
-              ]
-            end
-
-            it 'returns ServiceResponse with an error message' do
-              existing_group.add_owner(user)
-
-              result = subject.execute
-
-              expect(result).to be_a(ServiceResponse)
-              expect(result).to be_error
-              expect(result.message)
-                .to eq(
-                  "Import failed. 'existing-group/existing-project' already exists. " \
-                  "Change the destination and try again."
-                )
-            end
-          end
-
-          context 'when the destination_slug does not conflict with an existing project' do
-            let_it_be(:existing_group) { create(:group, path: 'existing-group') }
-            let(:params) do
-              [
-                {
-                  source_type: 'project_entity',
-                  source_full_path: 'full/path/to/source',
-                  destination_slug: 'new-project',
-                  destination_namespace: 'existing-group',
-                  migrate_projects: migrate_projects,
-                  migrate_memberships: migrate_memberships
-                }
-              ]
-            end
-
-            it 'returns success ServiceResponse' do
-              existing_group.add_owner(user)
-
-              result = subject.execute
-
-              expect(result).to be_a(ServiceResponse)
-              expect(result).to be_success
+              service.execute
             end
           end
         end

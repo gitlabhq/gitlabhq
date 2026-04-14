@@ -44,7 +44,7 @@ depending on the specific model and feature combination.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model family | Model | Code completion | Code generation | GitLab Duo Chat (non-agentic) | GitLab Duo Agent Platform |
+| Model family | Model | Code completion | Code generation | GitLab Duo Non-Agentic Chat | GitLab Duo Agent Platform |
 |--------------|-------|-----------------|-----------------|---------------------------|---------------------------|
 | Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude 4.5 Sonnet](https://www.anthropic.com/news/claude-sonnet-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
@@ -82,7 +82,7 @@ depending on the specific model and feature combination.
 
 {{< /history >}}
 
-You can use your own compatible models and platform with GitLab Duo features. For compatible models not included in supported model families, use the general model family.
+You can use your own compatible models and platform with GitLab Duo features. For compatible models not included in supported model families, use the general model family. This includes models that you host yourself (for example, served through vLLM or LiteLLM), with the requirement that they are exposed through an OpenAI API–compatible `/v1` endpoint.
 
 Compatible models are excluded from the definition of Customer Integrated Models in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/). Compatible models and platforms must adhere to the OpenAI API specification. Models and platforms that have
 previously been marked as experimental or beta are now considered compatible models.

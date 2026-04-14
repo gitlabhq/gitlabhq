@@ -44,16 +44,6 @@ module Banzai
           unsafe: true
         }.freeze
 
-        # Supports the bare minimum markdown. Usually used for single line
-        # titles.
-        MINIMUM_MARKDOWN = {
-          autolink: true,
-          hardbreaks: false,
-          strikethrough: true,
-          unsafe: false,
-          relaxed_autolinks: true
-        }.freeze
-
         def render(text)
           # GLFMMarkdown requires UTF-8 input, and raises on anything else,
           # like US-ASCII.  Occasionally we can get an empty US-ASCII `text`
@@ -79,8 +69,6 @@ module Banzai
         private
 
         def render_options
-          return MINIMUM_MARKDOWN if minimum_markdown_enabled?
-
           unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled? ||
               placeholders_disabled?
             return OPTIONS
@@ -106,10 +94,6 @@ module Banzai
 
         def raw_html_disabled?
           context[:disable_raw_html]
-        end
-
-        def minimum_markdown_enabled?
-          context[:minimum_markdown]
         end
 
         def placeholders_disabled?

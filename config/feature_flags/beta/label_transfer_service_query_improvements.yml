@@ -1,0 +1,10 @@
+---
+name: label_transfer_service_query_improvements
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595408
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229578
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595510
+milestone: '18.11'
+group: group::project management
+type: beta
+default_enabled: false

@@ -1,6 +1,5 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CreatedPersonalAccessToken from '~/personal_access_tokens/components/created_personal_access_token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
@@ -23,7 +22,6 @@ describe('CreatedPersonalAccessToken', () => {
   };
 
   const findPageHeading = () => wrapper.findComponent(PageHeading);
-  const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findDoneButton = () => wrapper.findComponent(GlButton);
   const findInputCopyToggleVisibility = () => wrapper.findComponent(InputCopyToggleVisibility);
 
@@ -34,10 +32,6 @@ describe('CreatedPersonalAccessToken', () => {
   it('renders the page heading', () => {
     expect(findPageHeading().exists()).toBe(true);
     expect(findPageHeading().props('heading')).toBe('Your new token has been created');
-
-    expect(findPageHeading().text()).toContain(
-      "Make sure you copy your token - you won't be able to access it again.",
-    );
   });
 
   it('renders the input copy toggle visibility component', () => {
@@ -47,7 +41,7 @@ describe('CreatedPersonalAccessToken', () => {
       value: tokenValue,
       readonly: true,
       size: 'xl',
-      showCopyButton: false,
+      showCopyButton: true,
       formInputGroupProps: {
         'data-testid': 'created-personal-access-token-field',
         autocomplete: 'off',
@@ -55,16 +49,8 @@ describe('CreatedPersonalAccessToken', () => {
     });
 
     expect(findInputCopyToggleVisibility().attributes()).toMatchObject({
-      'aria-label': 'Your personal access token',
+      'aria-label': 'Token details',
       'label-for': 'created-personal-access-token-field',
-    });
-  });
-
-  it('renders clipboard button', () => {
-    expect(findClipboardButton().exists()).toBe(true);
-    expect(findClipboardButton().props()).toMatchObject({
-      text: tokenValue,
-      title: 'Copy token',
     });
   });
 
@@ -76,7 +62,7 @@ describe('CreatedPersonalAccessToken', () => {
   });
 
   it('enables the `done` button when the copy button is clicked', async () => {
-    await findClipboardButton().vm.$emit('click');
+    await findInputCopyToggleVisibility().vm.$emit('copied');
 
     expect(findDoneButton().attributes('disabled')).toBeUndefined();
   });

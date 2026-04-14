@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { clearDraft } from '~/lib/utils/autosave';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -40,6 +41,16 @@ export default {
     saveNote: {
       type: Function,
       required: true,
+    },
+    saveDraft: {
+      type: Function,
+      required: false,
+      default: null,
+    },
+    hasDrafts: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     requestLastNoteEditing: {
       type: Function,
@@ -81,6 +92,11 @@ export default {
       required: false,
       default: false,
     },
+    codeSuggestionsConfig: {
+      type: Object,
+      required: false,
+      default: () => ({ lines: [], lineType: '', canSuggest: false, showPopover: false }),
+    },
     saveNoteErrorMessages: {
       type: Object,
       required: false,
@@ -96,6 +112,20 @@ export default {
     };
   },
   computed: {
+    renderMarkdownPath() {
+      const { previewParams } = this.codeSuggestionsConfig;
+      if (!previewParams) return this.endpoints.previewMarkdown;
+      return mergeUrlParams(previewParams, this.endpoints.previewMarkdown);
+    },
+    draftButtonTitle() {
+      return this.hasDrafts ? __('Add to review') : __('Start a review');
+    },
+    commentButtonTitle() {
+      return this.saveDraft ? __('Add comment now') : this.saveButtonTitle;
+    },
+    commentButtonCategory() {
+      return this.saveDraft ? 'secondary' : 'primary';
+    },
     formFieldProps() {
       return {
         id: 'note_note',
@@ -131,7 +161,11 @@ export default {
       this.$emit('cancel', shouldConfirm && this.noteBody !== this.editedNoteBody);
     },
     handleKeySubmit(shiftPressed = false) {
-      this.handleUpdate(shiftPressed);
+      if (shiftPressed && this.saveDraft) {
+        this.handleDraftSubmit();
+      } else {
+        this.handleUpdate(shiftPressed);
+      }
       this.editedNoteBody = '';
     },
     async handleUpdate(shiftPressed = false) {
@@ -142,6 +176,27 @@ export default {
       );
       try {
         await this.saveNote(this.editedNoteBody, shiftPressed);
+        this.editedNoteBody = '';
+        clearDraft(this.autosaveKey);
+      } catch (error) {
+        createAlert({
+          message: getNoteFormErrorMessages(error.response, this.saveNoteErrorMessages),
+          parent: this.$el,
+          error,
+        });
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    async handleDraftSubmit() {
+      if (!this.saveDraft) return;
+      this.isSubmitting = true;
+      trackSavedUsingEditor(
+        this.$refs.markdownEditor.isContentEditorActive,
+        `${this.noteableType}_note`,
+      );
+      try {
+        await this.saveDraft(this.editedNoteBody);
         this.editedNoteBody = '';
         clearDraft(this.autosaveKey);
       } catch (error) {
@@ -176,7 +231,8 @@ export default {
       <markdown-editor
         ref="markdownEditor"
         v-model="editedNoteBody"
-        :render-markdown-path="endpoints.previewMarkdown"
+        :code-suggestions-config="codeSuggestionsConfig"
+        :render-markdown-path="renderMarkdownPath"
         :markdown-docs-path="endpoints.markdownDocs"
         :noteable-type="noteableType"
         :form-field-props="formFieldProps"
@@ -197,13 +253,23 @@ export default {
       />
       <div class="gl-mt-3 gl-flex gl-flex-wrap gl-gap-4">
         <gl-button
+          v-if="saveDraft"
           :disabled="!editedNoteBody.length || isSubmitting"
           category="primary"
+          variant="confirm"
+          data-testid="add-to-review-button"
+          @click="handleDraftSubmit()"
+        >
+          {{ draftButtonTitle }}
+        </gl-button>
+        <gl-button
+          :disabled="!editedNoteBody.length || isSubmitting"
+          :category="commentButtonCategory"
           variant="confirm"
           data-testid="reply-comment-button"
           @click="handleUpdate()"
         >
-          {{ saveButtonTitle }}
+          {{ commentButtonTitle }}
         </gl-button>
         <gl-button
           v-if="canCancel"

@@ -30,7 +30,7 @@ module Ci
     end
 
     def allowed_to_force?
-      build.force_cancelable? && user.can?(:maintainer_access, build)
+      build.force_cancelable? && user.can?(:force_cancel_build, build)
     end
 
     def forbidden

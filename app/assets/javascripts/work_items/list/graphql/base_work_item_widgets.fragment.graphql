@@ -1,3 +1,5 @@
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
+
 fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetAssignees {
     assignees {
@@ -51,7 +53,7 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetHierarchy {
     parent {
-      id
+      ...WorkItemParentFields
     }
   }
 }

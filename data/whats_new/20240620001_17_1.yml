@@ -9,10 +9,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/ml/model_registry/
+  documentation_link: https://docs.gitlab.com/user/project/ml/model_registry/
   image_url: https://img.youtube.com/vi/8uyxk0vhifE/hqdefault.jpg
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: See multiple GitLab Duo Code Suggestions in VS Code
   description: |
@@ -21,16 +21,16 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/repository/code_suggestions/supported_extensions.html#view-multiple-code-suggestions
+  documentation_link: https://docs.gitlab.com/user/project/repository/code_suggestions/supported_extensions/#view-multiple-code-suggestions
   image_url: https://about.gitlab.com/images/17_1/multiple-code-suggestions-vs-code.png
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: Secret Push Protection available in beta
   description: |
     If a secret, like a key or an API token, is accidentally committed to a Git repository, anyone with repository access can impersonate the user of the secret for malicious purposes. To address this risk, most organizations require exposed secrets to be revoked and replaced, but you can save remediation time and reduce risk by preventing secrets from being pushed in the first place.
 
-    Secret push protection checks the content of each commit pushed to GitLab. [If any secrets are detected](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/detected_secrets.html), the push is blocked and displays information about the commit, including:
+    Secret push protection checks the content of each commit pushed to GitLab. [If any secrets are detected](https://docs.gitlab.com/user/application_security/secret_detection/secret_push_protection/detected_secrets/), the push is blocked and displays information about the commit, including:
 
     - The commit ID that contains the secret.
     - The filename and line number that contains the secret.
@@ -38,21 +38,21 @@
 
     Need to bypass secret push protection for testing? When you skip secret push detection, GitLab logs an audit event so you can investigate.
 
-    Secret push protection is available on GitLab.com and for Dedicated customers as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature and can be enabled on a [per project basis](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/#enable-secret-push-protection-in-a-project). You can help us improve secret push protection by providing feedback in [issue 467408](https://gitlab.com/gitlab-org/gitlab/-/issues/467408).
+    Secret push protection is available on GitLab.com and for Dedicated customers as a [Beta](https://docs.gitlab.com/policy/experiment-beta-support/#beta) feature and can be enabled on a [per project basis](https://docs.gitlab.com/user/application_security/secret_detection/secret_push_protection/#enable-secret-push-protection-in-a-project). You can help us improve secret push protection by providing feedback in [issue 467408](https://gitlab.com/gitlab-org/gitlab/-/issues/467408).
   stage: secure
   self-managed: false
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection
+  documentation_link: https://docs.gitlab.com/user/application_security/secret_detection/secret_push_protection
   image_url: https://img.youtube.com/vi/2jBC3uBUlyU/hqdefault.jpg
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: GitLab Runner Autoscaler is generally available
   description: |
-    In earlier versions of GitLab, some customers needed an autoscaling solution for GitLab Runner on virtual machine instances on public cloud platforms. These customers had to rely on the legacy [Docker Machine executor](https://docs.gitlab.com/runner/configuration/autoscale.html) or custom solutions stitched together by using cloud provider technologies.
+    In earlier versions of GitLab, some customers needed an autoscaling solution for GitLab Runner on virtual machine instances on public cloud platforms. These customers had to rely on the legacy [Docker Machine executor](https://docs.gitlab.com/runner/configuration/autoscale/) or custom solutions stitched together by using cloud provider technologies.
 
-    Today, we're pleased to announce the general availability of the GitLab Runner Autoscaler. The GitLab Runner Autoscaler is composed of GitLab-developed taskscaler and [fleeting](https://docs.gitlab.com/runner/fleet_scaling/fleeting.html) technologies and the cloud provider plugin for Google Compute Engine.
+    Today, we're pleased to announce the general availability of the GitLab Runner Autoscaler. The GitLab Runner Autoscaler is composed of GitLab-developed taskscaler and [fleeting](https://docs.gitlab.com/runner/fleet_scaling/fleeting/) technologies and the cloud provider plugin for Google Compute Engine.
   stage: verify
   self-managed: true
   gitlab-com: true
@@ -60,7 +60,7 @@
   documentation_link: https://docs.gitlab.com/runner/runner_autoscale/
   image_url: https://about.gitlab.com/images/17_1/runner_fleeting_ga.png
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: Improved wiki user experience
   description: |
@@ -75,10 +75,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/
+  documentation_link: https://docs.gitlab.com/user/project/wiki/
   image_url: https://img.youtube.com/vi/t2z7sZoJ6oE/hqdefault.jpg
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: Container images linked to signatures
   description: |
@@ -88,15 +88,15 @@
     - Find and validate the signatures that are associated with a container image.
 
     This improvement is generally available only on GitLab.com. Support for GitLab Self-Managed is in beta and requires users to enable the
-    [next-generation container registry](https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html), which is also in beta.
+    [next-generation container registry](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/), which is also in beta.
   stage: package
   self-managed: false
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/container_registry#container-image-signatures
+  documentation_link: https://docs.gitlab.com/user/packages/container_registry#container-image-signatures
   image_url: https://about.gitlab.com/images/17_1/container-registry-signatures.png
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"
 
 - name: Runner fleet dashboard for groups
   description: |
@@ -107,7 +107,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/runners/runner_fleet_dashboard_groups.html
+  documentation_link: https://docs.gitlab.com/ci/runners/runner_fleet_dashboard_groups/
   image_url: https://about.gitlab.com/images/17_1/runners-fleet-dashboard-groups-beta.png
   published_at: 2024-06-20
-  release: 17.1
+  release: "17.1"

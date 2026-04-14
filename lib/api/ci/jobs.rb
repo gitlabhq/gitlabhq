@@ -282,7 +282,7 @@ module API
           tags ['ci_jobs']
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, skip_job_token_policies: true
+        route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: :job_token_auth
         get '', feature_category: :continuous_integration, urgency: :low do
           validate_current_authenticated_job
 
@@ -300,7 +300,7 @@ module API
           tags ['agents']
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, skip_job_token_policies: true
+        route_setting :authorization, skip_job_token_policies: true, skip_granular_token_authorization: :job_token_auth
         get '/allowed_agents', urgency: :default, feature_category: :deployment_management do
           validate_current_authenticated_job
 

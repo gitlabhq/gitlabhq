@@ -154,7 +154,7 @@ module API
           representation = entity_representation_for(::API::Entities::BatchedBackgroundMigration, result, {})
           json_representation = Gitlab::Json.dump(representation)
 
-          body Gitlab::Json::PrecompiledJson.new(json_representation)
+          body Gitlab::Json::Precompiled.new(json_representation)
         end
       end
     end

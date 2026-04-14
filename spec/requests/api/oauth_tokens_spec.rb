@@ -229,13 +229,26 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
   end
 
   context 'Device Grant flow' do
-    let_it_be(:client) { create(:oauth_application, confidential: false) }
+    let_it_be(:client) { create(:oauth_application, :with_device_code_enabled, confidential: false) }
     let_it_be(:user) { create(:user) }
 
     def request_device_token(app_id, headers = {})
       post '/oauth/authorize_device',
         params: { client_id: app_id, scope: "api" },
         headers: headers
+    end
+
+    context 'when device_code_enabled is false' do
+      before do
+        client.update!(device_code_enabled: false)
+      end
+
+      it 'fails' do
+        request_device_token(client.uid)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('access_denied')
+      end
     end
 
     context 'when generating a device code' do

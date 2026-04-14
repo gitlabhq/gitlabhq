@@ -11,8 +11,7 @@ module Projects
       relation = IssuesFinder.new(current_user, project_id: project.id, state: 'opened').execute
       relation = relation.gfm_autocomplete_search(params[:search]).limit(SEARCH_LIMIT) if params[:search]
       relation
-        .with_work_item_type
-        .select([:iid, :title, :namespace_id, 'work_item_types.icon_name'])
+        .select(:iid, :title, :namespace_id, :work_item_type_id)
     end
 
     def milestones

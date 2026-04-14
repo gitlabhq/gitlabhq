@@ -17,6 +17,8 @@ module API
           track_runner_authentication
           forbidden! unless current_runner
 
+          set_current_organization_from_runner(current_runner)
+
           current_runner.heartbeat(creation_state: creation_state) if ensure_runner_manager
           return unless ensure_runner_manager
 
@@ -27,6 +29,8 @@ module API
         def authenticate_runner_from_header!
           track_runner_authentication
           forbidden! unless current_runner_from_header
+
+          set_current_organization_from_runner(current_runner_from_header)
         end
 
         def get_runner_details_from_request
@@ -110,8 +114,18 @@ module API
             job_forbidden!(current_job, 'Job is not processing on runner')
           rescue ::Ci::AuthJobFinder::ExpiredJobTokenError => e
             if fail_on_expired_token
-              e.job.drop!(:job_token_expired)
-              log_job_failed_due_to_expired_token(e.job)
+              dropped = \
+                begin
+                  e.job.drop(:job_token_expired)
+                rescue ActiveRecord::StaleObjectError
+                  false
+                end
+
+              if dropped
+                log_job_dropped_due_to_expired_token(e.job)
+              else
+                log_job_forbidden_due_to_expired_token(e.job)
+              end
             else
               log_job_forbidden_due_to_expired_token(e.job)
             end
@@ -192,9 +206,15 @@ module API
         end
 
         def set_application_context
-          return unless current_job
+          if current_job
+            Gitlab::ApplicationContext.push(job: current_job, runner: current_runner)
+          elsif current_runner
+            Gitlab::ApplicationContext.push(runner: current_runner)
+          end
 
-          Gitlab::ApplicationContext.push(job: current_job, runner: current_runner)
+          # Idempotent: organization_assigned guard in the callee prevents
+          # double-assignment when authenticate_runner! already set it.
+          set_current_organization_from_runner(current_runner)
         end
 
         def track_ci_minutes_usage!(_build)
@@ -220,6 +240,16 @@ module API
         end
 
         private
+
+        # rubocop:disable Gitlab/AvoidCurrentOrganization -- Runner API does not go
+        # through standard set_current_organization
+        def set_current_organization_from_runner(runner)
+          return if ::Current.organization_assigned
+          return if runner.nil? || runner.instance_type?
+
+          ::Current.organization = ::Organizations::Organization.find_by_id(runner.organization_id)
+        end
+        # rubocop:enable Gitlab/AvoidCurrentOrganization
 
         def processing_on_runner?(job)
           job.running? || job.canceling?
@@ -247,7 +277,7 @@ module API
           }.merge(Gitlab::ApplicationContext.current))
         end
 
-        def log_job_failed_due_to_expired_token(job)
+        def log_job_dropped_due_to_expired_token(job)
           Gitlab::AppLogger.info({
             class: self.class.name,
             job_id: job.id,

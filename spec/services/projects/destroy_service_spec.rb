@@ -99,7 +99,10 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         context 'with different pipeline sources' do
           before do
             # We're creating many pipelines
-            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(494)
+            # +1 from uploads table sync trigger (table_sync_function_40ecbfb353)
+            # created by SwapUploadsWithPartitionedTable migration.
+            # Remove after uploads_archived is dropped.
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(514)
 
             external_pull_request = create(:external_pull_request, project: project)
             create(:ci_pipeline, project: project, source: :external_pull_request_event, external_pull_request: external_pull_request)
@@ -312,7 +315,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       merge_request_diffs = merge_request.merge_request_diffs
       expect(merge_request_diffs.size).to eq(1)
 
-      expect { destroy_project(project, user, {}) }.to change(MergeRequestDiff, :count).by(-1)
+      expect { destroy_project(project, user, {}) }.to change { MergeRequestDiff.count }.by(-1)
       expect { another_project_mr.reload }.not_to raise_error
     end
   end
@@ -321,7 +324,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     let!(:deployment) { create(:deployment, project: project) }
 
     it 'deletes deployments' do
-      expect { destroy_project(project, user, {}) }.to change(Deployment, :count).by(-1)
+      expect { destroy_project(project, user, {}) }.to change { Deployment.count }.by(-1)
     end
   end
 
@@ -394,7 +397,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     it 'destroys project and export' do
       expect do
         destroy_project(project_with_export, user, {})
-      end.to change(ImportExportUpload, :count).by(-1)
+      end.to change { ImportExportUpload.count }.by(-1)
 
       expect(Project.all).not_to include(project_with_export)
     end
@@ -419,10 +422,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
 
     it { expect(Project.all).not_to include(project) }
-
-    it do
-      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-    end
+    it { expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey }
   end
 
   context 'when flushing caches fail due to Git errors' do
@@ -835,7 +835,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       expect do
         destroy_project(project, user)
-      end.to change(Snippet, :count).by(-2)
+      end.to change { Snippet.count }.by(-2)
     end
 
     context 'when an error is raised deleting snippets' do
@@ -870,7 +870,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       expect do
         destroy_project(project, user)
-      end.to change(WebHook, :count).by(-2)
+      end.to change { WebHook.count }.by(-2)
     end
 
     context 'when an error is raised deleting webhooks' do
@@ -908,7 +908,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     it 'deletes events from the project' do
       expect do
         destroy_project(project, user)
-      end.to change(Event, :count).by(-1)
+      end.to change { Event.count }.by(-1)
     end
 
     context 'when an error is returned while deleting events' do
@@ -949,12 +949,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         allow(project).to receive(:destroy!).and_raise(StandardError)
       end
 
-      it 'calls reschedule_deletion to transition state back' do
-        expect(project).to receive(:reschedule_deletion!).with(transition_user: user).and_call_original
-
+      it 'calls reschedule_deletion to transition state back with deletion_error' do
         destroy_project(project, user, {})
 
-        expect(project.reload.state).to eq('deletion_scheduled')
+        project.reload
+        expect(project.state).to eq('deletion_scheduled')
+        expect(project.deletion_error).to be_present
       end
     end
   end
@@ -1016,7 +1016,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           orphaned_commit_status_count: 0
         )
 
-        expect { service.send(:delete_commit_statuses) }.not_to change(::CommitStatus, :count)
+        expect { service.send(:delete_commit_statuses) }.not_to change { ::CommitStatus.count }
       end
     end
 
@@ -1071,7 +1071,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           deleted_environment_count: 0
         )
 
-        expect { service.send(:delete_environments) }.not_to change(Environment, :count)
+        expect { service.send(:delete_environments) }.not_to change { Environment.count }
       end
     end
 

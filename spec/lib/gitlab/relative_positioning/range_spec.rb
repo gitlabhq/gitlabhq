@@ -8,12 +8,18 @@ RSpec.describe Gitlab::RelativePositioning::Range do
   item_a = position_struct.new(100, :x, true)
   item_b = position_struct.new(200, :y, true)
 
+  unpositioned = position_struct.new(nil, :unpos, false)
+  unpositioned_2 = position_struct.new(nil, :unpos2, false)
+
   before do
     allow(item_a).to receive(:lhs_neighbour) { nil }
     allow(item_a).to receive(:rhs_neighbour) { item_b }
 
     allow(item_b).to receive(:lhs_neighbour) { item_a }
     allow(item_b).to receive(:rhs_neighbour) { nil }
+
+    allow(unpositioned).to receive(:lhs_neighbour) { nil }
+    allow(unpositioned).to receive(:rhs_neighbour) { nil }
   end
 
   describe 'RelativePositioning.range' do
@@ -58,7 +64,8 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [item_a, nil, false],
         [nil, item_b, false],
         [item_b, nil, false],
-        [nil, item_a, true]
+        [nil, item_a, true],
+        [unpositioned, item_a, true]
       ]
     end
 
@@ -78,6 +85,7 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [item_a, nil, false],
         [nil, item_b, false],
         [item_b, nil, true],
+        [item_b, unpositioned, true],
         [nil, item_a, false]
       ]
     end
@@ -111,6 +119,7 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [item_a, item_b, item_f, false],
         [item_a, item_b, nil, false],
 
+        # lhs = item_b.lhs_neighbour
         [nil, item_b, item_a, true],
         [nil, item_b, item_b, true],
         [nil, item_b, item_c, true],
@@ -121,6 +130,7 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [nil, item_b, item_f, false],
         [nil, item_b, nil, false],
 
+        # rhs = item_a.rhs_neighbour
         [item_a, nil, item_a, true],
         [item_a, nil, item_b, true],
         [item_a, nil, item_c, true],
@@ -131,6 +141,7 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [item_a, nil, item_f, false],
         [item_a, nil, nil, false],
 
+        # open on left
         [nil, item_a, item_a, true],
         [nil, item_a, item_b, false],
         [nil, item_a, item_c, false],
@@ -140,7 +151,11 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [nil, item_a, item_bx, false],
         [nil, item_a, item_f, false],
         [nil, item_a, nil, false],
+        [unpositioned, item_a, item_d, true],
+        [unpositioned, item_a, item_e, false],
+        [unpositioned, item_a, item_f, false],
 
+        # open on right
         [item_b, nil, item_a, false],
         [item_b, nil, item_b, true],
         [item_b, nil, item_c, false],
@@ -149,7 +164,17 @@ RSpec.describe Gitlab::RelativePositioning::Range do
         [item_b, nil, item_ax, false],
         [item_b, nil, item_bx, false],
         [item_b, nil, item_f, false],
-        [item_b, nil, nil, false]
+        [item_b, nil, nil, false],
+        [item_b, unpositioned, item_d, false],
+        [item_b, unpositioned, item_e, true],
+        [item_b, unpositioned, item_f, false],
+
+        # open on both sides
+        [nil, unpositioned, item_d, true],
+        [unpositioned, nil, item_d, true],
+        [unpositioned, unpositioned_2, item_d, true],
+        [unpositioned, unpositioned_2, item_f, true],
+        [unpositioned, unpositioned_2, nil, true]
       ]
     end
 

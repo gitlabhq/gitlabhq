@@ -33,11 +33,12 @@ Run the `gitlab:duo:setup` Rake task to seed a test group and a project with Git
 
 This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally. Below are several options. If you are unsure, use option 1.
 
-**Note:** Duo Core add-on is always created when running this script.
+> [!note]
+> Duo Core add-on is always created when running this script.
 
 Be sure to run the Rake task from the GitLab Rails root directory (typically `/path/to/gdk/gitlab`), not from the GDK root directory.
 
-1. GitLab.com (SaaS) mode
+1. GitLab.com mode
 
    ```shell
    GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup'

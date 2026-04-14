@@ -6,6 +6,10 @@ module Mcp
       class GraphqlSearchService < GraphqlService
         register_version '0.1.0', {
           description: 'Search labels in a GitLab project or group',
+          annotations: {
+            readOnlyHint: true,
+            destructiveHint: false
+          },
           input_schema: {
             type: 'object',
             properties: {

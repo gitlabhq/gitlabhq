@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize } from 'lodash-es';
 import { s__ } from '~/locale';
 import {
   PACKAGE_TYPE_CONAN,

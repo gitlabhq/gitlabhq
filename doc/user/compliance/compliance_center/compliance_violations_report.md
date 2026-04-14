@@ -53,7 +53,7 @@ For more information about compliance controls, see [Compliance frameworks](../c
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the project or group.
+- You must be an administrator or have the Security Manager or Owner role for the project or group.
 
 To view the compliance violations report:
 
@@ -178,7 +178,7 @@ Reports:
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To export a compliance violations report:
 
@@ -218,7 +218,7 @@ When you select a row in the static compliance violations report, a drawer appea
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the project or group.
+- You must be an administrator or have the Security Manager or Owner role for the project or group.
 
 To view the static compliance violations report:
 
@@ -289,7 +289,7 @@ Export a report of merge request compliance violations on merge requests belongi
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To export a report of merge request compliance violations for projects in a group:
 

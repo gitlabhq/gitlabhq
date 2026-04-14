@@ -41,8 +41,8 @@ export const updateSecurityTrainingCache =
 
 export const untrackRefsOptimisticResponse = (refIds) => ({
   __typename: 'Mutation',
-  securityTrackedRefsUntrack: {
-    __typename: 'SecurityTrackedRefsUntrackPayload',
+  securityRefsUntrack: {
+    __typename: 'SecurityRefsUntrackPayload',
     untrackedRefIds: refIds,
     errors: [],
   },
@@ -52,7 +52,7 @@ export const updateUntrackedRefsCache =
   ({ query, variables }) =>
   (cache, { data }) => {
     const {
-      securityTrackedRefsUntrack: { untrackedRefIds },
+      securityRefsUntrack: { untrackedRefIds },
     } = data;
 
     cache.updateQuery({ query, variables }, (sourceData) =>

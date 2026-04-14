@@ -18,9 +18,10 @@ Use this API to interact with [CI/CD job token](../ci/jobs/ci_job_token.md) scop
 > All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/authentication.md).
 > The authenticated user must have the Maintainer or Owner role for the project.
 
-## Get a project's CI/CD job token access settings
+## Retrieve the CI/CD job token access settings for a project
 
-Fetch the [CI/CD job token access settings](../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project) (job token scope) of a project.
+Retrieves the [CI/CD job token access settings](../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
+(job token scope) of a specified project.
 
 ```plaintext
 GET /projects/:id/job_token_scope
@@ -56,7 +57,7 @@ Example response:
 }
 ```
 
-## Patch a project's CI/CD job token access settings
+## Update the CI/CD job token access settings for a project
 
 {{< history >}}
 
@@ -65,7 +66,8 @@ Example response:
 
 {{< /history >}}
 
-Patch the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
+Updates the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+(job token scope) of a specified project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
@@ -93,9 +95,10 @@ curl --request PATCH \
   --data '{ "enabled": false }'
 ```
 
-## Get a project's CI/CD job token inbound allowlist
+## List all projects in a CI/CD job token allowlist
 
-Fetch the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
+Lists all projects in the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 GET /projects/:id/job_token_scope/allowlist
@@ -162,9 +165,10 @@ Example response:
   }
 ```
 
-## Add a project to a CI/CD job token inbound allowlist
+## Add a project to a CI/CD job token allowlist
 
-Add a project to the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of a project.
+Adds a project to the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 POST /projects/:id/job_token_scope/allowlist
@@ -203,9 +207,10 @@ Example response:
 }
 ```
 
-## Remove a project from a CI/CD job token inbound allowlist
+## Delete a project from a CI/CD job token allowlist
 
-Remove a project from the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) of a project.
+Deletes a project from the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 DELETE /projects/:id/job_token_scope/allowlist/:target_project_id
@@ -229,9 +234,10 @@ curl --request DELETE \
   --header 'Content-Type: application/json'
 ```
 
-## Get a project's CI/CD job token allowlist of groups
+## List all groups in a CI/CD job token allowlist
 
-Fetch the CI/CD job token allowlist of groups (job token scope) of a project.
+Lists all groups in the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 GET /projects/:id/job_token_scope/groups_allowlist
@@ -272,7 +278,8 @@ Example response:
 
 ## Add a group to a CI/CD job token allowlist
 
-Add a group to the CI/CD job token allowlist of a project.
+Adds a group to the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 POST /projects/:id/job_token_scope/groups_allowlist
@@ -311,9 +318,10 @@ Example response:
 }
 ```
 
-## Remove a group from a CI/CD job token allowlist
+## Delete a group from a CI/CD job token allowlist
 
-Remove a group from the CI/CD job token allowlist of a project.
+Deletes a group from the [CI/CD job token allowlist](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist)
+of a specified project.
 
 ```plaintext
 DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id

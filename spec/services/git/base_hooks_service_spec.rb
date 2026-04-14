@@ -297,9 +297,9 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
 
       let(:variables_attributes) do
         [
-          { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" },
-          { "key" => "BAR", "variable_type" => "env_var", "secret_value" => "456" },
-          { "key" => "MNO", "variable_type" => "env_var", "secret_value" => "890=ABC" }
+          { "key" => "FOO", "variable_type" => "env_var", "value" => "123" },
+          { "key" => "BAR", "variable_type" => "env_var", "value" => "456" },
+          { "key" => "MNO", "variable_type" => "env_var", "value" => "890=ABC" }
         ]
       end
 
@@ -325,7 +325,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
 
       let(:variables_attributes) do
         [
-          { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" }
+          { "key" => "FOO", "variable_type" => "env_var", "value" => "123" }
         ]
       end
 

@@ -8,7 +8,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import csrf from '~/lib/utils/csrf';
 import {
   I18N,
@@ -28,7 +28,7 @@ export default {
     GlIcon,
     GlLink,
     GlSprintf,
-    PageHeading,
+    IndexLayout,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -136,91 +136,93 @@ export default {
 </script>
 
 <template>
-  <form class="js-signature-container" method="POST" :action="projectCompareIndexPath">
-    <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-    <page-heading :heading="$options.i18n.title">
-      <template #description>
-        <gl-sprintf :message="$options.i18n.subtitle">
-          <template #bold="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-          <template #link="{ content }">
-            <gl-link target="_blank" :href="$options.docsLink" data-testid="help-link">{{
-              content
-            }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </template>
-    </page-heading>
-    <div class="compare-revision-cards gl-items-center @lg/panel:gl-flex @lg/panel:gl-flex-row">
-      <revision-card
-        data-testid="sourceRevisionCard"
-        :refs-project-path="to.refsProjectPath"
-        :revision-text="$options.i18n.source"
-        params-name="to"
-        :params-branch="to.revision"
-        :projects="to.projects"
-        :selected-project="to.selectedProject"
-        disable-repo-dropdown
-        @selectProject="onSelectProject"
-        @selectRevision="onSelectRevision"
-      />
-      <gl-button
-        v-gl-tooltip="$options.i18n.swapRevisions"
-        class="gl-mx-3 gl-hidden gl-self-end @md/panel:gl-flex"
-        :aria-label="$options.i18n.swap"
-        data-testid="swapRevisionsButton"
-        category="tertiary"
-        @click="onSwapRevision"
-      >
-        <gl-icon name="substitute" />
-      </gl-button>
-      <gl-button
-        v-gl-tooltip="$options.i18n.swapRevisions"
-        class="gl-my-5 gl-flex gl-self-end @md/panel:gl-hidden"
-        @click="onSwapRevision"
-      >
-        {{ $options.i18n.swap }}
-      </gl-button>
-      <revision-card
-        data-testid="targetRevisionCard"
-        :refs-project-path="from.refsProjectPath"
-        :revision-text="$options.i18n.target"
-        params-name="from"
-        :params-branch="from.revision"
-        :selected-project="from.selectedProject"
-        @selectProject="onSelectProject"
-        @selectRevision="onSelectRevision"
-      />
-    </div>
-    <gl-form-group :label="$options.i18n.optionsLabel" class="gl-mt-4">
-      <gl-form-radio-group
-        v-model="isStraight"
-        :options="$options.compareOptions"
-        :name="$options.inputName"
-        required
-      />
-    </gl-form-group>
-    <div class="gl-flex gl-items-center gl-gap-3 gl-pb-4">
-      <gl-button
-        category="primary"
-        variant="confirm"
-        data-testid="compare-button"
-        type="submit"
-        class="js-no-auto-disable"
-      >
-        {{ $options.i18n.compare }}
-      </gl-button>
-      <gl-button v-if="showMrButton" :href="mrButtonHref" :data-testid="mrButtonTestId">
-        {{ mrButtonText }}
-      </gl-button>
-      <span v-else-if="showMrStatusMessage" data-testid="mrStatusMessage">
-        <gl-sprintf :message="$options.i18n.compareToCheckMr">
-          <template #bold="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
-      </span>
-    </div>
-  </form>
+  <index-layout :heading="$options.i18n.title">
+    <template #description>
+      <gl-sprintf :message="$options.i18n.subtitle">
+        <template #bold="{ content }">
+          <strong>{{ content }}</strong>
+        </template>
+        <template #link="{ content }">
+          <gl-link target="_blank" :href="$options.docsLink" data-testid="help-link">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
+
+    <form class="js-signature-container" method="POST" :action="projectCompareIndexPath">
+      <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
+
+      <div class="compare-revision-cards gl-items-center @lg/panel:gl-flex @lg/panel:gl-flex-row">
+        <revision-card
+          data-testid="sourceRevisionCard"
+          :refs-project-path="to.refsProjectPath"
+          :revision-text="$options.i18n.source"
+          params-name="to"
+          :params-branch="to.revision"
+          :projects="to.projects"
+          :selected-project="to.selectedProject"
+          disable-repo-dropdown
+          @selectProject="onSelectProject"
+          @selectRevision="onSelectRevision"
+        />
+        <gl-button
+          v-gl-tooltip="$options.i18n.swapRevisions"
+          class="gl-mx-3 gl-hidden gl-self-end @md/panel:gl-flex"
+          :aria-label="$options.i18n.swap"
+          data-testid="swapRevisionsButton"
+          category="tertiary"
+          @click="onSwapRevision"
+        >
+          <gl-icon name="substitute" />
+        </gl-button>
+        <gl-button
+          v-gl-tooltip="$options.i18n.swapRevisions"
+          class="gl-my-5 gl-flex gl-self-end @md/panel:gl-hidden"
+          @click="onSwapRevision"
+        >
+          {{ $options.i18n.swap }}
+        </gl-button>
+        <revision-card
+          data-testid="targetRevisionCard"
+          :refs-project-path="from.refsProjectPath"
+          :revision-text="$options.i18n.target"
+          params-name="from"
+          :params-branch="from.revision"
+          :selected-project="from.selectedProject"
+          @selectProject="onSelectProject"
+          @selectRevision="onSelectRevision"
+        />
+      </div>
+      <gl-form-group :label="$options.i18n.optionsLabel" class="gl-mt-4">
+        <gl-form-radio-group
+          v-model="isStraight"
+          :options="$options.compareOptions"
+          :name="$options.inputName"
+          required
+        />
+      </gl-form-group>
+      <div class="gl-flex gl-items-center gl-gap-3 gl-pb-4">
+        <gl-button
+          category="primary"
+          variant="confirm"
+          data-testid="compare-button"
+          type="submit"
+          class="js-no-auto-disable"
+        >
+          {{ $options.i18n.compare }}
+        </gl-button>
+        <gl-button v-if="showMrButton" :href="mrButtonHref" :data-testid="mrButtonTestId">
+          {{ mrButtonText }}
+        </gl-button>
+        <span v-else-if="showMrStatusMessage" data-testid="mrStatusMessage">
+          <gl-sprintf :message="$options.i18n.compareToCheckMr">
+            <template #bold="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+          </gl-sprintf>
+        </span>
+      </div>
+    </form>
+  </index-layout>
 </template>

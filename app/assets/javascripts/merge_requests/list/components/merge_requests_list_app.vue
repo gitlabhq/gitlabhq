@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { sprintf, __ } from '~/locale';
 import Api from '~/api';

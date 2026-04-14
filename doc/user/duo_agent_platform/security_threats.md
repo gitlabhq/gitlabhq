@@ -13,7 +13,7 @@ GitLab mitigates risks through built-in safeguards and security controls with th
 
 - [Composite identity](composite_identity.md#why-composite-identity-matters) to [limit GitLab Duo Agent Platform access](flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to), [improve the auditability of AI workflows](flows/foundational_flows/software_development.md#audit-log), and even [attribute resources created by long-lived remote workflows to dedicate the agent's service account](../../development/ai_features/composite_identity.md#attributing-actions-to-the-correct-actor).
 - [Remote execution environment sandbox](environment_sandbox.md).
-- Integrated [Visual Studio Code Dev Container](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container) sandbox.
+- Integrated [Visual Studio Code Dev Container](../../editor_extensions/visual_studio_code/setup.md#install-in-a-visual-studio-code-dev-container) sandbox.
 - [Tools output sanitization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/security/TOOL_RESPONSE_SECURITY.md).
 - [Human in the loop approvals for chat-based GitLab Duo Agent Platform sessions](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools).
 - Integrated [prompt injection detection](#detect-prompt-injection-attempts) tools such
@@ -57,6 +57,28 @@ The table assumes agents and flows have access to all available tools.
 | External communication | [Sandboxed](environment_sandbox.md) (`srt`) blocks external communication. GitLab API writes are scoped to the top-level group | Writes to GitLab API only (public and private projects) | Unrestricted network access. Writes to GitLab API (public and private projects) |
 | Exposure to untrusted data | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | Unrestricted network access. On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy |
 | Risk profile | Sandboxing, scope restrictions, and tool limitations break the lethal trifecta | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval |
+
+### Content protection layers
+
+GitLab Duo Agent Platform executes in the following modes:
+
+- Flows that execute in GitLab Runner jobs with full sandbox isolation.
+- IDE and CLI agents that execute on your computer through editor extensions or GitLab CLI.
+- GitLab Duo Agentic Chat in the GitLab UI.
+
+The following table describes the security controls and how they apply to each mode:
+
+| Security control | Flows | IDE and CLI agents | GitLab Duo Agentic Chat |
+|------------------|--------------|---------------|------------------|
+| Sandbox | Isolated VM and sandbox | Not applied | Not applied |
+| Network egress controls | Configurable allowlist and denylist | Not applied | Not applied |
+| Identity | [Composite identity](composite_identity.md) of a service account and human user | Human user | Human user |
+| Human-in-the-loop | Not applied | User approves write API tool calls and terminal commands | User approves write API tool calls |
+| Tool restrictions | In each flow definition | In each flow definition | In each flow definition |
+| File access restrictions | Sandbox paths, project denylists, and Git-tracked files | Project denylists and Git-tracked files | Project denylists |
+| Tool response sanitization | Executed on the server | Executed on the server | Executed on the server |
+| Prompt injection detection | Executed on the server through HiddenLayer | Executed on the server HiddenLayer | Executed on the server HiddenLayer |
+| Secret scanning | Client-side Gitleaks redaction | Client-side Gitleaks redaction | Not applied |
 
 ### Example attack sequences
 
@@ -209,7 +231,7 @@ This breaks the "exposure to untrusted content" condition of the lethal trifecta
 
 Review the [security considerations for editor extensions](../../editor_extensions/security_considerations.md).
 
-For added security, [set up the extension and use GitLab Duo in a containerized development environment with VS Code Dev Containers](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container).
+For added security, [set up the extension and use GitLab Duo in a containerized development environment with VS Code Dev Containers](../../editor_extensions/visual_studio_code/setup.md#install-in-a-visual-studio-code-dev-container).
 This sandboxes GitLab Duo and limits its access to files, resources, and network paths.
 
 #### Apply layered agent flow architecture to reduce prompt injection risk

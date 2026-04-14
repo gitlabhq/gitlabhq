@@ -1,4 +1,5 @@
 import { userTypes } from '~/sidebar/components/assignees/constants';
+import { FLOW_TRIGGER_EVENTS } from '~/vue_shared/constants';
 
 export const createMockUser = (userDetails) => {
   return {
@@ -19,8 +20,11 @@ export const mockUser1 = createMockUser({
   webPath: '/root',
   status: {
     availability: 'NOT_SET',
-    disabledForDuoUsage: false,
-    disabledForDuoUsageReason: null,
+  },
+  duoStatus: {
+    disabled: false,
+    disabledReason: null,
+    flowTriggerEvents: [],
   },
   compositeIdentityEnforced: false,
 });
@@ -39,8 +43,11 @@ export const mockUser2 = createMockUser({
   webPath: '/rookie',
   status: {
     availability: 'NOT_SET',
-    disabledForDuoUsage: false,
-    disabledForDuoUsageReason: null,
+  },
+  duoStatus: {
+    disabled: false,
+    disabledReason: null,
+    flowTriggerEvents: [],
   },
   compositeIdentityEnforced: false,
 });
@@ -54,10 +61,13 @@ export const mockDisabledUser = createMockUser({
   avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
   status: {
     availability: 'NOT_SET',
-    disabledForDuoUsage: true,
-    disabledForDuoUsageReason: 'Out of credits',
   },
-  compositeIdentityEnforced: false,
+  duoStatus: {
+    disabled: true,
+    disabledReason: 'Out of credits',
+    flowTriggerEvents: [FLOW_TRIGGER_EVENTS.ASSIGN, FLOW_TRIGGER_EVENTS.ASSIGN_REVIEWER],
+  },
+  compositeIdentityEnforced: true,
 });
 
 export const mockUserWithType2 = {
@@ -524,6 +534,11 @@ export const searchAutocompleteQueryResponse = {
           webPath: '/root',
           status: null,
           compositeIdentityEnforced: false,
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
+          },
         },
         {
           id: '2',
@@ -534,6 +549,11 @@ export const searchAutocompleteQueryResponse = {
           webPath: '/rookie',
           status: null,
           compositeIdentityEnforced: false,
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
+          },
         },
         {
           id: '3',
@@ -544,6 +564,11 @@ export const searchAutocompleteQueryResponse = {
           webPath: '/root_external',
           status: null,
           compositeIdentityEnforced: false,
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
+          },
         },
       ],
     },
@@ -639,8 +664,11 @@ export const searchAutocompleteResponseOnMR = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
           compositeIdentityEnforced: false,
           mergeRequestInteraction: {
@@ -671,8 +699,11 @@ export const projectMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
         },
       ],
@@ -713,8 +744,11 @@ export const projectAutocompleteMembersResponse = {
 
           status: {
             availability: 'NOT_SET',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
         },
         {
@@ -723,8 +757,11 @@ export const projectAutocompleteMembersResponse = {
 
           status: {
             availability: 'NOT_SET',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
         },
         {
@@ -733,8 +770,11 @@ export const projectAutocompleteMembersResponse = {
 
           status: {
             availability: 'NOT_SET',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
         },
         {
@@ -748,8 +788,11 @@ export const projectAutocompleteMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
           compositeIdentityEnforced: false,
         },
@@ -776,8 +819,11 @@ export const groupMembersResponse = {
           webPath: '/franc',
           status: {
             availability: 'BUSY',
-            disabledForDuoUsage: false,
-            disabledForDuoUsageReason: null,
+          },
+          duoStatus: {
+            disabled: false,
+            disabledReason: null,
+            flowTriggerEvents: [],
           },
         },
       ],
@@ -812,9 +858,13 @@ export const participantsQueryResponse = {
               webPath: '/franc',
               status: {
                 availability: 'BUSY',
-                disabledForDuoUsage: false,
-                disabledForDuoUsageReason: null,
               },
+              duoStatus: {
+                disabled: false,
+                disabledReason: null,
+                flowTriggerEvents: [],
+              },
+              compositeIdentityEnforced: false,
             },
             {
               __typename: 'UserCore',
@@ -825,6 +875,12 @@ export const participantsQueryResponse = {
               webUrl: '/john',
               webPath: '/john',
               status: null,
+              duoStatus: {
+                disabled: false,
+                disabledReason: null,
+                flowTriggerEvents: [],
+              },
+              compositeIdentityEnforced: false,
             },
           ],
         },

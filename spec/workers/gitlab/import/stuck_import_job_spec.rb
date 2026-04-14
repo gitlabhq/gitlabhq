@@ -46,7 +46,8 @@ RSpec.describe Gitlab::Import::StuckImportJob, feature_category: :importers do
       expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
         hash_including(
           message: 'Marking stuck import job as failed',
-          extra_attributes: { jid: 'abc123' }
+          capture_exception: false,
+          extra_attributes: { jid: 'abc123', mirror: false }
         )
       )
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_ping do
   let(:snowplow_context) { subject.to_context }
+  let_it_be(:organization, freeze: true) { create(:organization) }
 
   describe '#to_context' do
     context 'environment' do
@@ -80,6 +81,8 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         allow(Gitlab.config.gitlab).to receive(:host).and_return(hostname)
         allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(version))
         allow(Gitlab::GlobalAnonymousId).to receive(:instance_id).and_return(instance_id)
+        allow(::Current).to receive(:organization_assigned).and_return(true)
+        stub_current_organization(organization)
       end
 
       subject do
@@ -101,6 +104,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:instance_id]).to eq(instance_id)
         expect(json_data[:realm]).to eq(described_class::GITLAB_REALM_SELF_MANAGED)
         expect(json_data[:deployment_type]).to eq(described_class::GITLAB_REALM_SELF_MANAGED)
+        expect(json_data[:organization_id]).to eq(organization.id)
       end
 
       describe 'user_id' do
@@ -148,6 +152,26 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       it 'does call `track_and_raise_for_dev_exception`' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
         snowplow_context
+      end
+    end
+
+    context 'when organization is nil' do
+      before do
+        allow(::Current).to receive(:organization).and_return(nil)
+      end
+
+      it 'returns nil organization_id' do
+        expect(described_class.new.to_h[:organization_id]).to be_nil
+      end
+    end
+
+    context 'when organization has not been set' do
+      before do
+        allow(::Current).to receive(:organization_assigned).and_return(false)
+      end
+
+      it 'returns nil organization_id' do
+        expect(described_class.new.to_h[:organization_id]).to be_nil
       end
     end
   end

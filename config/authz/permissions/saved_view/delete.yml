@@ -1,3 +1,7 @@
 ---
 name: delete_saved_view
-description: Grants the ability to delete a saved view
+description: Grants the ability to delete private saved views that the user authored.
+  Saved views are user-configured filters and sorts on work item lists. The saved
+  view policy combines this permission with an authorship check to control access
+  to private saved views. Deleting shared (non-private) saved views is controlled
+  by the _delete_shared_saved_view permission.

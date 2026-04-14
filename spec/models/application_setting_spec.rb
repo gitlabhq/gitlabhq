@@ -51,7 +51,6 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         ci_job_live_trace_enabled: false,
         ci_max_includes: 150,
         ci_max_total_yaml_size_bytes: 314572800,
-        ci_partitions_size_limit: 100.gigabytes,
         code_suggestions_api_rate_limit: 60,
         commit_email_hostname: "users.noreply.#{Gitlab.config.gitlab.host}",
         concurrent_bitbucket_import_jobs_limit: 100,
@@ -129,7 +128,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
         gitlab_shell_operation_limit: 600,
         global_search_block_anonymous_searches_enabled: false,
-        global_search_issues_enabled: true,
+        global_search_work_items_enabled: true,
         global_search_merge_requests_enabled: true,
         global_search_snippet_titles_enabled: true,
         global_search_users_enabled: true,
@@ -615,7 +614,6 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           autocomplete_users_limit
           autocomplete_users_unauthenticated_limit
           bulk_import_concurrent_pipeline_batch_limit
-          ci_partitions_size_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
           concurrent_bitbucket_server_import_jobs_limit
@@ -806,7 +804,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
 
       it 'allows valid scopes' do
-        %w[projects issues merge_requests blobs users milestones snippet_titles wiki_blobs commits
+        %w[blobs commits merge_requests milestones projects snippet_titles users wiki_blobs work_items
           notes].each do |scope|
           setting.default_search_scope = scope
 
@@ -1900,6 +1898,58 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       it 'does not allow authn_data_retention_cleanup_enabled with integer' do
         is_expected.not_to allow_value({ authn_data_retention_cleanup_enabled: 1 })
           .for(:resource_access_tokens_settings)
+      end
+    end
+
+    describe 'for personal_access_token_settings' do
+      it 'allows enforce_granular_tokens with true' do
+        is_expected.to allow_value({ enforce_granular_tokens: true })
+          .for(:personal_access_token_settings)
+      end
+
+      it 'allows enforce_granular_tokens with false' do
+        is_expected.to allow_value({ enforce_granular_tokens: false })
+          .for(:personal_access_token_settings)
+      end
+
+      it 'allows granular_tokens_enforced_after with nil when enforce_granular_tokens is false' do
+        is_expected.to allow_value({ granular_tokens_enforced_after: nil })
+          .for(:personal_access_token_settings)
+      end
+
+      context 'when enforce_granular_tokens is true' do
+        before do
+          setting.enforce_granular_tokens = true
+        end
+
+        it 'requires granular_tokens_enforced_after' do
+          is_expected.not_to allow_value(nil)
+            .for(:granular_tokens_enforced_after)
+            .with_message("can't be blank")
+        end
+
+        it 'allows granular_tokens_enforced_after with a future date' do
+          is_expected.to allow_value(1.day.from_now.to_date)
+            .for(:granular_tokens_enforced_after)
+        end
+
+        it 'allows granular_tokens_enforced_after with the current date' do
+          is_expected.to allow_value(Date.current)
+            .for(:granular_tokens_enforced_after)
+        end
+
+        it 'does not allow granular_tokens_enforced_after with a past date' do
+          is_expected.not_to allow_value(1.day.ago.to_date)
+            .for(:granular_tokens_enforced_after)
+            .with_message('cannot be a date in the past')
+        end
+
+        it 'allows granular_tokens_enforced_after with a past date when unchanged' do
+          allow(setting).to receive(:granular_tokens_enforced_after_changed?).and_return(false)
+
+          is_expected.to allow_value(1.day.ago.to_date)
+            .for(:granular_tokens_enforced_after)
+        end
       end
     end
   end

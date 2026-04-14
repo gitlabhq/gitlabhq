@@ -122,7 +122,6 @@ From here, you can:
 Deleting a group domain can impact enterprise users in your group. After you delete the domain:
 
 - Any existing enterprise users remain enterprise users in the group.
-- Primary emails for user accounts must be from a verified domain.
 - New enterprise users cannot be associated with the group until another domain is verified.
 
 To delete a custom domain for a group:
@@ -145,6 +144,7 @@ Prerequisites:
 
 - The top-level group must [add and verify a group domain](#add-group-domains).
 - The user account must meet at least one of the following conditions:
+  - The user account primary email must be from the verified domain.
   - The user account was created on or after February 1, 2021.
   - The user account has a SAML or SCIM identity tied to the organization's group.
   - The user account has a `provisioned_by_group_id` attribute that matches the group ID.
@@ -258,7 +258,7 @@ the user, you can choose to either:
 
 ### Release an enterprise user
 
-You can remove enterprise management features from a user account. You might need to
+You can remove enterprise management features from enterprise user accounts. You might need to
 do this if, for example, a user wants to keep their GitLab account after leaving their
 company. When you release a user, their account roles and permissions remain the same,
 but the group Owner loses management options for that user. For example, the released
@@ -267,8 +267,13 @@ user can access authentication methods that the group Owner previously disabled.
 If you need to permanently remove the account, [delete the user](#delete-an-enterprise-user)
 instead.
 
-To release the user, GitLab support must update the user's primary email address to an
-email address from a non-verified domain. This action automatically releases the account.
+To release an individual enterprise user from your group, GitLab support must update the user's
+primary email address to an email from a non-verified domain. This action automatically releases
+the account.
+
+To release all claimed enterprise users, you can [delete the group](../group/_index.md#schedule-a-group-for-deletion)
+itself rather than the group domain. This is useful for organizations testing the
+enterprise user functionality.
 
 Allowing group Owners to change primary emails is proposed in
 [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).

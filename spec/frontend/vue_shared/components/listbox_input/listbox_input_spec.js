@@ -127,6 +127,12 @@ describe('ListboxInput', () => {
 
       expect(findGlListbox().props('loading')).toBe(loading);
     });
+
+    it.each([null, 'my-toggle-id'])("passes %s to the listbox's toggleId prop", (toggleId) => {
+      createComponent({ toggleId });
+
+      expect(findGlListbox().props('toggleId')).toBe(toggleId);
+    });
   });
 
   describe('toggle text', () => {

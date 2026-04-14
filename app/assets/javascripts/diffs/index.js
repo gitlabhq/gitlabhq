@@ -82,7 +82,6 @@ export default function initDiffsApp() {
           projectPath: cleanLeadingSeparator(this.projectPath),
           iid: this.iid,
           endpointCoverage: this.endpointCoverage,
-          endpointCodequality: this.endpointCodequality,
           codequalityReportAvailable: this.codequalityReportAvailable,
           sastReportAvailable: this.sastReportAvailable,
           currentUser: this.currentUser,

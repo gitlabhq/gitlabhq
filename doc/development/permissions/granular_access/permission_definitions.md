@@ -43,7 +43,7 @@ This creates two files:
    description: Grants the ability to read CI/CD jobs
    ```
 
-1. A resource metadata file at `config/authz/permissions/<resource>/_metadata.yml` (if one does not already exist):
+1. A resource metadata file at `config/authz/permissions/<resource>/.metadata.yml` (if one does not already exist):
 
    ```yaml
    ---

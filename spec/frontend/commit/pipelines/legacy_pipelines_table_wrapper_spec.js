@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import LegacyPipelinesTableWrapper from '~/commit/pipelines/legacy_pipelines_table_wrapper.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
+import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -86,8 +87,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   let mockSubscriptionHandler;
   const showMock = jest.fn();
 
-  const findRunPipelineBtn = () => wrapper.findByTestId('run_pipeline_button');
-  const findRunPipelineBtnMobile = () => wrapper.findByTestId('run_pipeline_button_mobile');
+  const findRunPipelineBtn = () => wrapper.findComponent(RunPipelineButton);
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
   const findErrorEmptyState = () => wrapper.findByTestId('pipeline-error-empty-state');
   const findEmptyState = () => wrapper.findByTestId('pipeline-empty-state');
@@ -124,6 +124,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
         emptyStateSvgPath: 'foo',
         errorStateSvgPath: 'foo',
         ...props,
+      },
+      provide: {
+        newPipelinePath: '/group/project/-/pipelines/new',
       },
       mocks: {
         $toast,
@@ -268,7 +271,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
         await waitForPromises();
 
         expect(findRunPipelineBtn().exists()).toBe(true);
-        expect(findRunPipelineBtnMobile().exists()).toBe(true);
       });
     });
 
@@ -284,7 +286,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
         await waitForPromises();
 
         expect(findRunPipelineBtn().exists()).toBe(false);
-        expect(findRunPipelineBtnMobile().exists()).toBe(false);
       });
     });
 
@@ -325,45 +326,28 @@ describe('Pipelines table in Commits and Merge requests', () => {
             await waitForPromises();
           });
 
-          it('on desktop, shows a loading button', async () => {
-            await findRunPipelineBtn().trigger('click');
+          it('shows a loading button', async () => {
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
 
-            expect(findRunPipelineBtn().props('loading')).toBe(true);
-          });
-
-          it('on mobile, shows a loading button', async () => {
-            await findRunPipelineBtnMobile().trigger('click');
-
-            expect(findRunPipelineBtn().props('loading')).toBe(true);
+            expect(findRunPipelineBtn().props('isLoading')).toBe(true);
           });
         });
 
         describe('when the table is not a merge request table', () => {
           it('displays a toast message during pipeline creation', async () => {
-            await findRunPipelineBtn().trigger('click');
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
 
             expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
           });
 
-          it('on desktop, shows a loading button', async () => {
-            await findRunPipelineBtn().trigger('click');
+          it('shows a loading button', async () => {
+            await findRunPipelineBtn().vm.$emit('run-pipeline');
 
-            expect(findRunPipelineBtn().props('loading')).toBe(true);
-
-            await waitForPromises();
-
-            expect(findRunPipelineBtn().props('loading')).toBe(false);
-          });
-
-          it('on mobile, shows a loading button', async () => {
-            await findRunPipelineBtnMobile().trigger('click');
-
-            expect(findRunPipelineBtn().props('loading')).toBe(true);
+            expect(findRunPipelineBtn().props('isLoading')).toBe(true);
 
             await waitForPromises();
 
-            expect(findRunPipelineBtn().props('disabled')).toBe(false);
-            expect(findRunPipelineBtn().props('loading')).toBe(false);
+            expect(findRunPipelineBtn().props('isLoading')).toBe(false);
           });
         });
       });
@@ -383,7 +367,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
           jest.spyOn(Api, 'postMergeRequestPipeline').mockRejectedValue(response);
 
-          await findRunPipelineBtn().trigger('click');
+          await findRunPipelineBtn().vm.$emit('run-pipeline');
 
           await waitForPromises();
 
@@ -419,16 +403,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
         await waitForPromises();
       });
 
-      it('on desktop, shows a security warning modal', async () => {
-        await findRunPipelineBtn().trigger('click');
+      it('shows a security warning modal', async () => {
+        await findRunPipelineBtn().vm.$emit('run-pipeline');
 
         await nextTick();
-
-        expect(findModal()).not.toBeNull();
-      });
-
-      it('on mobile, shows a security warning modal', async () => {
-        await findRunPipelineBtnMobile().trigger('click');
 
         expect(findModal()).not.toBeNull();
       });
@@ -455,7 +433,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findModal().exists()).toBe(true);
 
-        findRunPipelineBtn().trigger('click');
+        findRunPipelineBtn().vm.$emit('run-pipeline');
 
         expect(showMock).toHaveBeenCalled();
       });
@@ -554,7 +532,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       it('calls the pipelines endpoint again', async () => {
         expect(mock.history.get).toHaveLength(1);
 
-        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+        findPipelinesTable().vm.$emit('job-action-executed');
 
         await waitForPromises();
 
@@ -783,10 +761,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
             findRunButton: () => findRunPipelineBtn(),
           },
           {
-            buttonType: 'mobile',
-            findRunButton: () => findRunPipelineBtnMobile(),
-          },
-          {
             buttonType: 'empty state',
             findRunButton: () => findRunPipelineBtn(),
           },
@@ -812,8 +786,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           await waitForPromises();
 
           expect(findRunButton().exists()).toBe(true);
-          expect(findRunButton().props('disabled')).toBe(true);
-          expect(findRunButton().props('loading')).toBe(true);
+          expect(findRunButton().props('isLoading')).toBe(true);
         });
       });
 
@@ -833,7 +806,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
           expect(findSkeletonLoader().exists()).toBe(false);
 
-          await findRunPipelineBtn().trigger('click');
+          await findRunPipelineBtn().vm.$emit('run-pipeline');
 
           expect(findSkeletonLoader().exists()).toBe(false);
 
@@ -888,7 +861,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         expect(findSkeletonLoader().exists()).toBe(false);
 
-        findRunPipelineBtn().trigger('click');
+        findRunPipelineBtn().vm.$emit('run-pipeline');
 
         expect(findSkeletonLoader().exists()).toBe(false);
 
@@ -936,7 +909,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, []);
 
-        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+        findPipelinesTable().vm.$emit('job-action-executed');
         await waitForPromises();
 
         expect(findSkeletonLoader().exists()).toBe(false);
@@ -991,7 +964,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
             },
           },
         ]);
-        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+        findPipelinesTable().vm.$emit('job-action-executed');
         await waitForPromises();
 
         expect(findSkeletonLoader().exists()).toBe(true);
@@ -1010,7 +983,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
 
-        findRunPipelineBtn().trigger('click');
+        findRunPipelineBtn().vm.$emit('run-pipeline');
 
         wrapper.destroy();
 

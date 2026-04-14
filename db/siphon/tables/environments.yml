@@ -1,0 +1,15 @@
+---
+table: environments
+database: main
+ignored_columns:
+  - description_html
+  - cached_markdown_version
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_environments
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - project_id

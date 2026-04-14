@@ -51,7 +51,7 @@ module QA
 
       def enable_2fa_for_user_and_fetch_recovery_code(user)
         Flow::Login.while_signed_in(as: user) do
-          Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
+          Page::Profile::PasswordAndAuth.perform do |two_fa_auth|
             otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
 
             two_fa_auth.set_pin_code(otp.fresh_otp)

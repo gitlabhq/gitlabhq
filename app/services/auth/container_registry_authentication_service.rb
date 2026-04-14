@@ -29,7 +29,8 @@ module Auth
       end
 
       if repository_path_push_protected?
-        return error('DENIED', status: 403, message: 'Pushing to protected repository path forbidden')
+        message = @push_protection_unauthorized ? 'access forbidden' : 'Pushing to protected repository path forbidden'
+        return error('DENIED', status: 403, message: message)
       end
 
       { token: authorized_token(*scopes).encoded }
@@ -407,23 +408,26 @@ module Auth
         params: { repository_path: repository_path }
       ).execute
 
-      # TODO: Remove this logging in !195939 when the error path is handled gracefully
-      if service_response.error?
-        Gitlab::AuthLogger.warn(
-          {
-            message: 'Container registry push protection rule check failed',
-            reason: service_response.reason,
-            error_message: service_response.message,
-            repository_path: repository_path,
-            project_path: project&.full_path,
-            username: current_user.is_a?(User) ? current_user.username : nil,
-            deploy_token_id: current_user.is_a?(DeployToken) ? current_user.id : nil
-          }.compact_blank
-        )
-        raise ArgumentError, service_response.message
+      return service_response[:protection_rule_exists?] unless service_response.error?
+
+      if service_response.reason == :unauthorized
+        @push_protection_unauthorized = true
+        return true
       end
 
-      service_response[:protection_rule_exists?]
+      Gitlab::AuthLogger.error(
+        {
+          message: 'Unexpected error checking container registry push protection rule',
+          reason: service_response.reason,
+          error_message: service_response.message,
+          repository_path: repository_path,
+          project_path: project&.full_path,
+          username: current_user.is_a?(User) ? current_user.username : nil,
+          deploy_token_id: current_user.is_a?(DeployToken) ? current_user.id : nil
+        }.compact_blank
+      )
+
+      raise ArgumentError, service_response.message
     end
 
     # Overridden in EE

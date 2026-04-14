@@ -1,0 +1,13 @@
+---
+table_name: security_scan_execution_project_schedules
+classes:
+- Security::ScanExecutionProjectSchedule
+feature_categories:
+- security_policy_management
+description: Stores per-project schedule state for scan execution policies with time_window distribution
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227096
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

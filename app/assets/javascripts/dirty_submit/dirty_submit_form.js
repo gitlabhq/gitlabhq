@@ -1,4 +1,4 @@
-import { memoize, throttle } from 'lodash';
+import { memoize, throttle } from 'lodash-es';
 import createEventHub from '~/helpers/event_hub_factory';
 
 class DirtySubmitForm {

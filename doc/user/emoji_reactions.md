@@ -38,7 +38,7 @@ comment thread.
 "Thumbs up" and "thumbs down" emoji are used to calculate an issue or merge request's position when
 [sorting by popularity](project/issues/sorting_issue_lists.md#sorting-by-popularity).
 
-For information on the relevant API, see [Emoji reactions API](../api/emoji_reactions.md).
+For more information, see the [emoji reactions API](../api/emoji_reactions.md).
 
 ## Emoji reactions for comments
 
@@ -99,4 +99,4 @@ To upload custom emoji:
 1. Select **Save**.
 
 You can also upload custom emoji to a GitLab instance with the GraphQL API.
-For more information, see [Use custom emoji with GraphQL](../api/graphql/custom_emoji.md).
+For more information, see [use custom emoji with GraphQL](../api/graphql/custom_emoji.md).

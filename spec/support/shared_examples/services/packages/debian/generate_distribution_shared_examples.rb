@@ -124,7 +124,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and change { component_file_old_main_amd64_di.reload.updated_at }.to(current_time.round)
 
         package_files = package.package_files.order(id: :asc).preload_debian_file_metadata.to_a
-        expected_main_amd64_content = <<~EOF
+        expected_main_amd64_content = <<~TEXT
         Package: libsample0
         Source: #{package.name}
         Version: #{package.version}
@@ -176,9 +176,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Filename: #{pool_prefix}/sample-dbgsym_1.2.3~alpha2_amd64.deb
         Size: 409600
         SHA256: c4c49c3d75486eea6654200f9f350656f951a89dc17ea5de6802a91778a12331
-        EOF
+        TEXT
 
-        expected_main_sources_content = <<~EOF
+        expected_main_sources_content = <<~TEXT
         Package: #{package.name}
         Binary: sample-dev, libsample0, sample-udeb, sample-ddeb
         Version: #{package.version}
@@ -200,7 +200,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Section: misc
         Priority: extra
         Directory: #{pool_prefix}
-        EOF
+        TEXT
 
         check_component_file(current_time.round, 'main', :packages, 'all', nil)
         check_component_file(current_time.round, 'main', :packages, 'amd64', expected_main_amd64_content)
@@ -230,7 +230,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         expected_main_sources_size = expected_main_sources_content.length
         expected_main_sources_sha256 = Digest::SHA256.hexdigest(expected_main_sources_content)
 
-        expected_release_content = <<~EOF
+        expected_release_content = <<~TEXT
         Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:19 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:19 +0000
@@ -252,7 +252,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-arm64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
          #{expected_main_sources_sha256} #{expected_main_sources_size.to_s.rjust(8)} main/source/Sources
-        EOF
+        TEXT
         expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)
@@ -276,13 +276,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and not_change { Packages::PackageFile.count }
           .and not_change { distribution.component_files.reset.count }
 
-        expected_release_content = <<~EOF
+        expected_release_content = <<~TEXT
         Codename: #{distribution.codename}
         Date: Sat, 25 Jan 2020 15:17:18 +0000
         Valid-Until: Mon, 27 Jan 2020 15:17:18 +0000
         Acquire-By-Hash: yes
         SHA256:
-        EOF
+        TEXT
         expected_release_content = "Suite: #{distribution.suite}\n#{expected_release_content}" if distribution.suite
 
         check_release_files(expected_release_content)

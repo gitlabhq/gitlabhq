@@ -14,3 +14,11 @@ RSpec/MultipleMemoizedHelpers:
 
 Rails/RakeEnvironment:
   Enabled: false
+
+Gitlab/DirectStdio:
+  Exclude:
+    - lib/gitlab/backup/cli/**/*.rb
+
+Rails/Output:
+  Exclude:
+    - lib/gitlab/backup/cli/**/*.rb

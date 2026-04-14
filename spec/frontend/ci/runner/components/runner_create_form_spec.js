@@ -14,10 +14,10 @@ import {
   I18N_CREATE_ERROR,
 } from '~/ci/runner/constants';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { runnerCreateResult } from '../mock_data';
 
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
@@ -153,10 +153,7 @@ describe('RunnerCreateForm', () => {
 
       it('reports error', () => {
         expect(captureException).toHaveBeenCalledTimes(1);
-        expect(captureException).toHaveBeenCalledWith({
-          component: 'RunnerCreateForm',
-          error,
-        });
+        expect(captureException).toHaveBeenCalledWith(error);
       });
     });
 
@@ -216,10 +213,7 @@ describe('RunnerCreateForm', () => {
 
       it('reports error', () => {
         expect(captureException).toHaveBeenCalledTimes(1);
-        expect(captureException).toHaveBeenCalledWith({
-          component: 'RunnerCreateForm',
-          error: new Error(I18N_CREATE_ERROR),
-        });
+        expect(captureException).toHaveBeenCalledWith(new Error(I18N_CREATE_ERROR));
       });
     });
   });

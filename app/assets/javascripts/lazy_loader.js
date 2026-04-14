@@ -1,4 +1,4 @@
-import { debounce, throttle } from 'lodash';
+import { debounce, throttle } from 'lodash-es';
 
 export const placeholderImage =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';

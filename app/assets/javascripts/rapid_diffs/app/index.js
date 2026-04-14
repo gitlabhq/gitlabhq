@@ -39,9 +39,12 @@ export class RapidDiffsFacade {
     }
 
     this.appData = camelizeKeys(JSON.parse(this.root.dataset.appData));
+    if (this.appData.linkedFileData) {
+      useDiffsList(pinia).setLinkedFileData(this.appData.linkedFileData);
+    }
     this.#populateLegacyFileFragment();
     if (this.#lazy) {
-      this.#reloadDiffs(true);
+      useDiffsList(pinia).streamInitialDiffs(this.appData.reloadStreamUrl);
     } else {
       this.#streamRemainingDiffs();
     }
@@ -105,10 +108,6 @@ export class RapidDiffsFacade {
       streamContainer,
       window.gl.rapidDiffsPreload,
     );
-  }
-
-  #reloadDiffs(initial) {
-    return useDiffsList(pinia).reloadDiffs(this.appData.reloadStreamUrl, initial);
   }
 
   #registerCustomElements() {

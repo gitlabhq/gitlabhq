@@ -6,18 +6,9 @@ description: Repository X-Ray gives Code Suggestions more insight into your proj
 title: Repository X-Ray with Code Suggestions
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 {{< /history >}}
 

@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 import { PROJECT_BADGE } from '~/badges/constants';
 

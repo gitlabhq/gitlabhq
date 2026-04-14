@@ -10,7 +10,7 @@ RSpec.describe MergeRequests::AssignsMergeParams, feature_category: :code_review
   end
 
   describe '#assign_allowed_merge_params' do
-    let(:merge_request) { build(:merge_request) }
+    let(:merge_request) { build_stubbed(:merge_request) }
 
     let(:params) do
       { commit_message: 'Commit Message',

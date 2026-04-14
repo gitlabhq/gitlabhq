@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: :integrations do
+RSpec.describe API::Integrations::JiraConnect::Subscriptions, :with_current_organization, feature_category: :integrations do
   describe 'POST /integrations/jira_connect/subscriptions' do
     subject(:post_subscriptions) { post api('/integrations/jira_connect/subscriptions') }
 
@@ -67,7 +67,7 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: 
       end
 
       context 'with valid JWT' do
-        let_it_be(:installation) { create(:jira_connect_installation) }
+        let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
         let_it_be(:user) { create(:user) }
 
         let(:claims) { { iss: installation.client_key, qsh: 'context-qsh', sub: 1234 } }
@@ -107,7 +107,7 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: 
   end
 
   describe 'POST /api/v4/integrations/jira_connect/subscriptions' do
-    let(:installation) { create(:jira_connect_installation) }
+    let(:installation) { create(:jira_connect_installation, organization: current_organization) }
     let(:shared_secret) { installation.shared_secret }
     let(:api_path) { '/api/v4/integrations/jira_connect/subscriptions' }
 

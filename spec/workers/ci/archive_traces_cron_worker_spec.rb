@@ -12,7 +12,7 @@ RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integr
   end
 
   shared_examples_for 'archives trace' do
-    it do
+    it 'keeps trace' do
       subject
 
       build.reload
@@ -21,7 +21,7 @@ RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integr
   end
 
   shared_examples_for 'does not archive trace' do
-    it do
+    it 'does not keep trace' do
       subject
 
       build.reload

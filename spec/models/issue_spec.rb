@@ -40,6 +40,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:incident_management_timeline_events) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
     it { is_expected.to have_one(:work_item_transition).class_name('::WorkItems::Transition') }
+    it { is_expected.to have_one(:work_item_position).class_name('::WorkItems::Position') }
 
     describe '#assignees_by_name_and_id' do
       it 'returns users ordered by name ASC, id DESC' do
@@ -427,7 +428,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     it 'can be used with other scopes' do
-      expect(in_namespaces_with_cte.with_work_item_type).to match_array(issue)
+      expect(in_namespaces_with_cte.opened).to match_array(issue)
     end
   end
 
@@ -1318,6 +1319,19 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:params) { { noteable: issuable, project: issuable_parent } }
     end
 
+    context 'when optimize_issuable_participants is disabled' do
+      before do
+        stub_feature_flags(optimize_issuable_participants: false)
+      end
+
+      it_behaves_like 'issuable participants' do
+        let_it_be(:issuable_parent) { create(:project, :public) }
+        let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
+
+        let(:params) { { noteable: issuable, project: issuable_parent } }
+      end
+    end
+
     context 'using a private project' do
       it 'does not include mentioned users that do not have access to the project' do
         project = create(:project)
@@ -2181,25 +2195,16 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#show_as_work_item?' do
     subject(:issue_as_work_item) { issue.show_as_work_item? }
 
-    where(:factory, :work_item_planning_view, :result) do
-      :issue                  | false | false
-      [:issue, :task]         | false | true
-      [:issue, :group_level]  | false | true
-      [:issue, :incident]     | false | false
-      [:issue, :service_desk] | false | false
-      :issue                  | true | true
-      [:issue, :task]         | true | true
-      [:issue, :group_level]  | true | true
-      [:issue, :incident]     | true | false
-      [:issue, :service_desk] | true | false
+    where(:factory, :result) do
+      :issue                  | true
+      [:issue, :task]         | true
+      [:issue, :group_level]  | true
+      [:issue, :incident]     | false
+      [:issue, :service_desk] | false
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
-
-      before do
-        stub_feature_flags(work_item_planning_view: work_item_planning_view)
-      end
 
       it { is_expected.to be result }
     end
@@ -2207,11 +2212,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when work_item_type is nil' do
       let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
-
-      it 'returns true when planning view is enabled' do
+      it 'returns true' do
         expect(issue_as_work_item).to be true
       end
     end
@@ -2220,23 +2221,15 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#use_work_item_url?' do
     subject(:use_work_item_url) { issue.use_work_item_url? }
 
-    where(:factory, :work_item_planning_view, :result) do
-      :issue                  | false | false
-      [:issue, :task]         | false | true
-      [:issue, :incident]     | false | false
-      [:issue, :service_desk] | false | false
-      :issue                  | true  | true
-      [:issue, :task]         | true  | true
-      [:issue, :incident]     | true  | false
-      [:issue, :service_desk] | true  | false
+    where(:factory, :result) do
+      :issue                  | true
+      [:issue, :task]         | true
+      [:issue, :incident]     | false
+      [:issue, :service_desk] | false
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
-
-      before do
-        stub_feature_flags(work_item_planning_view: work_item_planning_view)
-      end
 
       it { is_expected.to be result }
     end
@@ -2244,11 +2237,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when work_item_type is nil' do
       let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
-
-      it 'returns true when planning view is enabled' do
+      it 'returns true' do
         expect(use_work_item_url).to be true
       end
     end

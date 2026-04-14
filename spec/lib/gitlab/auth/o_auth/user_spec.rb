@@ -1140,7 +1140,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
 
       it "updates the user organization and job title" do
-        expect(gl_user.user_detail_organization).to eq(info_hash[:organization])
+        expect(gl_user.company).to eq(info_hash[:organization])
         expect(gl_user.job_title).to eq(info_hash[:job_title])
         expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
         expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)
@@ -1182,7 +1182,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
 
       it "updates the user organization and job title" do
-        expect(gl_user.user_detail_organization).to eq(info_hash[:organization])
+        expect(gl_user.company).to eq(info_hash[:organization])
         expect(gl_user.job_title).to eq(info_hash[:job_title])
         expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
         expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)

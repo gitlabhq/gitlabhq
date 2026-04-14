@@ -65,6 +65,7 @@ Example response:
     "version": "1.0-SNAPSHOT",
     "package_type": "maven",
     "created_at": "2019-11-27T03:37:38.711Z",
+    "creator_id": 1,
     "pipeline": {
       "id": 123,
       "status": "pending",
@@ -78,7 +79,8 @@ Example response:
         "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
       }
     },
-    "pipelines": []
+    "pipelines": [],
+    "tags": []
   },
   {
     "id": 2,
@@ -86,8 +88,6 @@ Example response:
     "version": "1.0.3",
     "package_type": "npm",
     "created_at": "2019-11-27T03:37:38.711Z",
-  },
-  ],
     "tags": []
   }
 ]
@@ -140,6 +140,7 @@ Example response:
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
     "created_at": "2019-11-27T03:37:38.711Z",
+    "creator_id": 1,
     "pipelines": [
       {
         "id": 123,
@@ -187,6 +188,9 @@ Example response:
 
 By default, the `GET` request returns 20 results, because the API is [paginated](rest/_index.md#pagination).
 
+The `creator_id` field contains the ID of the user who created the package. This field is `null` when the
+package was created by a deploy token or job token.
+
 The `_links` object contains the following properties:
 
 - `web_path`: The path which you can visit in GitLab and see the details of the package.
@@ -233,6 +237,7 @@ Example response:
   },
   "created_at": "2019-11-27T03:37:38.711Z",
   "last_downloaded_at": "2022-09-07T07:51:50.504Z",
+  "creator_id": 1,
   "pipelines": [
     {
       "id": 123,
@@ -272,6 +277,9 @@ Example response:
   ]
 }
 ```
+
+The `creator_id` field contains the ID of the user who created the package. This field is `null` when the
+package was created by a deploy token or job token.
 
 The `_links` object contains the following properties:
 

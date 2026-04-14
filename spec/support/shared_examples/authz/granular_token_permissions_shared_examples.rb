@@ -2,8 +2,15 @@
 
 RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success,
     context_type: :rest|
+  granular_permissions = Array(permissions)
+  individual_permission_labels = granular_permissions.map do |permission|
+    assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
+    "#{assignable.resource_name}: #{assignable.action.titleize}"
+  end.uniq.sort
+
   let(:is_graphql) { context_type == :graphql }
   let(:error_boundary_object) { boundary_object }
+  let(:acceptable_messages) { [message] }
 
   shared_examples 'granting access' do
     it 'grants access', :aggregate_failures do
@@ -20,7 +27,9 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
       if is_graphql
         expect(response).to have_gitlab_http_status(:success)
-        expect(graphql_errors).to include(a_hash_including('message' => include(message)))
+        expect(graphql_errors).to include(
+          a_hash_including('message' => satisfy { |m| acceptable_messages.any? { |e| m.include?(e) } })
+        )
       else
         expect(response).to have_gitlab_http_status(:forbidden)
 
@@ -41,9 +50,9 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
   context 'when authenticating with a granular personal access token' do
     let(:assignables) do
-      Array(permissions).map do |permission|
+      granular_permissions.map do |permission|
         ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name
-      end
+      end.uniq
     end
 
     let(:boundary) { ::Authz::Boundary.for(boundary_object) }
@@ -66,17 +75,15 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
         pat.granular_scopes.delete_all
       end
 
-      missing_permission_labels = Array(permissions).map do |permission|
-        assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
-        "#{assignable.resource_name}: #{assignable.action.titleize}"
-      end.uniq.sort.join(', ')
-
-      let(:message) do
+      let(:acceptable_messages) do
         boundary_type_label = ::Authz::Boundary.for(error_boundary_object).type_label
-
-        "Access denied: This operation requires a fine-grained personal access token " \
-          "with the following #{boundary_type_label} permissions: [#{missing_permission_labels}]."
+        prefix = "Access denied: This operation requires a fine-grained personal access token " \
+          "with the following #{boundary_type_label} permissions:"
+        (individual_permission_labels + [individual_permission_labels.join(', ')]).uniq
+          .map { |label| "#{prefix} [#{label}]." }
       end
+
+      let(:message) { acceptable_messages.last }
 
       it_behaves_like 'denying access'
     end

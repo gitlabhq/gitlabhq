@@ -6,18 +6,31 @@ import {
   GlFormTextarea,
   GlButton,
   GlExperimentBadge,
+  GlTabs,
+  GlLink,
+  GlSprintf,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { scrollTo } from '~/lib/utils/scroll_utils';
-import { s__, __ } from '~/locale';
+import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_USER, TYPENAME_PERSONAL_ACCESS_TOKEN } from '~/graphql_shared/constants';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
+import getSourcePersonalAccessToken from '~/personal_access_tokens/graphql/get_source_personal_access_token.query.graphql';
 import {
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
+  MAX_NAME_LENGTH,
   MAX_DESCRIPTION_LENGTH,
   ACCESS_USER_ENUM,
   ACCESS_NAMESPACE_ENUMS,
 } from '~/personal_access_tokens/constants';
+import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
+import { defaultDate } from '~/vue_shared/access_tokens/utils';
 import CreatedPersonalAccessToken from '../created_personal_access_token.vue';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
@@ -37,16 +50,28 @@ export default {
     PersonalAccessTokenNamespaceSelector,
     PersonalAccessTokenPermissionsSelector,
     GlButton,
+    ConfirmUnsavedChangesDialog,
     CreatedPersonalAccessToken,
     GlExperimentBadge,
+    GlTabs,
+    GlLink,
+    GlSprintf,
+    GlLoadingIcon,
+    AskDapPermissions: () =>
+      import(
+        'ee_component/personal_access_tokens/components/create_granular_token/ask_dap_permissions.vue'
+      ),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['accessTokenMaxDate', 'accessTokenTableUrl'],
   data() {
     return {
+      sourceTokenId: getParameterByName('source_token_id'),
+      prefillNamespaces: [],
       form: {
         name: '',
         description: '',
-        expirationDate: null,
+        expirationDate: defaultDate(this.accessTokenMaxDate),
         access: null,
         namespaceIds: [],
         permissions: {
@@ -62,9 +87,45 @@ export default {
         namespaceIds: '',
         permissions: '',
       },
+      isFormDirty: false,
       isSubmitting: false,
       createdToken: null,
+      permissionsToSelect: [],
+      permissionsToClear: [],
+      prefillNamespacePermissions: [],
+      prefillUserPermissions: [],
     };
+  },
+  apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+    sourceToken: {
+      query: getSourcePersonalAccessToken,
+      manual: true,
+      variables() {
+        return {
+          userId: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+          id: convertToGraphQLId(TYPENAME_PERSONAL_ACCESS_TOKEN, this.sourceTokenId),
+        };
+      },
+      skip() {
+        return !this.sourceTokenId;
+      },
+      result({ data }) {
+        if (!data) return;
+        const token = data.user.personalAccessTokens.nodes[0];
+
+        if (token) {
+          this.applySourceTokenPrefill(token);
+        }
+      },
+      error(error) {
+        createAlert({
+          message: this.$options.i18n.sourceTokenFetchError,
+          captureError: true,
+          error,
+        });
+      },
+    },
   },
   computed: {
     hasErrors() {
@@ -100,7 +161,46 @@ export default {
       return scopes;
     },
   },
+  watch: {
+    form: {
+      deep: true,
+      handler() {
+        this.isFormDirty = true;
+      },
+    },
+  },
   methods: {
+    handlePermissionsSelected(permissionNames) {
+      this.permissionsToSelect = [...permissionNames];
+      // Clear prefill arrays so the ternary fallback in the template doesn't
+      // re-apply them after the user has interacted with permissions via DAP.
+      this.prefillNamespacePermissions = [];
+      this.prefillUserPermissions = [];
+    },
+    handlePermissionsCleared(permissionNames) {
+      this.permissionsToClear = [...permissionNames];
+      this.prefillNamespacePermissions = [];
+      this.prefillUserPermissions = [];
+    },
+    applySourceTokenPrefill(token) {
+      const granularScopes = token.scopes.filter((s) => Boolean(s.access));
+      const namespaceScopes = granularScopes.filter((s) => s.access !== 'USER');
+
+      this.form.name = sprintf(this.$options.i18n.duplicateName, { name: token.name });
+      this.form.description = token.description || '';
+      this.form.access = namespaceScopes[0]?.access || null;
+
+      // For project scopes, use the project directly so IDs and types match the namespace selector
+      this.prefillNamespaces = namespaceScopes.map((s) => s.project || s.namespace).filter(Boolean);
+      this.form.namespaceIds = this.prefillNamespaces.map((s) => s.id);
+
+      const toPermissionNames = (scopes) =>
+        scopes.flatMap((s) => (s.permissions || []).map((p) => `${p.action}_${p.resource}`));
+      const userScopes = granularScopes.filter((s) => s.access === 'USER');
+
+      this.prefillNamespacePermissions = toPermissionNames(namespaceScopes);
+      this.prefillUserPermissions = toPermissionNames(userScopes);
+    },
     validateForm() {
       // reset the validation
       this.errors = {
@@ -118,8 +218,6 @@ export default {
 
       if (!this.form.description) {
         this.errors.description = this.$options.i18n.descriptionError;
-      } else if (this.form.description.length > MAX_DESCRIPTION_LENGTH) {
-        this.errors.description = this.$options.i18n.descriptionLengthError;
       }
 
       if (this.accessTokenMaxDate && !this.form.expirationDate) {
@@ -140,15 +238,22 @@ export default {
 
       return this.hasErrors;
     },
-    createGranularToken() {
+    async createGranularToken() {
       if (this.validateForm()) {
+        this.$nextTick(() => {
+          const firstError = this.$el.querySelector('.invalid-feedback');
+          if (firstError) {
+            scrollToElement(firstError, { behavior: 'smooth', offset: -100 });
+          }
+        });
+
         return;
       }
 
-      this.isSubmitting = true;
+      try {
+        this.isSubmitting = true;
 
-      this.$apollo
-        .mutate({
+        const response = await this.$apollo.mutate({
           mutation: createGranularPersonalAccessTokenMutation,
           variables: {
             input: {
@@ -158,28 +263,25 @@ export default {
               granularScopes: this.granularScopes,
             },
           },
-          update: (_, { data: { personalAccessTokenCreate } }) => {
-            const { token, errors } = personalAccessTokenCreate;
-
-            if (errors?.length) {
-              throw Error(errors.join(','));
-            }
-
-            this.createdToken = token;
-          },
-        })
-        .catch((error) => {
-          scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
-
-          createAlert({
-            message: this.$options.i18n.createError,
-            captureError: true,
-            error,
-          });
-        })
-        .finally(() => {
-          this.isSubmitting = false;
         });
+
+        const { errors, token } = response.data.personalAccessTokenCreate;
+
+        if (errors[0]) {
+          this.showCreateError(new Error(), errors[0]);
+        } else {
+          this.createdToken = token;
+          this.isFormDirty = false;
+        }
+      } catch (error) {
+        this.showCreateError(error, this.$options.i18n.createError);
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    showCreateError(error, message) {
+      scrollTo({ top: 0, behavior: 'smooth' }, this.$el);
+      createAlert({ message, error, captureError: true });
     },
   },
   i18n: {
@@ -187,26 +289,36 @@ export default {
     description: s__(
       'AccessTokens|Fine-grained personal access tokens give you granular control over the specific resources and actions available to the token.',
     ),
+    basicInformation: s__('AcccessTokens|Basic Information'),
     nameLabel: s__('AccessTokens|Name'),
-    nameError: s__('AccessTokens|Token name is required.'),
+    nameError: s__('AccessTokens|Add token name.'),
     descriptionLabel: s__('AccessTokens|Description'),
-    descriptionError: s__('AccessTokens|Token description is required.'),
-    descriptionLengthError: s__(
-      'AccessTokens|Description is too long (maximum is 255 characters).',
-    ),
-    expirationDateError: s__('AccessTokens|Expiration date is required.'),
-    scopeError: s__('AccessTokens|At least one scope is required.'),
+    descriptionError: s__('AccessTokens|Add token description.'),
+    expirationDateError: s__('AccessTokens|Add token expiration date.'),
+    scopeError: s__('AccessTokens|Set group and project access.'),
     namespaceError: s__('AccessTokens|At least one group or project is required.'),
-    permissionsError: s__('AccessTokens|At least one permission is required.'),
+    permissionsError: s__('AccessTokens|Add at least one resource with permissions.'),
+    duplicateName: s__('AccessTokens|%{name} (copy)'),
+    sourceTokenFetchError: s__(
+      'AccessTokens|Failed to load source token. Please fill in the form manually.',
+    ),
     cancelButton: __('Cancel'),
     createButton: s__('AccessTokens|Generate token'),
     createError: s__('AccessTokens|Token generation unsuccessful. Please try again.'),
+    addPermissions: s__('AccessTokens|Add resource permissions'),
+    addPermissionsDescription: s__(
+      'AccessTokens|Add only the %{linkStart}minimum resource and permissions %{linkEnd} needed for your token. Permissions not included in your assigned role have no effect.',
+    ),
   },
+  fineGrainedTokensDocPath: helpPagePath('auth/tokens/fine_grained_access_tokens.md'),
+  MAX_NAME_LENGTH,
+  MAX_DESCRIPTION_LENGTH,
 };
 </script>
 
 <template>
   <div>
+    <confirm-unsaved-changes-dialog :has-unsaved-changes="isFormDirty" />
     <created-personal-access-token v-if="createdToken" v-model="createdToken" />
 
     <div v-else>
@@ -222,15 +334,23 @@ export default {
         </template>
       </page-heading>
 
-      <gl-form class="js-quick-submit">
+      <gl-loading-icon v-if="$apollo.queries.sourceToken.loading" size="lg" />
+
+      <gl-form v-else class="js-quick-submit">
         <section class="gl-w-full lg:gl-w-1/2">
+          <h2 class="gl-heading-3">{{ $options.i18n.basicInformation }}</h2>
           <gl-form-group
             :label="$options.i18n.nameLabel"
             label-for="token-name"
             :invalid-feedback="errors.name"
             :state="!errors.name"
           >
-            <gl-form-input id="token-name" v-model.trim="form.name" :state="!errors.name" />
+            <gl-form-input
+              id="token-name"
+              v-model.trim="form.name"
+              :state="!errors.name"
+              :maxlength="$options.MAX_NAME_LENGTH"
+            />
           </gl-form-group>
 
           <gl-form-group
@@ -243,6 +363,7 @@ export default {
               id="token-description"
               v-model.trim="form.description"
               :state="!errors.description"
+              :maxlength="$options.MAX_DESCRIPTION_LENGTH"
             />
           </gl-form-group>
 
@@ -251,36 +372,61 @@ export default {
             :error="errors.expirationDate"
           />
         </section>
-        <section>
+        <section class="gl-mt-8">
           <personal-access-token-scope-selector v-model="form.access" :error="errors.access">
             <template #namespace-selector>
               <personal-access-token-namespace-selector
                 v-if="renderNamespaceSelector"
-                v-model="form.namespaceIds"
+                :prefill-namespaces="prefillNamespaces"
                 :error="errors.namespaceIds"
                 class="gl-mt-4 gl-w-full lg:gl-w-1/2"
-              />
-            </template>
-
-            <template #namespace-permissions>
-              <personal-access-token-permissions-selector
-                v-model="form.permissions.namespace"
-                :error="errors.permissions"
-                :target-boundaries="targetBoundaries.namespace"
-              />
-            </template>
-
-            <template #user-permissions>
-              <personal-access-token-permissions-selector
-                v-model="form.permissions.user"
-                :error="errors.permissions"
-                :target-boundaries="targetBoundaries.user"
+                @input="form.namespaceIds = $event"
               />
             </template>
           </personal-access-token-scope-selector>
         </section>
+        <section class="gl-mt-8">
+          <h2 class="gl-heading-3 gl-mb-2">{{ $options.i18n.addPermissions }}</h2>
+          <p class="gl-text-subtle">
+            <gl-sprintf :message="$options.i18n.addPermissionsDescription">
+              <template #link="{ content }">
+                <gl-link :href="$options.fineGrainedTokensDocPath" target="_blank">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </p>
+          <gl-tabs content-class="!gl-p-0">
+            <template #tabs-end>
+              <ask-dap-permissions
+                v-if="$options.components.AskDapPermissions && glFeatures.patPermissionsSuggestions"
+                @permissions-selected="handlePermissionsSelected"
+                @permissions-cleared="handlePermissionsCleared"
+              />
+            </template>
+            <personal-access-token-permissions-selector
+              v-model="form.permissions.namespace"
+              :error="errors.permissions"
+              :target-boundaries="targetBoundaries.namespace"
+              :permissions-to-select="
+                permissionsToSelect.length ? permissionsToSelect : prefillNamespacePermissions
+              "
+              :permissions-to-clear="permissionsToClear"
+            />
 
-        <section class="gl-mt-6">
+            <personal-access-token-permissions-selector
+              v-model="form.permissions.user"
+              :error="errors.permissions"
+              :target-boundaries="targetBoundaries.user"
+              :permissions-to-select="
+                permissionsToSelect.length ? permissionsToSelect : prefillUserPermissions
+              "
+              :permissions-to-clear="permissionsToClear"
+            />
+          </gl-tabs>
+        </section>
+
+        <div class="settings-sticky-footer gl-flex gl-flex-wrap gl-gap-3">
           <gl-button variant="confirm" :loading="isSubmitting" @click="createGranularToken">
             {{ $options.i18n.createButton }}
           </gl-button>
@@ -288,7 +434,7 @@ export default {
           <gl-button :href="accessTokenTableUrl">
             {{ $options.i18n.cancelButton }}
           </gl-button>
-        </section>
+        </div>
       </gl-form>
     </div>
   </div>

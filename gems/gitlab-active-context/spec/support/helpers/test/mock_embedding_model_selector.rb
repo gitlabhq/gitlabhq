@@ -6,12 +6,12 @@ module Test
     # This is for testing that the `for` method is being called with the expected params
     # We don't test how `model_metadata` is used,
     # as that logic is for the actual embedding_model_selector class
-    def self.for(model_metadata)
+    def self.for(model_metadata, search: false)
       ::ActiveContext::EmbeddingModel.new(
         model_name: model_metadata[:model_ref],
         field: model_metadata[:field],
         llm_class: Test::MockLlmClass,
-        llm_params: { model: model_metadata[:model_ref] }
+        llm_params: { model: model_metadata[:model_ref], search: search }
       )
     end
   end

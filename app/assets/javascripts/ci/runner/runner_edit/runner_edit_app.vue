@@ -2,11 +2,11 @@
 import { createAlert } from '~/alert';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerUpdateForm from '../components/runner_update_form.vue';
 import { I18N_FETCH_ERROR } from '../constants';
 import runnerFormQuery from '../graphql/edit/runner_form.query.graphql';
-import { captureException } from '../sentry_utils';
 
 export default {
   name: 'RunnerEditApp',
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
   },
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_category: :permissions do
+RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
   describe '#json_schema_file' do
@@ -40,14 +40,21 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
     end
 
     let(:mock_routes) { [mock_route] }
+    let(:source_proc) { instance_double(Proc, source_location: [Rails.root.join('lib/api/test.rb').to_s, 42]) }
 
     subject(:run) { task.run }
 
     before do
       allow(API::API).to receive(:endpoints).and_return(
-        [instance_double(Grape::Endpoint, routes: mock_routes)]
+        [instance_double(Grape::Endpoint, routes: mock_routes, source: source_proc)]
       )
       allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
+
+      # Skip test coverage validation by default -- tested separately below
+      allow(task).to receive(:register_test_coverage).with(any_args)
+      mock_scanner = instance_double(Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
+        insufficient_test_coverage: [])
+      allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
     end
 
     context 'when routes have no authorization settings but are listed in the TODO file' do
@@ -110,15 +117,15 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
-          #    - GET /projects/:id/test: undefined_permission
+          #    - GET /projects/:id/test: undefined_permission (lib/api/test.rb:42)
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
           #
-          #    - GET /projects/:id/test: undefined_permission
+          #    - GET /projects/:id/test: undefined_permission (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -147,15 +154,15 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
-          #    - GET /projects/:id/test: undefined_permission
+          #    - GET /projects/:id/test: undefined_permission (lib/api/test.rb:42)
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
           #
-          #    - GET /projects/:id/test: undefined_permission
+          #    - GET /projects/:id/test: undefined_permission (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -182,17 +189,17 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
-          #    - GET /projects/:id/test: undefined_one
-          #    - GET /projects/:id/test: undefined_two
+          #    - GET /projects/:id/test: undefined_one (lib/api/test.rb:42)
+          #    - GET /projects/:id/test: undefined_two (lib/api/test.rb:42)
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
           #
-          #    - GET /projects/:id/test: undefined_one
-          #    - GET /projects/:id/test: undefined_two
+          #    - GET /projects/:id/test: undefined_one (lib/api/test.rb:42)
+          #    - GET /projects/:id/test: undefined_two (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -235,17 +242,17 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions without definition files.
           #  Create definition files using: bin/permission <NAME>
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
-          #    - GET /projects/:id/first: undefined_one
-          #    - POST /projects/:id/second: undefined_two
+          #    - GET /projects/:id/first: undefined_one (lib/api/test.rb:42)
+          #    - POST /projects/:id/second: undefined_two (lib/api/test.rb:42)
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
           #
-          #    - GET /projects/:id/first: undefined_one
-          #    - POST /projects/:id/second: undefined_two
+          #    - GET /projects/:id/first: undefined_one (lib/api/test.rb:42)
+          #    - POST /projects/:id/second: undefined_two (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -266,9 +273,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes reference permissions not included in any assignable permission.
           #  Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#create-the-assignable-permission-file
           #
-          #    - GET /projects/:id/test: read_something
+          #    - GET /projects/:id/test: read_something (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -291,9 +298,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
           #  Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#determining-boundaries
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#determining-boundaries
           #
-          #    - GET /projects/:id/test: read_something
+          #    - GET /projects/:id/test: read_something (lib/api/test.rb:42)
           #        Route boundaries: user
           #        Assignable boundaries: project, group
           #
@@ -329,9 +336,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
           #  Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#determining-boundaries
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/assignable_permissions/#determining-boundaries
           #
-          #    - GET /projects/:id/test: read_something
+          #    - GET /projects/:id/test: read_something (lib/api/test.rb:42)
           #        Route boundaries: group, user
           #        Assignable boundaries: group
           #
@@ -394,9 +401,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes define permissions but are missing a boundary_type.
           #  Add boundary_type to the route_setting :authorization.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md#step-5-add-authorization-decorators-to-api-endpoints
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/#step-5-add-authorization-decorators-to-api-endpoints
           #
-          #    - GET /projects/:id/test: read_something
+          #    - GET /projects/:id/test: read_something (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -416,9 +423,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes are missing route_setting :authorization metadata.
           #  Add authorization metadata to the endpoint.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
           #
-          #    - GET /projects/:id/test
+          #    - GET /projects/:id/test (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -457,24 +464,62 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes are missing route_setting :authorization metadata.
           #  Add authorization metadata to the endpoint.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
           #
-          #    - POST /projects/:id/second
+          #    - POST /projects/:id/second (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
       end
     end
 
-    context 'when a route has skip_granular_token_authorization' do
-      let(:route_settings) { { authorization: { skip_granular_token_authorization: true } } }
-
-      before do
-        allow(described_class::TODO_FILE).to receive(:readlines).and_return([])
+    context 'when a route has skip_granular_token_authorization with a valid reason' do
+      let(:route_settings) do
+        { authorization: { skip_granular_token_authorization: :job_token_auth } }
       end
 
-      it 'is treated as tagged and completes successfully' do
+      it 'completes successfully' do
         expect { run }.to output(/API route permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a route has skip_granular_token_authorization: true without a reason' do
+      let(:route_settings) { { authorization: { skip_granular_token_authorization: true } } }
+
+      it 'returns an error' do
+        valid_reasons = described_class::VALID_SKIP_REASONS.map { |r| ":#{r}" }.join(', ')
+
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes use a missing or invalid skip_granular_token_authorization reason.
+          #  Use one of: #{valid_reasons}
+          #
+          #    - GET /projects/:id/test: true (lib/api/test.rb:42)
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a route has skip_granular_token_authorization with an invalid reason' do
+      let(:route_settings) do
+        { authorization: { skip_granular_token_authorization: :not_a_valid_reason } }
+      end
+
+      it 'returns an error' do
+        valid_reasons = described_class::VALID_SKIP_REASONS.map { |r| ":#{r}" }.join(', ')
+
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes use a missing or invalid skip_granular_token_authorization reason.
+          #  Use one of: #{valid_reasons}
+          #
+          #    - GET /projects/:id/test: not_a_valid_reason (lib/api/test.rb:42)
+          #
+          #######################################################################
+        OUTPUT
       end
     end
 
@@ -491,9 +536,9 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #  The following API routes are missing route_setting :authorization metadata.
           #  Add authorization metadata to the endpoint.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide
           #
-          #    - GET /projects/:id/test
+          #    - GET /projects/:id/test (lib/api/test.rb:42)
           #
           #######################################################################
         OUTPUT
@@ -513,6 +558,80 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
       end
 
       it 'ignores comments and blank lines and completes successfully' do
+        expect { run }.to output(/API route permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a route permission has insufficient test coverage' do
+      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      let(:mock_scanner) do
+        instance_double(
+          Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
+          insufficient_test_coverage: [{
+            permission: 'read_project',
+            route_count: 1,
+            test_count: 0,
+            routes: [{
+              method: 'GET', path: '/projects/:id/test',
+              source: 'lib/api/test.rb:42', permission: :read_project,
+              spec_file: 'spec/requests/api/test_spec.rb'
+            }]
+          }],
+          derive_spec_path: 'spec/requests/api/test_spec.rb'
+        )
+      end
+
+      before do
+        allow(task).to receive(:register_test_coverage).and_call_original
+        allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
+        allow(mock_scanner).to receive(:add_route)
+        allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
+        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'returns an error with route details' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following permissions have fewer tests than routes using them.
+          #  Each route should have its own `it_behaves_like 'authorizing granular token permissions'` test.
+          #  Add test coverage.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/rest_api_implementation_guide/#step-6-add-request-specs-for-the-endpoint
+          #
+          #    - read_project: 1 routes, 0 tests
+          #        GET /projects/:id/test (lib/api/test.rb:42)
+          #          Suggested spec: spec/requests/api/test_spec.rb
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a route permission has sufficient test coverage' do
+      let(:route_settings) { { authorization: { permissions: :read_project, boundary_type: :project } } }
+      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
+
+      let(:mock_scanner) do
+        instance_double(
+          Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner,
+          insufficient_test_coverage: [],
+          derive_spec_path: 'spec/requests/api/test_spec.rb'
+        )
+      end
+
+      before do
+        allow(task).to receive(:register_test_coverage).and_call_original
+        allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
+        allow(mock_scanner).to receive(:add_route)
+        allow(Authz::Permission).to receive(:defined?).with(:read_project).and_return(true)
+        allow(Authz::PermissionGroups::Assignable).to receive(:for_permission)
+          .with(:read_project).and_return([mock_assignable])
+      end
+
+      it 'completes successfully' do
         expect { run }.to output(/API route permissions are valid/).to_stdout
       end
     end

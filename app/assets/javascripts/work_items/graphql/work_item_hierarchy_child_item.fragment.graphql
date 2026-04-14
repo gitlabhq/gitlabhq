@@ -1,3 +1,4 @@
+#import "~/work_items/graphql/work_item_parent_fields.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 
 fragment WorkItemHierarchyChildItem on WorkItem {
@@ -34,6 +35,9 @@ fragment WorkItemHierarchyChildItem on WorkItem {
           name
           iconName
         }
+      }
+      parent {
+        ...WorkItemParentFields
       }
     }
     ...WorkItemMetadataWidgets

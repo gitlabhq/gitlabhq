@@ -135,6 +135,34 @@ describe('NavItem component', () => {
       );
     });
 
+    describe('async count pill', () => {
+      beforeEach(() => {
+        createWrapper({
+          item: {
+            title: 'Foo',
+            pill_count_field: 'openIssuesCount',
+          },
+          props: {
+            asyncCount: {},
+          },
+        });
+      });
+
+      it('renders `-` while async count field is not available yet', () => {
+        expect(findPill().text()).toBe('-');
+      });
+
+      it('updates from loading placeholder to async count value', async () => {
+        await wrapper.setProps({
+          asyncCount: {
+            openIssuesCount: 12,
+          },
+        });
+
+        expect(findPill().text()).toBe('12');
+      });
+    });
+
     describe('if `pill_count_field` does not exist, use `pill_count` value`', () => {
       it('renders `pill_count_field` value based on item type', () => {
         createWrapper({ item: { title: 'Foo', pill_count: 10, pill_count_field: null } });

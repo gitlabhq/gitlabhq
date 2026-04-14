@@ -49,13 +49,41 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 Note: you can use the [CXL calculator](https://cxl.com/ab-test-calculator/) to determine if your experiment has reached significance. The calculator includes an estimate for how much longer an experiment must run for before reaching significance.
 
-### Analysis Dashboards
+### Pre-staging validation (Development)
 
-The following Tableau dashboards are available for experiment analysis:
-- [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard) - for initial event validation
-- [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard) - for detailed experiment analysis
-- [General Snowplow Event Exploration Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D)
-provides additional event analysis capabilities, but for production only.
+Before deploying to staging, engineers must validate event structure locally using [Snowplow Micro](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/local_setup_and_debugging/#snowplow-micro).
+
+**Event structure validation should happen during development, not in staging or production.**
+
+After triggering all experiment events locally for each variant (control and candidate), paste the raw Snowplow Micro output below as proof that events are correctly structured.
+
+<details>
+<summary>Snowplow Micro raw dump (expand to view)</summary>
+
+<!-- Paste the raw JSON response from Snowplow Micro's /micro/good endpoint here. -->
+
+</details>
+
+### Staging validation
+
+In staging, validate **only** that events are being received in Snowplow — not their structure (which was validated locally).
+
+**UX validation:**
+- [ ] Verify the control experience renders correctly
+- [ ] Verify the candidate experience renders correctly
+- [ ] Verify transitions between control and candidate are smooth
+
+**Tracking event validation:**
+- [ ] Confirm assignment events appear in the [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard)
+- [ ] Confirm all expected events are received (events may take 24+ hours to appear)
+
+### Production validation
+
+In production, validate that events are flowing correctly into Snowflake.
+
+**Tracking event validation:**
+- [ ] Confirm events appear in the [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard)
+- [ ] Confirm events appear in the [General Snowplow Event Exploration Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D)
 
 **Note:** Events may take 24+ hours to appear in Tableau dashboards.
 
@@ -65,7 +93,7 @@ provides additional event analysis capabilities, but for production only.
 - Runtime in days, or until we expect to reach statistical significance: `30`
 - We will roll this out behind a feature flag and expose this to `<rollout-percentage>`% of actors to start then ramp it up from there.
 
-`/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
+`/chatops gitlab run feature set <feature-flag-name> <rollout-percentage> --actors`
 
 ### Status
 
@@ -96,14 +124,14 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
   - See [`#e2e-run-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
     - test kicked off: `Feature flag <feature-flag-name> has been set to true on **gstg**`
     - test result: `This pipeline was triggered due to toggling of <feature-flag-name> feature flag`
-- [ ] Enable on staging (`/chatops run feature set <feature-flag-name> true --staging`)
+- [ ] Enable on staging (`/chatops gitlab run feature set <feature-flag-name> true --staging`)
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated
-- [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`)
+- [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops gitlab run feature set --project=gitlab-org/gitlab <feature-flag-name> true`)
 - [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
   - In `#production` mention `@sre-oncall` and `@release-managers`. Once an SRE on call and Release Manager on call confirm, you can proceed with the rollout
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
-- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops run feature set <feature-flag-name> true`)
+- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops gitlab run feature set <feature-flag-name> true`)
 - [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/development/feature_flags/controls/#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled
 - [ ] Remove experiment code and feature flag and add changelog entry - a separate [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Experiment%20Successful%20Cleanup) might be required
@@ -115,7 +143,7 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 - [ ] This feature can be disabled by running the following Chatops command:
 
 ```
-/chatops run feature set <feature-flag-name> false
+/chatops gitlab run feature set <feature-flag-name> false
 ```
 
 ## Experiment Successful Cleanup Concerns

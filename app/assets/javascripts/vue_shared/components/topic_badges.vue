@@ -4,7 +4,7 @@
  */
 import { GlBadge, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { topicExploreProjectsPath } from '~/lib/utils/path_helpers/explore';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 
@@ -56,9 +56,7 @@ export default {
   },
   methods: {
     topicPath(topic) {
-      const explorePath = `/explore/projects/topics/${encodeURIComponent(topic)}`;
-
-      return joinPaths(gon.relative_url_root || '', explorePath);
+      return topicExploreProjectsPath(topic);
     },
     topicTitle(topic) {
       return truncate(topic, MAX_TOPIC_TITLE_LENGTH);

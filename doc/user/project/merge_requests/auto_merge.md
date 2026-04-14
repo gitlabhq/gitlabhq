@@ -48,6 +48,9 @@ Merge checks include a passing CI/CD pipeline, and much more:
 - All external status checks have passed.
 - The merge request must be open.
 - No denied policies exist.
+- All pipelines for the latest commit must succeed before the merge request is merged when
+  [scan execution policies](../../application_security/policies/scan_execution_policies.md) or
+  [pipeline execution policies](../../application_security/policies/pipeline_execution_policies.md) are configured.
 - If your project
   [requires merge requests to reference a Jira issue](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged),
   the merge request title or description contains a Jira issue link.
@@ -55,7 +58,7 @@ Merge checks include a passing CI/CD pipeline, and much more:
 - If the merge request has a **Merge after** date set, the current time must be after the configured date.
 
 For a full list of checks and their API equivalents, see
-[Merge status](../../../api/merge_requests.md#merge-status).
+[merge status](../../../api/merge_requests.md#merge-status).
 
 ![Auto-merge is ready](img/auto_merge_ready_v16_0.png)
 

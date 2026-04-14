@@ -11,7 +11,7 @@ class Admin::SessionsController < ApplicationController
 
   def new
     if current_user_mode.admin_mode?
-      redirect_to redirect_path, notice: _('Admin mode already enabled')
+      redirect_to redirect_path, notice: _('Admin mode is already active.')
     else
       current_user_mode.request_admin_mode! unless current_user_mode.admin_mode_requested?
       store_location_for(:redirect, redirect_path)
@@ -22,7 +22,7 @@ class Admin::SessionsController < ApplicationController
     if two_factor_enabled_for_user?
       admin_mode_authenticate_with_two_factor
     elsif current_user_mode.enable_admin_mode!(password: user_params[:password])
-      redirect_to redirect_path, notice: _('Admin mode enabled')
+      redirect_to redirect_path, notice: _('Admin mode is active.')
     else
       flash.now[:alert] = _('Invalid login or password')
       render :new
@@ -39,7 +39,7 @@ class Admin::SessionsController < ApplicationController
       ::Gitlab::Auth::Oidc::StepUpAuthentication.disable_step_up_authentication!(session: session, scope: :admin_mode)
     end
 
-    redirect_to root_path, status: :found, notice: _('Admin mode disabled')
+    redirect_to root_path, status: :found, notice: _('Admin mode is inactive.')
   end
 
   private

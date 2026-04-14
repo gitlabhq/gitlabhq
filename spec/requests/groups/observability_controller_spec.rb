@@ -22,154 +22,13 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
   end
 
   describe 'GET #show' do
-    subject(:observability_page) { get group_observability_path(group, '') }
+    subject(:observability_page) { get group_observability_path(group, 'alerts') }
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(observability_sass_features: group)
-        allow(Observability::O11yToken).to receive(:generate_tokens).and_return({ 'testToken' => 'value' })
-      end
-
-      context 'with incorrect permissions' do
-        let(:user) { create(:user) }
-
-        before do
-          group.add_guest(user)
-          sign_in(user)
-        end
-
-        subject { get group_observability_path(group, 'services') }
-
-        it_behaves_like 'redirects to 404'
-      end
-
-      context 'when the group has observability settings' do
-        subject(:services_page) { get group_observability_path(group, 'services') }
-
-        let!(:observability_setting) do
-          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
-        end
-
-        it 'sets the o11y url from group settings' do
-          services_page
-          expect(response).to render_template(:show)
-          expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
-          expect(assigns(:data).to_h[:path]).to eq('services')
-          expect(assigns(:data).to_h[:o11y_url]).to eq('https://observability.example.com')
-        end
-      end
-
-      context 'when the group has no observability settings' do
-        subject(:services_page) { get group_observability_path(group, 'services') }
-
-        it 'sets the o11y url to nil' do
-          services_page
-          expect(response).to render_template(:show)
-          expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
-          expect(assigns(:data).to_h[:path]).to eq('services')
-          expect(assigns(:data).to_h[:o11y_url]).to be_nil
-        end
-      end
-
-      context 'with a valid path parameter' do
-        let!(:observability_setting) do
-          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://o11y.gitlab.com')
-        end
-
-        Groups::ObservabilityController::VALID_PATHS.each do |path|
-          context "with path=#{path}" do
-            subject(:observability_page) { get group_observability_path(group, path) }
-
-            it 'renders the observability page with the specified path' do
-              observability_page
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
-              expect(assigns(:data).to_h[:path]).to eq(path)
-              expect(assigns(:data).to_h[:o11y_url]).to eq('https://o11y.gitlab.com')
-              expect(assigns(:data).title).to eq(Observability::ObservabilityPresenter::PATHS.fetch(path,
-                'Observability'))
-              expect(assigns(:data).auth_tokens).to eq({ 'test_token' => 'value' })
-            end
-          end
-        end
-      end
-
-      context 'with JSON format' do
-        let!(:observability_setting) do
-          create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
-        end
-
-        context 'when JSON is requested' do
-          subject(:get_json) { get group_observability_path(group, 'services', format: :json) }
-
-          it 'returns JSON response' do
-            get_json
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.content_type).to include('application/json')
-          end
-
-          it 'returns the correct JSON structure' do
-            get_json
-
-            expect(json_response).to include(
-              'o11y_url' => 'https://observability.example.com',
-              'path' => 'services',
-              'title' => 'Observability|Services'
-            )
-            expect(json_response).to have_key('auth_tokens')
-            expect(json_response['auth_tokens']).to eq({ 'test_token' => 'value' })
-          end
-        end
-
-        context 'when group has no observability settings' do
-          let!(:observability_setting) { nil }
-
-          subject(:get_json) { get group_observability_path(group, 'services', format: :json) }
-
-          it 'returns JSON with nil o11y_url' do
-            get_json
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to include(
-              'o11y_url' => nil,
-              'path' => 'services',
-              'title' => 'Observability|Services'
-            )
-          end
-        end
-
-        context 'with different valid paths' do
-          Groups::ObservabilityController::VALID_PATHS.each do |path|
-            context "with path=#{path}" do
-              subject(:get_json) { get group_observability_path(group, path, format: :json) }
-
-              it 'returns JSON with correct path and title' do
-                get_json
-
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['path']).to eq(path)
-                expect(json_response['title']).to eq(Observability::ObservabilityPresenter::PATHS.fetch(path,
-                  'Observability'))
-              end
-            end
-          end
-        end
-      end
-
-      context 'with an invalid path parameter' do
-        context 'with HTML format' do
-          subject { get group_observability_path(group, 'invalid-path') }
-
-          it_behaves_like 'redirects to 404'
-        end
-
-        context 'with JSON format' do
-          subject { get group_observability_path(group, 'invalid-path', format: :json) }
-
-          it_behaves_like 'redirects to 404'
-        end
+    before do
+      stub_feature_flags(observability_sass_features: group)
+      allow(Observability::O11yToken).to receive(:generate_tokens).and_return({ 'testToken' => 'value' })
+      allow_next_instance_of(Observability::ObservabilityPresenter) do |instance|
+        allow(instance).to receive(:auth_tokens).and_return({ 'test_token' => 'value' })
       end
     end
 
@@ -183,7 +42,6 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
 
     context 'when user is not authenticated' do
       before do
-        stub_feature_flags(observability_sass_features: group)
         sign_out(user)
       end
 
@@ -191,6 +49,189 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         observability_page
 
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with incorrect permissions' do
+      let(:user) { create(:user) }
+
+      before do
+        group.add_guest(user)
+        sign_in(user)
+      end
+
+      subject { get group_observability_path(group, 'services') }
+
+      it_behaves_like 'redirects to 404'
+    end
+
+    context 'when the group has observability settings' do
+      let!(:observability_setting) do
+        create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
+      end
+
+      subject(:services_page) { get group_observability_path(group, 'services') }
+
+      it 'renders the show template and exposes a presenter with the group o11y url' do
+        services_page
+
+        expect(response).to render_template(:show)
+        expect(assigns(:data)).to be_a(Observability::ObservabilityPresenter)
+        expect(assigns(:data).to_h).to include(
+          path: 'services',
+          o11y_url: 'https://observability.example.com'
+        )
+      end
+    end
+
+    context 'when the group has no observability settings' do
+      subject(:services_page) { get group_observability_path(group, 'services') }
+
+      it 'renders the show template with a nil o11y url' do
+        services_page
+
+        expect(response).to render_template(:show)
+        expect(assigns(:data).to_h).to include(path: 'services', o11y_url: nil)
+      end
+    end
+
+    context 'with an invalid path parameter' do
+      context 'with HTML format' do
+        subject { get group_observability_path(group, 'invalid-path') }
+
+        it_behaves_like 'redirects to 404'
+      end
+
+      context 'with JSON format' do
+        subject { get group_observability_path(group, 'invalid-path', format: :json) }
+
+        it_behaves_like 'redirects to 404'
+      end
+    end
+
+    context 'with JSON format' do
+      let!(:observability_setting) do
+        create(:observability_group_o11y_setting, group: group, o11y_service_url: 'https://observability.example.com')
+      end
+
+      subject(:get_json) { get group_observability_path(group, 'services', format: :json) }
+
+      it 'returns the full JSON structure' do
+        get_json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to include('application/json')
+        expect(json_response).to include(
+          'o11y_url' => 'https://observability.example.com',
+          'path' => 'services',
+          'title' => 'Observability|Services',
+          'query_params' => {}
+        )
+        expect(json_response).to have_key('auth_tokens')
+        expect(json_response['auth_tokens']).to eq({ 'test_token' => 'value' })
+      end
+
+      context 'when group has no observability settings' do
+        let!(:observability_setting) { nil }
+
+        it 'returns JSON with nil o11y_url' do
+          get_json
+
+          expect(json_response).to include('o11y_url' => nil, 'path' => 'services')
+        end
+      end
+    end
+
+    context 'with sub-path routing' do
+      # One representative per distinct routing shape: single-segment, two-segment static,
+      # two-segment parametric, three-segment static, three-segment parametric.
+      # Title inheritance and full path coverage are the presenter's responsibility.
+      {
+        'alerts' => 'Observability|Alerts',
+        'alerts/edit' => 'Observability|Alerts',
+        'dashboard/my-dashboard' => 'Observability|Dashboard',
+        'messaging-queues/kafka/detail' => 'Observability|Messaging queues',
+        'services/my-service/top-level-operations' => 'Observability|Services'
+      }.each do |sub_path, expected_title|
+        it "routes #{sub_path} to the controller and resolves the correct title" do
+          get group_observability_path(group, sub_path)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:data).title).to eq(expected_title)
+          expect(assigns(:data).to_h[:path]).to eq(sub_path)
+        end
+      end
+
+      context 'with bare top-level-only prefixes (sub-path required)' do
+        where(:bare_path) do
+          ['infrastructure-monitoring']
+        end
+
+        with_them do
+          it 'returns 404' do
+            get group_observability_path(group, bare_path)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'with path traversal attempts' do
+        where(:url_suffix) do
+          [
+            ['alerts/../admin'],
+            ['alerts/%2e%2e/admin'],
+            ['alerts/%252e%252e/admin'],
+            ['..%2Fadmin']
+          ]
+        end
+
+        with_them do
+          it 'returns 400 or 404' do
+            get "/groups/#{group.full_path}/-/observability/#{url_suffix}"
+
+            expect(response.status).to be_in([400, 404])
+          end
+        end
+      end
+
+      context 'when path traversal is detected by the controller' do
+        before do
+          allow(Gitlab::PathTraversal).to receive(:check_path_traversal!)
+            .and_raise(Gitlab::PathTraversal::PathTraversalAttackError)
+        end
+
+        it 'returns 404' do
+          get group_observability_path(group, 'alerts')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with query parameter forwarding' do
+      it 'forwards allowed params and strips disallowed ones' do
+        get group_observability_path(group, 'alerts', ruleId: 'abc-123', evil: 'bad', tab: 'overview')
+
+        expect(assigns(:data).to_h[:query_params]).to eq({ 'ruleId' => 'abc-123', 'tab' => 'overview' })
+      end
+
+      it 'drops all params when the query string exceeds 4096 bytes' do
+        get group_observability_path(group, 'alerts', ruleId: 'abc-123', search: 'x' * 4097)
+
+        expect(assigns(:data).to_h[:query_params]).to eq({})
+      end
+
+      it 'drops only the param whose value exceeds 1024 bytes, keeps the rest' do
+        get group_observability_path(group, 'alerts', ruleId: 'abc-123', search: 'y' * 1025)
+
+        expect(assigns(:data).to_h[:query_params]).to eq({ 'ruleId' => 'abc-123' })
+      end
+
+      it 'includes query_params in the JSON response' do
+        get group_observability_path(group, 'alerts', format: :json, ruleId: 'abc-123', tab: 'overview')
+
+        expect(json_response['query_params']).to eq({ 'ruleId' => 'abc-123', 'tab' => 'overview' })
       end
     end
   end
@@ -201,12 +242,6 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
 
     before do
       stub_feature_flags(observability_sass_features: group)
-    end
-
-    shared_examples 'includes o11y url in frame-src' do |o11y_url|
-      it "includes '#{o11y_url}' in frame-src directive" do
-        expect(frame_src_values).to include("'self'", o11y_url)
-      end
     end
 
     shared_examples 'does not modify frame-src directive' do

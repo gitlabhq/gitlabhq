@@ -1,0 +1,3 @@
+---
+name: force_cancel_build
+description: Grants the ability to force-cancel CI builds that are stuck in the canceling state.

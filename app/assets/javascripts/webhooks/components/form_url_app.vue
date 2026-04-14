@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import { GlAlert, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/scroll_utils';

@@ -1,0 +1,13 @@
+---
+name: merge_immediately_when_no_pipeline
+description: |
+  When the merge API is called with auto_merge enabled but no pipeline exists
+  and no auto-merge strategy is available, fall back to merging immediately
+  instead of returning 405.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355455
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228142
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594451
+milestone: '18.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

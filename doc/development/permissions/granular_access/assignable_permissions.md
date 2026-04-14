@@ -43,15 +43,15 @@ The directory structure uses three levels: `<category>/<resource>/<action>.yml`
 
 | File | When Required | Purpose |
 |------|---------------|---------|
-| Category `_metadata.yml` | Optional | Override folder name display (e.g., `ci_cd` → "CI/CD" instead of "Ci Cd") |
-| Resource `_metadata.yml` | Required | Provide user-facing description of the resource. The `description` field is mandatory. |
+| Category `.metadata.yml` | Optional | Override folder name display (e.g., `ci_cd` → "CI/CD" instead of "Ci Cd") |
+| Resource `.metadata.yml` | Optional | Override the generated resource description or titleized resource name |
 
 > [!note]
 > The assignable permission YAML file (at `<category>/<resource>/<action>.yml`) is always required and is not a metadata file—it's the main configuration file that defines the permission bundle.
 
 **Category Level:** The `<category>` subfolder represents the name of the category displayed in the UI where assignable permissions are grouped. The folder name is titleized when displayed (e.g., `project_management` becomes "Project Management"). This category name is displayed in permission selection UIs, helping users organize and find permissions by functional area.
 
-Create a `_metadata.yml` file in the category folder **only if** titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
+Create a `.metadata.yml` file in the category folder **only if** titleization produces an incorrect display name. For example, acronyms or abbreviations that don't titleize well:
 
 ```yaml
 ---
@@ -62,22 +62,22 @@ name: "CI/CD"
 
 - Folder: `project_management` → Without metadata: Displays as "Project Management"
 - Folder: `ci_cd` → Without metadata: Displays as "Ci Cd" (incorrect)
-- Folder: `ci_cd` → With `_metadata.yml` override: Displays as "CI/CD" (correct)
+- Folder: `ci_cd` → With `.metadata.yml` override: Displays as "CI/CD" (correct)
 
-**Resource Level:** Create a `_metadata.yml` file at `config/authz/permission_groups/assignable_permissions/<category>/<resource>/_metadata.yml` to add metadata about the resource. The `description` field is mandatory:
+**Resource Level:** Optionally create a `.metadata.yml` file at `config/authz/permission_groups/assignable_permissions/<category>/<resource>/.metadata.yml` to override default values:
 
 ```yaml
 ---
-description: "Description of what permissions in this resource group do"
+description: "Grants the ability to <actions> SSH keys."
 name: "SSH Key"
 ```
 
+By default, the resource name is derived from the directory name (titleized), and the description is generated from the resource's actions (e.g., "Grants the ability to assign, create, and read runners.").
+
 **Fields:**
 
-- `description` (required) - Provides context about what permissions in this resource group grant. This description is displayed in permission selection UIs, helping users understand what permissions they're assigning
+- `description` (optional) - Overrides the generated resource description. Must include `<actions>` interpolation, which is replaced at runtime with the alphabetically sorted list of actions from the resource's YAML files. Use `<actions>` to keep the action list in sync automatically while customizing the noun (e.g., `"Grants the ability to <actions> CI variables."`).
 - `name` (optional) - Overrides the titleized resource name for display. Use this for acronyms or special formatting where titleization won't work correctly (e.g., `name: "SSH Key"` instead of auto-titleized name)
-
-The resource metadata file is required for every resource directory that contains assignable permissions. Validation will fail if any resource directory is missing a `_metadata.yml` file.
 
 **Example in the UI:**
 
@@ -87,9 +87,18 @@ The following screenshot shows how category and resource metadata are displayed 
 
 In this example:
 
-- **CI/CD** - This is the category name, which comes from the folder name and can be overridden with category `_metadata.yml`
-- **CI Config** - This is the resource name, which comes from the folder name and can be overridden with resource `_metadata.yml`
-- The description below shows the `description` field from the resource `_metadata.yml` file
+- **CI/CD** - This is the category name, which comes from the folder name and can be overridden with category `.metadata.yml`
+- **CI Config** - This is the resource name, which comes from the folder name and can be overridden with resource `.metadata.yml`
+- The description below shows the resource description, which is either overridden in the resource `.metadata.yml` file or generated from the resource's actions
+
+**When to create a resource `.metadata.yml`:**
+
+- The resource name contains an acronym or brand name that doesn't titleize correctly (e.g., `ssh_key` → "`Ssh Key`" instead of "SSH Key")
+- The generated description needs a custom noun (e.g., "CI variables" instead of "variables", or "code" instead of "codes")
+- The resource has an unconventional action name that looks ugly in prose (e.g., `renew_secret`)
+- The directory name is uncountable or pluralizes awkwardly (e.g., "code" → "codes", "metadata" → "metadatas")
+
+You do **not** need a metadata file when the directory name titleizes and pluralizes correctly (the majority of resources).
 
 ### Determining Boundaries
 

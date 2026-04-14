@@ -7,11 +7,7 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import namespaceMergeRequestsEnabledQuery from '~/work_items/graphql/namespace_merge_requests_enabled.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
-import {
-  DEVELOPMENT_ITEMS_ANCHOR,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  STATE_OPEN,
-} from '~/work_items/constants';
+import { DEVELOPMENT_ITEMS_ANCHOR, STATE_OPEN } from '~/work_items/constants';
 import { findDevelopmentWidget } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
@@ -118,17 +114,17 @@ export default {
             s__(
               'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
             ),
-            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+            { workItemType: this.workItemType },
           )
         : sprintf(
             s__('WorkItem|This %{workItemType} will be closed when the following is merged.'),
-            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+            { workItemType: this.workItemType },
           );
     },
     closedStateText() {
       return sprintf(
         s__('WorkItem|The %{workItemType} was closed automatically when a branch was merged.'),
-        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+        { workItemType: this.workItemType },
       );
     },
     tooltipText() {

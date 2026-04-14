@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -142,7 +141,7 @@ func TestAllowedProxyRouteWithRateLimitCache(t *testing.T) {
 	config := newUpstreamConfig(railsServer.URL)
 	config.CircuitBreakerConfig.Enabled = true
 
-	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil, rdb, nil, nil, nil)
+	upstreamHandler := newUpstream(*config, testDependencies(t, withRdb(rdb)), configureRoutes)
 	ws := httptest.NewServer(upstreamHandler)
 	defer ws.Close()
 
@@ -172,6 +171,43 @@ func initRdb(t *testing.T) *redis.Client {
 		assert.NoError(t, rdb.Close())
 	})
 	return rdb
+}
+
+func TestWsRoutesRequireWebsocketUpgrade(t *testing.T) {
+	railsServer := startRailsServer(t, nil)
+	ws, _ := startWorkhorseServer(t, railsServer.URL, false)
+
+	wsRoutes := []struct {
+		name string
+		path string
+	}{
+		{"ActionCable", "/-/cable"},
+		{"environment terminal", "/group/project/-/environments/1/terminal.ws"},
+		{"job terminal", "/group/project/-/jobs/123/terminal.ws"},
+		{"job proxy", "/group/project/-/jobs/456/proxy.ws"},
+		{"Duo Workflow", "/api/v4/ai/duo_workflows/ws"},
+	}
+
+	for _, route := range wsRoutes {
+		t.Run(route.name+" rejects non-websocket request", func(t *testing.T) {
+			resp, err := http.Get(ws.URL + route.path)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+			require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+		})
+
+		t.Run(route.name+" allows websocket upgrade request", func(t *testing.T) {
+			req, err := http.NewRequest("GET", ws.URL+route.path, nil)
+			require.NoError(t, err)
+			req.Header.Set("Connection", "upgrade")
+			req.Header.Set("Upgrade", "websocket")
+
+			resp, err := http.DefaultClient.Do(req)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+			require.Equal(t, http.StatusOK, resp.StatusCode)
+		})
+	}
 }
 
 func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
@@ -216,35 +252,4 @@ func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
 			})
 		})
 	}
-}
-
-func TestWsRouteStrict(t *testing.T) {
-	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
-		handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		})
-		u.Routes = []routeEntry{
-			u.wsRouteStrict(newRoute(`^/-/cable\z`, "action_cable", railsBackend), handler),
-		}
-	}, nil, nil, nil, nil, nil)
-	ts := httptest.NewServer(u)
-	t.Cleanup(ts.Close)
-
-	t.Run("rejects request without websocket upgrade headers", func(t *testing.T) {
-		resp, err := http.Get(ts.URL + "/-/cable")
-		require.NoError(t, err)
-		defer resp.Body.Close()
-		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
-	})
-
-	t.Run("allows request with websocket upgrade headers", func(t *testing.T) {
-		req, _ := http.NewRequest("GET", ts.URL+"/-/cable", nil)
-		req.Header.Set("Connection", "upgrade")
-		req.Header.Set("Upgrade", "websocket")
-
-		resp, err := http.DefaultClient.Do(req)
-		require.NoError(t, err)
-		defer resp.Body.Close()
-		require.Equal(t, http.StatusOK, resp.StatusCode)
-	})
 }

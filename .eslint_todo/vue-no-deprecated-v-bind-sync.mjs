@@ -7,7 +7,6 @@ export default {
     'app/assets/javascripts/analytics/cycle_analytics/components/stage_table.vue',
     'app/assets/javascripts/boards/components/board_form.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue',
-    'app/assets/javascripts/ci/pipeline_editor/components/popovers/walkthrough_popover.vue',
     'app/assets/javascripts/crm/contacts/components/contacts_root.vue',
     'app/assets/javascripts/crm/organizations/components/organizations_root.vue',
     'app/assets/javascripts/incidents/components/incidents_list.vue',

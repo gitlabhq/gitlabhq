@@ -5,6 +5,7 @@ require 'spec_helper'
 # Part of the test security suite for the Import/Export feature
 # Finds if a new model has been added that can potentially be part of the Import/Export
 # If it finds a new model, it will show a +failure_message+ with the options available.
+# If it finds a stale model, it will show a +stale_failure_message+ with the options available.
 RSpec.describe 'Import/Export model configuration', feature_category: :importers do
   include ConfigurationHelper
 
@@ -20,6 +21,13 @@ RSpec.describe 'Import/Export model configuration', feature_category: :importers
     end
   end
 
+  it 'has no stale models', if: Gitlab.ee? do
+    model_names.each do |model_name|
+      stale_models = Array(all_models_hash[model_name]) - Array(current_models[model_name])
+      expect(stale_models).to be_empty, stale_failure_message(model_name.classify, stale_models)
+    end
+  end
+
   # List of current models between models, in the format of
   # {model: [model_2, model3], ...}
   def setup_models
@@ -30,13 +38,22 @@ RSpec.describe 'Import/Export model configuration', feature_category: :importers
 
   def failure_message(parent_model_name, new_models)
     <<~MSG
-      New model(s) <#{new_models.join(',')}> have been added, related to #{parent_model_name}, which is exported by
+      New model(s) <#{new_models.join(', ')}> have been added, related to #{parent_model_name}, which is exported by
       the Import/Export feature.
 
       If you think this model should be included in the export, please add it to `#{Gitlab::ImportExport.config_file}`.
 
       Definitely add it to `#{File.expand_path(all_models_yml)}`
       to signal that you've handled this error and to prevent it from showing up in the future.
+    MSG
+  end
+
+  def stale_failure_message(parent_model_name, stale_models)
+    <<~MSG
+      Stale model(s) <#{stale_models.join(', ')}> are listed in `#{File.expand_path(all_models_yml)}`
+      for #{parent_model_name}, but the association(s) no longer exist on the model.
+
+      Please remove them from `#{File.expand_path(all_models_yml)}`.
     MSG
   end
 end

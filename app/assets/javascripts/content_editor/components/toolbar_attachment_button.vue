@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import Link from '../extensions/link';
 
 export default {
+  name: 'ToolbarAttachmentButton',
   i18n: {
     inputLabel: __('Attach a file or image'),
   },

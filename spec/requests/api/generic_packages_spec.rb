@@ -99,17 +99,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       let(:request) { authorize_upload_file(workhorse_headers.merge(job_token_header(target_job.token))) }
     end
 
-    it_behaves_like 'authorizing granular token permissions', :authorize_generic_package do
-      let(:boundary_object) { project }
-      let(:request) do
-        authorize_upload_file(workhorse_headers.merge(personal_access_token_header(pat.token)))
-      end
-
-      before do
-        project.add_developer(user)
-      end
-    end
-
     context 'with valid project' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success

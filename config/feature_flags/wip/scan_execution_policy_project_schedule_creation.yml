@@ -1,0 +1,10 @@
+---
+name: scan_execution_policy_project_schedule_creation
+description: Enables persisting of per-project schedules for scan execution policies
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592731
+rollout_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227096
+milestone: '18.11'
+group: 'group::security policies'
+type: wip
+default_enabled: false

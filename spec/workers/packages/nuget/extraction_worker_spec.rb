@@ -208,7 +208,7 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
         end
       end
 
-      context 'handling a Zip::Error exception' do
+      context 'when handling a Zip::Error exception' do
         before do
           allow_any_instance_of(::Packages::UpdatePackageFileService).to receive(:execute).and_raise(::Zip::Error)
         end

@@ -368,7 +368,8 @@ flowchart TD
 
 {{< /history >}}
 
-> [!note]この機能は、GitLab Self-Managedインスタンスではデフォルトで有効になっています。管理者は、UIの[サインインの制限](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins)セクションからこの機能を無効にできます。この機能は、GitLab.comで常に有効になっています。
+> [!note]
+> この機能は、GitLab Self-Managedインスタンスではデフォルトで有効になっています。管理者は、UIの[サインインの制限](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins)セクションからこの機能を無効にできます。この機能は、GitLab.comで常に有効になっています。
 
 ユーザーが以前に不明なIPアドレスまたはデバイスから正常にサインインすると、GitLabはメールでユーザーに通知します。このようにして、GitLabは潜在的に悪意のあるまたは不正なサインインをユーザーに事前に警告します。この通知メールには以下が含まれます。
 

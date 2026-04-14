@@ -6,7 +6,7 @@ module QA
       class CiCdCatalog
         class Show < Page::Base
           view 'app/assets/javascripts/ci/catalog/components/details/ci_resource_header.vue' do
-            element 'latest-version-badge'
+            element 'current-version-badge'
           end
 
           view 'app/assets/javascripts/ci/catalog/components/details/ci_resource_components.vue' do
@@ -19,7 +19,7 @@ module QA
           end
 
           def click_latest_version_badge
-            click_element('latest-version-badge')
+            click_element('current-version-badge')
           end
 
           def has_input?(name:, required:, type:, description:, default:)
@@ -31,7 +31,7 @@ module QA
           end
 
           def has_version_badge?(version)
-            has_element?('latest-version-badge', text: version)
+            has_element?('current-version-badge', text: version)
           end
 
           def has_component_name?(name)

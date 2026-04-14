@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable API/LifecycleInDescription -- "experiment" is an MLflow domain concept, not a lifecycle term
+
 require 'mime/types'
 
 module API
@@ -141,3 +143,4 @@ module API
     end
   end
 end
+# rubocop:enable API/LifecycleInDescription

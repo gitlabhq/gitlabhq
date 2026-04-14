@@ -281,7 +281,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
     it 'returns the correct refspecs' do
       is_expected.to contain_exactly(
-        pipeline.sha,
+        "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
         "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
       )
     end
@@ -291,7 +291,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       it 'returns the correct refspecs' do
         is_expected.to contain_exactly(
-          pipeline.sha,
+          "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
           "+refs/tags/#{build.ref}:refs/tags/#{build.ref}"
         )
       end
@@ -303,7 +303,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
-            pipeline.sha,
+            "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
             '+refs/tags/*:refs/tags/*',
             '+refs/heads/*:refs/remotes/origin/*'
           )
@@ -317,7 +317,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly(pipeline.sha)
+        is_expected.to contain_exactly("+#{pipeline.sha}:#{pipeline.persistent_ref.path}")
       end
 
       context 'when GIT_DEPTH is zero' do
@@ -327,7 +327,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
-            pipeline.sha,
+            "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
             '+refs/heads/*:refs/remotes/origin/*',
             '+refs/tags/*:refs/tags/*'
           )
@@ -339,7 +339,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
-            pipeline.sha,
+            "+#{pipeline.sha}:#{pipeline.persistent_ref.path}",
             "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
           )
         end
@@ -351,7 +351,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly(pipeline.sha)
+        is_expected.to contain_exactly("+#{pipeline.sha}:#{pipeline.persistent_ref.path}")
       end
     end
 

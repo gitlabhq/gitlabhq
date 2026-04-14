@@ -12,6 +12,12 @@ module Authn
       where(secret: hashed_tokens)
     end
 
+    # We explicitly disable device_code_enabled here because it's enabled
+    # by default in db/migrate/20260224050659_add_device_code_enabled_to_oauth_applications.rb
+    # which is so existing records have the option enabled but all new
+    # applications should have device_code_enabled set to false.
+    attribute :device_code_enabled, default: -> { false }
+
     # Hashes raw token
     def self.encode(raw_token_value)
       ::Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(raw_token_value)

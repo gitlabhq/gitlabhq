@@ -50,12 +50,33 @@ describe('Pipeline Url Component', () => {
     expect(findPipelineUrlLink().text()).toBe('#1');
   });
 
-  it('should render the  pipeline schedule', () => {
+  it('should render the  pipeline schedule with REST data', () => {
     createComponent({
       props: merge(mockPipeline(projectPath), {
         pipeline: {
           name: 'Build pipeline',
           pipeline_schedule: { id: 1, description: 'Schedule', path: 'schedule/path' },
+        },
+      }),
+    });
+
+    expect(findRefName().exists()).toBe(true);
+    expect(findCommitShortSha().exists()).toBe(true);
+    expect(findPipelineIdentifierLink().text()).toBe('Schedule');
+    expect(findPipelineIdentifierLink().attributes('href')).toBe('schedule/path');
+    expect(findPipelineIdentifierMissingMessage().exists()).toBe(false);
+  });
+
+  it('should render the  pipeline schedule with GraphQL data', () => {
+    createComponent({
+      props: merge(mockPipeline(projectPath), {
+        pipeline: {
+          name: 'Scheduled Pipeline',
+          pipelineSchedule: {
+            id: 'gid://gitlab/Ci::PipelineSchedule/8',
+            description: 'Schedule',
+            editPath: 'schedule/path',
+          },
         },
       }),
     });

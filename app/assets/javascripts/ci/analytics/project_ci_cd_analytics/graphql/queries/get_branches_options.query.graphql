@@ -1,0 +1,9 @@
+# @feature_category: fleet_visibility
+query getBranchesOptions($limit: Int!, $offset: Int!, $fullPath: ID!, $searchPattern: String!) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      branchNames(limit: $limit, offset: $offset, searchPattern: $searchPattern)
+    }
+  }
+}

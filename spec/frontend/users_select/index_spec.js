@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import htmlCeMrSingleAssignees from 'test_fixtures/merge_requests/merge_request_with_single_assignee_feature.html';
 import UsersSelect from '~/users_select/index';
 import {

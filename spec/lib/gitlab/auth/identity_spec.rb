@@ -336,8 +336,8 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
   end
 
-  describe '.invert_composite_identity' do
-    subject(:result) { described_class.invert_composite_identity(current_user) }
+  describe '.resolve_composite_identity_actor' do
+    subject(:result) { described_class.resolve_composite_identity_actor(current_user) }
 
     context 'when current_user is nil' do
       let(:current_user) { nil }
@@ -543,7 +543,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
       it 'preserves the authentication context so the service account remains the attributed actor' do
         identity.link!(scoped_user, context: :permission_check)
 
-        expect(described_class.invert_composite_identity(scoped_user)).to eq(primary_user)
+        expect(described_class.resolve_composite_identity_actor(scoped_user)).to eq(primary_user)
       end
     end
 

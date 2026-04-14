@@ -1,44 +1,43 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlBadge, GlTabs, GlFilteredSearchToken } from '@gitlab/ui';
+import { GlBadge, GlFilteredSearchToken, GlTabs } from '@gitlab/ui';
 import projectCountsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/project_counts.query.graphql.json';
-import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { extendedWrapper, mountExtended } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import TabView from '~/groups_projects/components/tab_view.vue';
 import { createRouter as projectsYourWorkCreateRouter } from '~/projects/your_work';
 import { createRouter as groupsShowCreateRouter } from '~/groups/show';
 import { stubComponent } from 'helpers/stub_component';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import {
-  ROOT_ROUTE_NAME,
-  DASHBOARD_ROUTE_NAME,
-  PROJECTS_DASHBOARD_ROUTE_NAME,
-  PROJECT_DASHBOARD_TABS,
-  FIRST_TAB_ROUTE_NAMES,
   CONTRIBUTED_TAB,
-  STARRED_TAB,
-  PERSONAL_TAB,
-  MEMBER_TAB,
+  DASHBOARD_ROUTE_NAME,
+  FILTERED_SEARCH_NAMESPACE,
+  FILTERED_SEARCH_TERM_KEY,
+  FIRST_TAB_ROUTE_NAMES,
   INACTIVE_TAB,
+  MEMBER_TAB,
+  PERSONAL_TAB,
+  PROJECT_DASHBOARD_TABS,
+  PROJECTS_DASHBOARD_ROUTE_NAME,
+  ROOT_ROUTE_NAME,
+  STARRED_TAB,
 } from '~/projects/your_work/constants';
-import { SUBGROUPS_AND_PROJECTS_TAB, GROUPS_SHOW_TABS } from '~/groups/show/constants';
+import { GROUPS_SHOW_TABS, SUBGROUPS_AND_PROJECTS_TAB } from '~/groups/show/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-  SORT_DIRECTION_DESC,
-  SORT_DIRECTION_ASC,
-  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
   FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
-} from '~/groups_projects/constants';
-import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
-import {
-  SORT_OPTIONS,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+  SORT_DIRECTION_ASC,
+  SORT_DIRECTION_DESC,
   SORT_OPTION_CREATED,
   SORT_OPTION_UPDATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
-} from '~/projects/filtered_search_and_sort/constants';
+  SORT_OPTIONS,
+} from '~/groups_projects/constants';
+import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import userPreferencesUpdateMutation from '~/groups_projects/graphql/mutations/user_preferences_update.mutation.graphql';
@@ -46,6 +45,7 @@ import { createAlert } from '~/alert';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import * as localStorageUtils from '~/lib/utils/local_storage';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -484,6 +484,21 @@ describe('TabsWithList', () => {
         });
       });
 
+      describe('when `sortStorageKey` prop is passed', () => {
+        it('saves sort to localStorage and does not call `userPreferencesUpdate` mutation', async () => {
+          const saveSpy = jest.spyOn(localStorageUtils, 'saveStorageValue');
+
+          await setup({ sortStorageKey: 'projects' });
+
+          expect(saveSpy).toHaveBeenCalledWith(
+            'tabs-with-list-sort:projects',
+            `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
+            true,
+          );
+          expect(userPreferencesUpdateSuccessHandler).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when `userPreferencesSortKey` prop is passed', () => {
         it('calls `userPreferencesUpdate` mutation with correct variables', async () => {
           await setup({ userPreferencesSortKey: 'projectsSort' });
@@ -769,8 +784,9 @@ describe('TabsWithList', () => {
     });
 
     describe('when gon.relative_url_root is set', () => {
+      useConfigurePathHelpers('/gitlab');
+
       beforeEach(async () => {
-        gon.relative_url_root = '/gitlab';
         await createComponent({
           propsData: {
             tabs: GROUPS_SHOW_TABS,
@@ -788,7 +804,7 @@ describe('TabsWithList', () => {
 
         if (router.options.base) {
           // Vue router 3
-          expect(router.options.base).toBe('/gitlab');
+          expect(router.options.base).toBe('/gitlab/');
         } else {
           // Vue router 4
           expect(router.currentRoute.href).toMatch(/^\/gitlab\//);

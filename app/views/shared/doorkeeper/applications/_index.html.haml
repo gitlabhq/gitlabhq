@@ -32,6 +32,8 @@
                   %tr
                     %th= _('Name')
                     %th= _('Callback URL')
+                    %th= _('Confidential')
+                    %th= _('Device authorization grant')
                     %th= _('Clients')
                     %th.gl-w-4
                 %tbody
@@ -42,6 +44,10 @@
                       %td{ data: { label: _('Callback URL') } }
                         - application.redirect_uri.split.each do |uri|
                           = uri
+                      %td{ data: { label: _('Confidential') } }
+                        = application.confidential? ? _('Yes'): _('No')
+                      %td{ data: { label: _('Device authorization grant') } }
+                        = application.device_code_enabled? ? _('Yes'): _('No')
                       %td{ data: { label: _('Clients') } }
                         = application.access_tokens.count
                       %td.gl-items-center{ class: '!gl-flex @sm/panel:!gl-table-cell !gl-py-3', data: { label: _('Actions') } }
@@ -56,7 +62,7 @@
     - else
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
         - c.with_body do
-          = s_('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
+          = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
 
     - if oauth_authorized_applications_enabled
       = render ::Layouts::CrudComponent.new(_('Authorized applications'),

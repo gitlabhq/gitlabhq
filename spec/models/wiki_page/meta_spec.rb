@@ -6,6 +6,87 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
   let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:other_project) { create(:project) }
 
+  describe '.for_projects_visible_to_user' do
+    let(:private_project) { create(:project, :private) }
+    let(:public_project) { create(:project, :public) }
+    let(:user) { create(:user) }
+    let(:private_meta) { create(:wiki_page_meta, title: 'Private Page', project: private_project) }
+    let(:public_meta) { create(:wiki_page_meta, title: 'Public Page', project: public_project) }
+
+    context 'when user has access to the private project' do
+      before do
+        private_project.add_developer(user)
+      end
+
+      it 'returns meta records for both private and public projects' do
+        results = described_class.for_projects_visible_to_user(user)
+
+        expect(results).to include(private_meta, public_meta)
+      end
+    end
+
+    context 'when user does not have access to the private project' do
+      it 'excludes meta records from the private project' do
+        results = described_class.for_projects_visible_to_user(user)
+
+        expect(results).to include(public_meta)
+        expect(results).not_to include(private_meta)
+      end
+    end
+  end
+
+  describe '.search_by_title' do
+    let_it_be(:meta_1) { create(:wiki_page_meta, title: 'Deploy Guide', project: project) }
+    let_it_be(:meta_2) { create(:wiki_page_meta, title: 'Setup Instructions', project: project) }
+    let_it_be(:meta_3) { create(:wiki_page_meta, title: 'Deployment Pipeline', project: project) }
+
+    it 'returns records matching the search term case-insensitively' do
+      results = described_class.search_by_title('deploy')
+
+      expect(results).to include(meta_1, meta_3)
+      expect(results).not_to include(meta_2)
+    end
+
+    it 'returns records matching partial titles' do
+      results = described_class.search_by_title('Guide')
+
+      expect(results).to include(meta_1)
+      expect(results).not_to include(meta_2, meta_3)
+    end
+
+    it 'is case-insensitive' do
+      results = described_class.search_by_title('SETUP')
+
+      expect(results).to include(meta_2)
+      expect(results).not_to include(meta_1, meta_3)
+    end
+  end
+
+  describe '.id_in_ordered' do
+    let_it_be(:meta_a) { create(:wiki_page_meta, title: 'Page A', project: project) }
+    let_it_be(:meta_b) { create(:wiki_page_meta, title: 'Page B', project: project) }
+    let_it_be(:meta_c) { create(:wiki_page_meta, title: 'Page C', project: project) }
+
+    it 'returns records in the specified order' do
+      ordered_ids = [meta_c.id, meta_a.id, meta_b.id]
+      results = described_class.id_in_ordered(ordered_ids)
+
+      expect(results.map(&:id)).to eq(ordered_ids)
+    end
+
+    it 'returns records matching the given ids' do
+      results = described_class.id_in_ordered([meta_a.id, meta_b.id])
+
+      expect(results).to contain_exactly(meta_a, meta_b)
+    end
+
+    it 'handles a single id' do
+      results = described_class.id_in_ordered([meta_a.id])
+
+      expect(results).to contain_exactly(meta_a)
+    end
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:slugs) }

@@ -26,7 +26,11 @@ module Gitlab
         end
 
         def detect_part(key)
-          @plan.parts.detect { |p| p.instance_key == key }
+          formattable_parts.detect { |p| p.instance_key == key }
+        end
+
+        def formattable_parts
+          @formattable_parts ||= @plan.dimensions + @plan.metrics
         end
       end
     end

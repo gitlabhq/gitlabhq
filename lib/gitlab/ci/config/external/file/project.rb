@@ -8,7 +8,6 @@ module Gitlab
           class Project < Base
             extend ::Gitlab::Utils::Override
             include Gitlab::Utils::StrongMemoize
-            include Gitlab::Ci::Pipeline::SlowOperationLogger
 
             attr_reader :project_name, :ref_name
 
@@ -91,14 +90,8 @@ module Gitlab
               Gitlab::SafeRequestStore.fetch(
                 ['Ci::Config::External::File::Project', 'project_access_allowed_download_code', project.id, user&.id]
               ) do
-                log_slow_operation(
-                  operation_name: :download_code_permission_check,
-                  project: project,
-                  context: { project_id: project.id, user_id: user&.id }
-                ) do
-                  context.logger.instrument(:config_file_project_validate_access_download_code) do
-                    Ability.allowed?(user, :download_code, project)
-                  end
+                context.logger.instrument(:config_file_project_validate_access_download_code) do
+                  Ability.allowed?(user, :download_code, project)
                 end
               end
             end

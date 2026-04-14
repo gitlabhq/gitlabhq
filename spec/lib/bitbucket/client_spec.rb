@@ -93,16 +93,75 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
   describe '#last_issue' do
     let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL" }
 
-    it 'requests one issue' do
+    it 'requests one issue and returns a representation' do
       stub_request(:get, url).to_return(
         status: 200,
         headers: headers,
-        body: { 'values' => [{ 'kind' => 'bug' }] }.to_json
+        body: { 'values' => [{ 'kind' => 'bug', 'id' => 7 }] }.to_json
       )
 
-      client.last_issue(repo)
+      result = client.last_issue(repo)
 
       expect(WebMock).to have_requested(:get, url)
+      expect(result).to be_a(Bitbucket::Representation::Issue)
+    end
+
+    it 'returns nil when there are no issues' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [] }.to_json
+      )
+
+      expect(client.last_issue(repo)).to be_nil
+    end
+
+    it 'returns nil when the values key is missing' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: {}.to_json
+      )
+
+      expect(client.last_issue(repo)).to be_nil
+    end
+  end
+
+  describe '#last_pull_request' do
+    let(:url) { "#{root_url}/repositories/#{repo}/pullrequests?pagelen=1&sort=-created_on&state=ALL" }
+
+    it 'requests one pull request' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [{ 'id' => 42, 'title' => 'Last PR' }] }.to_json
+      )
+
+      result = client.last_pull_request(repo)
+
+      expect(WebMock).to have_requested(:get, url)
+      expect(result).to be_a(Bitbucket::Representation::PullRequest)
+      expect(result.iid).to eq(42)
+    end
+
+    it 'returns nil when there are no pull requests' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: { 'values' => [] }.to_json
+      )
+
+      expect(client.last_pull_request(repo)).to be_nil
+    end
+
+    it 'returns nil when the values key is missing' do
+      stub_request(:get, url).to_return(
+        status: 200,
+        headers: headers,
+        body: {}.to_json
+      )
+
+      expect(client.last_pull_request(repo)).to be_nil
     end
   end
 

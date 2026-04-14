@@ -41,6 +41,10 @@ module Search
       error.present?
     end
 
+    def server_error?
+      false
+    end
+
     def blobs_count
       0
     end

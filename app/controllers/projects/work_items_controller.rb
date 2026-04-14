@@ -12,11 +12,11 @@ class Projects::WorkItemsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_item_planning_view,
-      !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:use_work_item_url, !!project&.use_work_item_url?)
     push_force_frontend_feature_flag(:work_item_features_field,
       Feature.enabled?(:work_item_features_field, current_user))
+    push_frontend_feature_flag(:duo_quick_action_work_item_list, current_user)
+    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
   end
 
   before_action :check_search_rate_limit!, if: ->(c) do
@@ -26,6 +26,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
   prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
 
+  feature_category :portfolio_management, [:index, :rss, :calendar]
   feature_category :team_planning
   urgency :high, [:authorize]
   urgency :low
@@ -151,7 +152,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     # remove order by since we return just one item anyway. In some cases keeping order by confuses PG planner on which
     # index to use to return the result.
     @issuable ||= ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
-      .execute.with_work_item_type.without_order.find_by_iid(show_params[:iid])
+      .execute.without_order.find_by_iid(show_params[:iid])
   end
 end
 

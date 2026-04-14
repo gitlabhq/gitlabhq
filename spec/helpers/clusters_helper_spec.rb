@@ -33,7 +33,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
 
   describe '#js_clusters_list_data' do
     let_it_be(:current_user) { create(:user) }
-    let_it_be(:project) { build(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:clusterable) { ClusterablePresenter.fabricate(project, current_user: current_user) }
 
     subject { helper.js_clusters_list_data(clusterable) }

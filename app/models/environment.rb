@@ -364,7 +364,7 @@ class Environment < ApplicationRecord
 
   def cancel_deployment_jobs!
     active_deployments.jobs.each do |job|
-      Gitlab::OptimisticLocking.retry_lock_with_transaction(job, name: 'environment_cancel_deployment_jobs') do |job|
+      Gitlab::OptimisticLocking.retry_lock(job, name: 'environment_cancel_deployment_jobs') do |job|
         job.cancel! if job&.cancelable?
       end
     rescue StandardError => e
@@ -612,6 +612,7 @@ class Environment < ApplicationRecord
 
   # Guessing the tier of the environment if it's not explicitly specified by users.
   # See https://en.wikipedia.org/wiki/Deployment_environment for industry standard deployment environments
+  # Please keep the table at doc/ci/environments/_index.md in sync with the guessings
   def guess_tier
     case name
     when /(dev|review|trunk)/i

@@ -1,9 +1,9 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabのワークスペースを設定して、GitLabの開発環境を管理します。
-title: ワークスペースの設定
+title: ワークスペースを設定する
 ---
 
 {{< details >}}
@@ -24,72 +24,69 @@ title: ワークスペースの設定
 
 ## ワークスペースのインフラストラクチャをセットアップする {#set-up-workspace-infrastructure}
 
-[ワークスペースを作成](#create-a-workspace)する前に、インフラストラクチャを1回だけセットアップする必要があります。クラウドプロバイダーに関係なく、ワークスペースのインフラストラクチャをセットアップするには、次のことを行う必要があります:
+[ワークスペースを作成](#create-a-workspace)する前に、インフラストラクチャを1回だけセットアップする必要があります。クラウドプロバイダーに関係なく、ワークスペースのインフラストラクチャをセットアップするには、次のことを行う必要があります。
 
-1. [Kubernetes向けGitLabエージェント](../clusters/agent/_index.md)がサポートするKubernetesクラスタを設定します。[サポートされているKubernetesのバージョン](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features)を参照してください。
+1. [Kubernetes向けGitLabエージェント](../clusters/agent/_index.md)がサポートするKubernetesクラスターをセットアップします。[サポートされているKubernetesのバージョン](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features)を参照してください。
 1. Kubernetesクラスターのオートスケールが有効になっていることを確認します。
-1. Kubernetesクラスターで、次の手順を実行します:
+1. Kubernetesクラスターで、次の手順を実行します。
    1. [デフォルトのストレージクラス](https://kubernetes.io/docs/concepts/storage/storage-classes/)が定義されていて、各ワークスペースのボリュームを動的にプロビジョニングできることを確認します。
-1. [チュートリアル: Kubernetes向けGitLabエージェントをセットアップする](set_up_gitlab_agent_and_proxies.md)。
+1. [Kubernetes向けGitLabエージェントのセットアップチュートリアル](set_up_gitlab_agent_and_proxies.md)のすべてのステップを完了してください。
 1. オプション。[ワークスペースでコンテナをビルドおよび実行](#build-and-run-containers-in-a-workspace)します。
 1. オプション。[プライベートコンテナレジストリのサポートを設定](#configure-support-for-private-container-registries)します。
 1. オプション。[ワークスペースのsudoアクセスを設定](#configure-sudo-access-for-a-workspace)します。
 
-AWSを使用している場合は、OpenTofuチュートリアルを使用できます。詳細については、[チュートリアル: AWSでワークスペースのインフラストラクチャをセットアップする](set_up_infrastructure.md)を参照してください。
+AWSを使用している場合は、OpenTofuチュートリアルを使用できます。詳細については、[AWSでのワークスペースインフラストラクチャのセットアップチュートリアル](set_up_infrastructure.md)を参照してください。
 
 ## ワークスペースを作成する {#create-a-workspace}
 
 {{< history >}}
 
-- GitLab 16.0で、**Time before automatic termination**（自動終了までの時間）が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120168)されました。
+- GitLab 16.0で、**自動終了までの時間**が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120168)されました。
 - GitLab 16.4で、プライベートプロジェクトのサポートが[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273)されました。
-- GitLab 16.10で、**Git reference**（Git参照）と**devfileの場所**が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/392382)されました。
-- GitLab 16.10で、**Time before automatic termination**（自動終了するまでの時間）が**Workspace automatically terminates after**（ワークスペースが自動的に終了するまで）に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/392382)されました。
+- GitLab 16.10で、**Git参照**と**devfileの場所**が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/392382)されました。
+- GitLab 16.10で、**自動終了するまでの時間**が**ワークスペースが自動的に終了するまで**に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/392382)されました。
 - GitLab 17.1で、**変数**が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/463514)されました。
-- GitLab 17.6で、**Workspace automatically terminates after**（ワークスペースが自動的に終了するまで）が[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065)されました。
-- GitLab 18.0で、**Workspace can be created from Merge Request page**（マージリクエストページからワークスペースを作成できるようにする操作）が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187320)されました。
+- GitLab 17.6で、**ワークスペースが自動的に終了するまで**が[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065)されました。
+- GitLab 18.0で、**マージリクエストページからワークスペースを作成できるようにする操作**が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187320)されました。
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> ワークスペースは信頼できるプロジェクトからのみ作成してください。
 
-信頼できるプロジェクトからのみワークスペースを作成してください。
-
-{{< /alert >}}
-
-前提要件:
+前提条件: 
 
 - [ワークスペースのインフラストラクチャをセットアップ](#set-up-workspace-infrastructure)する必要があります。
-- ワークスペースおよびエージェントプロジェクトに対してデベロッパーロール以上を持っている必要があります。
+- ワークスペースおよびエージェントプロジェクトに対して、デベロッパー、メンテナー、またはオーナーロールが必要です。
 
 {{< tabs >}}
 
 {{< tab title="プロジェクトから" >}}
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **編集** > **新しいワークスペース**を選択します。
 1. **クラスターエージェント**ドロップダウンリストから、プロジェクトが属するグループが所有するクラスターエージェントを選択します。
-1. **Git reference**（Git参照）ドロップダウンリストから、GitLabがワークスペースの作成に使用するブランチ、タグ、またはコミットハッシュを選択します。デフォルトでは、これは表示しているブランチです。
-1. **devfile**ドロップダウンリストから、次のいずれかを選択します:
+1. **Git参照**ドロップダウンリストから、GitLabがワークスペースの作成に使用するブランチ、タグ、またはコミットハッシュを選択します。これは、デフォルトで現在表示しているブランチです。
+1. **devfile**ドロップダウンリストから、次のいずれかを選択します。
    - [GitLabのデフォルトdevfile](_index.md#gitlab-default-devfile)
    - [カスタムdevfile](_index.md#custom-devfile)
-1. **変数**に、ワークスペースに挿入する環境変数のキーと値を入力します。新しい変数を追加するには、**変数を追加する**を選択します。
+1. **変数**に、ワークスペースに挿入する環境変数のキーと値を入力します。新しい変数を追加するには、**変数を追加**を選択します。
 1. **ワークスペースを作成**を選択します。
 
 {{< /tab >}}
 
 {{< tab title="マージリクエストから" >}}
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択します。
-1. ワークスペースを作成するマージリクエストを選択します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 左サイドバーで、**コード** > **マージリクエスト**を選択します。
+1. ワークスペースを作成したいマージリクエストを選択します。
 1. **コード** > **ワークスペースで開く**を選択します。
 1. **クラスターエージェント**ドロップダウンリストから、プロジェクトが属するグループが所有するクラスターエージェントを選択します。
-1. **Git reference**（Git参照）ドロップダウンリストから、GitLabがワークスペースの作成に使用するブランチ、タグ、またはコミットハッシュを選択します。デフォルトでは、これはソースブランチのマージリクエストです。
-1. **devfile**ドロップダウンリストから、次のいずれかを選択します:
+1. **Git参照**ドロップダウンリストから、GitLabがワークスペースの作成に使用するブランチ、タグ、またはコミットハッシュを選択します。これは、デフォルトでマージリクエストのソースブランチです。
+1. **devfile**ドロップダウンリストから、次のいずれかを選択します。
    - [GitLabのデフォルトdevfile](_index.md#gitlab-default-devfile)
    - [カスタムdevfile](_index.md#custom-devfile)
-1. **変数**に、ワークスペースに挿入する環境変数のキーと値を入力します。新しい変数を追加するには、**変数を追加する**を選択します。
+1. **変数**に、ワークスペースに挿入する環境変数のキーと値を入力します。新しい変数を追加するには、**変数を追加**を選択します。
 1. **ワークスペースを作成**を選択します。
 
 {{< /tab >}}
@@ -98,17 +95,17 @@ AWSを使用している場合は、OpenTofuチュートリアルを使用でき
 
 ワークスペースの起動には数分かかる場合があります。ワークスペースを開くには、**プレビュー**でワークスペースを選択します。ターミナルにアクセスして、必要な依存関係をインストールすることもできます。
 
-### ワークスペース起動の進捗を監視する {#monitor-workspace-startup-progress}
+### ワークスペースの起動初期化進捗を監視する {#monitor-workspace-startup-progress}
 
-ワークスペースを起動すると、初期化タスクと`postStart`イベントの進捗をワークスペースログで確認できます。詳しくは、[Workspace logs directory](_index.md#workspace-logs-directory)を参照してください。
+ワークスペースを起動すると、初期化タスクと`postStart`イベントの進捗をワークスペースログで監視できます。詳細については、[ワークスペースログディレクトリ](_index.md#workspace-logs-directory)を参照してください。
 
 ## プラットフォームの互換性 {#platform-compatibility}
 
 ワークスペースのプラットフォーム要件は、開発ニーズによって異なります。
 
-基本的なワークスペース機能では、基盤となるオペレーティングシステムに関係なく、Kubernetes向けGitLabエージェントをサポートする任意の`linux/amd64`Kubernetesクラスタ上でワークスペースが実行されます。
+基本的なワークスペース機能の場合、ワークスペースは基盤となるオペレーティングシステムに関係なく、Kubernetes向けGitLabエージェントをサポートするあらゆる`linux/amd64` Kubernetesクラスター上で動作します。
 
-プラットフォーム要件に合った方法を選択するには、[ワークスペースのsudoアクセスの設定](#configure-sudo-access-for-a-workspace)を参照してください。
+プラットフォーム要件に合った方法を選択するには、[ワークスペースのsudoアクセスを設定する](#configure-sudo-access-for-a-workspace)を参照してください。
 
 ## ワークスペースでコンテナをビルドおよび実行する {#build-and-run-containers-in-a-workspace}
 
@@ -118,7 +115,7 @@ AWSを使用している場合は、OpenTofuチュートリアルを使用でき
 
 {{< /history >}}
 
-開発環境では、ランタイム時に依存関係を管理および使用するために、コンテナのビルドと実行が必要になることがよくあります。ワークスペースでコンテナをビルドおよび実行するには、[Sysboxを使用してワークスペースのsudoアクセスを設定する方法](#with-sysbox)を参照してください。
+開発環境では、ランタイム時に依存関係を管理および使用するために、コンテナのビルドと実行が必要になることがよくあります。ワークスペース内でコンテナをビルドおよび実行するには、[ワークスペースのsudoアクセスを設定する](#configure-sudo-access-for-a-workspace)を参照してください。
 
 ## プライベートコンテナレジストリのサポートを設定する {#configure-support-for-private-container-registries}
 
@@ -143,15 +140,15 @@ AWSを使用している場合は、OpenTofuチュートリアルを使用でき
 
 {{< /history >}}
 
-開発環境では、ランタイムに依存関係をインストール、設定、および使用するために、sudo権限が必要になることがよくあります。プラットフォーム要件に合った方法を選択します:
+開発環境では、ランタイムに依存関係をインストール、設定、および使用するために、sudo権限が必要になることがよくあります。プラットフォーム要件に合った方法を選択してください:
 
 | 方法                                   | プラットフォーム要件                                                                                                                                                                                                                                                                     | 使用法 |
 |------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
-| [Sysbox](#with-sysbox)                   | 最新情報については、[Sysboxディストリビューション互換性マトリックス](https://github.com/nestybox/sysbox/blob/master/docs/distro-compat.md)を参照してください。                                                                                                                                     | コンテナの分離を改善し、VMと同じワークロードをコンテナで実行できるようにします。 |
-| [Kata Containers](#with-kata-containers) | 最新情報については、[Kata Containersのインストールガイド](https://github.com/kata-containers/kata-containers/tree/main/docs/install)を参照してください。                                                                                                                                     | 軽量な仮想マシンはコンテナのように動作しますが、強化されたワークロードの分離とセキュリティを提供します。 |
-| [ユーザーネームスペース](#with-user-namespaces) | Kubernetesバージョン1.33以降では、ユーザーネームスペースがKubernetes機能ゲートの背後で有効になっており、これはデフォルトで有効になっています。最新情報については、[Kubernetesの機能ゲート](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)を参照してください。 | 追加のランタイムインストールは不要です。セキュリティを向上させるために、コンテナユーザーをホストユーザーから分離します。 |
+| [Sysbox](#with-sysbox)                   | 最新情報については、[Sysbox distribution compatibility matrix](https://github.com/nestybox/sysbox/blob/master/docs/distro-compat.md)を参照してください。                                                                                                                                     | コンテナの分離を改善し、コンテナが仮想マシンと同じワークロードを実行できるようにします。 |
+| [Kata Containers](#with-kata-containers) | 最新情報については、[Kata Containers installation guides](https://github.com/kata-containers/kata-containers/tree/main/docs/install)を参照してください。                                                                                                                                     | 軽量のVMはコンテナのように動作しますが、強化されたワークロードの分離とセキュリティを提供します。 |
+| [ユーザーネームスペース](#with-user-namespaces) | Kubernetesバージョン1.33以降では、Kubernetes機能ゲートの背後でユーザーネームスペースが有効になっており、これはデフォルトで有効になっています。最新情報については、[Kubernetes Feature Gates](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/)を参照してください。 | 追加のランタイムインストールは不要です。コンテナユーザーをホストユーザーから分離し、セキュリティを向上させます。 |
 
-前提要件: 
+前提条件: 
 
 - コンテナイメージは[任意のユーザーID](_index.md#arbitrary-user-ids)をサポートする必要があります。sudoアクセスが設定されていても、[devfile](_index.md#devfile)で使用されるコンテナイメージは、ユーザーID `0`では実行できません。
 
@@ -200,27 +197,27 @@ Kata Containersでsudoアクセスを設定するには:
 
 {{< /history >}}
 
-前提要件: 
+前提条件: 
 
 - [devfile](_index.md#devfile)で指定されたイメージに対してSSHアクセスを有効にする必要があります。詳細については、[ワークスペースコンテナイメージを更新する](#update-your-workspace-container-image)を参照してください。
 - GitLabワークスペースプロキシを指すTCPロードバランサーを設定する必要があります。詳細については、[DNSレコードを更新する](set_up_gitlab_agent_and_proxies.md#update-your-dns-records)を参照してください。
 
 SSHクライアントを使用してワークスペースに接続するには:
 
-1. `gitlab-workspaces-proxy-ssh`サービスの外部IPアドレスを取得します:
+1. `gitlab-workspaces-proxy-ssh`サービスの外部IPアドレスを取得します。
 
    ```shell
    kubectl -n gitlab-workspaces get service gitlab-workspaces-proxy-ssh
    ```
 
-1. ワークスペースの名前を取得します:
+1. ワークスペースの名前を取得します。
 
-   1. 左側のサイドバーで、**検索または移動先**を選択します。
+   1. 上部のバーで、**検索または移動先**を選択します。
    1. **あなたの作業**を選択します。
    1. **ワークスペース**を選択します。
    1. 接続するワークスペースの名前をコピーします。
 
-1. 次のコマンドを実行します:
+1. 次のコマンドを実行します。
 
    ```shell
    ssh <workspace_name>@<ssh_proxy_IP_address>
@@ -228,7 +225,7 @@ SSHクライアントを使用してワークスペースに接続するには:
 
 1. パスワードには、少なくとも`read_api`スコープを持つパーソナルアクセストークンを入力します。
 
-TCPロードバランサーを介して`gitlab-workspaces-proxy`に接続すると、`gitlab-workspaces-proxy`はユーザー名（ワークスペース名）を調べ、GitLabとやり取りして、以下を確認します:
+TCPロードバランサーを介して`gitlab-workspaces-proxy`に接続すると、`gitlab-workspaces-proxy`はユーザー名（ワークスペース名）を調べ、GitLabとやり取りして、以下を確認します。
 
 - パーソナルアクセストークン
 - ワークスペースへのユーザーアクセス
@@ -237,14 +234,14 @@ TCPロードバランサーを介して`gitlab-workspaces-proxy`に接続する�
 
 カスタムワークスペースイメージは、2つの方法で更新できます。
 
-ワークスペースイメージが[ワークスペースベースイメージ](_index.md#workspace-base-image)に基づいている場合、SSHサポートはすでに設定されており、使用する準備ができています。この方法では、イメージにワークスペースに必要なすべての設定があることが保証されます。詳細な手順については、[カスタムワークスペースイメージを作成する](create_image.md)を参照してください。
+ワークスペースイメージが[ワークスペースベースイメージ](_index.md#workspace-base-image)に基づいている場合、SSHサポートはすでに設定されており、すぐに使用できます。このアプローチにより、イメージに必要なすべてのワークスペース設定が確実に行われます。詳細については、[カスタムワークスペースイメージの作成](create_image.md)を参照してください。
 
-ワークスペースベースイメージを使用しない場合は、独自のベースイメージからビルドできます。これを行う場合は、ランタイムイメージでSSHサポートを手動で設定します:
+ワークスペースベースイメージを使用しない場合は、独自のベースイメージからビルドできます。この場合、ランタイムイメージでSSHサポートを手動で設定します:
 
 1. ランタイムイメージに[`sshd`](https://man.openbsd.org/sshd.8)をインストールします。
 1. `gitlab-workspaces`という名前のユーザーを作成し、パスワードなしでコンテナにアクセスできるようにします。
 
-以下は、SSHの設定例です:
+以下はSSH設定の例です:
 
 ```dockerfile
 FROM golang:1.20.5-bullseye

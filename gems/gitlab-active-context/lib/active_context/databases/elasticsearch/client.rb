@@ -20,9 +20,12 @@ module ActiveContext
           es_query = Processor.transform(collection: collection, node: query, user: user)
           es_query = add_source_fields(es_query, collection)
 
-          result = client.search(index: collection.collection_name, body: es_query)
+          query_result = log_search(collection: collection) do
+            result = client.search(index: collection.collection_name, body: es_query)
+            QueryResult.new(result: result, collection: collection, user: user)
+          end
 
-          QueryResult.new(result: result, collection: collection, user: user).authorized_results
+          query_result.authorized_results
         end
 
         def client

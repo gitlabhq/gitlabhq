@@ -1,0 +1,8 @@
+---
+name: changes_access_logging
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229148
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595089
+milestone: '18.11'
+group: group::source code
+type: ops
+default_enabled: false

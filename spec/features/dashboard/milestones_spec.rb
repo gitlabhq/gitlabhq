@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > Milestones', :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   describe 'as anonymous user' do
     before do
       visit dashboard_milestones_path
@@ -39,9 +41,10 @@ RSpec.describe 'Dashboard > Milestones', :js, feature_category: :team_planning d
     describe 'new milestones dropdown' do
       it 'takes user to a new milestone page' do
         click_button 'Select project to create milestone'
+        wait_for_requests
 
         within_testid('new-resource-dropdown') do
-          click_button group.name
+          select_listbox_item(group.name)
           click_link "New milestone in #{group.name}"
         end
 

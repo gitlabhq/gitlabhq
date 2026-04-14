@@ -106,7 +106,8 @@ module Types
           Types::UserType,
           null: true,
           description: 'User who last updated the saved view.',
-          experiment: { milestone: '18.10' }
+          experiment: { milestone: '18.10' },
+          method: :updated_by
 
         def filters
           filters_data = validated_result[:filters]
@@ -138,8 +139,6 @@ module Types
             Gitlab::Routing.url_helpers.project_saved_view_url(project, object.id)
           end
         end
-
-        def last_updated_by; end
 
         private
 

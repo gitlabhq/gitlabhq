@@ -12,6 +12,14 @@ The changes need to become an official part of the product.
 - [ ] Determine if tracking should be kept as is, removed, or modified.
 - [ ] Determine if any UX experiences need to be "polished" i.e. updated to further improve the end user experience. This task should be completed by the designated UX counterpart. 
    - [ ] (placeholder for UX polish work that needs to be completed for this cleanup issue to be considered completed) 
+- [ ] **Consider the user experience impact of transitioning users between control and candidate experiences.**
+   Users who were in the control group will now receive the candidate experience (or vice versa if the experiment is being disabled). Evaluate whether this transition could cause surprising or disorienting experiences, such as:
+   - Unexpected UI changes (e.g. layout, navigation, or feature availability shifting without warning)
+   - Loss of user-specific state or preferences that were tied to one variant (e.g. pinned items, saved settings)
+   - Inconsistency between what a user remembers and what they now see
+   
+   If any of these concerns apply, determine what mitigation is needed (e.g. data migration, a transitional state, in-app messaging, or a phased rollout) and add sub-tasks below:
+   - [ ] (placeholder for any user experience transition work identified above)
 - [ ] Ensure any relevant documentation has been updated.
 - [ ] Determine whether there are other concerns that need to be considered before removing the feature flag.
    - These are typically captured in the `Experiment Successful Cleanup Concerns` section of the rollout issue.

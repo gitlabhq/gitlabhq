@@ -16,7 +16,7 @@ title: Development guide for GitLab CI/CD templates (Deprecated)
 > This ensures that template and component functionality remain in sync, aligning with
 > our new development practices.
 
-This document explains how to develop [GitLab CI/CD templates](../../ci/examples/_index.md#cicd-templates).
+This document explains how to develop GitLab CI/CD templates.
 
 ## Requirements for CI/CD templates
 

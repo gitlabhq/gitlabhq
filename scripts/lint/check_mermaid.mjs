@@ -29,7 +29,7 @@ const mdFiles = argv.flatMap((arg) => glob.sync(arg));
 
 console.log(`Checking ${mdFiles.length} markdown files...`);
 
-// Mimicking app/assets/javascripts/lib/mermaid.js
+// Mimicking app/assets/javascripts/lib/mermaid_sandbox.js
 mermaid.initialize({
   // mermaid core options
   mermaid: {

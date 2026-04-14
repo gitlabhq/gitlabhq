@@ -1,0 +1,7 @@
+---
+name: read_add_on_purchase
+description: |-
+  Grants read access to add-on purchase data within a namespace,
+  including eligible users and their seat assignments. Used to
+  authorize queries related to add-on seat management for purchases
+  such as Code Suggestions and Duo Pro.

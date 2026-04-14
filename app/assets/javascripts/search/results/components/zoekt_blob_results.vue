@@ -1,6 +1,6 @@
 <script>
 import { GlCard, GlPagination, GlLoadingIcon } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import BlobHeader from '~/search/results/components/blob_header.vue';

@@ -104,6 +104,9 @@ export default {
         [ACTION_LEAVE]: {
           text: __('Leave project'),
           action: this.onActionLeave,
+          extraAttrs: {
+            class: 'js-leave-link',
+          },
         },
       };
 

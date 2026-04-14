@@ -49,7 +49,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
     it('displays the correct content in the modal body', () => {
       createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
-      expect(wrapper.text()).toContain('Are you sure you want to cancel creating this epic?');
+      expect(wrapper.text()).toContain('Are you sure you want to cancel creating this Epic?');
     });
 
     it('displays the action buttons', () => {

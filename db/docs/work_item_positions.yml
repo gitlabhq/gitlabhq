@@ -1,0 +1,13 @@
+---
+table_name: work_item_positions
+classes:
+- WorkItems::Position
+feature_categories:
+- team_planning
+description: Stores the position of work items in boards and manually sorted lists.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229961
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

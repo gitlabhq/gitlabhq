@@ -34,7 +34,7 @@ Gitlab::GrapeOpenapi.configure do |config|
   # Server definitions
   config.servers = [
     Gitlab::GrapeOpenapi::Models::Server.new(
-      url: 'https://{hostname}/',
+      url: 'https://{hostname}',
       description: "Production API",
       variables: {
         hostname: Gitlab::GrapeOpenapi::Models::ServerVariable.new(

@@ -75,7 +75,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     it "declares all expected states" do
       is_expected.to have_states :ancestor_inherited, :archived, :deletion_scheduled,
         :creation_in_progress, :deletion_in_progress,
-        :transfer_in_progress, :maintenance
+        :transfer_in_progress, :maintenance, :transfer_scheduled
     end
 
     it 'has ancestor_inherited as initial state' do
@@ -102,12 +102,15 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       it { is_expected.to handle_events :cancel_deletion, when: :deletion_scheduled }
       it { is_expected.to handle_events :cancel_deletion, when: :deletion_in_progress }
       it { is_expected.to handle_events :cancel_deletion, when: :ancestor_inherited }
-      it { is_expected.to handle_events :start_transfer, when: :ancestor_inherited }
-      it { is_expected.to handle_events :start_transfer, when: :archived }
+      it { is_expected.to handle_events :schedule_transfer, when: :ancestor_inherited }
+      it { is_expected.to handle_events :schedule_transfer, when: :archived }
+      it { is_expected.to handle_events :start_transfer, when: :transfer_scheduled }
       it { is_expected.to handle_events :complete_transfer, when: :transfer_in_progress }
+      it { is_expected.to handle_events :cancel_transfer, when: :transfer_scheduled }
       it { is_expected.to handle_events :cancel_transfer, when: :transfer_in_progress }
       it { is_expected.to reject_events :archive, when: :archived }
       it { is_expected.to reject_events :schedule_deletion, when: :deletion_scheduled }
+      it { is_expected.to reject_events :schedule_transfer, when: :transfer_scheduled }
       it { is_expected.to reject_events :start_transfer, when: :transfer_in_progress }
     end
 
@@ -122,9 +125,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :start_deletion      | :deletion_scheduled   | :deletion_in_progress
         :reschedule_deletion | :deletion_in_progress | :deletion_scheduled
         :reschedule_deletion | :ancestor_inherited   | :deletion_scheduled
-        :start_transfer      | :ancestor_inherited   | :transfer_in_progress
-        :start_transfer      | :archived             | :transfer_in_progress
+        :schedule_transfer   | :ancestor_inherited   | :transfer_scheduled
+        :schedule_transfer   | :archived             | :transfer_scheduled
+        :start_transfer      | :transfer_scheduled   | :transfer_in_progress
         :complete_transfer   | :transfer_in_progress | :ancestor_inherited
+        :cancel_transfer     | :transfer_scheduled   | :ancestor_inherited
         :cancel_transfer     | :transfer_in_progress | :ancestor_inherited
       end
 
@@ -163,9 +168,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
           :reschedule_deletion | :deletion_in_progress | :start_deletion    | :ancestor_inherited
           :reschedule_deletion | :deletion_in_progress | :start_deletion    | :archived
           :reschedule_deletion | :deletion_in_progress | :start_deletion    | :deletion_scheduled
-          :complete_transfer   | :transfer_in_progress | :start_transfer    | :ancestor_inherited
-          :complete_transfer   | :transfer_in_progress | :start_transfer    | :archived
-          :cancel_transfer     | :transfer_in_progress | :start_transfer    | :archived
+          :complete_transfer   | :transfer_in_progress | :schedule_transfer | :ancestor_inherited
+          :complete_transfer   | :transfer_in_progress | :schedule_transfer | :archived
+          :cancel_transfer     | :transfer_scheduled   | :schedule_transfer | :ancestor_inherited
+          :cancel_transfer     | :transfer_scheduled   | :schedule_transfer | :archived
+          :cancel_transfer     | :transfer_in_progress | :schedule_transfer | :archived
         end
 
         with_them do
@@ -212,30 +219,44 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :archive             | :deletion_in_progress
         :archive             | :creation_in_progress
         :archive             | :transfer_in_progress
+        :archive             | :transfer_scheduled
         :archive             | :maintenance
         :unarchive           | :deletion_scheduled
         :unarchive           | :deletion_in_progress
         :unarchive           | :creation_in_progress
         :unarchive           | :transfer_in_progress
+        :unarchive           | :transfer_scheduled
         :unarchive           | :maintenance
         :schedule_deletion   | :deletion_scheduled
         :schedule_deletion   | :deletion_in_progress
         :schedule_deletion   | :creation_in_progress
         :schedule_deletion   | :transfer_in_progress
+        :schedule_deletion   | :transfer_scheduled
         :schedule_deletion   | :maintenance
         :start_deletion      | :deletion_in_progress
         :start_deletion      | :creation_in_progress
         :start_deletion      | :transfer_in_progress
+        :start_deletion      | :transfer_scheduled
         :start_deletion      | :maintenance
         :reschedule_deletion | :archived
         :reschedule_deletion | :deletion_scheduled
         :reschedule_deletion | :creation_in_progress
         :reschedule_deletion | :transfer_in_progress
+        :reschedule_deletion | :transfer_scheduled
         :reschedule_deletion | :maintenance
         :cancel_deletion     | :archived
         :cancel_deletion     | :creation_in_progress
         :cancel_deletion     | :transfer_in_progress
+        :cancel_deletion     | :transfer_scheduled
         :cancel_deletion     | :maintenance
+        :schedule_transfer   | :deletion_scheduled
+        :schedule_transfer   | :deletion_in_progress
+        :schedule_transfer   | :creation_in_progress
+        :schedule_transfer   | :transfer_in_progress
+        :schedule_transfer   | :transfer_scheduled
+        :schedule_transfer   | :maintenance
+        :start_transfer      | :ancestor_inherited
+        :start_transfer      | :archived
         :start_transfer      | :deletion_scheduled
         :start_transfer      | :deletion_in_progress
         :start_transfer      | :creation_in_progress
@@ -246,6 +267,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :complete_transfer   | :deletion_scheduled
         :complete_transfer   | :deletion_in_progress
         :complete_transfer   | :creation_in_progress
+        :complete_transfer   | :transfer_scheduled
         :complete_transfer   | :maintenance
         :cancel_transfer     | :ancestor_inherited
         :cancel_transfer     | :archived

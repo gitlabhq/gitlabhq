@@ -1,7 +1,7 @@
 ---
 key_path: counts.ci_runner_manager_custom_executors
 description: Counts the number of custom CI runner manager executors
-product_group: runner
+product_group: runner_core
 product_categories:
   - runner_core
 value_type: number

@@ -47,7 +47,7 @@ RSpec.shared_examples 'promote_to_incident quick action' do
         visit new_project_issue_path(project)
         fill_in('Title', with: 'Title')
         fill_in('Description', with: '/promote_to_incident')
-        click_button('Create issue')
+        click_button('Create Issue')
 
         expect(page).to have_content("Incident created just now by #{user.name}")
       end
@@ -59,7 +59,7 @@ RSpec.shared_examples 'promote_to_incident quick action' do
           select 'Incident', from: 'Type'
           fill_in('Title', with: 'Title')
           fill_in('Description', with: '/promote_to_incident')
-          click_button('Create incident')
+          click_button('Create Incident')
 
           expect(page).to have_content("Incident created just now by #{user.name}")
         end

@@ -637,24 +637,10 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
       end
 
-      context 'when optimize_pat_lookup feature flag is enabled' do
-        it 'returns user without performing OAuth token lookup' do
-          expect(self).not_to receive(:find_oauth_access_token)
+      it 'returns user without performing OAuth token lookup' do
+        expect(self).not_to receive(:find_oauth_access_token)
 
-          expect(find_user_from_access_token).to eq(user)
-        end
-      end
-
-      context 'when optimize_pat_lookup feature flag is disabled' do
-        before do
-          stub_feature_flags(optimize_pat_lookup: false)
-        end
-
-        it 'returns user after attempting OAuth lookup first' do
-          expect(self).to receive(:find_oauth_access_token).and_call_original
-
-          expect(find_user_from_access_token).to eq(user)
-        end
+        expect(find_user_from_access_token).to eq(user)
       end
     end
 
@@ -1049,7 +1035,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
       context 'when IAM service is disabled' do
         before do
-          allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+          allow(Authn::IamAuthService).to receive(:enabled?).and_return(false)
         end
 
         it 'raises UnauthorizedError' do
@@ -1388,6 +1374,29 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         subject
 
         expect(::Current.token_info[:auth_header_type]).to eq('private_token_header')
+      end
+
+      context 'when a previous failed validation left auth failure context' do
+        before do
+          set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
+        end
+
+        it 'clears auth failure context on successful validation', :aggregate_failures do
+          # Simulate a prior failed auth attempt (e.g. wrong scope) that set auth failure context
+          expect { validate_and_save_access_token!(scopes: [:sudo]) }
+            .to raise_error(Gitlab::Auth::InsufficientScopeError)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('insufficient_scope')
+
+          validate_and_save_access_token!
+
+          expect(Gitlab::ApplicationContext.current).not_to include(
+            'meta.auth_fail_reason',
+            'meta.auth_fail_token_id',
+            'meta.auth_fail_requested_scopes',
+            'meta.auth_fail_token_type',
+            'meta.auth_fail_auth_header_type'
+          )
+        end
       end
 
       context 'when the token is not valid' do

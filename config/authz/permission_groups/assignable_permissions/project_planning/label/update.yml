@@ -1,0 +1,8 @@
+---
+name: update_label
+description: Grants the ability to update labels
+permissions:
+  - update_label
+boundaries:
+  - group
+  - project

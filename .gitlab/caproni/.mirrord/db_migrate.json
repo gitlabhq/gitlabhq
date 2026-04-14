@@ -1,0 +1,14 @@
+{
+  "feature": {
+    "fs": {
+      "mode": "localwithoverrides",
+      "read_only": "^/etc/gitlab",
+      "mapping": {
+        "^/etc/gitlab/gitlab-workhorse/secret": "./workhorse/secret"
+      }
+    },
+    "env": {
+      "exclude": "ENABLE_BOOTSNAP;RAILS_ENV"
+    }
+  }
+}

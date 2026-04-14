@@ -3,7 +3,7 @@
 %p
   = merge_path_description(@merge_request)
 %p
-  = sprintf(s_('Author: %{author_name}'), { author_name: sanitize_name(@merge_request.author_name) })
+  = sprintf(_('Author: %{author_name}'), { author_name: sanitize_name(@merge_request.author_name) })
 %p
   = assignees_label(@merge_request)
 %p

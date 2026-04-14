@@ -52,6 +52,103 @@ RSpec.describe Import::DirectReassignService, feature_category: :importers do
 
       expect(models).to match_array(base_classes)
     end
+
+    shared_examples 'includes all supported models and attributes' do
+      def relation_class(relation_key)
+        relation_key.to_s.classify.constantize
+      rescue NameError
+        relation_key.to_s.constantize
+      end
+
+      def extract_relation_names(hash, keys = [])
+        keys += hash.keys
+        hash.each_value do |value|
+          keys += extract_relation_names(value, keys)
+        end
+        keys.uniq
+      end
+
+      def missing_model_message(model)
+        <<-MSG
+        #{model} models references a user and it is not defined in #{described_class}::MODEL_LIST.
+        Please define the mapping in #{described_class}::MODEL_LIST.
+        MSG
+      end
+
+      def missing_attribute_message(model, attribute)
+        <<-MSG
+        #{model}##{attribute} references a user and it is not defined in #{described_class}::MODEL_LIST.
+        Please add the attribute in the columns key in the #{described_class}::MODEL_LIST['#{model}'] hash.
+        MSG
+      end
+
+      it "includes all supported models which are imported resources that references users", :eager_load do
+        relation_names = extract_relation_names(config_tree).reject { |name| ignore_relations.include?(name.to_sym) }
+
+        relation_names.each do |relation_name|
+          relation_name = overrides[relation_name] || relation_name
+          model_class = relation_class(relation_name)
+          next unless model_class.respond_to?(:columns)
+
+          table_columns = model_class.columns.collect(&:name)
+          user_associations = model_class.reflect_on_all_associations(:belongs_to)
+            .reject(&:polymorphic?)
+            .filter { |association| association.klass == User }
+            .reject { |association| table_columns.exclude?(association.foreign_key) }
+
+          next unless user_associations.any?
+
+          expect(described_class.model_list[model_class.base_class.to_s]).to be_present,
+            missing_model_message(model_class)
+
+          user_associations.each do |association|
+            foreign_key = association.foreign_key
+            attributes = described_class.model_list[model_class.base_class.to_s]
+
+            next if not_supported_due_missing_index[model_class.base_class.to_s]&.include?(foreign_key)
+
+            expect(attributes).to include(foreign_key), missing_attribute_message(model_class.base_class, foreign_key)
+          end
+        end
+      end
+    end
+
+    describe 'include project models' do
+      let(:overrides) { Gitlab::ImportExport::Project::RelationFactory.overrides }
+      let(:ignore_relations) { %i[project_members user_contributions author user] }
+      let(:not_supported_due_missing_index) do
+        {
+          'Issue' => %w[last_edited_by_id],
+          'MergeRequest' => %w[last_edited_by_id],
+          'Note' => %w[updated_by_id resolved_by_id],
+          'Epic' => %w[updated_by_id],
+          'CommitStatus' => %w[erased_by_id]
+        }
+      end
+
+      let(:config_tree) do
+        Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.config_file).to_h[:tree][:project]
+      end
+
+      it_behaves_like 'includes all supported models and attributes'
+    end
+
+    describe 'include group models' do
+      let(:overrides) { Gitlab::ImportExport::Group::RelationFactory.overrides }
+      let(:ignore_relations) { %i[members user_contributions author user] }
+      let(:not_supported_due_missing_index) do
+        {
+          'Epic' => %w[updated_by_id],
+          'Note' => %w[updated_by_id resolved_by_id]
+        }
+      end
+
+      let(:config_tree) do
+        Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h[:tree][:group]
+      end
+
+      it_behaves_like 'includes all supported models and attributes'
+    end
   end
 
   describe '.supported?' do

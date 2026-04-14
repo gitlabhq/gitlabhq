@@ -40,7 +40,7 @@ export default {
         return __('Other updates');
       }
 
-      return sprintf(s__('FeaturedUpdate|%{releaseNumber} Release'), {
+      return sprintf(s__('FeaturedUpdate|%{releaseNumber} release'), {
         releaseNumber: this.formattedReleaseNumber,
       });
     },

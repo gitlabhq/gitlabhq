@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import NamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/namespace_storage.query.graphql';
 import ProjectListStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/project_list_storage.query.graphql';
@@ -41,7 +41,7 @@ export default {
       update: parseGetStorageResults,
       error(error) {
         this.namespaceLoadingError = true;
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
     },
     projects: {
@@ -59,7 +59,7 @@ export default {
       },
       error(error) {
         this.projectsLoadingError = true;
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
     },
   },

@@ -15,10 +15,6 @@ query namespaceProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
         avatarUrl
         nameWithNamespace
         fullPath
-        namespace {
-          id
-          name
-        }
       }
     }
   }

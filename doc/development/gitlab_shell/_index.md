@@ -30,7 +30,7 @@ and support:
 The two version files relevant to GitLab Shell:
 
 - [Stable version](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/VERSION)
-- [Version deployed in GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION)
+- [Version deployed in GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION)
 
 GitLab team members can also monitor the `#announcements` internal Slack channel.
 
@@ -153,7 +153,7 @@ or `gitlab-sshd` session by inspecting the logs. Some guidelines:
 - Logging too much is better than not logging enough. If a message seems too
   verbose, consider reducing the log level before removing the message.
 
-## GitLab SaaS
+## GitLab.com
 
 A diagram of the flow of `gitlab-shell` on GitLab.com:
 

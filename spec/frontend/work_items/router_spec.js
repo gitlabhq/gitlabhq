@@ -15,7 +15,7 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
-import { WORK_ITEM_BASE_ROUTE_MAP, WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
+import { WORK_ITEM_BASE_ROUTE_MAP } from '~/work_items/constants';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
@@ -48,7 +48,7 @@ describe('Work items router', () => {
   const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
 
   const createComponent = async (routeArg) => {
-    const router = createRouter({ fullPath: '/work_item' });
+    const router = createRouter({ fullPath: '/full-path', routerPath: '/full-path/-/work_items' });
     if (routeArg !== undefined) {
       await router.push(routeArg);
     }
@@ -112,35 +112,28 @@ describe('Work items router', () => {
     localStorage.clear();
   });
 
-  it('includes relative_url_root', () => {
-    gon.relative_url_root = '/my-org';
-    const router = createRouter({ fullPath: '/work_item' });
-
-    // options.history only exists in Vue 3 router
-    const basePath = router.options.history?.base || router.options.base;
-
-    expect(basePath).toBe('/my-org/work_item/-');
-  });
-
-  it('includes groups in path for groups', () => {
-    const router = createRouter({ fullPath: '/work_item', namespaceType: 'group' });
-
-    // options.history only exists in Vue 3 router
-    const basePath = router.options.history?.base || router.options.base;
-
-    expect(basePath).toBe('/groups/work_item/-');
-  });
-
-  it('includes /-/issues in basePath for service desk list', () => {
+  it('strips /work_items from routerPath for base path', () => {
     const router = createRouter({
-      fullPath: '/work_item',
-      workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+      fullPath: '/full-path',
+      routerPath: '/groups/full-path/-/work_items',
     });
 
     // options.history only exists in Vue 3 router
     const basePath = router.options.history?.base || router.options.base;
 
-    expect(basePath).toBe('/work_item/-/issues');
+    expect(basePath).toBe('/groups/full-path/-');
+  });
+
+  it('includes /-/issues in basePath for service desk list', () => {
+    const router = createRouter({
+      fullPath: '/full-path',
+      routerPath: '/full-path/-/issues',
+    });
+
+    // options.history only exists in Vue 3 router
+    const basePath = router.options.history?.base || router.options.base;
+
+    expect(basePath).toBe('/full-path/-/issues');
   });
 
   it(`renders create work item page on /issues/new route with 'type' param set to 'ISSUE'`, async () => {
@@ -155,18 +148,6 @@ describe('Work items router', () => {
 
     expect(findCreateWorkItem().exists()).toBe(true);
     expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
-  });
-
-  it(`renders create work item page on /issues/new route work item type set via localStorage draft`, async () => {
-    localStorage.setItem(
-      // full-path in router is set to `/work_item
-      'autosave/new-/work_item-new-route-widgets-draft',
-      JSON.stringify({ TYPE: { name: 'Task' } }),
-    );
-    await createComponent(`/issues/new`);
-
-    expect(findCreateWorkItem().exists()).toBe(true);
-    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('TASK');
   });
 
   describe.each(workItemTypes)('Create Work Item for type: %s', (type) => {

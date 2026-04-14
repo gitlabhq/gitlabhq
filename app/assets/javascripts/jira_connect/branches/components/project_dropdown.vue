@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import produce from 'immer';
 import { __ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';

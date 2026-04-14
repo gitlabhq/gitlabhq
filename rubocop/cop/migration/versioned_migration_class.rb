@@ -10,7 +10,7 @@ module RuboCop
 
         ENFORCED_SINCE = 2025_04_27_00_00_00
         CURRENT_MIGRATION_VERSION = 2.3 # Should be the same value as Gitlab::Database::Migration.current_version
-        DOC_LINK = "https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning"
+        DOC_LINK = "https://docs.gitlab.com/development/migration_style_guide/#migration-helpers-and-versioning"
 
         MSG_INHERIT = "Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. " \
                       "Use Gitlab::Database::Migration[#{CURRENT_MIGRATION_VERSION}] instead. See #{DOC_LINK}.".freeze

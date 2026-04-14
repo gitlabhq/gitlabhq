@@ -27,20 +27,15 @@ module NamespaceSettings
         param_key: :new_user_signups_cap,
         user_policy: :change_new_user_signups_cap
       )
-      validate_settings_param_for_admin(
-        param_key: :default_branch_protection,
-        user_policy: :update_default_branch_protection
-      )
-      validate_settings_param_for_admin(
-        param_key: :default_branch_protection_defaults,
-        user_policy: :update_default_branch_protection
-      )
       validate_settings_param_for_root_group(
         param_key: :enabled_git_access_protocol,
         user_policy: :update_git_access_protocol
       )
 
       handle_default_branch_name
+      # Authorization for :default_branch_protection and :default_branch_protection_defaults
+      # is handled by the calling services (Groups::CreateService and Groups::UpdateService)
+      # in their respective remove_unallowed_params methods.
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
       handle_jwt_ci_cd_job_token_enabled
 

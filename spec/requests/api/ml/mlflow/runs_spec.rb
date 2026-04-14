@@ -109,6 +109,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
         })
     end
 
+    it_behaves_like 'authorizing granular token permissions', :create_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
+    end
+
     describe 'Error States' do
       context 'when experiment id is not passed' do
         let(:params) { {} }
@@ -167,6 +175,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
         })
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        get api(route, personal_access_token: pat), params: params
+      end
+    end
+
     context 'with a relative root URL' do
       before do
         allow(Gitlab::Application.routes).to receive(:default_url_options)
@@ -220,6 +236,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
     it 'searches runs for a project', :aggregate_failures do
       is_expected.to have_gitlab_http_status(:ok)
       is_expected.to match_response_schema('ml/search_runs')
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
     end
 
     describe 'pagination and ordering' do
@@ -334,6 +358,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       expect(json_response).to include('run_info' => hash_including(**expected_properties))
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
+    end
+
     describe 'Error States' do
       context 'when status in invalid' do
         let(:params) { default_params.merge(status: 'YOLO') }
@@ -364,6 +396,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       expect(candidate.metrics.reload.length).to eq(3)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :log_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
+    end
+
     describe 'Error Cases' do
       it_behaves_like 'MLflow|shared error cases'
       it_behaves_like 'MLflow|Requires api scope and write permission'
@@ -381,6 +421,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       is_expected.to have_gitlab_http_status(:ok)
       expect(json_response).to be_empty
       expect(candidate.params.reload.length).to eq(3)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :log_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
     end
 
     describe 'Error Cases' do
@@ -406,6 +454,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       is_expected.to have_gitlab_http_status(:ok)
       expect(json_response).to be_empty
       expect(candidate.reload.metadata.map(&:name)).to include('some_key')
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
     end
 
     describe 'Error Cases' do
@@ -448,6 +504,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       expect(candidate2.params.size).to eq(1)
       expect(candidate2.metadata.size).to eq(1)
       expect(candidate2.metrics.size).to eq(2)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :log_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
     end
 
     context 'when parameter was already logged' do
@@ -500,6 +564,14 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
     it 'deletes the run', :aggregate_failures do
       is_expected.to have_gitlab_http_status(:ok)
       expect { candidate.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_ml_flow_run do
+      let(:boundary_object) { project }
+      let(:user) { current_user }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: params
+      end
     end
 
     describe 'Error States' do

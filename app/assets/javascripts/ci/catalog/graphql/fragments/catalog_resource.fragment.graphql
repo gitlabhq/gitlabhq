@@ -1,3 +1,5 @@
+# @feature_category: pipeline_composition
+
 fragment CatalogResourceFields on CiCatalogResource {
   id
   description
@@ -10,26 +12,6 @@ fragment CatalogResourceFields on CiCatalogResource {
   topics
   verificationLevel
   archived
-  versions(first: 1) {
-    nodes {
-      id
-      components {
-        nodes {
-          id
-          name
-        }
-      }
-      name
-      path
-      createdAt
-      author {
-        id
-        name
-        state
-        webUrl
-      }
-    }
-  }
   visibilityLevel
   webPath
 }

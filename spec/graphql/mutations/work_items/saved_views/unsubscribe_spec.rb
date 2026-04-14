@@ -39,19 +39,6 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
       end
     end
 
-    context 'when saved views are not enabled for the namespace' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'returns an error' do
-        result = resolve_mutation(id: saved_view.to_global_id)
-
-        expect(result[:saved_view]).to be_nil
-        expect(result[:errors]).to eq(['Saved views are not enabled for this namespace.'])
-      end
-    end
-
     context 'when the user has permission' do
       context 'when subscribed to the saved view' do
         let_it_be(:user_saved_view) do

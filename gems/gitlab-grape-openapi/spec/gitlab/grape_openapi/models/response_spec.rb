@@ -91,5 +91,60 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Response do
 
       expect(response.status_code).to eq('200')
     end
+
+    it 'includes example in the content when provided' do
+      response = described_class.new(
+        status_code: 200,
+        description: 'Success',
+        entity_class: entity_class,
+        example: { id: 1, name: 'Jane' }
+      )
+
+      result = response.to_h(schema_registry)
+
+      expect(result[:content]['application/json'][:example]).to eq({ id: 1, name: 'Jane' })
+    end
+
+    it 'omits example from content when not provided' do
+      response = described_class.new(
+        status_code: 200,
+        description: 'Success',
+        entity_class: entity_class
+      )
+
+      result = response.to_h(schema_registry)
+
+      expect(result[:content]['application/json'].key?(:example)).to be false
+    end
+
+    it 'includes examples in the content when provided' do
+      examples = {
+        'NewUser' => { summary: 'A new user', value: { id: 1, name: 'Jane' } },
+        'AdminUser' => { summary: 'An admin user', value: { id: 2, name: 'Bob', admin: true } }
+      }
+
+      response = described_class.new(
+        status_code: 200,
+        description: 'Success',
+        entity_class: entity_class,
+        examples: examples
+      )
+
+      result = response.to_h(schema_registry)
+
+      expect(result[:content]['application/json'][:examples]).to eq(examples)
+    end
+
+    it 'omits examples from content when not provided' do
+      response = described_class.new(
+        status_code: 200,
+        description: 'Success',
+        entity_class: entity_class
+      )
+
+      result = response.to_h(schema_registry)
+
+      expect(result[:content]['application/json'].key?(:examples)).to be false
+    end
   end
 end

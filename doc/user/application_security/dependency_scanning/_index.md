@@ -223,13 +223,13 @@ For more details of the dependency scanning report, see the
 ### CycloneDX Software Bill of Materials
 
 Dependency scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
-for each supported lock or build file it detects.
+for each supported lockfile or build file it detects.
 
 The CycloneDX SBOMs are:
 
 - Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
 - Available as job artifacts of the dependency scanning job.
-- Saved in the same directory as the detected lock or build files.
+- Saved in the same directory as the detected lockfile or build files.
 
 For example, if your project has the following structure:
 
@@ -261,39 +261,6 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
 └── go-project/
     ├── go.sum
     └── gl-sbom-go-go.cdx.json
-```
-
-#### Merging multiple CycloneDX SBOMs
-
-You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM. GitLab uses
-[CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store) to store
-implementation-specific details in the metadata of each CycloneDX SBOM, such as the location of
-build and lock files. If multiple CycloneDX SBOMs are merged together, this information is removed
-from the resulting merged file.
-
-For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
-merged, and the resulting file validated.
-
-```yaml
-stages:
-  - test
-  - merge-cyclonedx-sboms
-
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-merge cyclonedx sboms:
-  stage: merge-cyclonedx-sboms
-  image:
-    name: cyclonedx/cyclonedx-cli:0.25.1
-    entrypoint: [""]
-  script:
-    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
-    # optional: validate the merged sbom
-    - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
-  artifacts:
-    paths:
-      - gl-sbom-all.cdx.json
 ```
 
 ## Roll out
@@ -500,7 +467,7 @@ The following languages and dependency managers are supported by dependency scan
 8. Excludes both `pip` and `setuptools` from the report as they are required by the installer.
 9. Only SBOM, without advisories. See [issue 468764](https://gitlab.com/gitlab-org/gitlab/-/issues/468764).
 10. No license detection. See [epic 17037](https://gitlab.com/groups/gitlab-org/-/epics/17037).
-11. If a lock file contains multiple entries for the same package with different environment markers (for example, numpy==2.2.6 for Python <3.11 and numpy==2.4.1 for Python ≥3.11), only the first entry is parsed and reported.
+11. If a lockfile contains multiple entries for the same package with different environment markers (for example, numpy==2.2.6 for Python <3.11 and numpy==2.4.1 for Python ≥3.11), only the first entry is parsed and reported.
 
 <!-- markdownlint-enable MD029 -->
 <!-- markdownlint-enable MD044 -->
@@ -966,7 +933,7 @@ The language detection relies on CI job [`rules`](../../../ci/yaml/_index.md#rul
 
 For Java and Python, when a supported dependency file is detected, dependency scanning attempts to
 build the project and execute some Java or Python commands to get the list of dependencies. For all
-other projects, the lock file is parsed to obtain the list of dependencies without needing to build
+other projects, the lockfile is parsed to obtain the list of dependencies without needing to build
 the project first.
 
 All direct and transitive dependencies are analyzed, without a limit to the depth of transitive dependencies.
@@ -1088,7 +1055,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 
 **Footnotes**:
 
-1. Support for NuGet version 2 lock files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398680) in GitLab 16.2.
+1. Support for NuGet version 2 lockfiles was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398680) in GitLab 16.2.
 1. Support for Yarn version 4 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431752) in GitLab 16.11.
 
    The following features are not supported for Yarn Berry:
@@ -1220,14 +1187,14 @@ A maximum of two directory levels from the repository's root is searched. For ex
 
 ### Python
 
-GitLab only executes one installation in the directory where either a requirements file or a lock file has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
+GitLab only executes one installation in the directory where either a requirements file or a lockfile has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
 
 1. `requirements.txt`, `requirements.pip`, or `requires.txt` for projects using Pip.
 1. `Pipfile` or `Pipfile.lock` for projects using Pipenv.
 1. `poetry.lock` for projects using Poetry.
 1. `setup.py` for project using Setuptools.
 
-The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently a Poetry lock file in the root directory would be detected before a Pipenv file in a subdirectory.
+The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently a Poetry lockfile in the root directory would be detected before a Pipenv file in a subdirectory.
 
 ### Java and Scala
 

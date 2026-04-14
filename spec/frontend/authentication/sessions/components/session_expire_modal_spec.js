@@ -93,6 +93,7 @@ describe('SessionExpireModal', () => {
 
       beforeEach(() => {
         broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL);
+        return waitForPromises();
       });
       afterEach(() => {
         broadcastChannel.close();

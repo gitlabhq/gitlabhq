@@ -5,6 +5,7 @@ class MergeRequestAssignee < ApplicationRecord
 
   belongs_to :merge_request, touch: true
   belongs_to :assignee, class_name: "User", foreign_key: :user_id, inverse_of: :merge_request_assignees
+  belongs_to :project
 
   validates :assignee, uniqueness: { scope: :merge_request_id }
 

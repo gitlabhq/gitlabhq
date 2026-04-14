@@ -10,6 +10,11 @@ module Organizations
     desc 'Organization is public'
     condition(:public_organization, scope: :subject, score: 0) { @subject.public? }
 
+    desc 'Organization admin area feature flag is enabled'
+    condition(:organization_admin_area_enabled, scope: :subject) do
+      Feature.enabled?(:org_admin_area, @subject)
+    end
+
     rule { public_organization }.policy do
       enable :read_organization
       enable :read_work_item_type
@@ -28,6 +33,10 @@ module Organizations
       enable :admin_organization
       enable :access_organization_admin_area
       enable :read_organization_user
+    end
+
+    rule { ~organization_admin_area_enabled }.policy do
+      prevent :access_organization_admin_area
     end
 
     rule { organization_user }.policy do

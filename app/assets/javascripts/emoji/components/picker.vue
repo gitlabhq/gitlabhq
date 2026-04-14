@@ -7,7 +7,7 @@ import {
   GlTooltipDirective,
   GlAnimatedSmileIcon,
 } from '@gitlab/ui';
-import { findLastIndex } from 'lodash';
+import { findLastIndex } from 'lodash-es';
 import { getEmojiCategoryMap, state } from '~/emoji';
 import { __ } from '~/locale';
 import { CATEGORY_NAMES, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from '../constants';
@@ -59,6 +59,11 @@ export default {
       default: '',
     },
     buttonTitle: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    toggleAriaLabel: {
       type: String,
       required: false,
       default: null,
@@ -119,7 +124,13 @@ export default {
       this.scrollTop = offset;
 
       const categories = await getEmojiCategories();
-      this.currentCategory = findLastIndex(Object.values(categories), ({ top }) => offset >= top);
+      const categoryKeys = this.categoryNames.map(({ name }) => name);
+      this.currentCategory = findLastIndex(categoryKeys, (name) => {
+        // category may be undefined if categoryNames includes a tab (e.g. frequently_used)
+        // whose data has not yet been loaded into the categories map
+        const category = categories[name];
+        return category && offset >= category.top;
+      });
     },
     onShow() {
       this.isVisible = true;
@@ -157,6 +168,7 @@ export default {
       ref="dropdown"
       :class="dropdownClass"
       :placement="placement"
+      :toggle-aria-label="toggleAriaLabel"
       @shown="onShow"
       @hidden="onHide"
     >

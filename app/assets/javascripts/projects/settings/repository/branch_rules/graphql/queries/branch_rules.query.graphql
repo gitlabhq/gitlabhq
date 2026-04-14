@@ -24,6 +24,10 @@ query getBranchRules($projectPath: ID!, $after: String, $first: Int) {
               node {
                 accessLevel
                 accessLevelDescription
+                deployKey {
+                  id
+                  title
+                }
               }
             }
           }

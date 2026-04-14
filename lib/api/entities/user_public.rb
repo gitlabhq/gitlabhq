@@ -17,7 +17,7 @@ module API
 
       expose :two_factor_enabled?, as: :two_factor_enabled, documentation: { type: 'Boolean', example: true }
 
-      expose :external
+      expose :external, documentation: { type: 'Boolean' }
 
       expose :private_profile, documentation: { type: 'Boolean', example: :null }
       expose :commit_email_or_default, as: :commit_email

@@ -14,7 +14,10 @@ module Mutations
 
       argument :milestone_id, GraphQL::Types::ID, # rubocop: disable Graphql/IDType
         required: false,
-        description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
+        description: 'ID of the milestone to assign to the issue. ' \
+          'Accepts either a global ID, for example `"gid://gitlab/Milestone/42"`, ' \
+          'or a numeric ID, for example `"42"`. ' \
+          'On update milestone will be removed if set to null.'
 
       argument :add_label_ids, [GraphQL::Types::ID],
         required: false,
@@ -70,6 +73,7 @@ module Mutations
       private
 
       def parse_arguments(args)
+        args[:milestone_id] = parse_milestone_id(args[:milestone_id])
         args[:add_label_ids] = parse_label_ids(args[:add_label_ids])
         args[:remove_label_ids] = parse_label_ids(args[:remove_label_ids])
         args[:label_ids] = parse_label_ids(args[:label_ids])
@@ -80,6 +84,16 @@ module Mutations
         end
 
         args
+      end
+
+      def parse_milestone_id(id)
+        return id unless id
+
+        begin
+          GitlabSchema.parse_gid(id, expected_type: ::Milestone).model_id
+        rescue Gitlab::Graphql::Errors::ArgumentError
+          id
+        end
       end
 
       def parse_label_ids(ids)

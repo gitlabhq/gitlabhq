@@ -1,6 +1,6 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';

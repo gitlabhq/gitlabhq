@@ -245,6 +245,8 @@ They're useful, for example, to test permissions, redirections, API endpoints, w
 Integration tests cover the interaction between all components on a single page.
 Their abstraction level is comparable to how a user would interact with the UI.
 
+For more details on MSW jest integration test and how to use them, see [the MSW integration tests page](frontend_testing.md#msw-integration-tests)
+
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph RL

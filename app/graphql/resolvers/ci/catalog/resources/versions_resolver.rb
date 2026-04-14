@@ -11,11 +11,17 @@ module Resolvers
             required: false,
             description: 'Name of the version.'
 
+          argument :search, GraphQL::Types::String,
+            required: false,
+            description: 'Search term to filter versions by name.'
+
           alias_method :catalog_resource, :object
 
-          def resolve(name: nil)
+          def resolve(name: nil, search: nil)
             if name
               ::Ci::Catalog::Resources::Version.for_catalog_resources(catalog_resource).by_name(name)
+            elsif search
+              ::Ci::Catalog::Resources::Version.for_catalog_resources(catalog_resource).search_by_version(search)
             else
               fetch_catalog_resources_versions
             end

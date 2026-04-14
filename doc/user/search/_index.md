@@ -14,7 +14,7 @@ description: Basic, advanced, exact, search scope, and commit SHA search.
 {{< /details >}}
 
 Find what you need in a growing codebase or expanding organization.
-Save time by looking up specific code, issues, merge requests, and other content across your projects.
+Save time by looking up specific code, work items, merge requests, and other content across your projects.
 Choose from three types of search to match your needs: **basic search**,
 [**advanced search**](advanced_search.md), and [**exact code search**](exact_code_search.md).
 
@@ -36,8 +36,7 @@ The following scopes are available for basic search:
 | Code           |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 | Comments       |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 | Commits        |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
-| Epics          |     {{< no >}}      | {{< yes >}} | {{< no >}} |
-| Issues         |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Work items     |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Merge requests |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Milestones <sup>2</sup> |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Projects       |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
@@ -216,8 +215,8 @@ As you type in the search box, autocomplete suggestions are displayed for:
 - Project features (for example, milestones)
 - Settings (for example, user settings)
 - Recently viewed merge requests
-- Recently viewed issues and epics
-- [GitLab Flavored Markdown references](../markdown.md#gitlab-specific-references) for issues in a project
+- Recently viewed work items
+- [GitLab Flavored Markdown references](../markdown.md#gitlab-specific-references) for work items in a project
 
 ## Search in all GitLab
 

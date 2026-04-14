@@ -54,6 +54,10 @@ module Gitlab
               if pipeline.pipeline_schedule
                 variables.append(key: 'CI_PIPELINE_SCHEDULE_DESCRIPTION', value: pipeline.pipeline_schedule.description)
               end
+
+              if pipeline.source_ref_path.present?
+                variables.append(key: 'CI_CONFIG_REF_URI', value: pipeline.ci_config_ref_uri)
+              end
             end
           end
 

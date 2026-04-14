@@ -17,9 +17,7 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
       end
     end
 
-    it 'creates the next ci_partition' do
-      expect { execute_service }.to change { Ci::Partition.count }.by(1)
-    end
+    it_behaves_like 'ci_partition not created'
 
     context 'when ci_partition is nil' do
       let(:ci_partition) { nil }
@@ -27,13 +25,23 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
       it_behaves_like 'ci_partition not created'
     end
 
-    context 'when no more headroom available' do
+    context 'when headroom is enabled' do
       before do
-        stub_const("#{described_class}::HEADROOM_PARTITIONS", 1)
-        create(:ci_partition)
+        stub_const("#{described_class}::HEADROOM_PARTITIONS", 2)
       end
 
-      it_behaves_like 'ci_partition not created'
+      it 'creates the next ci_partition' do
+        expect { execute_service }.to change { Ci::Partition.count }.by(1)
+      end
+
+      context 'when no more headroom available' do
+        before do
+          stub_const("#{described_class}::HEADROOM_PARTITIONS", 1)
+          create(:ci_partition)
+        end
+
+        it_behaves_like 'ci_partition not created'
+      end
     end
   end
 end

@@ -311,6 +311,26 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       end
     end
 
+    context 'when the discussion is a system note' do
+      let!(:note) do
+        if noteable.is_a?(::Commit)
+          create(:system_note, noteable_type: 'Commit', commit_id: noteable.id, project: project)
+        else
+          create(:system_note, noteable: noteable, project: project)
+        end
+      end
+
+      before do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+                 "discussions/#{note.discussion_id}/notes", user), params: { body: 'hi!' }
+      end
+
+      it 'returns 400 bad request with an error message' do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Replies to system notes are not allowed.')
+      end
+    end
+
     it_behaves_like 'ai_workflows scope' do
       let(:note_action) { post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions/#{note.discussion_id}/notes", oauth_access_token: oauth_token), params: { body: 'hi!' } }
       let(:expected_status) { :created }

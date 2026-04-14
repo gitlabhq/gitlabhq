@@ -47,7 +47,8 @@ export function dispatchSnowplowEvent(
     });
     return true;
   } catch (error) {
-    Sentry.captureException(error);
+    // Override gon.feature_category as this code loads on all pages
+    Sentry.captureException(error, { tags: { feature_category: 'product_analytics' } });
     return false;
   }
 }

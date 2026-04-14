@@ -8,7 +8,7 @@ RSpec.describe Search::Scope, feature_category: :global_search do
       before do
         stub_application_setting(
           global_search_snippet_titles_enabled: true,
-          global_search_issues_enabled: true,
+          global_search_work_items_enabled: true,
           global_search_merge_requests_enabled: true,
           global_search_milestones_enabled: true,
           global_search_users_enabled: true
@@ -23,11 +23,11 @@ RSpec.describe Search::Scope, feature_category: :global_search do
 
     context 'when some global search settings are disabled' do
       before do
-        stub_application_setting(global_search_issues_enabled: false, global_search_users_enabled: false)
+        stub_application_setting(global_search_work_items_enabled: false, global_search_users_enabled: false)
       end
 
       it 'does not return those scopes' do
-        expect(described_class.global).not_to include(%w[issues users])
+        expect(described_class.global).not_to include(%w[work_items users])
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Search::Scope, feature_category: :global_search do
       before do
         stub_application_setting(
           global_search_snippet_titles_enabled: false,
-          global_search_issues_enabled: false,
+          global_search_work_items_enabled: false,
           global_search_merge_requests_enabled: false,
           global_search_users_enabled: false
         )
@@ -57,7 +57,7 @@ RSpec.describe Search::Scope, feature_category: :global_search do
       before do
         stub_application_setting(
           global_search_snippet_titles_enabled: false,
-          global_search_issues_enabled: false,
+          global_search_work_items_enabled: false,
           global_search_merge_requests_enabled: false,
           global_search_users_enabled: false
         )
@@ -81,7 +81,7 @@ RSpec.describe Search::Scope, feature_category: :global_search do
       before do
         stub_application_setting(
           global_search_snippet_titles_enabled: false,
-          global_search_issues_enabled: false,
+          global_search_work_items_enabled: false,
           global_search_merge_requests_enabled: false,
           global_search_users_enabled: false
         )

@@ -1,0 +1,7 @@
+---
+name: grant_protected_ref_access
+description: Allows user-assigned push and merge access levels on protected branches
+  and tags to be preserved during project import. Without this permission, access
+  levels that reference specific users are silently skipped to prevent privilege
+  escalation — for example, a user gaining push access to a protected branch could
+  indirectly access sensitive data like group CI/CD variables.

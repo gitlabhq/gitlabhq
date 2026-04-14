@@ -13,6 +13,7 @@ class PersonalAccessTokensFinder
   def execute
     tokens = PersonalAccessToken.all
     tokens = by_current_user(tokens)
+    tokens = by_token_id(tokens)
     tokens = by_user(tokens)
     tokens = by_users(tokens)
     tokens = by_impersonation(tokens)
@@ -44,6 +45,12 @@ class PersonalAccessTokensFinder
     return PersonalAccessToken.none unless Ability.allowed?(current_user, :read_personal_access_token, params[:user])
 
     tokens
+  end
+
+  def by_token_id(tokens)
+    return tokens unless params[:token_id]
+
+    tokens.id_in(params[:token_id])
   end
 
   def by_user(tokens)

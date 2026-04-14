@@ -10,7 +10,7 @@ RSpec.describe ClickHouse::ReplicatedTableEnginePatcher, feature_category: :data
       (
           `id` Int64 DEFAULT 0,
           `traversal_path` String DEFAULT '0/',
-          `version` DateTime64(6, 'UTC') DEFAULT now(),
+          `version` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
           `deleted` Bool DEFAULT false
       )
       ENGINE = ReplacingMergeTree(version, deleted)
@@ -26,7 +26,7 @@ RSpec.describe ClickHouse::ReplicatedTableEnginePatcher, feature_category: :data
       (
           `id` Int64 DEFAULT 0,
           `traversal_path` String DEFAULT '0/',
-          `version` DateTime64(6, 'UTC') DEFAULT now(),
+          `version` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
           `deleted` Bool DEFAULT false
       )
       ENGINE = ReplicatedReplacingMergeTree(version, deleted)

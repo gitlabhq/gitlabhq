@@ -45,16 +45,8 @@ end
 raise "Do not configure cable.yml with a Redis Cluster as ActionCable only works with Redis." if using_redis_cluster
 
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
-ActionCable::SubscriptionAdapter::Redis.redis_connector = ->(config) do
-  from_cable_yaml = config.except(:adapter, :channel_prefix)
-    .merge(custom: { instrumentation_class: "ActionCable" })
-
-  final_config = Gitlab::Redis::ConfigGenerator.new('ActionCable').generate(from_cable_yaml)
-  secondary_store = ::Redis.new(final_config)
-
-  primary_store = Gitlab::Redis::ActionCable.redis
-
-  ::Gitlab::Redis::MultiStore.create_using_client(primary_store, secondary_store, 'ActionCable')
+ActionCable::SubscriptionAdapter::Redis.redis_connector = ->(_config) do
+  Gitlab::Redis::ActionCable.redis
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install

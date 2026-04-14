@@ -44,7 +44,7 @@ module EnforcesStepUpAuthenticationForNamespace
 
     return unless step_up_auth_supported_for_namespace?(namespace)
     return unless step_up_auth_required_for_namespace?(namespace)
-    return if step_up_auth_succeeded_for_namespace?
+    return if step_up_auth_succeeded_for_namespace?(namespace)
 
     handle_failed_step_up_auth_for_namespace(namespace)
   end
@@ -66,11 +66,14 @@ module EnforcesStepUpAuthenticationForNamespace
     )
   end
 
-  def step_up_auth_succeeded_for_namespace?
-    ::Gitlab::Auth::Oidc::StepUpAuthentication.succeeded?(
-      session,
-      scope: ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
-    )
+  def step_up_auth_succeeded_for_namespace?(namespace)
+    ::Gitlab::Auth::Oidc::StepUpAuthentication
+      .build_flow(
+        provider: namespace.step_up_auth_required_oauth_provider_from_self_or_inherited,
+        session: session,
+        scope: ::Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
+      )
+      .succeeded?
   end
 
   def handle_failed_step_up_auth_for_namespace(namespace)

@@ -56,6 +56,40 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
       context 'without trusted certificate within store' do
         it_behaves_like 'x509 signature without trusted certificate'
       end
+
+      context 'when intermediate and signing certificate share the same serial number' do
+        before do
+          store = OpenSSL::X509::Store.new
+          certificate = OpenSSL::X509::Certificate.new(X509Helpers::User1.trust_cert)
+          store.add_cert(certificate)
+          allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
+
+          allow_next_instance_of(OpenSSL::PKCS7) do |p7|
+            allow(p7).to receive(:certificates).and_wrap_original do |method|
+              [fake_intermediate] + method.call
+            end
+          end
+        end
+
+        let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+
+        # A minimal cert is sufficient - only serial and issuer are checked by signer_certificate
+        let(:fake_intermediate) do
+          cert = OpenSSL::X509::Certificate.new
+          cert.serial = X509Helpers::User1.certificate_serial
+          cert.subject = OpenSSL::X509::Name.parse('CN=Fake Intermediate CA,O=Test')
+          cert.issuer = OpenSSL::X509::Name.parse('CN=Fake Root CA,O=Test')
+          cert.not_before = Time.utc(2016, 1, 1)
+          cert.not_after = Time.utc(2030, 1, 1)
+          cert
+        end
+
+        it 'selects the signing certificate and verifies the signature', :aggregate_failures do
+          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+          expect(signature.verified_signature).to be_truthy
+          expect(signature.verification_status).to eq(:verified)
+        end
+      end
     end
 
     it_behaves_like 'x509 signature invalid scenarios'

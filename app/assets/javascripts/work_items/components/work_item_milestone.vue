@@ -12,12 +12,7 @@ import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.g
 import groupMilestonesQuery from '~/sidebar/queries/group_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  I18N_WORK_ITEM_ERROR_UPDATING,
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  TRACKING_CATEGORY_SHOW,
-  VIEW_CONTEXT,
-} from '../constants';
+import { I18N_WORK_ITEM_ERROR_UPDATING, TRACKING_CATEGORY_SHOW, VIEW_CONTEXT } from '../constants';
 
 export default {
   i18n: {
@@ -212,7 +207,7 @@ export default {
         .catch((error) => {
           this.localMilestone = this.workItemMilestone;
           const msg = sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
-            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+            workItemType: this.workItemType,
           });
           this.$emit('error', msg);
           Sentry.captureException(error);

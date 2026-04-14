@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
 

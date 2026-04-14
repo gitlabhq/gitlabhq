@@ -111,22 +111,23 @@ export const TABLE_FIELDS = [
   {
     key: 'name',
     label: __('Name'),
-    tdClass: 'lg:gl-w-1/4',
+    tdClass: '@md/panel:gl-w-1/2',
   },
   {
     key: 'description',
     label: __('Description'),
-    tdClass: 'lg:gl-w-1/3',
+    tdClass: '@md/panel:gl-w-1/2',
   },
   {
     key: 'status',
     label: __('Status'),
-    tdClass: 'lg:gl-w-1/3',
+    tdClass: '@md/panel:gl-w-0',
   },
   {
     key: 'actions',
     label: __('Actions'),
-    tdClass: 'gl-text-center',
+    thAlignRight: true,
+    tdClass: 'gl-text-right @md/panel:gl-w-0',
   },
 ];
 
@@ -188,8 +189,8 @@ export const ACCESS_SELECTED_MEMBERSHIPS_ENUM = 'SELECTED_MEMBERSHIPS';
 export const ACCESS_ALL_MEMBERSHIPS_ENUM = 'ALL_MEMBERSHIPS';
 export const ACCESS_USER_ENUM = 'USER';
 export const ACCESS_NAMESPACE_ENUMS = ['GROUP', 'PROJECT'];
-export const ACCESS_INSTANCE_ENUM = 'INSTANCE';
 
+export const MAX_NAME_LENGTH = 200;
 export const MAX_DESCRIPTION_LENGTH = 255;
 
 export const SEARCH = 'search';

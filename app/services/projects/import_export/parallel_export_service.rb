@@ -38,7 +38,7 @@ module Projects
       end
 
       def exporters
-        [version_saver, exported_relations_merger]
+        [version_saver, exported_relations_merger, max_iids_saver]
       end
 
       def save_exporters
@@ -55,6 +55,10 @@ module Projects
 
       def version_saver
         @version_saver ||= Gitlab::ImportExport::VersionSaver.new(shared: shared)
+      end
+
+      def max_iids_saver
+        @max_iids_saver ||= Gitlab::ImportExport::Project::MaxIidsSaver.new(project: project, shared: shared)
       end
 
       def exported_relations_merger

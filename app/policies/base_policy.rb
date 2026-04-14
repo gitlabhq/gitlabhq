@@ -14,6 +14,9 @@ class BasePolicy < DeclarativePolicy::Base
     end
   end
 
+  # This condition is overridden in EE
+  condition(:auditor, score: 0) { false }
+
   desc "The current instance is a GitLab Dedicated instance"
   condition :gitlab_dedicated do
     Gitlab::CurrentSettings.gitlab_dedicated_instance?

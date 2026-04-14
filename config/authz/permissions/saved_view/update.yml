@@ -1,3 +1,7 @@
 ---
 name: update_saved_view
-description: Grants the ability to update a saved view
+description: Grants the ability to update private saved views that the user authored.
+  Saved views are user-configured filters and sorts on work item lists. The saved
+  view policy combines this permission with an authorship check to control access
+  to private saved views. Updating shared (non-private) saved views is controlled
+  by the _update_shared_saved_view permission.

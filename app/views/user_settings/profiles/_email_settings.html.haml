@@ -2,7 +2,7 @@
 - readonly = @user.read_only_attribute?(:email)
 - email_change_disabled = local_assigns.fetch(:email_change_disabled, nil)
 - read_only_help_text = readonly ? s_("Profiles|Your email address was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:email) } : user_email_help_text(@user)
-- help_text = email_change_disabled ? s_("Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO.") % { group_name: @user.managing_group.name } : read_only_help_text
+- help_text = email_change_disabled ? _("Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO.") % { group_name: @user.managing_group.name } : read_only_help_text
 - password_automatically_set = @user.password_automatically_set?
 - allow_password_authentication_for_web = @user.allow_password_authentication_for_web?
 

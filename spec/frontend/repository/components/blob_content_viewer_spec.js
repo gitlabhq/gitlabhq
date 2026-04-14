@@ -12,7 +12,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
-import BlameHeader from '~/blob/components/blame_header.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
@@ -161,7 +160,6 @@ const execImmediately = (callback) => {
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
-  const findBlameHeader = () => wrapper.findComponent(BlameHeader);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
   const findSourceViewer = () => wrapper.findComponent(SourceViewer);
@@ -279,7 +277,7 @@ describe('Blob content viewer component', () => {
       });
 
       describe('blame header', () => {
-        it('does not render a blame header for binary files', async () => {
+        it('does not pass showBlameInfo for binary files', async () => {
           await createComponent({
             blob: {
               ...simpleViewerMock,
@@ -289,20 +287,20 @@ describe('Blob content viewer component', () => {
           });
           await triggerBlame();
 
-          expect(findBlameHeader().exists()).toBe(false);
+          expect(findBlobHeader().props('showBlameInfo')).toBe(false);
         });
 
-        it('does not render a blame header when blame is closed', async () => {
+        it('does not pass showBlameInfo when blame is closed', async () => {
           await createComponent({ blob: simpleViewerMock });
 
-          expect(findBlameHeader().exists()).toBe(false);
+          expect(findBlobHeader().props('showBlameInfo')).toBe(false);
         });
 
-        it('renders a blame header when blame is open', async () => {
+        it('passes showBlameInfo when blame is open', async () => {
           await createComponent({ blob: simpleViewerMock });
           await triggerBlame();
 
-          expect(findBlameHeader().exists()).toBe(true);
+          expect(findBlobHeader().props('showBlameInfo')).toBe(true);
         });
 
         it('sets shouldPreloadBlame prop on the viewer when header emits preload event', async () => {

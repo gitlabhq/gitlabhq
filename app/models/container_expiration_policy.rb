@@ -71,11 +71,17 @@ class ContainerExpirationPolicy < ApplicationRecord
 
   def self.older_than_options
     {
+      '1d': _('%{days} day until tags are automatically removed') % { days: 1 },
+      '3d': _('%{days} days until tags are automatically removed') % { days: 3 },
       '7d': _('%{days} days until tags are automatically removed') % { days: 7 },
       '14d': _('%{days} days until tags are automatically removed') % { days: 14 },
       '30d': _('%{days} days until tags are automatically removed') % { days: 30 },
       '60d': _('%{days} days until tags are automatically removed') % { days: 60 },
-      '90d': _('%{days} days until tags are automatically removed') % { days: 90 }
+      '90d': _('%{days} days until tags are automatically removed') % { days: 90 },
+      '180d': _('%{days} days until tags are automatically removed') % { days: 180 },
+      '365d': _('%{years} year until tags are automatically removed') % { years: 1 },
+      '730d': _('%{years} years until tags are automatically removed') % { years: 2 },
+      '1095d': _('%{years} years until tags are automatically removed') % { years: 3 }
     }
   end
 

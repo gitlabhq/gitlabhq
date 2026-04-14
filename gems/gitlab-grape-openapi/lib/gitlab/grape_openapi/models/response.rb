@@ -7,12 +7,16 @@ module Gitlab
       class Response
         attr_reader :status_code, :description, :entity_class, :headers, :content_type
 
-        def initialize(status_code:, description:, entity_class:, headers: {}, content_type: 'application/json')
+        def initialize(
+          status_code:, description:, entity_class:, headers: {}, content_type: 'application/json',
+          example: nil, examples: nil)
           @status_code = status_code.to_s
           @description = description
           @entity_class = entity_class
           @headers = headers
           @content_type = content_type
+          @example = example
+          @examples = examples
         end
 
         def to_h(schema_registry)
@@ -20,8 +24,10 @@ module Gitlab
             description: description,
             content: {
               content_type => {
-                schema: { '$ref': schema_ref(schema_registry) }
-              }
+                schema: { '$ref': schema_ref(schema_registry) },
+                example: @example,
+                examples: @examples
+              }.compact
             }
           }
 

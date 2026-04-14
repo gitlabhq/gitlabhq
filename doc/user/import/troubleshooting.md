@@ -41,7 +41,7 @@ If you're experiencing prolonged delays or failures with file-based imports, esp
 
 Check the import status:
 
-1. Use the GitLab API to check the [import status](../../api/project_import_export.md#import-status) of the affected project.
+1. Use the GitLab API to check the [import status](../../api/project_import_export.md#retrieve-the-status-of-a-project-import) of the affected project.
 1. Review the response for any error messages or status information, especially the `status` and `import_error` values.
 1. Make note of the `correlation_id` in the response, as it's crucial for further troubleshooting.
 

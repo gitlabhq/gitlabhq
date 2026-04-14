@@ -38,9 +38,9 @@ Read more on [pagination](rest/_index.md#pagination).
 
 ## Issues
 
-### List project issue discussion items
+### List all issue discussion items
 
-Gets a list of all discussion items for a single issue.
+Lists all discussion items for a specified issue in a project.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/discussions
@@ -163,9 +163,9 @@ Example response:
 ]
 ```
 
-### Get single issue discussion item
+### Retrieve an issue discussion item
 
-Returns a single discussion item for a specific project issue.
+Retrieves a specified discussion item for a project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/discussions/:discussion_id
@@ -179,7 +179,7 @@ Supported attributes:
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid`     | integer           | Yes      | The IID of an issue. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List issue discussion items](#list-all-issue-discussion-items).
 
 Example request:
 
@@ -188,7 +188,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>"
 ```
 
-### Create new issue thread
+### Create an issue thread
 
 Creates a new thread to a single project issue. Similar to creating a note, but other comments (replies) can be added to it later.
 
@@ -205,7 +205,7 @@ Supported attributes:
 | `issue_iid`  | integer           | Yes      | The IID of an issue. |
 | `created_at` | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
-If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items).
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the same response attributes as [List issue discussion items](#list-all-issue-discussion-items).
 
 Example request:
 
@@ -215,12 +215,12 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions?body=comment"
 ```
 
-### Add note to existing issue thread
+### Add a note to an issue thread
 
 Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
 
-> [!warning]
-> Notes can be added to other items than comments, such as system notes, making them threads.
+> [!note]
+> Notes cannot be added to system notes. Attempting to do so returns a `400 Bad Request` error.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes
@@ -246,9 +246,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
-### Modify existing issue thread note
+### Update an issue thread note
 
-Modify existing thread note of an issue.
+Updates an existing thread note of an issue.
 
 ```plaintext
 PUT /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id
@@ -303,9 +303,9 @@ curl --request DELETE \
 
 ## Snippets
 
-### List project snippet discussion items
+### List all snippet discussion items
 
-Gets a list of all discussion items for a single snippet.
+Lists all discussion items for a specified snippet in a project.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/discussions
@@ -318,7 +318,7 @@ Supported attributes:
 | `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id` | integer           | Yes      | The ID of a snippet. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Snippet`.
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List issue discussion items](#list-all-issue-discussion-items), with `noteable_type` set to `Snippet`.
 
 Example request:
 
@@ -411,9 +411,9 @@ Example response:
 ]
 ```
 
-### Get single snippet discussion item
+### Retrieve a snippet discussion item
 
-Returns a single discussion item for a specific project snippet.
+Retrieves a specified discussion item for a project snippet.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/discussions/:discussion_id
@@ -427,7 +427,7 @@ Supported attributes:
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id`    | integer        | Yes      | The ID of a snippet. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project snippet discussion items](#list-project-snippet-discussion-items).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List snippet discussion items](#list-all-snippet-discussion-items).
 
 Example request:
 
@@ -436,7 +436,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>"
 ```
 
-### Create new snippet thread
+### Create a snippet thread
 
 Creates a new thread to a single project snippet. Similar to creating
 a note, but other comments (replies) can be added to it later.
@@ -464,7 +464,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions?body=comment"
 ```
 
-### Add note to existing snippet thread
+### Add a note to a snippet thread
 
 Adds a new note to the thread.
 
@@ -492,9 +492,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
-### Modify existing snippet thread note
+### Update a snippet thread note
 
-Modify existing thread note of a snippet.
+Updates an existing thread note of a snippet.
 
 ```plaintext
 PUT /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes/:note_id
@@ -568,9 +568,9 @@ curl --request DELETE \
 >
 > For more information, see the [API migration guide](graphql/epic_work_items_api_migration_guide.md).
 
-### List group epic discussion items
+### List all epic discussion items
 
-Gets a list of all discussion items for a single epic.
+Lists all discussion items for a single epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/discussions
@@ -583,7 +583,7 @@ Supported attributes:
 | `epic_id` | integer           | Yes      | The ID of an epic. |
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Epic`.
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List issue discussion items](#list-all-issue-discussion-items), with `noteable_type` set to `Epic`.
 
 Example request:
 
@@ -677,9 +677,9 @@ Example response:
 ]
 ```
 
-### Get single epic discussion item
+### Retrieve an epic discussion item
 
-Returns a single discussion item for a specific group epic.
+Retrieves a specified discussion item for a group epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/discussions/:discussion_id
@@ -693,7 +693,7 @@ Supported attributes:
 | `epic_id`       | integer           | Yes      | The ID of an epic. |
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List group epic discussion items](#list-group-epic-discussion-items).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List epic discussion items](#list-all-epic-discussion-items).
 
 Example request:
 
@@ -702,7 +702,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>"
 ```
 
-### Create new epic thread
+### Create an epic thread
 
 Creates a new thread to a single group epic. Similar to creating
 a note, but other comments (replies) can be added to it later.
@@ -730,7 +730,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions?body=comment"
 ```
 
-### Add note to existing epic thread
+### Add a note to an epic thread
 
 Adds a new note to the thread. This can also
 [create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
@@ -759,9 +759,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
-### Modify existing epic thread note
+### Update an epic thread note
 
-Modify existing thread note of an epic.
+Updates an existing thread note of an epic.
 
 ```plaintext
 PUT /groups/:id/epics/:epic_id/discussions/:discussion_id/notes/:note_id
@@ -816,9 +816,9 @@ curl --request DELETE \
 
 ## Merge requests
 
-### List project merge request discussion items
+### List all merge request discussion items
 
-Gets a list of all discussion items for a single merge request.
+Lists all discussion items for a specified merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/discussions
@@ -1029,9 +1029,9 @@ Diff comments also contain position:
 ]
 ```
 
-### Get single merge request discussion item
+### Retrieve a merge request discussion item
 
-Returns a single discussion item for a specific project merge request.
+Retrieves a specified discussion item for a project merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id
@@ -1045,7 +1045,7 @@ Supported attributes:
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project merge request discussion items](#list-project-merge-request-discussion-items).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List merge request discussion items](#list-all-merge-request-discussion-items).
 
 Example request:
 
@@ -1054,7 +1054,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>"
 ```
 
-### Create new merge request thread
+### Create a merge request thread
 
 Creates a new thread to a single project merge request. Similar to creating
 a note but other comments (replies) can be added to it later. For other approaches,
@@ -1242,7 +1242,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>?resolved=true"
 ```
 
-### Add note to existing merge request thread
+### Add note to a merge request thread
 
 Adds a new note to the thread. This can also
 [create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
@@ -1271,9 +1271,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes?body=comment"
 ```
 
-### Modify an existing merge request thread note
+### Update a merge request thread note
 
-Modify or resolve an existing thread note of a merge request.
+Updates or resolves a specified thread note for a merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id
@@ -1337,9 +1337,9 @@ curl --request DELETE \
 
 ## Commits
 
-### List project commit discussion items
+### List all commit discussion items
 
-Gets a list of all discussion items for a single commit.
+Lists all discussion items for a specified commit.
 
 ```plaintext
 GET /projects/:id/repository/commits/:commit_id/discussions
@@ -1352,7 +1352,7 @@ Supported attributes:
 | `commit_id` | string            | Yes      | The SHA of a commit. |
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Commit`.
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List issue discussion items](#list-all-issue-discussion-items), with `noteable_type` set to `Commit`.
 
 Example request:
 
@@ -1491,9 +1491,9 @@ Diff comments contain also position:
 ]
 ```
 
-### Get single commit discussion item
+### Retrieve a commit discussion item
 
-Returns a single discussion item for a specific project commit
+Retrieves a specified discussion item for a project commit.
 
 ```plaintext
 GET /projects/:id/repository/commits/:commit_id/discussions/:discussion_id
@@ -1507,7 +1507,7 @@ Supported attributes:
 | `discussion_id` | string            | Yes      | The ID of a discussion item. |
 | `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project commit discussion items](#list-project-commit-discussion-items).
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List commit discussion items](#list-all-commit-discussion-items).
 
 Example request:
 
@@ -1516,7 +1516,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>"
 ```
 
-### Create new commit thread
+### Create a commit thread
 
 Creates a new thread to a single project commit. Similar to creating
 a note but other comments (replies) can be added to it later.
@@ -1565,7 +1565,7 @@ The exceptions:
 - `head_sha`
 - `start_sha`
 
-### Add note to existing commit thread
+### Add note to a commit thread
 
 Adds a new note to the thread.
 
@@ -1593,9 +1593,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes?body=comment"
 ```
 
-### Modify an existing commit thread note
+### Update a commit thread note
 
-Modify or resolve an existing thread note of a commit.
+Updates or resolves a specified thread note for a commit.
 
 ```plaintext
 PUT /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes/:note_id

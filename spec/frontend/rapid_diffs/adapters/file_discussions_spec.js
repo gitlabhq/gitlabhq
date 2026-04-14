@@ -9,7 +9,7 @@ import { pinia } from '~/pinia/instance';
 
 jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
   return {
-    props: ['oldPath', 'newPath'],
+    inject: ['filePaths', 'linkedFileData'],
     methods: {
       empty() {
         this.$emit('empty');
@@ -22,7 +22,13 @@ jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
       this.$el.onDestroy?.();
     },
     render(h) {
-      return h('div', { attrs: { id: 'file-discussions-component' } });
+      return h('div', {
+        attrs: {
+          id: 'file-discussions-component',
+          'data-file-paths': JSON.stringify(this.filePaths),
+          'data-linked-file-data': JSON.stringify(this.linkedFileData),
+        },
+      });
     },
   };
 });
@@ -30,6 +36,7 @@ jest.mock('~/rapid_diffs/app/discussions/diff_file_discussions.vue', () => {
 describe('fileDiscussionsAdapter', () => {
   const oldPath = 'old';
   const newPath = 'new';
+  const linkedFileData = { old_path: oldPath, new_path: newPath };
   const appData = {
     userPermissions: { can_create_note: true },
     discussionsEndpoint: 'discussionsEndpoint',
@@ -39,6 +46,7 @@ describe('fileDiscussionsAdapter', () => {
     signInPath: 'signInPath',
     noteableType: 'MergeRequest',
     reportAbusePath: 'reportAbusePath',
+    linkedFileData,
   };
 
   const getDiffFile = () => document.querySelector('diff-file');
@@ -104,6 +112,51 @@ describe('fileDiscussionsAdapter', () => {
     ];
     await nextTick();
     expect(getFileDiscussionsComponent()).not.toBeNull();
+  });
+
+  it('mounts file discussions component when file discussions are hidden', async () => {
+    mountAdapter();
+    useDiscussions().discussions = [
+      {
+        id: 'file-disc',
+        diff_discussion: true,
+        hidden: true,
+        position: {
+          old_path: oldPath,
+          new_path: newPath,
+          position_type: 'file',
+          old_line: null,
+          new_line: null,
+        },
+      },
+    ];
+    await nextTick();
+    expect(getFileDiscussionsComponent()).not.toBeNull();
+  });
+
+  it('provides filePaths to the component', async () => {
+    mountAdapter();
+    useDiscussions().discussions = [
+      {
+        id: 'file-disc',
+        diff_discussion: true,
+        position: {
+          old_path: oldPath,
+          new_path: newPath,
+          position_type: 'file',
+          old_line: null,
+          new_line: null,
+        },
+      },
+    ];
+    await nextTick();
+    expect(JSON.parse(getFileDiscussionsComponent().dataset.filePaths)).toStrictEqual({
+      oldPath,
+      newPath,
+    });
+    expect(JSON.parse(getFileDiscussionsComponent().dataset.linkedFileData)).toStrictEqual(
+      linkedFileData,
+    );
   });
 
   it('does not mount when there are no file discussions', async () => {

@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 import { slugify, truncateNamespace } from '~/lib/utils/text_utility';
 import {
   GROUPS_CATEGORY,

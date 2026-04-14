@@ -11,7 +11,7 @@ import {
   GlFormRadio,
   GlFormRadioGroup,
 } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { buildApiUrl } from '~/api/api_utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';

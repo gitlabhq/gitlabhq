@@ -22,6 +22,7 @@ module API
               detail 'Retrieves agent info for agentk for the given token'
             end
             route_setting :authentication, cluster_agent_token_allowed: true
+            route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
             get '/agent_info', feature_category: :deployment_management, urgency: :low do
               project = agent.project
 
@@ -47,6 +48,7 @@ module API
             detail 'Verifies if the agent (owning the token) is authorized to access the given project'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           get '/verify_project_access', feature_category: :deployment_management, urgency: :low do
             project = find_project(params[:id])
 
@@ -64,6 +66,7 @@ module API
             requires :agent_id, type: Integer, desc: 'ID of the configured Agent'
             requires :agent_config, type: JSON, desc: 'Configuration for the Agent'
           end
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           post '/', feature_category: :deployment_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
             update_configuration(agent: agent, config: params[:agent_config])
@@ -82,6 +85,7 @@ module API
               requires :csrf_token, type: String, allow_blank: false, desc: 'CSRF token that must be checked when access_type is "session_cookie", to ensure the request originates from a GitLab browsing session.'
             end
           end
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           post '/', feature_category: :deployment_management do
             # Load user
             user = if params[:access_type] == 'session_cookie'
@@ -128,6 +132,7 @@ module API
               optional :flux_git_push_notified_unique_projects, type: Array[Integer], desc: 'An array of projects that have been notified to reconcile their Flux workloads'
             end
           end
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           post '/', feature_category: :deployment_management do
             increment_count_events
             increment_unique_events
@@ -170,6 +175,7 @@ module API
               end
             end
           end
+          route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           post '/', feature_category: :deployment_management do
             track_events
 

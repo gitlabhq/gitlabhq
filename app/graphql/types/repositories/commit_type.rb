@@ -68,6 +68,10 @@ module Types
       field :committer_name, type: GraphQL::Types::String, null: true,
         description: "Name of the committer."
 
+      field :tags, [GraphQL::Types::String], null: true,
+        description: 'Tag names pointing to the commit.',
+        method: :tags_for_display
+
       # models/commit lazy loads the author by email
       field :author, type: Types::UserType, null: true,
         description: 'Author of the commit.'
@@ -85,8 +89,8 @@ module Types
         description: 'Pipelines of the commit ordered latest first.',
         resolver: Resolvers::CommitPipelinesResolver
 
-      markdown_field :title_html, null: true
-      markdown_field :full_title_html, null: true
+      markdown_field :title_html, null: true, description: "HTML rendering of `title`"
+      markdown_field :full_title_html, null: true, description: "HTML rendering of `full_title`"
       markdown_field :description_html, null: true
 
       def diffs

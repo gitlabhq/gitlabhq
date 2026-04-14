@@ -362,4 +362,32 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
       end
     end
   end
+
+  context 'with namespaceGroupsForLinksWidget query' do
+    let(:query) { get_graphql_query_as_string('work_items/graphql/namespace_groups_for_links_widget.query.graphql') }
+    let(:variables) { { 'fullPath' => public_group.full_path } }
+
+    before do
+      create(:group, parent: public_group)
+    end
+
+    it 'does not execute N+1 queries', :use_sql_query_cache do
+      post_graphql(query, current_user: user1, variables: variables) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: user1, variables: variables)
+      end
+
+      expect_graphql_errors_to_be_empty
+
+      create_list(:group, 3, parent: public_group)
+      create_list(:group, 2, parent: create(:group, parent: public_group))
+
+      expect do
+        post_graphql(query, current_user: user1, variables: variables)
+      end.not_to exceed_all_query_limit(control)
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
 end

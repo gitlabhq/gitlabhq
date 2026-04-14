@@ -12,7 +12,6 @@ const defaultProps = {
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
   licensedAiFeaturesAvailable: true,
-  experimentFeaturesEnabled: true,
   ultimateFeaturesAvailable: true,
   duoContextExclusionSettings: {
     exclusionRules: ['*.log', 'node_modules/'],
@@ -588,17 +587,11 @@ describe('GitlabDuoSettings', () => {
   });
 
   describe('ExclusionSettings', () => {
-    it('renders ExclusionSettings component when experiment features are enabled', () => {
-      wrapper = createWrapper({ experimentFeaturesEnabled: true });
+    it('renders ExclusionSettings component', () => {
+      wrapper = createWrapper();
 
       expect(findExclusionSettings().exists()).toBe(true);
       expect(findExclusionSettings().props('exclusionRules')).toEqual(['*.log', 'node_modules/']);
-    });
-
-    it('does not render ExclusionSettings when experiment features are disabled', () => {
-      wrapper = createWrapper({ experimentFeaturesEnabled: false });
-
-      expect(findExclusionSettings().exists()).toBe(false);
     });
 
     it('updates exclusion rules when ExclusionSettings emits update', async () => {

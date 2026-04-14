@@ -53,6 +53,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   DEDUPLICATED_COLUMNS =
     %i[commit_author_id committer_id authored_date committed_date sha message].freeze
 
+  BULK_INSERT_BATCH_SIZE = 1000
+
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
@@ -101,7 +103,11 @@ class MergeRequestDiffCommit < ApplicationRecord
 
     rows = commit_rows_with_metadata(project.id, merge_request_diff_id, rows)
 
-    ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
+    transaction do
+      rows.each_slice(BULK_INSERT_BATCH_SIZE) do |batch|
+        ApplicationRecord.legacy_bulk_insert(self.table_name, batch) # rubocop:disable Gitlab/BulkInsert
+      end
+    end
   end
 
   def self.prepare_commits_for_bulk_insert(commits, organization_id)

@@ -54,3 +54,5 @@ module Types
     end
   end
 end
+
+Types::WorkItems::WidgetDefinitions::HierarchyType.prepend_mod

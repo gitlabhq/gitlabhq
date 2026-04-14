@@ -15,6 +15,7 @@ import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_
 import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -42,7 +43,6 @@ import {
   PARAM_KEY_GROUP,
   I18N_ALL,
 } from '../constants';
-import { captureException } from '../sentry_utils';
 
 export default {
   name: 'AdminRunnersApp',
@@ -210,7 +210,7 @@ export default {
       this.$apollo.getClient().refetchQueries({ include: [allRunnersCountQuery] });
     },
     reportToSentry(error) {
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
     onPaginationInput(value) {
       this.search.pagination = value;

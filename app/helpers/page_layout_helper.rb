@@ -13,7 +13,8 @@ module PageLayoutHelper
     end
 
     # Segments are separated by middot
-    @page_title.join(" · ")
+    site_title = defined?(current_appearance) ? site_name : nil
+    (@page_title + [site_title].compact).join(" · ")
   end
 
   # Define or get a description for the current page

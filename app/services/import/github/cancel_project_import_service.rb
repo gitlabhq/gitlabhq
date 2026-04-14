@@ -24,7 +24,7 @@ module Import
       end
 
       def authorized_to_cancel?
-        can?(current_user, :owner_access, project)
+        can?(current_user, :cancel_project_import, project)
       end
 
       def cannot_cancel_error_message

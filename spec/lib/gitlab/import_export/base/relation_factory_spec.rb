@@ -12,8 +12,8 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
   let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
   let(:original_users_map) { nil }
 
-  subject do
-    described_class.create( # rubocop:disable Rails/SaveBang
+  let(:relation_factory) do
+    described_class.new(
       relation_sym: relation_sym,
       relation_hash: relation_hash,
       relation_index: 1,
@@ -21,13 +21,14 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
       members_mapper: members_mapper,
       user: user,
       importable: project,
-      excluded_keys: excluded_keys,
       import_source: import_source,
       original_users_map: original_users_map
     )
   end
 
   describe '#create' do
+    subject { relation_factory.create } # rubocop:disable Rails/SaveBang -- this is a factory
+
     context 'when relation is invalid' do
       before do
         expect_next_instance_of(described_class) do |relation_factory|
@@ -234,6 +235,218 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
 
       it 'returns constantized class' do
         expect(described_class.relation_class(relation_name)).to eq(User)
+      end
+    end
+  end
+
+  describe '#setup_note' do
+    let(:relation_sym) { :notes }
+
+    context 'when note is a merge request note' do
+      let(:relation_hash) do
+        {
+          'id' => 1,
+          'note' => "merged\n\n[Compare with previous version](/link)",
+          'noteable_type' => 'MergeRequest',
+          'noteable_id' => 1,
+          'author_id' => 1,
+          'created_at' => '2020-01-01T00:00:00Z',
+          'updated_at' => '2020-01-01T00:00:00Z',
+          'project_id' => project.id,
+          'attachment' => nil,
+          'system' => true
+        }
+      end
+
+      it 'removes the compare link' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['note']).to eq('merged')
+      end
+
+      it 'removes attachment' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['attachment']).to be_nil
+      end
+    end
+
+    context 'when note is not a merge request note' do
+      let(:relation_hash) do
+        {
+          'id' => 1,
+          'note' => "comment\n\n[Compare with previous version](/link)",
+          'noteable_type' => 'Issue',
+          'noteable_id' => 1,
+          'author_id' => 1,
+          'created_at' => '2020-01-01T00:00:00Z',
+          'updated_at' => '2020-01-01T00:00:00Z',
+          'project_id' => project.id,
+          'attachment' => nil,
+          'system' => true
+        }
+      end
+
+      it 'does not remove the compare link' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['note']).to include('[Compare with previous version]')
+      end
+
+      it 'removes attachment' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['attachment']).to be_nil
+      end
+    end
+
+    context 'when note is not a system note' do
+      let(:relation_hash) do
+        {
+          'id' => 1,
+          'note' => "comment\n\n[Compare with previous version](/link)",
+          'noteable_type' => 'MergeRequest',
+          'noteable_id' => 1,
+          'author_id' => 1,
+          'created_at' => '2020-01-01T00:00:00Z',
+          'updated_at' => '2020-01-01T00:00:00Z',
+          'project_id' => project.id,
+          'attachment' => nil,
+          'system' => false
+        }
+      end
+
+      it 'does not remove the compare link' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['note']).to include('[Compare with previous version]')
+      end
+
+      it 'removes attachment' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['attachment']).to be_nil
+      end
+    end
+
+    context 'when merge request note has blank content' do
+      let(:relation_hash) do
+        {
+          'id' => 1,
+          'note' => nil,
+          'noteable_type' => 'MergeRequest',
+          'noteable_id' => 1,
+          'author_id' => 1,
+          'created_at' => '2020-01-01T00:00:00Z',
+          'updated_at' => '2020-01-01T00:00:00Z',
+          'project_id' => project.id,
+          'attachment' => nil,
+          'system' => true
+        }
+      end
+
+      it 'does not process the note' do
+        relation_factory.send(:setup_note)
+        expect(relation_factory.relation_hash['note']).to be_nil
+      end
+    end
+  end
+
+  describe '#setup_merge_request_note' do
+    let(:relation_sym) { :notes }
+
+    context 'when note is a merge request note with compare link' do
+      let(:relation_hash) do
+        {
+          'note' => "text\n\n[Compare with previous version](/link)",
+          'noteable_type' => 'MergeRequest',
+          'system' => true
+        }
+      end
+
+      it 'removes the compare link' do
+        relation_factory.send(:setup_merge_request_note)
+        expect(relation_factory.relation_hash['note']).to eq('text')
+      end
+    end
+
+    context 'when note is not a merge request note' do
+      let(:relation_hash) do
+        {
+          'note' => "text\n\n[Compare with previous version](/link)",
+          'noteable_type' => 'Issue',
+          'system' => true
+        }
+      end
+
+      it 'does not remove the compare link' do
+        relation_factory.send(:setup_merge_request_note)
+        expect(relation_factory.relation_hash['note']).to include('[Compare with previous version]')
+      end
+    end
+
+    context 'when note is blank' do
+      let(:relation_hash) do
+        {
+          'note' => nil,
+          'noteable_type' => 'MergeRequest',
+          'system' => true
+        }
+      end
+
+      it 'does not process the note' do
+        relation_factory.send(:setup_merge_request_note)
+        expect(relation_factory.relation_hash['note']).to be_nil
+      end
+    end
+
+    context 'when noteable_type is missing' do
+      let(:relation_hash) do
+        {
+          'note' => "text\n\n[Compare with previous version](/link)",
+          'system' => true
+        }
+      end
+
+      it 'does not remove the compare link' do
+        relation_factory.send(:setup_merge_request_note)
+        expect(relation_factory.relation_hash['note']).to include('[Compare with previous version]')
+      end
+    end
+  end
+
+  describe '#remove_compare_link' do
+    context 'when content contains the compare link' do
+      let(:content) do
+        "merged\n\n[Compare with previous version](/link/-/merge_requests/1/diffs?diff_id=123)"
+      end
+
+      it 'removes the link' do
+        result = relation_factory.send(:remove_compare_link, content)
+        expect(result).to eq('merged')
+      end
+    end
+
+    context 'when content does not contain the compare link' do
+      let(:content) { 'Just a regular note' }
+
+      it 'returns the content unchanged' do
+        result = relation_factory.send(:remove_compare_link, content)
+        expect(result).to eq(content)
+      end
+    end
+
+    context 'when URL in link exceeds 1000 characters' do
+      let(:long_url) { 'a' * 1001 }
+      let(:content) { "[Compare with previous version](#{long_url})" }
+
+      it 'does not remove the link due to URL length limit' do
+        result = relation_factory.send(:remove_compare_link, content)
+        expect(result).to eq(content)
+      end
+    end
+
+    context 'when URL in link is within 1000 characters' do
+      let(:long_url) { 'a' * 1000 }
+      let(:content) { "\n\n[Compare with previous version](#{long_url})\n\n" }
+
+      it 'removes the link' do
+        result = relation_factory.send(:remove_compare_link, content)
+        expect(result).to eq('')
       end
     end
   end

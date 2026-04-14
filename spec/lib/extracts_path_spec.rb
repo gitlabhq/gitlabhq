@@ -352,6 +352,28 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
     end
   end
 
+  describe '#path_present?' do
+    it 'returns falsey when path is nil' do
+      @path = nil
+      expect(path_present?).to be_falsey
+    end
+
+    it 'returns falsey when path is empty' do
+      @path = ''
+      expect(path_present?).to be_falsey
+    end
+
+    it 'returns true when path is whitespace-only' do
+      @path = ' '
+      expect(path_present?).to be true
+    end
+
+    it 'returns true when path is a real path' do
+      @path = 'app/models'
+      expect(path_present?).to be true
+    end
+  end
+
   describe '#extract_ref_and_format' do
     it 'ignores any matching refs suffixed with atom' do
       expect(extract_ref_and_format('master.atom')).to eq(['master', :atom])

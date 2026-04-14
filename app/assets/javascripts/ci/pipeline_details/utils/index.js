@@ -163,5 +163,6 @@ export const graphqlEtagMergeRequestPipelines = (graphqlPath, mergeRequestId) =>
 };
 
 export const graphqlEtagStagePath = (graphqlPath, stageId) => {
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- template literal suffix is an ETag resource identifier, not a navigational URL
   return `${graphqlPath}/stages/id/${stageId}`;
 };

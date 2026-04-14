@@ -94,6 +94,14 @@ module Observability
       "http://#{otel_address}:4317"
     end
 
+    def otel_https_endpoint
+      "https://#{otel_address}:14318"
+    end
+
+    def otel_grpcs_endpoint
+      "https://#{otel_address}:14317"
+    end
+
     def otel_address
       if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- endpoint differs between SaaS and self-managed
         "#{o11y_service_name}.otel.gitlab-o11y.com"

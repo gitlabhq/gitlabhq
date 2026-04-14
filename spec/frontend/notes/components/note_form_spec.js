@@ -388,6 +388,7 @@ describe('issue_note_form component', () => {
   describe('markdownPreviewPath', () => {
     const diffFile = {
       file_path: 'app/models/user.rb',
+      view_path: '/namespace/project/-/blob/abc123/app/models/user.rb',
       diff_refs: {
         base_sha: 'abc123',
         start_sha: 'def456',
@@ -446,6 +447,145 @@ describe('issue_note_form component', () => {
 
       expect(previewPath).not.toContain('preview_suggestions');
       expect(previewPath).toBe(noteableDataMock.preview_note_path);
+    });
+  });
+
+  describe('codeSuggestionsConfig passed to MarkdownEditor', () => {
+    const findMarkdownEditorConfig = () =>
+      wrapper.findComponent(MarkdownEditor).props('codeSuggestionsConfig');
+
+    describe('lines normalization', () => {
+      it('uses text directly when present on the line object', () => {
+        createComponentWrapper({
+          line: { text: 'plain text', rich_text: '<b>ignored</b>', type: 'new', new_line: 1 },
+          lines: [],
+        });
+
+        expect(findMarkdownEditorConfig().lines).toEqual(['plain text']);
+      });
+
+      it('strips HTML and unescapes entities from rich_text when text is absent', () => {
+        createComponentWrapper({
+          line: { rich_text: '<span>&lt;div&gt;</span>', type: 'new', new_line: 1 },
+          lines: [],
+        });
+
+        expect(findMarkdownEditorConfig().lines).toEqual(['<div>']);
+      });
+
+      it('uses the lines prop when provided, ignoring the single line', () => {
+        createComponentWrapper({
+          line: { text: 'first', type: 'new', new_line: 1 },
+          lines: [
+            { text: 'line one', type: 'new', new_line: 1 },
+            { text: 'line two', type: 'new', new_line: 2 },
+          ],
+        });
+
+        expect(findMarkdownEditorConfig().lines).toEqual(['line one', 'line two']);
+      });
+
+      it('passes empty lines array when no line or lines provided', () => {
+        createComponentWrapper({ line: null, lines: [] });
+
+        expect(findMarkdownEditorConfig().lines).toEqual([]);
+      });
+    });
+
+    describe('lineType', () => {
+      it('passes the line type when line is provided', () => {
+        createComponentWrapper({
+          line: { text: 'foo', type: 'new', new_line: 1 },
+        });
+
+        expect(findMarkdownEditorConfig().lineType).toBe('new');
+      });
+
+      it('passes empty string when line is null', () => {
+        createComponentWrapper({ line: null });
+
+        expect(findMarkdownEditorConfig().lineType).toBe('');
+      });
+    });
+
+    describe('canSuggest', () => {
+      it('is falsy without a line', () => {
+        createComponentWrapper({ line: null });
+
+        expect(findMarkdownEditorConfig().canSuggest).toBe(false);
+      });
+
+      it('is falsy when line.can_receive_suggestion is false', () => {
+        createComponentWrapper({
+          line: { text: 'foo', type: 'new', new_line: 1, can_receive_suggestion: false },
+        });
+
+        expect(findMarkdownEditorConfig().canSuggest).toBe(false);
+      });
+    });
+
+    describe('lineRange', () => {
+      it('is null when no line is provided', () => {
+        createComponentWrapper({ line: null, lines: [] });
+
+        expect(findMarkdownEditorConfig().lineRange).toBeNull();
+      });
+
+      it('sets start and end to the single line number', () => {
+        createComponentWrapper({
+          line: { text: 'foo', type: 'new', new_line: 7 },
+          lines: [],
+        });
+
+        expect(findMarkdownEditorConfig().lineRange).toEqual({ start: 7, end: 7 });
+      });
+
+      it('uses first and last new_line from the lines prop for a range', () => {
+        createComponentWrapper({
+          line: { text: 'last', type: 'new', new_line: 9 },
+          lines: [
+            { text: 'first', type: 'new', new_line: 5 },
+            { text: 'middle', type: 'new', new_line: 7 },
+            { text: 'last', type: 'new', new_line: 9 },
+          ],
+        });
+
+        expect(findMarkdownEditorConfig().lineRange).toEqual({ start: 5, end: 9 });
+      });
+    });
+
+    describe('blobRawPath', () => {
+      it('converts diffFile view_path to a raw path', () => {
+        const diffFile = {
+          file_path: 'foo.rb',
+          view_path: '/foo/-/blob/abc/foo.rb',
+          diff_refs: { base_sha: 'abc', start_sha: 'def', head_sha: 'ghi' },
+        };
+        createComponentWrapper({
+          line: { text: 'foo', type: 'new', new_line: 1 },
+          diffFile,
+        });
+
+        expect(findMarkdownEditorConfig().blobRawPath).toBe('/foo/-/raw/abc/foo.rb');
+      });
+
+      it('is null when no diffFile is provided', () => {
+        createComponentWrapper({ line: { text: 'foo', type: 'new', new_line: 1 } });
+
+        expect(findMarkdownEditorConfig().blobRawPath).toBeNull();
+      });
+
+      it('is null when diffFile has no view_path', () => {
+        createComponentWrapper({
+          line: { text: 'foo', type: 'new', new_line: 1 },
+          diffFile: {
+            file_path: 'foo.rb',
+            diff_refs: { base_sha: 'abc', start_sha: 'def', head_sha: 'ghi' },
+          },
+        });
+
+        expect(findMarkdownEditorConfig().blobRawPath).toBeNull();
+      });
     });
   });
 });

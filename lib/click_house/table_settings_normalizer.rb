@@ -13,7 +13,7 @@ module ClickHouse
       statement
         .gsub(", deduplicate_merge_projection_mode = 'rebuild'", '')
         .gsub("deduplicate_merge_projection_mode = 'rebuild', ", '')
-        .gsub("SETTING deduplicate_merge_projection_mode = 'rebuild'", '')
+        .gsub("SETTINGS deduplicate_merge_projection_mode = 'rebuild'", '')
     end
   end
 end

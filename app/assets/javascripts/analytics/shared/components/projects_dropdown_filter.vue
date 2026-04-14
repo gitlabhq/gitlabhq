@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlIcon, GlAvatar, GlCollapsibleListbox, GlTruncate } from '@gitlab/ui';
-import { debounce, unionBy } from 'lodash';
+import { debounce, unionBy } from 'lodash-es';
 import { filterBySearchTerm } from '~/analytics/shared/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
@@ -53,6 +53,7 @@ export default {
       default: '',
     },
   },
+  emits: ['selected'],
   data() {
     return {
       loading: true,

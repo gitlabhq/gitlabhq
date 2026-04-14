@@ -95,3 +95,7 @@ To enable proxy authentication in the Language Server, follow the steps for your
 
 > [!note]
 > Bearer authentication is proposed in [issue 548](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/548).
+
+## Related topics
+
+- [GitLab Language Server releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases)

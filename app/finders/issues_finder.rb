@@ -28,7 +28,7 @@
 #     updated_after: datetime
 #     updated_before: datetime
 #     confidential: boolean
-#     issue_types: array of strings (one of ::WorkItems::TypesFramework::Provider.new.unfiltered_base_types)
+#     issue_types: array of strings (one of ::WorkItems::TypesFramework::Provider.unfiltered_base_types)
 #
 class IssuesFinder < IssuableFinder
   extend ::Gitlab::Utils::Override
@@ -112,7 +112,6 @@ class IssuesFinder < IssuableFinder
   def use_namespace_traversal_ids_filtering?
     return false unless params.group?
     return false unless include_subgroups_or_descendants?
-    return false unless ::Feature.enabled?(:use_namespace_traversal_ids_for_work_items_finder, current_user)
     return false unless user_can_access_all_subgroup_items?
 
     # For sub-groups it's performant enough to use the traversal_ids and sort in memory.

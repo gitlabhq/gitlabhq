@@ -82,6 +82,7 @@ describe('WorkItemAwardEmoji component', () => {
 
   const createComponent = ({
     props = {},
+    provide = {},
     awardEmojiQueryHandler = awardEmojiQuerySuccessHandler,
     awardEmojiMutationHandler = awardEmojiAddSuccessHandler,
   } = {}) => {
@@ -117,6 +118,7 @@ describe('WorkItemAwardEmoji component', () => {
         workItemDiscussionLocked: false,
         ...props,
       },
+      provide,
     });
   };
 
@@ -316,6 +318,7 @@ describe('WorkItemAwardEmoji component', () => {
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
           after: undefined,
+          useWorkItemFeatures: false,
         });
         expect(awardEmojiQuerySingleItemHandler).toHaveBeenCalledTimes(1);
       });
@@ -340,6 +343,7 @@ describe('WorkItemAwardEmoji component', () => {
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
           after: 'endCursor',
+          useWorkItemFeatures: false,
         });
 
         await nextTick();
@@ -349,6 +353,7 @@ describe('WorkItemAwardEmoji component', () => {
           iid: '1',
           pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
           after: mockMoreThanDefaultAwardEmojisWidget.pageInfo.endCursor,
+          useWorkItemFeatures: false,
         });
         expect(awardEmojisQueryMoreThanDefaultHandler).toHaveBeenCalledTimes(2);
       });
@@ -375,5 +380,22 @@ describe('WorkItemAwardEmoji component', () => {
         expect(findAwardsList().props('canAwardEmoji')).toBe(expected);
       },
     );
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    it('passes useWorkItemFeatures as true to the query', async () => {
+      createComponent({
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+      await waitForPromises();
+
+      expect(awardEmojiQuerySuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'test-project-path',
+        iid: '1',
+        pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+        after: undefined,
+        useWorkItemFeatures: true,
+      });
+    });
   });
 });

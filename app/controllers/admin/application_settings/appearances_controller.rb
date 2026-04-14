@@ -97,6 +97,7 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
       message_background_color
       message_font_color
       email_header_and_footer_enabled
+      site_name
     ]
   end
 end

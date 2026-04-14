@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { MASK_ITEM_VALUE_HIDDEN } from '../constants';

@@ -45,7 +45,7 @@ module Integrations
     def self.help
       build_help_page_url(
         'user/project/integrations/beyond_identity.md',
-        s_('Verify that GPG keys are authorized by Beyond Identity Authenticator.')
+        _('Verify that GPG keys are authorized by Beyond Identity Authenticator.')
       )
     end
 

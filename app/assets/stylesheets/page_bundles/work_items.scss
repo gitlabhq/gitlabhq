@@ -364,7 +364,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-.work-item-list-container {
+.work-item-list-container, .planning-view {
   .row-content-block {
     @apply gl-bg-transparent;
     @apply gl-border-b-0;

@@ -45,6 +45,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category
         description: 'test_desc',
         null: true,
         resolver_method: :object,
+        authorize: nil,
         resolver: 'resolver mock'
       })
     end
@@ -68,6 +69,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category
         description: 'test_desc',
         null: true,
         resolver_method: :object,
+        authorize: nil,
         resolver: 'resolver mock'
       })
     end
@@ -91,6 +93,24 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category
 
       expect(parent_field.fields.size).to eq(1)
       expect(parent_field.fields.first[:options][:resolver]).to eq('resolver with validation')
+    end
+
+    it 'supports authorize option' do
+      expected_resolver_options = {
+        field_name: :aggregation,
+        types_prefix: :aggregation,
+        description: 'test_desc',
+        authorize: :read_project
+      }
+      block = proc {}
+      expect(Resolvers::Analytics::Aggregation::EngineResolver)
+        .to receive(:build).with(engine_class, **expected_resolver_options, &block).and_return('resolver mock')
+      parent_field.mount_aggregation_engine(engine_class, description: 'test_desc', authorize: :read_project, &block)
+
+      expect(parent_field.fields.size).to eq(1)
+      field = parent_field.fields.first
+
+      expect(field[:options]).to include(authorize: :read_project)
     end
   end
 end

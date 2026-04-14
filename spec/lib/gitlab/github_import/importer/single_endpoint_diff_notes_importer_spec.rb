@@ -22,7 +22,8 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
         :merged_merge_request,
         iid: 999,
         source_project: project,
-        target_project: project
+        target_project: project,
+        imported_from: :github
       )
     end
 
@@ -72,6 +73,23 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, 
       expect(client).not_to receive(:each_page)
 
       subject.each_object_to_import {}
+    end
+
+    context 'when the project has merge requests not imported from GitHub' do
+      before do
+        create(:merge_request, source_project: project, target_project: project,
+          source_branch: 'other-branch', imported_from: :none)
+      end
+
+      it 'only fetches diff notes for merge requests imported from GitHub' do
+        expect(client)
+          .to receive(:each_page)
+          .once
+          .with(:pull_request_comments, nil, 'github/repo', merge_request.iid, {})
+          .and_yield(page)
+
+        expect { |b| subject.each_object_to_import(&b) }.to yield_with_args(note)
+      end
     end
   end
 end

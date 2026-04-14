@@ -14,12 +14,17 @@ module Gitlab
       IAM_SERVICE_PATH_PREFIX = '/iam-service'
 
       def initialize(app = nil, opts = {})
-        iam_service_url = Gitlab.config.authn.iam_service.url
-        super(app, backend: iam_service_url, **opts)
+        backend_url = begin
+          Authn::IamAuthService.url
+        rescue Authn::IamAuthService::ConfigurationError
+          nil
+        end
+
+        super(app, backend: backend_url, **opts)
       end
 
       def perform_request(env)
-        if Gitlab.config.authn.iam_service.enabled && env['PATH_INFO'].start_with?(IAM_SERVICE_PATH_PREFIX)
+        if @backend.present? && Authn::IamAuthService.enabled? && env['PATH_INFO'].start_with?(IAM_SERVICE_PATH_PREFIX)
 
           # Remove /iam-service prefix from path
           env['PATH_INFO'] = env['PATH_INFO'].sub(IAM_SERVICE_PATH_PREFIX, '')

@@ -193,6 +193,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     context 'when DB timeouts occur from global searches', :aggregate_failures do
       %w[
         issues
+        work_items
         merge_requests
         milestones
         projects
@@ -240,7 +241,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     context 'with correct params' do
-      [:issues, :merge_requests, :projects, :milestones, :users, :snippet_titles].each do |scope|
+      [:issues, :work_items, :merge_requests, :projects, :milestones, :users, :snippet_titles].each do |scope|
         context "with correct params for scope #{scope}" do
           it_behaves_like 'internal event tracking' do
             let(:event) { 'perform_search' }
@@ -325,6 +326,129 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
             let(:confidential) { false }
 
             include_examples 'filter by confidentiality', scope: :issues, search: 'awesome'
+          end
+        end
+      end
+
+      context 'for work_items scope' do
+        let_it_be(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+        let_it_be(:issue_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:issue) }
+
+        context 'without filtering by type' do
+          before do
+            create(:work_item, :issue, project: project, title: 'awesome work item')
+
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome' }
+          end
+
+          it_behaves_like 'response is correct', schema: 'public_api/v4/work_items'
+
+          it_behaves_like 'apdex recorded', scope: 'work_items', level: 'global'
+
+          describe 'pagination' do
+            before do
+              create(:work_item, :task, project: project, title: 'another work item')
+            end
+
+            include_examples 'pagination', scope: :work_items
+          end
+        end
+
+        context 'when filtering by type' do
+          before do
+            create(:work_item, :issue, project: project, title: 'awesome issue work item')
+            create(:work_item, :task, project: project, title: 'awesome task work item')
+          end
+
+          it 'filters by single type' do
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: ['task'] }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.size).to eq(1)
+            expect(json_response.first['title']).to include('task')
+          end
+
+          it 'filters by multiple types' do
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: %w[task issue] }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.size).to eq(2)
+          end
+
+          %w[TASK Task].each do |type_case|
+            it "filters case-insensitively with '#{type_case}'" do
+              get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: [type_case] }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response.size).to eq(1)
+              expect(json_response.first['title']).to include('task')
+            end
+          end
+
+          it 'filters case-insensitively with multiple mixed case types' do
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: %w[TASK Issue] }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.size).to eq(2)
+          end
+
+          it 'returns bad request when requesting unavailable work item types' do
+            # Request a type that doesn't exist or isn't available (e.g., 'nonexistent')
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: ['nonexistent'] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq(
+              '400 Bad request - All requested work item types are unavailable or do not exist'
+            )
+          end
+
+          it 'returns bad request when all requested types are unavailable' do
+            # Request multiple unavailable types
+            get api(endpoint, user), params: { scope: 'work_items', search: 'awesome', type: %w[nonexistent invalid] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq(
+              '400 Bad request - All requested work item types are unavailable or do not exist'
+            )
+          end
+        end
+
+        context 'when filtering by state' do
+          before do
+            create(:work_item, :issue, project: project, title: 'awesome opened work item')
+            create(:work_item, :issue, :closed, project: project, title: 'awesome closed work item')
+          end
+
+          context 'for state: opened' do
+            let(:state) { 'opened' }
+
+            include_examples 'filter by state', scope: :work_items, search: 'awesome'
+          end
+
+          context 'for state: closed' do
+            let(:state) { 'closed' }
+
+            include_examples 'filter by state', scope: :work_items, search: 'awesome'
+          end
+        end
+
+        context 'when filtering by confidentiality' do
+          before do
+            create(:work_item, :issue, project: project, author: user, title: 'awesome non-confidential work item')
+            create(:work_item, :issue, :confidential, project: project, author: user,
+              title: 'awesome confidential work item')
+          end
+
+          context 'for confidential: true' do
+            let(:confidential) { true }
+
+            include_examples 'filter by confidentiality', scope: :work_items, search: 'awesome'
+          end
+
+          context 'for confidential: false' do
+            let(:confidential) { false }
+
+            include_examples 'filter by confidentiality', scope: :work_items, search: 'awesome'
           end
         end
       end

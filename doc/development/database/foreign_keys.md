@@ -287,7 +287,7 @@ end
 ##### Verify the MR was deployed and the FK is valid in production
 
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
-   `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
+   `/chatops gitlab run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
    the post-deploy migration has been executed in the production database. For more information, see
    [How to determine if a post-deploy migration has been executed on GitLab.com](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 1. Wait until the next week so that the FK can be validated over a weekend.

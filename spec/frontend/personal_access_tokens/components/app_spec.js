@@ -13,6 +13,7 @@ import PersonalAccessTokenDrawer from '~/personal_access_tokens/components/perso
 import CreatePersonalAccessTokenDropdown from '~/personal_access_tokens/components/create_personal_access_token_dropdown.vue';
 import PersonalAccessTokenStatistics from '~/personal_access_tokens/components/personal_access_token_statistics.vue';
 import PersonalAccessTokenActions from '~/personal_access_tokens/components/personal_access_token_actions.vue';
+import PersonalAccessTokenDuplicateModal from '~/personal_access_tokens/components/personal_access_token_duplicate_modal.vue';
 import RotatedPersonalAccessToken from '~/personal_access_tokens/components/rotated_personal_access_token.vue';
 import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
 import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
@@ -55,6 +56,7 @@ describe('PersonalAccessTokensApp', () => {
   const findDrawer = () => wrapper.findComponent(PersonalAccessTokenDrawer);
   const findStatistics = () => wrapper.findComponent(PersonalAccessTokenStatistics);
   const findActions = () => wrapper.findComponent(PersonalAccessTokenActions);
+  const findDuplicateModal = () => wrapper.findComponent(PersonalAccessTokenDuplicateModal);
   const findRotatedToken = () => wrapper.findComponent(RotatedPersonalAccessToken);
 
   beforeEach(() => {
@@ -499,6 +501,37 @@ describe('PersonalAccessTokensApp', () => {
         token: mockTokens[1],
         action: 'revoke',
       });
+    });
+  });
+
+  describe('duplicate token', () => {
+    it('renders the duplicate modal component', () => {
+      expect(findDuplicateModal().exists()).toBe(true);
+    });
+
+    it('passes null token to modal by default', () => {
+      expect(findDuplicateModal().props('token')).toBeNull();
+    });
+
+    it('sets the duplicate token when table emits duplicate', async () => {
+      await findTable().vm.$emit('duplicate', mockTokens[0]);
+
+      expect(findDuplicateModal().props('token')).toEqual(mockTokens[0]);
+    });
+
+    it('sets the duplicate token and keeps the drawer open when drawer emits duplicate', async () => {
+      await findTable().vm.$emit('select', mockTokens[0]);
+      await findDrawer().vm.$emit('duplicate', mockTokens[0]);
+
+      expect(findDuplicateModal().props('token')).toEqual(mockTokens[0]);
+      expect(findDrawer().props('token')).toEqual(mockTokens[0]);
+    });
+
+    it('clears the duplicate token when modal emits cancel', async () => {
+      await findTable().vm.$emit('duplicate', mockTokens[0]);
+      await findDuplicateModal().vm.$emit('cancel');
+
+      expect(findDuplicateModal().props('token')).toBeNull();
     });
   });
 });

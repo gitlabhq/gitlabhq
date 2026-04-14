@@ -241,6 +241,12 @@ may not be able to check out the wiki locally afterward.
 
 ## Edit a wiki page
 
+{{< history >}}
+
+- Sticky **Edit** in preview mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590255) in GitLab 18.11.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role.
@@ -252,6 +258,9 @@ Prerequisites:
    - Select **Edit**.
 1. Edit the content.
 1. Select **Save changes**.
+
+When you preview a page and scroll, a sticky bar at the top of the page keeps
+the **Edit** button and other actions accessible.
 
 Unsaved changes to a wiki page are preserved in local browser storage to prevent accidental data loss.
 
@@ -333,7 +342,7 @@ A PDF of the wiki page is created.
 
 With the diagrams.net integration, you can create and embed SVG diagrams on wiki pages! The diagram editor is available in both the plain text editor and the rich text editor.
 
-On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
+On GitLab.com, this integration is enabled for all users and does not require any additional configuration.
 
 On GitLab Self-Managed, you can integrate with the free diagrams.net website or host your own diagrams.net site in offline environments.
 
@@ -511,6 +520,7 @@ You can also [restore wiki page templates](#restore-a-page-template-to-a-previou
 - Limit of 15 items in the sidebar [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158084) in GitLab 17.2.
 - Sidebar [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/569910) from the upper right to the upper left of the page in GitLab 18.6.
 - Floating sidebar toggle [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221019) in GitLab 18.9 with a flag named `wiki_floating_sidebar_toggle`. Disabled by default.
+- Floating sidebar toggle [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227437) in GitLab 18.11. Feature flag `wiki_floating_sidebar_toggle` removed.
 
 {{< /history >}}
 

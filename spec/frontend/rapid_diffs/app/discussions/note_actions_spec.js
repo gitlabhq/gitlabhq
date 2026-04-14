@@ -293,6 +293,56 @@ describe('NoteActions', () => {
     });
   });
 
+  describe('Resolve Button', () => {
+    const findResolveButton = () => wrapper.find('[data-testid="resolve-discussion-button"]');
+
+    it('renders when canResolve is true', () => {
+      createComponent({ canResolve: true });
+      expect(findResolveButton().exists()).toBe(true);
+    });
+
+    it('does not render when canResolve is false', () => {
+      createComponent({ canResolve: false });
+      expect(findResolveButton().exists()).toBe(false);
+    });
+
+    it('shows check-circle icon when unresolved', () => {
+      createComponent({ canResolve: true, isResolved: false });
+      expect(findResolveButton().props('icon')).toBe('check-circle');
+    });
+
+    it('shows check-circle-filled icon when resolved', () => {
+      createComponent({ canResolve: true, isResolved: true });
+      expect(findResolveButton().props('icon')).toBe('check-circle-filled');
+    });
+
+    it('applies success text class when resolved', () => {
+      createComponent({ canResolve: true, isResolved: true });
+      expect(findResolveButton().classes()).toContain('!gl-text-success');
+    });
+
+    it('shows loading state when resolving', () => {
+      createComponent({ canResolve: true, isResolving: true });
+      expect(findResolveButton().props('loading')).toBe(true);
+    });
+
+    it('emits resolve event when clicked', () => {
+      createComponent({ canResolve: true });
+      findResolveButton().vm.$emit('click');
+      expect(wrapper.emitted('resolve')).toEqual([[]]);
+    });
+
+    it('shows correct tooltip for unresolved thread', () => {
+      createComponent({ canResolve: true, isResolved: false });
+      expect(findResolveButton().attributes('title')).toBe('Resolve thread');
+    });
+
+    it('shows correct tooltip for resolved thread', () => {
+      createComponent({ canResolve: true, isResolved: true });
+      expect(findResolveButton().attributes('title')).toBe('Reopen thread');
+    });
+  });
+
   describe('Abuse Category Selector', () => {
     it('does not render the drawer by default', () => {
       createComponent({ canReportAsAbuse: true });

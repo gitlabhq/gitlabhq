@@ -219,13 +219,13 @@ module Gitlab
     def base_and_descendant_ids_cte
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
-      base_query = descendants_base.except(:order).select(objects_table[:id])
+      base_query = descendants_base.except(:order).select(objects_id_columns)
 
       cte << base_query
 
       # Recursively get all the descendants of the base set.
       descendants_query = unscoped_model
-        .select(objects_table[:id])
+        .select(objects_id_columns)
         .from(from_tables(cte))
         .where(descendant_conditions(cte))
         .except(:order)
@@ -241,6 +241,10 @@ module Gitlab
 
     def parent_id_column(cte)
       cte.table[:parent_id]
+    end
+
+    def objects_id_columns
+      objects_table[:id]
     end
 
     def from_tables(cte)

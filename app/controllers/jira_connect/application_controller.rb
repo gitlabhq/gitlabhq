@@ -40,7 +40,7 @@ class JiraConnect::ApplicationController < ApplicationController
       next unless jwt
       next unless jwt.iss_claim
 
-      JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
+      JiraConnectInstallation.find_by_client_key_and_organization_id(jwt.iss_claim, Current.organization.id)
     end
   end
 

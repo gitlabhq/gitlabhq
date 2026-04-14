@@ -86,7 +86,7 @@ module ActiveContext
         def search_embedding_model
           return nil if collection_record&.search_embedding_model.nil?
 
-          embedding_model_selector.for(collection_record.search_embedding_model)
+          embedding_model_selector.for(collection_record.search_embedding_model, search: true)
         end
 
         def indexing_embedding_models

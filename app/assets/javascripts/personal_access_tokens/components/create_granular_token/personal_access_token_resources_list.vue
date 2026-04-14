@@ -7,7 +7,7 @@ import {
   GlFormCheckbox,
   GlPopover,
 } from '@gitlab/ui';
-import { xor } from 'lodash';
+import { xor } from 'lodash-es';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
@@ -26,7 +26,7 @@ export default {
       required: false,
       default: () => [],
     },
-    permissions: {
+    permissionsFilteredBySearch: {
       type: Array,
       required: false,
       default: () => [],
@@ -53,7 +53,7 @@ export default {
       },
     },
     resourcesGroupedByCategory() {
-      return groupPermissionsByResourceAndCategory(this.permissions);
+      return groupPermissionsByResourceAndCategory(this.permissionsFilteredBySearch);
     },
   },
   methods: {

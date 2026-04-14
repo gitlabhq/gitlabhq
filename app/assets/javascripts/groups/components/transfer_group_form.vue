@@ -1,5 +1,5 @@
 <script>
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import TransferLocations from '~/groups_projects/components/transfer_locations.vue';
 import { getGroupTransferLocations } from '~/api/groups_api';
@@ -10,7 +10,6 @@ export const i18n = {
   ),
   confirmButtonText: __('Transfer group'),
   emptyNamespaceTitle: __('No parent group'),
-  dropdownLabel: s__('GroupSettings|Select parent group'),
 };
 
 export default {
@@ -68,7 +67,6 @@ export default {
       data-testid="transfer-group-namespace"
       :group-transfer-locations-api-method="getGroupTransferLocations"
       :additional-dropdown-items="$options.additionalDropdownItems"
-      :label="$options.i18n.dropdownLabel"
     />
     <confirm-danger
       :disabled="disableSubmitButton"

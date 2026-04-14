@@ -9,10 +9,8 @@
     },
     "description": {
       "type": "string",
-      "description": "Description of the resource"
+      "description": "Description of the resource",
+      "pattern": "<actions>"
     }
-  },
-  "required": [
-    "description"
-  ]
+  }
 }

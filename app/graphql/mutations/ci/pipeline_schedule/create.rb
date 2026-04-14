@@ -9,6 +9,8 @@ module Mutations
         include FindsProject
 
         authorize :create_pipeline_schedule
+        authorize_granular_token permissions: :create_pipeline_schedule, boundary_argument: :project_path,
+          boundary_type: :project
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

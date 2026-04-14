@@ -10,8 +10,6 @@ require_relative '../../qa'
 # Extension for GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
 require_relative 'helpers/quarantine_formatter_extension'
 
-QA::Specs::QaDeprecationToolkitEnv.configure!
-
 Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack? && !QA::Runtime::Env.dry_run
 
 # TODO: move all classes that perform rspec configuration under spec/helpers

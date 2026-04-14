@@ -78,7 +78,7 @@ describe('WorkItemProjectsListbox', () => {
       const dropdownItem = findDropdownItemFor(namespaceProjectsData[0].fullPath);
 
       expect(dropdownItem.text()).toContain(namespaceProjectsData[0].name);
-      expect(dropdownItem.text()).toContain(namespaceProjectsData[0].namespace.name);
+      expect(dropdownItem.text()).toContain(namespaceProjectsData[0].nameWithNamespace);
     });
 
     it('supports selecting a project', async () => {
@@ -163,7 +163,7 @@ describe('WorkItemProjectsListbox', () => {
       const dropdownItem = findDropdownItemFor(namespaceProjectsData[0].fullPath);
 
       expect(dropdownItem.text()).toContain(namespaceProjectsData[0].name);
-      expect(dropdownItem.text()).toContain(namespaceProjectsData[0].namespace.name);
+      expect(dropdownItem.text()).toContain(namespaceProjectsData[0].nameWithNamespace);
     });
 
     it('auto-selects the current project when the selected project is in the list of projects', async () => {

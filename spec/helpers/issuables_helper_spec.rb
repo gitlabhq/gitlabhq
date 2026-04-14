@@ -6,13 +6,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   describe '#users_dropdown_label' do
     let(:user) { build_stubbed(:user) }
     let(:user2) { build_stubbed(:user) }
@@ -210,8 +203,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         @project = issue.project
 
         base_data = {
-          endpoint: "/#{@project.full_path}/-/issues/#{issue.iid}",
-          updateEndpoint: "/#{@project.full_path}/-/issues/#{issue.iid}.json",
+          endpoint: "/#{@project.full_path}/-/work_items/#{issue.iid}",
+          updateEndpoint: "/#{@project.full_path}/-/work_items/#{issue.iid}.json",
           canUpdate: true,
           canDestroy: true,
           issuableRef: "##{issue.iid}",
@@ -231,6 +224,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           canCreateIncident: true,
           fullPath: issue.project.full_path,
           iid: issue.iid,
+          isIncidentManagement: false,
+          isServiceDesk: false,
           issuableId: issue.id,
           issueType: 'issue',
           isHidden: false,
@@ -284,6 +279,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         expected_data = {
           issueType: 'incident',
+          isIncidentManagement: true,
+          isServiceDesk: false,
           hasLinkedAlerts: false,
           canUpdateTimelineEvent: true,
           currentPath: "/foo/bar/-/issues/incident/#{incident.iid}/timeline",
@@ -291,6 +288,54 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         }
 
         expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))
+      end
+    end
+
+    context 'for ticket' do
+      let(:ticket) { create(:issue, :ticket) }
+
+      it 'includes ticket attributes' do
+        @project = ticket.project
+
+        expected_data = {
+          issueType: 'ticket',
+          isIncidentManagement: false,
+          isServiceDesk: true
+        }
+
+        expect(helper.issuable_initial_data(ticket)).to match(hash_including(expected_data))
+      end
+    end
+
+    context 'when work_item_type is nil' do
+      let(:issue) { create(:issue) }
+
+      it 'defaults isIncidentManagement and isServiceDesk to false' do
+        @project = issue.project
+        allow(issue).to receive(:work_item_type).and_return(nil)
+
+        expect(helper.issuable_initial_data(issue)).to match(hash_including(
+          isIncidentManagement: false,
+          isServiceDesk: false
+        ))
+      end
+    end
+
+    context 'for service desk issue authored by support bot' do
+      let(:project) { create(:project) }
+      let(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
+      let(:service_desk_issue) { create(:issue, project: project, author: support_bot) }
+
+      it 'sets isServiceDesk to true via from_service_desk? fallback' do
+        @project = service_desk_issue.project
+
+        expected_data = {
+          issueType: 'issue',
+          isIncidentManagement: false,
+          isServiceDesk: true
+        }
+
+        expect(helper.issuable_initial_data(service_desk_issue)).to match(hash_including(expected_data))
       end
     end
 
@@ -454,6 +499,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       it 'returns the expected data' do
         expect(helper.issuable_label_selector_data(project, issuable)).to match({
+          allow_scoped_labels: project.licensed_feature_available?(:scoped_labels).to_s,
           field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
           full_path: project.full_path,
           initial_labels: '[]',
@@ -495,6 +541,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         ]
 
         expect(helper.issuable_label_selector_data(project, issuable)).to match({
+          allow_scoped_labels: project.licensed_feature_available?(:scoped_labels).to_s,
           field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
           full_path: project.full_path,
           initial_labels: initial_labels.to_json,

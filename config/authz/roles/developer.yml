@@ -7,45 +7,92 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _read_own_workspace
+  - _update_own_workspace
   - access_security_and_compliance
+  - access_security_scans_api
+  - add_project_to_instance_security_dashboard
   - admin_feature_flag
+  - admin_feature_flags_issue_links
   - admin_feature_flags_user_lists
+  - admin_incident_management_timeline_event
   - admin_issue_board
   - admin_merge_request
+  - admin_vulnerability_merge_request_link
+  - approve_merge_request
   - cancel_build
   - cancel_pipeline
   - create_build
   - create_commit_status
   - create_container_image
+  - create_coverage_fuzzing_corpus
   - create_deployment
   - create_environment
+  - create_external_issue_link
   - create_feature_flag
   - create_merge_request_from
+  - create_on_demand_dast_scan
   - create_package
   - create_pipeline
   - create_pipeline_schedule
   - create_release
+  - create_saved_replies
   - create_wiki
+  - create_workspace
   - destroy_container_image
   - destroy_container_image_tag
   - destroy_container_registry_protection_tag_rule
   - destroy_environment
   - destroy_feature_flag
   - destroy_release
+  - destroy_saved_replies
+  - edit_on_demand_dast_scan
+  - enable_continuous_vulnerability_scans
+  - execute_ai_catalog_item
+  - keep_job_artifacts
+  - play_job
+  - provide_status_check_response
   - publish_catalog_version
+  - publish_status_page
   - push_code
+  - read_ai_catalog_flow
+  - read_ai_catalog_third_party_flow
+  - read_ai_flow_triggers
+  - read_ai_foundational_flow
   - read_alert_management_alert
+  - read_ascp_component
+  - read_ascp_scan
+  - read_ascp_security_context
   - read_cluster
   - read_cluster_agent
+  - read_coverage_fuzzing
   - read_feature_flag
+  - read_merge_request_status_check_url
+  - read_on_demand_dast_scan
+  - read_pipeline_subscription
   - read_pod_logs
+  - read_project_audit_events
+  - read_project_security_exclusions
   - read_resource_group
+  - read_secret_push_protection_info
   - read_secure_files
   - read_security_configuration
+  - read_security_inventory
+  - read_security_orchestration_policies
+  - read_security_resource
+  - read_security_scan_profiles
+  - read_security_settings
   - read_terraform_state
+  - read_vulnerability
+  - read_vulnerability_statistics
   - reopen_merge_request
   - resolve_note
+  - retry_failed_status_checks
+  - retry_job
+  - trigger_amazon_q
+  - unschedule_job
   - update_alert_management_alert
+  - update_build
   - update_container_image
   - update_deployment
   - update_environment
@@ -55,18 +102,43 @@ project:
   - update_pipeline
   - update_release
   - update_resource_group
+  - update_saved_replies
+  - update_secret_detection_validity_check_status
   - update_sentry_issue
+  - update_vulnerability_flag
+  - write_observability
 group:
   permissions: []
   raw_permissions:
   - admin_crm_contact
   - admin_crm_organization
+  - admin_merge_request
+  - create_custom_dashboard
   - create_custom_emoji
   - create_observability_access_request
   - create_package
+  - create_saved_replies
+  - create_wiki
+  - delete_custom_dashboard
   - delete_o11y_settings
+  - destroy_saved_replies
+  - read_ai_catalog_flow
+  - read_ai_catalog_third_party_flow
+  - read_ai_foundational_flow
   - read_cluster
   - read_cluster_agent
+  - read_dependency
   - read_group_all_available_runners
+  - read_group_audit_events
+  - read_licenses
   - read_observability_portal
+  - read_security_attribute
+  - read_security_inventory
+  - read_security_orchestration_policies
+  - read_security_scan_profiles
+  - read_vulnerability
+  - read_vulnerability_statistics
+  - resolve_note
+  - update_custom_dashboard
   - update_o11y_settings
+  - update_saved_replies

@@ -10,6 +10,8 @@ import {
   PROJECT_DASHBOARD_TABS,
   FIRST_TAB_ROUTE_NAMES,
   PROJECTS_DASHBOARD_ROUTE_NAME,
+  FILTERED_SEARCH_TERM_KEY,
+  FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import TabView from '~/groups_projects/components/tab_view.vue';
@@ -17,15 +19,11 @@ import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-} from '~/groups_projects/constants';
-import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
-import {
   SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
-} from '~/projects/filtered_search_and_sort/constants';
+} from '~/groups_projects/constants';
+import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -128,7 +126,8 @@ describe('YourWorkProjectsApp', () => {
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
       shouldUpdateActiveTabCountFromTabQuery: true,
-      userPreferencesSortKey: 'projectsSort',
+      userPreferencesSortKey: null,
+      sortStorageKey: 'projects',
     });
   });
 

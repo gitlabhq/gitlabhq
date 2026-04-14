@@ -1,0 +1,12 @@
+---
+table: projects
+database: main
+ignored_columns:
+  - runners_token
+  - external_webhook_token
+  - runners_token_encrypted
+  - description_html
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_projects
+    priority: 2

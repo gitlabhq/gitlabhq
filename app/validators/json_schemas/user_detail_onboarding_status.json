@@ -64,10 +64,6 @@
         8,
         99
       ]
-    },
-    "version": {
-      "description": "Version of registration flow",
-      "type": "integer"
     }
   },
   "additionalProperties": false

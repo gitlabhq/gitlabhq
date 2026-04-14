@@ -26,15 +26,9 @@ module Gitlab
 
             gitlab_user_id = user_finder.user_id_for(review.author)
 
-            if gitlab_user_id
-              add_review_note!(gitlab_user_id)
-              add_approval!(gitlab_user_id)
-              add_reviewer!(gitlab_user_id) if options[:add_reviewer]
-            else
-              # TODO this method and this if/else can be removed when `github_user_mapping` flag is removed
-              # because there will always be a gitlab_user_id when using placeholder users.
-              add_complementary_review_note!(project.creator_id)
-            end
+            add_review_note!(gitlab_user_id)
+            add_approval!(gitlab_user_id)
+            add_reviewer!(gitlab_user_id) if options[:add_reviewer]
           end
 
           private
@@ -45,19 +39,6 @@ module Gitlab
             return if review.note.empty?
 
             add_note!(author_id, review_note_content)
-          end
-
-          def add_complementary_review_note!(author_id)
-            return if review.note.empty? && !review.approval?
-
-            note_body = MarkdownText.format(
-              review_note_content,
-              review.author,
-              project: project,
-              client: client
-            )
-
-            add_note!(author_id, note_body)
           end
 
           def review_note_content

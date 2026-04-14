@@ -147,6 +147,48 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
 
           it_behaves_like 'a valid diff head pipeline is required'
         end
+
+        context 'when the auto merge strategy is nil' do
+          let(:auto_merge_strategy) { nil }
+
+          it 'is success' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+          end
+        end
+
+        context 'when the auto merge strategy is STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS' do
+          let(:auto_merge_strategy) { ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS }
+
+          context 'when ci is disabled' do
+            it 'is success' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+            end
+          end
+
+          context 'when ci is enabled' do
+            before do
+              allow(merge_request).to receive(:has_ci_enabled?).and_return(true)
+            end
+
+            context 'when mwcp_skip_ci_guard is enabled' do
+              before do
+                stub_feature_flags(mwcp_skip_ci_guard: true)
+              end
+
+              it_behaves_like 'a valid diff head pipeline is required'
+            end
+
+            context 'when mwcp_skip_ci_guard is disabled' do
+              before do
+                stub_feature_flags(mwcp_skip_ci_guard: false)
+              end
+
+              it 'is success' do
+                expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+              end
+            end
+          end
+        end
       end
     end
   end

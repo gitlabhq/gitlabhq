@@ -54,15 +54,9 @@ module QA
       def enable_2fa_for_user(user)
         Flow::Login.while_signed_in(as: user) do
           Page::Main::Menu.perform(&:click_edit_profile_link)
-          Page::Profile::Menu.perform(&:click_account)
+          Page::Profile::Menu.perform(&:click_password_and_authentication)
 
-          if Runtime::Feature.enabled?("passkeys")
-            Page::Profile::Accounts::Show.perform(&:click_manage_authentication_button)
-          else
-            Page::Profile::Accounts::Show.perform(&:click_enable_2fa_button)
-          end
-
-          Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
+          Page::Profile::PasswordAndAuth.perform do |two_fa_auth|
             otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
             two_fa_auth.set_pin_code(otp.fresh_otp)
             two_fa_auth.set_current_password(user.password)

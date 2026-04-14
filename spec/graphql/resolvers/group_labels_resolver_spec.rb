@@ -122,7 +122,7 @@ RSpec.describe Resolvers::GroupLabelsResolver, feature_category: :team_planning 
 
         subject { resolve_labels(subgroup, params) }
 
-        it { self.instance_exec(&test) }
+        it { instance_exec(&test) }
       end
     end
   end

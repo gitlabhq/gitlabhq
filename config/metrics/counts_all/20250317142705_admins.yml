@@ -2,6 +2,8 @@
 key_path: counts.admins
 description: "Count of administrators"
 product_group: authentication
+product_categories:
+- system_access
 value_type: number
 status: active
 milestone: "17.11"

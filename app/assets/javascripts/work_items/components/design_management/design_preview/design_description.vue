@@ -60,6 +60,7 @@ export default {
       showEditor: false,
       isSubmitting: false,
       errorMessage: '',
+      isCancellingEdit: false,
       autosaveKey: `WorkItem/${getIdFromGraphQLId(this.design.issue.id)}/Design/${getIdFromGraphQLId(
         this.design.id,
       )}`,
@@ -96,29 +97,36 @@ export default {
       this.showEditor = false;
     },
     async cancelDescription() {
+      if (this.isCancellingEdit) return;
+
       if (this.descriptionText && this.descriptionText !== this.design.description) {
-        const confirmed = await confirmAction(this.$options.i18n.cancelEdit, {
-          primaryBtnText: this.$options.i18n.primaryModalButton,
-          cancelBtnText: this.$options.i18n.cancelModalButton,
-          primaryBtnVariant: 'danger',
-        });
+        this.isCancellingEdit = true;
+        try {
+          const confirmed = await confirmAction(this.$options.i18n.cancelEdit, {
+            primaryBtnText: this.$options.i18n.primaryModalButton,
+            cancelBtnText: this.$options.i18n.cancelModalButton,
+            primaryBtnVariant: 'danger',
+          });
 
-        if (!confirmed) {
-          return;
+          if (!confirmed) {
+            return;
+          }
+
+          // Update markdown's placeholder text based on if
+          // an existing description was being edited or
+          // a totally new description was being added
+          if (!this.design.descriptionHtml) {
+            this.descriptionText = '';
+          } else {
+            this.descriptionText = this.design.description;
+          }
+
+          markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
+          this.showEditor = false;
+          this.enableCheckboxes();
+        } finally {
+          this.isCancellingEdit = false;
         }
-
-        // Update markdown's placeholder text based on if
-        // an existing description was being edited or
-        // a totally new description was being added
-        if (!this.design.descriptionHtml) {
-          this.descriptionText = '';
-        } else {
-          this.descriptionText = this.design.description;
-        }
-
-        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
-        this.showEditor = false;
-        this.enableCheckboxes();
       } else {
         this.descriptionText = this.design.description;
         this.showEditor = false;

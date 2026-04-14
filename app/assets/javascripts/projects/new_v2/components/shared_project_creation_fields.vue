@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput, GlFormSelect, GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import validation, { initForm } from '~/vue_shared/directives/validation';

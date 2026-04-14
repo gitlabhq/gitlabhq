@@ -7,9 +7,9 @@ title: Model Switching
 
 The Model Switching Framework in the GitLab AI Gateway allows customers to choose between different AI models for various features.
 
-This feature is available for GitLab SaaS and self-managed instances using the cloud-connected AI Gateway.
+This feature is available for GitLab.com and self-managed instances using the cloud-connected AI Gateway.
 
-- On GitLab SaaS, this feature is available at the namespace level, allowing groups to choose between different models for their namespace.
+- On GitLab.com, this feature is available at the namespace level, allowing groups to choose between different models for their namespace.
   - If the namespace has not decided to "pin" a model, the default model will be used. This will also allow users to change the model themselves for specific features, like Agentic chat. This feature is termed as "User model selection".
 - On self-managed instances using the cloud-connected AI Gateway, this feature is available at the instance level.
 
@@ -138,5 +138,5 @@ After adding a new model:
 
 ## Notes
 
-- Please note that adding a new model will automatically make it available for the feature, not just for GitLab SaaS, but also for self-managed instances using the cloud-connected AI Gateway.
+- Please note that adding a new model will automatically make it available for the feature, not just for GitLab.com, but also for self-managed instances using the cloud-connected AI Gateway.
 - For a real-world example of adding new models, see [commit 16b9fee8](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/commit/16b9fee8d2ecdbb1d1d0f7e436883ed0769d8ba9) which added `gpt-5-mini` and `gpt-5-codex` models.

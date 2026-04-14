@@ -44,7 +44,6 @@ Database/JsonbSizeLimit:
     - 'app/models/user_preference.rb'
     - 'app/models/vulnerability.rb'
     - 'app/models/work_items/user_preference.rb'
-    - 'app/models/work_items/widget_definition.rb'
     - 'ee/app/models/ai/conversation/message.rb'
     - 'ee/app/models/authz/admin_role.rb'
     - 'ee/app/models/cloud_connector/access.rb'

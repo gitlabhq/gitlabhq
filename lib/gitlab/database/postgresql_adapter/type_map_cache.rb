@@ -24,7 +24,16 @@ module Gitlab
         def initialize_type_map(map = type_map)
           TYPE_MAP_CACHE_MONITOR.synchronize do
             cached_type_map = self.class.type_map_cache[@connection_parameters.hash]
-            break @type_map = cached_type_map if cached_type_map
+
+            # Clone the cached type map's internal mapping so each connection gets its own copy. This prevents
+            # `type_map.clear` on one connection (during reload_type_map) from emptying the map for all other
+            # connections sharing the cache. See https://gitlab.com/gitlab-org/gitlab/-/issues/592511
+            if cached_type_map
+              mapping_copy = cached_type_map.instance_variable_get(:@mapping).dup
+              map.instance_variable_set(:@mapping, mapping_copy)
+
+              break
+            end
 
             super
             self.class.type_map_cache[@connection_parameters.hash] = map

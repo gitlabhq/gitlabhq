@@ -8,7 +8,7 @@ title: GitLab MCPクライアント
 
 {{< details >}}
 
-- プラン: Premium、Ultimate
+- プラン: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom)、Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -25,6 +25,7 @@ title: GitLab MCPクライアント
 - GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/545956)で有効になりました。機能フラグ`duo_workflow_mcp_support`は削除されました。
 - GitLab 18.3で実験的機能から[ベータ](https://gitlab.com/gitlab-org/gitlab/-/issues/545956)に変更されました。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
+- GitLab 18.10で、GitLab.comのFreeティアでGitLabクレジットが利用可能です。
 
 {{< /history >}}
 
@@ -35,12 +36,12 @@ MCPは以下をサポートしています:
 - Visual Studio Code（VS Code）およびVSCodium
 - JetBrains IDE
 
-同じMCP設定ファイルは、サポートされているすべてのIDEで機能します。
+すべてのサポートされているIDEで、同じMCPの設定ファイルが動作します。
 
 次の機能はMCPクライアントとして動作し、MCPサーバーから外部ツールに接続できます:
 
-- [GitLab Duo Chat（エージェント）](../../../user/gitlab_duo_chat/agentic_chat.md)
-- [ソフトウェア開発フロー](../../../user/duo_agent_platform/flows/foundational_flows/software_development.md)
+- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
+- [ソフトウェア開発フロー](../../duo_agent_platform/flows/foundational_flows/software_development.md)
 
 これらの機能は、外部コンテキストと情報にアクセスして、より強力な回答を生成できます。
 
@@ -49,7 +50,10 @@ MCPで機能を使用するには、次の手順に従います:
 1. グループのMCPをオンにします。
 1. 機能を接続するMCPサーバーを構成します。
 
-クリックスルーデモについては、[GitLab Duo Agent Platform - MCPインテグレーション](https://gitlab.navattic.com/mcp)を参照してください。
+<i class="fa-youtube-play" aria-hidden="true"></i>概要については、[GitLab Duo Chat（エージェント型） - MCPツール呼び出しの承認](https://www.youtube.com/watch?v=_cHoTmG8Yj8)を参照してください。
+<!-- Video published on 2025-06-24 -->
+
+クリックデモについては、[GitLab Duo Agent Platform - MCPクライアント](https://gitlab.navattic.com/mcp)を参照してください。
 <!-- Demo published on 2025-08-05 -->
 
 ## 前提条件 {#prerequisites}
@@ -59,23 +63,23 @@ MCPで機能を使用するには、次の手順に従います:
 Visual Studio Code（VS Code）またはVSCodiumの場合:
 
 - [VS Code](https://code.visualstudio.com/download)または[VSCodium](https://vscodium.com/)をインストールします。
-- GitLab for VS Code拡張機能を[Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)または[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)からインストールしてセットアップします。
-  - MCPサポートについては、バージョン6.28.2以降をインストールします。
-  - ワークスペースおよびユーザー設定については、バージョン6.35.6以降をインストールします。
+- VS Code用のGitLab拡張機能を、[Open VSXレジストリ](https://open-vsx.org/extension/GitLab/gitlab-workflow)または[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)からインストールしてセットアップします。
+  - MCPサポートには、バージョン6.28.2以降をインストールします。
+  - ワークスペースとユーザー設定には、バージョン6.35.6以降をインストールします。
 
-JetBrainsIDEの場合:
+JetBrains IDEの場合:
 
-- JetBrainsIDEをインストールします。
-- [GitLab Duoプラグインfor JetBrainsIDE](../../../editor_extensions/jetbrains_ide/setup.md)をインストールしてセットアップします。
+- JetBrains IDEをインストールします。
+- インストールして[GitLab Duoプラグインfor JetBrains IDE](../../../editor_extensions/jetbrains_ide/setup.md)をセットアップします。
 
-## 外部のMCPツールを許可する {#allow-external-mcp-tools}
+## 外部のMCPツールを許可 {#allow-external-mcp-tools}
 
 IDEが外部のMCPツールにアクセスできるようにするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
 1. **設定の変更**を選択します。
-1. **外部のMCPツール**で、**外部のMCPツールを許可**チェックボックスを選択します。
+1. **外部のMCPツール**の下で、**外部のMCPツールを許可**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
 ## MCPサーバーを設定する {#configure-mcp-servers}
@@ -84,7 +88,7 @@ MCPを言語サーバーと統合するには、ワークスペースの設定�
 
 ### バージョンの互換性 {#version-compatibility}
 
-| GitLab for VS Codeバージョン | 利用可能なMCP機能 |
+| VS Code用のGitLabバージョン | 利用可能なMCP機能 |
 |-----------------------------------|------------------------|
 | 6.28.2〜6.35.5  | ワークスペースまたはユーザー設定のない基本的なMCPサポート |
 | 6.35.6以降 | ワークスペースとユーザー設定を含む、完全なMCPサポート |
@@ -112,14 +116,14 @@ MCPを言語サーバーと統合するには、ワークスペースの設定�
 1. ファイルを保存します。
 1. IDEを再起動します。
 
-JetBrainsIDEの場合、またはVS Codeでファイルを手動で作成するには、この場所を使用します:
+JetBrains IDEの場合、またはVS Codeでファイルを手動で作成する場合は、この場所を使用します:
 
 - Windows: `C:\Users\<username>\AppData\Roaming\GitLab\duo\mcp.json`
 - その他すべてのオペレーティングシステム: `~/.gitlab/duo/mcp.json`
 
 ### 設定形式 {#configuration-format}
 
-両方の設定ファイルは同じJSON形式を使用し、詳細は`mcpServers`キーに記述されています:
+両方の設定ファイルは、`mcpServers`キーに詳細が記述された同じJSON形式を使用します:
 
 ```json
 {
@@ -147,13 +151,13 @@ JetBrainsIDEの場合、またはVS Codeでファイルを手動で作成する�
 ```
 
 > [!note]
-> 他のMCPクライアントの場合、Atlassianのドキュメントではサンプル設定ファイルで`mcp.servers`を使用します。GitLabでは代わりに`mcpServers`を使用します。
+> 他のMCPクライアントの場合、Atlassianのドキュメントではサンプル設定ファイルに`mcp.servers`を使用しています。GitLabでは、代わりに`mcpServers`を使用します。
 
-### ツール承認を設定する {#configure-tool-approval}
+### ツール承認を設定します {#configure-tool-approval}
 
 デフォルトでは、各セッションでサーバーからのすべてのMCPツールを手動で承認する必要があります。
 
-代わりに、設定ファイルでMCPツールを事前承認して、手動の承認プロンプトをスキップできます。
+代わりに、設定ファイルでMCPツールを事前承認して、手動のプロンプトをスキップできます。
 
 そのためには、`approvedTools`フィールドを任意のサーバー設定に追加します:
 
@@ -163,7 +167,7 @@ JetBrainsIDEの場合、またはVS Codeでファイルを手動で作成する�
 このフィールドを含めない場合、セッション内のすべてのツールを手動で承認する必要があります（これがデフォルトの動作です）。
 
 > [!warning]
-> 完全に信頼するサーバーに対してのみ`"approvedTools": true`を使用してください。
+> 完全に信頼できるサーバーにのみ`"approvedTools": true`を使用してください。
 
 例: 
 
@@ -191,9 +195,9 @@ JetBrainsIDEの場合、またはVS Codeでファイルを手動で作成する�
 
 #### ツール承認の仕組み {#how-tool-approval-works}
 
-GitLabは、MCPツールに2層の承認システムを使用します:
+GitLabはMCPツールに2層の承認システムを使用します:
 
-- 設定に基づく承認（永続的）: `mcp.json`で`approvedTools`フィールドを使用して承認されたツール。これらの承認は、すべてのセッションで永続的に有効です。
+- 設定ベースの承認（永続的）: `mcp.json`で`approvedTools`フィールドを使用して承認されたツール。これらの承認はすべてのセッションで持続します。
 - セッションベースの承認（一時的）: 現在のワークフローセッションのランタイム中に承認されたツール。これらの承認は、IDEを閉じるか、ワークフローを終了するとクリアされます。
 
 いずれかの条件が満たされた場合、ツールは承認されます。
@@ -222,7 +226,7 @@ GitLabは、MCPツールに2層の承認システムを使用します:
 
 #### GitLabナレッジグラフサーバー {#gitlab-knowledge-graph-server}
 
-[GitLabナレッジグラフ](https://gitlab-org.gitlab.io/rust/knowledge-graph)は、MCPを通じてコードインテリジェンスを提供します。すべてのツールを承認するか、特定のツールを承認することができます:
+The [GitLabナレッジグラフ](https://gitlab-org.gitlab.io/rust/knowledge-graph)は、MCPを通じてコードインテリジェンスを提供します。すべてのツールまたは特定のツールを承認できます:
 
 ```json
 {
@@ -250,7 +254,7 @@ GitLabは、MCPツールに2層の承認システムを使用します:
 }
 ```
 
-利用可能なツールに関する詳細は、[Knowledge Graph MCPツールのドキュメント](https://gitlab-org.gitlab.io/rust/knowledge-graph/mcp/tools/)を参照してください。
+利用可能なツールに関する詳細については、[ナレッジグラフMCPツールドキュメント](https://gitlab-org.gitlab.io/rust/knowledge-graph/mcp/tools/)を参照してください。
 
 #### HTTPサーバー {#http-server}
 
@@ -266,20 +270,20 @@ GitLabは、MCPツールに2層の承認システムを使用します:
 }
 ```
 
-## MCPサーバーのステータスを表示する {#view-the-status-of-mcp-servers}
+## MCPサーバーのステータスを表示 {#view-the-status-of-mcp-servers}
 
 {{< history >}}
 
-- GitLab for VS Code拡張機能6.55.0で[導入](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155)されました。
+- VS Code用のGitLab拡張機能バージョン6.55.0で[導入されました](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155)。
 
 {{< /history >}}
 
 前提条件: 
 
-- GitLab for VS Code拡張機能6.55.0以降をインストール済みであること。
-- ユーザーまたはワークスペース設定で、少なくとも1つのMCPサーバーを設定済みであること。
+- VS Code用のGitLab拡張機能バージョン6.55.0以降がインストールされている必要があります。
+- ユーザーまたはワークスペースの設定で、少なくとも1つのMCPサーバーが構成されている必要があります。
 
-設定されているMCPサーバーのステータスを表示するには:
+構成されたMCPサーバーのステータスを表示するには:
 
 1. VS CodeまたはVSCodiumで、コマンドパレットを開きます:
    - macOSでは、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
@@ -288,10 +292,10 @@ GitLabは、MCPツールに2層の承認システムを使用します:
 
 MCPダッシュボードが新しいエディタタブで開きます。ダッシュボードを使用して以下を実行します:
 
-- MCPサーバーが正しく設定され、実行されていることを確認します。
+- お使いのMCPサーバーが正しく構成され、実行されていることを確認します。
 - GitLab Duo機能を使用する前に、接続の問題を特定します。
-- 各サーバーで利用可能なツールを表示します。
-- サーバー設定の問題をトラブルシューティングします。
+- 各サーバーから利用可能なツールを表示します。
+- サーバーの設定の問題のトラブルシューティングを行う。
 
 ### MCP設定ファイルを開く {#open-mcp-configuration-files}
 
@@ -301,16 +305,16 @@ MCP設定ファイルを開くには:
    - macOSでは、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
    - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
 1. 設定ファイルを開きます:
-   - ユーザー設定については、`GitLab MCP: Open User Settings (JSON)`と入力して<kbd>Enter</kbd>を押します。
-   - ワークスペース設定については、`GitLab MCP: Open Workspace Settings (JSON)`と入力して<kbd>Enter</kbd>を押します。
+   - ユーザー設定の場合は、`GitLab MCP: Open User Settings (JSON)`と入力して<kbd>Enter</kbd>を押します。
+   - ワークスペース設定の場合は、`GitLab MCP: Open Workspace Settings (JSON)`と入力して<kbd>Enter</kbd>を押します。
 
 ## MCPサーバーで再認証する {#re-authenticate-with-mcp-servers}
 
-MCP設定ファイル内の認証詳細を更新した後、関連するMCPサーバーで再認証する必要があります。
+MCP設定ファイルで認証の詳細を更新した後、関連するMCPサーバーで再認証する必要があります。
 
 再認証をトリガーするには:
 
-- GitLab Duoに、そのMCPサーバーからのデータを必要とする質問をします（例: Atlassianの場合は`What are the issues in my Jira project?`）。認証フローが自動的に開始されます。
+- そのMCPサーバーからのデータを必要とするGitLab Duoに質問をします（たとえば、Atlassianの場合は`What are the issues in my Jira project?`）。認証ワークフローが自動的に開始されます。
 
 ## MCPでGitLab Duo機能を使用する {#use-gitlab-duo-features-with-mcp}
 
@@ -341,18 +345,13 @@ GitLab Duo機能が質問に回答するために外部ツールを呼び出す�
 
    - チャットの場合、ツールを拒否すると、**Provide Rejection Reason**ダイアログが表示されます。拒否理由を入力し、**Submit Rejection**を選択します。
 
-     チャットは、新しいアプローチの提案やイシューの作成など、提供された理由に基づいてアクションを実行する場合があります。
-
-## 関連トピック {#related-topics}
-
-- [Model Context Protocolのスタートガイド](https://modelcontextprotocol.io/introduction)
-- [Demo - Agentic Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
+     チャットは、あなたが提供する理由に基づいて、新しいアプローチを提案したり、イシューを作成したりするなどのアクションを実行する可能性があります。
 
 ## トラブルシューティング {#troubleshooting}
 
-### MCP認証キャッシュを削除する {#delete-the-mcp-authentication-cache}
+### MCP認証キャッシュを削除します {#delete-the-mcp-authentication-cache}
 
-GitLabは、`~/.mcp-auth/`にMCP認証をローカルでキャッシュします。トラブルシューティング中に誤検出を防ぐため、キャッシュディレクトリを削除します:
+GitLabはMCP認証を`~/.mcp-auth/`の下にローカルでキャッシュします。トラブルシューティング中に誤検出を防ぐために、キャッシュディレクトリを削除します:
 
 ```shell
 rm -rf ~/.mcp-auth/
@@ -366,4 +365,4 @@ rm -rf ~/.mcp-auth/
 
 ### VS CodeでのMCPのトラブルシューティング {#troubleshooting-mcp-in-vs-code}
 
-トラブルシューティング情報については、[GitLab for VS Code拡張機能のトラブルシューティング](../../../editor_extensions/visual_studio_code/troubleshooting.md)を参照してください。
+のトラブルシューティング情報については、[GitLab for VS Code拡張機能のトラブルシューティング](../../../editor_extensions/visual_studio_code/troubleshooting.md)を参照してください。

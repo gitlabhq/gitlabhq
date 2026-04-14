@@ -1,0 +1,8 @@
+---
+name: read_organization
+description: Grants the ability to read organizations
+boundaries:
+  - instance
+permissions:
+  - read_organization
+  - read_organization_user

@@ -7,31 +7,53 @@ module Gitlab
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
 
         METRIC_PREFIX = 'gitlab_database_connection_pool_'
+        EXTENDED_METRIC_PREFIX = 'gitlab_database_extended_connection_pool_'
 
         METRIC_DESCRIPTIONS = {
-          size: 'Total connection pool capacity',
-          connections: 'Current connections in the pool',
-          busy: 'Connections in use where the owner is still alive',
-          dead: 'Connections in use where the owner is not alive',
-          idle: 'Connections not in use',
-          waiting: 'Threads currently waiting on this queue'
+          size: ['Total connection pool capacity', :min], # The total number of connections that can be created
+          connections: ['Current connections in the pool', :max], # The number of connections that have been created
+          busy: ['Connections in use where the owner is still alive', :max],
+          dead: ['Connections in use where the owner is not alive', :max],
+          idle: ['Connections not in use', :max], # connections in the pool, that are not in use
+          waiting: ['Threads currently waiting on this queue', :max]
+        }.freeze
+
+        EXTENDED_METRIC_DESCRIPTIONS = {
+          busy: 'Connections in use where the owner is still alive, per thread',
+          dead: 'Connections in use where the owner is not alive, per thread'
         }.freeze
 
         def metrics
           @metrics ||= init_metrics
         end
 
+        def extended_metrics
+          @extended_metrics ||= init_extended_metrics
+        end
+
         def sample
           host_metrics.each do |metric_data|
             metrics[metric_data[:metric]].set(metric_data[:labels], metric_data[:value])
+          end
+
+          return unless extended_metrics_enabled?
+
+          extended_host_metrics.each do |metric_data|
+            extended_metrics[metric_data[:metric]].set(metric_data[:labels], metric_data[:value])
           end
         end
 
         private
 
         def init_metrics
-          METRIC_DESCRIPTIONS.to_h do |name, description|
-            [name, ::Gitlab::Metrics.gauge(:"#{METRIC_PREFIX}#{name}", description)]
+          METRIC_DESCRIPTIONS.to_h do |name, (description, multiprocess_mode)|
+            [name, ::Gitlab::Metrics.gauge(:"#{METRIC_PREFIX}#{name}", description, {}, multiprocess_mode)]
+          end
+        end
+
+        def init_extended_metrics
+          EXTENDED_METRIC_DESCRIPTIONS.to_h do |name, description|
+            [name, ::Gitlab::Metrics.gauge(:"#{EXTENDED_METRIC_PREFIX}#{name}", description)]
           end
         end
 
@@ -44,9 +66,7 @@ module Gitlab
             next unless base_model.connected?
 
             base_labels = labels_for_class(base_model)
-            metrics_for_base_model = build_metrics(base_labels, base_model.connection_pool.extended_stat)
-
-            metrics.concat(metrics_for_base_model)
+            metrics.concat(build_metrics(base_labels, base_model.connection_pool.stat))
           end
         end
 
@@ -56,43 +76,48 @@ module Gitlab
 
             load_balancer.host_list.hosts.each do |host|
               base_labels = labels_for_replica_host(load_balancer, host)
-              metrics_for_host = build_metrics(base_labels, host.pool.extended_stat)
-
-              metrics.concat(metrics_for_host)
+              metrics.concat(build_metrics(base_labels, host.pool.stat))
             end
           end
         end
 
         def build_metrics(base_labels, stats)
-          simple_metrics = [
-            { metric: :size, labels: base_labels, value: stats[:size] },
-            { metric: :connections, labels: base_labels, value: stats[:connections] },
-            { metric: :idle, labels: base_labels, value: stats[:idle] },
-            { metric: :waiting, labels: base_labels, value: stats[:waiting] }
-          ]
-
-          dead_metrics = split_metric_by_thread_name(:dead, base_labels, stats[:dead_by_thread_name])
-          busy_metrics = split_metric_by_thread_name(:busy, base_labels, stats[:busy_by_thread_name])
-
-          simple_metrics + dead_metrics + busy_metrics
+          METRIC_DESCRIPTIONS.keys.map do |metric|
+            { metric: metric, labels: base_labels, value: stats[metric] }
+          end
         end
 
-        def labels_for_class(klass)
-          {
-            host: klass.connection_db_config.host,
-            port: klass.connection_db_config.configuration_hash[:port],
-            class: klass.to_s,
-            db_config_name: klass.connection_db_config.name
-          }
+        def extended_metrics_enabled?
+          ::Feature.enabled?(:per_thread_db_connection_pool_metrics, Feature.current_pod, type: :ops)
         end
 
-        def labels_for_replica_host(load_balancer, host)
-          {
-            host: host.host,
-            port: host.port,
-            class: load_balancer.configuration.connection_specification_name,
-            db_config_name: host.pool.db_config.name
-          }
+        def extended_host_metrics
+          extended_connection_class_metrics + extended_replica_host_metrics
+        end
+
+        def extended_connection_class_metrics
+          Gitlab::Database.database_base_models.each_value.with_object([]) do |base_model, metrics|
+            next unless base_model.connected?
+
+            base_labels = labels_for_class(base_model)
+            metrics.concat(build_extended_metrics(base_labels, base_model.connection_pool.extended_stat))
+          end
+        end
+
+        def extended_replica_host_metrics
+          Gitlab::Database::LoadBalancing.each_load_balancer.with_object([]) do |load_balancer, metrics|
+            next if load_balancer.primary_only?
+
+            load_balancer.host_list.hosts.each do |host|
+              base_labels = labels_for_replica_host(load_balancer, host)
+              metrics.concat(build_extended_metrics(base_labels, host.pool.extended_stat))
+            end
+          end
+        end
+
+        def build_extended_metrics(base_labels, stats)
+          split_metric_by_thread_name(:busy, base_labels, stats[:busy_by_thread_name]) +
+            split_metric_by_thread_name(:dead, base_labels, stats[:dead_by_thread_name])
         end
 
         def split_metric_by_thread_name(metric, base_labels, values_by_thread_name)
@@ -112,6 +137,24 @@ module Gitlab
           counts_by_thread_name.each_with_object(Hash.new(0)) do |(thread_name, count), result|
             result[ThreadNameCardinalityLimiter.normalize_thread_name(thread_name)] += count
           end
+        end
+
+        def labels_for_class(klass)
+          {
+            host: klass.connection_db_config.host,
+            port: klass.connection_db_config.configuration_hash[:port],
+            class: klass.to_s,
+            db_config_name: klass.connection_db_config.name
+          }
+        end
+
+        def labels_for_replica_host(load_balancer, host)
+          {
+            host: host.host,
+            port: host.port,
+            class: load_balancer.configuration.connection_specification_name,
+            db_config_name: host.pool.db_config.name
+          }
         end
       end
     end

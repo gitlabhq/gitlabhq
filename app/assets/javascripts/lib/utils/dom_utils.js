@@ -1,4 +1,4 @@
-import { has } from 'lodash';
+import { has } from 'lodash-es';
 import { __ } from '~/locale';
 import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 

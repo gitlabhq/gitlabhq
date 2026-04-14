@@ -3,11 +3,7 @@ import { GlDisclosureDropdown, GlPopover, GlLink, GlTooltipDirective } from '@gi
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
-import {
-  NAME_TO_TEXT_LOWERCASE_MAP,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_OBJECTIVE,
-} from '../../constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE } from '../../constants';
 
 export default {
   components: {
@@ -41,14 +37,14 @@ export default {
         s__(
           'WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels.',
         ),
-        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[workItemType] },
+        { workItemType },
       );
     },
     getPopoverLink(workItemType) {
       switch (workItemType) {
         case WORK_ITEM_TYPE_NAME_EPIC:
-          return helpPagePath('/user/group/epics/manage_epics', {
-            anchor: 'multi-level-child-epics',
+          return helpPagePath('/user/work_items/child_items', {
+            anchor: 'work-with-multi-level-hierarchies',
           });
         case WORK_ITEM_TYPE_NAME_OBJECTIVE:
           return helpPagePath('/user/okrs', { anchor: 'child-objectives-and-key-results' });

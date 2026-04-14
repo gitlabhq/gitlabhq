@@ -49,6 +49,9 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
       timeEstimate
     }
   }
+  notes {
+    discussionLocked
+  }
   development {
     closingMergeRequests {
       count
@@ -57,6 +60,25 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
   hierarchy {
     parent {
       id
+    }
+  }
+  crmContacts {
+    contactsAvailable
+    contacts {
+      nodes {
+        id
+        email
+        firstName
+        lastName
+        phone
+        description
+        organization {
+          id
+          name
+          description
+          defaultRate
+        }
+      }
     }
   }
 }

@@ -156,6 +156,33 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
 
         it_behaves_like 'enqueues worker'
       end
+
+      context 'when resuming from a previous worker' do
+        let(:previous_max) { [5000] }
+
+        before do
+          previous_worker = worker_klass.enqueue(
+            job_class_name,
+            table_name,
+            column_name,
+            job_arguments: job_arguments,
+            user: user
+          )
+
+          previous_worker.create_job!([1], previous_max)
+          previous_worker.update!(status: 3) # finished
+        end
+
+        it 'sets min_cursor to the previous worker last job max_cursor' do
+          enqueue_background_operation
+
+          new_worker = worker_klass.unfinished_with_config(
+            job_class_name, table_name, column_name, job_arguments, org_id: user.organization_id
+          ).first
+
+          expect(new_worker.min_cursor).to eq(previous_max)
+        end
+      end
     end
   end
 end

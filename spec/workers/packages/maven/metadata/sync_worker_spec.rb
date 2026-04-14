@@ -58,7 +58,7 @@ RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
           subject
         end
 
-        context 'not in the passed project' do
+        context 'when not in the passed project' do
           let(:project) { create(:project) }
 
           it 'does not create the updated metadata files' do
@@ -144,7 +144,7 @@ RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
           subject
         end
 
-        context 'not in the passed project' do
+        context 'when not in the passed project' do
           let(:project) { create(:project) }
 
           it 'does not create the updated metadata files' do

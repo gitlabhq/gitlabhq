@@ -69,6 +69,10 @@ module PolicyActor
     false
   end
 
+  def confirmed?
+    false
+  end
+
   def can?(action, subject = :global)
     Ability.allowed?(self, action, subject)
   end

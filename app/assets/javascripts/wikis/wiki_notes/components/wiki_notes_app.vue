@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';

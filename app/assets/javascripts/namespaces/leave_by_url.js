@@ -2,6 +2,7 @@ import { createAlert } from '~/alert';
 import { initRails } from '~/lib/utils/rails_ujs';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import { waitForElement } from '~/lib/utils/dom_utils';
 
 const PARAMETER_NAME = 'leave';
 const PROJECT_LEAVE_LINK_SELECTOR = '.js-leave-link';
@@ -12,7 +13,7 @@ export const NAMESPACE_TYPES = {
   PROJECT: 'project',
 };
 
-export default function leaveByUrl(namespaceType) {
+export default async function leaveByUrl(namespaceType) {
   if (!namespaceType) throw new Error('namespaceType not provided');
 
   const param = getParameterByName(PARAMETER_NAME);
@@ -25,10 +26,10 @@ export default function leaveByUrl(namespaceType) {
       ? GROUP_LEAVE_LINK_SELECTOR
       : PROJECT_LEAVE_LINK_SELECTOR;
 
-  const leaveLink = document.querySelector(LEAVE_LINK_SELECTOR);
-  if (leaveLink) {
+  try {
+    const leaveLink = await waitForElement(LEAVE_LINK_SELECTOR);
     leaveLink.click();
-  } else {
+  } catch (error) {
     createAlert({
       message: sprintf(__('You do not have permission to leave this %{namespaceType}.'), {
         namespaceType,

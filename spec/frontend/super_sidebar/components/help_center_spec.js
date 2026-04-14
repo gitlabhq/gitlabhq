@@ -6,6 +6,7 @@ import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { mockTracking } from 'helpers/tracking_helper';
+import HelpCenterUpgradeSubscription from 'ee_component/super_sidebar/components/help_center_upgrade_subscription.vue';
 import { sidebarData } from '../mock_data';
 
 jest.mock('~/whats_new');
@@ -23,13 +24,14 @@ describe('HelpCenter component', () => {
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
   const findWhatsNew = () => wrapper.findByTestId('sidebar-whatsnew-button');
+  const findUpgradeButton = () => wrapper.findComponent(HelpCenterUpgradeSubscription);
   const findNotificationCount = () => wrapper.findByTestId('notification-count');
   const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
   const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
       propsData: { sidebarData: sidebarDataOverride },
-      stubs: { GlEmoji },
+      stubs: { GlEmoji, HelpCenterUpgradeSubscription: true },
       provide: {
         isSaas: false,
         isIconOnly: false,
@@ -379,12 +381,16 @@ describe('HelpCenter component', () => {
     });
   });
 
-  describe('when display_upgrade_subscription is true', () => {
+  describe('when free_group_upgrade_link is provided', () => {
     beforeEach(() => {
-      createWrapper({ ...sidebarData, display_upgrade_subscription: true });
+      createWrapper({ ...sidebarData, free_group_upgrade_link: '/groups/my-group/-/billings' });
     });
 
-    it('renders menu items', () => {
+    it('renders upgrade subscription button', () => {
+      expect(findUpgradeButton().exists()).toBe(true);
+    });
+
+    it('renders menu items without whats new at top level', () => {
       expect(findWhatsNew().exists()).toBe(false);
       expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
 
@@ -402,7 +408,7 @@ describe('HelpCenter component', () => {
       beforeEach(() => {
         createWrapper({
           ...sidebarData,
-          display_upgrade_subscription: true,
+          free_group_upgrade_link: '/groups/my-group/-/billings',
           whats_new_most_recent_release_items_count: 0,
           whats_new_read_articles: [],
         });
@@ -414,12 +420,16 @@ describe('HelpCenter component', () => {
     });
   });
 
-  describe('when display_upgrade_subscription is undefined', () => {
+  describe('when free_group_upgrade_link is not provided', () => {
     beforeEach(() => {
       createWrapper();
     });
 
-    it('shows whats new button at top level (defaults to false)', () => {
+    it('does not render upgrade subscription button', () => {
+      expect(findUpgradeButton().exists()).toBe(false);
+    });
+
+    it('shows whats new button at top level', () => {
       expect(findWhatsNew().exists()).toBe(true);
     });
   });

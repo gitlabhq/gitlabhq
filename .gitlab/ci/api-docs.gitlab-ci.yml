@@ -1,0 +1,8 @@
+trigger-api-docs-pipeline:
+  extends:
+    - .api-docs:rules:trigger-api-docs-pipeline
+  stage: notify
+  allow_failure: true
+  trigger:
+    project: gitlab-com/gl-infra/api-docs
+    branch: main

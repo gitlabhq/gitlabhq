@@ -694,6 +694,46 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#max_member_access_for_user' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when user is not persisted' do
+      let(:non_persisted_user) { build(:user) }
+
+      it 'returns NO_ACCESS' do
+        project = create(:project, namespace: user.namespace)
+
+        expect(project.team.max_member_access_for_user(non_persisted_user)).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when the project belongs to a personal namespace' do
+      it 'returns OWNER for the namespace owner' do
+        project = create(:project, namespace: user.namespace)
+
+        expect(project.team.max_member_access_for_user(user)).to eq(ProjectMember::OWNER)
+      end
+    end
+
+    context 'when the project belongs to a group' do
+      it 'does not return OWNER for a regular user' do
+        project = create(:project, :in_group)
+        project.group # load group association
+
+        expect(project.team.max_member_access_for_user(user)).not_to eq(ProjectMember::OWNER)
+      end
+
+      it 'skips the namespace owner check when the group is already loaded' do
+        project = create(:project, :in_group)
+        project.group # load group association
+
+        expect(project).not_to receive(:namespace)
+
+        project.team.max_member_access_for_user(user)
+      end
+    end
+  end
+
   describe '#max_member_access_for_user_ids' do
     context 'with RequestStore enabled', :request_store do
       include_examples 'max member access for users'

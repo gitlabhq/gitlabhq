@@ -38,11 +38,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               title: 'Invite members',
               icon: 'shaking_hands',
               partial: partial,
-              component: 'invite_members',
-              data: {
-                trigger_source: 'top_nav',
-                trigger_element: 'text-emoji'
-              }
+              component: 'invite_members'
             )
           )
         )
@@ -79,13 +75,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_project',
                 title: 'New project/repository',
-                href: '/projects/new',
-                data: {
-                  track_action: 'click_link_new_project',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top',
-                  testid: 'global-new-project-link'
-                }
+                href: '/projects/new'
               )
             )
           )
@@ -102,13 +92,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_group',
                 title: 'New group',
-                href: '/groups/new',
-                data: {
-                  track_action: 'click_link_new_group',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top',
-                  testid: 'global-new-group-link'
-                }
+                href: '/groups/new'
               )
             )
           )
@@ -125,13 +109,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_snippet',
                 title: 'New snippet',
-                href: '/-/snippets/new',
-                data: {
-                  track_action: 'click_link_new_snippet_parent',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top',
-                  testid: 'global-new-snippet-link'
-                }
+                href: '/-/snippets/new'
               )
             )
           )
@@ -148,13 +126,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_organization',
                 title: s_('Organization|New organization'),
-                href: '/-/organizations/new',
-                data: {
-                  track_action: 'click_link_new_organization_parent',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top',
-                  testid: 'global_new_organization_link'
-                }
+                href: '/-/organizations/new'
               )
             )
           )
@@ -214,12 +186,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_project',
                 title: 'New project/repository',
-                href: "/projects/new?namespace_id=#{group.id}",
-                data: {
-                  track_action: 'click_link_new_project_group',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top'
-                }
+                href: "/projects/new?namespace_id=#{group.id}"
               )
             )
           )
@@ -236,12 +203,26 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_subgroup',
                 title: 'New subgroup',
-                href: "/groups/new?parent_id=#{group.id}#create-group-pane",
-                data: {
-                  track_action: 'click_link_new_subgroup',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top'
-                }
+                href: "/groups/new?parent_id=#{group.id}#create-group-pane"
+              )
+            )
+          )
+        end
+      end
+
+      context 'when user can create work items in group' do
+        before do
+          allow(helper).to receive(:can?).with(current_user, :create_work_item, group).and_return(true)
+        end
+
+        it 'shows new work item menu item' do
+          expect(view_model[:menu_sections]).to eq(
+            expected_menu_section(
+              title: 'In this group',
+              menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                id: 'new_group_work_item',
+                title: 'New work item',
+                component: 'create_new_work_item_modal'
               )
             )
           )
@@ -292,42 +273,10 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_work_item',
                 title: 'New work item',
-                component: 'create_new_work_item_modal',
-                data: {
-                  track_action: 'click_link_new_work_item',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top',
-                  testid: 'new_work_item_button'
-                }
+                component: 'create_new_work_item_modal'
               )
             )
           )
-        end
-
-        context 'when work_item_planning_view is disabled' do
-          before do
-            stub_feature_flags(work_item_planning_view: false)
-          end
-
-          it 'shows new issue menu item' do
-            expect(view_model[:menu_sections]).to eq(
-              expected_menu_section(
-                title: 'In this project',
-                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
-                  id: 'new_issue',
-                  title: 'New issue',
-                  href: "/#{project.path_with_namespace}/-/issues/new",
-                  component: 'create_new_work_item_modal',
-                  data: {
-                    track_action: 'click_link_new_issue',
-                    track_label: 'plus_menu_dropdown',
-                    testid: 'new_issue_link',
-                    track_property: 'navigation_top'
-                  }
-                )
-              )
-            )
-          end
         end
       end
 
@@ -341,12 +290,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_mr',
                 title: 'New merge request',
-                href: "/#{merge_project.path_with_namespace}/-/merge_requests/new",
-                data: {
-                  track_action: 'click_link_new_mr',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top'
-                }
+                href: "/#{merge_project.path_with_namespace}/-/merge_requests/new"
               )
             )
           )
@@ -363,12 +307,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_wiki_page',
                 title: 'New wiki page',
-                href: "/#{project.path_with_namespace}/-/wikis/new",
-                data: {
-                  track_action: 'click_link_new_project_wiki_page',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top'
-                }
+                href: "/#{project.path_with_namespace}/-/wikis/new"
               )
             )
           )
@@ -385,12 +324,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_snippet',
                 title: 'New snippet',
-                href: "/#{project.path_with_namespace}/-/snippets/new",
-                data: {
-                  track_action: 'click_link_new_snippet_project',
-                  track_label: 'plus_menu_dropdown',
-                  track_property: 'navigation_top'
-                }
+                href: "/#{project.path_with_namespace}/-/snippets/new"
               )
             )
           )
@@ -426,13 +360,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_work_item',
             title: 'New work item',
-            component: 'create_new_work_item_modal',
-            data: {
-              track_action: 'click_link_new_work_item',
-              track_label: 'plus_menu_dropdown',
-              track_property: 'navigation_top',
-              testid: 'new_work_item_button'
-            }
+            component: 'create_new_work_item_modal'
           )
         )
         results = {
@@ -441,36 +369,6 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         }
 
         expect(view_model).to eq(results)
-      end
-
-      context 'when work_item_planning_view is disabled' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it 'gives precedence to project over group' do
-          project_section = expected_menu_section(
-            title: 'In this project',
-            menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
-              id: 'new_issue',
-              title: 'New issue',
-              href: "/#{project.path_with_namespace}/-/issues/new",
-              component: 'create_new_work_item_modal',
-              data: {
-                track_action: 'click_link_new_issue',
-                track_label: 'plus_menu_dropdown',
-                testid: 'new_issue_link',
-                track_property: 'navigation_top'
-              }
-            )
-          )
-          results = {
-            title: title,
-            menu_sections: project_section
-          }
-
-          expect(view_model).to eq(results)
-        end
       end
     end
 

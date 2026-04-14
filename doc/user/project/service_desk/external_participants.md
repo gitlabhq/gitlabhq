@@ -24,7 +24,7 @@ They get notified of public comments on an issue or ticket by [Service Desk emai
 The maximum number of external participants on an issue or ticket is 10.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Multiple external participants in GitLab Service Desk](https://www.youtube.com/watch?v=eKNe7fYQCLc).
+For an overview, see [multiple external participants in GitLab Service Desk](https://www.youtube.com/watch?v=eKNe7fYQCLc).
 <!-- Video published on 2024-05-13 -->
 
 ## Service Desk tickets

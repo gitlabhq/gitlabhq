@@ -19,10 +19,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_center/#standards-adherence-dashboard'
+  documentation_link: 'https://docs.gitlab.com/user/compliance/compliance_center/#standards-adherence-dashboard'
   image_url: 'https://about.gitlab.com/images/16_5/govern-compliance-standards-adherence-report.png'
   published_at: 2023-10-22
-  release: 16.5
+  release: "16.5"
 - name: Create rules to set target branches for merge requests
   description: |  # Do not modify this line, instead modify the lines below.
     Some projects use multiple long-term branches for development, like `develop` and `qa`. In these projects, you might want to keep `main` as the default branch since it represents the production state of the project. However, development work expects merge requests to target `develop` or `qa`. Target branch rules help ensure merge requests target the appropriate branch for your project and development workflow.
@@ -32,10 +32,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/branches/#configure-rules-for-target-branches'
+  documentation_link: 'https://docs.gitlab.com/user/project/repository/branches/#configure-rules-for-target-branches'
   image_url: 'https://about.gitlab.com/images/16_5/create-target-branch-rules.png'
   published_at: 2023-10-22
-  release: 16.5
+  release: "16.5"
 - name: Resolve an issue thread
   description: |  # Do not modify this line, instead modify the lines below.
     Long-running issues with many threads can be challenging to read and track. You can now resolve a thread on an issue when the topic of discussion has concluded.
@@ -43,18 +43,18 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/discussions/#resolve-a-thread'
+  documentation_link: 'https://docs.gitlab.com/user/discussions/#resolve-a-thread'
   image_url: 'https://about.gitlab.com/images/16_5/resolve_functionality_for_issues.png'
   published_at: 2023-10-22
-  release: 16.5
+  release: "16.5"
 - name: Fast-forward merge trains with semi-linear history
   description: |  # Do not modify this line, instead modify the lines below.
-    In 16.4, we released [Fast-forward merge trains](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#fast-forward-merge-support-for-merge-trains), and as a continuation, we want to ensure we support all [merge methods](https://docs.gitlab.com/ee/user/project/merge_requests/methods/). Now, if you want to ensure your semi-linear commit history is maintained you can use Semi-linear fast-forward merge trains.
+    In 16.4, we released [Fast-forward merge trains](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#fast-forward-merge-support-for-merge-trains), and as a continuation, we want to ensure we support all [merge methods](https://docs.gitlab.com/user/project/merge_requests/methods/). Now, if you want to ensure your semi-linear commit history is maintained you can use Semi-linear fast-forward merge trains.
   stage: verify
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/merge_trains.html'
+  documentation_link: 'https://docs.gitlab.com/ci/pipelines/merge_trains/'
   image_url: 'https://about.gitlab.com/images/16_5/ff-merge.png'
   published_at: 2023-10-22
-  release: 16.5
+  release: "16.5"

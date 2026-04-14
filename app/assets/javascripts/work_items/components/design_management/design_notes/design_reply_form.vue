@@ -81,6 +81,7 @@ export default {
       noteUpdateDirty: false,
       isLoggedIn: isLoggedIn(),
       errorMessage: '',
+      isCancellingEdit: false,
       formFieldProps: {
         id: 'design-reply',
         name: 'design-reply',
@@ -189,26 +190,33 @@ export default {
       }
     },
     async confirmCancelCommentModal() {
-      const msg = this.isNewComment
-        ? this.$options.i18n.cancelCreate
-        : this.$options.i18n.cancelUpdate;
+      if (this.isCancellingEdit) return;
 
-      const cancelBtn = this.isNewComment
-        ? this.$options.i18n.cancelBtnCreate
-        : this.$options.i18n.cancelBtnUpdate;
+      this.isCancellingEdit = true;
+      try {
+        const msg = this.isNewComment
+          ? this.$options.i18n.cancelCreate
+          : this.$options.i18n.cancelUpdate;
 
-      const confirmed = await confirmAction(msg, {
-        primaryBtnText: this.$options.i18n.primaryBtn,
-        cancelBtnText: cancelBtn,
-        primaryBtnVariant: 'danger',
-      });
+        const cancelBtn = this.isNewComment
+          ? this.$options.i18n.cancelBtnCreate
+          : this.$options.i18n.cancelBtnUpdate;
 
-      if (!confirmed) {
-        return;
+        const confirmed = await confirmAction(msg, {
+          primaryBtnText: this.$options.i18n.primaryBtn,
+          cancelBtnText: cancelBtn,
+          primaryBtnVariant: 'danger',
+        });
+
+        if (!confirmed) {
+          return;
+        }
+
+        this.$emit('cancel-form');
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
+      } finally {
+        this.isCancellingEdit = false;
       }
-
-      this.$emit('cancel-form');
-      markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
     },
   },
 };

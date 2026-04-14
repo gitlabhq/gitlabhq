@@ -38,6 +38,10 @@ The Security Analyst Agent understands GitLab-specific security implementations,
 vulnerability states, severity levels, and security scanner outputs. It can interpret EPSS scores,
 CVE data, and reachability analysis to provide contextual security guidance.
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [How to Use the GitLab Security Analyst Agent for AI-Powered Triage](https://www.youtube.com/watch?v=XqVmrsa9BnM).
+<!-- Video published on 2026-02-25 -->
+
 ## Use the Security Analyst Agent
 
 You can use the Security Analyst Agent in the GitLab UI, VS Code, and JetBrains IDEs.
@@ -52,14 +56,10 @@ Prerequisites:
 To use the Security Analyst Agent in the GitLab UI:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
-   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
-   ({{< icon name="duo-chat" >}}).
+1. On the GitLab Duo sidebar, select **Add new chat** ({{< icon name="pencil-square" >}}).
+1. From the dropdown list, select **Security Analyst**.
 
-   A Chat conversation opens in the GitLab Duo sidebar on the right side of your
-   screen.
-
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Security Analyst**.
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
 1. Enter your security-related question or request. To get the best results from your request:
 
    - Provide context about your security requirements and risk tolerance.
@@ -97,7 +97,7 @@ Prerequisites:
 
 - Use a GitLab project with security scanning enabled.
 - [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
-- Install and configure [GitLab plugin for JetBrains](../../../../editor_extensions/jetbrains_ide/setup.md)
+- Install and configure the [GitLab Duo plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/setup.md)
   version 3.11.1 or later.
 - Set a [default GitLab Duo namespace](../../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 

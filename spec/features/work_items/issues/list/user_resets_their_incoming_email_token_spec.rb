@@ -10,16 +10,12 @@ RSpec.describe 'Issues > User resets their incoming email token', feature_catego
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
     project.add_maintainer(user)
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
-    visit namespace_project_issues_path(user.namespace, project)
+    visit project_work_items_path(project)
   end
 
   it 'changes incoming email address token', :js do

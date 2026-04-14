@@ -21,7 +21,7 @@ module Authn
       end
 
       def execute
-        unless iam_config.enabled
+        unless Authn::IamAuthService.enabled?
           Gitlab::AuthLogger.info(
             message: 'IAM JWT authentication attempt when disabled',
             reason: :disabled
@@ -32,7 +32,8 @@ module Authn
         jwt_payload = decode_and_validate_token
 
         ServiceResponse.success(payload: { jwt_payload: jwt_payload })
-      rescue JwksClient::JwksFetchFailedError, JwksClient::ConfigurationError => e
+      rescue JwksClient::JwksFetchFailedError, JwksClient::ConfigurationError,
+        Authn::IamAuthService::ConfigurationError => e
         ServiceResponse.error(message: e.message, reason: :service_unavailable)
       rescue InvalidTokenError, JWT::DecodeError => e
         handle_validation_error(jwt_error_to_message(e))
@@ -57,10 +58,10 @@ module Authn
           jwks: jwks_client.keyset,
           required_claims: %w[sub jti exp iat iss aud scope],
           verify_aud: true,
-          aud: iam_config.audience,
+          aud: Authn::IamAuthService.jwt_audience,
           exp_leeway: CLOCK_SKEW_SECONDS,
           verify_iss: true,
-          iss: iam_config.url,
+          iss: Authn::IamAuthService.url,
           verify_iat: true
         }
       end
@@ -84,10 +85,6 @@ module Authn
           error: error_message
         )
         ServiceResponse.error(message: error_message, reason: :invalid_token)
-      end
-
-      def iam_config
-        Gitlab.config.authn.iam_service
       end
 
       def jwks_client

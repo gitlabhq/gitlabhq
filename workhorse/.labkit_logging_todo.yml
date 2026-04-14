@@ -1,0 +1,48 @@
+# LabKit Logging Field Standardization TODO
+# AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
+#
+# This file tracks deprecated logging fields that need to be migrated to
+# standard fields defined in gitlab.com/gitlab-org/labkit/v2/fields.
+# Each offense represents a file using a deprecated field name.
+#
+# How to fix:
+#   Replace the string literal with the constant from the fields package.
+#   e.g. log.WithField("source_ip", ...) → log.WithField(fields.RemoteIP, ...)
+#
+# Adding offenses when an immediate fix is not possible:
+#   go get gitlab.com/gitlab-org/labkit/v2/cmd/validate-log-fields
+#   go run gitlab.com/gitlab-org/labkit/v2/cmd/validate-log-fields -update-todo
+#   go mod tidy
+#
+# Regenerate entire TODO:
+#   Delete this file, then run the command above.
+
+---
+offenses:
+    - callsite: internal/ai_assist/duoworkflow/actions.go
+      deprecated_field: error
+      standard_field: fields.ErrorMessage
+    - callsite: internal/ai_assist/duoworkflow/actions.go
+      deprecated_field: status_code
+      standard_field: fields.HTTPStatusCode
+    - callsite: internal/ai_assist/duoworkflow/handler.go
+      deprecated_field: duration_ms
+      standard_field: fields.DurationS
+    - callsite: internal/badgateway/roundtripper.go
+      deprecated_field: duration_ms
+      standard_field: fields.DurationS
+    - callsite: internal/git/archive_cleaner.go
+      deprecated_field: error
+      standard_field: fields.ErrorMessage
+    - callsite: internal/git/git-http.go
+      deprecated_field: username
+      standard_field: fields.GitLabUserName
+    - callsite: internal/healthcheck/puma_checker.go
+      deprecated_field: error
+      standard_field: fields.ErrorMessage
+    - callsite: internal/loadshedding/service.go
+      deprecated_field: status_code
+      standard_field: fields.HTTPStatusCode
+    - callsite: internal/upload/exif/exif.go
+      deprecated_field: error
+      standard_field: fields.ErrorMessage

@@ -203,6 +203,7 @@ export default {
             :text="value"
             :title="copyButtonTitle"
             :toast-message="copyButtonToastMessage"
+            @copied="$emit('copied')"
           />
         </gl-button-group>
       </template>

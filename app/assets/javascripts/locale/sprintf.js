@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 
 /**
  * Very limited implementation of sprintf supporting only named parameters.

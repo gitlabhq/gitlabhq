@@ -98,6 +98,9 @@
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
+.if-merge-request-labels-as-if-foss-run-predictive: &if-merge-request-labels-as-if-foss-run-predictive
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:as-if-foss-run-predictive/'
+
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
 
@@ -948,6 +951,21 @@
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"
 
+# this is a combination of ruby-patterns and additional paths that contain ruby scripts without extension
+.rubocop-target-patterns: &rubocop-target-patterns
+  - "**/Rakefile"
+  - "**/Dangerfile"
+  - "**/Gemfile"
+  - "**/Gemfile.next"
+  - "**/Guardfile"
+  - "**/*.rake"
+  - "**/*.rb"
+  - "**/*.ru"
+  - "**/*.haml"
+  - "**/*.builder"
+  - "scripts/**/*"
+  - "bin/*"
+
 .rubocop-patterns: &rubocop-patterns
   - ".{rubocop,rubocop_todo}.yml"
   - "{,spec/}rubocop/cop/.rubocop.yml"
@@ -1580,6 +1598,14 @@
     # to avoid the side effect of "never" rules
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
+.frontend:rules:generate-js-routes:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-train
+      when: never
+    - when: on_success
+
 .frontend:rules:compile-test-assets:
   rules:
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
@@ -1804,6 +1830,31 @@
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
+.frontend:rules:jest-msw-integration:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_JEST_MSW_INTEGRATION == "true"'
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
+    # Tier-1: only run when the MSW integration tests themselves change
+    - <<: *if-merge-request-tier-1-or-no-tier
+      changes:
+        - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
+    - <<: *if-merge-request-tier-1-or-no-tier
+      when: never
+    # Tier-2+: run on frontend, MSW integration test, GraphQL, or fixture generator changes
+    - <<: *if-merge-request-tier-2-or-above
+      changes:
+        - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
+        - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
+        - "{,ee/,jh/}app/graphql/**/*"
+        - "{,ee/}spec/frontend/fixtures/**/*"
+        - "ee/frontend_islands/apps/**/*"
+    - <<: *if-default-refs
+      changes: *code-backstage-spec-patterns
+
 .frontend:rules:coverage-frontend:
   rules:
     - <<: *if-not-ee
@@ -1859,6 +1910,12 @@
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-default-refs
       changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
+
+.frontend:rules:test-infection-scanner:
+  rules:
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-default-refs
+      changes: ["scripts/frontend/infection_scanner/**/*", "spec/frontend/scripts/infection_scanner/**/*"]
 
 .frontend:rules:jest-vue3-check-quarantined:
   rules:
@@ -2165,6 +2222,8 @@
     - <<: *if-security-merge-request
       when: never
     - <<: *if-security-schedule
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
@@ -2547,6 +2606,7 @@
     - <<: *if-default-refs
       changes:
         - "db/click_house/**/*"
+        - "db/siphon/**/*"
         - "lib/click_house/**/*"
 
 .rails:rules:ee-only-clickhouse-changes:
@@ -2895,25 +2955,16 @@
       changes: *rubocop-patterns
       variables:
         RUN_ALL_RUBOCOP: "false"
+    - <<: *if-merge-request-tier-3
+      changes: *rubocop-target-patterns
+      variables:
+        RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
       changes: *rubocop-patterns
       variables:
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
-      # this is a combination of ruby-patterns and additional paths that contain ruby scripts without extension
-      changes:
-        - "**/Rakefile"
-        - "**/Dangerfile"
-        - "**/Gemfile"
-        - "**/Gemfile.next"
-        - "**/Guardfile"
-        - "**/*.rake"
-        - "**/*.rb"
-        - "**/*.ru"
-        - "**/*.haml"
-        - "**/*.builder"
-        - "scripts/**/*"
-        - "bin/*"
+      changes: *rubocop-target-patterns
 
 .static-analysis:rules:ensure-application-settings-have-definition-file:
   rules:
@@ -3129,15 +3180,14 @@
 
 .setup:rules:dont-interrupt-me:
   rules:
-    - <<: *if-default-branch-or-tag
-      allow_failure: true
     - <<: *if-schedule-pipeline
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true
     - <<: *if-triggered-by-aigw-project
       allow_failure: true
-    - when: manual
+    - <<: *if-merge-request
+      when: manual
       allow_failure: true
 
 .setup:rules:clone-gitlab-repo:
@@ -3372,6 +3422,7 @@
       when: never
     - !reference [".strict-ee-only-rules", rules]
     - *if-merge-request-labels-as-if-foss
+    - *if-merge-request-labels-as-if-foss-run-predictive
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:as-if-foss-run-once/'
       when: never
     - !reference [".prevent-tier-2-and-below", "rules"]
@@ -3570,6 +3621,13 @@
   rules:
     - <<: *if-merge-request-tier-3
       when: never
+
+##################
+# API docs rules #
+##################
+.api-docs:rules:trigger-api-docs-pipeline:
+  rules:
+    - <<: *if-dot-com-gitlab-org-default-branch
 
 .test-metadata:rules:export-predictive-test-metrics:
   rules:

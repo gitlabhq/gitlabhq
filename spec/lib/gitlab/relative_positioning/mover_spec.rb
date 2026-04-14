@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_management do
+  using RSpec::Parameterized::TableSyntax
+
   range = (101..105)
   indices = (0..).take(range.size)
 
@@ -475,6 +477,28 @@ RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_manageme
 
         it_behaves_like 'able to move a new item'
         it_behaves_like 'able to move an existing item'
+      end
+    end
+
+    context 'when moving between items that have nil position' do
+      where(:lhs_pos, :rhs_pos, :item_pos, :expected_pos) do
+        nil | nil | nil | nil
+        nil | 105 | nil | 103 # position_between(100, 105)
+        101 | nil | nil | 104 # position_between(101, 106)
+      end
+
+      with_them do
+        let(:project) { no_issues }
+
+        let(:lhs) { create_issue(lhs_pos) }
+        let(:rhs) { create_issue(rhs_pos) }
+        let(:item) { create_issue(item_pos) }
+
+        it 'sets the correct position' do
+          subject.move(item, lhs, rhs)
+
+          expect(item.relative_position).to eq(expected_pos)
+        end
       end
     end
   end

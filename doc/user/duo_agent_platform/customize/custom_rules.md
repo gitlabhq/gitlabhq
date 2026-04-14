@@ -15,8 +15,13 @@ title: Custom rules
 {{< history >}}
 
 - Custom rules [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550743) in GitLab 18.2.
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.32.2) in GitLab for VS Code 6.32.2.
+  - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.12.2) in the GitLab Duo plugin for JetBrains IDEs 3.12.2.
+  - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases/v0.60.0) in GitLab for Visual Studio 0.60.0.
+  - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.43.0) in GitLab Duo CLI 8.43.0.
 - User-level custom rules [added](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2452) in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Support for GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/593279) in GitLab 18.11.
 
 {{< /history >}}
 
@@ -27,25 +32,30 @@ requirements such as development style guides.
 
 The following Agent Platform features support custom rules:
 
-- [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
 - [Foundational and custom agents](../agents/_index.md)
 - [Foundational and custom flows](../flows/_index.md)
 
 ## Create custom rules
 
-You can create custom rules at two levels:
+You can create custom rules at two levels, depending on how you use GitLab Duo:
 
-- User-level rules: Apply to all of your projects and workspaces.
-- Workspace-level rules: Apply only to a specific project or workspace.
+| Level                                                           | Agentic Chat in the GitLab UI | Editor extensions | GitLab Duo CLI |
+|-----------------------------------------------------------------|--------------------------|------------------|--------------|
+| User-level: Apply to all of your projects and workspaces        | {{< no >}}  |  {{< yes >}}    | {{< yes >}} |
+| Workspace-level: Apply only to a specific project or workspace  | {{< yes >}} | {{< yes >}}         | {{< yes >}} |
 
 If both user-level and workspace-level rules exist, GitLab Duo Chat applies both to conversations.
 
 Prerequisites:
 
 - Meet the [Agent Platform prerequisites](../_index.md#prerequisites).
-- For VS Code, install and configure the [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
-- For a JetBrains IDE, install and configure the [GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md) version 3.12.2 or later.
-- For Visual Studio, install and configure the [GitLab for Visual Studio extension](../../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+- For GitLab Duo in your local environment, install and configure one of the following:
+  - [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md) 6.32.2 or later.
+  - [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md) 3.12.2
+    or later.
+  - [GitLab for Visual Studio](../../../editor_extensions/visual_studio/setup.md) 0.60.0 or later.
+  - [GitLab Duo CLI](../../gitlab_duo_cli/_index.md#set-up-the-gitlab-duo-cli) 8.43.0 or later.
 
 > [!note]
 > Conversations that existed before you created any custom rules do not follow those rules.

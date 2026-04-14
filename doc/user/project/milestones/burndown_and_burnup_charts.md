@@ -26,7 +26,7 @@ Both burndown and burnup charts:
 
 - Show the total number of issues for each day of the current milestone.
 - Have a [toggle](#switch-between-number-of-issues-and-issue-weight) between the total number of
-  issues or the total [weight](../issues/issue_weight.md) of issues for each day of the milestone.
+  issues or the total [weight](../../work_items/weight.md) of issues for each day of the milestone.
 
 Differences between burndown and burnup charts are:
 

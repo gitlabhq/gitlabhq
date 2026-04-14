@@ -10,6 +10,7 @@ import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import * as constants from '~/notes/constants';
 
@@ -23,7 +24,7 @@ export default {
   },
   components: {
     AbuseCategorySelector,
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    EmojiPicker,
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -92,6 +93,21 @@ export default {
       type: Boolean,
       required: true,
     },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -126,6 +142,13 @@ export default {
         name: this.projectName,
       });
     },
+    resolveIcon() {
+      if (this.isResolving) return null;
+      return this.isResolved ? 'check-circle-filled' : 'check-circle';
+    },
+    resolveButtonTitle() {
+      return this.isResolved ? __('Reopen thread') : __('Resolve thread');
+    },
   },
 };
 </script>
@@ -157,6 +180,18 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="@max-sm/discussion:gl-flex-1"></span>
+    <gl-button
+      v-if="canResolve"
+      v-gl-tooltip
+      data-testid="resolve-discussion-button"
+      category="tertiary"
+      :class="{ '!gl-text-success': isResolved }"
+      :title="resolveButtonTitle"
+      :aria-label="resolveButtonTitle"
+      :icon="resolveIcon"
+      :loading="isResolving"
+      @click="$emit('resolve')"
+    />
     <emoji-picker
       v-if="canAwardEmoji"
       toggle-category="tertiary"

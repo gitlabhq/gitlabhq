@@ -665,6 +665,107 @@ func TestGetArchiveProxiedToGitalyInterruptedStream(t *testing.T) {
 	waitDone(t, done)
 }
 
+func TestGetChangedPathsProxiedToGitalySuccessfully(t *testing.T) {
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
+	defer gitalyServer.GracefulStop()
+
+	gitalyAddress := unixPrefix + socketPath
+	msg := serializedMessage("FindChangedPathsRequest", &gitalypb.FindChangedPathsRequest{
+		Repository: buildPbRepo(repoRelativePath),
+	})
+	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
+
+	resp, body, err := doSendDataRequest(t, "/something", "git-changed-paths", jsonParams)
+	resp.Body.Close()
+	require.NoError(t, err)
+
+	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
+
+	contentType := resp.Header.Get("Content-Type")
+	require.Equal(t, "application/x-ndjson", contentType, "GET %q: content type", resp.Request.URL)
+
+	require.NotEmpty(t, body, "GET %q: response body should not be empty", resp.Request.URL)
+	require.Contains(t, string(body), "file1.txt", "GET %q: response body", resp.Request.URL)
+}
+
+func TestGetChangedPathsProxiedToGitalyInterruptedStream(t *testing.T) {
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
+	defer gitalyServer.GracefulStop()
+
+	gitalyAddress := unixPrefix + socketPath
+	msg := serializedMessage("FindChangedPathsRequest", &gitalypb.FindChangedPathsRequest{
+		Repository: buildPbRepo(repoRelativePath),
+	})
+	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
+
+	resp, _, err := doSendDataRequest(t, "/something", "git-changed-paths", jsonParams)
+	require.NoError(t, err)
+
+	// This causes the server stream to be interrupted instead of consumed entirely.
+	resp.Body.Close()
+
+	done := make(chan struct{})
+	go func() {
+		gitalyServer.Wait()
+		close(done)
+	}()
+
+	waitDone(t, done)
+}
+
+func TestGetListBlobsProxiedToGitalySuccessfully(t *testing.T) {
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
+	defer gitalyServer.GracefulStop()
+
+	gitalyAddress := unixPrefix + socketPath
+	msg := serializedMessage("ListBlobsRequest", &gitalypb.ListBlobsRequest{
+		Repository: buildPbRepo(repoRelativePath),
+		Revisions:  []string{oid},
+		BytesLimit: 1048576,
+		WithPaths:  true,
+	})
+	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
+
+	resp, body, err := doSendDataRequest(t, "/something", "git-list-blobs", jsonParams)
+	resp.Body.Close()
+	require.NoError(t, err)
+
+	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
+
+	contentType := resp.Header.Get("Content-Type")
+	require.Equal(t, "application/octet-stream", contentType, "GET %q: content type", resp.Request.URL)
+
+	require.NotEmpty(t, body, "GET %q: response body should not be empty", resp.Request.URL)
+}
+
+func TestGetListBlobsProxiedToGitalyInterruptedStream(t *testing.T) {
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
+	defer gitalyServer.GracefulStop()
+
+	gitalyAddress := unixPrefix + socketPath
+	msg := serializedMessage("ListBlobsRequest", &gitalypb.ListBlobsRequest{
+		Repository: buildPbRepo(repoRelativePath),
+		Revisions:  []string{oid},
+		BytesLimit: 1048576,
+		WithPaths:  true,
+	})
+	jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
+
+	resp, _, err := doSendDataRequest(t, "/something", "git-list-blobs", jsonParams)
+	require.NoError(t, err)
+
+	// This causes the server stream to be interrupted instead of consumed entirely.
+	resp.Body.Close()
+
+	done := make(chan struct{})
+	go func() {
+		gitalyServer.Wait()
+		close(done)
+	}()
+
+	waitDone(t, done)
+}
+
 func TestGetDiffProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
@@ -719,7 +820,7 @@ func TestGetSnapshotProxiedToGitalySuccessfully(t *testing.T) {
 	expectedBody := testhelper.GitalyGetSnapshotResponseMock
 	archiveLength := len(expectedBody)
 
-	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
+	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("foo/bar.git"))
 	resp, body, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	resp.Body.Close()
 	require.NoError(t, err)
@@ -740,7 +841,7 @@ func TestGetSnapshotProxiedToGitalyInterruptedStream(t *testing.T) {
 
 	gitalyAddress := unixPrefix + socketPath
 
-	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
+	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("foo/bar.git"))
 	resp, _, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	require.NoError(t, err)
 
@@ -790,9 +891,9 @@ func buildGitalyRPCParams(gitalyAddress string, rpcArgs ...rpcArg) string {
 	return string(b)
 }
 
-func buildPbRepo(storageName, relativePath string) *gitalypb.Repository {
+func buildPbRepo(relativePath string) *gitalypb.Repository {
 	return &gitalypb.Repository{
-		StorageName:  storageName,
+		StorageName:  repoStorage,
 		RelativePath: relativePath,
 	}
 }

@@ -65,8 +65,8 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
   context 'with pipeline variables' do
     let(:variables_attributes) do
       [
-        { key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' },
-        { key: 'OTHER_VARIABLE', secret_value: 'OTHER_VAL' }
+        { key: 'SOME_VARIABLE', value: 'SOME_VAL' },
+        { key: 'OTHER_VARIABLE', value: 'OTHER_VAL' }
       ]
     end
 
@@ -86,19 +86,6 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
       expect(pipeline).to be_created_successfully
       expect(pipeline.pipeline_artifacts_pipeline_variables.partition_id).to eq(current_partition_id)
       expect(pipeline.variables.size).to eq(2)
-    end
-
-    context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
-      before do
-        stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
-      end
-
-      it 'assigns partition_id to variables' do
-        variables_partition_ids = pipeline.association(:variables).reader.map(&:partition_id).uniq
-
-        expect(pipeline.variables.size).to eq(2)
-        expect(variables_partition_ids).to eq([current_partition_id])
-      end
     end
 
     it 'assigns partition_id to needs' do

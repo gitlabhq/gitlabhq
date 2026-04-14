@@ -204,6 +204,65 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
         end
       end
 
+      context 'with allowed_to_create using deploy_key_id' do
+        let_it_be(:deploy_key) { create(:deploy_key, write_access_to: project, user: user) }
+
+        it 'protects a tag while allowing a deploy key to create tags' do
+          post api("/projects/#{project.id}/protected_tags", user),
+            params: { name: tag_name, allowed_to_create: [{ deploy_key_id: deploy_key.id }] }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('protected_tag')
+          expect(json_response['name']).to eq(tag_name)
+          expect(json_response['create_access_levels'][0]['deploy_key_id']).to eq(deploy_key.id)
+        end
+
+        it 'avoids creating default access levels when deploy key is specified' do
+          post api("/projects/#{project.id}/protected_tags", user),
+            params: { name: tag_name, allowed_to_create: [{ deploy_key_id: deploy_key.id }] }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['create_access_levels'].count).to eq(1)
+          expect(json_response['create_access_levels'][0]['deploy_key_id']).to eq(deploy_key.id)
+        end
+
+        context 'when deploy key is invalid' do
+          let(:invalid_deploy_key) { create(:deploy_key) }
+
+          it 'returns unprocessable entity error' do
+            post api("/projects/#{project.id}/protected_tags", user),
+              params: { name: tag_name, allowed_to_create: [{ deploy_key_id: invalid_deploy_key.id }] }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'when deploy key does not have write access' do
+          let_it_be(:read_only_deploy_key) { create(:deploy_key, user: user) }
+
+          before_all do
+            create(:deploy_keys_project, project: project, deploy_key: read_only_deploy_key, can_push: false)
+          end
+
+          it 'returns unprocessable entity error' do
+            post api("/projects/#{project.id}/protected_tags", user),
+              params: { name: tag_name, allowed_to_create: [{ deploy_key_id: read_only_deploy_key.id }] }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'when allowed_to_create format is incorrect' do
+          it 'returns a bad request error' do
+            post api("/projects/#{project.id}/protected_tags", user),
+              params: { name: tag_name, allowed_to_create: [''] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('allowed_to_create is invalid')
+          end
+        end
+      end
+
       it_behaves_like 'authorizing granular token permissions', :create_protected_tag do
         let(:boundary_object) { project }
         let(:request) do

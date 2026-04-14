@@ -279,6 +279,49 @@ For the second log, you might have one of the following scenarios:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the GitLab Self-Managed instance.
 
+## Error: `The Jira user is not a site or organization administrator`
+
+When you try to link a GitLab group, you might get one of the following errors:
+
+```plaintext
+The Jira user is not a site or organization administrator. Check the permissions in Jira and try again.
+```
+
+```plaintext
+Failed to link group. Please try again.
+```
+
+This issue occurs when the Jira user is not a member of the `site-admins` or
+`org-admins` group. GitLab checks group membership by calling the Jira API
+endpoint `/rest/api/3/user?expand=groups` and verifying that the user belongs
+to one of these two groups.
+
+A user can appear as a site administrator in the
+[Atlassian organization](https://admin.atlassian.com) and have full
+administrator privileges, but if they are not explicitly added to the `site-admins` or
+`org-admins` group, the GitLab permission check fails. This also means that
+administrator privileges assigned through custom groups or product-specific roles
+are not detected by GitLab.
+
+To resolve this issue, add the Jira user to the `org-admins` or `site-admins`
+group:
+
+1. Sign in to your [Atlassian organization](https://admin.atlassian.com).
+1. Go to **Directory** > **Groups**.
+1. Select the `org-admins` group (recommended) or `site-admins` group.
+   If the group does not exist,
+   [create it](https://support.atlassian.com/user-management/docs/create-groups/).
+1. Add the Jira user to the group.
+
+For more information about Jira user requirements, see
+[Jira user requirements](jira_cloud_app.md#jira-user-requirements).
+
+GitLab cannot use Jira's permissions API to check administrator status directly
+due to OAuth scope limitations. For more context, see
+[issue #420687](https://gitlab.com/gitlab-org/gitlab/-/issues/420687)
+and
+[merge request !135771](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135771).
+
 ## Error: `Failed to link group`
 
 When you link a group, you might get the following error:

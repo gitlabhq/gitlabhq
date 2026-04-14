@@ -331,7 +331,7 @@ module Gitlab
 
           value = auth_hash.public_send(key) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `auth_hash.has_attribute?(key)` on L330
           if key.to_sym == :organization
-            user.user_detail_organization = value
+            user.company = value
           elsif user.respond_to?(:"#{key}=")
             user.public_send(:"#{key}=", value) # rubocop:disable GitlabSecurity/PublicSend -- we validate that `key` is a supported value by calling `gl_user.sync_attribute?(key)` on L330
           else

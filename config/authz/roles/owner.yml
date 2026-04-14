@@ -9,19 +9,32 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _delete_incident_work_item
   - add_catalog_resource
+  - admin_project_secrets_manager
   - archive_project
+  - cancel_project_import
   - change_namespace
   - change_visibility_level
+  - clone_project_configuration
   - create_group_link
   - delete_group_link
   - destroy_issue
   - destroy_merge_request
   - destroy_pipeline
+  - destroy_requirement
+  - grant_protected_ref_access
   - link_forked_project
   - manage_owners
+  - mark_issue_for_publication
+  - modify_security_policy
+  - read_compliance_adherence_report
+  - read_compliance_dashboard
+  - read_compliance_violations_report
+  - read_project_import
   - remove_fork_project
   - remove_project
+  - rewrite_repository_history
   - set_emails_disabled
   - set_issue_created_at
   - set_issue_iid
@@ -31,46 +44,104 @@ project:
   - set_show_diff_preview_in_email
   - set_warn_about_potentially_unwanted_characters
   - update_group_link
+  - update_security_orchestration_policy_project
 group:
   permissions: []
   raw_permissions:
+  - activate_group_member
   - admin_add_on_purchase
+  - admin_ci_minutes
   - admin_cicd_variables
+  - admin_compliance_framework
+  - admin_compliance_pipeline_configuration
+  - admin_dependency_proxy
+  - admin_duo_workflow
+  - admin_external_audit_events
   - admin_group
+  - admin_group_credentials_inventory
   - admin_group_member
+  - admin_group_model_selection
   - admin_integrations
+  - admin_licensed_seat
+  - admin_member_access_request
+  - admin_member_role
+  - admin_merge_request_approval_settings
   - admin_namespace
   - admin_package
   - admin_protected_environments
   - admin_runners
+  - admin_service_account_member
+  - admin_service_accounts
+  - admin_setting_to_allow_resource_access_token_creation
+  - admin_web_hook
   - archive_group
+  - ban_group_member
   - change_group
   - change_new_user_signups_cap
+  - change_prevent_group_forking
   - change_prevent_sharing_groups_outside_hierarchy
   - change_seat_control
   - change_visibility_level
   - create_deploy_token
   - create_group_link
   - create_runners
+  - create_service_account
   - create_subgroup
   - delete_group_link
+  - delete_namespace_ban
+  - delete_secrets_permission
+  - delete_service_account
   - delete_subgroup
+  - deprovision_secrets_manager
   - destroy_deploy_token
+  - destroy_epic
   - destroy_issue
+  - destroy_resource_access_tokens
+  - destroy_user_achievement
   - edit_billing
+  - export_group_memberships
+  - invite_group_members
+  - manage_deploy_tokens
   - manage_merge_request_settings
+  - modify_security_policy
+  - provision_secrets_manager
+  - read_add_on_purchase
+  - read_billable_member
   - read_billing
+  - read_compliance_adherence_report
+  - read_compliance_dashboard
+  - read_compliance_framework
+  - read_compliance_violations_report
+  - read_enterprise_user
+  - read_group_credentials_inventory
+  - read_group_saml_identity
+  - read_group_scim_identity
+  - read_member_access_request
+  - read_resource_access_tokens
   - read_runners
   - read_runners_registration_token
+  - read_saml_user
+  - read_service_account
   - read_subscription_usage
   - read_usage_quotas
+  - read_web_hook
   - register_group_runners
   - remove_group
   - security_manager_access
   - set_emails_disabled
+  - set_epic_created_at
+  - set_epic_updated_at
+  - set_issue_created_at
+  - set_issue_updated_at
   - set_note_created_at
   - set_show_diff_preview_in_email
+  - update_approval_rule
   - update_default_branch_protection
   - update_git_access_protocol
   - update_group_link
+  - update_knowledge_graph_setting
   - update_runners_registration_token
+  - update_secrets_permission
+  - update_security_orchestration_policy_project
+  - update_subscription_usage_cap
+  - view_member_roles

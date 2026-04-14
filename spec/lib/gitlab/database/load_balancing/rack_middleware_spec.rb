@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
+RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis, feature_category: :database do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:warden_user) { double(:warden, user: double(:user, id: 42)) }
+  let(:warden_user_no_preload) { double(:warden) }
   let(:single_sticking_object) { Set.new([[ActiveRecord::Base.sticking, :user, 99]]) }
   let(:multiple_sticking_objects) do
     Set.new([
@@ -13,6 +14,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
       [ActiveRecord::Base.sticking, :runner, '123456789'],
       [ActiveRecord::Base.sticking, :runner, '1234']
     ])
+  end
+
+  before do
+    stub_feature_flags(grab_user_id_from_warden_session: false)
   end
 
   after do
@@ -180,12 +185,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   end
 
   describe '#clear' do
-    it 'clears the currently used host and session' do
+    it 'clears the currently used host and session with force' do
       session = spy(:session)
 
       stub_const('Gitlab::Database::LoadBalancing::SessionMap', session)
 
-      expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts)
+      expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts).with(force: true)
 
       middleware.clear
 
@@ -195,20 +200,54 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#sticking_namespaces' do
     context 'using a Warden request' do
-      it 'returns the warden user if present' do
-        env = { 'warden' => warden_user }
-        ids = Gitlab::Database::LoadBalancing.base_models.map do |model|
-          [model.sticking, :user, 42]
+      context 'when grab_user_id_from_warden_session is disabled (default)' do
+        before do
+          stub_feature_flags(grab_user_id_from_warden_session: false)
         end
 
-        expect(middleware.sticking_namespaces(env)).to eq(ids)
+        it 'returns the warden user if present' do
+          env = { 'warden' => warden_user }
+          ids = Gitlab::Database::LoadBalancing.base_models.map do |model|
+            [model.sticking, :user, 42]
+          end
+
+          expect(middleware.sticking_namespaces(env)).to eq(ids)
+        end
+
+        it 'returns an empty Array if no user was present' do
+          warden = double(:warden, user: nil)
+          env = { 'warden' => warden }
+
+          expect(middleware.sticking_namespaces(env)).to eq([])
+        end
       end
 
-      it 'returns an empty Array if no user was present' do
-        warden = double(:warden, user: nil)
-        env = { 'warden' => warden }
+      # TODO: Remove the feature flag and promote these behaviours to the default when
+      # grab_user_id_from_warden_session is fully rolled out
+      context 'when grab_user_id_from_warden_session is enabled' do
+        before do
+          stub_feature_flags(grab_user_id_from_warden_session: true)
+        end
 
-        expect(middleware.sticking_namespaces(env)).to eq([])
+        it 'returns the user id from the session without loading the user object' do
+          session_key = Warden::SessionSerializer.new({}).key_for(:user)
+          env = {
+            'warden' => warden_user_no_preload,
+            'rack.session' => { session_key => [[42], 'session'] }
+          }
+          ids = Gitlab::Database::LoadBalancing.base_models.map do |model|
+            [model.sticking, :user, 42]
+          end
+
+          expect(warden_user_no_preload).not_to receive(:user)
+          expect(middleware.sticking_namespaces(env)).to eq(ids)
+        end
+
+        it 'returns an empty Array if rack.session is missing' do
+          env = { 'warden' => warden_user_no_preload }
+
+          expect(middleware.sticking_namespaces(env)).to eq([])
+        end
       end
     end
 

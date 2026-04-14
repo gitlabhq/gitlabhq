@@ -8,8 +8,10 @@ module Banzai
     class PlayableLinkFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
 
+      XPATH = 'descendant-or-self::img[not(ancestor::a)]'
+
       def call
-        doc.xpath('descendant-or-self::img[not(ancestor::a)]').each do |el|
+        doc.xpath(XPATH).each do |el|
           el.replace(media_node(doc, el)) if has_allowed_media?(el)
         end
 

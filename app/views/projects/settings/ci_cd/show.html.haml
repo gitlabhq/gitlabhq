@@ -31,13 +31,13 @@
 - if can?(current_user, :admin_protected_environments, @project)
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-- if can?(current_user, :admin_runners, @project)
+- if can?(current_user, :read_runners, @project)
   = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
     id: 'js-runners-settings',
     testid: 'runners-settings-content') do |c|
     - c.with_description do
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-      = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       #js-project-runners-settings{ data: project_runners_settings_data(@project) }
 

@@ -7,7 +7,7 @@ identifiers:
 - project
 - user
 - namespace
-product_group: runner
+product_group: runner_core
 product_categories:
 - fleet_visibility
 milestone: "16.4"

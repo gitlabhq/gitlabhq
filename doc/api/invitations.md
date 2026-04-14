@@ -25,7 +25,7 @@ Prerequisites:
   - You must have the Owner or Maintainer role for the project.
   - [Group membership lock](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - For GitLab Self-Managed instances:
-  - If [new sign-ups are disabled](../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [new user accounts are not allowed](../administration/settings/sign_up_restrictions.md#disable-new-user-account-creation), an administrator must add the user.
   - If [user invitations are not allowed](../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects), an administrator must add the user.
   - If [administrator approval for role promotions is enabled](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
@@ -39,7 +39,7 @@ POST /projects/:id/invitations
 | `id`             | integer or string | yes                               | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths) |
 | `email`          | string            | yes (if `user_id` isn't provided) | The email of the new member or multiple emails separated by commas. |
 | `user_id`        | integer or string | yes (if `email` isn't provided)   | The ID of the new member or multiple IDs separated by commas. |
-| `access_level`   | integer           | yes                               | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level`   | integer           | yes                               | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source`  | string            | no                                | The source of the invitation that starts the member creation process. |
 | `member_role_id` | integer           | no                                | Assigns the new member to the provided custom role. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100)) in GitLab 16.6. Ultimate only. |
@@ -90,9 +90,9 @@ Example response:
 }
 ```
 
-## List all invitations pending for a group or project
+## List all pending invitations for a group or project
 
-Gets a list of invited group or project members viewable by the authenticated user.
+Lists all pending invitations viewable by the authenticated user.
 Returns invitations to direct members only, and not through inherited ancestors' groups.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of members.
@@ -134,7 +134,7 @@ Example response:
 
 ## Update an invitation to a group or project
 
-Updates a pending invitation's access level or access expiry date.
+Updates a pending invitation to a group or project.
 
 ```plaintext
 PUT /groups/:id/invitations/:email
@@ -145,7 +145,7 @@ PUT /projects/:id/invitations/:email
 | -------------- | ----------------- | -------- | ----------- |
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `email`        | string            | yes      | The email address the invitation was previously sent to. |
-| `access_level` | integer           | no       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level` | integer           | no       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`   | string            | no       | A date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
 
 ```shell
@@ -168,7 +168,7 @@ Example response:
 
 ## Delete an invitation to a group or project
 
-Deletes a pending invitation by email address.
+Deletes a pending invitation to the specified email address.
 
 ```plaintext
 DELETE /groups/:id/invitations/:email

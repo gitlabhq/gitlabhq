@@ -109,111 +109,6 @@ Quote script commands and variable values to prevent YAML and shell parsing erro
       - gcc $COMPILE_FLAGS main.c  # Expands to: gcc -Wall -Werror -O2 main.c
   ```
 
-## Pass environment variables to later jobs
-
-You can define environment variables in a job script and pass them to other jobs
-in later stages using [`dotenv` reports](../yaml/artifacts_reports.md#artifactsreportsdotenv).
-
-Environment variables from `dotenv` reports can only be used in job scripts, not to configure pipelines.
-The variables [take precedence](_index.md#cicd-variable-precedence) over job variables defined in the `.gitlab-ci.yml` file.
-
-To pass `dotenv` variables to later jobs:
-
-1. In the job script, save the variable as a `.env` file with the format `VARIABLE_NAME=value`. For example:
-
-   ```yaml
-      build-job:
-        stage: build
-        script:
-          - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
-        artifacts:
-          reports:
-            dotenv: build.env
-   ```
-
-1. In later stage jobs, use the variable in scripts. For example:
-
-   ```yaml
-   test-job:
-     stage: test
-     script:
-       - echo "$BUILD_VARIABLE"  # Output is: 'value_from_build_job'
-   ```
-
-You can also [pass `dotenv` variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
-
-### Control which jobs receive `dotenv` variables
-
-You can use the [`dependencies`](../yaml/_index.md#dependencies) or [`needs`](../yaml/_index.md#needs)
-keywords to control which jobs receive the `dotenv` artifacts.
-
-To have no environment variables from a `dotenv` artifact:
-
-- Pass an empty `dependencies` or `needs` array.
-- Pass [`needs:artifacts`](../yaml/_index.md#needsartifacts) as `false`.
-- Set `needs` to only list jobs that do not have a `dotenv` artifact.
-
-For example:
-
-```yaml
-build-job1:
-  stage: build
-  script:
-    - echo "BUILD_VERSION=v1.0.0" >> build.env
-  artifacts:
-    reports:
-      dotenv: build.env
-
-build-job2:
-  stage: build
-  needs: []
-  script:
-    - echo "This job has no dotenv artifacts"
-
-test-job1:
-  stage: test
-  script:
-    - echo "$BUILD_VERSION"  # Output is: 'v1.0.0'
-  dependencies:
-    - build-job1
-
-test-job2:
-  stage: test
-  script:
-    - echo "$BUILD_VERSION"  # Output is ''
-  dependencies: []
-
-test-job3:
-  stage: test
-  script:
-    - echo "$BUILD_VERSION"  # Output is: 'v1.0.0'
-  needs:
-    - build-job1
-
-test-job4:
-  stage: test
-  script:
-    - echo "$BUILD_VERSION"  # Output is: 'v1.0.0'
-  needs:
-    - job: build-job1
-      artifacts: true
-
-test-job5:
-  stage: deploy
-  script:
-    - echo "$BUILD_VERSION"  # Output is ''
-  needs:
-    - job: build-job1
-      artifacts: false
-
-test-job6:
-  stage: deploy
-  script:
-    - echo "$BUILD_VERSION"  # Output is ''
-  needs:
-    - build-job2
-```
-
 ## Pass an environment variable from the `script` section to `artifacts` or `cache`
 
 {{< history >}}
@@ -302,3 +197,7 @@ job:
 ```
 
 This does not work when [passing a CI/CD variable to a downstream pipeline](../pipelines/downstream_pipelines_troubleshooting.md#variable-with--character-does-not-get-passed-to-a-downstream-pipeline-properly).
+
+## Related topics
+
+- [Pass environment variables to later jobs with dotenv](dotenv_variables.md#pass-variables-to-later-jobs)

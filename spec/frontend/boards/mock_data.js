@@ -25,6 +25,7 @@ import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
+import WorkItemTypeToken from '~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue';
 
 export const mockBoard = {
   milestone: {
@@ -927,16 +928,13 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
     isProject: false,
   },
   {
-    icon: 'work-item-issue',
-    title: TOKEN_TITLE_TYPE,
     type: TOKEN_TYPE_TYPE,
-    token: GlFilteredSearchToken,
+    title: TOKEN_TITLE_TYPE,
+    icon: 'work-item-issue',
     unique: true,
-    options: [
-      { icon: 'work-item-issue', value: 'ISSUE', title: 'Issue' },
-      { icon: 'work-item-incident', value: 'INCIDENT', title: 'Incident' },
-      { icon: 'work-item-ticket', value: 'TICKET', title: 'Ticket' },
-    ],
+    token: WorkItemTypeToken,
+    fullPath: 'gitlab-org',
+    isFilterableBoardView: true,
   },
   {
     type: TOKEN_TYPE_RELEASE,
@@ -953,6 +951,7 @@ export const mockLabel1 = {
   color: '#F0AD4E',
   textColor: '#FFFFFF',
   description: null,
+  __typename: 'Label',
 };
 
 export const mockLabel2 = {
@@ -961,6 +960,7 @@ export const mockLabel2 = {
   color: '#F0AD4E',
   textColor: '#FFFFFF',
   description: null,
+  __typename: 'Label',
 };
 
 export const mockProjectLabelsResponse = {

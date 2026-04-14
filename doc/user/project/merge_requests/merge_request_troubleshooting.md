@@ -162,7 +162,7 @@ This error can happen if your merge request:
 - References a Git LFS file that is locked.
 
 Users on GitLab Self-Managed can request an administrator review server logs
-to determine the cause of the error. GitLab SaaS users should
+to determine the cause of the error. GitLab.com users should
 [contact Support](https://about.gitlab.com/support/#contact-support) for help.
 
 ## Cached merge request count
@@ -319,16 +319,31 @@ approvals for those merge requests. In GitLab Premium and Ultimate, by default, 
 To avoid this problem, add logic to your automation that ensures
 [commits are processed before approving](../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests) the merge request.
 
-## Merge request `merged manually`
+## Merge request unexpectedly marked as merged
 
-If a merged merge request contains a `merged manually` system note, it was either merged outside the GitLab UI, or contains commits
-that were merged as part of a different merge request. For example:
+If a merged merge request contains a `merged manually` system note, the source branch commits
+were merged either outside the GitLab UI or as part of a different merge request.
 
-- Merge request 1 is for the branch `single-fix`, and has commit `cd87d6`.
-- Merge request 2 is for the branch `several-fixes`. It contains commit `cd87d6` and several others.
+### Merged outside the GitLab UI
 
-Merging the `several-fixes` branch merges all commits on that branch, including commit `cd87d6`.
-Even though no action has been taken on the branch `single-fix`, commit `cd87d6` was merged
-as part of `several-fixes`, so `single-fix` now shows as merged.
+When you use `git merge` to merge a branch directly into the target branch outside of the UI,
+GitLab detects the operation and marks the merge request as `merged manually`.
 
-For more information, see [multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).
+This can occur when direct pushes to the target branch are allowed.
+To prevent this situation, you can protect the target branch and configure it to not allow direct pushes
+(**Allowed to push and merge** is set to **No one**).
+
+For more information, see [protect a branch](../repository/branches/protected.md#protect-a-branch).
+
+### Merged as part of a different merge request
+
+The merge request contains commits that were already merged as part of a different merge request.
+If this occurs on a protected branch, the commits were approved before being merged,
+in accordance with the protected branch settings.
+
+For more information, see
+[multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).
+
+> [!note]
+> In some cases, GitLab may show `merged manually` instead of `Merged with !<merge_request_id>`.
+> For more information, see [issue 456426](https://gitlab.com/gitlab-org/gitlab/-/issues/456426).

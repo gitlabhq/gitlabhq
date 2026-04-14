@@ -217,7 +217,7 @@ class ApplicationController < BaseActionController
     redirect_location || root_path
   end
 
-  def after_sign_out_path_for(resource)
+  def after_sign_out_path_for(_resource)
     Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
   end
 
@@ -454,7 +454,7 @@ class ApplicationController < BaseActionController
     Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
-  def set_current_context(&block)
+  def set_current_context
     # even though feature_category is pre-populated by
     # Gitlab::Middleware::ActionControllerStaticContext
     # using the static annotation on controllers, the

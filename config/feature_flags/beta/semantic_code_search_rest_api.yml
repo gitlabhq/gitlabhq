@@ -1,0 +1,10 @@
+---
+name: semantic_code_search_rest_api
+description: Enable the semantic code search REST API endpoint (beta)
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21285
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227817
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594944
+milestone: '18.11'
+group: group::global search
+type: beta
+default_enabled: true

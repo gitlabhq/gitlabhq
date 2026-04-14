@@ -51,13 +51,6 @@ module WorkItems
 
     enum :base_type, BASE_TYPES.transform_values { |value| value[:enum_value] }
 
-    has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
-    has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
-      inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'
-    has_many :user_preferences,
-      class_name: 'WorkItems::UserPreference',
-      inverse_of: :work_item_type
-
     before_validation :strip_whitespace
 
     # TODO: review validation rules
@@ -69,8 +62,6 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
-    scope :with_widget_definition_preload, -> { preload(:enabled_widget_definitions) }
-
     def self.default_by_type(type)
       found_type = find_by(base_type: type)
       return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
@@ -93,7 +84,9 @@ module WorkItems
 
     # resource_parent is used in EE
     def widgets(_resource_parent)
-      enabled_widget_definitions.filter(&:widget_class)
+      WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+        .where(work_item_type_id: id)
+        .filter(&:widget_class)
     end
 
     def widget_classes(resource_parent)
@@ -195,12 +188,12 @@ module WorkItems
 
     # Temporary method for adding configuration thought the API
     def service_desk?
-      nil
+      base_type.to_s == "ticket"
     end
 
     # Temporary method for adding configuration thought the API
     def incident_management?
-      nil
+      base_type.to_s == "incident"
     end
 
     # Temporary method for adding configuration thought the API

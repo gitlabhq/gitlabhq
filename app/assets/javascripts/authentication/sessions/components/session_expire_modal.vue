@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { INTERVAL_SESSION_MODAL, BROADCAST_CHANNEL } from '../constants';

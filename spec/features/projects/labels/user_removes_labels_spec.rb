@@ -40,15 +40,22 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
     end
 
     it "removes all labels" do
-      loop do
-        li = page.first(".js-label-list-item", minimum: 0)
-        break unless li
+      initial_count = page.all(".js-label-list-item", minimum: 1).count
 
-        page.within li do
+      initial_count.times do |i|
+        remaining = initial_count - i
+
+        page.within first(".js-label-list-item") do
           find_by_testid('label-actions-dropdown-toggle').click
           click_button('Delete')
         end
         click_link("Delete label")
+
+        if remaining > 1
+          expect(page).to have_css(".js-label-list-item", count: remaining - 1)
+        else
+          expect(page).to have_content("Generate a default set of labels")
+        end
       end
 
       expect(page).to have_content("Generate a default set of labels").and have_content("New label")

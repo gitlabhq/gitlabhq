@@ -145,6 +145,7 @@ following levels are valid:
 - Guest (`10`)
 - Planner (`15`)
 - Reporter (`20`)
+- Security Manager (`25`)
 - Developer (`30`)
 - Maintainer (`40`)
 - Owner (`50`)

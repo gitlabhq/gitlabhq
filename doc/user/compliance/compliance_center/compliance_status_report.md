@@ -38,7 +38,7 @@ To learn more about how requirements and controls are defined in a compliance fr
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To view the compliance status report:
 
@@ -71,7 +71,7 @@ Export the contents of a status report for projects in a group. Reports are trun
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To export the compliance status report for projects in a group:
 

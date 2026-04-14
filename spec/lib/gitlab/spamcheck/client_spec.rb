@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   include_context 'includes Spam constants'
 
   let(:endpoint) { 'grpc://grpc.test.url' }
-  let_it_be(:user) { create(:user, user_detail_organization: 'GitLab') }
+  let_it_be(:user) { create(:user, company: 'GitLab') }
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
   let(:verdict_score) { 0.01 }
   let(:verdict_evaluated) { true }

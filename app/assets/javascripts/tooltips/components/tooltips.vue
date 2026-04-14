@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltip } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const getTooltipTitle = (element) => {

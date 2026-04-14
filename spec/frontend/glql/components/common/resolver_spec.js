@@ -1,4 +1,4 @@
-import { identity } from 'lodash';
+import { identity } from 'lodash-es';
 import { nextTick } from 'vue';
 import Resolver from '~/glql/components/common/resolver.vue';
 import { parse } from '~/glql/core/parser';

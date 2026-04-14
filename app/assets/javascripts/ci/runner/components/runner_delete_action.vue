@@ -2,7 +2,7 @@
 import runnerDeleteMutation from '~/ci/runner/graphql/shared/runner_delete.mutation.graphql';
 import { createAlert } from '~/alert';
 import { sprintf, s__ } from '~/locale';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { I18N_DELETED_TOAST } from '../constants';
 import RunnerDeleteModal from './runner_delete_modal.vue';
@@ -107,7 +107,7 @@ export default {
       });
 
       createAlert({ title, message });
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
   },
 };

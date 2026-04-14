@@ -30,6 +30,7 @@ export const rawMockData = {
   licensedUserCount: '',
   ldapSyncConfigured: 'false',
   samlScimConfigured: 'false',
+  contractOveragesAllowed: 'true',
 };
 
 export const mockData = {
@@ -64,4 +65,5 @@ export const mockData = {
   licensedUserCount: '',
   ldapSyncConfigured: false,
   samlScimConfigured: false,
+  contractOveragesAllowed: true,
 };

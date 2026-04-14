@@ -15,11 +15,11 @@ class DashboardController < Dashboard::ApplicationController
     only: [:issues, :merge_requests, :search_merge_requests, :work_items, :work_items_calendar]
 
   before_action only: [:issues] do
-    redirect_to_work_items_dashboard if current_user&.work_items_consolidated_list_enabled?
+    redirect_to_work_items_dashboard
   end
 
   before_action only: [:issues_calendar] do
-    redirect_to_work_items_dashboard(format: :ics) if current_user&.work_items_consolidated_list_enabled?
+    redirect_to_work_items_dashboard(format: :ics)
   end
 
   before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests, :work_items]
@@ -38,8 +38,7 @@ class DashboardController < Dashboard::ApplicationController
 
   feature_category :notifications, [:home]
   feature_category :user_profile, [:activity]
-  feature_category :team_planning, [:issues, :issues_calendar]
-  feature_category :portfolio_management, [:work_items, :work_items_calendar]
+  feature_category :portfolio_management, [:issues, :issues_calendar, :work_items, :work_items_calendar]
   feature_category :code_review_workflow, [:merge_requests, :search_merge_requests]
 
   urgency :low, [:merge_requests, :activity, :search_merge_requests]

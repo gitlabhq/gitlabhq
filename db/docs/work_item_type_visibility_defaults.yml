@@ -1,0 +1,13 @@
+---
+table_name: work_item_type_visibility_defaults
+classes:
+  - WorkItems::TypesFramework::VisibilityDefault
+feature_categories:
+  - team_planning
+description: Stores default visibility settings a namespace applies when new child namespaces are created under it
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227971
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

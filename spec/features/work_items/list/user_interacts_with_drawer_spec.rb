@@ -51,36 +51,6 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
         expect(first_card).to have_content('Jan 1 – Dec 31, 2025')
       end
     end
-
-    context 'when accessing work item from project issue list' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-
-        sign_in(user)
-
-        visit project_issues_path(project)
-
-        first_card.click
-
-        wait_for_requests
-      end
-
-      it_behaves_like 'work item drawer on the list page'
-
-      it 'updates start and due date on the list', :aggregate_failures do
-        within_testid('work-item-drawer') do
-          within_testid 'work-item-due-dates' do
-            click_button 'Edit'
-            fill_in 'Start', with: '2025-01-01'
-            fill_in 'Due', with: '2025-12-31'
-          end
-
-          close_drawer
-        end
-
-        expect(first_card).to have_content('Jan 1 – Dec 31, 2025')
-      end
-    end
   end
 
   def first_card

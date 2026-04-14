@@ -35,19 +35,11 @@ module.exports = (path, options = {}) => {
     // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
     '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
     '@gitlab/ui$': '@gitlab/ui/src',
-    '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
   };
   const globals = {};
 
   const customElements = ['fe-island-duo-next'];
   const isCE = (tag) => customElements.includes(tag);
-
-  if (!USE_VUE_3) {
-    Object.assign(vueModuleNameMappers, {
-      '^portal-vue-vue3-impl$':
-        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
-    });
-  }
 
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
@@ -63,8 +55,7 @@ module.exports = (path, options = {}) => {
         '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
       '^vue-virtual-scroll-list$':
         '<rootDir>/app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
-      '^portal-vue-vue3-impl$':
-        '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
+      '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     });
     if (USE_VUE3_COMPILER) {
       Object.assign(globals, {
@@ -314,6 +305,10 @@ module.exports = (path, options = {}) => {
     Set nothing for CI, because we want to use the auto-logic for the cores
      */
     maxWorkers: process.env.CI ? '' : '60%',
-    testPathIgnorePatterns: ['<rootDir>/ee/frontend_islands'],
+    testPathIgnorePatterns: [
+      '<rootDir>/ee/frontend_islands',
+      '<rootDir>/spec/frontend/msw_integration',
+      '<rootDir>/ee/spec/frontend/msw_integration',
+    ],
   };
 };

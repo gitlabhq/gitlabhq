@@ -17,6 +17,7 @@ title: GitLab Credits and usage billing
 
 - Introduced in GitLab 18.7.
 - GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
+- Introduced for community subscriptions in GitLab 18.11.
 
 {{< /history >}}
 
@@ -50,6 +51,8 @@ Included credits are allocated to all users on a Premium or Ultimate tier.
 These credits are individual and cannot be shared between users.
 Included credits reset at the beginning of each month.
 Unused credits do not roll over to the next month.
+
+[Community program subscriptions](community_programs.md) do not receive included credits.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
 
@@ -137,22 +140,7 @@ If you're on the Free tier and want to try credits, you can start an [Ultimate t
 
 {{< /history >}}
 
-Users on the Free tier on GitLab.com can purchase a Monthly Commitment Pool of GitLab Credits for their group namespace. This provides access to a set of GitLab Duo Agent Platform features, without needing a Premium or Ultimate subscription.
-
-You can use the following features after you purchase credits:
-
-- [GitLab Duo Chat (agentic)](../user/gitlab_duo_chat/agentic_chat.md)
-- [AI Catalog](../user/duo_agent_platform/ai_catalog.md)
-- [Custom Agents](../user/duo_agent_platform/agents/custom.md)
-- [Planner Agent](../user/duo_agent_platform/agents/foundational_agents/planner.md)
-- [Custom Flows](../user/duo_agent_platform/flows/custom.md)
-- [Software Development Flow](../user/duo_agent_platform/flows/foundational_flows/software_development.md)
-- [Developer Flow](../user/duo_agent_platform/flows/foundational_flows/developer.md)
-- [Fix CI/CD Pipeline Flow](../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md)
-- [Convert to GitLab CI/CD Flow](../user/duo_agent_platform/flows/foundational_flows/convert_to_gitlab_ci.md)
-- [Code Review Flow](../user/duo_agent_platform/flows/foundational_flows/code_review.md)
-- [GitLab MCP clients](../user/gitlab_duo/model_context_protocol/mcp_clients.md)
-- [Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md)
+Users on the Free tier on GitLab.com can purchase a Monthly Commitment Pool of GitLab Credits for their group namespace. This provides access to a set of [GitLab Duo Agent Platform features](../user/duo_agent_platform/_index.md), without needing a Premium or Ultimate subscription.
 
 On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
 
@@ -230,6 +218,12 @@ Your GitLab Credits are displayed in the subscription card in Customers Portal, 
 Credit usage is calculated based on the features and models they use.
 Some features have multiple model options to choose from, while other features use only one model.
 
+A request represents a single (billable) action initiated by a user (for example, sending a chat message or requesting code generation).
+This represents one interaction from the user's perspective.
+
+A model call represents the underlying API calls made to LLMs to fulfill a user request.
+A single user request might trigger multiple model calls. For example, one call to understand context and another call to generate a response.
+
 ### Models
 
 The following table lists the number of requests you can make with one GitLab Credit for different [models](../user/duo_agent_platform/model_selection.md).
@@ -246,28 +240,28 @@ For subsidized models with basic integration:
 | `codestral-2501` | 8.0 |
 | `gemini-2.5-flash` | 8.0 |
 | `gpt-5-mini` | 8.0 |
+| `gpt-5-4-nano` | 8.0 |
 
 For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
 | `claude-4.5-haiku` | 6.7 |
+| `gpt-5-4-mini` | 6.7 |
 | `gpt-5-codex` | 3.3|
 | `gpt-5` | 3.3 |
 | `gpt-5.2` | 2.5 |
+| `gpt-5.2-codex` | 2.5 |
+| `gpt-5.3-codex` | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4` <sup>1</sup> | 2.0 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
-| `claude-sonnet-4.6` <sup>1</sup> | 2.0 |
+| `claude-sonnet-4.6` | 2.0 |
 | `claude-opus-4.5` | 1.2 |
-| `claude-opus-4.6` <sup>1</sup> | 1.2 |
+| `claude-opus-4.6`  | 1.2 |
 | `claude-sonnet-4` <sup>2</sup> | 1.1 |
 | `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
-| `claude-sonnet-4.6` <sup>2</sup> | 1.1 |
-| `gpt-5.2-codex` | 0.8 |
-| `claude-opus-4.6` <sup>2</sup> | 0.7 |
-| `gpt-5.1-codex` | 0.6 |
 
 **Footnotes**:
 
@@ -276,18 +270,92 @@ For premium models with optimized integration:
 
 ### Features
 
-The following table lists the number of requests you can make with one GitLab Credit for features that use a fixed model.
+The following table lists the number of requests or model calls you can make with one GitLab Credit for different features.
+This pricing applies to all models (including self-hosted models) available for the feature.
 
-| Feature | Requests with one credit |
+| Feature | Requests or calls with one credit |
 |---------|---------------------------|
-| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
+| [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 requests |
+| Code Review Flow | 4 calls |
+| SAST False Positive Detection Flow | 1 call |
+| SAST Vulnerability Resolution Flow | 0.25 calls |
 
-[GitLab Duo Chat (agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
-so credit cost varies based on the model selected for the request.
-With the [default model](../user/duo_agent_platform/model_selection.md#default-models) you can make 6.7 requests with one credit.
-
-Each message sent to GitLab Duo Chat (agentic) counts as one billable request.
+Each message sent to GitLab Duo Agentic Chat counts as one billable request.
 One conversation window can include multiple messages, and so multiple billable requests.
+
+## Usage caps
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19881) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `budget_caps_graphql_api`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+You can set a monthly GitLab Credits cap at the subscription and user level to prevent
+unexpected overage charges. When credit consumption reaches the configured cap,
+access to features that consume GitLab Credits (for example, GitLab Duo Agent Platform)
+is automatically suspended until the next billing period begins,
+or until an administrator adjusts or disables the cap.
+
+The following cap types are available:
+
+| Cap type | Applies to | Credit sources counted | Managed through |
+|---|---|---|---|
+| Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
+| Flat user cap | Individual users (default limit) | All | GraphQL API |
+| Per-user override | Specific users (overrides the flat cap) | All | GraphQL API |
+
+When on-demand usage in the current billing period reaches or exceeds the configured cap,
+all Agent Platform features (Duo Chat, Code Suggestions, Flows, and Agents)
+are suspended for all users on that subscription or instance. For user-level caps,
+only the individual user who reached their cap is suspended.
+
+Users who have reached their cap are unable to access Agent Platform features
+until the cap is raised or the next billing period begins.
+
+Usage counters reset automatically at the start of each billing period.
+Cap values persist across billing periods unless changed.
+
+Caps are enforced using the most recent usage data available. Because data
+is not real time, limited additional GitLab Credits usage may occur before
+enforcement takes effect.
+
+When subscription on-demand usage reaches the configured cap, GitLab sends an
+email notification to billing account managers.
+
+### Set a subscription-level usage cap
+
+Prerequisites:
+
+- You must be a billing account manager.
+
+1. Sign in to [Customers Portal](https://customers.gitlab.com/).
+1. On the subscription card, select **GitLab Credits dashboard**.
+1. In the **On-demand Credit Cap** panel, turn on the **Monthly On-demand Credits cap** toggle.
+1. Enter the maximum number of on-demand GitLab Credits allowed per billing period.
+1. Select **Save**.
+
+If the cap is set below the currently reported total on-demand usage
+for the current billing period, the cap is considered reached immediately on
+the next enforcement check.
+
+To disable the cap, turn off the **Monthly On-demand Credits cap** toggle. When disabled,
+no subscription-level on-demand GitLab Credits cap is enforced, and behavior falls back to
+existing billing behavior.
+
+You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
 
 ## GitLab Credits dashboard
 
@@ -338,6 +406,8 @@ The dashboard displays summary cards of key metrics:
 - On-Demand usage: Credits consumed beyond your included and committed amounts.
   If you have enough waiver credits to offset all On-Demand credits, the GitLab Credits Dashboard hides
   the **On-Demand** card and displays the **Monthly Waiver** card instead.
+- Usage control status: Whether individual users have been blocked from
+  Agent Platform access due to reaching their per-user credit cap.
 
 ### In GitLab
 
@@ -348,8 +418,15 @@ The dashboard displays the following information:
 
 - Organization usage: Total credit usage across your GitLab instance or group
 - Detailed credit usage by user: Number of credits used by each user
+- User drill-down view: Individual usage events for each user, with links to GitLab Duo Agent Platform session details
 
 ### View the GitLab Credits dashboard
+
+{{< history >}}
+
+- Historical usage period selection [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15910) in GitLab 18.11.
+
+{{< /history >}}
 
 {{< tabs >}}
 
@@ -361,6 +438,7 @@ Prerequisites:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
+1. Optional. To view a previous month, from the **Usage period** dropdown list, select a period you want to view.
 1. Optional. To sort the results by **User** or **Total credits used**, select the respective column.
 
 {{< /tab >}}
@@ -395,6 +473,60 @@ Prerequisites:
 By default, individual user data is not displayed in the GitLab Credits dashboard.
 To display it, you must enable this setting for your [group](../user/group/manage.md#display-gitlab-credits-user-data) or [instance](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).
 
+### Usage control status
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594635) in GitLab 18.11.
+
+{{< /history >}}
+
+When per-user credit caps are enabled, the **Usage by user** tab on the
+GitLab Credits dashboard displays a **Usage control status** column.
+This column shows whether each user can access
+[GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md) features
+or is blocked because they reached their credit cap.
+
+The column displays one of the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| **Regular** | The user has not reached their credit cap and can use GitLab Duo Agent Platform features. |
+| **Blocked - subscription cap reached** | The user reached the flat per-user cap set at the subscription level. |
+| **Blocked - user cap reached** | The user reached a per-user override cap set specifically for them. |
+
+#### Unblock a user who reached their credit cap
+
+You can restore access for a blocked user by using the per-user override GraphQL API.
+
+To unblock a user, either:
+
+- Increase the cap: Set a higher per-user override cap so the user's
+  usage falls below the new limit.
+- Remove the cap: Delete the per-user override so the user is no longer
+  subject to an individual cap.
+
+After you update the cap, the user's status changes to **Regular** and they
+can use GitLab Duo Agent Platform features again.
+
+### View user credit usage details
+
+{{< history >}}
+
+- Linking to GitLab Duo Agent Platform session details [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/579139) in GitLab 18.10.
+
+{{< /history >}}
+
+To view a user's individual usage events in a drill-down view:
+
+1. In the GitLab Credits dashboard, select the **Usage by user** tab.
+1. In the **User** column, select the user you want to view.
+1. To view session details, in the **Action** column, select the action you want to view.
+
+> [!note]
+> Session links are available only for GitLab Duo Agent Platform usage events that are triggered in a project and have an associated session ID.
+> Usage events triggered in a group, legacy events, and actions outside Agent Platform don't have links.
+
 ### Export usage data
 
 {{< history >}}
@@ -412,4 +544,5 @@ Prerequisites:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
+1. From the **Usage period** dropdown list, select the period you want to export data for.
 1. Select **Export usage data**.

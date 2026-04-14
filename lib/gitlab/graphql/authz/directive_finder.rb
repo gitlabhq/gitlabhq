@@ -11,34 +11,33 @@ module Gitlab
           @field = field
         end
 
-        def find(object)
-          find_on_field ||
-            find_on_owner ||
-            find_on_implementing_type(object) ||
-            find_on_return_type
+        def find_all(object)
+          find_all_on_field ||
+            find_all_on_owner ||
+            find_all_on_implementing_type(object) ||
+            find_all_on_return_type ||
+            []
         end
 
         private
 
-        def find_on_field
-          find_directive(@field)
+        def find_all_on_field
+          find_all_directives(@field)
         end
 
-        def find_on_owner
-          find_directive(@field.owner)
+        def find_all_on_owner
+          find_all_directives(@field.owner)
         end
 
-        def find_on_implementing_type(object)
+        def find_all_on_return_type
+          find_all_directives(unwrap_type(@field.type))
+        end
+
+        def find_all_on_implementing_type(object)
           return unless @field.owner&.kind&.interface? && object
 
           implementing_type = resolve_implementing_type(object)
-          find_directive(implementing_type)
-        end
-
-        def find_on_return_type
-          return_type = unwrap_type(@field.type)
-
-          find_directive(return_type)
+          find_all_directives(implementing_type)
         end
 
         def resolve_implementing_type(object)
@@ -50,10 +49,10 @@ module Gitlab
           GitlabSchema.types[model.class.name]
         end
 
-        def find_directive(field_or_type)
+        def find_all_directives(field_or_type)
           return unless field_or_type.respond_to?(:directives)
 
-          field_or_type.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
+          field_or_type.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }.presence
         end
       end
     end

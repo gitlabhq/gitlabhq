@@ -208,7 +208,7 @@ of that project or group is used instead for feature availability and credit con
 - If you use GitLab Duo features in a project you're not a member of,
   usage is billed to your default namespace.
 
-If you do not set a default namespace, GitLab Duo Chat (agentic) and the GitLab Duo Agent Platform are disabled.
+If you do not set a default namespace, GitLab Duo Agentic Chat and the GitLab Duo Agent Platform are disabled.
 
 To set a default GitLab Duo namespace:
 
@@ -234,7 +234,7 @@ availability and credit consumption. GitLab Duo checks for a namespace in this o
 1. The project namespace, if your project is linked to a remote repository in GitLab.
 1. The default namespace set in your user preferences.
 1. For IDEs, the default namespace set in the editor extension's settings:
-   - For VS Code, under **Extensions** > **GitLab** > **Manage** ({{< icon name="settings" >}}) > **Settings** > **GitLab** > **Duo Agent Platform**.
+   - For VS Code, under **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo Agent Platform: Default Namespace**.
    - For JetBrains IDEs, under **Settings** > **Tools** > **GitLab Duo** > **GitLab Duo Agent Platform**.
    - For Visual Studio, under **Tools** > **Options** > **GitLab** > **General**.
 

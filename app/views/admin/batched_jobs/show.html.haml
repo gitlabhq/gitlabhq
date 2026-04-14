@@ -1,10 +1,10 @@
-- add_to_breadcrumbs s_('Batched Job|Background migrations'), admin_background_migrations_path(database: params[:database])
+- add_to_breadcrumbs s_('BatchedJobs|Background migrations'), admin_background_migrations_path(database: params[:database])
 - add_to_breadcrumbs @job.batched_background_migration_id, admin_background_migration_path(@job.batched_migration, database: params[:database])
-- breadcrumb_title sprintf(s_('Batched Job|Batched Job (Id: %{id})'), { id: @job.id.to_s})
+- breadcrumb_title sprintf(s_('BatchedJobs|Batched Job (Id: %{id})'), { id: @job.id.to_s})
 - page_title @job.id, s_('BatchedJob|Batched Jobs')
 - @breadcrumb_link = admin_background_migration_batched_job_path(@job.batched_migration, @job, database: params[:database])
 
-%h3= sprintf(s_('Batched Job|Batched Job (Id: %{id})'), { id: @job.id.to_s})
+%h3= sprintf(s_('BatchedJobs|Batched Job (Id: %{id})'), { id: @job.id.to_s})
 
 %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
   %thead{ role: 'rowgroup' }

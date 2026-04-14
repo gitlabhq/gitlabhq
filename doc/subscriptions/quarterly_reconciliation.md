@@ -26,8 +26,8 @@ either quarterly (quarterly reconciliation process) or annually (annual true-up 
 
 Learn more about:
 
-- [How seat usage is determined](manage_users_and_seats.md#gitlabcom-billing-and-usage) on GitLab.com.
-- [How GitLab bills for users](manage_users_and_seats.md#self-managed-billing-and-usage) on GitLab Self-Managed.
+- [How seat usage is determined](manage_seats.md#gitlabcom-billing-and-usage) on GitLab.com.
+- [How GitLab bills for users](manage_seats.md#self-managed-billing-and-usage) on GitLab Self-Managed.
 
 To prevent overages, you can turn on restricted access for your [group](../user/group/manage.md#turn-on-restricted-access)
 or [instance](../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
@@ -73,21 +73,21 @@ You are excluded from quarterly reconciliation if you:
 - Purchased your subscription from a reseller or another channel partner.
 - Purchased a subscription that is not a 12-month term (includes multi-year and non-standard length subscriptions).
 - Purchased your subscription with a purchasing order.
-- Purchased an [Enterprise Agile Planning](manage_users_and_seats.md#enterprise-agile-planning) product.
+- Purchased an [Enterprise Agile Planning](manage_seats.md#enterprise-agile-planning) product.
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
 - Are enrolled in a program that provides a Free tier such as the GitLab for Education,
   GitLab for Open Source Program, or GitLab for Startups.
 
 If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually.
-Alternatively, you can reconcile any overages by [purchasing additional seats](manage_users_and_seats.md#buy-more-seats).
+Alternatively, you can reconcile any overages by [purchasing additional seats](manage_seats.md#buy-more-seats).
 
 ### Invoicing and payment
 
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date you are billed.
 
-1. An email that communicates the [overage seat quantity](manage_users_and_seats.md#users-over-subscription-limit)
+1. An email that communicates the [overage seat quantity](manage_seats.md#users-over-subscription-limit)
    and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners and billing account managers.

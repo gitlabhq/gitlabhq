@@ -1,0 +1,8 @@
+---
+name: ebonet_chaos_endpoint_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228235
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594205
+milestone: '18.11'
+type: development
+group: group::engineering productivity
+default_enabled: false

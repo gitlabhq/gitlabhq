@@ -6,6 +6,7 @@ module Gitlab
       class ParameterConverter
         include CoercerResolver
         include Concerns::Serializable
+        include Concerns::LimitResolver
 
         attr_reader :name, :options, :validations, :route
 
@@ -21,7 +22,9 @@ module Gitlab
         end
 
         def in_value
-          route.path.gsub('version', '').include?("/:#{name}") ? 'path' : 'query'
+          # Strip only the :version path segment (not substrings like :version_id or :package_version),
+          # then match the param name as a complete segment bounded by / . ( or end-of-string.
+          route.path.gsub('/:version/', '/').match?(%r{/:#{Regexp.escape(name)}([/.(]|$)}) ? 'path' : 'query'
         end
 
         def example
@@ -55,6 +58,7 @@ module Gitlab
                          end
 
           apply_allow_blank(built_schema)
+          apply_limit!(built_schema, validations)
           built_schema
         end
 
@@ -158,7 +162,8 @@ module Gitlab
         def apply_allow_blank(schema)
           if options[:allow_blank] == false || (options[:required] && options[:values])
             schema[:minLength] = 1 if schema[:type] == 'string'
-          else
+          elsif in_value != 'path'
+            # path parameters are never nullable because they are required URL segments
             schema[:nullable] = true
           end
         end

@@ -5,16 +5,23 @@ import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
+import {
+  transformNewCodeQualityFinding,
+  transformResolvedCodeQualityFinding,
+} from '~/vue_merge_request_widget/widgets/code_quality/utils';
 import Poll from '~/lib/utils/poll';
 
 export default normalizeRender({
   name: 'CodeQualityProvider',
   provide() {
     return {
-      isCodeQualityLoading: computed(() => this.isLoading),
+      isCodeQualityLoading: computed(() => this.isFetching),
       errorMessage: computed(() => this.errorMessage),
+      statusMessage: computed(() => this.statusMessage),
       newErrorsCount: computed(() => this.newErrorsCount),
+      resolvedErrorsCount: computed(() => this.resolvedErrorsCount),
       statusIconName: computed(() => this.statusIconName),
+      sections: computed(() => this.sections),
     };
   },
   props: {
@@ -25,7 +32,8 @@ export default normalizeRender({
   },
   data() {
     return {
-      isLoading: true,
+      isFetching: true,
+      statusMessage: '',
       errorMessage: '',
       responseData: null,
       activePolls: [],
@@ -38,11 +46,24 @@ export default normalizeRender({
     newErrorsCount() {
       return this.responseData?.new_errors?.length || 0;
     },
+    resolvedErrorsCount() {
+      return this.responseData?.resolved_errors?.length || 0;
+    },
+    sections() {
+      const newErrors = this.responseData?.new_errors || [];
+      const resolvedErrors = this.responseData?.resolved_errors || [];
+      const children = [
+        ...newErrors.map(transformNewCodeQualityFinding),
+        ...resolvedErrors.map(transformResolvedCodeQualityFinding),
+      ];
+      if (!children.length) return [];
+      return [{ children }];
+    },
     statusIconName() {
       if (this.errorMessage) {
         return EXTENSION_ICONS.error;
       }
-      if (this.newErrorsCount > 0) {
+      if (this.statusMessage || this.newErrorsCount > 0) {
         return EXTENSION_ICONS.warning;
       }
       return EXTENSION_ICONS.success;
@@ -57,8 +78,8 @@ export default normalizeRender({
   methods: {
     async fetchData() {
       if (!this.codeQualityEndpoint) {
-        this.errorMessage = s__('ciReport|Code quality results are not available');
-        this.isLoading = false;
+        this.statusMessage = s__('ciReport|Code quality results are not available');
+        this.isFetching = false;
         return;
       }
 
@@ -67,11 +88,16 @@ export default normalizeRender({
         if (data) {
           this.responseData = data;
         }
-      } catch {
-        this.errorMessage = s__('ciReport|Code quality failed loading results');
+      } catch (error) {
+        const statusReason = error.response?.data?.status_reason;
+        if (statusReason) {
+          this.statusMessage = statusReason;
+        } else {
+          this.errorMessage = s__('ciReport|Code quality failed loading results');
+        }
       }
 
-      this.isLoading = false;
+      this.isFetching = false;
     },
     fetchWithPolling(endpoint) {
       return new Promise((resolve, reject) => {

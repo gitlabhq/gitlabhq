@@ -125,6 +125,7 @@ class Note < ApplicationRecord
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, -> { where(system: true) }
+  scope :with_possible_mentions, -> { where('note LIKE ?', "%#{User.reference_prefix}%") } # rubocop:disable GitlabSecurity/SqlInjection,Database/PreventWildcardInjection -- User.reference_prefix is a hardcoded constant ("@"), not user input, so wildcard injection is not possible
   scope :user, -> { where(system: false) }
   scope :not_internal, -> { where(internal: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }

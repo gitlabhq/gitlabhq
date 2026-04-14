@@ -21,7 +21,7 @@ module Ci
       pipeline_id, enqueue_timestamp = Ci::UnlockPipelineRequest.next!
       return log_extra_metadata_on_done(:remaining_pending, 0) unless pipeline_id
 
-      Ci::Pipeline.find_by_id_through_partition(pipeline_id).try do |pipeline|
+      Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
         log_extra_metadata_on_done(:pipeline_id, pipeline.id)
         log_extra_metadata_on_done(:project, pipeline.project.full_path)
 

@@ -1,12 +1,16 @@
 - if @diff_hunk.header
   %tr.rd-hunk-header.rd-hunk-header-parallel{ data: { hunk_header: true } }
-    %td.rd-hunk-header-buttons= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
+    %td.rd-hunk-header-buttons= expand_buttons
     %td.rd-hunk-header-content{ colspan: '3' }= @diff_hunk.header.text
-
-- line_pairs.each do |pair|
-  - line_id, sides, expanded = pair.values_at(:line_id, :sides, :expanded)
+- @diff_hunk.parallel_lines&.each do |pair|
+  - left = pair[:left]
+  - right = pair[:right]
+  - line_id = (left || right).id(@file_hash)
+  - expanded = left&.expanded? || right&.expanded?
+  - left_change = line_change_type(left)
+  - right_change = line_change_type(right)
   %tr.rd-hunk-lines.rd-hunk-lines-parallel{ id: line_id, data: { testid: 'hunk-lines-parallel', hunk_lines: true, expanded: (true if expanded) } }
-    - sides.each do |side|
-      - line, position = side.values_at(:line, :position, :border)
-      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(line: line, line_id: line_id, position: position)
-      = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: position)
+    = line_number_cell(left, line_id, left_change, :old)
+    = line_content_cell(left, left_change, :old)
+    = line_number_cell(right, line_id, right_change, :new)
+    = line_content_cell(right, right_change, :new)

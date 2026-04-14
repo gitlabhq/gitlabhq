@@ -35,6 +35,16 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       static_object_token_encrypted
       unlock_token
       cached_markdown_version
+      author_id_convert_to_bigint
+      closed_by_id_convert_to_bigint
+      duplicated_to_id_convert_to_bigint
+      id_convert_to_bigint
+      last_edited_by_id_convert_to_bigint
+      milestone_id_convert_to_bigint
+      moved_to_id_convert_to_bigint
+      project_id_convert_to_bigint
+      promoted_to_epic_id_convert_to_bigint
+      updated_by_id_convert_to_bigint
     )
   end
 
@@ -42,7 +52,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
   let_it_be(:pg_type_map) { Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP }
   let_it_be(:ch_type_map) { pg_type_map.invert }
 
-  let(:siphon_tables) { ch_table_names - skip_tables }
+  let(:siphon_tables) { siphon_table_names - skip_tables }
 
   it 'has corresponding PG tables', :aggregate_failures do
     siphon_tables.each do |ch_table|
@@ -54,9 +64,30 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
     end
   end
 
-  RSpec::Matchers.define :be_a_siphon_of do |pg_table|
-    match do |ch_table|
-      matching_field_names_and_type?(pg_table, ch_table)
+  describe 'Siphon definition' do
+    let(:clickhouse_table_names) { ch_table_names.pluck('name').to_set }
+    let(:skip_ignore_columns) do
+      {
+        'namespaces' => %w[max_personal_access_token_lifetime],
+        'users' => %w[otp_secret_expires_at]
+      }
+    end
+
+    Dir[Rails.root.join("db/siphon/tables/*.yml")].each do |file|
+      name = File.basename(file, '.yml')
+
+      it "has correct configuration for #{name}", :aggregate_failures do
+        content = YAML.safe_load_file(file)
+        table_config = YAML.safe_load_file(Rails.root.join('db', 'docs', "#{name}.yml"))
+
+        expect(content['table']).to eq(name)
+        expect(ApplicationRecord.connection).to be_table_exists(name)
+
+        expect(content).to match_database_schema(table_config)
+        expect(content).to ignore_sensitive_and_encrypted_columns(table_config, skip_ignore_columns[name])
+        expect(content).to have_correct_replication_target(clickhouse_table_names)
+        expect(content).to have_correct_reconcile_config
+      end
     end
   end
 
@@ -89,6 +120,12 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
     true
   end
 
+  def siphon_table_names
+    ch_table_names.filter_map do |row|
+      row['name'] if row['name'].start_with?(siphon_table_prefix)
+    end
+  end
+
   def ch_table_names
     query =
       <<~SQL
@@ -97,9 +134,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
         WHERE database = '#{ch_database_name}';
       SQL
 
-    ::ClickHouse::Client.select(query, :main).filter_map do |row|
-      row['name'] if row['name'].start_with?(siphon_table_prefix)
-    end
+    ::ClickHouse::Client.select(query, :main)
   end
 
   def ch_table_fields_hash_for(ch_table)

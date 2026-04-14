@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AIネイティブの機能と機能性。
 title: GitLab Duoプロンプトガードレール
 ---
@@ -14,11 +14,8 @@ GitLab Duoには、基盤となるプロンプトガードレールが備わっ�
 
 これらのセーフガードは、AI主導のワークフローに関連するリスクを最小限に抑えることで、GDPRなどの一般的な規制基準への準拠をサポートします。
 
-{{< alert type="note" >}}
-
-これらのガードレールはリスクを軽減する可能性はありますが、すべての脆弱性を排除するわけではありません。すべての誤用や高度な攻撃に対して、完全な保護を保証できるシステムはありません。
-
-{{< /alert >}}
+> [!note]
+> これらのガードレールはリスクを軽減する可能性がありますが、すべての脆弱性を排除するわけではありません。すべての誤用や高度な攻撃に対して、完全な保護を保証できるシステムはありません。
 
 ## 一般的なガードレール {#general-guardrails}
 
@@ -49,19 +46,19 @@ GitLab Duoで使用されるプロンプトの目的:
 
 ### 意思決定者向け {#for-decision-makers}
 
-- **信頼の構築**: セーフガードは、GitLab Duoが責任を持って動作することを保証するのに役立ち、これは新しいツールへの信頼にとって非常に重要です。
+- **信頼の構築**: セーフガードは、GitLab Duoが責任を持って動作することを保証するのに役立ち、これは新しいツールへの信頼を構築するのに非常に重要です。
 - **情報に基づいた意思決定**: セキュリティ機能の明確なドキュメントにより、組織にとってのGitLab Duoの適合性を評価するために必要な情報が提供されます。
 - **リスクの軽減**: 機密情報とモデルの動作に関する一般的な懸念事項に取り組むことで、GitLab DuoはAIをワークフローに統合するための安全で実用的なソリューションを提供します。
 
 ## 機能別のガードレール {#guardrails-for-features}
 
-個々の機能には、露出を制限するのための特定のプロンプト指示が含まれています。プロンプト指示は、次の原則に従います。
+個々の機能には、露出を制限するための特定のプロンプト指示が含まれています。プロンプト指示は、次の原則に従います。
 
 ### GitLab Duo Agent Platform {#gitlab-duo-agent-platform}
 
 プロンプトインジェクションを防ぐために、信頼できないコンテンツを分離します。
 
-AIゲートウェイ上で、[detects prompt injection attempts](../duo_agent_platform/security_threats.md#detect-prompt-injection-attempts)を検出し、ログに記録するか、ブロックします。
+AIゲートウェイ上で、[プロンプトインジェクションの試行を検出](../duo_agent_platform/security_threats.md#detect-prompt-injection-attempts)し、ログに記録するか、ブロックします。
 
 ### GitLab Duo Chat {#gitlab-duo-chat}
 

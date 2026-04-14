@@ -6,6 +6,10 @@ module Gitlab
       module Chain
         class Metrics < Chain::Base
           def perform!
+            ::Gitlab::Ci::Pipeline::Metrics
+              .pipelines_created_counter
+              .increment(source: pipeline.source, partition_id: pipeline.partition_id)
+
             ::Ci::PipelineCreationMetricsWorker.perform_async(
               @pipeline.id,
               inputs_count,

@@ -177,7 +177,7 @@ module Keeps
 
       ## TODO for the reviewers before merging this MR
       - [ ] See the status of the rollout by checking #{feature_flag_rollout_issue_url(feature_flag)}, #{format(FEATURE_FLAG_LOG_ISSUES_URL, feature_flag_name: feature_flag.name)}
-      - [ ] Verify the feature flag status via chatops by running `/chatops run feature get #{feature_flag.name}`.
+      - [ ] Verify the feature flag status via chatops by running `/chatops gitlab run feature get #{feature_flag.name}`.
       - [ ] [Search for references to `#{feature_flag.name.split('_').map(&:capitalize).join}` in frontend part of code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{feature_flag.name.split('_').map(&:capitalize).join}&regex=false)
       - [ ] [Search for references to `#{feature_flag.name}` in code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{feature_flag.name}&regex=false)
       - [ ] Check if we need to remove any Gem or other related code by looking at the changes in #{feature_flag.introduced_by_url}

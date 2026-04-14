@@ -19,7 +19,7 @@ module Gitlab
           html = Banzai.render(text, project: nil,
             no_original_data: true,
             suggestions_filter_enabled: supports_suggestion)
-          doc = Nokogiri::HTML(html)
+          doc = Nokogiri::HTML5(html)
           suggestion_nodes = doc.xpath(XPATH)
 
           return [] if suggestion_nodes.empty?

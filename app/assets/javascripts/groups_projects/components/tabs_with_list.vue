@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlFilteredSearchToken, GlTab, GlTabs } from '@gitlab/ui';
-import { get, isEqual, pick } from 'lodash';
+import { get, isEqual, pick } from 'lodash-es';
 import { __ } from '~/locale';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 import {
   ACCESS_LEVEL_OWNER_INTEGER,
   ACCESS_LEVELS_INTEGER_TO_STRING,
@@ -37,6 +38,7 @@ import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences
 import TabView from './tab_view.vue';
 
 const trackingMixin = InternalEvents.mixin();
+const SORT_STORAGE_KEY_PREFIX = 'tabs-with-list-sort:';
 
 // Will be made more generic to work with groups and projects in future commits
 export default {
@@ -138,6 +140,11 @@ export default {
       required: false,
       default: null,
     },
+    sortStorageKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -235,17 +242,38 @@ export default {
     sortQuery() {
       return this.$route.query.sort;
     },
-    sort() {
-      const sortOptionValues = this.sortOptions.flatMap(({ value }) => [
+    sortOptionValues() {
+      return this.sortOptions.flatMap(({ value }) => [
         `${value}_${SORT_DIRECTION_ASC}`,
         `${value}_${SORT_DIRECTION_DESC}`,
       ]);
+    },
+    storedSort() {
+      if (!this.sortStorageKey) {
+        return null;
+      }
 
-      if (this.sortQuery && sortOptionValues.includes(this.sortQuery)) {
+      const { exists, value } = getStorageValue(
+        `${SORT_STORAGE_KEY_PREFIX}${this.sortStorageKey}`,
+        true,
+      );
+
+      if (!exists || typeof value !== 'string') {
+        return null;
+      }
+
+      return this.sortOptionValues.includes(value) ? value : null;
+    },
+    sort() {
+      if (this.sortQuery && this.sortOptionValues.includes(this.sortQuery)) {
         return this.sortQuery;
       }
 
-      if (sortOptionValues.includes(this.initialSort)) {
+      if (this.storedSort) {
+        return this.storedSort;
+      }
+
+      if (this.sortOptionValues.includes(this.initialSort)) {
         return this.initialSort;
       }
 
@@ -413,13 +441,21 @@ export default {
     },
     async updateSort(sort) {
       await this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
-      this.userPreferencesUpdateMutate(sort);
+      this.persistSort(sort);
 
       if (!this.eventTracking?.sort) {
         return;
       }
 
       this.trackEvent(this.eventTracking.sort, { label: this.activeTab.value, property: sort });
+    },
+    persistSort(sort) {
+      if (this.sortStorageKey) {
+        saveStorageValue(`${SORT_STORAGE_KEY_PREFIX}${this.sortStorageKey}`, sort, true);
+        return;
+      }
+
+      this.userPreferencesUpdateMutate(sort);
     },
     async onFilter(filters) {
       const { sort } = this.$route.query;

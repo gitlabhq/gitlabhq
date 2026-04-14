@@ -9,11 +9,11 @@ import { createAlert } from '~/alert';
 import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/ci/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -165,10 +165,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
       expect(createAlert).toHaveBeenLastCalledWith({
         message: mockErrorMsg,
       });
-      expect(captureException).toHaveBeenCalledWith({
-        error: new Error(mockErrorMsg),
-        component: 'RunnerRegistrationTokenReset',
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error(mockErrorMsg));
     });
 
     it('On validation error, error message is shown', async () => {
@@ -191,10 +188,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
       expect(createAlert).toHaveBeenLastCalledWith({
         message: `${mockErrorMsg} ${mockErrorMsg2}`,
       });
-      expect(captureException).toHaveBeenCalledWith({
-        error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-        component: 'RunnerRegistrationTokenReset',
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error(`${mockErrorMsg} ${mockErrorMsg2}`));
     });
   });
 

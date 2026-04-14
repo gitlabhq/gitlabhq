@@ -4,7 +4,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 
 import RunnerPauseAction from '~/ci/runner/components/runner_pause_action.vue';
@@ -15,7 +15,7 @@ const mockRunner = allRunnersData.data.runners.nodes[0];
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('RunnerPauseAction', () => {
   let wrapper;
@@ -132,10 +132,7 @@ describe('RunnerPauseAction', () => {
           });
 
           it('error is reported to sentry', () => {
-            expect(captureException).toHaveBeenCalledWith({
-              error: new Error(mockErrorMsg),
-              component: 'RunnerPauseAction',
-            });
+            expect(captureException).toHaveBeenCalledWith(new Error(mockErrorMsg));
           });
 
           it('error is shown to the user', () => {
@@ -164,10 +161,9 @@ describe('RunnerPauseAction', () => {
           });
 
           it('error is reported to sentry', () => {
-            expect(captureException).toHaveBeenCalledWith({
-              error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-              component: 'RunnerPauseAction',
-            });
+            expect(captureException).toHaveBeenCalledWith(
+              new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
+            );
           });
 
           it('error is shown to the user', () => {

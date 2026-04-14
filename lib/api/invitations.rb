@@ -139,7 +139,7 @@ module API
           not_found! unless invite
 
           destroy_conditionally!(invite) do
-            ::Members::DestroyService.new(current_user, params).execute(invite)
+            ::Members::DestroyService.new(invite, current_user: current_user).execute
             unprocessable_entity! unless invite.destroyed?
           end
         end

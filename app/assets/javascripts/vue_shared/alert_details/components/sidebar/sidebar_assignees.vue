@@ -239,7 +239,7 @@ export default {
         class="gl-w-full"
         :class="dropdownClass"
         toggle-class="dropdown-menu-toggle"
-        @keydown.esc.native="hideDropdown"
+        @keydown.esc="hideDropdown"
         @hide="hideDropdown"
       >
         <p class="gl-dropdown-header-top">

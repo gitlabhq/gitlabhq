@@ -48,6 +48,10 @@ GITLAB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 POD_BASE="/srv/gitlab"
 DEPLOYMENT_LABEL="app=webservice"
 CONTAINER="webservice"
+SIDEKIQ_DEPLOYMENT_LABEL="app=sidekiq"
+SIDEKIQ_CONTAINER="sidekiq"
+WORKHORSE_CONTAINER="gitlab-workhorse"
+
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -132,8 +136,55 @@ if [[ -z "$POD_NAME" ]] || [[ "$POD_STATUS" != "Running" ]]; then
   exit 1
 fi
 
+# ---------------------------------------------------------------------------
+# 1b. Locate a running pod from the gitlab-sidekiq-all-in-1-v2 deployment
+# ---------------------------------------------------------------------------
 
+echo ""
+echo "==> Locating a running pod in $NAMESPACE with label $SIDEKIQ_DEPLOYMENT_LABEL..."
 
+SIDEKIQ_POD_NAME=""
+ATTEMPT=0
+
+while [[ $ATTEMPT -lt $MAX_RETRIES ]]; do
+  SIDEKIQ_POD_NAME=$(
+    $KUBECTL get pod -n "$NAMESPACE" \
+      -l "$SIDEKIQ_DEPLOYMENT_LABEL" \
+      -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true
+  )
+
+  if [[ -z "$SIDEKIQ_POD_NAME" ]]; then
+    ATTEMPT=$((ATTEMPT + 1))
+    if [[ $ATTEMPT -lt $MAX_RETRIES ]]; then
+      echo "Pod not found with label $SIDEKIQ_DEPLOYMENT_LABEL in namespace $NAMESPACE, retrying in ${RETRY_INTERVAL}s (attempt $ATTEMPT/$MAX_RETRIES)..."
+      sleep "$RETRY_INTERVAL"
+    fi
+    continue
+  fi
+
+  SIDEKIQ_POD_STATUS=$(
+    $KUBECTL get pod -n "$NAMESPACE" \
+      -l "$SIDEKIQ_DEPLOYMENT_LABEL" \
+      -o jsonpath='{.items[0].status.phase}' 2>/dev/null || true
+  )
+
+  if [[ "$SIDEKIQ_POD_STATUS" == "Running" ]]; then
+    success "==> Found pod: $SIDEKIQ_POD_NAME in $SIDEKIQ_POD_STATUS status"
+    break
+  fi
+
+  ATTEMPT=$((ATTEMPT + 1))
+  if [[ $ATTEMPT -lt $MAX_RETRIES ]]; then
+    echo "Pod $SIDEKIQ_POD_NAME status: $SIDEKIQ_POD_STATUS, retrying in ${RETRY_INTERVAL}s (attempt $ATTEMPT/$MAX_RETRIES)..."
+    sleep "$RETRY_INTERVAL"
+  fi
+done
+
+if [[ -z "$SIDEKIQ_POD_NAME" ]] || [[ "$SIDEKIQ_POD_STATUS" != "Running" ]]; then
+  error "No Running sidekiq pod found in namespace '$NAMESPACE' after $((MAX_RETRIES * RETRY_INTERVAL))s."
+  error "       Check: kubectl get pods -n $NAMESPACE -l $SIDEKIQ_DEPLOYMENT_LABEL" >&2
+  exit 1
+fi
 
 # ---------------------------------------------------------------------------
 # 2. Copy CNG-generated config files from the pod into $CONFIG_DIR
@@ -165,7 +216,7 @@ FAILED_FILES=()
 for file in "${CONFIG_FILES[@]}"; do
   local_path="$GITLAB_DIR/$file"
   mkdir -p "$(dirname "$local_path")"
-  $KUBECTL cp -n "$NAMESPACE" -c "$CONTAINER" "$POD_NAME:$POD_BASE/$file" "$local_path" >/dev/null 2>&1
+  $KUBECTL cp -n "$NAMESPACE" -c "$CONTAINER" "$POD_NAME:$POD_BASE/$file" "$local_path" >/dev/null
   if [[ -f "$local_path" ]]; then
     echo "  ✓ $file"
     COPIED_FILES+=("$file")
@@ -176,6 +227,86 @@ for file in "${CONFIG_FILES[@]}"; do
 done
 
 echo "Copied ${#COPIED_FILES[@]} files, skipped ${#FAILED_FILES[@]}."
+
+# ---------------------------------------------------------------------------
+# 2b. Copy config/gitlab.yml from the sidekiq pod → local config/gitlab-sidekiq.yml
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Copying config/gitlab.yml from sidekiq pod $SIDEKIQ_POD_NAME → config/gitlab-sidekiq.yml..."
+
+SIDEKIQ_GITLAB_YML="$GITLAB_DIR/config/gitlab-sidekiq.yml"
+mkdir -p "$(dirname "$SIDEKIQ_GITLAB_YML")"
+$KUBECTL cp -n "$NAMESPACE" -c "$SIDEKIQ_CONTAINER" \
+  "$SIDEKIQ_POD_NAME:$POD_BASE/config/gitlab.yml" "$SIDEKIQ_GITLAB_YML" >/dev/null 2>&1
+
+if [[ -f "$SIDEKIQ_GITLAB_YML" ]]; then
+  echo "  ✓ config/gitlab-sidekiq.yml"
+else
+  warn "could not copy config/gitlab.yml from sidekiq pod (skipping)"
+fi
+
+# ---------------------------------------------------------------------------
+# 2c. Patch gitlab-sidekiq.yml: replace address: "*" with address: "0.0.0.0"
+#
+#     Under mirrord, getaddrinfo("*") is intercepted and forwarded to the
+#     cluster's CoreDNS, which cannot resolve "*" → "Name or service not
+#     known".  Replacing with the explicit bind-all address "0.0.0.0" avoids
+#     any DNS lookup entirely and lets WEBrick bind correctly.
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Patching config/gitlab-sidekiq.yml: replacing address: \"*\" with address: \"0.0.0.0\"..."
+
+if [[ -f "$SIDEKIQ_GITLAB_YML" ]]; then
+  sed -i.bak 's/^\([ \t]*address:\) "\*"$/\1 "0.0.0.0"/' "$SIDEKIQ_GITLAB_YML"
+  rm "$SIDEKIQ_GITLAB_YML.bak"
+  echo "  ✓ config/gitlab-sidekiq.yml"
+else
+  warn "config/gitlab-sidekiq.yml not found – skipping address patch"
+fi
+
+# ---------------------------------------------------------------------------
+# 2d. Copy workhorse config and secret from the pod
+#
+#     The workhorse config lives in the gitlab-workhorse container, while
+#     the workhorse secret is mounted in the webservice container.  Both
+#     are generated at deploy time by the Helm chart and are not committed
+#     to the repo.
+# ---------------------------------------------------------------------------
+
+echo ""
+echo "==> Copying workhorse config and secret from pod $POD_NAME..."
+
+CONTAINER_FILE_CONTAINERS=(
+  "$WORKHORSE_CONTAINER"
+  "$CONTAINER"
+)
+CONTAINER_FILE_POD_PATHS=(
+  "/srv/gitlab/config/workhorse-config.toml"
+  "/etc/gitlab/gitlab-workhorse/secret"
+)
+CONTAINER_FILE_LOCAL_PATHS=(
+  "workhorse/workhorse-config.toml"
+  "workhorse/secret"
+)
+
+for i in "${!CONTAINER_FILE_CONTAINERS[@]}"; do
+  container="${CONTAINER_FILE_CONTAINERS[$i]}"
+  pod_path="${CONTAINER_FILE_POD_PATHS[$i]}"
+  local_rel="${CONTAINER_FILE_LOCAL_PATHS[$i]}"
+  local_path="$GITLAB_DIR/$local_rel"
+  mkdir -p "$(dirname "$local_path")"
+  $KUBECTL cp -n "$NAMESPACE" -c "$container" "$POD_NAME:$pod_path" "$local_path" >/dev/null
+  if [[ -f "$local_path" ]]; then
+    echo "  ✓ $local_rel"
+    COPIED_FILES+=("$local_rel")
+  else
+    warn "could not copy $local_rel (skipping)"
+    FAILED_FILES+=("$local_rel")
+  fi
+done
+
 
 # ---------------------------------------------------------------------------
 # 3. Rewrite top-level "production:" key → "development:" in YAML configs
@@ -193,6 +324,7 @@ echo "==> Rewriting 'production:' → 'development:' in YAML config files..."
 
 ENV_REWRITE_FILES=(
   "config/gitlab.yml"
+  "config/gitlab-sidekiq.yml"
   "config/database.yml"
   "config/cable.yml"
   "config/resque.yml"

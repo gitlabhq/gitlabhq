@@ -12,7 +12,7 @@ RSpec.describe Projects::BoardsController do
 
   describe 'GET index' do
     it 'creates a new project board when project does not have one' do
-      expect { list_boards }.to change(project.boards, :count).by(1)
+      expect { list_boards }.to change { project.boards.count }.by(1)
     end
 
     it 'renders template' do
@@ -102,7 +102,7 @@ RSpec.describe Projects::BoardsController do
 
     context 'when format is HTML' do
       it 'renders template' do
-        expect { read_board board: board }.to change(BoardProjectRecentVisit, :count).by(1)
+        expect { read_board board: board }.to change { BoardProjectRecentVisit.count }.by(1)
 
         expect(response).to render_template :show
         expect(response.media_type).to eq 'text/html'

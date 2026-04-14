@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlLoadingIcon, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import Api from '~/api';
 import { i18n } from '../constants';
 

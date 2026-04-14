@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples_for 'object cache helper' do
-  it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
+  it { is_expected.to be_a(Gitlab::Json::Precompiled) }
 
   it "uses the presenter" do
     expect(presenter).to receive(:represent).with(presentable, project: project)
@@ -69,7 +69,7 @@ RSpec.shared_examples_for 'object cache helper' do
 end
 
 RSpec.shared_examples_for 'collection cache helper' do
-  it { is_expected.to be_an(Gitlab::Json::PrecompiledJson) }
+  it { is_expected.to be_an(Gitlab::Json::Precompiled) }
 
   it "uses the presenter" do
     presentable.each do |item|

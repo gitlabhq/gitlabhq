@@ -86,6 +86,63 @@ Example response:
 
 The response body is a binary tar.gz archive streamed via Workhorse.
 
+#### Stream changed file paths
+
+Use a GET command to stream changed file paths between two tree revisions as newline-delimited JSON via Workhorse.
+Proxies to the Gitaly `FindChangedPaths` RPC.
+Returns 400 if `left_tree_revision` is not an ancestor of `right_tree_revision` (force push detected).
+
+```plaintext
+GET /internal/orbit/project/:project_id/repository/changed_paths
+```
+
+| Attribute              | Type    | Required | Description                                                                          |
+|:-----------------------|:--------|:---------|:-------------------------------------------------------------------------------------|
+| `project_id`           | integer | yes      | ID of the project                                                                    |
+| `left_tree_revision`   | string  | yes      | Base tree revision (commit SHA). Use the blank SHA (`0000...0000`) for initial indexing. |
+| `right_tree_revision`  | string  | yes      | Target tree revision (commit SHA)                                                    |
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/changed_paths?left_tree_revision=abc123&right_tree_revision=def456"
+```
+
+Example response (newline-delimited JSON streamed via Workhorse):
+
+```json
+{"path":"app/models/user.rb","status":"MODIFIED","old_path":"","new_mode":33188,"old_blob_id":"aaa111","new_blob_id":"bbb222"}
+{"path":"README.md","status":"ADDED","old_path":"","new_mode":33188,"old_blob_id":"","new_blob_id":"ccc333"}
+{"path":"old_file.rb","status":"DELETED","old_path":"","new_mode":0,"old_blob_id":"ddd444","new_blob_id":""}
+```
+
+#### List blobs
+
+Use a POST command to stream blob contents for given revisions as length-prefixed protobuf frames via Workhorse.
+Proxies to the Gitaly `ListBlobs` RPC. Blobs larger than `bytes_limit` are truncated.
+
+```plaintext
+POST /internal/orbit/project/:project_id/repository/list_blobs
+```
+
+| Attribute     | Type     | Required | Description                                                                          |
+|:--------------|:---------|:---------|:-------------------------------------------------------------------------------------|
+| `project_id`  | integer  | yes      | ID of the project                                                                    |
+| `revisions`   | string[] | yes      | Git revisions to list blobs for (e.g., a SHA, `--not`, a range exclusion). Must not be empty. |
+| `bytes_limit` | integer  | no       | Maximum blob size in bytes (1 to 1,048,576). Defaults to 1 MB.                       |
+
+Example request:
+
+```shell
+curl --request POST --header "Gitlab-Orbit-Api-Request: <json-web-token>" \
+  --header "Content-Type: application/json" \
+  --data '{"revisions": ["def456", "--not", "abc123"]}' \
+  "https://gitlab.example.com/api/v4/internal/orbit/project/1/repository/list_blobs"
+```
+
+The response body is a binary stream of `ListBlobsResponse` protobuf frames. Each frame is preceded
+by a 4-byte big-endian length prefix indicating the size of the following protobuf message.
+
 #### List repository commits
 
 Use a GET command to get a paginated list of commits for a given ref.

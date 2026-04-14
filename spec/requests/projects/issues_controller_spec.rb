@@ -90,19 +90,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       end
     end
 
-    context 'when work_item_planning_view: false' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'renders the page' do
-        get_index
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('issues/index')
-      end
-    end
-
     it 'redirects to work items page' do
       get_index
 

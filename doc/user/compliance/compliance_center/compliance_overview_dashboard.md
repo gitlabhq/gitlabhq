@@ -38,7 +38,7 @@ The compliance overview dashboard displays four key areas of compliance monitori
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To view the compliance overview dashboard:
 

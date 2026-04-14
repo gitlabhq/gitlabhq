@@ -171,8 +171,7 @@ security or operational issues.
 To prevent this problem:
 
 1. Identify the branch names you do not want used as tags.
-1. As described in [Configure protected tags](#configure-protected-tags),
-   create a protected tag:
+1. Create a protected tag described in [configure protected tags](#configure-protected-tags):
 
    - For the **Name**, provide a name, such as `stable`. You can also create a wildcard
      like `stable-*` to match multiple names, like `stable-v1` and `stable-v2`.
@@ -217,7 +216,7 @@ To unprotect a tag:
 You can delete tags that have protection rules applied to them.
 This removes the tag from the repository, not the protection rule itself.
 If you want to remove the protection rule without deleting the tag,
-see [Unprotect a tag](#unprotect-a-tag).
+see [unprotect a tag](#unprotect-a-tag).
 
 Prerequisites:
 
@@ -237,5 +236,5 @@ Git commands or third-party Git clients.
 
 ## Related topics
 
-- [Protected Tags API](../../api/protected_tags.md)
+- [Protected tags API](../../api/protected_tags.md)
 - [Tags API](../../api/tags.md)

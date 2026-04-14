@@ -20,6 +20,11 @@ The `Property of` column describes what object a property may be attached to.
 - Properties attached to an individual object apply to that object and any others nested underneath it.
 - Objects which may nest themselves (such as `components`) may only have properties applied to the top-level object.
 
+When a property is set in both `metadata` and on an individual `component`, the component-level
+value takes precedence for that component. If a property is set only in `metadata`, it applies
+uniformly to all components. This is important for merged SBOMs where components originate from
+different input files.
+
 ## `gitlab` namespace taxonomy
 
 | Namespace             | Description |
@@ -50,6 +55,17 @@ The `Property of` column describes what object a property may be attached to.
 | `gitlab:dependency_scanning:source_file`     | Namespace for information about the file you can edit to manage the dependency. |
 | `gitlab:dependency_scanning:package_manager` | Namespace for information about the package manager associated with the dependency. |
 | `gitlab:dependency_scanning:language`        | Namespace for information about the programming language associated with the dependency. |
+
+### Required properties for vulnerability scanning
+
+For vulnerability scanning to produce findings, the following properties are required:
+
+- `gitlab:meta:schema_version` (must be `1`) in `metadata`
+- `gitlab:dependency_scanning:input_file:path` in `metadata` or on each `component`
+
+If `input_file:path` is absent, `source_file:path` is used as a fallback. If neither is present,
+no vulnerability findings are produced for those components. On GitLab 18.10 and later, an error
+is displayed in the pipeline security tab.
 
 ## `gitlab:dependency_scanning:input_file` namespace taxonomy
 

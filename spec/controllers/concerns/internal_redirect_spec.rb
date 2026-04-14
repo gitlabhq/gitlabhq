@@ -19,6 +19,7 @@ RSpec.describe InternalRedirect do
     where(:input) do
       [
         'Hello world',
+        '/',
         '//example.com/hello/world',
         'https://example.com/hello/world',
         "not-starting-with-a-slash\n/starting/with/slash"
@@ -34,7 +35,8 @@ RSpec.describe InternalRedirect do
     where(:input) do
       [
         '/hello/world',
-        '/-/ide/project/path'
+        '/-/ide/project/path',
+        '/?non_archived=true&sort=name_asc'
       ]
     end
 
@@ -46,6 +48,25 @@ RSpec.describe InternalRedirect do
       it 'returns the path with querystring and fragment' do
         expect(controller.safe_redirect_path("#{input}?hello=world#L123"))
           .to eq("#{input}?hello=world#L123")
+      end
+    end
+
+    context 'with open redirect attack vectors' do
+      where(:input) do
+        [
+          '//evil.com',
+          '//evil.com/path',
+          '/\\evil.com',
+          '/.evil.com',
+          '/%2f%2fevil.com',
+          "//evil.com\n/?legit=true"
+        ]
+      end
+
+      with_them 'being blocked' do
+        it 'returns nil' do
+          expect(controller.safe_redirect_path(input)).to be_nil
+        end
       end
     end
   end

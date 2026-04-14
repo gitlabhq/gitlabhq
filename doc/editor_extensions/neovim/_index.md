@@ -51,6 +51,7 @@ in the `gitlab.vim` repository.
 
 ## Related topics
 
+- [GitLab plugin for Neovim releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/releases)
 - [Security considerations for editor extensions](../security_considerations.md)
 - [Neovim troubleshooting](neovim_troubleshooting.md)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)

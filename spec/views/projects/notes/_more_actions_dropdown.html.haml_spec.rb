@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/notes/_more_actions_dropdown' do
-  let(:author_user) { create(:user) }
-  let(:not_author_user) { create(:user) }
+RSpec.describe 'projects/notes/_more_actions_dropdown', feature_category: :team_planning do
+  let(:author_user) { build_stubbed(:user) }
+  let(:not_author_user) { build_stubbed(:user) }
 
-  let(:project) { create(:project) }
-  let(:issue) { create(:issue, project: project) }
-  let!(:note) { create(:note_on_issue, author: author_user, noteable: issue, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:issue) { build_stubbed(:issue, project: project) }
+  let(:note) { build_stubbed(:note_on_issue, author: author_user, noteable: issue, project: project) }
 
   before do
     assign(:project, project)

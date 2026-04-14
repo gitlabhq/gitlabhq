@@ -17,14 +17,14 @@ import {
 import RunnerProjects from '~/ci/runner/components/runner_projects.vue';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import runnerProjectsQuery from '~/ci/runner/graphql/show/runner_projects.query.graphql';
 
 import { runnerData, runnerProjectsData } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockRunner = runnerData.data.runner;
 const mockRunnerWithProjects = runnerProjectsData.data.runner;
@@ -262,10 +262,7 @@ describe('RunnerProjects', () => {
     });
 
     it('reports an error', () => {
-      expect(captureException).toHaveBeenCalledWith({
-        component: 'RunnerProjects',
-        error: expect.any(Error),
-      });
+      expect(captureException).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });

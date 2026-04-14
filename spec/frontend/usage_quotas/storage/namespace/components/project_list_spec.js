@@ -80,8 +80,8 @@ describe('ProjectList', () => {
 
     it.each`
       project           | projectUrlWithUsageQuotas
-      ${projectList[0]} | ${'http://localhost/frontend-fixtures/twitter/-/usage_quotas'}
-      ${projectList[1]} | ${'http://localhost/frontend-fixtures/html5-boilerplate/-/usage_quotas'}
+      ${projectList[0]} | ${'/frontend-fixtures/twitter/-/usage_quotas'}
+      ${projectList[1]} | ${'/frontend-fixtures/html5-boilerplate/-/usage_quotas'}
     `('renders project link as usage_quotas URL', ({ project, projectUrlWithUsageQuotas }) => {
       createComponent({ props: { projects: [project] } });
 

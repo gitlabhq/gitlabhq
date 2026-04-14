@@ -29,9 +29,7 @@ module Import
       end
 
       def execute
-        # We use :owner_access here because it's shared between GroupPolicy and
-        # NamespacePolicy.
-        return error_invalid_permissions unless current_user.can?(:owner_access, namespace)
+        return error_invalid_permissions unless current_user.can?(:admin_namespace, namespace)
         return error_no_source_users if import_source_users.empty?
 
         ServiceResponse.success(payload: csv_data)
@@ -59,7 +57,7 @@ module Import
 
       def error_no_source_users
         ServiceResponse.error(
-          message: s_('No placeholder users are awaiting reassignment.'),
+          message: _('No placeholder users are awaiting reassignment.'),
           reason: :no_source_users
         )
       end

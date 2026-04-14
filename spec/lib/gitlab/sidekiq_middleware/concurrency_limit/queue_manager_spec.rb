@@ -91,7 +91,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     end
   end
 
-  describe '#resume_processing!' do
+  describe '#resume_processing!', :clean_gitlab_redis_queues_metadata do
     let(:wal_locations) { { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
     let(:jobs) do
       [

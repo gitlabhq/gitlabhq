@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Pages::MarkOnboardingComplete do
+RSpec.describe Mutations::Pages::MarkOnboardingComplete, feature_category: :pages do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }

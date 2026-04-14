@@ -1,0 +1,5 @@
+---
+name: use_protected_cache
+description: Grants the ability to use the protected CI cache namespace. When CI separated
+  caches are enabled, builds run by users with this permission use a separate cache
+  partition shared with protected refs, preventing cache poisoning by lower-privileged users.

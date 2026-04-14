@@ -7,10 +7,9 @@ import GoogleCloudRegistrationInstructionsModal from '~/ci/runner/components/reg
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import provisionGoogleCloudRunnerGroup from '../../graphql/register/provision_google_cloud_runner_group.query.graphql';
 import provisionGoogleCloudRunnerProject from '../../graphql/register/provision_google_cloud_runner_project.query.graphql';
-
-import { captureException } from '../../sentry_utils';
 
 const GC_PROJECT_PATTERN = /^[a-z][a-z0-9-]{4,28}[a-z0-9]$/; // https://cloud.google.com/resource-manager/reference/rest/v1/projects
 const GC_REGION_PATTERN = /^[a-z]+-[a-z]+\d+$/;
@@ -240,7 +239,7 @@ export default {
         this.showAlert = true;
       }
       if (error.networkError) {
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       }
     },
   },

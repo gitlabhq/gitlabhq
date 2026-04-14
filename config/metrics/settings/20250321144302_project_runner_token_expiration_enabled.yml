@@ -2,7 +2,7 @@
 key_path: settings.project_runner_token_expiration_enabled
 description: >
   Tracks whether an expiration interval is defined for project runner authentication tokens
-product_group: runner
+product_group: runner_core
 product_categories:
   - runner_core
 value_type: boolean

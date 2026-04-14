@@ -10,7 +10,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     let_it_be(:user)    { project.first_owner }
 
     let(:ref)                  { 'refs/heads/master' }
-    let(:variables_attributes) { [{ key: 'MYVAR', secret_value: 'hello' }] }
+    let(:variables_attributes) { [{ key: 'MYVAR', value: 'hello' }] }
     let(:source)               { :push }
 
     let(:service)  { described_class.new(project, user, { ref: ref, variables_attributes: variables_attributes }) }
@@ -190,7 +190,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
       end
     end
 
-    context 'with timeout handling' do
+    context 'with Gitaly timeout handling' do
       before do
         stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 0.0001)
       end
@@ -308,6 +308,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         before do
+          stub_feature_flags(ci_config_fetch_timeout_override: false)
           stub_const('Gitlab::Ci::Config::TIMEOUT_SECONDS', 0.3.seconds) # it should take at least 0.3 seconds (0.1 x 3)
           stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 1) # allowing it run as log as it takes
 
@@ -323,6 +324,45 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(pipeline).to be_persisted
           expect(pipeline.error_messages.map(&:content)).to include(
             Gitlab::Ci::Config::TIMEOUT_MESSAGE
+          )
+        end
+      end
+    end
+
+    context 'with HTTP timeout handling' do
+      include StubRequests
+
+      let(:remote_url) { 'https://example.com/ci-template.yml' }
+
+      let(:config) do
+        <<~YAML
+        include:
+          - remote: #{remote_url}
+        job:
+          script: exit 0
+        YAML
+      end
+
+      before do
+        stub_full_request(remote_url).to_timeout
+      end
+
+      it 'fails with timeout error' do
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages.map(&:content)).to include(
+          "Remote file `#{remote_url}` could not be fetched after 3 attempts because of a timeout error!"
+        )
+      end
+
+      context 'when ci_config_http_timeout feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_config_http_timeout: false)
+        end
+
+        it 'fails with timeout error' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.error_messages.map(&:content)).to include(
+            "Remote file `#{remote_url}` could not be fetched after 3 attempts because of a timeout error!"
           )
         end
       end

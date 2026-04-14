@@ -1,0 +1,7 @@
+---
+name: _update_incident_work_item
+description: Private permission that gates update access to incident work items.
+  Incidents are a work item type used for tracking service disruptions. Without
+  this permission, the issue and work item policies prevent updating,
+  administering, and linking incident work items. Must not be checked directly
+  at enforcement points.

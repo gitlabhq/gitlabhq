@@ -3,5 +3,6 @@ name: read_audit_event
 description: Grants the ability to read audit events
 boundaries:
   - group
+  - instance
 permissions:
   - read_audit_event

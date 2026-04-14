@@ -11,7 +11,7 @@ RSpec.describe Keeps::Helpers::FileHelper, feature_category: :tooling do
       # Migration type +class+
       # frozen_string_literal: true
 
-      # See https://docs.gitlab.com/ee/development/migration_style_guide.html
+      # See https://docs.gitlab.com/development/migration_style_guide/
       # for more information on how to write migrations for GitLab.
 
       =begin
@@ -108,7 +108,7 @@ RSpec.describe Keeps::Helpers::FileHelper, feature_category: :tooling do
           # Migration type +class+
           # frozen_string_literal: true
 
-          # See https://docs.gitlab.com/ee/development/migration_style_guide.html
+          # See https://docs.gitlab.com/development/migration_style_guide/
           # for more information on how to write migrations for GitLab.
 
           =begin
@@ -146,7 +146,7 @@ RSpec.describe Keeps::Helpers::FileHelper, feature_category: :tooling do
         # Migration type +class+
         # frozen_string_literal: true
 
-        # See https://docs.gitlab.com/ee/development/migration_style_guide.html
+        # See https://docs.gitlab.com/development/migration_style_guide/
         # for more information on how to write migrations for GitLab.
 
         =begin

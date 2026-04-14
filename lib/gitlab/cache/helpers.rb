@@ -31,7 +31,7 @@ module Gitlab
             )
           end
 
-        render Gitlab::Json::PrecompiledJson.new(json)
+        render Gitlab::Json::Precompiled.new(json)
       end
 
       private

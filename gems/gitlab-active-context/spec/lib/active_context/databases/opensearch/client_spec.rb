@@ -9,7 +9,12 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
 
   describe '#search' do
     let(:opensearch_client) { instance_double(OpenSearch::Client) }
-    let(:search_response) { { 'hits' => { 'total' => 5, 'hits' => [] } } }
+    let(:search_response) do
+      { 'hits' => { 'total' => 5,
+                    'hits' => [{ '_source' => { 'id' => 1 } }, { '_source' => { 'id' => 2 } },
+                      { '_source' => { 'id' => 3 } }] } }
+    end
+
     let(:query) { ActiveContext::Query.filter(project_id: 1) }
 
     before do
@@ -20,6 +25,17 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
 
     it 'calls search on the Opensearch client' do
       expect(opensearch_client).to receive(:search)
+      client.search(collection: collection, query: query, user: user)
+    end
+
+    it 'logs search duration and result count' do
+      expect(ActiveContext::Logger).to receive(:info).with(
+        message: 'ActiveContext client search completed',
+        collection: collection,
+        duration_s: be_a(Float),
+        result_count: 3
+      )
+
       client.search(collection: collection, query: query, user: user)
     end
   end

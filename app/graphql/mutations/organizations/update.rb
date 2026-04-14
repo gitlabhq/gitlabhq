@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'OrganizationUpdate'
 
       authorize :admin_organization
+      authorize_granular_token permissions: :update_organization, boundary: :instance, boundary_type: :instance
 
       argument :id,
         Types::GlobalIDType[::Organizations::Organization],

@@ -70,6 +70,23 @@ For more information, see the relevant:
 - [Migration guide](https://docs.gitlab.com/user/compliance/compliance_pipelines/#pipeline-execution-policies-migration).
 - [Blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
 
+### Design Management deprecated
+
+- Announced in GitLab 18.6
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/20375).
+
+In GitLab 20.0, GitLab will begin deprecation of Design Management. Design Management allows users to upload design assets such as wireframes and mockups to GitLab issues for collaboration. We've made this decision after careful consideration of existing usage and estimated customer impact. The ongoing maintenance required for Design Management outweighed the current usage, and we're focusing our efforts on solutions that better align with modern designer workflows. In GitLab 20.0 and later, users will no longer be able to upload new designs. Existing designs will remain available in read-only mode until GitLab 21.0, giving users time to save their designs as needed. GitLab is exploring alternatives that better integrate with the tools designers already use.
+
+### Enforce keyset pagination on audit event API
+
+- Announced in GitLab 17.8
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 20.0
+we will enforce keyset pagination on these APIs.
+
 ### Legacy group-level audit event streaming destination GraphQL APIs
 
 - Announced in GitLab 18.10
@@ -228,23 +245,6 @@ To migrate:
 
 If you encounter any issues after making these changes, try regenerating your AWS credentials.
 
-### Design Management deprecated
-
-- Announced in GitLab 18.6
-- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/20375).
-
-In GitLab 19.0, GitLab will begin deprecation of Design Management. Design Management allows users to upload design assets such as wireframes and mockups to GitLab issues for collaboration. We've made this decision after careful consideration of existing usage and estimated customer impact. The ongoing maintenance required for Design Management outweighed the current usage, and we're focusing our efforts on solutions that better align with modern designer workflows. In GitLab 19.0 and later, users will no longer be able to upload new designs. Existing designs will remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed. GitLab is exploring alternatives that better integrate with the tools designers already use.
-
-### Enforce keyset pagination on audit event API
-
-- Announced in GitLab 17.8
-- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
-
-The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
-we will enforce keyset pagination on these APIs.
-
 ### Enforce page limit for unauthenticated Projects API requests
 
 - Announced in GitLab 18.9
@@ -315,7 +315,7 @@ Mattermost was first bundled with GitLab in 2015 as an open source team messagin
 to support the integration. Since then, Mattermost has significantly matured its own packaging and deployment
 options, and adoption of the bundled Mattermost among GitLab customers has remained relatively low.
 
-With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.cloudron.io/topic/14298/upcoming-removal-of-gitlab-sso-in-mattermost-v11-suggestion-for-cloudron).
+With Mattermost v11, [Mattermost has deprecated GitLab SSO from their free offering](https://forum.mattermost.com/t/mattermost-v11-changes-in-free-offerings/25126).
 Given this change, the maturity of Mattermost standalone deployment options, and the low adoption in our customer
 base, we are removing Mattermost from the Linux package.
 
@@ -512,7 +512,7 @@ These changes affect you if your pipelines use the [`auto-build-image`](https://
 
 To continue to use `heroku/builder:22` after GitLab 19.0, set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:22`.
 
-### Trending tab in Explore > Projects is deprecated
+### Trending tab in Explore projects page is deprecated
 
 - Announced in GitLab 18.8
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
@@ -1668,7 +1668,7 @@ The runner's legacy escape sequence mechanism to handle variable expansion imple
 - Removal in GitLab 17.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461).
 
-The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings API](https://docs.gitlab.com/api/settings/). To add a custom text to the sign-in and sign-up pages, use the `description` field in the [Appearance API](https://docs.gitlab.com/api/appearance/).
+The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings API](https://docs.gitlab.com/api/settings/). To add a custom text to the sign-in and new user account pages, use the `description` field in the [Appearance API](https://docs.gitlab.com/api/appearance/).
 
 ### Deprecating Windows Server 2019 in favor of 2022
 
@@ -4265,13 +4265,13 @@ In GitLab 15.0, we will:
 
 If you rely on Java 8 being present in the analyzer environment, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352549#breaking-change).
 
-### Outdated indices of Advanced Search migrations
+### Outdated indices of advanced search migrations
 
 - Announced in GitLab 14.10
 - Removal in GitLab 15.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/359133).
 
-As Advanced Search migrations usually require support multiple code paths for a long period of time,
+As advanced search migrations usually require support multiple code paths for a long period of time,
 it's important to clean those up when we safely can. We use GitLab major version upgrades as a safe
 time to remove backward compatibility for indices that have not been fully migrated. See the
 [upgrade documentation](https://docs.gitlab.com/update/#upgrading-to-a-new-major-version) for details.

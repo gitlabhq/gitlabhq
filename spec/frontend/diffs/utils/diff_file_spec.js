@@ -7,6 +7,7 @@ import {
   countLinesInBetween,
   findClosestMatchLine,
   lineExists,
+  getRawPath,
 } from '~/diffs/utils/diff_file';
 import { diffViewerModes } from '~/ide/constants';
 import { getDiffFileMock } from '../mock_data/diff_file';
@@ -371,6 +372,32 @@ describe('diff_file utilities', () => {
 
     it('returns false for non-existing line', () => {
       expect(lineExists([{ old_line: 15, new_line: 16 }], 20, 20)).toBe(false);
+    });
+  });
+
+  describe('getRawPath', () => {
+    it('replaces /-/blob/ with /-/raw/ in view_path', () => {
+      const diffFile = {
+        view_path: 'https://gitlab.com/namespace/project/-/blob/abc123/path/to/file.rb',
+      };
+      expect(getRawPath(diffFile)).toBe(
+        'https://gitlab.com/namespace/project/-/raw/abc123/path/to/file.rb',
+      );
+    });
+
+    it('does not replace blob in a project or group name', () => {
+      const diffFile = { view_path: '/blobstore/project/-/blob/abc123/file.rb' };
+      expect(getRawPath(diffFile)).toBe('/blobstore/project/-/raw/abc123/file.rb');
+    });
+
+    it('does not replace blob directory in the file path', () => {
+      const diffFile = { view_path: '/namespace/project/-/blob/abc123/blob/file.rb' };
+      expect(getRawPath(diffFile)).toBe('/namespace/project/-/raw/abc123/blob/file.rb');
+    });
+
+    it('handles a file named blob.rb', () => {
+      const diffFile = { view_path: '/namespace/project/-/blob/abc123/blob.rb' };
+      expect(getRawPath(diffFile)).toBe('/namespace/project/-/raw/abc123/blob.rb');
     });
   });
 });

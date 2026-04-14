@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlButton, GlTooltipDirective, GlOutsideDirective } from '@gitlab/ui';
+import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
@@ -21,7 +21,6 @@ export default {
   name: 'WorkItemDrawer',
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlOutside: GlOutsideDirective,
   },
   components: {
     GlLink,
@@ -241,29 +240,6 @@ export default {
     openTooltipText: __('Open in full page'),
     closePanelText: __('Close panel'),
   },
-  defaultExcludedSelectors: [
-    '#confirmationModal',
-    '#create-timelog-modal',
-    '#set-time-estimate-modal',
-    '[id^="insert-comment-template-modal"]',
-    'input[type="file"]',
-    '.pika-single',
-    '.atwho-container',
-    '.item-title',
-    '.tippy-content .gl-new-dropdown-panel',
-    '#blocked-by-issues-modal',
-    '#open-children-warning-modal',
-    '#create-work-item-modal',
-    '#work-item-confirm-delete',
-    '.work-item-link-child',
-    '.modal-content',
-    '#create-merge-request-modal',
-    '#b-toaster-bottom-left',
-    '.js-tanuki-bot-chat-toggle',
-    '#super-sidebar-search',
-    '#chat-component',
-    '.user-popover',
-  ],
 };
 </script>
 

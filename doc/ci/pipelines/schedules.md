@@ -36,6 +36,7 @@ and use the [CI/CD job token](../jobs/ci_job_token.md) based on your access leve
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
+- Your primary email address must be verified.
 - For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
   you must have merge permissions for the target branch.
 - Your `.gitlab-ci.yml` file must have valid syntax. You can [validate your configuration](../yaml/lint.md) before scheduling.

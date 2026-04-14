@@ -1,0 +1,67 @@
+diff --git a/node_modules/@vitejs/plugin-vue2/dist/index.mjs b/node_modules/@vitejs/plugin-vue2/dist/index.mjs
+index 984a2f0..88611cc 100644
+--- a/node_modules/@vitejs/plugin-vue2/dist/index.mjs
++++ b/node_modules/@vitejs/plugin-vue2/dist/index.mjs
+@@ -749,7 +749,7 @@ export default function normalizeComponent (
+   }
+ }`;
+ 
+-async function transformMain(code, filename, options, pluginContext, ssr) {
++async function transformMain(code, filename, options, pluginContext, ssr, extraQuery = '') {
+   const { devServer, isProduction, devToolsEnabled } = options;
+   const prevDescriptor = getPrevDescriptor(filename);
+   const { descriptor, errors } = createDescriptor(filename, code, options);
+@@ -760,8 +760,8 @@ async function transformMain(code, filename, options, pluginContext, ssr) {
+   const hasScoped = descriptor.styles.some((s) => s.scoped);
+   const hasCssModules = descriptor.styles.some((s) => s.module);
+   const hasFunctional = descriptor.template && descriptor.template.attrs.functional;
+-  const { code: scriptCode, map: scriptMap } = await genScriptCode(descriptor, options, pluginContext, ssr);
+-  const templateCode = await genTemplateCode(descriptor, options, pluginContext, ssr);
++  const { code: scriptCode, map: scriptMap } = await genScriptCode(descriptor, options, pluginContext, ssr, extraQuery);
++  const templateCode = await genTemplateCode(descriptor, options, pluginContext, ssr, extraQuery);
+   const stylesCode = await genStyleCode(descriptor, pluginContext);
+   const customBlocksCode = await genCustomBlockCode(descriptor, pluginContext);
+   const output = [
+@@ -817,7 +817,7 @@ var __component__ = /*#__PURE__*/__normalizer(
+     }
+   };
+ }
+-async function genTemplateCode(descriptor, options, pluginContext, ssr) {
++async function genTemplateCode(descriptor, options, pluginContext, ssr, extraQuery = '') {
+   const template = descriptor.template;
+   if (!template) {
+     return "const _sfc_render = null; const _sfc_staticRenderFns = null";
+@@ -833,12 +833,12 @@ async function genTemplateCode(descriptor, options, pluginContext, ssr) {
+     const srcQuery = template.src ? hasScoped ? `&src=${descriptor.id}` : "&src=true" : "";
+     const scopedQuery = hasScoped ? `&scoped=${descriptor.id}` : ``;
+     const attrsQuery = attrsToQuery(template.attrs, "js", true);
+-    const query = `?vue&type=template${srcQuery}${scopedQuery}${attrsQuery}`;
++    const query = `?vue&type=template${srcQuery}${scopedQuery}${attrsQuery}${extraQuery}`;
+     const request = JSON.stringify(src + query);
+     return `import { render as _sfc_render, staticRenderFns as _sfc_staticRenderFns } from ${request}`;
+   }
+ }
+-async function genScriptCode(descriptor, options, pluginContext, ssr) {
++async function genScriptCode(descriptor, options, pluginContext, ssr, extraQuery = '') {
+   let scriptCode = `const _sfc_main = {}`;
+   let map;
+   const script = resolveScript(descriptor, options, ssr);
+@@ -856,7 +856,7 @@ async function genScriptCode(descriptor, options, pluginContext, ssr) {
+       const langFallback = script.src && path.extname(src).slice(1) || "js";
+       const attrsQuery = attrsToQuery(script.attrs, langFallback);
+       const srcQuery = script.src ? `&src=true` : ``;
+-      const query = `?vue&type=script${srcQuery}${attrsQuery}`;
++      const query = `?vue&type=script${srcQuery}${attrsQuery}${extraQuery}`;
+       const request = JSON.stringify(src + query);
+       scriptCode = `import _sfc_main from ${request}
+ export * from ${request}`;
+@@ -1101,7 +1101,8 @@ function vuePlugin(rawOptions = {}) {
+         return;
+       }
+       if (!query.vue) {
+-        return transformMain(code, filename, options, this, ssr);
++        const extraQuery = Object.keys(query).filter((k) => !['vue', 'type', 'index', 'src', 'raw', 'scoped', 'lang'].includes(k)).map((k) => query[k] === '' || query[k] === true ? `&${k}` : `&${k}=${encodeURIComponent(query[k])}`).join('');
++        return transformMain(code, filename, options, this, ssr, extraQuery);
+       } else {
+         const descriptor = query.src ? getSrcDescriptor(filename, query) : getDescriptor(filename, options);
+         if (query.type === "template") {

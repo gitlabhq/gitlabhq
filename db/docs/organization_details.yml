@@ -3,7 +3,7 @@ table_name: organization_details
 classes:
 - Organizations::OrganizationDetail
 feature_categories:
-- cell
+- organization
 description: Detail about an organization
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137616
 milestone: '16.7'

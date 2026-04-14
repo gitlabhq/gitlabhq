@@ -48,6 +48,7 @@ describe('~/security_configuration/components/app', () => {
       propsData: {
         augmentedSecurityFeatures: securityFeaturesMock,
         securityTrainingEnabled: true,
+        mergeRequestsEnabled,
         ...propsData,
       },
       provide: {
@@ -70,11 +71,6 @@ describe('~/security_configuration/components/app', () => {
         }),
         PageHeading,
         MergeRequestsDisabledAlert: false,
-      },
-      data() {
-        return {
-          mergeRequestsEnabled,
-        };
       },
     });
   };
@@ -288,14 +284,6 @@ describe('~/security_configuration/components/app', () => {
           });
         },
       );
-    });
-  });
-
-  describe('when given latestPipelinePath props', () => {
-    beforeEach(() => {
-      createComponent({
-        latestPipelinePath: 'test/path',
-      });
     });
   });
 

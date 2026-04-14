@@ -5,7 +5,7 @@ action: click_create_group_runner_button
 identifiers:
   - namespace
   - user
-product_group: runner
+product_group: runner_core
 product_categories:
   - fleet_visibility
 milestone: '16.10'

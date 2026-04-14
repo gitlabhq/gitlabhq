@@ -31,12 +31,12 @@ module Integrations
       description: -> { s_('AppleAppStore|Apple App Store Connect key ID.') }
 
     field :app_store_private_key_file_name,
-      description: -> { s_('Apple App Store Connect private key file name.') },
+      description: -> { _('Apple App Store Connect private key file name.') },
       section: SECTION_TYPE_CONNECTION,
       required: true
 
     field :app_store_private_key,
-      description: -> { s_('Apple App Store Connect private key.') },
+      description: -> { _('Apple App Store Connect private key.') },
       required: true,
       api_only: true
 
@@ -72,10 +72,10 @@ module Integrations
       tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
       texts = [
-        s_("Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."),
-        s_("After you enable the integration, the following protected variables are created for CI/CD use:"),
+        _("Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."),
+        _("After you enable the integration, the following protected variables are created for CI/CD use:"),
         ActionController::Base.helpers.safe_join(variable_list, ActionController::Base.helpers.tag(:br)),
-        safe_format(s_("For more information, see the %{link_start}documentation%{link_end}."), tag_pair_docs_link)
+        safe_format(_("For more information, see the %{link_start}documentation%{link_end}."), tag_pair_docs_link)
       ]
 
       ActionController::Base.helpers.safe_join(texts, ActionController::Base.helpers.tag(:br) * 2)

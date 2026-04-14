@@ -1,0 +1,7 @@
+---
+table: organizations
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_organizations
+    priority: 1

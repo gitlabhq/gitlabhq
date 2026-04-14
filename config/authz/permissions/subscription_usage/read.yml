@@ -1,0 +1,3 @@
+---
+name: read_subscription_usage
+description: Grants the ability to read subscription seat usage data for a namespace.

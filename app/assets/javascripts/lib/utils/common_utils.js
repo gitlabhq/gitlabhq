@@ -3,7 +3,7 @@
  */
 
 import $ from 'jquery';
-import { isFunction, escape, partial, toLower } from 'lodash';
+import { escape, isFunction, partial, toLower } from 'lodash-es';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
@@ -339,6 +339,23 @@ export const parseIntPagination = (paginationInformation) => ({
   totalPages: parseInt(paginationInformation['X-TOTAL-PAGES'], 10),
   nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
   previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
+});
+
+/**
+ * Parses pagination headers from keyset-based API requests
+ *
+ * https://docs.gitlab.com/api/rest/#keyset-based-pagination
+ * https://docs.gitlab.com/api/rest/#other-pagination-headers
+ *
+ * @param paginationInformation
+ * @returns {{perPage: number, hasNextPage: boolean, hasPreviousPage: boolean, endCursor: string | null, startCursor: string | null}}
+ */
+export const parseCursorPagination = (paginationInformation) => ({
+  perPage: parseInt(paginationInformation['X-PER-PAGE'], 10),
+  startCursor: paginationInformation['X-PREV-PAGE'] || null,
+  endCursor: paginationInformation['X-NEXT-PAGE'] || null,
+  hasNextPage: Boolean(paginationInformation['X-NEXT-PAGE']),
+  hasPreviousPage: Boolean(paginationInformation['X-PREV-PAGE']),
 });
 
 export const buildUrlWithCurrentLocation = (param) => {

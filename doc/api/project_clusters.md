@@ -17,9 +17,9 @@ title: Project clusters API (certificate-based) (deprecated)
 
 Users need the Maintainer or Owner role to use these endpoints.
 
-## List project clusters
+## List all clusters in a project
 
-Returns a list of project clusters.
+Lists all clusters in a specified project.
 
 ```plaintext
 GET /projects/:id/clusters
@@ -89,9 +89,9 @@ Example response:
 ]
 ```
 
-## Get a single project cluster
+## Retrieve a cluster from a project
 
-Gets a single project cluster.
+Retrieves a specified cluster in a project.
 
 ```plaintext
 GET /projects/:id/clusters/:cluster_id
@@ -185,9 +185,9 @@ Example response:
 }
 ```
 
-## Add existing cluster to project
+## Add a cluster to a project
 
-Adds an existing Kubernetes cluster to the project.
+Adds an existing cluster to a specified project.
 
 ```plaintext
 POST /projects/:id/clusters/user
@@ -284,9 +284,9 @@ Example response:
 }
 ```
 
-## Edit project cluster
+## Update a cluster in a project
 
-Updates an existing project cluster.
+Updates a cluster in a specified project.
 
 ```plaintext
 PUT /projects/:id/clusters/:cluster_id
@@ -312,7 +312,7 @@ Parameters:
 > [!note]
 > `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
 > through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
-> through the ["Add existing cluster to project"](#add-existing-cluster-to-project) endpoint.
+> through the ["Add existing cluster to project"](#add-a-cluster-to-a-project) endpoint.
 
 Example request:
 
@@ -397,9 +397,10 @@ Example response:
 }
 ```
 
-## Delete project cluster
+## Delete cluster from a project
 
-Deletes an existing project cluster. Does not remove existing resources within the connected Kubernetes cluster.
+Deletes a specified cluster from a project.
+Does not remove existing resources in the connected Kubernetes cluster.
 
 ```plaintext
 DELETE /projects/:id/clusters/:cluster_id

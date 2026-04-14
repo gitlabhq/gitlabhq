@@ -200,16 +200,50 @@ RSpec.describe Gitlab::Auth::Ldap::Adapter do
       end
     end
 
-    described_class::NON_ERROR_LDAP_RESPONSE_CODES.each do |code|
-      context "when the search returns nil with non-error response code #{code}" do
+    context "when the search returns nil with a success response code" do
+      before do
+        allow(ldap).to receive_messages(
+          search: nil,
+          get_operation_result: double(code: 0, message: 'Success')
+        )
+        allow(Gitlab::AppLogger).to receive(:warn)
+      end
+
+      it { is_expected.to eq [] }
+
+      it 'does not log a warning' do
+        adapter.ldap_search(base: :dn, filter: :filter)
+        expect(Gitlab::AppLogger).not_to have_received(:warn)
+      end
+    end
+
+    context "when the search returns nil with a non-error response code" do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:code, :message) do
+        10 | 'Referral'
+        32 | 'No Such Object'
+      end
+
+      with_them do
         before do
           allow(ldap).to receive_messages(
             search: nil,
-            get_operation_result: double(code: code, message: 'non-error response')
+            get_operation_result: double(code: code, message: message)
           )
+          allow(Gitlab::AppLogger).to receive(:warn)
         end
 
-        it { is_expected.to eq [] }
+        it 'returns an empty array' do
+          expect(adapter.ldap_search(base: :dn, filter: :filter)).to eq([])
+        end
+
+        it 'logs a warning with the response code' do
+          adapter.ldap_search(base: :dn, filter: :filter)
+          expect(Gitlab::AppLogger).to have_received(:warn).with(
+            "LDAP search error code: #{code}, message: #{message}"
+          )
+        end
       end
     end
 

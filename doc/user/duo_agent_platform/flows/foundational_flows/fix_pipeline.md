@@ -8,7 +8,7 @@ title: Fix CI/CD Pipeline Flow
 {{< details >}}
 
 - Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -36,9 +36,6 @@ The flow can automatically fix various pipeline issues, including:
 - Dependency and workflow issues.
 
 This flow is available in the GitLab UI only.
-
-> [!note]
-> The Fix CI/CD Pipeline Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
 
 ## Prerequisites
 

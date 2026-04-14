@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';

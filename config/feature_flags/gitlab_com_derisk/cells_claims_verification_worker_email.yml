@@ -1,0 +1,10 @@
+---
+name: cells_claims_verification_worker_email
+description: Gates the claims verification worker for the Email model
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/468
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227043
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/593865
+milestone: '18.11'
+group: group::cells infrastructure
+type: gitlab_com_derisk
+default_enabled: false

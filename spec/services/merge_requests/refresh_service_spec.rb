@@ -199,6 +199,110 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
             expect(merge_status_updates.values.sum).to eq 5
           end
         end
+
+        context 'when auto_merge_on_mark_as_unchecked feature flag is enabled' do
+          let!(:auto_merge_mr) do
+            create(
+              :merge_request,
+              source_project: @project,
+              source_branch: 'feature3',
+              target_branch: 'master',
+              merge_status: 'can_be_merged',
+              auto_merge_enabled: true,
+              merge_user: @user
+            )
+          end
+
+          it 'enqueues AutoMergeProcessWorker with staggered delay' do
+            enqueued = []
+
+            allow(AutoMergeProcessWorker).to receive(:perform_in) do |delay, args|
+              enqueued << { delay: delay, mr_id: args['merge_request_id'] }
+            end
+
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+            mr_enqueue = enqueued.find { |e| e[:mr_id] == auto_merge_mr.id }
+            expect(mr_enqueue).to be_present
+
+            expected_delays = Array.new(described_class::AUTO_MERGE_BATCH_LIMIT) do |i|
+              (i * described_class::AUTO_MERGE_DELAY_INTERVAL).seconds
+            end
+            expect(expected_delays).to include(mr_enqueue[:delay])
+          end
+
+          context 'when there are more auto-merge MRs than the batch limit' do
+            let(:batch_limit) { 5 }
+
+            let!(:auto_merge_mrs) do
+              Array.new(batch_limit + 5) do |i|
+                create(
+                  :merge_request,
+                  source_project: @project,
+                  source_branch: "feature#{i + 10}",
+                  target_branch: 'master',
+                  merge_status: 'can_be_merged',
+                  auto_merge_enabled: true,
+                  merge_user: @user
+                )
+              end
+            end
+
+            before do
+              stub_const("#{described_class}::AUTO_MERGE_BATCH_LIMIT", batch_limit)
+              # Disable auto_merge on MRs from outer context so only auto_merge_mrs
+              # compete for batch slots, keeping the test self-contained.
+              @merge_request.update_column(:auto_merge_enabled, false)
+              @another_merge_request.update_column(:auto_merge_enabled, false)
+              auto_merge_mr.update_column(:auto_merge_enabled, false)
+            end
+
+            it 'enqueues at most AUTO_MERGE_BATCH_LIMIT workers with correct staggered delays' do
+              enqueued = []
+
+              allow(AutoMergeProcessWorker).to receive(:perform_in) do |delay, args|
+                enqueued << { delay: delay, mr_id: args['merge_request_id'] }
+              end
+
+              refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+              expect(enqueued.size).to eq(batch_limit)
+
+              enqueued.each_with_index do |enqueue, index|
+                expected_delay = index * described_class::AUTO_MERGE_DELAY_INTERVAL
+                expect(enqueue[:delay]).to eq(expected_delay.seconds)
+              end
+
+              enqueued_mr_ids = enqueued.pluck(:mr_id)
+              skipped_mrs = auto_merge_mrs.reject { |mr| enqueued_mr_ids.include?(mr.id) }
+              expect(skipped_mrs.size).to eq(5)
+            end
+          end
+        end
+
+        context 'when auto_merge_on_mark_as_unchecked feature flag is disabled' do
+          let!(:auto_merge_mr) do
+            create(
+              :merge_request,
+              source_project: @project,
+              source_branch: 'feature3',
+              target_branch: 'master',
+              merge_status: 'can_be_merged',
+              auto_merge_enabled: true,
+              merge_user: @user
+            )
+          end
+
+          before do
+            stub_feature_flags(auto_merge_on_mark_as_unchecked: false)
+          end
+
+          it 'does not enqueue AutoMergeProcessWorker' do
+            expect(AutoMergeProcessWorker).not_to receive(:perform_in)
+
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          end
+        end
       end
 
       context 'when a merge error exists' do

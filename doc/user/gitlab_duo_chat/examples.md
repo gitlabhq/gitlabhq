@@ -39,11 +39,29 @@ For example, `How does the clean_missing_data function in data_cleaning.py decid
 
 For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
 
+## Use of credits with Chat features
+
+The following Chat features have an agentic version which consumes
+[GitLab Credits](../../subscriptions/gitlab_credits.md), and a non-agentic version
+that does not consume GitLab Credits:
+
+- Explain selected code.
+- Troubleshoot failed CI/CD jobs with Root Cause Analysis.
+- Explain a vulnerability.
+- Slash commands in the GitLab UI.
+
+If you have access to both Agentic Chat and Non-Agentic Chat, the default feature version depends on the tool you're using:
+
+- In the GitLab UI, the default Chat version is the version you last selected in the GitLab Duo sidebar.
+- In a supported IDE, the default Chat version is determined by your settings.
+
+If you do not have access to Agentic Chat and therefore the GitLab Duo Agent Platform, the feature version defaults to the non-agentic version.
+
 ## Ask about GitLab
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -80,7 +98,7 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -117,7 +135,7 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -241,7 +259,7 @@ You can ask about a specific GitLab pipeline job. For example:
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -270,7 +288,7 @@ You can ask about a specific GitLab work item. For example:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- Editors - GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -325,7 +343,7 @@ In the GitLab UI, you can also explain code in:
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -366,7 +384,7 @@ You can also ask Chat to generate code. For example:
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -399,7 +417,7 @@ A follow-up to the question `How to start a C# project?` could be:
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, the Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, the Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -428,7 +446,7 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -442,7 +460,7 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< /history >}}
 
-Add repository files to your GitLab Duo Chat conversations in VS Code or JetBrains IDEs
+Add repository files to your GitLab Duo Chat conversations in your supported IDE
 by typing `/include` and choosing the files.
 
 Prerequisites:
@@ -475,7 +493,7 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (non-agentic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- Editors - GitLab Duo Non-Agentic Chat: Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -523,7 +541,7 @@ For more information, see:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (non-agentic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- Editors - GitLab Duo Non-Agentic Chat: Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -563,7 +581,7 @@ You can include additional instructions to be considered. For example:
 
 {{< collapsible title="Editor and model information" >}}
 
-- Editors - GitLab Duo Chat (non-agentic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- Editors - GitLab Duo Non-Agentic Chat: Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -607,7 +625,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -749,7 +767,7 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: GitLab UI, Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -802,7 +820,7 @@ These commands are dynamic and are available only in the GitLab UI when using Gi
 
 {{< collapsible title="Editor information" >}}
 
-- GitLab Duo Chat (non-agentic): Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
+- GitLab Duo Non-Agentic Chat: Web IDE, VS Code, JetBrains IDEs, Visual Studio, and Eclipse
 
 {{< /collapsible >}}
 
@@ -821,4 +839,8 @@ These commands work only when using GitLab Duo Chat in supported IDEs:
 | /explain  | [Explain code](#explain-selected-code)            |
 | /refactor | [Refactor the code](#refactor-code-in-the-ide)    |
 | /fix      | [Fix the code](#fix-code-in-the-ide)              |
-| /include  | [Include file context](#ask-about-specific-files-in-the-ide) |
+| /include  | [Include file context](#ask-about-specific-files-in-the-ide) <sup>1</sup> |
+
+**Footnotes**:
+
+1. Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.

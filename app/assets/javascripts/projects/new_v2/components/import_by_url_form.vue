@@ -104,12 +104,8 @@ export default {
       }
     },
     onBlur() {
-      // Only validate on blur if there's actually content
-      if (this.repositoryUrl.trim() === '') {
-        this.urlValidationState = null;
-      } else {
-        this.urlValidationState = isReasonableGitUrl(this.repositoryUrl);
-      }
+      this.urlValidationState =
+        this.repositoryUrl === '' ? null : isReasonableGitUrl(this.repositoryUrl);
     },
     onInput() {
       this.urlValidationState = null;
@@ -146,7 +142,7 @@ export default {
           <gl-form-input-group>
             <gl-form-input
               id="repository-url"
-              v-model="repositoryUrl"
+              v-model.trim="repositoryUrl"
               name="project[import_url]"
               autocomplete="off"
               data-testid="repository-url"

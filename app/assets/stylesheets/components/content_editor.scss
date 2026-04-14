@@ -63,7 +63,14 @@
   }
 
   td,
-  th,
+  th {
+    > [data-node-view-content] > [data-node-view-wrapper]:only-child {
+      :first-child {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
   li,
   dd,
   dt,
@@ -464,5 +471,6 @@
   .rte-text-box {
     position: relative;
     max-height: none !important;
+    resize: none !important;
   }
 }

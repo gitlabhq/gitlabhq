@@ -33,15 +33,29 @@ RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store, :silen
 
     it_behaves_like 'rake task with disabled object_storage', ::Projects::GitlabProjectsImportService, :execute_sidekiq_job
 
-    it 'performs project import successfully' do
-      expect { subject }.to output(/Done!/).to_stdout
-      expect { subject }.not_to raise_error
-      expect(subject).to eq(true)
+    shared_examples 'successful project import' do
+      it 'performs project import successfully' do
+        expect { subject }.to output(/Done!/).to_stdout
+        expect { subject }.not_to raise_error
+        expect(subject).to eq(true)
 
-      expect(project.merge_requests.count).to be > 0
-      expect(project.issues.count).to be > 0
-      expect(project.milestones.count).to be > 0
-      expect(project.import_state.status).to eq('finished')
+        expect(project.name).to eq(project_name)
+        expect(project.merge_requests.count).to be > 0
+        expect(project.issues.count).to be > 0
+        expect(project.milestones.count).to be > 0
+        expect(project.import_state.status).to eq('finished')
+      end
+    end
+
+    it_behaves_like 'successful project import'
+
+    context 'when a project with the same name as the exported project already exists' do
+      before do
+        # lightweight_project_export.tar.gz contains the exported project name 'Project name'
+        create(:project, name: 'Project name', namespace: user.namespace)
+      end
+
+      it_behaves_like 'successful project import'
     end
   end
 

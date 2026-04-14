@@ -15,6 +15,7 @@ module Banzai
           Filter::JsonTableFilter,
           Filter::PlantumlFilter,
           Filter::SpacedLinkFilter,
+          Filter::IframeToImgFilter,
           # ======== Sanitization boundary ========
           # Items above this point must not be moved below this point, as they depend
           # on running before SanitizationFilter and SanitizeLinkFilter for safety.

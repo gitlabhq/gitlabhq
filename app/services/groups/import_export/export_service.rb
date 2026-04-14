@@ -73,7 +73,7 @@ module Groups
       end
 
       def savers
-        [version_saver, tree_exporter]
+        [version_saver, tree_exporter, max_iids_saver]
       end
 
       def tree_exporter
@@ -87,6 +87,10 @@ module Groups
 
       def version_saver
         Gitlab::ImportExport::VersionSaver.new(shared: shared)
+      end
+
+      def max_iids_saver
+        Gitlab::ImportExport::Group::MaxIidsSaver.new(group: group, shared: shared)
       end
 
       def file_saver

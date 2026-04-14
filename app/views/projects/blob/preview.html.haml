@@ -1,4 +1,6 @@
-- if Gitlab::MarkupHelper.markup?(@blob.name)
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Blob|Unable to load preview')
+- elsif Gitlab::MarkupHelper.markup?(@blob.name)
   .file-content.md
     = markup(@blob.name, @content)
 - else

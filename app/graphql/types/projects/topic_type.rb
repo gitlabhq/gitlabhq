@@ -6,6 +6,8 @@ module Types
     class TopicType < BaseObject
       graphql_name 'Topic'
 
+      authorize_granular_token permissions: :read_topic, boundary: :instance, boundary_type: :instance
+
       field :id, GraphQL::Types::ID, null: false,
         description: 'ID of the topic.'
 

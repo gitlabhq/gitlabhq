@@ -13,46 +13,53 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
       click_button 'Verify code'
     end
 
+    def expect_main_sign_in_success(otp)
+      expect(page).to have_content(_('Enter verification code'))
+      enter_code(otp)
+      expect(page).to have_current_path root_path, ignore_query: true
+    end
+
+    def expect_admin_sign_in_waiting_for_code(user)
+      enable_admin_mode!(user, use_ui: true)
+      expect(page).to have_content(_('Enter verification code'))
+    end
+
+    def expect_admin_sign_in_success
+      expect(page).to have_content(_('Admin mode is active.'))
+      expect(page).to have_current_path admin_root_path, ignore_query: true
+    end
+
+    def expect_admin_sign_in_fail
+      expect(page).to have_content(_('Invalid two-factor code.'))
+      expect(page).to have_current_path admin_session_path, ignore_query: true
+    end
+
     context 'with valid username/password' do
       let(:user) { create(:admin, :two_factor) }
 
       context 'using one-time code' do
         it 'blocks login if we reuse the same code immediately' do
           gitlab_sign_in(user, remember: true)
-
-          expect(page).to have_content(_('Enter verification code'))
-
           repeated_otp = user.current_otp
-          enter_code(repeated_otp)
-          enable_admin_mode!(user, use_ui: true)
-
-          expect(page).to have_content(_('Enter verification code'))
+          expect_main_sign_in_success(repeated_otp)
+          expect_admin_sign_in_waiting_for_code(user)
 
           enter_code(repeated_otp)
-
-          expect(page).to have_current_path admin_session_path, ignore_query: true
-          expect(page).to have_content('Invalid two-factor code')
+          expect_admin_sign_in_fail
         end
 
         context 'not re-using codes' do
           before do
             gitlab_sign_in(user, remember: true)
-
-            expect(page).to have_content('Enter verification code')
-
-            enter_code(user.current_otp)
-            enable_admin_mode!(user, use_ui: true)
-
-            expect(page).to have_content(_('Enter verification code'))
+            expect_main_sign_in_success(user.current_otp)
+            expect_admin_sign_in_waiting_for_code(user)
           end
 
           it 'allows login with valid code' do
             # Cannot reuse the TOTP
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
+              expect_admin_sign_in_success
             end
           end
 
@@ -60,8 +67,7 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
             # Cannot reuse the TOTP
             travel_to(30.seconds.from_now) do
               enter_code('foo')
-
-              expect(page).to have_content('Invalid two-factor code')
+              expect_admin_sign_in_fail
             end
           end
 
@@ -69,13 +75,10 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
             # Cannot reuse the TOTP
             travel_to(30.seconds.from_now) do
               enter_code('foo')
-
-              expect(page).to have_content('Invalid two-factor code')
+              expect_admin_sign_in_fail
 
               enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
+              expect_admin_sign_in_success
             end
           end
 
@@ -92,16 +95,13 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
             context 'with valid code' do
               it 'allows login' do
                 enter_code(codes.first)
-                expect(page).to have_current_path admin_root_path, ignore_query: true
-                expect(page).to have_content('Admin mode enabled')
+                expect_admin_sign_in_success
               end
 
               it 'invalidates the used code' do
-                expect do
-                  enter_code(codes.first)
-                  wait_for_requests
-                end
-                  .to change { user.reload.otp_backup_codes.size }.by(-1)
+                enter_code(codes.first)
+                expect_admin_sign_in_success
+                expect(user.reload.otp_backup_codes.size).to eq(codes.size - 1)
               end
             end
 
@@ -114,9 +114,7 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
                 expect(user.reload.otp_backup_codes.size).to eq 9
 
                 enter_code(code)
-                wait_for_requests
-
-                expect(page).to have_content('Invalid two-factor code.')
+                expect_admin_sign_in_fail
               end
             end
           end
@@ -144,34 +142,24 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
 
           it 'signs user in without prompting for second factor' do
             sign_in_using_saml!
+            expect(page).to have_no_content(_('Enter verification code'))
 
-            expect(page).not_to have_content(_('Enter verification code'))
-
-            enable_admin_mode_using_saml!
-
-            expect(page).not_to have_content(_('Enter verification code'))
-            expect(page).to have_current_path admin_root_path, ignore_query: true
-            expect(page).to have_content('Admin mode enabled')
+            gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
+            expect(page).to have_no_content(_('Enter verification code'))
+            expect_admin_sign_in_success
           end
         end
 
         context 'when two factor authentication is required' do
           it 'shows 2FA prompt after omniauth login' do
             sign_in_using_saml!
-
-            expect(page).to have_content(_('Enter verification code'))
-            enter_code(user.current_otp)
-
-            enable_admin_mode_using_saml!
-
-            expect(page).to have_content(_('Enter verification code'))
+            expect_main_sign_in_success(user.current_otp)
+            expect_admin_sign_in_waiting_for_code_saml!(user)
 
             # Cannot reuse the TOTP
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
+              expect_admin_sign_in_success
             end
           end
         end
@@ -180,8 +168,9 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
           gitlab_sign_in_via('saml', user, 'my-uid', mock_saml_response)
         end
 
-        def enable_admin_mode_using_saml!
+        def expect_admin_sign_in_waiting_for_code_saml!(user)
           gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
+          expect(page).to have_content(_('Enter verification code'))
         end
       end
 
@@ -210,19 +199,13 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
         context 'when two factor authentication is required' do
           it 'shows 2FA prompt after ldap login' do
             sign_in_using_ldap!(user, provider_label)
-            expect(page).to have_content(_('Enter verification code'))
-
-            enter_code(user.current_otp)
-            enable_admin_mode_using_ldap!(user)
-
-            expect(page).to have_content(_('Enter verification code'))
+            expect_main_sign_in_success(user.current_otp)
+            expect_admin_sign_in_waiting_for_code_ldap!(user)
 
             # Cannot reuse the TOTP
             travel_to(30.seconds.from_now) do
               enter_code(user.current_otp)
-
-              expect(page).to have_current_path admin_root_path, ignore_query: true
-              expect(page).to have_content('Admin mode enabled')
+              expect_admin_sign_in_success
             end
           end
         end
@@ -252,12 +235,13 @@ RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category:
           click_button 'Sign in'
         end
 
-        def enable_admin_mode_using_ldap!(user)
+        def expect_admin_sign_in_waiting_for_code_ldap!(user)
           visit new_admin_session_path
           click_link provider_label
           fill_in 'username', with: user.username
           fill_in 'password', with: user.password
           click_button 'Enter admin mode'
+          expect(page).to have_content(_('Enter verification code'))
         end
       end
     end

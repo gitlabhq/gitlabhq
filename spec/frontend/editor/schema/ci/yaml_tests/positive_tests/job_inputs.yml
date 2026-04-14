@@ -18,5 +18,9 @@ test-job:
       default: ["linux", "docker"]
     api_key:
       default: "default-key"
+    test_framework:
+      default: "rspec"
+      description: "Testing framework to use"
+      options: ["rspec", "minitest", "cucumber"]
   script:
     - echo "Testing ${{ inputs.environment }}"

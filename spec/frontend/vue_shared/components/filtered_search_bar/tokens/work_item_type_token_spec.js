@@ -81,7 +81,7 @@ describe('WorkItemTypeToken', () => {
       expect(tokenSegments.at(2).text()).toBe(expectedText);
     });
 
-    it('renders all available suggestions when active and passes correct suggestions to BaseToken', async () => {
+    it('renders isFilterableListView suggestions by default', async () => {
       createComponent({
         props: { active: true },
         stubs: { GlFilteredSearchSuggestionList: false },
@@ -89,11 +89,21 @@ describe('WorkItemTypeToken', () => {
       await waitForPromises();
 
       expect(findSuggestions().length).toBeGreaterThan(0);
-      expect(findBaseToken().props('suggestions')).toMatchObject(
-        mockWorkItemTypesConfigurationResponse.data.namespace.workItemTypes.nodes.map(
-          ({ id, name }) => ({ id, name }), // Ignore CE/EE differences
-        ),
-      );
+      expect(findBaseToken().props('suggestions')).toMatchObject([
+        { name: 'Issue' },
+        { name: 'Task' },
+      ]);
+    });
+
+    it('renders isFilterableBoardView suggestions when isFilterableBoardView config is passed', async () => {
+      createComponent({
+        props: { active: true, config: { ...mockTypeToken, isFilterableBoardView: true } },
+        stubs: { GlFilteredSearchSuggestionList: false },
+      });
+      await waitForPromises();
+
+      expect(findSuggestions().length).toBeGreaterThan(0);
+      expect(findBaseToken().props('suggestions')).toMatchObject([{ name: 'Issue' }]);
     });
 
     it('emits input event when token value changes', () => {

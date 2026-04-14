@@ -1,8 +1,8 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 定義済みのルールを無効化、オーバーライド、または置き換えることによって、GitLabでSASTアナライザールールをカスタマイズします。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabでSASTアナライザーのルールを、無効化、オーバーライド、またはデフォルトルールを置き換えることでカスタマイズします。
 title: ルールセットをカスタマイズする
 ---
 
@@ -15,82 +15,154 @@ title: ルールセットをカスタマイズする
 
 {{< history >}}
 
-- GitLab 16.2で、あいまいなパススルー参照の指定のサポートを[有効化](https://gitlab.com/gitlab-org/security-products/analyzers/ruleset/-/merge_requests/18)しました。
+- GitLab 16.2で、曖昧なパススルーrefsの指定に対するサポートを[有効化しました](https://gitlab.com/gitlab-org/security-products/analyzers/ruleset/-/merge_requests/18)。
 
 {{< /history >}}
 
-スキャン対象のリポジトリで[ルールセット設定ファイルを定義](#create-the-configuration-file)することで、SASTアナライザーの動作をカスタマイズできます。
+各SASTアナライザーは、ルールセット設定ファイルを通じて異なるレベルのカスタマイズをサポートしています。SemgrepベースのSASTアナライザーと高度なSASTアナライザーには、[デフォルトのルールセット](rules.md)があります。
 
-## アナライザーごとのカスタマイズオプション {#customization-options-by-analyzer}
+## ルールセット用語集 {#ruleset-glossary}
 
-| カスタマイズ                                                                                           | GitLab高度なSAST                                                                                                                                             | GitLab Semgrep             | [その他のアナライザー](analyzers.md#official-analyzers) |
-|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
-| [定義済みのルールを無効にする](#disable-predefined-rules)                                                   | {{< icon name="check-circle-filled" >}}対応                                                                                                                                                              | {{< icon name="check-circle-filled" >}}対応                        | {{< icon name="check-circle-filled" >}}対応                                                |
-| [定義済みのルールのメタデータをオーバーライドする](#override-metadata-of-predefined-rules)                         | {{< icon name="check-circle-filled" >}}対応                                                                                                                                                              | {{< icon name="check-circle-filled" >}}対応                        | {{< icon name="check-circle-filled" >}}対応                                                |
-| [パススルーを使用して、定義済みのルールをカスタム設定に置き換えます](#build-a-custom-configuration) | 定義済みの非taint、構造ルール、およびファイルとrawパススルーの適用動作の変更をサポートします。その他のパススルーの型は無視されます。 | 完全なパススルーをサポート | {{< icon name="dash-circle" >}}対象外                                                 |
+ルール: 特定の脆弱性をスキャンする個別のセキュリティチェックまたは検出パターン。
 
-## 定義済みのルールを無効にする {#disable-predefined-rules}
+ルールセット: `sast-ruleset.toml`ファイルで定義されている、ルールとその設定のコレクション。
 
-任意のSASTアナライザーの定義済みのルールを無効にできます。
+パススルー: パススルーとは、ファイル、Gitリポジトリ、URL、またはインライン設定からルールセットのカスタマイズを取得する設定ソースです。複数のパススルーをチェーンに結合でき、それぞれが以前の設定を上書きするか追加できます。
 
-ルールを無効にすると:
+## ルールのカスタマイズオプション {#rule-customization-options}
 
-- カスタムルールセットをサポートするすべてのSASTアナライザーは、脆弱性のスキャンを引き続き行います。結果はスキャン完了後の処理ステップとして削除され、[`gl-sast-report.json`アーティファクト](_index.md#download-a-sast-report)には表示されません。GitLab高度なSASTは、初期スキャンから無効なルールを除外することで異なります。
-- 無効になっているルールの検出結果は、[パイプラインセキュリティタブ](../detect/security_scanning_results.md)に表示されなくなります。
-- デフォルトのブランチ上の無効なルールの既存の検出結果は、[脆弱性レポート](../vulnerability_report/_index.md)で[`No longer detected`](../vulnerability_report/_index.md#activity-filter)としてマークされます。
+SASTルールセットにはデフォルトのルールが含まれていますが、組織ごとにセキュリティ要件が異なります。ルールを無効にしたり、そのメタデータをオーバーライドしたり、ルールを置き換えたり追加したりすることで、これらのルールセットをカスタマイズできます。
 
-Semgrepベースのアナライザーは、無効になっているルールを異なる方法で処理します:
+下の表は、各アナライザータイプで利用できるカスタマイズオプションを示しています。
 
-- Semgrepベースのアナライザーでルールを無効にすると、`sast-ruleset.toml`ファイルをデフォルトのブランチにマージした後、そのルールの既存の脆弱性の検出結果は[自動的に解決されます](_index.md#automatic-vulnerability-resolution)。
+| カスタマイズ                          | GitLab高度なSAST                                                                                                                                             | GitLab Semgrep             | [Other analyzers](analyzers.md#official-analyzers) |
+|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
+| デフォルトルールを無効にする               | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
+| デフォルトルールのメタデータをオーバーライドする  | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
+| デフォルトルールを置き換えるか追加する | デフォルトの非汚染構造ルール、およびファイルとrawパススルーの適用動作の変更をサポートします。その他のパススルータイプは無視されます。 | フルパススルーをサポートします。 | {{< no >}}                                         |
 
-この動作の設定方法については、[スキーマ](#schema)セクションと[例](#examples)セクションを参照してください。
+> [!note]
+> GitLabのサポートスコープは、Semgrepアナライザーのインテグレーションとデフォルトのルールセットに限定されます。デフォルトのルールを置き換えたり追加したりする場合、結果として発生する可能性のある互換性の問題を管理する必要があります。詳細については、[Semgrep analyzer compatibility documentation](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/COMPATIBILITY.md)を参照してください。
 
-## 定義済みのルールのメタデータをオーバーライドする {#override-metadata-of-predefined-rules}
+### デフォルトルールを無効にする {#disable-default-rules}
 
-任意のSASTアナライザーの定義済みルールの特定の属性をオーバーライドできます。これは、既存のワークフローまたはツールにSASTを適合させる場合に役立ちます。たとえば、組織のポリシーに基づいて脆弱性の重大度をオーバーライドしたり、脆弱性レポートに表示する別のメッセージを選択したりできます。
+任意のSASTアナライザーのデフォルトルールを無効にできます。たとえば、組織のポリシーに基づいて特定のルールを除外することがあります。
 
-この動作の設定方法については、[スキーマ](#schema)セクションと[例](#examples)セクションを参照してください。
+以下の例を参照してください:
 
-## カスタム設定をビルドする {#build-a-custom-configuration}
+- [デフォルトの高度なSASTルールを無効にする](#disable-default-gitlab-advanced-sast-rules)
+- [その他のSASTアナライザーのデフォルトルールを無効にする](#disable-default-rules-of-other-sast-analyzers)
 
-[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)および[GitLab高度なSAST](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast)アナライザーの[GitLabで管理されているルールセット](rules.md)を独自のルールに置き換えることができます。
+### デフォルトルールのメタデータをオーバーライドする {#override-metadata-of-default-rules}
 
-カスタマイズはパススルーを使用して提供します。これらはランタイム時にパススルーチェーンに構成され、評価されて完全な設定が生成されます。次に、基盤となるスキャナーがこの新しい設定に対して実行されます。
+任意のSASTアナライザーのデフォルトルールの特定の属性をオーバーライドできます。たとえば、組織のポリシーに基づいて脆弱性の重大度をオーバーライドしたり、脆弱性レポートに表示するメッセージを変更したりできます。
 
-複数のパススルータイプがあり、リポジトリにコミットされたファイルの使用や、ルールセット設定ファイルへのインラインなど、さまざまな方法で設定を提供できます。また、チェーン内の後続のパススルーの処理方法を選択することもできます。以前の設定をオーバーライドしたり、追加したりできます。
+例については、[デフォルトのルールメタデータをオーバーライドする](#override-default-rule-metadata)を参照してください。
 
-この動作の設定方法については、[スキーマ](#schema)セクションと[例](#examples)セクションを参照してください。
+### デフォルトルールを置き換えるか追加する {#replace-or-add-to-the-default-rules}
 
-## 設定ファイルを作成します。 {#create-the-configuration-file}
+SemgrepベースのSASTアナライザーと高度なSASTアナライザーのデフォルトルールを置き換えたり追加したりできます。デフォルトでは、カスタムルールセットを定義すると、デフォルトのルールセットが置き換えられます。デフォルトルールセットに追加するには、[ルールセット設定ファイル](#configuration-methods)で`keepdefaultrules`を`true`に設定する必要があります。
 
-ルールセット設定ファイルを作成するには:
+以下の例を参照してください:
 
-1. プロジェクトのルートに`.gitlab`ディレクトリを作成します（まだ存在しない場合）。
+- [高度なSASTのデフォルトルールを置き換える](#replace-the-default-rules-of-gitlab-advanced-sast)
+- [`semgrep`のデフォルトルールを置き換えるか追加する](#replace-or-add-to-the-default-rules-of-semgrep)
+
+### ルールセットカスタマイズの影響 {#effects-of-ruleset-customization}
+
+以下の表は、SASTルールセットをカスタマイズしたときに発生することを示しています:
+
+| アクション                     | スキャン動作                                                                                                                                                               | パイプラインセキュリティタブ                                                                                                      | 脆弱性レポート                                                                                                                                   |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ルールを無効にする             | アナライザーは引き続き脆弱性をスキャンしますが、ルールの結果はスキャン完了後に削除されます。高度なSASTは、最初のスキャンから無効なルールを除外するします。 | 無効化される前にそのルールによって検出された検出結果は、次のパイプライン実行後には表示されなくなります。                        | 無効化される前にルールによって検出された脆弱性は、[**検出されませんでした**](../vulnerability_report/_index.md#activity-filter)とマークされます。 |
+| メタデータをオーバーライドする          | スキャン動作の変更はありません。                                                                                                                                                 | ルールがオーバーライドされる前に検出された検出結果のメタデータは、次のパイプライン実行後に更新されます。               | ルールがオーバーライドされる前に検出された脆弱性のメタデータが更新されます。                                                                 |
+| デフォルトルールセットを置き換える | カスタムルールセットをサポートするアナライザーでは、デフォルトのルールセットは使用されません。                                                                                               | デフォルトルールセットのルールによって、置き換えられる前に検出された検出結果は、次のパイプライン実行後には表示されなくなります。 | デフォルトルールセットのルールによって検出された脆弱性は、[**検出されませんでした**](../vulnerability_report/_index.md#activity-filter)とマークされます。 |
+
+## 設定方法 {#configuration-methods}
+
+ルールセットのカスタマイズは、以下の方法で提供できます:
+
+ローカルルールセットファイル: カスタマイズを`sast-ruleset.toml`ファイルで定義し、リポジトリにコミットします。このアプローチにより、ルールセット設定はバージョン管理下でソースコードとともに管理されます。
+
+リモートルールセットファイル: ルールセットファイルがホストされているリモートの場所（Gitリポジトリ、URL、またはその他のソース）を指定します。このアプローチにより、ルールセットを一元的に管理し、複数のプロジェクトで再利用できます。
+
+> [!note]
+> ローカルの`.gitlab/sast-ruleset.toml`ファイルは、リモートルールセットファイルよりも優先されます。
+
+パススルー（ルールセットに結合できる設定ソース）を使用してカスタマイズを提供します。
+
+すべてのルールセットのカスタマイズは、[SASTルールセットスキーマ](#schema)に準拠する必要があります。
+
+### ローカルルールセットファイルを使用する {#use-a-local-ruleset-file}
+
+カスタマイズをソースコードと一緒に保存したい場合は、ローカルルールセットファイルを使用します。ローカルのカスタマイズは個別のプロジェクトにのみ適用されます。
+
+前提条件: 
+
+- プロジェクトのメンテナーまたはオーナーのロール。
+
+ローカルルールセットファイルを作成するには:
+
+1. まだ存在しない場合は、プロジェクトのルートに`.gitlab`ディレクトリを作成します。
 1. `.gitlab`ディレクトリに`sast-ruleset.toml`という名前のファイルを作成します。
+1. カスタムルールセットを`sast-ruleset.toml`ファイルに追加します。
+1. ローカルルールセットファイルをリポジトリにコミットします。
 
-## リモート設定ファイルを指定する {#specify-a-remote-configuration-file}
+ローカルルールセットファイルの[例](#examples)を参照してください。
+
+### リモートルールセットファイルを使用する {#use-a-remote-ruleset-file}
 
 {{< history >}}
 
-- 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393452)されました。
+- GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393452)されました。
 
 {{< /history >}}
 
-[CI/CD変数](../../../ci/variables/_index.md)を設定して、現在のリポジトリの外部に保存されているルールセット設定ファイルを使用できます。これにより、複数のプロジェクトに同じルールを適用できます。
+複数のプロジェクトに同じカスタマイズを適用したい場合は、リモートルールセットファイルを使用します。リモートルールセットファイルは、それを使用するプロジェクトのリポジトリの外部に保存されます。
 
-`SAST_RULESET_GIT_REFERENCE`変数は、プロジェクトのURI、オプションの認証、およびオプションのGitセキュアハッシュアルゴリズムを指定するための[Git URI](https://git-scm.com/docs/git-clone#_git_urls)と同様の形式を使用します。変数は、次の形式を使用します:
+リモートルールセットファイルを使用するには、以下を行います:
 
-```plaintext
-[<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
-```
+- リモートルールセットを作成します。
+- 各プロジェクトからリモートルールセットを参照します。
 
-{{< alert type="note" >}}
+> [!note]
+> ローカルの`.gitlab/sast-ruleset.toml`ファイルは、リモートルールセットファイルよりも優先されます。
 
-プロジェクトに`.gitlab/sast-ruleset.toml`ファイルがコミットされている場合、そのローカル設定が優先され、`SAST_RULESET_GIT_REFERENCE`で指定されたファイルは使用されません。
+#### リモートルールセットファイルを作成する {#create-a-remote-ruleset-file}
 
-{{< /alert >}}
+複数のプロジェクトの中央ルールセットとしてリモートルールセットファイルを作成します。
 
-次の例では、[SASTを有効にする](_index.md#configure-sast-in-your-cicd-yaml)、および共有ルールセットのカスタマイズファイルを使用します。この例では、ファイルは`example-ruleset-project`のデフォルトのブランチの`.gitlab/sast-ruleset.toml`にコミットされます。
+前提条件: 
+
+- プロジェクトのメンテナーまたはオーナーのロール。
+
+リモートルールセットを作成するには:
+
+- プロジェクトのリポジトリにルールセットを作成します。
+
+  例となるルールセットファイルについては、[例](#examples)を参照してください。
+
+#### リモートルールセットファイルを参照する {#reference-the-remote-ruleset-file}
+
+プロジェクトにルールを適用するために、リモートルールセットファイルを参照します。
+
+前提条件: 
+
+- プロジェクトのメンテナーまたはオーナーのロール。
+- [プロジェクトのリモートルールセット](#create-a-remote-ruleset-file)。
+- リモートルールセットが保存されているプロジェクトへの読み取りアクセス権。たとえば、ジョブトークンまたはグループアクセストークンを使用します。
+
+各プロジェクトでリモートルールセットファイルを参照するには、以下を行います:
+
+- リモートルールセットファイルの場所を指定するために、CI/CD変数`SAST_RULESET_GIT_REFERENCE`変数を設定します。
+
+  リモートルールセットファイルの参照は、プロジェクトURI、オプションの認証、およびオプションのGit SHAを指定するために、[Git URL](https://git-scm.com/docs/git-clone#_git_urls)と同様の形式を使用します。変数は以下の形式を使用します:
+
+  ```plaintext
+  [<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
+  ```
+
+以下の例は、SASTを有効にし、リモートルールセットファイルを使用します。この例では、ファイルは`example-ruleset-project`のデフォルトブランチのパス`.gitlab/sast-ruleset.toml`にコミットされます。
 
 ```yaml
 include:
@@ -100,26 +172,28 @@ variables:
   SAST_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
 ```
 
-高度な使用法については、[プライベートリモート設定の指定例](#specify-a-private-remote-configuration)を参照してください。
+高度な例については、[プライベートリモート設定の例を指定する](#specify-a-private-remote-configuration)を参照してください。
 
-### リモート設定ファイルのトラブルシューティング {#troubleshooting-remote-configuration-files}
+#### リモート設定ファイルのトラブルシューティング {#troubleshooting-remote-configuration-files}
 
-リモート設定ファイルがカスタマイズを正しく適用していないように見える場合、原因として考えられるのは次のとおりです:
+リモート設定ファイルがカスタマイズを正しく適用していないように見える場合、原因は以下のとおりです:
 
-1. リポジトリにローカルの`.gitlab/sast-ruleset.toml`ファイルがあります。
-   - デフォルトでは、リモート設定が変数として設定されている場合でも、ローカルファイルが存在する場合は使用されます。
-   - [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD変数](../../../ci/variables/_index.md)を`false`に設定して、ローカル設定ファイルを無視できます。
+1. あなたのリポジトリにはローカルの`.gitlab/sast-ruleset.toml`ファイルがあります。
+   - デフォルトでは、リモート設定が変数として設定されていても、ローカルファイルが存在する場合はそれが使用されます。
+   - ローカル設定ファイルを無視するには、[SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD変数](../../../ci/variables/_index.md)を`false`に設定します。
 1. 認証に問題があります。
    - これが問題の原因であるかどうかを確認するには、認証を必要としないリポジトリの場所から設定ファイルを参照してみてください。
 
 ## スキーマ {#schema}
 
-### トップレベルセクション {#the-top-level-section}
+ルールセット設定ファイルはTOML構文を使用します。以下のセクションでは、各設定要素の構造と有効な設定について説明します。
 
-トップレベルセクションには、[TOMLテーブル](https://toml.io/en/v1.0.0#table)として定義された1つ以上の設定セクションが含まれています。
+### トップレベルセクション {#top-level-section}
 
-| 設定 | 説明 |
-| --------| ----------- |
+トップレベルセクションには、[TOMLテーブル](https://toml.io/en/v1.0.0#table)として定義された1つ以上の設定セクションが含まれます。
+
+| 設定       | 説明                                                                                                                                            |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `[$analyzer]` | アナライザーの設定セクションを宣言します。名前は、[SASTアナライザー](analyzers.md#official-analyzers)のリストで定義されている名前に従います。 |
 
 設定例:
@@ -129,31 +203,28 @@ variables:
 ...
 ```
 
-既存のルールを修正してカスタムルールセットをビルドする設定セクションを作成しないでください。後者は定義済みのルールを完全に置き換えるためです。
+既存のルールを変更する設定セクションを作成したり、カスタムルールセットをビルドしたりすることは避けてください。後者はデフォルトルールを完全に置き換えるためです。
 
-### `[$analyzer]`設定セクション {#the-analyzer-configuration-section}
+### `[$analyzer]`設定セクション {#analyzer-configuration-section}
 
-`[$analyzer]`セクションでは、アナライザーの動作をカスタマイズできます。有効なプロパティは、作成する設定の種類によって異なります。
+`[$analyzer]`セクションでは、アナライザーの動作をカスタマイズできます。有効なプロパティは、作成している設定の種類によって異なります。
 
-| 設定 | 適用対象 | 説明 |
-| --------| -------------- | ----------- |
-| `[[$analyzer.ruleset]]` | 定義済みのルール | 既存のルールに対する変更を定義します。 |
-| `interpolate` | すべて | `true`に設定すると、設定で`$VAR`を使用して環境変数を評価できます。流出したシークレットまたはトークンがリークしないように、この機能は慎重に使用してください。(デフォルト: `false`) |
-| `description` | パススルー | カスタムルールセットの説明。 |
-| `targetdir`   | パススルー | 最終的な設定が永続化されるディレクトリ。空の場合、ランダムな名前のディレクトリが作成されます。このディレクトリには、最大100MBのファイルを格納できます。SASTジョブがルート以外のユーザー権限で実行されている場合は、ユーザーにこのディレクトリの読み取りおよび書き込み権限があることを確認してください。 |
-| `validate`    | パススルー | `true`に設定すると、各パススルーのコンテンツが検証されます。検証は、`yaml`、`xml`、`json`、および`toml`コンテンツに対して機能します。適切なvalidatorは、`[[$analyzer.passthrough]]`セクションの`target`パラメータで使用されている拡張子に基づいて識別されます。(デフォルト: `false`) |
-| `timeout`     | パススルー | タイムアウトになる前に、パススルーチェーンの評価に費やす最大時間。タイムアウトは300秒を超えることはできません。(デフォルト: 60) |
-| `keepdefaultrules`  | パススルー | `true`に設定すると、アナライザーのデフォルトルールが、定義されたパススルーと組み合わせてアクティブになります。(デフォルト: `false`) |
+| 設定                 | 適用対象    | 説明                                                                                                                                                                                                                                                                                                   |
+|-------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `[[$analyzer.ruleset]]` | デフォルトルール | 既存のルールへの変更を定義します。                                                                                                                                                                                                                                                                    |
+| `interpolate`           | すべて           | `true`に設定すると、設定内で`$VAR`を使用して環境変数を評価できます。シークレットやトークンが漏洩しないように、この機能は注意して使用してください。（デフォルト: `false`）                                                                                                                           |
+| `description`           | パススルー  | カスタムルールセットの説明。                                                                                                                                                                                                                                                                            |
+| `targetdir`             | パススルー  | 最終的な設定が永続化されるディレクトリ。空の場合、ランダムな名前のディレクトリが作成されます。ディレクトリには最大100 MBのファイルを含めることができます。SASTジョブが非ルートユーザー権限で実行されている場合は、ユーザーがこのディレクトリに対する読み取りおよび書き込み権限を持っていることを確認してください。 |
+| `validate`              | パススルー  | `true`に設定すると、各パススルーのコンテンツが検証されます。検証は、`yaml`、`xml`、`json`、および`toml`コンテンツに対して機能します。適切なバリデーターは、`[[$analyzer.passthrough]]`セクションの`target`パラメータで使用されている拡張子に基づいて識別されます。（デフォルト: `false`）                    |
+| `timeout`               | パススルー  | パススルーチェーンを評価するために費やされる最大時間で、タイムアウトする前の時間です。タイムアウトは300秒を超えることはできません。（デフォルト: 60）                                                                                                                                                                          |
+| `keepdefaultrules`      | パススルー  | `true`に設定すると、アナライザーのデフォルトルールが、定義されたパススルーと連携して有効になります。（デフォルト: `false`）                                                                                                                                                                                 |
 
 #### `interpolate` {#interpolate}
 
-{{< alert type="warning" >}}
+> [!warning]
+> シークレットの漏洩リスクを軽減するため、この機能は注意して使用してください。
 
-流出したシークレットのリスクを軽減するため、この機能は慎重に使用してください。
-
-{{< /alert >}}
-
-以下の例は、プライベートリポジトリにアクセスするために`$GITURL`環境変数を使用する設定を示しています。この変数には、ユーザー名とトークン（`https://user:token@url`など）が含まれているため、設定ファイルに明示的に保存されることはありません。
+以下の例は、`$GITURL`環境変数を使用してプライベートリポジトリにアクセスする設定を示しています。この変数にはユーザー名とトークン（例: `https://user:token@url`）が含まれているため、それらは設定ファイルに明示的に保存されません。
 
 ```toml
 [semgrep]
@@ -166,15 +237,15 @@ variables:
     ref = "main"
 ```
 
-### `[[$analyzer.ruleset]]`セクション {#the-analyzerruleset-section}
+### `[[$analyzer.ruleset]]`セクション {#analyzerruleset-section}
 
-`[[$analyzer.ruleset]]`セクションは、単一の事前定義されたルールを対象とし、変更します。アナライザーごとに、これらのセクションを1つ以上定義できます。
+`[[$analyzer.ruleset]]`セクションは、単一のデフォルトルールを対象とし、変更します。アナライザーごとに最大20個のこれらのセクションを定義できます。
 
-| 設定 | 説明 |
-| --------| ----------- |
-| `disable` | ルールを無効にするかどうか。(デフォルト: `false`) |
-| `[$analyzer.ruleset.identifier]` | 変更する事前定義されたルールを選択します。 |
-| `[$analyzer.ruleset.override]` | ルールのオーバーライドを定義します。 |
+| 設定                          | 説明                                             |
+|----------------------------------|---------------------------------------------------------|
+| `disable`                        | ルールを無効にするかどうか。（デフォルト: `false`） |
+| `[$analyzer.ruleset.identifier]` | 変更するデフォルトルールを選択します。                |
+| `[$analyzer.ruleset.override]`   | ルールに対するオーバーライドを定義します。                     |
 
 設定例:
 
@@ -185,18 +256,18 @@ variables:
     ...
 ```
 
-### `[$analyzer.ruleset.identifier]`セクション {#the-analyzerrulesetidentifier-section}
+### `[$analyzer.ruleset.identifier]`セクション {#analyzerrulesetidentifier-section}
 
-`[$analyzer.ruleset.identifier]`セクションは、変更する事前定義されたルールの識別子を定義します。
+`[$analyzer.ruleset.identifier]`セクションは、変更したいデフォルトルールの識別子を定義します。
 
-| 設定 | 説明 |
-| --------| ----------- |
-| `type`  | 事前定義されたルールで使用される識別子の型。 |
-| `value` | 事前定義されたルールで使用される識別子の値。 |
+| 設定 | 説明                                           |
+|---------|-------------------------------------------------------|
+| `type`  | デフォルトルールで使用される識別子のタイプ。      |
+| `value` | デフォルトルールで使用される識別子の値。 |
 
-`type`と`value`の正しい値を調べるには、アナライザーによって生成された[`gl-sast-report.json`](_index.md#download-a-sast-report)を表示します。このファイルは、アナライザーのCIジョブからジョブアーティファクトとしてダウンロードできます。
+`type`と`value`の正しい値は、アナライザーによって生成される[`gl-sast-report.json`](_index.md#download-a-sast-report)を見ることで調べることができます。このファイルは、アナライザーのCIジョブからジョブアーティファクトとしてダウンロードできます。
 
-たとえば、以下のスニペットは、3つの識別子を持つ`semgrep`ルールからの検出結果を示しています。JSONオブジェクトの`type`キーと`value`キーは、このセクションで指定する必要がある値に対応しています。
+たとえば、以下のスニペットは、3つの識別子を持つ`semgrep`ルールからの検出結果を示しています。JSONオブジェクト内の`type`と`value`キーは、このセクションで指定すべき値に対応しています。
 
 ```json
 ...
@@ -242,22 +313,19 @@ variables:
     ...
 ```
 
-### `[$analyzer.ruleset.override]`セクション {#the-analyzerrulesetoverride-section}
+### `[$analyzer.ruleset.override]`セクション {#analyzerrulesetoverride-section}
 
-`[$analyzer.ruleset.override]`セクションでは、事前定義されたルールの属性をオーバーライドできます。
+`[$analyzer.ruleset.override]`セクションでは、デフォルトルールの属性をオーバーライドできます。
 
-| 設定 | 説明 |
-| --------| ----------- |
-| `description`  | 問題の詳細な説明。 |
-| `message` | （非推奨）問題の説明。 |
-| `name` | ルールの名前。 |
-| `severity` | ルールの重大度。有効なオプションは、`Critical`、`High`、`Medium`、`Low`、`Unknown`、`Info`)です。 |
+| 設定       | 説明                                                                                         |
+|---------------|-----------------------------------------------------------------------------------------------------|
+| `description` | 問題の詳細な説明。                                                                |
+| `message`     | （非推奨）問題の説明。                                                            |
+| `name`        | ルールの名前。                                                                               |
+| `severity`    | ルールの重大度。有効なオプションは次のとおりです: `Critical`、`High`、`Medium`、`Low`、`Unknown`、`Info` |
 
-{{< alert type="note" >}}
-
-`message`はアナライザーによって入力されたものですが、`name`および`description`を優先して[非推奨](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)になりました。
-
-{{< /alert >}}
+> [!note]
+> `message`はアナライザーによって入力されたものですが、`name`と`description`の使用が推奨されるため、[非推奨](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)となりました。
 
 設定例:
 
@@ -270,50 +338,47 @@ variables:
     ...
 ```
 
-### `[[$analyzer.passthrough]]`セクション {#the-analyzerpassthrough-section}
+### `[[$analyzer.passthrough]]`セクション {#analyzerpassthrough-section}
 
-{{< alert type="note" >}}
+> [!note]
+> パススルー設定は、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)でのみ利用可能です。
 
-パススルー設定は、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)でのみ使用できます。
+`[[$analyzer.passthrough]]`セクションでは、アナライザー用のカスタム設定をビルドできます。アナライザーごとに最大20個のこれらのセクションを定義できます。パススルーは、アナライザーのデフォルトルールを置き換える完全な設定に評価される_パススルーチェーン_に構成されます。
 
-{{< /alert >}}
+パススルーは順序どおりに評価されます。チェーンで後からリストされるパススルーは、優先順位が高く、以前のパススルーによって生成されたデータを上書きするか追加できます（`mode`によって異なります）。これは、既存の設定を使用または変更する必要がある場合に便利です。
 
-`[[$analyzer.passthrough]]`セクションでは、アナライザーのカスタム設定をビルドできます。アナライザーごとに、これらのセクションを最大20個定義できます。パススルーは、アナライザーの事前定義されたルールを置き換える完全な設定に評価される_パススルーチェーン_に構成されます。
+単一のパススルーによって生成される設定のサイズは10 MBに制限されます。
 
-パススルーは順番に評価されます。チェーンの後の方にリストされているパススルーは優先度が高く、以前のパススルーによって生成されたデータをオーバーライドまたは追加できます（`mode`によって異なります）。これは、既存の設定を使用または変更する必要がある場合に役立ちます。
-
-単一のパススルーによって生成される設定のサイズは、10MBに制限されています。
-
-| 設定 | 適用対象 | 説明 |
-| ------- | ---------- | ----------- |
-| `type` | すべて |  `file`、`raw`、`git`、`url`のいずれかです。 |
-| `target` | すべて | パススルー評価によって書き込まれたデータを含むターゲットファイル。空の場合、ランダムなファイル名が使用されます。 |
-| `mode` | すべて | `overwrite`の場合、`target`ファイルは上書きされます。`append`の場合、新しいコンテンツが`target`ファイルに追加されます。`git`型は`overwrite`のみをサポートしています。(デフォルト: `overwrite`) |
-| `ref` | `type = "git"` | プルするブランチ、タグ、またはSHAの名前が含まれています |
-| `subdir` | `type = "git"` | 設定ソースとしてGitリポジトリのサブディレクトリを選択するために使用されます。 |
-| `value` | すべて | `file`、`url`、および`git`型の場合、ファイルまたはGitリポジトリの場所を定義します。`raw`型の場合、インライン設定が含まれます。 |
-| `validator` | すべて | パススルーの評価後、ターゲットファイルでバリデーター（`xml`、`yaml`、`json`、`toml`）を明示的に呼び出すために使用されます。 |
+| 設定     | 適用対象     | 説明                                                                                                                                                                   |
+|-------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`      | すべて            | `file`、`raw`、`git`、`url`のいずれかです。                                                                                                                                         |
+| `target`    | すべて            | パススルー評価によって書き込まれるデータを含むターゲットファイル。空の場合、ランダムなファイル名が使用されます。                                                               |
+| `mode`      | すべて            | `overwrite`の場合、`target`ファイルは上書きするされます。`append`の場合、新しいコンテンツが`target`ファイルに追加されます。`git`タイプは`overwrite`のみをサポートします。（デフォルト: `overwrite`） |
+| `ref`       | `type = "git"` | ブランチ、タグ、またはプルするSHAの名前を含みます。                                                                                                                      |
+| `subdir`    | `type = "git"` | Gitリポジトリのサブディレクトリを設定ソースとして選択するために使用されます。                                                                                              |
+| `value`     | すべて            | `file`、`url`、および`git`タイプの場合、ファイルまたはGitリポジトリの場所を定義します。`raw`タイプの場合、インライン設定が含まれます。                            |
+| `validator` | すべて            | パススルーの評価後、ターゲットファイルでバリデーター（`xml`、`yaml`、`json`、`toml`）を明示的に実行するために使用されます。                                                |
 
 #### パススルータイプ {#passthrough-types}
 
-| 型   | 説明 |
-| ------ | ----------- |
-| `file` | Gitリポジトリに存在するファイルを使用します。 |
-| `raw`  | インラインで設定を指定します。 |
+| 種類   | 説明                                          |
+|--------|------------------------------------------------------|
+| `file` | Gitリポジトリに存在するファイルを使用します。    |
+| `raw`  | 設定をインラインで提供します。                    |
 | `git`  | リモートGitリポジトリから設定をプルします。 |
-| `url`  | HTTPを使用して設定をフェッチします。 |
+| `url`  | HTTPを使用して設定をフェッチします。                  |
 
-{{< alert type="warning" >}}
-
-YAMLスニペットで`raw`パススルーを使用する場合、`sast-ruleset.toml`ファイルのすべてのインデントをスペースとしてフォーマットすることをお勧めします。YAML仕様では、タブよりもスペースが優先されることが義務付けられており、インデントがそれに応じて表現されない限り、アナライザーはカスタムルールセットを解析できません。
-
-{{< /alert >}}
+> [!warning] 
+> 
+> `raw`パススルーをYAMLスニペットで使用する場合、`sast-ruleset.toml`ファイル内のすべてのインデントをスペースとしてフォーマットすることをお勧めします。YAMLの仕様では、タブではなくスペースが義務付けられており、インデントが適切に表現されていない限り、アナライザーはカスタムルールセットの解析に失敗します。
 
 ## 例 {#examples}
 
-### ファイルパススルーを使用して、GitLab高度なSASTのカスタム設定をビルドする {#build-a-custom-configuration-using-a-file-passthrough-for-gitlab-advanced-sast}
+以下の例は、一般的なシナリオでのルールセットのカスタマイズ方法を示しています。各例で使用されている設定オプションを理解するには、スキーマセクションを使用してください。
 
-次のカスタムルールセット設定では、GitLab高度なSASTアナライザーの事前定義されたルールセットが、スキャンされるリポジトリ内の`my-gitlab-advanced-sast-rules.yaml`というファイルに含まれるカスタムルールセットに置き換えられます。
+### 高度なSASTのデフォルトルールを置き換える {#replace-the-default-rules-of-gitlab-advanced-sast}
+
+以下のカスタムルールセット設定により、高度なSASTアナライザーのデフォルトルールセットは、スキャン対象のリポジトリ内の`my-gitlab-advanced-sast-rules.yaml`という名前のファイルに含まれるカスタムルールセットに置き換えられます。
 
 ```yaml
 # my-gitlab-advanced-sast-rules.yaml
@@ -337,15 +402,15 @@ rules:
     value = "my-gitlab-advanced-sast-rules.yaml"
 ```
 
-### 事前定義されたGitLab高度なSASTルールを無効にする {#disable-predefined-gitlab-advanced-sast-rules}
+### デフォルトの高度なSASTルールを無効にする {#disable-default-gitlab-advanced-sast-rules}
 
-GitLab高度なSASTルールを無効にしたり、それらのメタデータを編集したりできます。次の例では、さまざまな基準に基づいてルールを無効にします:
+高度なSASTルールを無効にするか、そのメタデータを編集できます。以下の例は、異なる基準に基づいてルールを無効にします:
 
-- 脆弱性のクラス全体を識別するCWE識別子。
-- GitLab高度なSASTルールID。これは、GitLab高度なSASTで使用される特定の検出戦略を識別します。
-- 関連付けられたSemgrepルールID。これは、互換性のためにGitLab高度なSASTの検出結果に含まれています。この追加のメタデータを使用すると、両方のアナライザーが同じ場所に同様の検出結果を作成した場合に、検出結果を自動的に移行できます。
+- 脆弱性のクラス全体を識別子するCWE識別子。
+- 高度なSASTで使用される特定の検出戦略を識別子する高度なSASTルールID。
+- 互換性のために高度なSASTの検出結果に含まれる、関連するSemgrepルールID。この追加メタデータにより、両方のアナライザーが同じ場所で類似の検出結果を作成した場合に、検出結果を自動的に移行できます。
 
-これらの識別子は、各脆弱性の[脆弱性の詳細](../vulnerabilities/_index.md)に表示されます。各識別子とその関連付けられた`type`は、[ダウンロード可能なSASTレポートアーティファクト](_index.md#download-a-sast-report)でも確認できます。
+これらの識別子は、各脆弱性の[脆弱性](../vulnerabilities/_index.md)の詳細に表示されます。また、各識別子とその関連する`type`を[ダウンロード可能なSASTレポートアーティファクト](_index.md#download-a-sast-report)で確認できます。
 
 ```toml
 [gitlab-advanced-sast]
@@ -368,13 +433,13 @@ GitLab高度なSASTルールを無効にしたり、それらのメタデータ�
       value = "java_cookie_rule-CookieHTTPOnly"
 ```
 
-### 他のSASTアナライザーの事前定義されたルールを無効にする {#disable-predefined-rules-of-other-sast-analyzers}
+### その他のSASTアナライザーのデフォルトルールを無効にする {#disable-default-rules-of-other-sast-analyzers}
 
-次のカスタムルールセット設定では、次のルールがレポートから除外されます:
+以下のカスタムルールセット設定により、以下のルールはレポートから省略されます:
 
-- `semgrep`ルール。値が`gosec.G106-1`の`semgrep_id`、または値が`322`の`cwe`。
-- `sobelow`ルール。値が`sql_injection`の`sobelow_rule_id`。
-- `flawfinder`ルール。値が`memcpy`の`flawfinder_func_name`。
+- `gosec.G106-1`の`semgrep_id`または`322`の`cwe`を持つ`semgrep`ルール。
+- `sql_injection`の`sobelow_rule_id`を持つ`sobelow`ルール。
+- `memcpy`の`flawfinder_func_name`を持つ`flawfinder`ルール。
 
 ```toml
 [semgrep]
@@ -405,9 +470,9 @@ GitLab高度なSASTルールを無効にしたり、それらのメタデータ�
       value = "memcpy"
 ```
 
-### 事前定義されたルールメタデータをオーバーライドする {#override-predefined-rule-metadata}
+### デフォルトルールのメタデータをオーバーライドする {#override-default-rule-metadata}
 
-次のカスタムルールセット設定では、型が`CWE`、値が`322`の`semgrep`で見つかった脆弱性の重大度が`Critical`にオーバーライドされます。
+以下のカスタムルールセット設定により、`semgrep`で検出されたタイプ`CWE`、値`322`の脆弱性の重大度は`Critical`にオーバーライドされます。
 
 ```toml
 [semgrep]
@@ -419,9 +484,9 @@ GitLab高度なSASTルールを無効にしたり、それらのメタデータ�
       severity = "Critical"
 ```
 
-### ファイルパススルーを使用して`semgrep`のカスタム設定をビルドする {#build-a-custom-configuration-using-a-file-passthrough-for-semgrep}
+### `semgrep`のデフォルトルールを置き換えるか追加する {#replace-or-add-to-the-default-rules-of-semgrep}
 
-次のカスタムルールセット設定では、`semgrep`アナライザーの事前定義されたルールセットが、スキャンされるリポジトリ内の`my-semgrep-rules.yaml`というファイルに含まれるカスタムルールセットに置き換えられます。
+以下のカスタムルールセット設定により、`semgrep`アナライザーのデフォルトルールセットは、スキャン対象のリポジトリ内の`my-semgrep-rules.yaml`という名前のファイルに含まれるカスタムルールセットに置き換えられます。
 
 ```yaml
 # my-semgrep-rules.yml
@@ -445,19 +510,19 @@ rules:
     value = "my-semgrep-rules.yml"
 ```
 
-### パススルーチェーンを使用して`semgrep`のカスタム設定をビルドする {#build-a-custom-configuration-using-a-passthrough-chain-for-semgrep}
+### `semgrep`用のパススルーチェーンを使用したカスタム設定をビルドする {#build-a-custom-configuration-using-a-passthrough-chain-for-semgrep}
 
-次のカスタムルールセット設定では、`semgrep`アナライザーの事前定義されたルールセットが、4つのパススルールールセットに置き換えられます。各パススルーコンテナ内の`/sgrules`ディレクトリに書き込まれるファイルを生成します。Gitリポジトリが応答しない場合に備えて、60秒の`timeout`が設定されます。
+以下のカスタムルールセット設定により、`semgrep`アナライザーのデフォルトルールセットは、4つのパススルーのチェーンを評価することによって生成されたカスタムルールセットに置き換えられます。各パススルーは、コンテナ内の`/sgrules`ディレクトリに書き込まれるファイルを生成します。Gitリモートが応答しない場合に備えて、60秒の`timeout`が設定されます。
 
-この例では、さまざまなパススルータイプが示されています:
+この例では、異なるパススルータイプが示されています:
 
-- 2つの`git`パススルー。1つ目は、`myrules` Gitリポジトリから`develop`ブランチをプルし、2つ目は、`sast-rules`リポジトリからリビジョン`97f7686`をプルし、`go`サブディレクトリ内のファイルのみを考慮します。
-  - `sast-rules`エントリは、設定の後半に表示されるため、優先度が高くなります。
-  - 2つのチェックアウト間でファイル名の競合がある場合、`sast-rules`リポジトリのファイルは`myrules`リポジトリのファイルを上書きします。
-- `raw`パススルーは、`value`を`/sgrules/insecure.yml`に書き込みます。
-- `url`パススルー設定をフェッチし、`/sgrules/gosec.yml`に書き込みます。
+- 2つの`git`パススルーで、1つ目は`myrules`Gitリポジトリから`develop`ブランチをプルし、2つ目は`sast-rules`リポジトリからリビジョン`97f7686`をプルし、`go`サブディレクトリ内のファイルのみを考慮します。
+  - `sast-rules`エントリは、設定の後の方に表示されるため、優先順位が高くなります。
+  - 2つのチェックアウト間でファイル名が衝突する場合、`sast-rules`リポジトリのファイルが`myrules`リポジトリのファイルを上書きするします。
+- `raw`パススルーは、その`value`を`/sgrules/insecure.yml`に書き込みます。
+- `url`パススルーは、URLでホストされている設定をフェッチし、`/sgrules/gosec.yml`に書き込みます。
 
-その後、Semgrepは`/sgrules`にある最終的な設定で呼び出されます。
+その後、`/sgrules`の下にある最終的な設定でSemgrepが実行するされます。
 
 ```toml
 [semgrep]
@@ -499,13 +564,13 @@ rules:
     target = "gosec.yml"
 ```
 
-### チェーン内のパススルー設定する {#configure-the-mode-for-passthroughs-in-a-chain}
+### チェーン内のパススルーのモードを設定する {#configure-the-mode-for-passthroughs-in-a-chain}
 
-チェーン内のパススルー間で発生するファイル名の競合を処理する方法を選択できます。デフォルトの動作は、同じ名前の既存のファイルを上書きすることですが、代わりに`mode = append`を選択して、後続のファイルの内容を以前のファイルに追加できます。
+チェーン内のパススルー間で発生するファイル名の競合をどのように処理するかを選択できます。デフォルトの動作は、既存の同じ名前のファイルを上書きすることですが、代わりに`mode = append`を選択して、後のファイルのコンテンツを以前のファイルに追加することもできます。
 
 `append`モードは、`file`、`url`、および`raw`パススルータイプでのみ使用できます。
 
-次のカスタムルールセット設定では、2つの`raw`パススルーを使用して、`/sgrules/my-rules.yml`ファイルを繰り返し組み立てます。これは、ルールセットとしてSemgrepに提供されます。各パススルールールセットに単一のルールを追加します。最初のパススルーは、[Semgrepのルール構文](https://semgrep.dev/docs/writing-rules/rule-syntax)に従って、トップレベルの`rules`オブジェクトを初期化する役割を担います。
+以下のカスタムルールセット設定では、2つの`raw`パススルーが`/sgrules/my-rules.yml`ファイルを繰り返し組み立てるために使用され、そのファイルがSemgrepにルールセットとして提供されます。各パススルーは、単一のルールをルールセットに追加します。最初のパススルーは、[Semgrepルール構文](https://semgrep.dev/docs/writing-rules/rule-syntax)に従って、トップレベルの`rules`オブジェクトを初期化する役割を担います。
 
 ```toml
 [semgrep]
@@ -583,27 +648,25 @@ rules:
 
 ### プライベートリモート設定を指定する {#specify-a-private-remote-configuration}
 
-次の例では、[SASTを有効にする](_index.md#configure-sast-in-your-cicd-yaml)、共有ルールセットのカスタマイズファイルを使用します。ファイルは次のとおりです:
+以下の例は、SASTを有効にし、共有ルールセットカスタマイズファイルを使用します:
 
-- CI変数内に安全に保存されている[グループアクセストークン](../../group/settings/group_access_tokens.md)を使用して、認証を必要とするプライベートプロジェクトからダウンロードされます。
-- デフォルトブランチの代わりに特定のGitコミットSHAでチェックアウトされます。
-
-グループアクセストークンに関連付けられたユーザー名の検索方法については、[グループアクセストークン](../../group/settings/group_access_tokens.md#bot-users-for-groups)を参照してください。
+- このファイルは、認証を必要とするプライベートプロジェクトからダウンロードされます。この例では、CI/CD変数に安全に保存されている[グループアクセストークン](../../group/settings/group_access_tokens.md)を使用します。
+- このファイルは、デフォルトブランチではなく、特定のGitコミットSHAでチェックアウトされます。
 
 ```yaml
 include:
   - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
-  SAST_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$PERSONAL_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
+  SAST_RULESET_GIT_REFERENCE: "oauth2:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
 ```
 
-### デモプロジェクト {#demo-projects}
+### デモンストレーションプロジェクト {#demonstration-projects}
 
-これらの設定オプションの一部を示す[デモプロジェクト](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations)があります。
+これらのいくつかの設定オプションを示す[デモンストレーションプロジェクト](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations)を参照してください。
 
-これらのプロジェクトの多くは、リモートルールセットを使用してルールをオーバーライドまたは無効にすることを示しており、それらが対象とするアナライザーによってグループ化されています。
+これらのプロジェクトの多くは、リモートルールセットを使用してルールをオーバーライドまたは無効にする方法を示しており、対象となるアナライザーごとにグループ化されています。
 
-リモートルールセットの設定について説明するビデオデモもいくつかあります:
+リモートルールセットの設定に関するビデオデモンストレーションも視聴できます:
 
-- [リモートルールセットを備えたIaCアナライザー](https://youtu.be/VzJFyaKpA-8)
+- [リモートルールセットを使用したIaCアナライザー](https://youtu.be/VzJFyaKpA-8)

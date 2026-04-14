@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserProfileSetStatusWrapper from '~/set_status_modal/user_profile_set_status_wrapper.vue';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';

@@ -142,7 +142,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       end
 
       it 'creates a RemoteMirror object' do
-        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
+        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change { RemoteMirror.count }.by(1)
       end
 
       context 'with json format' do
@@ -171,7 +171,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       end
 
       it 'does not create a RemoteMirror object' do
-        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
+        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change { RemoteMirror.count }
       end
 
       context 'when service returns an error' do
@@ -204,7 +204,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       let(:mirror_id) { project.remote_mirrors.first.id }
 
       it 'processes a successful delete' do
-        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(-1)
+        expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change { RemoteMirror.count }.by(-1)
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
         expect(flash[:notice]).to match(/successfully updated/)
@@ -214,7 +214,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
         let(:mirror_id) { non_existing_record_id }
 
         it 'returns a 404 error' do
-          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
+          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change { RemoteMirror.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

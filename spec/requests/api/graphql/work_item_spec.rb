@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
+RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
   include_context 'with work item request context'
 
   let_it_be(:user) { create(:user) }
@@ -104,27 +104,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       )
     end
 
-    context 'when work_item_planning_view is disabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-        post_graphql(query, current_user: current_user)
-      end
-
-      it 'uses the issues path for webPath and webUrl' do
-        expect(work_item_data).to include(
-          'webPath' => Gitlab::UrlBuilder.build(work_item, only_path: true).to_s,
-          'webUrl' => Gitlab::UrlBuilder.build(work_item, only_path: false).to_s
-        )
-      end
-    end
-
-    context 'when work_item_planning_view is enabled' do
-      it 'uses the work items path for webPath and webUrl' do
-        expect(work_item_data).to include(
-          'webPath' => Gitlab::Routing.url_helpers.project_work_item_path(work_item.project, work_item.iid).to_s,
-          'webUrl' => Gitlab::Routing.url_helpers.project_work_item_url(work_item.project, work_item.iid).to_s
-        )
-      end
+    it 'uses the work items path for webPath and webUrl' do
+      expect(work_item_data).to include(
+        'webPath' => Gitlab::Routing.url_helpers.project_work_item_path(work_item.project, work_item.iid).to_s,
+        'webUrl' => Gitlab::Routing.url_helpers.project_work_item_url(work_item.project, work_item.iid).to_s
+      )
     end
 
     context 'when querying work item type information' do

@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::VariablePresenter do
+RSpec.describe Ci::VariablePresenter, feature_category: :pipeline_composition do
   include Gitlab::Routing.url_helpers
 
-  let(:project) { create(:project) }
-  let(:variable) { create(:ci_variable, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:variable) { build_stubbed(:ci_variable, project: project) }
 
   subject(:presenter) do
     described_class.new(variable)

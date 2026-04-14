@@ -3705,6 +3705,74 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       reset_delivered_emails!
     end
 
+    describe '#group_was_transferred' do
+      let(:group) { create(:group) }
+      let(:owner) { create(:user) }
+
+      before do
+        group.add_owner(owner)
+        reset_delivered_emails!
+      end
+
+      it 'sends email to group owners and maintainers' do
+        notification.group_was_transferred(group, 'old-path')
+
+        should_email(owner)
+      end
+
+      context 'when group emails are disabled' do
+        before do
+          allow(group).to receive(:emails_disabled?).and_return(true)
+        end
+
+        it 'does not send any emails' do
+          notification.group_was_transferred(group, 'old-path')
+
+          should_not_email(owner)
+        end
+      end
+
+      context 'when user has moved_project notification disabled' do
+        before do
+          owner.notification_settings_for(nil).update!(level: :custom, moved_project: false)
+          reset_delivered_emails!
+        end
+
+        it 'does not send email' do
+          notification.group_was_transferred(group, 'old-path')
+
+          should_not_email(owner)
+        end
+      end
+
+      context 'when group has no direct members but has a parent' do
+        let(:parent_group) { create(:group) }
+        let(:parent_owner) { create(:user) }
+        let(:child_group) { create(:group, parent: parent_group) }
+
+        before do
+          parent_group.add_owner(parent_owner)
+          reset_delivered_emails!
+        end
+
+        it 'falls back to parent group members' do
+          notification.group_was_transferred(child_group, 'old-path')
+
+          should_email(parent_owner)
+        end
+      end
+
+      context 'when group has no members and no parent' do
+        let(:empty_group) { create(:group) }
+
+        it 'does not send any emails' do
+          notification.group_was_transferred(empty_group, 'old-path')
+
+          should_not_email_anyone
+        end
+      end
+    end
+
     describe '#project_was_moved' do
       context 'when notifications are disabled' do
         before do

@@ -55,12 +55,6 @@ describe('issue_note_body component', () => {
     expect(wrapper.findComponent(NoteAwardsList).exists()).toBe(true);
   });
 
-  describe('isInternalNote', () => {
-    beforeEach(() => {
-      createComponent({ isInternalNote: true });
-    });
-  });
-
   describe('isEditing', () => {
     const autosaveKey = 'autosave';
 
@@ -104,12 +98,6 @@ describe('issue_note_body component', () => {
       const form = wrapper.findComponent(NoteForm);
 
       expect(form.props('lines')).toEqual(value);
-    });
-
-    describe('isInternalNote', () => {
-      beforeEach(() => {
-        wrapper.setProps({ isInternalNote: true });
-      });
     });
   });
 

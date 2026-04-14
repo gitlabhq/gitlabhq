@@ -2,7 +2,7 @@
 
 module Authz
   class Validation
-    PERMISSION_NAME_REGEX = /\A[a-z]+_[a-z_]+[a-z]\z/
+    PERMISSION_NAME_REGEX = /\A_?[a-z]+_[a-z_]+[a-z]\z/
 
     COMMON_ACTIONS = {
       create: 'Creates a new resource',

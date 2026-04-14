@@ -76,7 +76,8 @@ const updateItemAccess = (
         id: contextItem.id,
       },
     }).catch((e) => {
-      Sentry.captureException(e);
+      // Override gon.feature_category as this code loads on all pages
+      Sentry.captureException(e, { tags: { feature_category: 'navigation' } });
     });
   }
 

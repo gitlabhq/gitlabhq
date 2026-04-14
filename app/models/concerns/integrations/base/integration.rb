@@ -547,6 +547,7 @@ module Integrations
         attribute :group_confidential_mention_events, default: false
 
         after_initialize :initialize_properties
+        before_validation :normalize_filter
 
         after_commit :reset_updated_properties
 
@@ -717,6 +718,14 @@ module Integrations
         super.except('properties')
       end
 
+      def filter
+        normalize_filter_value(read_attribute(:filter))
+      end
+
+      def filter=(value)
+        write_attribute(:filter, normalize_filter_value(value))
+      end
+
       # Returns a hash of attributes (columns => values) used for inserting into the database.
       def to_database_hash
         column = self.class.attribute_aliases.fetch('type', 'type')
@@ -726,7 +735,7 @@ module Integrations
           .except(*JSONB_COLUMNS)
           .merge(column => type)
           .merge(reencrypt_properties)
-          .merge(JSONB_COLUMNS.to_h { |col| [col.to_s, self[col]] })
+          .merge(JSONB_COLUMNS.to_h { |col| [col.to_s, normalized_jsonb_value(col)] })
       end
 
       def reencrypt_properties
@@ -883,6 +892,40 @@ module Integrations
       end
 
       private
+
+      def normalize_filter_value(value)
+        return value unless value.is_a?(String)
+
+        log_error(
+          'Integration filter value is a string, normalizing',
+          filter_value: value,
+          caller: cleaned_caller_backtrace
+        )
+
+        parsed = Gitlab::Json.safe_parse(value)
+        parsed.is_a?(String) ? Gitlab::Json.safe_parse(parsed) : parsed
+      end
+
+      def cleaned_caller_backtrace
+        Gitlab::BacktraceCleaner.clean_backtrace(caller)
+          .reject { |line| line.include?('/gems/') }
+          .first(5)
+      end
+
+      def normalize_filter
+        return unless read_attribute(:filter).is_a?(String)
+
+        write_attribute(:filter, normalize_filter_value(read_attribute(:filter)))
+      end
+
+      def normalized_jsonb_value(column_name)
+        case column_name
+        when 'filter'
+          filter
+        else
+          self[column_name]
+        end
+      end
 
       def validate_recipients?
         activated? && !importing?

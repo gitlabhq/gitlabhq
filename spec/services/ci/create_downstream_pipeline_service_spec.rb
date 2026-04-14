@@ -166,6 +166,22 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         .to change { upstream_pipeline.reload.duration }.from(nil).to(an_instance_of(Integer))
     end
 
+    context 'when the downstream project belongs to a different organization' do
+      let(:other_organization) { create(:organization) }
+
+      before do
+        downstream_project.namespace.update!(organization: other_organization)
+        downstream_project.project_namespace.update!(organization: other_organization)
+        downstream_project.update!(organization: other_organization)
+      end
+
+      it 'drops the bridge' do
+        expect(subject).to be_error
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_bridge_project_not_found')
+      end
+    end
+
     context 'when the bridge contains `inputs` within its options' do
       let(:stub_ci_yaml) { false }
 

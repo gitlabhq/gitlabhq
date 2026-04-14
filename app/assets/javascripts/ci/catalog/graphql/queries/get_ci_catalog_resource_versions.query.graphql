@@ -1,0 +1,15 @@
+# @feature_category: pipeline_composition
+
+query getCiCatalogResourceVersions($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
+    id
+    webPath
+    versions(first: 10) {
+      nodes {
+        id
+        name
+        createdAt
+      }
+    }
+  }
+}

@@ -54,7 +54,8 @@ Example response:
   "footer_message": "",
   "message_background_color": "#e75e40",
   "message_font_color": "#ffffff",
-  "email_header_and_footer_enabled": false
+  "email_header_and_footer_enabled": false,
+  "site_name": "Production"
 }
 ```
 
@@ -85,6 +86,7 @@ PUT /application/appearance
 | `message_background_color`        | string  | no       | Background color for the system header / footer bar |
 | `message_font_color`              | string  | no       | Font color for the system header / footer bar |
 | `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled |
+| `site_name`                       | string  | no       | Appends a site name after the page title. |
 
 Example request:
 
@@ -114,7 +116,8 @@ Example response:
   "footer_message": "",
   "message_background_color": "#e75e40",
   "message_font_color": "#ffffff",
-  "email_header_and_footer_enabled": true
+  "email_header_and_footer_enabled": true,
+  "site_name": ""
 }
 ```
 

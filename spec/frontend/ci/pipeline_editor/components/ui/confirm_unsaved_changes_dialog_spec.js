@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import ConfirmDialog from '~/ci/pipeline_editor/components/ui/confirm_unsaved_changes_dialog.vue';
+import ConfirmDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 
 describe('pipeline_editor/components/ui/confirm_unsaved_changes_dialog', () => {
   let beforeUnloadEvent;

@@ -239,5 +239,5 @@ To fix this issue, you must activate GitHub sign-in in GitLab:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the left sidebar, select **Account**.
+1. In the left sidebar, select **Access** > **Password and authentication**.
 1. In the **Service sign-in** section, select **Connect to GitHub**.

@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';

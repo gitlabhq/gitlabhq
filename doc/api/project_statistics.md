@@ -22,9 +22,9 @@ can use the Reporter role and the `read_api` scope.
 This API retrieves the number of times the project is either cloned or pulled
 with the HTTP method. SSH fetches are not included.
 
-## Get the statistics of the last 30 days
+## Retrieve the statistics of the last 30 days
 
-Get the clone and pull statistics for a project for the last 30 days.
+Retrieves the clone and pull statistics for the last 30 days from a specified project.
 
 ```plaintext
 GET /projects/:id/statistics

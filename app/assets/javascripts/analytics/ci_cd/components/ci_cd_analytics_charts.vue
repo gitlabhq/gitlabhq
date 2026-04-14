@@ -29,6 +29,7 @@ export default {
       default: null,
     },
   },
+  emits: ['select-chart'],
   data() {
     return {
       selectedChart: DEFAULT_SELECTED_CHART,

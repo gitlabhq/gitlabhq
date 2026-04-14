@@ -13,13 +13,13 @@ import { runnerToModel } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import runnerUpdateMutation from '~/ci/runner/graphql/edit/runner_update.mutation.graphql';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { INSTANCE_TYPE } from '~/ci/runner/constants';
 import { runnerFormData } from '../mock_data';
 
 jest.mock('~/lib/utils/local_storage_alert');
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
@@ -171,10 +171,7 @@ describe('RunnerUpdateForm', () => {
       expect(createAlert).toHaveBeenLastCalledWith({
         message: mockErrorMsg,
       });
-      expect(captureException).toHaveBeenCalledWith({
-        component: 'RunnerUpdateForm',
-        error: new Error(mockErrorMsg),
-      });
+      expect(captureException).toHaveBeenCalledWith(new Error(mockErrorMsg));
       expect(findSubmitDisabledAttr()).toBeUndefined();
     });
 

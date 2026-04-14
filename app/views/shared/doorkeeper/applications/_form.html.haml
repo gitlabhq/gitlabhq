@@ -19,6 +19,13 @@
       help_text: _('Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential.')
 
   .form-group
+    - docs_link_url = help_page_path('api/oauth2.md', anchor: 'device-authorization-grant-flow')
+    - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
+    = f.gitlab_ui_checkbox_component :device_code_enabled, _('Device authorization grant'),
+      checkbox_options: { data: { testid: 'device-code-enabled-checkbox' } },
+      help_text: _('Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+
+  .form-group
     = f.label :scopes, class: 'label-bold'
     = render 'shared/tokens/scopes_form', prefix: 'authn_oauth_application', token: @application, scopes: @scopes, f: f
 

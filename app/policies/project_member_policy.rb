@@ -5,6 +5,8 @@ class ProjectMemberPolicy < BasePolicy
 
   delegate { @subject.project }
 
+  overrides(:destroy_project_member)
+
   condition(:target_is_holder_of_the_personal_namespace, scope: :subject) do
     @subject.holder_of_the_personal_namespace?
   end

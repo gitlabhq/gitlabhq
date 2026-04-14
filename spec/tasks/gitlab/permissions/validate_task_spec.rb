@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :permissions do
+RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, :silence_stdout, feature_category: :permissions do
   let(:task) { described_class.new }
 
   describe '#run', :unlimited_max_formatted_output_length do
     let(:exclusion_list) { ['undefined_permission'] }
     let(:exclusion_list_data) { exclusion_list.join("\n") }
-    let(:exclusion_file) { Tempfile.new("definitions_todo.txt") }
+    let(:exclusion_todo_path) { 'tmp/tests/definitions_todo.txt' }
     let(:permission_name) { 'defined_permission' }
     let(:permission_source_file) { 'config/authz/permissions/permission/defined.yml' }
     let(:permission_definition) do
@@ -44,10 +44,11 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       allow(Authz::Permission).to receive(:get).with(permission_name.to_sym).and_return(permission)
 
       # Stub exclusion list
-      File.open(exclusion_file.path, "w+b") { |f| f.write exclusion_list_data }
-      stub_const('Tasks::Gitlab::Permissions::ValidateTask::PERMISSION_TODO_FILE', exclusion_file.path)
+      FileUtils.mkdir_p(Rails.root.join('tmp/tests'))
+      File.write(Rails.root.join(exclusion_todo_path), exclusion_list_data)
+      stub_const('Tasks::Gitlab::Permissions::ValidateTask::PERMISSION_TODO_FILE', exclusion_todo_path)
 
-      # Stubs to make _metadata.yml file validation pass
+      # Stubs to make .metadata.yml file validation pass
       allow(Authz::Resource).to receive(:get).and_return(instance_double(Authz::Resource, definition: {}))
       allow(JSONSchemer).to receive(:schema).and_call_original
       allow(JSONSchemer).to receive(:schema)
@@ -55,8 +56,22 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         .and_return(instance_double(JSONSchemer::Schema, validate: []))
     end
 
+    after do
+      FileUtils.rm_f(Rails.root.join(exclusion_todo_path))
+    end
+
     context 'when all permissions are valid' do
       it 'completes successfully' do
+        expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
+      end
+    end
+
+    context 'when a missing permission is in the exclusion list' do
+      let(:exclusion_list) { %w[missing_but_excluded] }
+      let(:exclusion_list_data) { "\n#{exclusion_list.join("\n")}\n" }
+      let(:enabled_permissions) { %i[missing_but_excluded] }
+
+      it 'does not report a violation' do
         expect { run }.to output(/Permission definitions are up-to-date/).to_stdout
       end
     end
@@ -76,12 +91,32 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions are missing a definition file.
           #  Run bin/permission <NAME> to generate definition files.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
           #    - undefined_permission
           #
           #######################################################################
         OUTPUT
+      end
+
+      context 'when the policy source can be resolved' do
+        before do
+          allow(task).to receive(:policy_source_path).and_return('app/policies/project_policy.rb:42')
+        end
+
+        it 'includes the policy source file in the error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following permissions are missing a definition file.
+            #  Run bin/permission <NAME> to generate definition files.
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
+            #
+            #    - undefined_permission (app/policies/project_policy.rb:42)
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
 
@@ -95,7 +130,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #  The following permissions have a definition file.
           #  Remove them from config/authz/permissions/definitions_todo.txt.
           #
-          #    - defined_permission
+          #    - defined_permission (config/authz/permissions/permission/defined.yml, tmp/tests/definitions_todo.txt:2)
           #
           #######################################################################
         OUTPUT
@@ -112,14 +147,14 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions are missing a definition file.
           #  Run bin/permission <NAME> to generate definition files.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
           #    - undefined_permission
           #
           #  The following permissions have a definition file.
           #  Remove them from config/authz/permissions/definitions_todo.txt.
           #
-          #    - defined_permission
+          #    - defined_permission (config/authz/permissions/permission/defined.yml, tmp/tests/definitions_todo.txt:1)
           #
           #######################################################################
         OUTPUT
@@ -140,9 +175,9 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions failed schema validation.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-fields
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-fields
           #
-          #    - defined_permission
+          #    - defined_permission (config/authz/permissions/permission/defined.yml)
           #        - property '/key' is invalid: error_type=schema
           #
           #######################################################################
@@ -161,9 +196,9 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions contain a disallowed action.
-          #  Learn more: http://localhost/help/development/permissions/conventions.md#disallowed-actions
+          #  Learn more: https://docs.gitlab.com/development/permissions/conventions/#disallowed-actions
           #
-          #    - #{permission_name}: Prefer #{preferred} over #{disallowed_action}.
+          #    - #{permission_name}: Prefer #{preferred} over #{disallowed_action}. (#{permission_source_file})
           #
           #######################################################################
             OUTPUT
@@ -181,7 +216,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-naming-and-validation
             #
             #    - defined_permission in config/authz/permissions/defined_permission.yml
             #      Expected path: config/authz/permissions/<resource>/defined_permission.yml
@@ -199,7 +234,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-naming-and-validation
             #
             #    - defined_permission in config/authz/permissions/another_dir/resource_dir/defined_permission.yml
             #      Expected path: config/authz/permissions/resource_dir/defined_permission.yml
@@ -218,7 +253,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-naming-and-validation
             #
             #    - action_on_a_resource in config/authz/permissions/wrong_resource_name/wrong_action_name.yml
             #      Path must match 'config/authz/permissions/<resource>/<action>.yml' based on <resource> and <action> values from 'action_on_a_resource' ('<action>_<resource>')
@@ -239,9 +274,9 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions have invalid names.
           #  Permission name must be in the format action_resource[_subresource].
-          #  Learn more: http://localhost/help/development/permissions/conventions.md#naming-permissions
+          #  Learn more: https://docs.gitlab.com/development/permissions/conventions/#naming-permissions
           #
-          #    - defined_permission-123
+          #    - defined_permission-123 (config/authz/permissions/permission-123/defined.yml)
           #
           #######################################################################
         OUTPUT
@@ -259,9 +294,9 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions have a definition file but are not found in declarative policy.
           #  Remove the definition files for the unknown permissions.
-          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-definition-file
           #
-          #    - defined_permission
+          #    - defined_permission (config/authz/permissions/permission/defined.yml)
           #
           #######################################################################
         OUTPUT
@@ -281,8 +316,8 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
             #######################################################################
             #
-            #  The following permission resource directories are missing a _metadata.yml file.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#resource-metadata-fields
+            #  The following permission resource directories are missing a .metadata.yml file.
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#resource-metadata-fields
             #
             #    - config/authz/permissions/**/permission/
             #
@@ -309,7 +344,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following resource metadata files failed schema validation.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#resource-metadata-fields
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#resource-metadata-fields
             #
             #    - permission
             #        - property '/feature_category' does not match format: known_product_category
@@ -321,7 +356,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     end
 
     describe 'empty resource directory validation' do
-      context 'when a resource directory contains only _metadata.yml' do
+      context 'when a resource directory contains only .metadata.yml' do
         before do
           allow(Dir).to receive(:glob).and_call_original
           allow(Dir).to receive(:glob)
@@ -329,16 +364,16 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             .and_return(['config/authz/permissions/empty_resource/'])
           allow(Dir).to receive(:glob)
             .with('config/authz/permissions/empty_resource/*.yml')
-            .and_return(['config/authz/permissions/empty_resource/_metadata.yml'])
+            .and_return(['config/authz/permissions/empty_resource/.metadata.yml'])
         end
 
         it 'returns an error' do
           expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
             #######################################################################
             #
-            #  The following resource directories contain only a _metadata.yml file with no permission definitions.
+            #  The following resource directories contain only a .metadata.yml file with no permission definitions.
             #  Either add permission definitions or remove the directory.
-            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
+            #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/permission_definitions/#permission-naming-and-validation
             #
             #    - config/authz/permissions/empty_resource/
             #
@@ -347,7 +382,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         end
       end
 
-      context 'when a resource directory contains _metadata.yml and permission files' do
+      context 'when a resource directory contains .metadata.yml and permission files' do
         before do
           allow(Dir).to receive(:glob).and_call_original
           allow(Dir).to receive(:glob)
@@ -356,7 +391,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           allow(Dir).to receive(:glob)
             .with('config/authz/permissions/valid_resource/*.yml')
             .and_return([
-              'config/authz/permissions/valid_resource/_metadata.yml',
+              'config/authz/permissions/valid_resource/.metadata.yml',
               'config/authz/permissions/valid_resource/read.yml'
             ])
         end
@@ -376,12 +411,12 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     subject(:validate_name) { task.send(:validate_name, permission) }
 
     where(:name, :valid) do
-      "valid_permission"     | true
-      "valid_permission_two" | true
-      "_invalid_permission"  | false
-      "Invalid_permission"   | false
-      "invalid-permission"   | false
-      "invalid_permission_"  | false
+      "valid_permission"           | true
+      "valid_permission_two"       | true
+      "_valid_private_permission"  | true
+      "Invalid_permission"         | false
+      "invalid-permission"         | false
+      "invalid_permission_"        | false
     end
 
     with_them do
@@ -394,6 +429,78 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           expect(task.instance_variable_get(:@violations)[:name]).to include(name)
         end
       end
+    end
+  end
+
+  describe '#permission_source_path' do
+    it 'returns nil when the permission is not found' do
+      allow(Authz::Permission).to receive(:get).with(:unknown).and_return(nil)
+
+      expect(task.send(:permission_source_path, :unknown)).to be_nil
+    end
+  end
+
+  describe '#policy_source_path' do
+    context 'when the policy class has no source location' do
+      it 'returns nil' do
+        klass = Class.new(DeclarativePolicy::Base)
+        allow(klass).to receive(:name).and_return('NonexistentPolicy')
+        allow(Object).to receive(:const_source_location).with('NonexistentPolicy').and_return(nil)
+
+        expect(task.send(:policy_source_path, klass)).to be_nil
+      end
+    end
+
+    context 'when called without a permission name' do
+      it 'returns the file path without a line number' do
+        klass = Class.new(DeclarativePolicy::Base)
+        allow(klass).to receive(:name).and_return('TestPolicy')
+        allow(Object).to receive(:const_source_location)
+          .with('TestPolicy').and_return([Rails.root.join('app/policies/test_policy.rb').to_s, 1])
+
+        expect(task.send(:policy_source_path, klass)).to eq('app/policies/test_policy.rb')
+      end
+    end
+
+    context 'when the permission is found in the file' do
+      it 'returns the file path with a line number' do
+        file_path = Rails.root.join('app/policies/test_policy.rb').to_s
+        klass = Class.new(DeclarativePolicy::Base)
+        allow(klass).to receive(:name).and_return('TestPolicy')
+        allow(Object).to receive(:const_source_location)
+          .with('TestPolicy').and_return([file_path, 1])
+        allow(File).to receive(:foreach).with(file_path).and_return(
+          ["  rule { default }.policy do\n", "    enable :read_project\n"].each
+        )
+
+        expect(task.send(:policy_source_path, klass, :read_project)).to eq('app/policies/test_policy.rb:2')
+      end
+    end
+
+    context 'when the permission is not found in the file' do
+      it 'returns the file path without a line number' do
+        file_path = Rails.root.join('app/policies/test_policy.rb').to_s
+        klass = Class.new(DeclarativePolicy::Base)
+        allow(klass).to receive(:name).and_return('TestPolicy')
+        allow(Object).to receive(:const_source_location)
+          .with('TestPolicy').and_return([file_path, 1])
+        allow(File).to receive(:foreach).with(file_path).and_return(
+          ["  enable :other_permission\n"].each
+        )
+
+        expect(task.send(:policy_source_path, klass, :nonexistent_perm)).to eq('app/policies/test_policy.rb')
+      end
+    end
+  end
+
+  describe '#add_definition_violation' do
+    it 'handles permissions not found in any policy' do
+      task.instance_variable_set(:@permission_policies, {})
+
+      task.send(:add_definition_violation, :orphan_permission)
+
+      violation = task.instance_variable_get(:@violations)[:definition].last
+      expect(violation).to eq({ name: :orphan_permission, sources: [] })
     end
   end
 end

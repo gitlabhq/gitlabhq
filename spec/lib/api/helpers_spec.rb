@@ -2279,6 +2279,23 @@ RSpec.describe API::Helpers, feature_category: :api do
           helper.current_user
         end
       end
+
+      context 'when skip_granular_token_authorization is a reason symbol' do
+        before do
+          allow(helper).to receive(:authorization_settings)
+            .and_return(skip_granular_token_authorization: :job_token_auth)
+        end
+
+        it 'returns false' do
+          expect(helper.send(:authorize_granular_token?)).to be(false)
+        end
+
+        it 'does not authorize granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+          helper.current_user
+        end
+      end
     end
 
     context 'when access token is nil' do

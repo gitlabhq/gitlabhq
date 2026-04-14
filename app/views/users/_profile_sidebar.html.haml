@@ -46,7 +46,7 @@
                       = user_local_time
                 .gl-flex.gl-gap-2.gl-mb-2
                   = sprite_icon('calendar', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                  %span= s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }
+                  %span= _('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }
 
             - if has_contact_info?(@user)
               .gl-text-default

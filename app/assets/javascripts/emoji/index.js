@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { escape, minBy } from 'lodash';
+import { escape, minBy } from 'lodash-es';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import createApolloClient from '~/lib/graphql';

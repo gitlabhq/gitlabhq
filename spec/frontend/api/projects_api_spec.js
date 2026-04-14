@@ -215,6 +215,28 @@ describe('~/api/projects_api.js', () => {
     });
   });
 
+  describe('transferProject', () => {
+    const destinationId = '123';
+    const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/transfer`;
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'put');
+      mock.onPut(expectedUrl).replyOnce(HTTP_STATUS_OK, project);
+    });
+
+    it('puts to the correct URL', async () => {
+      await expect(projectsApi.transferProject(projectId, destinationId)).resolves.toMatchObject({
+        data: project,
+      });
+    });
+
+    it('passes the destinationId parameter', () => {
+      projectsApi.transferProject(projectId, destinationId);
+
+      expect(axios.put).toHaveBeenCalledWith(expectedUrl, { namespace: destinationId });
+    });
+  });
+
   describe('getProjectMembers', () => {
     it('requests members of a project', async () => {
       const expectedUrl = `/api/${mockApiVersion}/projects/1/members`;

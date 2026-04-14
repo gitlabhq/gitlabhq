@@ -604,7 +604,7 @@ Access permissions for value stream analytics depend on the project type.
 |--------------|---------------------------------------------------|
 | Public       | Anyone can access.                                |
 | Internal     | Any authenticated user can access.                |
-| Private      | Any user with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role can access. |
+| Private      | Any user with the Reporter, Developer, Maintainer, or Owner role can access. |
 
 ## Value Stream Analytics GraphQL API
 

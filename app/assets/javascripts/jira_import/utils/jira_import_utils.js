@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from './constants';
 
 export const IMPORT_STATE = {

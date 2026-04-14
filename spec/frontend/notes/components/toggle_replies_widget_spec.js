@@ -2,21 +2,31 @@ import { GlAvatarsInline, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { note } from '../mock_data';
+import { createNoteMock } from '../mock_data';
 
 describe('toggle replies widget for notes', () => {
-  let wrapper;
-
-  const deepCloneObject = (obj) => JSON.parse(JSON.stringify(obj));
-
-  const noteFromOtherUser = deepCloneObject(note);
+  const noteFromOtherUser = createNoteMock();
   noteFromOtherUser.author.username = 'fatihacet';
 
-  const noteFromAnotherUser = deepCloneObject(note);
+  const noteFromAnotherUser = createNoteMock();
   noteFromAnotherUser.author.username = 'mgreiling';
   noteFromAnotherUser.author.name = 'Mike Greiling';
 
-  const replies = [note, note, note, noteFromOtherUser, noteFromAnotherUser];
+  const replies = [
+    createNoteMock(),
+    createNoteMock(),
+    createNoteMock(),
+    noteFromOtherUser,
+    noteFromAnotherUser,
+  ];
+
+  let wrapper;
+
+  const mountComponent = (props) => {
+    wrapper = mountExtended(ToggleRepliesWidget, {
+      propsData: { replies, collapsed: false, ...props },
+    });
+  };
 
   // const findCollapseToggleButton = () =>
   //   wrapper.findComponentByRole('button', { text: ToggleRepliesWidget.i18n.collapseReplies });
@@ -27,12 +37,15 @@ describe('toggle replies widget for notes', () => {
   const findAvatars = () => wrapper.findComponent(GlAvatarsInline);
   const findUserLink = () => wrapper.findByRole('link', { text: noteFromAnotherUser.author.name });
 
-  const mountComponent = ({ collapsed = false }) =>
-    mountExtended(ToggleRepliesWidget, { propsData: { replies, collapsed } });
+  it('supports custom tag', () => {
+    mountComponent({ tag: 'span' });
+    expect(wrapper.element.tagName).toBe('SPAN');
+    expect(wrapper.element.getAttribute('aria-expanded')).toBeNull();
+  });
 
   describe('collapsed state', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ collapsed: true });
+      mountComponent({ collapsed: true });
     });
 
     it('renders collapsed state elements', () => {
@@ -60,7 +73,7 @@ describe('toggle replies widget for notes', () => {
 
   describe('expanded state', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ collapsed: false });
+      mountComponent({ collapsed: false });
     });
 
     it('renders expanded state elements', () => {

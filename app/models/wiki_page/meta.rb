@@ -9,6 +9,7 @@ class WikiPage
     include Subscribable
     include Todoable
     include Awardable
+    include IdInOrdered
 
     self.table_name = 'wiki_page_meta'
 
@@ -39,6 +40,13 @@ class WikiPage
     scope :for_project, ->(project) do
       where(project: project)
     end
+    scope :search_by_title, ->(query) {
+      sanitized_query = "%#{sanitize_sql_like(query)}%"
+      where('wiki_page_meta.title ILIKE ?', sanitized_query)
+    }
+    scope :for_projects_visible_to_user, ->(user) {
+      joins(:project).merge(Project.public_or_visible_to_user(user))
+    }
 
     delegate :wiki, to: :container
     delegate :to_reference, to: :wiki_page, allow_nil: true

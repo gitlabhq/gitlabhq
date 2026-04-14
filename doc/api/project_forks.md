@@ -14,9 +14,9 @@ title: Project forks API
 
 Use this API to manage forks of GitLab projects. For more information, see [forks](../user/project/repository/forking_workflow.md).
 
-## Fork a project
+## Create a fork of a project
 
-Fork a project into your personal namespace or the namespace provided.
+Create a fork of the specified project.
 
 Prerequisites:
 
@@ -48,9 +48,9 @@ POST /projects/:id/fork
 > Service accounts cannot fork projects to their personal namespace. For more information, see
 > [add a service account to a group or project](../user/profile/service_accounts.md#add-a-service-account-to-a-group-or-project).
 
-## List forks of a project
+## List all forks of a project
 
-List the projects accessible to you that have an established forked relationship with the specified project.
+List all forks of the specified project. Only returns forks that are accessible to you.
 
 ```plaintext
 GET /projects/:id/forks
@@ -63,7 +63,7 @@ Supported attributes:
 | `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `archived`                    | boolean           | No       | Limit by archived status. |
 | `membership`                  | boolean           | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer           | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer           | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string            | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean           | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string            | No       | Return list of projects matching the search criteria. |
@@ -169,9 +169,9 @@ Example responses:
 ]
 ```
 
-## Create a fork relationship between projects
+## Create a fork relationship
 
-Create a fork relationship between projects.
+Create a fork relationship between two specified projects.
 
 Prerequisites:
 
@@ -188,9 +188,9 @@ Supported attributes:
 | `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
 | `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-## Delete a fork relationship between projects
+## Delete a fork relationship
 
-Delete a fork relationship between projects.
+Delete a fork relationship between two specified projects.
 
 Prerequisites:
 

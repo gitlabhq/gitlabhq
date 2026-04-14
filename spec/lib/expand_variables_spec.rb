@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Move this back to 'fast_spec_helper' when the FF `ci_optimize_variables_collection_and_item` is removed.
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rspec-parameterized'
 
 RSpec.describe ExpandVariables, feature_category: :pipeline_composition do

@@ -40,7 +40,7 @@ Track the development of the security inventory in [epic 16939](https://gitlab.c
 
 Prerequisites:
 
-- You must have the Developer, Maintainer, or Owner role in the group to view the security inventory.
+- You must have the Security Manager, Developer, Maintainer, or Owner role in the group to view the security inventory.
 
 To view the security inventory:
 
@@ -87,4 +87,4 @@ When working with the security inventory, you might encounter the following issu
 
 ### Security inventory menu item missing
 
-Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer, Maintainer, or Owner role.
+Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Security Manager, Developer, Maintainer, or Owner role.

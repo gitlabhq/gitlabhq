@@ -72,6 +72,10 @@ The cluster cannot assign replica shards to the same node as primary shards.
 > [!warning]
 > Support for Elasticsearch 7.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/583544)
 > in GitLab 18.10 and is planned for removal in 19.1.
+>
+> [!note]
+> GitLab.com uses Elasticsearch 9.x in production. For self-managed instances, Elasticsearch 9.x
+> is the recommended version for optimal performance and forward compatibility.
 
 Advanced search works with the following versions of Elasticsearch.
 
@@ -1072,14 +1076,13 @@ When performing a search, the GitLab index uses the following scopes:
 | `commits`        | Commit data            |
 | `projects`       | Project data (default) |
 | `blobs`          | Code                   |
-| `issues`         | Issue data             |
+| `work_items`     | Work item data         |
 | `merge_requests` | Merge request data     |
 | `milestones`     | Milestone data         |
 | `notes`          | Note data              |
 | `snippets`       | Snippet data           |
 | `wiki_blobs`     | Wiki contents          |
 | `users`          | Users                  |
-| `epics`          | Epic data              |
 
 On GitLab.com and GitLab Dedicated, vulnerability records are always indexed
 for all projects and namespaces to support features outside of search.

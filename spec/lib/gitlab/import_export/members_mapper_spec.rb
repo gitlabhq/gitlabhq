@@ -342,6 +342,28 @@ RSpec.describe Gitlab::ImportExport::MembersMapper, feature_category: :importers
               .to raise_error(StandardError, "Error adding importer user to Project members. #{exception_message}")
           end
         end
+
+        context 'when importer user already exists during retry' do
+          let(:logger) { instance_double(::Import::Framework::Logger) }
+
+          before do
+            importable.add_member(user, member_class::MAINTAINER)
+            allow(::Import::Framework::Logger).to receive(:build).and_return(logger)
+            allow(logger).to receive(:info)
+          end
+
+          it 'gracefully handles the duplicate importer user error' do
+            expect { members_mapper }
+              .not_to raise_error
+          end
+
+          it 'logs the duplicate user error' do
+            members_mapper
+
+            expect(logger).to have_received(:info)
+                                .with(hash_including(message: a_string_including('User already exists')))
+          end
+        end
       end
     end
 

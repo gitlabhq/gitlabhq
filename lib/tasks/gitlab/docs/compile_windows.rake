@@ -2,32 +2,37 @@
 
 OUTPUT_FILE = 'doc/update/breaking_windows.md'
 DEPRECATIONS_PATH = 'data/deprecations'
-TARGET_MILESTONE = '18.0'
+TARGET_MILESTONE = '19.0'
 
 WINDOWS = {
-  1 => { date: 'April 21 - 23, 2025', time: '09:00 UTC to 22:00 UTC' },
-  2 => { date: 'April 28 - 30, 2025', time: '09:00 UTC to 22:00 UTC' },
-  3 => { date: 'May 5 - 7, 2025', time: '09:00 UTC to 22:00 UTC' }
+  1 => { date: 'May 4 - 6, 2026', time: '09:00 UTC to 22:00 UTC', label: 'Primary window' },
+  2 => { date: 'May 11 - 13, 2026', time: '09:00 UTC to 22:00 UTC', label: 'Contingency window' }
 }.transform_values { |v| v.merge(changes: []) }
 
 def process_deprecations
+  affected_files = []
+
   Dir.glob("#{DEPRECATIONS_PATH}/*.yml").each do |file|
     deprecations = YAML.safe_load(File.read(file), permitted_classes: [Date], symbolize_names: true)
     deprecations = [deprecations] unless deprecations.is_a?(Array)
 
     deprecations.each do |deprecation|
       next unless deprecation[:removal_milestone] == TARGET_MILESTONE && deprecation[:breaking_change] == true
+      next if deprecation[:gitlab_com] == false
 
-      window = deprecation[:window].to_i
-      WINDOWS[window][:changes] << deprecation if WINDOWS.key?(window)
+      target_window = deprecation[:window] == 2 ? 2 : 1
+      WINDOWS[target_window][:changes] << deprecation
+      affected_files << file
     end
   end
+
+  affected_files.uniq
 end
 
 def generate_markdown_file
   File.open(OUTPUT_FILE, 'w') do |file|
     write_metadata(file)
-    # write_windows_content(file)
+    write_windows_content(file)
   end
 end
 
@@ -44,9 +49,10 @@ def write_metadata(file)
     Changes are deployed continuously to GitLab.com. However, breaking changes
     can require more time to prepare for.
 
-    In the month before the GitLab 19.0 release, breaking changes will be deployed
-    during specific time windows. Closer to the 19.0 release, the dates for these windows
-    will be announced and this page will list when each breaking change will be deployed.
+    Breaking changes that are scheduled for the next GitLab major release (19.0)
+    will be deployed to GitLab.com during a specific window. A contingency
+    window (May 11 - 13, 2026) is available as a fallback if a breaking change
+    cannot be deployed during the primary window.
 
     <!--
     Do not edit this page directly.
@@ -58,24 +64,31 @@ def write_metadata(file)
 end
 
 def write_windows_content(file)
-  WINDOWS.each_with_index do |(window, data), index|
-    file.puts <<~WINDOW
-      ## Window #{window}
+  visible_windows = WINDOWS.select { |_k, data| data[:changes].any? }
+  show_labels = visible_windows.size > 1
 
+  visible_windows.each_with_index do |(_window, data), index|
+    file.puts "## #{data[:label]}\n\n" if show_labels
+
+    file.puts <<~WINDOW
       This window takes place on #{data[:date]} from #{data[:time]}.
 
-      | Deprecation | Impact | Stage | Scope | Check potential impact |
-      |-------------|--------|-------|-------|------------------------|
+      | Deprecation | Impact | Scope | Check potential impact |
+      |-------------|--------|-------|------------------------|
     WINDOW
 
     data[:changes].each do |deprecation|
       deprecation_anchor = Gitlab::Help::HugoTransformer.new.hugo_anchor(deprecation[:title])
+      impact = Array(deprecation[:impact]).join(', ')
+      scope = Array(deprecation[:scope]).join(', ')
+      check_impact = deprecation[:check_impact]
+      check_impact_cell = check_impact.to_s.empty? ? '' : "<#{check_impact}>"
       file.puts "| [#{deprecation[:title]}](deprecations.md##{deprecation_anchor}) | " \
-        "#{deprecation[:impact]&.capitalize} | #{deprecation[:stage]&.capitalize} | " \
-        "#{deprecation[:scope]&.capitalize} | #{deprecation[:check_impact]} |"
+        "#{impact.capitalize} | " \
+        "#{scope.capitalize} | #{check_impact_cell} |"
     end
 
-    file.puts unless index == WINDOWS.size - 1
+    file.puts unless index == visible_windows.size - 1
   end
 end
 
@@ -88,10 +101,12 @@ namespace :gitlab do
       require 'stringio'
       require_relative '../../../../lib/gitlab/help/hugo_transformer'
 
-      process_deprecations
+      affected_files = process_deprecations
       generate_markdown_file
 
       puts "Breaking windows markdown file generated at #{OUTPUT_FILE}"
+      puts "\nAffected YAML files (#{affected_files.size}):"
+      affected_files.sort.each { |f| puts "  - #{f}" }
     end
 
     desc "Check that the breaking windows documentation is up to date"

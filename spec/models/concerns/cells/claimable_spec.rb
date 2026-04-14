@@ -33,7 +33,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_source_type).to eq(Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       expect(test_klass.cells_claims_attributes).to eq(
         path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
-                feature_flag: :cells_claims_organizations }
+                feature_flag: :cells_claims_organizations, if: nil }
       )
     end
 
@@ -41,6 +41,14 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_source_type).to eq(
         Gitlab::Cells::TopologyService::Claims::V1::Source::Type::RAILS_TABLE_ORGANIZATIONS
       )
+    end
+
+    it 'raises ArgumentError when if: is not a Proc or nil' do
+      expect do
+        test_klass.cells_claims_attribute :name,
+          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          if: 'not_a_proc'
+      end.to raise_error(ArgumentError, %r{must be a Proc/lambda or nil})
     end
   end
 
@@ -169,6 +177,179 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
           instance.destroy!
         end
+      end
+    end
+  end
+
+  describe 'conditional claims with if:' do
+    let(:conditional_klass) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'organizations'
+
+        include Cells::Claimable
+      end
+    end
+
+    let(:transaction_record) { instance_double(Cells::TransactionRecord) }
+
+    before do
+      conditional_klass.cells_claims_attribute :path,
+        type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+        feature_flag: :cells_claims_organizations,
+        if: ->(record) { record.path.exclude?('/') }
+      conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+        subject_key: :id
+    end
+
+    around do |example|
+      example.run
+    ensure
+      described_class.models_with_claims.delete(conditional_klass)
+    end
+
+    describe '#cells_claims_save_changes' do
+      context 'when if: returns true' do
+        it 'creates a claim' do
+          new_instance = conditional_klass.new(path: 'claimable')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(new_instance.connection).and_return(transaction_record)
+          expect(transaction_record).to receive(:create_record).once
+
+          new_instance.save!
+        end
+      end
+
+      context 'when if: returns false' do
+        it 'does not create a claim' do
+          new_instance = conditional_klass.new(path: 'group/project')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(new_instance.connection).and_return(transaction_record)
+          expect(transaction_record).not_to receive(:create_record)
+
+          new_instance.save!
+        end
+      end
+
+      context 'when changing from claimable to non-claimable value' do
+        it 'destroys old claim but does not create new claim' do
+          record = conditional_klass.create!(path: 'claimtop')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
+          expect(transaction_record).to receive(:destroy_record).with(
+            a_hash_including(bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'claimtop'
+            })
+          )
+          expect(transaction_record).not_to receive(:create_record)
+
+          record.update!(path: 'group/project')
+        end
+      end
+
+      context 'when changing from non-claimable to claimable value' do
+        it 'destroys old claim and creates new claim' do
+          record = conditional_klass.create!(path: 'group/project')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
+          expect(transaction_record).to receive(:destroy_record).with(
+            a_hash_including(bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'group/project'
+            })
+          )
+          expect(transaction_record).to receive(:create_record).with(
+            a_hash_including(bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath'
+            })
+          )
+
+          record.update!(path: 'newpath')
+        end
+      end
+    end
+
+    describe '#cells_claims_destroy_changes' do
+      context 'when if: returns false' do
+        it 'still sends destroy (unconditional)' do
+          record = conditional_klass.create!(path: 'group/subpath')
+
+          allow(Cells::TransactionRecord)
+            .to receive(:current_transaction).with(record.connection).and_return(transaction_record)
+          expect(transaction_record).to receive(:destroy_record).with(
+            a_hash_including(bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'group/subpath'
+            })
+          )
+
+          record.destroy!
+        end
+      end
+    end
+
+    describe '#cells_claims_metadata' do
+      context 'when if: returns false' do
+        it 'excludes the entry' do
+          record = conditional_klass.create!(path: 'group/nested')
+          expect(record.cells_claims_metadata).to be_empty
+        end
+      end
+
+      context 'when if: returns true' do
+        it 'includes the entry' do
+          record = conditional_klass.create!(path: 'toponly')
+          expect(record.cells_claims_metadata).to contain_exactly(
+            a_hash_including(bucket: {
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'toponly'
+            })
+          )
+        end
+      end
+    end
+  end
+
+  describe '.cells_claims_scope' do
+    it 'returns all by default' do
+      expect(test_klass.cells_claims_scope).to eq(test_klass.all)
+    end
+
+    context 'when overridden' do
+      let(:scoped_klass) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = 'organizations'
+
+          include Cells::Claimable
+
+          cells_claims_scope do
+            where("strpos(path, '/') = 0")
+          end
+        end
+      end
+
+      before do
+        scoped_klass.cells_claims_attribute :path,
+          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          feature_flag: :cells_claims_organizations,
+          if: ->(record) { record.path.exclude?('/') }
+        scoped_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+          subject_key: :id
+      end
+
+      around do |example|
+        example.run
+      ensure
+        described_class.models_with_claims.delete(scoped_klass)
+      end
+
+      it 'returns only records matching the scope' do
+        top_level = scoped_klass.create!(path: 'toplevel')
+        scoped_klass.create!(path: 'group/sub')
+
+        result = scoped_klass.cells_claims_scope
+        expect(result).to include(top_level)
+        expect(result.count).to eq(1)
       end
     end
   end
@@ -342,6 +523,80 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       it 'raises ArgumentError' do
         expect { cells_claims_subject_key }.to raise_error(
           ArgumentError, /subject_key must be a Symbol or a Proc, but got: String/
+        )
+      end
+    end
+  end
+
+  describe '.cells_claims_enabled_for_attribute?' do
+    context 'when feature_flag is nil' do
+      it 'returns true' do
+        config = { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, feature_flag: nil, if: nil }
+        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(true)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      it 'returns true' do
+        config = test_klass.cells_claims_attributes[:path]
+        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(true)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(cells_claims_organizations: false)
+      end
+
+      it 'returns false' do
+        config = test_klass.cells_claims_attributes[:path]
+        expect(test_klass.cells_claims_enabled_for_attribute?(config)).to be(false)
+      end
+    end
+  end
+
+  describe '#cells_claims_metadata_for_attribute' do
+    context 'when attribute is not configured' do
+      it 'returns nil' do
+        expect(instance.cells_claims_metadata_for_attribute(:nonexistent)).to be_nil
+      end
+    end
+
+    context 'when attribute is configured with an if: condition that returns false' do
+      let(:conditional_klass) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = 'organizations'
+          include Cells::Claimable
+        end
+      end
+
+      let(:conditional_instance) { conditional_klass.create!(path: 'group/nested') }
+
+      before do
+        conditional_klass.cells_claims_attribute :path,
+          type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+          feature_flag: :cells_claims_organizations,
+          if: ->(record) { record.path.exclude?('/') }
+        conditional_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+          subject_key: :id
+      end
+
+      after do
+        described_class.models_with_claims.delete(conditional_klass)
+      end
+
+      it 'returns nil' do
+        expect(conditional_instance.cells_claims_metadata_for_attribute(:path)).to be_nil
+      end
+    end
+
+    context 'when attribute is configured and claimable' do
+      it 'returns the claim metadata' do
+        metadata = instance.cells_claims_metadata_for_attribute(:path)
+
+        expect(metadata).to include(
+          bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: instance.path },
+          subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id }
         )
       end
     end

@@ -64,6 +64,14 @@ gitlab-advanced-sast:
     paths:
       - "scan_metrics.csv"
   timeout: 3h
+  artifacts:
+    access: 'developer'
+    reports:
+      sast: gl-sast-report.json
+    paths:
+      - gl-sast-report.json
+      - ts-cache.sqlite.gz
+    expire_in: 3 days
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never

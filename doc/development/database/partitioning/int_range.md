@@ -91,6 +91,14 @@ The partition size can be decided based on the anticipated growth of the table.
 
 Do not forget to register your model on the partition manager, in the file `config/initializers/postgres_partitioning.rb`.
 
+If a table is partitioned by a column that is not backed by a sequence on the partitioned table, define the
+`sequence_name` of the column. This is needed so the partition manager can get the correct `min_id` when
+creating new partitions.
+
+```ruby
+partitioned_by :project_id, strategy: :int_range, partition_size: 2_000_000, sequence_name: 'projects_id_seq'
+```
+
 ## Add the database migration
 
 In the database migration that creates the table, we may also need to create the initial partitions, especially

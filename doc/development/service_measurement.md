@@ -80,5 +80,5 @@ for `Projects::ImportService`.
 From ChatOps:
 
 ```shell
-/chatops run feature set gitlab_service_measuring_projects_import_service true
+/chatops gitlab run feature set gitlab_service_measuring_projects_import_service true
 ```

@@ -239,34 +239,41 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
-  describe 'IAM Service configuration' do
-    let(:config) do
-      {
-        url: 'http://iam-service-host:9000',
-        audience: 'custom-audience'
-      }
-    end
-
+  describe 'IAM Auth Service configuration' do
     context 'with default configuration' do
       before do
-        stub_config(authn: { iam_service: {} })
+        stub_config(iam_auth_service: { http: {}, grpc: {} })
         load_settings
       end
 
-      it { expect(Settings.authn.iam_service.enabled).to be(false) }
-      it { expect(Settings.authn.iam_service.url).to eq('http://localhost:8084') }
-      it { expect(Settings.authn.iam_service.audience).to eq('gitlab-rails') }
+      it { expect(Settings.iam_auth_service.enabled).to be(false) }
+      it { expect(Settings.iam_auth_service.secret_file).to be_nil }
+      it { expect(Settings.iam_auth_service.http.host).to eq('localhost') }
+      it { expect(Settings.iam_auth_service.http.port).to eq(8084) }
+      it { expect(Settings.iam_auth_service.grpc.host).to eq('localhost') }
+      it { expect(Settings.iam_auth_service.grpc.port).to eq(8085) }
+      it { expect(Settings.iam_auth_service.jwt_audience).to eq('gitlab-rails') }
     end
 
     context 'with custom configuration' do
       before do
-        stub_config(authn: { iam_service: { enabled: true }.merge(config) })
+        stub_config(iam_auth_service: {
+          enabled: true,
+          secret_file: '/etc/gitlab/iam-auth/.gitlab_iam_auth_secret',
+          http: { host: 'iam.example.com', port: 443 },
+          grpc: { host: 'iam.example.com', port: 443 },
+          jwt_audience: 'custom-audience'
+        })
         load_settings
       end
 
-      it { expect(Settings.authn.iam_service.enabled).to be(true) }
-      it { expect(Settings.authn.iam_service.url).to eq(config[:url]) }
-      it { expect(Settings.authn.iam_service.audience).to eq(config[:audience]) }
+      it { expect(Settings.iam_auth_service.enabled).to be(true) }
+      it { expect(Settings.iam_auth_service.secret_file).to eq('/etc/gitlab/iam-auth/.gitlab_iam_auth_secret') }
+      it { expect(Settings.iam_auth_service.http.host).to eq('iam.example.com') }
+      it { expect(Settings.iam_auth_service.http.port).to eq(443) }
+      it { expect(Settings.iam_auth_service.grpc.host).to eq('iam.example.com') }
+      it { expect(Settings.iam_auth_service.grpc.port).to eq(443) }
+      it { expect(Settings.iam_auth_service.jwt_audience).to eq('custom-audience') }
     end
   end
 
@@ -293,6 +300,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_git_ref_updates_cleanup_scheduler_worker
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
+        cells_schedule_claims_verification_worker
         ci_archive_traces_cron_worker
         ci_catalog_resources_aggregate_last30_day_usage_worker
         ci_catalog_resources_cleanup_last_usages_worker

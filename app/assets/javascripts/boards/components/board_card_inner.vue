@@ -179,6 +179,9 @@ export default {
     workItemTypeIconName() {
       return this.item.workItemType?.iconName;
     },
+    workItemTypeName() {
+      return this.item.workItemType?.name;
+    },
     workItemFullPath() {
       return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
     },
@@ -331,7 +334,7 @@ export default {
             <work-item-type-icon
               v-if="showWorkItemTypeIcon"
               :aria-label="createIssueNumberAriaLabel()"
-              :work-item-type="item.type"
+              :work-item-type="workItemTypeName"
               :type-icon-name="workItemTypeIconName"
               class="gl-text-subtle"
               icon-class="gl-flex-shrink-0 gl-fill-icon-subtle"

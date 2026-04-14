@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 REVIEW_ROULETTE_SECTION = <<MARKDOWN
-## Reviewer roulette
+## Reviewer roulette suggestions
 MARKDOWN
 
 CATEGORY_TABLE = <<MARKDOWN

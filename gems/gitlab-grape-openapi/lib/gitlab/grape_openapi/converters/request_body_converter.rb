@@ -41,10 +41,11 @@ module Gitlab
         def build_request_body(body_params)
           properties = {}
           required_params = []
-          parameter_schema = Models::RequestBody::ParameterSchema.new(route: route)
 
           body_params.each do |key, param_options|
-            schema = parameter_schema.build(key, param_options)
+            schema = Models::RequestBody::ParameterSchema.new(
+              route: route, key: key, param_options: param_options
+            ).build
             properties[key.to_s] = schema
             required_params << key.to_s if param_options[:required]
           end

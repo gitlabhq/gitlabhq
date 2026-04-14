@@ -544,7 +544,7 @@ You can edit the following issue attributes in the right sidebar:
 - Milestone
 - Notifications setting
 - Title
-- [Weight](issues/issue_weight.md)
+- [Weight](../work_items/weight.md)
 - Time tracking
 
 When you select an issue card from the issue board, the issue opens in a details panel.
@@ -646,7 +646,7 @@ You can filter by the following:
 - My reaction
 - Release
 - Type (issue/incident)
-- [Weight](issues/issue_weight.md)
+- [Weight](../work_items/weight.md)
 - [Status](../work_items/status.md)
 
 #### Filtering issues in a group board

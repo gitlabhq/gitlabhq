@@ -410,4 +410,24 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
     end
   end
+
+  describe '#registration_path_params' do
+    context 'when invite_email is provided' do
+      it 'returns a hash with invite_email' do
+        invite_email = 'user@example.com'
+
+        expect(helper.registration_path_params(invite_email)).to eq({
+          invite_email: invite_email
+        })
+      end
+    end
+
+    context 'when invite_email is nil' do
+      it 'returns a hash with nil invite_email' do
+        expect(helper.registration_path_params(nil)).to eq({
+          invite_email: nil
+        })
+      end
+    end
+  end
 end

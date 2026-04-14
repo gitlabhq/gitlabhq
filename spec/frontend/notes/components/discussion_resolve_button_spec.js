@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import resolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import resolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 
 const buttonTitle = 'Resolve discussion';
 

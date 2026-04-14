@@ -15,6 +15,7 @@ module Gitlab
         # @param per_page [Integer, nil] Number of results per page for pagination
         # @param page_token [String, nil] Token for pagination to get next page of results
         # @param ref_names [Array<String>] List of specific ref names to find (exact match, overrides search)
+        # @param ignore_case [Boolean] When true, makes pattern matching and sorting case-insensitive
         #
         # @example Basic search
         #   RefsFinder.new(repo, ref_type: :branches, search: "feat")
@@ -24,7 +25,9 @@ module Gitlab
         #
         # @example With pagination and sorting
         #   RefsFinder.new(repo, ref_type: :tags, sort_by: "name_desc", per_page: 10)
-        def initialize(repository, ref_type:, search: nil, sort_by: nil, per_page: nil, page_token: nil, ref_names: [])
+        def initialize(
+          repository, ref_type:, search: nil, sort_by: nil, per_page: nil, page_token: nil, ref_names: [],
+          ignore_case: false)
           @repository = repository
           @search = search
           @ref_type = ref_type
@@ -32,16 +35,22 @@ module Gitlab
           @per_page = per_page
           @page_token = page_token
           @ref_names = Array(ref_names)
+          @ignore_case = ignore_case
 
           validate_sort_by!
         end
+
+        attr_reader :next_cursor
 
         def execute
           raw_refs = repository.list_refs(
             patterns,
             sort_by: sort_by,
-            pagination_params: pagination_params
+            pagination_params: pagination_params,
+            ignore_case: ignore_case
           )
+          @next_cursor = raw_refs.next_cursor
+
           raw_refs.map { |ref| Ref.new(repository, ref.name, ref.target, nil) }
         rescue ArgumentError => e
           raise Gitlab::Git::InvalidPageToken, "Invalid page token: #{page_token}" if e.message.include?('page token')
@@ -51,7 +60,7 @@ module Gitlab
 
         private
 
-        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names
+        attr_reader :repository, :search, :ref_type, :sort_by, :page_token, :ref_names, :ignore_case
 
         def validate_sort_by!
           return if sort_by.blank?

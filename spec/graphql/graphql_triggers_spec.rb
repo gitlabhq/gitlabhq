@@ -262,12 +262,19 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
 
   describe '.ci_stage_status_updated' do
     let_it_be(:stage) { create(:ci_stage) }
+    let_it_be(:pipeline) { stage.pipeline }
 
-    it 'triggers the ci_stage_status_updated subscription' do
+    it 'triggers the ci_stage_status_updated and ci_pipeline_status_updated subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
         :ci_stage_status_updated,
         { stage_id: stage.to_gid },
         stage
+      )
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_status_updated,
+        { pipeline_id: pipeline.to_gid },
+        pipeline
       )
 
       described_class.ci_stage_status_updated(stage)

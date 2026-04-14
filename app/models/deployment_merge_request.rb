@@ -6,6 +6,8 @@ class DeploymentMergeRequest < ApplicationRecord
 
   belongs_to :deployment, optional: false
   belongs_to :merge_request, optional: false
+  belongs_to :project
+  belongs_to :environment
 
   def self.join_deployments_for_merge_requests
     joins(deployment: :environment)

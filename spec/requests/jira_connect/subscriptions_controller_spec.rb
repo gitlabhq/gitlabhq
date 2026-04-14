@@ -2,9 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrations do
+RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization, feature_category: :integrations do
   describe 'GET /-/jira_connect/subscriptions' do
-    let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
+    let_it_be(:installation) do
+      create(
+        :jira_connect_installation,
+        instance_url: 'http://self-managed-gitlab.com',
+        organization: current_organization
+      )
+    end
+
     let(:qsh) do
       Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test')
     end
@@ -49,6 +56,7 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
       context 'and display_url is different from base_url' do
         let_it_be(:installation) do
           create(:jira_connect_installation,
+            organization: current_organization,
             base_url: 'https://jira.atlassian.net',
             display_url: 'https://custom.jira.com',
             instance_url: 'http://self-managed-gitlab.com')
@@ -64,7 +72,9 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
     end
 
     context 'with no self-managed instance configured' do
-      let_it_be(:installation) { create(:jira_connect_installation, instance_url: '') }
+      let_it_be(:installation) do
+        create(:jira_connect_installation, instance_url: '', organization: current_organization)
+      end
 
       it { is_expected.not_to include('http://self-managed-gitlab.com/-/jira_connect/') }
       it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
@@ -155,7 +165,14 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
   end
 
   describe 'DELETE /-/jira_connect/subscriptions/:id' do
-    let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
+    let_it_be(:installation) do
+      create(
+        :jira_connect_installation,
+        instance_url: 'http://self-managed-gitlab.com',
+        organization: current_organization
+      )
+    end
+
     let_it_be(:subscription) { create(:jira_connect_subscription, installation: installation) }
     let(:stub_service_response) { ::ServiceResponse.success }
 

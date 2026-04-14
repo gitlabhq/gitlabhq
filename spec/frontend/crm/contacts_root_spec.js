@@ -38,7 +38,7 @@ describe('Customer relations contacts root app', () => {
       provide: {
         groupFullPath: 'flightjs',
         groupId: 26,
-        groupIssuesPath: '/issues',
+        groupWorkItemsPath: '/work_items',
         groupOrganizationsPath: '/organizations',
         canAdminCrmContact,
         canReadCrmOrganization,
@@ -65,7 +65,7 @@ describe('Customer relations contacts root app', () => {
       trackViewsOptions: { category: 'Customer Relations', action: 'view_contacts_list' },
       i18n: {
         emptyText: 'No contacts found',
-        issuesButtonLabel: 'View issues',
+        issuesButtonLabel: 'View work items',
         editButtonLabel: 'Edit',
         title: 'Customer relations contacts',
         newContact: 'New contact',

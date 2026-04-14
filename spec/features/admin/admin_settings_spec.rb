@@ -266,7 +266,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           it 'changes the setting', :js,
             quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
             within_testid('sign-up-restrictions-settings-content') do
-              check 'Require admin approval for new sign-ups'
+              check 'Require admin approval for new user accounts'
               click_button 'Save changes'
             end
 
@@ -539,6 +539,109 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
           expect(page).to have_content 'Application settings saved successfully'
           expect(current_settings.vscode_extension_marketplace_single_origin_fallback_enabled).to be(true)
+        end
+      end
+
+      context 'for granular personal access token enforcement settings' do
+        context 'when `granular_personal_access_tokens_enforcement` feature flag is disabled' do
+          before do
+            stub_feature_flags(granular_personal_access_tokens_enforcement: false)
+            visit general_admin_application_settings_path
+          end
+
+          it 'does not show the enforcement section' do
+            expect(page).not_to have_content(
+              s_('AccessTokens|Fine-grained personal access tokens')
+            )
+          end
+        end
+
+        context 'when `granular_personal_access_tokens_enforcement` feature flag is enabled', :freeze_time do
+          before do
+            stub_feature_flags(granular_personal_access_tokens_enforcement: true)
+            visit general_admin_application_settings_path
+          end
+
+          it 'shows the enforcement section' do
+            expect(page).to have_content(
+              s_('AccessTokens|Fine-grained personal access tokens')
+            )
+          end
+
+          it 'shows the enforcement date input disabled by default', :js do
+            within_testid('account-and-limit-settings-content') do
+              expect(page).to have_field(
+                s_('AccessTokens|Fine-grained personal access tokens enforcement date'),
+                disabled: true
+              )
+            end
+          end
+
+          it 'enables the enforcement date input when the checkbox is checked', :js do
+            within_testid('account-and-limit-settings-content') do
+              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+
+              expect(page).to have_field(
+                s_('AccessTokens|Fine-grained personal access tokens enforcement date'),
+                disabled: false
+              )
+            end
+          end
+
+          it 'saves the granular token enforcement settings' do
+            within_testid('account-and-limit-settings-content') do
+              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              fill_in s_('AccessTokens|Fine-grained personal access tokens enforcement date'), with: Date.current.to_s
+
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content 'Application settings saved successfully'
+
+            expect(current_settings.enforce_granular_tokens).to be(true)
+            expect(current_settings.granular_tokens_enforced_after).to eq(Date.current)
+          end
+
+          it 'shows an inline validation error when checkbox is checked but date is cleared' do
+            within_testid('account-and-limit-settings-content') do
+              check s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+              fill_in s_('AccessTokens|Fine-grained personal access tokens enforcement date'), with: ''
+
+              expect(page).to have_content(_('Please enter a date value.'))
+            end
+          end
+
+          context 'when enforcement is already enabled' do
+            before do
+              current_settings.update_columns(
+                personal_access_token_settings: {
+                  enforce_granular_tokens: true,
+                  granular_tokens_enforced_after: 1.month.ago.to_date
+                }
+              )
+
+              visit general_admin_application_settings_path
+            end
+
+            it 'saving without changing the date does not throw an error' do
+              within_testid('account-and-limit-settings-content') do
+                click_button 'Save changes'
+              end
+
+              expect(page).to have_content('Application settings saved successfully')
+            end
+
+            it 'unchecking the checkbox updates granular token enforcement settings', :js do
+              within_testid('account-and-limit-settings-content') do
+                uncheck s_('AccessTokens|Require fine-grained personal access tokens after a specific date')
+
+                click_button 'Save changes'
+              end
+
+              expect(page).to have_content('Application settings saved successfully')
+              expect(current_settings.enforce_granular_tokens).to be(false)
+            end
+          end
         end
       end
     end

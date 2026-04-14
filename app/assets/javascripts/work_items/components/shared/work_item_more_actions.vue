@@ -8,11 +8,7 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import {
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS,
-  METADATA_KEYS,
-} from '~/work_items/constants';
+import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 import {
   workItemRoadmapPath,
   saveHiddenMetadataKeysToLocalStorage,
@@ -67,11 +63,19 @@ export default {
       type: String,
       required: true,
     },
+    defaultHiddenMetadataKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       isDropdownVisible: false,
-      hiddenMetadataKeys: getHiddenMetadataKeysFromLocalStorage(this.metadataLocalStorageKey, []),
+      hiddenMetadataKeys: getHiddenMetadataKeysFromLocalStorage(
+        this.metadataLocalStorageKey,
+        this.defaultHiddenMetadataKeys,
+      ),
     };
   },
   computed: {
@@ -103,10 +107,7 @@ export default {
     },
     shouldShowViewRoadmapAction() {
       if (this.showViewRoadmapAction) {
-        return (
-          this.workItemTypeConfiguration?.supportsRoadmapView ||
-          this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        );
+        return this.workItemTypeConfiguration?.supportsRoadmapView;
       }
       return false;
     },

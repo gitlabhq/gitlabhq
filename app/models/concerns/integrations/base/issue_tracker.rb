@@ -148,12 +148,6 @@ module Integrations
         @other_external_issue_trackers ||= project.integrations.external_issue_trackers.where.not(id: id) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Legacy use
       end
 
-      def enabled_in_gitlab_config
-        Gitlab.config.issues_tracker &&
-          Gitlab.config.issues_tracker.values.any? &&
-          issues_tracker
-      end
-
       def issues_tracker
         Gitlab.config.issues_tracker[to_param]
       end

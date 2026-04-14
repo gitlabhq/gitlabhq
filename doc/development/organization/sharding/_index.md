@@ -25,35 +25,15 @@ The purpose of the sharding key is documented in the
 but in short this column is used to provide a standard way of determining which
 Organization owns a particular row in the database.
 
-The actual name of the foreign key can be anything but it must reference a row
-in `projects` or `namespaces`. The chosen `sharding_key` column must be non-nullable.
-
-The reasoning for adding sharding keys, and which keys to add to a table/row, goes like this:
-
-- In order to move organizations across cells, we want `organization_id` on all rows of all tables.
-- But `organization_id` on rows that are actually owned by a top-level group (or its subgroups or projects) makes
-  top-level group transfer inefficient (due to `organization_id` rewrites) to the point of being impractical.
-- Compromise: Add `organization_id` or `namespace_id` to all rows of all tables.
-- But `namespace_id` on rows of tables that are actually owned by projects makes project transfer (and certain subgroup
-  transfers) inefficient (due to `namespace_id` rewrites) to the point of being impractical.
-- Compromise: Add `organization_id`, `namespace_id`, or `project_id` to all rows of all tables (whichever is most specific).
-
 ## Choosing the right sharding key
 
 Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large
 tables.
 
-In rare cases where a table can belong to multiple different parent entities (for example, both a project and a namespace),
-you may define the `sharding_key` with multiple columns.
-This is only allowed if the table has a check constraint that correctly ensures exactly one of the sharding key columns must be non-nullable for a row in the table.
-See [`NOT NULL` constraints for multiple columns](../../database/not_null_constraints.md#not-null-constraints-for-multiple-columns)
-for instructions on creating these constraints.
+The actual name of the foreign key can be anything but it must reference a row
+in `projects` or `namespaces`.
 
-> [!warning]
-> Tables with multiple-column sharding key may be required to be split into separate tables in the future to support efficient data migration and isolation across cells.
-> Avoid designing new tables with multiple-column sharding keys unless absolutely necessary.
-
-The following are examples of valid sharding keys:
+The following are examples of a valid sharding key:
 
 - The table entries belong only to a project:
 
@@ -83,7 +63,34 @@ The following are examples of valid sharding keys:
     group_id: namespaces
   ```
 
-- The table entries belong to a namespace or a project:
+- (Only for `gitlab_main_user`) The table entries belong only to a user:
+
+  ```yaml
+  sharding_key:
+    user_id: users
+  ```
+
+### The sharding key must be non-nullable
+
+The chosen `sharding_key` must be non-nullable.
+We must be able to consistently attribute each row to an organization,
+and not lose data after migrating an organization to another cell.
+
+Additionally, to set up row filtering for Org Mover, we require a
+[`REPLICA IDENTITY`](https://www.postgresql.org/docs/current/logical-replication-row-filter.html#LOGICAL-REPLICATION-ROW-FILTER-RESTRICTIONS)
+that includes the sharding key column.
+This `REPLICA IDENTITY` must include only columns that are
+[not null](https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-REPLICA-IDENTITY).
+
+### Multiple sharding key columns
+
+In rare cases where a table can belong to multiple different parent entities (for example, both a project and a namespace),
+you may define the `sharding_key` with multiple columns.
+This is only allowed if the table has a check constraint that correctly ensures exactly one of the sharding key columns must be non-nullable for a row in the table.
+See [`NOT NULL` constraints for multiple columns](../../database/not_null_constraints.md#not-null-constraints-for-multiple-columns)
+for instructions on creating these constraints.
+
+- The table entries belong to a namespace, or a project:
 
   ```yaml
   sharding_key:
@@ -91,12 +98,19 @@ The following are examples of valid sharding keys:
     namespace_id: namespaces
   ```
 
-- (Only for `gitlab_main_user`) The table entries belong only to a user:
+For example:
 
-  ```yaml
-  sharding_key:
-    user_id: users
-  ```
+- In order to move organizations across cells, we want `organization_id` on all rows of all tables.
+- But `organization_id` on rows that are actually owned by a top-level group (or its subgroups or projects) makes
+  top-level group transfer inefficient (due to `organization_id` rewrites) to the point of being impractical.
+- Compromise: Add `organization_id` or `namespace_id` to all rows of all tables.
+- But `namespace_id` on rows of tables that are actually owned by projects makes project transfer (and certain subgroup
+  transfers) inefficient (due to `namespace_id` rewrites) to the point of being impractical.
+- Compromise: Add `organization_id`, `namespace_id`, or `project_id` to all rows of all tables (whichever is most specific).
+
+> [!warning]
+> Tables with multiple-column sharding key may be required to be split into separate tables in the future to support efficient data migration and isolation across cells.
+> Avoid designing new tables with multiple-column sharding keys unless absolutely necessary.
 
 ### The sharding key must be immutable
 
@@ -474,7 +488,7 @@ The keep file contains code that:
 
 Once the column has been added and the backfill is finished we need to finalize the migration. We can check the status of queued migration in `#chat-ops-test` Slack channel.
 
-- `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>` to check the status of a particular job
+- `/chatops gitlab run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>` to check the status of a particular job
 - Output will look something like:
 
   ![ChatOps response showing batched background migration status with progress percentage and batch counts.](img/chatops_v18_6.png)
@@ -629,7 +643,57 @@ Step 2 (MR 2): [Validate `project_id` NOT NULL on `packages_package_files`](http
 1. Create the MR with label `pipeline:skip-check-migrations` as reverting this migration is intended to be `#no-op`.
 
 > [!note]
-> Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb?ref_type=heads#L81).
+> Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in
+> [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb).
+> For guidance on when omitting a FK is acceptable, see
+> [When to omit a foreign key on a sharding key column](#when-to-omit-a-foreign-key-on-a-sharding-key-column).
+
+### When to omit a foreign key on a sharding key column
+
+Sharding key columns must reference their parent table (`projects`, `namespaces`, or `organizations`) with a
+foreign key constraint. You can omit the foreign key when the table automatically drops data after a fixed
+retention period through time-based partition management (configured with `retain_for` in `partitioned_by`).
+Because old partitions are dropped in their entirety, referential integrity is maintained by the retention
+policy rather than a cascading FK constraint. The same applies to tables using a `sliding_list` partitioning
+strategy, where partitions are detached and dropped once all their rows are considered stale.
+
+**Example 1: fixed retention with `retain_for`**
+
+`web_hook_logs_daily` is partitioned daily and drops partitions older than 14 days:
+
+```ruby
+partitioned_by :created_at, strategy: :daily, retain_for: 14.days
+```
+
+Because old partitions are dropped automatically, a foreign key on `web_hook_logs_daily.project_id`
+referencing `projects` is not required.
+
+**Example 2: sliding list partitioning**
+
+`security_findings` uses a `sliding_list` strategy and detaches partitions once all their findings are
+associated with scans that have been purged and are older than `security_scan_stale_after_days`
+(configurable, defaulting to 3 months):
+
+```ruby
+partitioned_by :partition_number,
+  strategy: :sliding_list,
+  next_partition_if: ->(partition) { partition_full?(partition) || oldest_record_stale?(partition) },
+  detach_partition_if: ->(partition) { detach_partition?(partition.value) }
+```
+
+Because stale partitions are detached and eventually dropped, a foreign key on
+`security_findings.project_id` referencing `projects` is not required.
+
+When you omit a foreign key for this reason, add the column to `allowed_to_be_missing_foreign_key` in
+`spec/lib/gitlab/organizations/sharding_key_spec.rb` with a comment explaining the retention behavior:
+
+```ruby
+# No LFK needed: daily partitions are dropped after 14 days via retain_for
+'web_hook_logs_daily.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+
+# No LFK needed: sliding_list partitions are detached once findings are stale and purged
+'security_findings.project_id', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588191
+```
 
 ### Add transfer service support
 
@@ -683,7 +747,7 @@ Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an exa
 - Failures are also reported as a comment on backfilled original MR. Example: MR [!183123](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2482744925)
 
   ![Merge request comment showing batched background migration failure notification.](img/bbm-failure_v18_6.png)
-- We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
+- We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops gitlab run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
   ![ChatOps output indicating a failed batched background migration status.](img/backfill-chatops-failed_v18_6.png)
 - Let's figure out the reason for failure using [Kibana dashboard](https://log.gprd.gitlab.net/app/discover).
@@ -723,7 +787,7 @@ Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fail
 
   ![Merge request comment tagging team members about the migration failure.](img/bbm-mr-message_v18_6.png)
 
-1. We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
+1. We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops gitlab run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
    ![ChatOps command output showing the failed migration status and progress details.](img/chatops-failed-status_v18_6.png)
 1. Let's check the Kibana dashboard. There are [no logs](https://log.gprd.gitlab.net/app/discover#/view/07cd7a8b-10bb-457c-8d25-3c6d6269e614?_g=h@9751b81&_a=h@ff28b71) for this job.

@@ -1,0 +1,19 @@
+---
+table_name: uploads_archived
+classes:
+- Upload
+feature_categories:
+- code_review_workflow
+- design_management
+- importers
+- portfolio_management
+- groups_and_projects
+- source_code_management
+- team_planning
+description: Archived non-partitioned uploads table after swap with partitioned version.
+  Original table for tracking blob metadata from milestone 9.0.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd284058deee483bf0009f8179b792bc
+milestone: '9.0'
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+table_size: large

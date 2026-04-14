@@ -18,6 +18,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import ErrorsAlert from '~/vue_shared/components/errors_alert.vue';
 
+import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
 import { useAccessTokens } from '../stores/access_tokens';
 import { defaultDate } from '../utils';
 
@@ -137,16 +138,11 @@ export default {
       },
       inputAttrs: {
         'data-testid': 'access-token-name-field',
+        maxlength: MAX_NAME_LENGTH,
       },
     },
     description: {
       label: s__('AccessTokens|Description'),
-      validators: [
-        formValidators.factory(
-          s__('AccessTokens|Description is too long (maximum is 255 characters).'),
-          (val) => val.length <= 255,
-        ),
-      ],
       groupAttrs: {
         optional: true,
         'optional-text': __('(optional)'),
@@ -166,6 +162,7 @@ export default {
       ],
     },
   },
+  MAX_DESCRIPTION_LENGTH,
 };
 </script>
 
@@ -191,7 +188,13 @@ export default {
         @submit="submit"
       >
         <template #input(description)="{ id, input, value, validation }">
-          <gl-form-textarea :id="id" :value="value" :state="validation.state" @input="input" />
+          <gl-form-textarea
+            :id="id"
+            :value="value"
+            :state="validation.state"
+            :maxlength="$options.MAX_DESCRIPTION_LENGTH"
+            @input="input"
+          />
         </template>
 
         <template #group(expiresAt)-description>

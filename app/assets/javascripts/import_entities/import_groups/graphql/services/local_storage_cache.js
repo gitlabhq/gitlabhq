@@ -1,4 +1,4 @@
-import { debounce, merge } from 'lodash';
+import { debounce, merge } from 'lodash-es';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 const OLD_KEY = 'gl-bulk-imports-import-state-v2';

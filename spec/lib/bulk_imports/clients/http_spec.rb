@@ -229,26 +229,71 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
     it 'returns version as an instance of Gitlab::VersionInfo' do
       response = { version: version }
 
-      stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+      stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
         .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
 
       expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
     end
 
-    context 'when /version endpoint is not available' do
-      it 'requests /metadata endpoint' do
+    context 'when /metadata endpoint is not available' do
+      it 'requests /version endpoint' do
         response = { version: version }
 
-        stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
-        stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
+        stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token').to_return(status: 404)
+        stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
           .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
 
         expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
       end
 
-      context 'when /metadata endpoint returns a 401' do
+      context 'when /version endpoint returns a 401' do
         it 'raises a BulkImports:Error' do
-          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+            .to_return(status: 401, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }
+            .to raise_exception(BulkImports::Error,
+              "Check that the source instance base URL and the personal access token meet the necessary requirements.")
+        end
+      end
+
+      context 'when /version endpoint returns a 403' do
+        it 'raises a BulkImports:Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+            .to_return(status: 403, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }
+            .to raise_exception(BulkImports::Error,
+              "Check that the source instance base URL and the personal access token meet the necessary requirements.")
+        end
+      end
+
+      context 'when /version endpoint returns a 404' do
+        it 'raises a BulkImports:Error' do
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+            .to_return(status: 404, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::Error, 'Invalid source URL. Enter only the base URL of the source GitLab instance.')
+        end
+      end
+
+      context 'when /version endpoint returns any other BulkImports::NetworkError' do
+        it 'raises a BulkImports:NetworkError' do
+          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token').to_return(status: 404)
+          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+            .to_return(status: 418, body: "", headers: { 'Content-Type' => 'application/json' })
+
+          expect { subject.instance_version }.to raise_exception(BulkImports::NetworkError)
+        end
+      end
+    end
+
+    context 'when /metadata endpoint returns a non-404 error' do
+      context 'when /metadata endpoint returns a 401' do
+        it 'raises a BulkImports::Error' do
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
             .to_return(status: 401, body: "", headers: { 'Content-Type' => 'application/json' })
 
@@ -259,8 +304,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
       end
 
       context 'when /metadata endpoint returns a 403' do
-        it 'raises a BulkImports:Error' do
-          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+        it 'raises a BulkImports::Error' do
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
             .to_return(status: 403, body: "", headers: { 'Content-Type' => 'application/json' })
 
@@ -270,21 +314,10 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
         end
       end
 
-      context 'when /metadata endpoint returns a 404' do
-        it 'raises a BulkImports:Error' do
-          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
+      context 'when /metadata endpoint returns any other network error' do
+        it 'raises a BulkImports::NetworkError' do
           stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
-            .to_return(status: 404, body: "", headers: { 'Content-Type' => 'application/json' })
-
-          expect { subject.instance_version }.to raise_exception(BulkImports::Error, 'Invalid source URL. Enter only the base URL of the source GitLab instance.')
-        end
-      end
-
-      context 'when /metadata endpoint returns any other BulkImports::NetworkError' do
-        it 'raises a BulkImports:NetworkError' do
-          stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)
-          stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
-            .to_return(status: 418, body: "", headers: { 'Content-Type' => 'application/json' })
+            .to_return(status: 500, body: "", headers: { 'Content-Type' => 'application/json' })
 
           expect { subject.instance_version }.to raise_exception(BulkImports::NetworkError)
         end
@@ -364,7 +397,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
     let(:response) { { enterprise: false } }
 
     before do
-      stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token')
+      stub_request(:get, 'http://gitlab.example/api/v4/metadata?private_token=token')
         .to_return(status: 200, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -408,7 +441,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
 
     before do
       allow(Gitlab::HTTP).to receive(:get)
-        .with('http://website.example/gitlab/api/v4/version', anything)
+        .with('http://website.example/gitlab/api/v4/metadata', anything)
         .and_return(metadata_response)
     end
 

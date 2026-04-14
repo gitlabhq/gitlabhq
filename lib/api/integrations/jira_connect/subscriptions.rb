@@ -6,7 +6,10 @@ module API
       class Subscriptions < ::API::Base
         feature_category :team_planning
 
-        before { authenticate! }
+        before do
+          authenticate!
+          set_current_organization
+        end
 
         namespace :integrations do
           namespace :jira_connect do
@@ -34,7 +37,10 @@ module API
 
                 jwt = Atlassian::JiraConnect::Jwt::Symmetric.new(jwt_token)
                 # JWT should exist here since token size validation passed
-                installation = JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
+                installation = JiraConnectInstallation.find_by_client_key_and_organization_id(
+                  jwt.iss_claim,
+                  Current.organization.id
+                )
 
                 if !installation || !jwt.valid?(installation.shared_secret) || !jwt.verify_context_qsh_claim
                   unauthorized!('JWT authentication failed')

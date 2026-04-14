@@ -767,21 +767,21 @@ describe('legacyDiffs actions', () => {
       ]);
     });
 
-    it('should prevent default event', () => {
+    it('should prevent default event', async () => {
       const preventDefault = jest.fn();
       const target = { href: TEST_HOST };
       const event = { target, preventDefault };
-      testAction(store.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+      await testAction(store.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
         { type: store[types.SET_HIGHLIGHTED_ROW], payload: 'ABC_123' },
         { type: store[types.SET_CURRENT_DIFF_FILE], payload: 'ABC' },
       ]);
       expect(preventDefault).toHaveBeenCalled();
     });
 
-    it('should filter out linked file param', () => {
+    it('should filter out linked file param', async () => {
       const target = { href: `${TEST_HOST}/diffs?file=foo#abc_11` };
       const event = { target, preventDefault: jest.fn() };
-      testAction(store.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+      await testAction(store.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
         { type: store[types.SET_HIGHLIGHTED_ROW], payload: 'ABC_123' },
         { type: store[types.SET_CURRENT_DIFF_FILE], payload: 'ABC' },
       ]);
@@ -909,7 +909,7 @@ describe('legacyDiffs actions', () => {
 
   describe('removeDiscussionsFromDiff', () => {
     it('does not call mutation if no diff file is on discussion', () => {
-      testAction(
+      return testAction(
         store.removeDiscussionsFromDiff,
         {
           id: '1',
@@ -1497,6 +1497,73 @@ describe('legacyDiffs actions', () => {
 
       const result = store.getLinesForDiscussion({ discussion });
       expect(result).toEqual([{ line_code: 'line2', type: 'new' }]);
+    });
+
+    it('stops by new_line when end line_code is stale', () => {
+      // After a force-push the old end line_code hash_16_18 no longer
+      // exists. The new_line fallback (18) matches hash_18_18 instead.
+      const diffLines = [
+        { line_code: 'hash_12_12', type: null, old_line: 12, new_line: 12 },
+        { line_code: 'hash_13_13', type: null, old_line: 13, new_line: 13 },
+        { line_code: 'hash_14_14', type: null, old_line: 14, new_line: 14 },
+        { line_code: 'hash_15_15', type: null, old_line: 15, new_line: 15 },
+        { line_code: 'hash_16_16', type: null, old_line: 16, new_line: 16 },
+        { line_code: 'hash_17_17', type: null, old_line: 17, new_line: 17 },
+        { line_code: 'hash_18_18', type: null, old_line: 18, new_line: 18 },
+        { line_code: null, type: 'match', old_line: null, new_line: null },
+        { line_code: 'hash_30_30', type: null, old_line: 30, new_line: 30 },
+      ];
+
+      store.diffFiles = [{ file_hash: 'abc', [INLINE_DIFF_LINES_KEY]: diffLines }];
+
+      const result = store.getLinesForDiscussion({
+        discussion: {
+          diff_file: { file_hash: 'abc' },
+          position: {
+            line_range: {
+              start: { line_code: 'hash_14_14', old_line: 14, new_line: 14 },
+              end: { line_code: 'hash_16_18', old_line: 16, new_line: 18 },
+            },
+          },
+        },
+      });
+
+      // Collects lines 14-18. The stale hash_16_18 didn't match any
+      // line_code, but new_line=18 matched hash_18_18.
+      expect(result).toEqual([
+        diffLines[2], // 14/14
+        diffLines[3], // 15/15
+        diffLines[4], // 16/16
+        diffLines[5], // 17/17
+        diffLines[6], // 18/18 — matched by new_line fallback
+      ]);
+    });
+
+    it('stops at a meta/match line as a hard boundary', () => {
+      const diffLines = [
+        { line_code: 'hash_14_14', type: null, old_line: 14, new_line: 14 },
+        { line_code: 'hash_15_15', type: null, old_line: 15, new_line: 15 },
+        { line_code: null, type: 'match', old_line: null, new_line: null },
+        { line_code: 'hash_30_30', type: null, old_line: 30, new_line: 30 },
+      ];
+
+      store.diffFiles = [{ file_hash: 'abc', [INLINE_DIFF_LINES_KEY]: diffLines }];
+
+      const result = store.getLinesForDiscussion({
+        discussion: {
+          diff_file: { file_hash: 'abc' },
+          position: {
+            line_range: {
+              start: { line_code: 'hash_14_14', old_line: 14, new_line: 14 },
+              end: { line_code: 'nonexistent', old_line: null, new_line: 999 },
+            },
+          },
+        },
+      });
+
+      expect(result).toEqual([diffLines[0], diffLines[1]]);
+      expect(result).not.toContainEqual(expect.objectContaining({ type: 'match' }));
+      expect(result).not.toContainEqual(expect.objectContaining({ line_code: 'hash_30_30' }));
     });
   });
 
@@ -2347,10 +2414,10 @@ describe('legacyDiffs actions', () => {
   });
 
   describe('unlinkFile', () => {
-    it('unlinks linked file', () => {
+    it('unlinks linked file', async () => {
       const linkedFile = getDiffFileMock();
       setWindowLocation(`${TEST_HOST}/?file=${linkedFile.file_hash}#${linkedFile.file_hash}_10_10`);
-      testAction(
+      await testAction(
         store.unlinkFile,
         undefined,
         { diffFiles: [linkedFile], linkedFileHash: linkedFile.file_hash },
@@ -2362,13 +2429,13 @@ describe('legacyDiffs actions', () => {
     });
 
     it('does nothing when no linked file present', () => {
-      testAction(store.unlinkFile, undefined, {}, [], []);
+      return testAction(store.unlinkFile, undefined, {}, [], []);
     });
   });
 
   describe('expandAllFiles', () => {
     it('triggers mutation', () => {
-      testAction(
+      return testAction(
         store.expandAllFiles,
         undefined,
         {},
@@ -2385,7 +2452,7 @@ describe('legacyDiffs actions', () => {
 
   describe('collapseAllFiles', () => {
     it('triggers mutation', () => {
-      testAction(
+      return testAction(
         store.collapseAllFiles,
         undefined,
         {},

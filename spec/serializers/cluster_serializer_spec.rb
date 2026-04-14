@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ClusterSerializer do
-  let(:cluster) { create(:cluster, :project, provider_type: :user) }
+RSpec.describe ClusterSerializer, feature_category: :deployment_management do
+  let(:cluster) { build_stubbed(:cluster, :project, provider_type: :user) }
 
   describe '#represent_list' do
     subject { described_class.new(current_user: nil).represent_list(cluster).keys }
@@ -28,9 +28,9 @@ RSpec.describe ClusterSerializer do
 
     context 'when provider type is gcp and cluster is errored' do
       let(:cluster) do
-        errored_provider = create(:cluster_provider_gcp, :errored)
+        errored_provider = build_stubbed(:cluster_provider_gcp, :errored)
 
-        create(:cluster, provider_type: :gcp, provider_gcp: errored_provider)
+        build_stubbed(:cluster, provider_type: :gcp, provider_gcp: errored_provider)
       end
 
       it 'serializes attrs correctly' do

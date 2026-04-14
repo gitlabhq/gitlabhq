@@ -524,7 +524,7 @@ Troubleshooting sections.
 
 #### 422 error with non-allowed email
 
-You might get a 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
+You might get a 422 error that states "Email is not allowed. Please use your regular email address."
 
 This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
 
@@ -536,8 +536,8 @@ To implement this workaround:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
-1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
+1. Expand **New user account restrictions**.
+1. Add or remove a domain as appropriate to **Domains allowed for new users** and **Domains denied for new users**.
 1. Select **Save changes**.
 
 ### User is blocked when signing in through SAML

@@ -74,7 +74,7 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       [user, :foo]
     end
 
-    it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
+    it { is_expected.to be_a(Gitlab::Json::Precompiled) }
 
     it "represents the correct data" do
       expect(subject.to_s).to eq(Gitlab::Json.dump(return_value).to_s)
@@ -150,7 +150,7 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
     context "conditional is truthy" do
       let(:conditional) { "truthy thing" }
 
-      it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
+      it { is_expected.to be_a(Gitlab::Json::Precompiled) }
 
       it "caches the block" do
         expect(instance).to receive(:cache_action).with(cache_key, **kwargs)
@@ -198,7 +198,7 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
     context "conditional is falsey" do
       let(:conditional) { false }
 
-      it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
+      it { is_expected.to be_a(Gitlab::Json::Precompiled) }
 
       it "caches the block" do
         expect(instance).to receive(:cache_action).with(cache_key, **kwargs)

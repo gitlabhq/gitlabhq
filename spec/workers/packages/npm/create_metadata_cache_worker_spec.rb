@@ -12,7 +12,7 @@ RSpec.describe Packages::Npm::CreateMetadataCacheWorker, type: :worker, feature_
     subject { described_class.new.perform(project.id, package_name) }
 
     shared_examples 'does not trigger service to create npm metadata cache' do
-      it do
+      it 'does not create a new CreateMetadataCacheService' do
         expect(::Packages::Npm::CreateMetadataCacheService).not_to receive(:new)
 
         subject

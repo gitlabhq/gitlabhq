@@ -1,5 +1,5 @@
 <script>
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

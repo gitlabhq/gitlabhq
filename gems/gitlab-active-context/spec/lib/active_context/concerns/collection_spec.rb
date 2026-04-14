@@ -90,11 +90,7 @@ RSpec.describe ActiveContext::Concerns::Collection do
   end
 
   describe 'all embedding models' do
-    where(:embedding_model_key) do
-      [:current_indexing_embedding_model, :next_indexing_embedding_model, :search_embedding_model]
-    end
-
-    with_them do
+    shared_examples 'embedding_model' do
       subject(:embedding_model) { collection_class.public_send(embedding_model_key) }
 
       context 'when collection_record is nil' do
@@ -127,10 +123,33 @@ RSpec.describe ActiveContext::Concerns::Collection do
         end
 
         it "builds an embedding_model object through the embedding_model_selector" do
-          expect(model_selector_class).to receive(:for).with(model_metadata)
+          expect(model_selector_class).to receive(:for).with(
+            model_metadata, **expected_custom_build_params
+          )
 
           embedding_model
         end
+      end
+    end
+
+    describe '#current_indexing_embedding_model' do
+      it_behaves_like 'embedding_model' do
+        let(:embedding_model_key) { :current_indexing_embedding_model }
+        let(:expected_custom_build_params) { {} }
+      end
+    end
+
+    describe '#next_indexing_embedding_model' do
+      it_behaves_like 'embedding_model' do
+        let(:embedding_model_key) { :next_indexing_embedding_model }
+        let(:expected_custom_build_params) { {} }
+      end
+    end
+
+    describe '#search_embedding_model' do
+      it_behaves_like 'embedding_model' do
+        let(:embedding_model_key) { :search_embedding_model }
+        let(:expected_custom_build_params) { { search: true } }
       end
     end
   end

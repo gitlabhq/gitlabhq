@@ -1,4 +1,4 @@
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 
 // Safari doesn't consider custom elements as Web Components when streaming ¯\_(ツ)_/¯
 export const fixWebComponentsStreamingOnSafari = (elementToObserve, DiffFile, DiffFileMounted) => {

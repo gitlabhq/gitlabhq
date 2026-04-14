@@ -50,7 +50,7 @@ module RapidDiffs
     def current_merge_request_diff
       return if options[:diff_id].blank?
 
-      ::Gitlab::MergeRequests::DiffVersion
+      ::Gitlab::MergeRequests::DiffResolver
         .new(merge_request, diff_id: options[:diff_id])
         .resolve
     end

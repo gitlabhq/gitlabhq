@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
-import { partition, isString, uniqueId, isEmpty } from 'lodash';
+import { partition, isString, uniqueId, isEmpty } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
@@ -13,7 +13,7 @@ import {
   baseBindingAttributes,
 } from 'ee_else_ce/invite_members/utils/member_utils';
 import { responseFromSuccess } from 'ee_else_ce/invite_members/utils/response_message_parser';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   BLOCKED_SEAT_OVERAGES_ERROR_REASON,
@@ -309,7 +309,7 @@ export default {
           this.onInviteSuccess();
         }
       } catch (error) {
-        captureException({ error, component: this.$options.name });
+        captureException(error);
         this.showInvalidFeedbackMessage(error);
       } finally {
         this.isLoading = false;

@@ -36,4 +36,4 @@
       locals: { diff_file: discussion.diff_file }
 
 .md{ style: note_style }
-  = markdown(note.note, pipeline: :email, author: author, current_user: @recipient, issuable_reference_expansion_enabled: true)
+  = markdown(note.note, pipeline: :email, author: author, current_user: @recipient, issuable_reference_expansion_enabled: true, no_header_anchors: true)

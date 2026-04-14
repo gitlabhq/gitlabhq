@@ -1,7 +1,0 @@
----
-name: update_oauth_application
-description: Grants the ability to update OAuth applications
-boundaries:
-  - instance
-permissions:
-  - update_oauth_application

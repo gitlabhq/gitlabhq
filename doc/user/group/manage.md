@@ -495,7 +495,7 @@ Users with the Minimal Access role can authenticate and access the group, but ha
 When seats become available, they can be promoted to their intended access level.
 Existing users with billable roles are not affected by this behavior.
 
-You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+You can [view seat usage](../../subscriptions/manage_seats.md#view-seat-usage) and manage users with Minimal Access.
 
 ### Known issues
 

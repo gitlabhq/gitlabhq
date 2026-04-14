@@ -1,0 +1,10 @@
+---
+name: optimize_issuable_participants
+description: Optimize computation of issuable participants
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/583451
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228413
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594418
+milestone: '18.11'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

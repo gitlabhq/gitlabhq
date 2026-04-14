@@ -26,13 +26,20 @@ module API
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :target_branch, :source_branch
-      expose(:user_notes_count) { |merge_request, options| issuable_metadata.user_notes_count }
-      expose(:upvotes)          { |merge_request, options| issuable_metadata.upvotes }
-      expose(:downvotes)        { |merge_request, options| issuable_metadata.downvotes }
+      expose(:user_notes_count, documentation: { type: 'Integer' }) do |merge_request, options|
+        issuable_metadata.user_notes_count
+      end
+      expose(:upvotes, documentation: { type: 'Integer' }) do |merge_request, options|
+        issuable_metadata.upvotes
+      end
+      expose(:downvotes, documentation: { type: 'Integer' }) do |merge_request, options|
+        issuable_metadata.downvotes
+      end
 
       expose :author, :assignees, :assignee, using: Entities::UserBasic
       expose :reviewers, using: Entities::UserBasic
-      expose :source_project_id, :target_project_id
+      expose :source_project_id, documentation: { type: 'Integer' }
+      expose :target_project_id, documentation: { type: 'Integer' }
       expose :labels do |merge_request, options|
         if options[:with_labels_details]
           ::API::Entities::LabelBasic.represent(merge_request.labels.sort_by(&:title))
@@ -40,15 +47,15 @@ module API
           merge_request.labels.map(&:title).sort
         end
       end
-      expose :draft?, as: :draft
-      expose :imported?, as: :imported
+      expose :draft?, as: :draft, documentation: { type: 'Boolean' }
+      expose :imported?, as: :imported, documentation: { type: 'Boolean' }
       expose :imported_from, documentation: { type: 'String', example: 'bitbucket' }
 
       # [Deprecated]  see draft
       #
-      expose :draft?, as: :work_in_progress
+      expose :draft?, as: :work_in_progress, documentation: { type: 'Boolean' }
       expose :milestone, using: Entities::Milestone
-      expose :merge_when_pipeline_succeeds
+      expose :merge_when_pipeline_succeeds, documentation: { type: 'Boolean' }
 
       # Ideally we should deprecate `MergeRequest#merge_status` exposure and
       # use `MergeRequest#mergeable?` instead (boolean).

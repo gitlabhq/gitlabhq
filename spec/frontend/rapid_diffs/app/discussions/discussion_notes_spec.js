@@ -1,6 +1,7 @@
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
+import DraftNote from '~/rapid_diffs/app/discussions/draft_note.vue';
 import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import SystemNote from '~/rapid_diffs/app/discussions/system_note.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
@@ -56,20 +57,44 @@ describe('DiscussionNotes', () => {
           defaultProvisions.userPermissions.can_create_note,
         );
       });
+    });
+
+    describe('draft replies', () => {
+      it('renders draft replies via DraftNote component', () => {
+        const draftReply = { id: 'draft-1', isDraft: true };
+        createComponent(
+          { notes: [{ id: 'first' }, draftReply] },
+          { provide: { store: {}, endpoints: {}, userPermissions: { can_create_note: true } } },
+        );
+        expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
+        expect(wrapper.findComponent(DraftNote).props('draft')).toBe(draftReply);
+      });
+
+      it('excludes draft replies from toggle replies widget', () => {
+        const draftReply = { id: 'draft-1', isDraft: true };
+        createComponent(
+          { notes: [{ id: 'first' }, { id: 'regular' }, draftReply] },
+          { provide: { userPermissions: { can_create_note: true } } },
+        );
+        const replies = wrapper.findComponent(ToggleRepliesWidget).props('replies');
+        expect(replies).toHaveLength(1);
+        expect(replies[0].id).toBe('regular');
+      });
+
+      it('shows draft replies even when collapsed', () => {
+        const draftReply = { id: 'draft-1', isDraft: true };
+        createComponent(
+          { notes: [{ id: 'first' }, { id: 'regular' }, draftReply], expanded: false },
+          { provide: { store: {}, endpoints: {}, userPermissions: { can_create_note: true } } },
+        );
+        expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
+      });
 
       it('propagates startReplying event', () => {
         const note = { id: 'foo' };
         createComponent({ notes: [note] });
         wrapper.findComponent(NoteableNote).vm.$emit('startReplying');
         expect(wrapper.emitted('startReplying')).toStrictEqual([[]]);
-      });
-
-      it('propagates toggleAward event', () => {
-        const award = 'smile';
-        const note = { id: 'foo' };
-        createComponent({ notes: [note] });
-        wrapper.findComponent(NoteableNote).vm.$emit('toggleAward', award);
-        expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
       });
 
       it('propagates noteEdited event', () => {
@@ -97,27 +122,10 @@ describe('DiscussionNotes', () => {
           expect(findNoteableNote().exists()).toBe(true);
         });
 
-        it.each(['noteDeleted', 'startEditing', 'cancelEditing'])(
-          'propagates %s event',
-          (event) => {
-            createComponent({ notes });
-            findNoteableNote().vm.$emit(event, note);
-            expect(wrapper.emitted(event)).toStrictEqual([[note]]);
-          },
-        );
-
-        it('propagates noteUpdated event', () => {
-          const updatedNote = {};
+        it.each(['startEditing', 'cancelEditing'])('propagates %s event', (event) => {
           createComponent({ notes });
-          findNoteableNote().vm.$emit('noteUpdated', updatedNote);
-          expect(wrapper.emitted('noteUpdated')).toStrictEqual([[updatedNote]]);
-        });
-
-        it('propagates toggleAward event', () => {
-          const award = 'smile';
-          createComponent({ notes });
-          findNoteableNote().vm.$emit('toggleAward', award);
-          expect(wrapper.emitted('toggleAward')).toStrictEqual([[{ note, award }]]);
+          findNoteableNote().vm.$emit(event, note);
+          expect(wrapper.emitted(event)).toStrictEqual([[note]]);
         });
 
         it('propagates noteEdited event', () => {

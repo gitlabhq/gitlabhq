@@ -26,7 +26,7 @@ Prerequisites:
 
 ## List all advanced search migrations
 
-Get a list of all advanced search migrations for the GitLab instance.
+Lists all advanced search migrations for the GitLab instance.
 
 ```plaintext
 GET /admin/search/migrations
@@ -84,9 +84,9 @@ Example response:
 ]
 ```
 
-## Get an advanced search migration
+## Retrieve an advanced search migration
 
-Get a single advanced search migration by providing the migration version or name.
+Retrieves a specified advanced search migration by migration version or name.
 
 ```plaintext
 GET /admin/search/migrations/:version_or_name

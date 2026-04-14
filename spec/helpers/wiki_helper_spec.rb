@@ -187,33 +187,12 @@ RSpec.describe WikiHelper, feature_category: :wiki do
       allow(Pajamas::ButtonComponent).to receive(:new).and_call_original
     end
 
-    describe 'when wiki_floating_sidebar_toggle is enabled' do
-      before do
-        stub_feature_flags({ wiki_floating_sidebar_toggle: true })
-      end
+    it 'shows the sidebar icon and is hidden on large screens' do
+      subject
 
-      it 'shows the sidebar icon and is hidden on large screens' do
-        subject
-
-        expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
-          expect(kwargs[:icon]).to eq('sidebar')
-          expect(kwargs[:button_options][:class]).to include('@lg/panel:gl-hidden')
-        end
-      end
-    end
-
-    describe 'when wiki_floating_sidebar_toggle is disabled' do
-      before do
-        stub_feature_flags({ wiki_floating_sidebar_toggle: false })
-      end
-
-      it 'shows the list_bulleted icon and is visible on large screens' do
-        subject
-
-        expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
-          expect(kwargs[:icon]).to eq('list-bulleted')
-          expect(kwargs[:button_options][:class]).not_to include('@lg/panel:gl-hidden')
-        end
+      expect(Pajamas::ButtonComponent).to have_received(:new) do |**kwargs|
+        expect(kwargs[:icon]).to eq('sidebar')
+        expect(kwargs[:button_options][:class]).to include('@lg/panel:gl-hidden')
       end
     end
   end

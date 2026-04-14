@@ -14,6 +14,10 @@ module Packages
     ENCODED_SLASH = "%2F"
     SORTABLE_COLUMNS = %w[id file_name created_at].freeze
 
+    FILE_MD5_MAX_LENGTH = 32.bytes
+    FILE_SHA1_MAX_LENGTH = 40.bytes
+    FILE_SHA256_MAX_LENGTH = 64.bytes
+
     delegate :conan_file_type, to: :conan_file_metadatum
     delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
     delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm, allow_nil: true
@@ -44,6 +48,10 @@ module Packages
     validates :file_name, uniqueness: { scope: :package }, if: -> { !pending_destruction? && package&.pypi? }
     validates :file_sha256, format: { with: Gitlab::Regex.sha256_regex }, if: -> { package&.pypi? }, allow_nil: true
     validate :ensure_unique_conan_file_name, if: -> { !pending_destruction? && package&.conan? }, on: :create
+
+    validates :file_md5, bytesize: { maximum: -> { FILE_MD5_MAX_LENGTH } }, allow_nil: true
+    validates :file_sha1, bytesize: { maximum: -> { FILE_SHA1_MAX_LENGTH } }, allow_nil: true
+    validates :file_sha256, bytesize: { maximum: -> { FILE_SHA256_MAX_LENGTH } }, allow_nil: true
 
     scope :recent, -> { order(id: :desc) }
     scope :limit_recent, ->(limit) { recent.limit(limit) }
@@ -110,6 +118,13 @@ module Packages
       joins(:debian_file_metadatum)
         .where(packages_debian_file_metadata: { architecture: architecture_name })
     end
+
+    scope :latest_id_per_file_name, -> {
+      where(
+        id: select('DISTINCT ON (packages_package_files.file_name) packages_package_files.id')
+          .order(:file_name).recent
+      )
+    }
 
     scope :with_debian_unknown_since, ->(updated_before) do
       where_exists(

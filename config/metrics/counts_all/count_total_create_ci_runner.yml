@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_ci_runners_created
 description: Count of created runners
-product_group: runner
+product_group: runner_core
 product_categories:
 - runner_core
 performance_indicator_type: []

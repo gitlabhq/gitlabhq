@@ -32,10 +32,16 @@ module BlobHelper
       return ide_edit_path(target_project, branch, path)
     end
 
-    params = { target_project: target_project.full_path } if target_project != source_project
+    # Build IDE path using file path
+    # Format: /-/ide/project/{project_path}/-/{encoded_path}?merge_request_id={id}&target_project={target}
+    segments = [ide_path, 'project', source_project.full_path]
+    segments.concat(['-', encode_ide_path(path)]) if path.present?
+    result = File.join(segments)
 
-    result = File.join(ide_path, 'project', source_project.full_path, 'merge_requests', merge_request.to_param)
-    result += "?#{params.to_query}" unless params.nil?
+    params = { merge_request_id: merge_request.to_param }
+    params[:target_project] = target_project.full_path if target_project != source_project
+
+    result += "?#{params.to_query}"
     result
   end
 

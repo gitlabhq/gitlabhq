@@ -7,7 +7,7 @@ import {
   shallowMount,
   WrapperArray,
 } from '@vue/test-utils';
-import { flowRight } from 'lodash';
+import { flowRight } from 'lodash-es';
 
 /**
  * Query function type

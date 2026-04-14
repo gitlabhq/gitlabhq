@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
-import { identity, uniqueId } from 'lodash';
+import { identity, uniqueId } from 'lodash-es';
 import { __ } from '~/locale';
 
 export default {

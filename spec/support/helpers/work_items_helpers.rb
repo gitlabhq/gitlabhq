@@ -148,4 +148,20 @@ module WorkItemsHelpers
       click_button 'Save'
     end
   end
+
+  def open_new_view_modal_from_dropdown
+    find_by_testid('add-saved-view-toggle').click
+    wait_for_requests
+    click_button 'New view'
+    wait_for_requests
+  end
+
+  def open_edit_modal_from_saved_view_tab(view_name, click_view_button: false)
+    click_button view_name if click_view_button
+    wait_for_requests
+    click_button view_name
+
+    find_by_testid('edit-action').click
+    wait_for_requests
+  end
 end

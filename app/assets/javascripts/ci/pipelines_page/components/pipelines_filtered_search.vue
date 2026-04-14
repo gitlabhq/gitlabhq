@@ -106,7 +106,7 @@ export default {
   methods: {
     onSubmit(filters) {
       this.track('click_filtered_search', { label: TRACKING_CATEGORIES.search });
-      this.$emit('filterPipelines', filters);
+      this.$emit('filter-pipelines', filters);
     },
   },
 };

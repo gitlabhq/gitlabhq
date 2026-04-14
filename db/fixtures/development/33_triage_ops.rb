@@ -88,6 +88,7 @@ class Gitlab::Seeder::TriageOps
     pipeline:run-single-db
     pipeline:skip-undercoverage
     pipeline:update-cache
+    pipeline:as-if-foss-run-predictive
     pipeline:run-as-if-foss-once
   LABELS
 
@@ -149,11 +150,10 @@ class Gitlab::Seeder::TriageOps
       scopes: ['api'],
       name: "API Token #{Time.zone.now}"
     }
-    response = PersonalAccessTokens::CreateService.new(current_user: bot, target_user: bot, organization_id: bot.namespace.organization_id, params: params).execute
+    response = PersonalAccessTokens::CreateService.new(current_user: bot, target_user: bot,
+      organization_id: bot.namespace.organization_id, params: params).execute
 
-    unless response.success?
-      raise "Can't create Triage Bot access token: #{response.message}"
-    end
+    raise "Can't create Triage Bot access token: #{response.message}" unless response.success?
 
     puts "Bot with API_TOKEN=#{response[:personal_access_token].token} is present now."
 

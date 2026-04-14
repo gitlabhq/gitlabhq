@@ -57,6 +57,7 @@ module Gitlab
             service = Projects::GitlabProjectsImportService.new(
               current_user,
               import_params,
+              override_params,
               import_type: 'gitlab_project'
             )
 
@@ -84,6 +85,10 @@ module Gitlab
             path: project_path,
             file: File.open(file_path)
           }
+        end
+
+        def override_params
+          { name: project_path }
         end
 
         def show_import_failures_count

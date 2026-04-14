@@ -39,6 +39,15 @@ module Namespaces
       private
 
       def execute_transfer(group, new_parent_group, user, exclusive_lease)
+        if group.transfer_in_progress?
+          Gitlab::AppLogger.warn(
+            message: 'Cancelling stale transfer_in_progress state',
+            group_id: group.id
+          )
+          group.cancel_transfer!
+        end
+
+        group.schedule_transfer!(transition_user: user) unless group.transfer_scheduled?
         group.start_transfer!(transition_user: user)
 
         transfer_successful = ::Groups::TransferService.new(group, user).execute(new_parent_group)

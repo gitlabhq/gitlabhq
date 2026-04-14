@@ -525,7 +525,7 @@ The continuous update is done by calling `Elastic::ProcessBookkeepingService.tra
 
 ##### Backfilling data
 
-Add a new [Advanced Search migration](search/advanced_search_migration_styleguide.md) to backfill data by executing `scripts/elastic-migration` and following the instructions.
+Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to backfill data by executing `scripts/elastic-migration` and following the instructions.
 
 Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper). The [`BackfillWorkItems` migration](https://gitlab.com/gitlab-org/search-team/migration-graveyard/-/blob/09354f497698037fc21f5a65e5c2d0a70edd81eb/lib/migrate/20240816132114_backfill_work_items.rb) can be used as an example.
 

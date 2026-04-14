@@ -33,7 +33,7 @@ The default framework for the group has a **default** badge.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the project or group.
+- You must be an administrator or have the Security Manager or Owner role for the project or group.
 
 To view the compliance projects report:
 
@@ -124,7 +124,7 @@ Export a report of compliance frameworks that are applied to projects in a group
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To export a report of compliance frameworks on projects in a group:
 
@@ -162,7 +162,7 @@ You can create new compliance frameworks on top-level groups.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To create a new compliance framework from the compliance projects report:
 
@@ -179,7 +179,7 @@ You can edit compliance frameworks on top-level groups.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To edit a compliance framework from the compliance projects report:
 
@@ -195,7 +195,7 @@ You can delete compliance frameworks from top-level groups.
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator or have the Security Manager or Owner role for the group.
 
 To delete a compliance framework from the compliance projects report:
 

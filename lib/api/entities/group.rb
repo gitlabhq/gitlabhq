@@ -4,9 +4,9 @@ module API
   module Entities
     class Group < BasicGroupDetails
       expose :path, :description, :visibility
-      expose :share_with_group_lock
-      expose :require_two_factor_authentication
-      expose :two_factor_grace_period
+      expose :share_with_group_lock, documentation: { type: 'Boolean' }
+      expose :require_two_factor_authentication, documentation: { type: 'Boolean' }
+      expose :two_factor_grace_period, documentation: { type: 'Integer' }
       expose :project_creation_level_str, as: :project_creation_level
       expose :auto_devops_enabled
       expose :subgroup_creation_level_str, as: :subgroup_creation_level
@@ -16,21 +16,21 @@ module API
         group.show_diff_preview_in_email?
       end
       expose :mentions_disabled
-      expose :lfs_enabled?, as: :lfs_enabled
+      expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'Boolean' }
       expose(:archived, documentation: { type: 'Boolean' }) { |group, _options| group.self_or_ancestors_archived? }
       expose :math_rendering_limits_enabled, documentation: { type: 'Boolean' }
       expose :lock_math_rendering_limits_enabled, documentation: { type: 'Boolean' }
       expose :default_branch_name, as: :default_branch
-      expose :default_branch_protection
+      expose :default_branch_protection, documentation: { type: 'Integer' }
       expose :default_branch_protection_settings, as: :default_branch_protection_defaults
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end
-      expose :request_access_enabled
+      expose :request_access_enabled, documentation: { type: 'Boolean' }
       expose :full_name, :full_path
       expose :created_at
       expose :parent_id
-      expose :organization_id
+      expose :organization_id, documentation: { type: 'Integer' }
       expose :shared_runners_setting
       expose :max_artifacts_size, documentation: { type: 'Integer' }
 

@@ -24,6 +24,7 @@ module API
 
       namespace 'internal' do
         namespace 'workhorse' do
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_verification_auth
           post 'authorize_upload' do
             unauthorized! unless request_authenticated?
 

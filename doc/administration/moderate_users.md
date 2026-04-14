@@ -50,7 +50,7 @@ To view users by type:
 
 ## Billable users
 
-You can view and update the [billable users](../subscriptions/manage_users_and_seats.md#billable-users) in your instance through the Rails console.
+You can view and update the [billable users](../subscriptions/manage_seats.md#billable-users) in your instance through the Rails console.
 
 ### Check daily and historical billable users
 
@@ -92,7 +92,7 @@ To trigger a manual update of the daily and historical billable users in your Gi
 A user in a pending approval state requires action by an administrator. A user sign up can be in a
 pending approval state because an administrator has enabled any of the following options:
 
-- [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
+- [Require administrator approval for new user account creation](settings/sign_up_restrictions.md#require-administrator-approval-for-new-user-accounts) setting.
 - [User cap](settings/sign_up_restrictions.md#user-cap).
 - [Block auto-created users (OmniAuth)](../integration/omniauth.md#configure-common-settings)
 - [Block auto-created users (LDAP)](auth/ldap/_index.md#basic-configuration-settings)
@@ -108,9 +108,9 @@ A user pending approval:
 - Cannot sign in.
 - Cannot access Git repositories or the GitLab API.
 - Does not receive any notifications from GitLab.
-- Does not consume a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
+- Does not consume a [seat](../subscriptions/manage_seats.md#billable-users).
 
-An administrator must [approve their sign up](#approve-or-reject-a-user-sign-up) to allow them to
+An administrator must [approve their sign up](#approve-or-reject-a-new-user-account) to allow them to
 sign in.
 
 ### View user sign ups pending approval
@@ -127,7 +127,7 @@ To view user sign ups pending approval:
 1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Pending approval**, and press <kbd>Enter</kbd>.
 
-### Approve or reject a user sign up
+### Approve or reject a new user account
 
 {{< history >}}
 
@@ -148,7 +148,7 @@ Approving a user:
 
 - Activates their account.
 - Changes the user's state to active.
-- Consumes a subscription [seat](../subscriptions/manage_users_and_seats.md#billable-users).
+- Consumes a subscription [seat](../subscriptions/manage_seats.md#billable-users).
 
 Rejecting a user:
 
@@ -178,7 +178,7 @@ A blocked user:
 - Cannot sign in or access any repositories.
   - Any associated data remains in these repositories.
 - Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
+- Does not occupy a [seat](../subscriptions/manage_seats.md#billable-users).
 
 ### Block a user
 
@@ -214,7 +214,7 @@ To unblock a user:
 1. For the user you want to unblock, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Unblock**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/manage_users_and_seats.md#billable-users).
+[seat](../subscriptions/manage_seats.md#billable-users).
 
 > [!note]
 > Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
@@ -240,7 +240,7 @@ A deactivated user:
   - If a deactivated user signs in, they are automatically reactivated.
 - Cannot access repositories or the API.
 - Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a seat. For more information, see [billable users](../subscriptions/manage_users_and_seats.md#billable-users).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/manage_seats.md#billable-users).
 
 When you deactivate a user, their projects, groups, and history remain.
 
@@ -263,7 +263,7 @@ For more information, see [user deactivation emails](settings/email.md#user-deac
 To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
 To remove a user from a GitLab.com subscription, see
-[Remove users from your subscription](../subscriptions/manage_users_and_seats.md#remove-users-from-subscription).
+[Remove users from your subscription](../subscriptions/manage_seats.md#remove-users-from-subscription).
 
 ### Automatically deactivate dormant users
 
@@ -353,7 +353,7 @@ To reactivate a user:
 1. For the user you want to reactivate, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Activate**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/manage_users_and_seats.md#billable-users).
+[seat](../subscriptions/manage_seats.md#billable-users).
 
 > [!note]
 > A deactivated user can also reactivate their account themselves by logging back in through the UI.
@@ -378,7 +378,7 @@ A banned user:
 - Cannot sign in or access any repositories.
   - Any associated projects, issues, merge requests, or comments are hidden.
 - Cannot use [slash commands in Slack](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
+- Does not occupy a [seat](../subscriptions/manage_seats.md#billable-users).
 
 ### Ban a user
 
@@ -408,7 +408,7 @@ To unban a user:
 1. From the dropdown list, select **Unban member**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/manage_users_and_seats.md#billable-users).
+[seat](../subscriptions/manage_seats.md#billable-users).
 
 ## Delete a user
 

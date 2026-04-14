@@ -114,11 +114,8 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       import_export_uploads
       issuable_metric_image_uploads
       coverage_fuzzing_corpuses
-      cluster_agents
-      clusters
       dependency_list_export_part_uploads
       dependency_list_export_uploads
-      deploy_tokens
       design_management_action_uploads
       import_export_upload_uploads
       merge_requests_merge_data
@@ -137,25 +134,21 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       vulnerability_export_uploads
       vulnerability_remediation_uploads
       work_item_descriptions
-      agent_activity_events
       ai_settings
       catalog_resource_versions
-      cluster_agent_tokens
-      cluster_agent_url_configurations
       incident_management_timeline_events
       merge_trains
       resource_iteration_events
       resource_link_events
       resource_milestone_events
       resource_weight_events
-      terraform_state_versions
-      terraform_states
       user_namespace_callouts
-      uploads_9ba88c4165
+      uploads_archived
       custom_dashboards
       custom_dashboard_search_data
       custom_dashboard_versions
       early_access_program_tracking_events
+      duo_workflow_session_artifacts
     ]
   end
 

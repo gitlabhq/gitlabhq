@@ -8,8 +8,12 @@ class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
 
   def new
-    @namespace = Namespace.find(project_params[:namespace_id])
-    return render_404 unless current_user.can?(:import_projects, @namespace)
+    namespace_id = project_params[:namespace_id]
+    @namespace = namespace_id.present? ? Namespace.find(namespace_id) : current_user.namespace
+
+    unless current_user.can?(:import_projects, @namespace)
+      return access_denied!(s_('ImportProjects|You do not have permission to import into this namespace.'))
+    end
 
     @path = project_params[:path]
   end

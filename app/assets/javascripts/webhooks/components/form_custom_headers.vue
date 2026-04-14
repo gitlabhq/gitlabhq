@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/scroll_utils';

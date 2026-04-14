@@ -12,7 +12,7 @@ module Types
             Class.new(BaseObject) do
               include BaseResponseType
               graphql_name "#{types_prefix}AggregationResponse"
-              description "Response for #{types_prefix} aggregation engine"
+              description "Response for `#{types_prefix}` aggregation engine"
               connection_type_class Types::Analytics::Aggregation::EngineResponseConnectionType
 
               field :dimensions,

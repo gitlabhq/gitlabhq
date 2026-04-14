@@ -17,15 +17,7 @@ class WikiPagePolicy < BasePolicy
     prevent :award_emoji
   end
 
-  rule { can?(:read_wiki) & can?(:reporter_access) }.policy do
-    enable :mark_note_as_internal
-  end
-
-  rule { can?(:read_wiki) & can?(:planner_access) }.policy do
-    enable :mark_note_as_internal
-  end
-
-  rule { can?(:developer_access) }.policy do
-    enable :resolve_note
+  rule { ~can?(:read_wiki) }.policy do
+    prevent :mark_note_as_internal
   end
 end

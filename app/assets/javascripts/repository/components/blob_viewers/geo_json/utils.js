@@ -1,5 +1,5 @@
 import { map, tileLayer, geoJson, featureGroup, Icon } from 'leaflet';
-import { template, each } from 'lodash';
+import { template, each } from 'lodash-es';
 import {
   OPEN_STREET_TILE_URL,
   MAP_ATTRIBUTION,

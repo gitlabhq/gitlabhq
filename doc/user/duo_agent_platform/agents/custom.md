@@ -8,7 +8,7 @@ title: Custom agents
 {{< details >}}
 
 - Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -28,12 +28,9 @@ title: Custom agents
 - Feature flag `global_ai_catalog` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223135) in 18.10.
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 
 {{< /history >}}
-
-> [!flag]
-> The ability to enable an agent directly in projects as a maintainer is controlled by a feature flag.
-> For more information, see the history.
 
 Agents use AI to perform tasks and answer complex questions. Create
 custom agents to accomplish specific tasks, like creating merge
@@ -226,13 +223,10 @@ To use a custom agent in the GitLab UI:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. Open an issue, epic, or merge request.
-1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
-   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
-   ({{< icon name="duo-chat" >}}).
+1. On the GitLab Duo sidebar, select **Add new chat** ({{< icon name="pencil-square" >}}).
+1. From the dropdown list, select the custom agent.
 
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
-
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
 1. Enter your question or request.
 
 ### In VS Code
@@ -256,7 +250,7 @@ To use a custom agent in VS Code:
 Prerequisites:
 
 - Enable the agent in the project you want to use it in.
-- Install and configure [GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md)
+- Install and configure the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md)
   version 3.19.0 or later.
 - Set a [default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 

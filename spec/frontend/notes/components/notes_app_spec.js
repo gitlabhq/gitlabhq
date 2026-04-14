@@ -72,7 +72,9 @@ describe('note_app', () => {
     // call after mounted hook
     queueMicrotask(() => {
       queueMicrotask(() => {
-        useNotes().fetchNotes();
+        useNotes()
+          .fetchNotes()
+          .catch(() => {});
       });
     });
   };

@@ -287,6 +287,7 @@ export default {
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
   },
   FORM_TYPES,
+  WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
 };
 </script>
 
@@ -333,6 +334,7 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :show-closed="showClosed"
         :show-view-roadmap-action="false"
+        :metadata-local-storage-key="$options.WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY"
         @update-hidden-metadata-keys="handleUpdateHiddenMetadataKeys"
         @toggle-show-closed="toggleShowClosed"
       />

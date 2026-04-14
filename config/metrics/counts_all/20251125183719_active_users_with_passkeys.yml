@@ -2,6 +2,8 @@
 key_path: counts.active_users_with_passkeys
 description: Total count of active users with passkeys
 product_group: authentication
+product_categories:
+- system_access
 value_type: number
 status: active
 milestone: "18.7"

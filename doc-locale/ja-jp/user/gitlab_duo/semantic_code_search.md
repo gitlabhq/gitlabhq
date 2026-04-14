@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: キーワードのマッチングではなく、意味に基づいてリポジトリ内の関連するコードスニペットを検索します。
 title: セマンティックコード検索
 ---
@@ -18,6 +18,8 @@ title: セマンティックコード検索
 {{< history >}}
 
 - GitLab 18.7で[ベータ版](../../policy/development_stages_support.md#beta)として[導入](https://gitlab.com/groups/gitlab-org/-/epics/16910)されました。
+- GitLab 18.8でGitLab Duo Coreに[追加されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/588259)。
+- GitLab 18.9でPremiumに[追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/590394)。
 
 {{< /history >}}
 
@@ -29,16 +31,15 @@ title: セマンティックコード検索
 
 ## 前提条件 {#prerequisites}
 
-- 次のいずれかが設定されていること:
-  - [GitLab AIゲートウェイ](../../administration/gitlab_duo/gateway.md)へのアクセス。
-  - 埋め込み生成のためにVertex AIの`text-embedding-005`モデルにアクセスできる、[セルフホストAIゲートウェイ](../../install/install_ai_gateway.md)。
+- GitLabが運用する[AIゲートウェイ](../../administration/gitlab_duo/gateway.md)へのアクセス。
 - 次の機能をオンにすること:
-  - GitLab.comの場合、トップレベルネームスペースに対する実験的機能。
+  - GitLab.comの場合、トップレベルグループの実験機能を有効にします。
   - GitLab Self-Managedの場合、インスタンスに対するGitLab Duoの実験的機能およびベータ版機能。
-- プロジェクトで[GitLab Duo](turn_on_off.md#turn-gitlab-duo-on-or-off)がオンになっていること。
-- サポートされているベクターストアが設定されていること:
+- プロジェクトで[GitLab Duo](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off)がオンになっていること。
+- 以下のいずれかのベクターストアが設定されていること:
   - Elasticsearch 8.0以降。
   - OpenSearch 2.0以降。
+  - PostgreSQLと[`pgvector`](https://github.com/pgvector/pgvector)拡張機能。
 - 管理者アクセス権が必要です。
 
 ## セマンティックコード検索を有効にする {#enable-semantic-code-search}
@@ -54,14 +55,17 @@ GitLabインスタンスで高度な検索にElasticsearchまたはOpenSearchを
 
 ### Railsコンソールを使用する場合 {#with-the-rails-console}
 
-ElasticsearchまたはOpenSearch用にカスタムベクターストア接続を作成するには、Railsコンソールで、`adapter`と`options`を使用して接続を作成します。
+Elasticsearch、OpenSearch、またはPostgreSQL用のカスタムベクターストア接続を作成するには、Railsコンソールで`adapter`と`options`を使用して接続を作成します。
+
+> [!note]
+> 中規模から大規模のリポジトリには、ElasticsearchまたはOpenSearchを使用してください。`pgvector`は、少数の小さなリポジトリを持つセットアップでのみPostgreSQLと共に使用してください。インデックス作成とクエリ実行のパフォーマンスは`pgvector`で制限される可能性があります。
 
 #### Elasticsearch {#elasticsearch}
 
 ```ruby
 connection = Ai::ActiveContext::Connection.create!(
   name: "elasticsearch",
-  options: { url: ["http://your-elasticsearch-url:9200"] },
+  options: options,
   adapter_class: "ActiveContext::Databases::Elasticsearch::Adapter"
 )
 connection.activate!
@@ -82,7 +86,7 @@ connection.activate!
 ```ruby
 connection = Ai::ActiveContext::Connection.create!(
   name: "opensearch",
-  options: { url: ["http://your-opensearch-url:9200"] },
+  options: options,
   adapter_class: "ActiveContext::Databases::Opensearch::Adapter"
 )
 connection.activate!
@@ -102,6 +106,45 @@ connection.activate!
 | `aws_access_key`         | 文字列           | いいえ       | なし       | AWSアクセスキーID。 |
 | `aws_secret_access_key`  | 文字列           | いいえ       | なし       | AWSシークレットアクセスキー。 |
 
+#### PostgreSQLと`pgvector` {#postgresql-with-pgvector}
+
+{{< history >}}
+
+- GitLab 18.8で[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/552311)されました。
+
+{{< /history >}}
+
+PostgreSQLでは、[`pgvector`](https://github.com/pgvector/pgvector)拡張機能を使用します:
+
+1. PostgreSQLデータベースで、拡張機能を作成します:
+
+   ```sql
+   CREATE EXTENSION vector;
+   ```
+
+1. Railsコンソールで、接続を作成します:
+
+   ```ruby
+   connection = Ai::ActiveContext::Connection.create!(
+     name: "postgres",
+     options: options,
+     adapter_class: "ActiveContext::Databases::Postgresql::Adapter"
+   )
+   connection.activate!
+   ```
+
+接続オプション:
+
+| オプション           | 型    | 必須 | デフォルト | 説明 |
+|------------------|---------|----------|---------|-------------|
+| `host`           | 文字列  | はい      | なし    | PostgreSQLホスト。 |
+| `port`           | 整数 | いいえ       | なし    | PostgreSQLポート。 |
+| `database`       | 文字列  | いいえ       | なし    | データベース名。 |
+| `user`           | 文字列  | いいえ       | なし    | PostgreSQLユーザー。 |
+| `password`       | 文字列  | いいえ       | なし    | PostgreSQLパスワード。 |
+| `connect_timeout`| 整数 | いいえ       | `5`     | 秒単位の接続タイムアウト。 |
+| `pool_size`      | 整数 | いいえ       | `5`     | 接続プールのサイズ。 |
+
 ## セマンティックコード検索を使用する {#use-semantic-code-search}
 
 セマンティックコード検索は、GitLab MCPサーバーツールとして利用できます。このツールの使用方法の詳細については、[`semantic_code_search`](model_context_protocol/mcp_server_tools.md#semantic_code_search)を参照してください。
@@ -112,4 +155,4 @@ GitLabプロジェクトでセマンティックコード検索を初めて使�
 - これらの埋め込みは、設定済みのベクターストアに保存されます。
 - コードがデフォルトブランチにマージされると、更新は段階的に処理されます。
 
-初回のインデックス作成には、リポジトリのサイズに応じて数分かかる場合があります。
+初期のインデックス作成は、リポジトリのサイズによっては時間がかかる場合があります。

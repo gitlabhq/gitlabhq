@@ -193,7 +193,6 @@
         = f.label :time_display_format, class: 'label-bold' do
           = s_('Preferences|Time format')
         - time_display_format_choices.each_entry do |time_display_format_option|
-          .gl-mb-4
           = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Enable follow users feature'),

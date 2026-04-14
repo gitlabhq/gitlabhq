@@ -80,7 +80,7 @@ To find out the version, revision, branch and package deployed in GitLab.com, st
 run this in the #chat-ops-test Slack channel:
 
 ```shell
-/chatops run auto_deploy status
+/chatops gitlab run auto_deploy status
 ```
 
 ![ChatOps auto deploy status output.](img/ChatopsAutoDeployStatus_v18_0.png)
@@ -99,7 +99,7 @@ git show c46489109e4:qa/qa/specs/features/ee/browser_ui/1_manage/group/restrict_
 ```
 
 You can determine the revision SHA deployed on a GitLab instance by either navigating to <https://www.example.com/help>,
-by calling the `https://www.example.com/api/v4/version` API or by running `/chatops run auto_deploy status` in a Slack
+by calling the `https://www.example.com/api/v4/version` API or by running `/chatops gitlab run auto_deploy status` in a Slack
 channel such as #chat-ops-test.
 
 You can also determine if your commit has been deployed on a GitLab environment using [ChatOps](../../../ci/chatops/_index.md).
@@ -107,7 +107,7 @@ For example, if your commit ref is `347e530c5b3dec60c0ce2870bc79ca4c8273604d` yo
 channel such as #chat-ops-test:
 
 ```shell
-/chatops run auto_deploy status 347e530c5b3dec60c0ce2870bc79ca4c8273604d
+/chatops gitlab run auto_deploy status 347e530c5b3dec60c0ce2870bc79ca4c8273604d
 ```
 
 ### Determine the commit SHA of a nightly image

@@ -19,10 +19,9 @@ module Todos
       def execute
         return unless entity && user
 
-        # If at least planner, all entities including confidential issues can be accessed. Although PLANNER is not a
-        # linear access level, it can be considered so for the purpose of issuables visibility because the same
-        # permissions apply to all levels higher than Gitlab::Access::PLANNER
-        return if user_has_planner_access?
+        # If the user can read confidential issues on the entity, they have sufficient access to all
+        # issuables and no todos need to be removed.
+        return if user_can_read_confidential_issues?
 
         remove_confidential_resource_todos
         remove_group_todos
@@ -131,10 +130,10 @@ module Todos
           .id_not_in(authorized_planner_groups)
       end
 
-      def user_has_planner_access?
-        return unless entity.is_a?(Namespace)
+      def user_can_read_confidential_issues?
+        return false unless entity.is_a?(Namespace)
 
-        entity.member?(User.find(user.id), Gitlab::Access::PLANNER)
+        Ability.allowed?(user, :read_confidential_issues, entity)
       end
 
       def confidential_issues

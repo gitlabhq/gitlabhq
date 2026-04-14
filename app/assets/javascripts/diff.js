@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';

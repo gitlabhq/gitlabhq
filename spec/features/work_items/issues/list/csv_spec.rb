@@ -12,13 +12,9 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning, quarantine: 
   let!(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
-    visit project_issues_path(project)
+    visit project_work_items_path(project)
   end
 
   def request_csv

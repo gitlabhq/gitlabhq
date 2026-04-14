@@ -60,6 +60,22 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
         end
       end
 
+      context 'when setting milestone with a global id' do
+        let(:mutation_params) do
+          {
+            project_path: project.full_path,
+            iid: issue.iid,
+            milestone_id: milestone.to_global_id.to_s
+          }
+        end
+
+        it 'sets the milestone correctly' do
+          subject
+
+          expect(issue.reload.milestone).to eq(milestone)
+        end
+      end
+
       context 'when setting milestone to nil' do
         let(:expected_attributes) { { milestone_id: nil } }
 

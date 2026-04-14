@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormCheckboxGroup } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 
 const isValidItemDefinition = (value) => {
   // The Item definition should either be a simple string

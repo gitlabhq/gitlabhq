@@ -21,6 +21,7 @@ module Timelogs
           }, 404)
       end
 
+      return timelogs_not_supported_error unless timelogs_supported?
       return error(_("Spent at can't be a future date and time."), 404) if spent_at.future?
       return error(_("Time spent can't be zero."), 404) if time_spent == 0
 
@@ -66,6 +67,17 @@ module Timelogs
           current_user: current_user
         )
       end
+    end
+
+    def timelogs_not_supported_error
+      error(
+        _("%{issuable_class_name} does not support time logs.") % {
+          issuable_class_name: issuable.nil? ? 'Issuable' : issuable.base_class_name
+        }, 404)
+    end
+
+    def timelogs_supported?
+      issuable.is_a?(Issue) || issuable.is_a?(MergeRequest)
     end
   end
 end

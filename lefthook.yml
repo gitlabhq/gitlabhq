@@ -1,4 +1,4 @@
-commit-msg:
+post-commit:
   scripts:
     'lint_commit_message':
       runner: bash
@@ -276,7 +276,7 @@ pre-commit:
       run: scripts/lint-clickhouse-migrations.sh
     gitaly-version-check:
       tags: gitaly
-      glob: "{Gemfile.lock,VERSION}"
+      glob: '{Gemfile.lock,VERSION}'
       run: 'scripts/lint/gitaly_version.rb'
 
 auto-fix:
@@ -323,3 +323,8 @@ auto-fix:
       exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: markdownlint-cli2 --fix {files}
+    openapi_generate:
+      tags: documentation backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: '{,ee/}lib/api/**/*.rb'
+      run: GITLAB_SIMULATE_SAAS=false bundle exec rake gitlab:openapi:v3:generate gitlab:openapi:v2:generate

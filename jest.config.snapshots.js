@@ -36,11 +36,16 @@ module.exports = () => {
     saveArrayToFile(testMatch, SNAPSHOT_TEST_MATCH_FILE);
   }
 
+  const config = baseConfig('spec/frontend');
   return {
-    ...baseConfig('spec/frontend'),
+    ...config,
     roots: ['<rootDir>/spec/frontend'],
     rootsEE: ['<rootDir>/ee/spec/frontend'],
     rootsJH: ['<rootDir>/jh/spec/frontend'],
     testMatch,
+    setupFilesAfterEnv: [
+      ...config.setupFilesAfterEnv,
+      '<rootDir>/spec/frontend/__helpers__/axios_mock_adapter_setup.js',
+    ],
   };
 };

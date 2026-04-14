@@ -6,6 +6,10 @@ FactoryBot.define do
     sequence(:version) { |n| "1.0.#{n}" }
     package_type { :cargo }
 
+    package_files do
+      [association(:package_file, :cargo, package: instance)]
+    end
+
     trait :with_metadatum do
       cargo_metadatum { association(:cargo_metadatum, package: instance) }
     end

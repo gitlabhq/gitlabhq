@@ -15,7 +15,7 @@ module Ci
       end
 
       pipeline.processables.latest.skipped.find_each do |skipped|
-        Gitlab::OptimisticLocking.retry_lock_with_transaction(skipped, name: 'ci_retry_pipeline') do |job|
+        Gitlab::OptimisticLocking.retry_lock(skipped, name: 'ci_retry_pipeline') do |job|
           job.process(current_user)
         end
       end

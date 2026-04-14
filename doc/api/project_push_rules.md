@@ -18,9 +18,9 @@ Use this API to manage project [push rules](../user/project/repository/push_rule
 > [!note]
 > GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for all regular expressions in push rules.
 
-## Get project push rules
+## Retrieve the push rules of a project
 
-Get the push rules of a project.
+Retrieves the push rules of a specified project.
 
 ```plaintext
 GET /projects/:id/push_rule
@@ -58,7 +58,7 @@ If push rules were never configured for the project, returns HTTP `200 OK` with 
 `"null"` as the response body.
 
 > [!note]
-> This differs from the [group push rules API](group_push_rules.md#get-the-push-rules-of-a-group),
+> This differs from the [group push rules API](group_push_rules.md#retrieve-the-push-rules-of-a-group),
 > which returns `404 Not Found` error.
 
 Example request:
@@ -109,9 +109,9 @@ null
 
 This returns the literal string `"null"` (4 characters), not a JSON `null` value.
 
-## Add a project push rule
+## Add push rules to a project
 
-Add a push rule to a specified project.
+Adds push rules to the specified project.
 
 ```plaintext
 POST /projects/:id/push_rule
@@ -191,9 +191,9 @@ Example response:
 }
 ```
 
-## Edit project push rule
+## Update push rules of a project
 
-Edit a push rule for a specified project.
+Updates the push rules for the specified project.
 
 ```plaintext
 PUT /projects/:id/push_rule
@@ -273,9 +273,9 @@ Example response:
 }
 ```
 
-## Delete project push rule
+## Delete the push rules of a project
 
-Delete a push rule from a project.
+Deletes all the push rules of a specified project.
 
 ```plaintext
 DELETE /projects/:id/push_rule

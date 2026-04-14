@@ -150,7 +150,7 @@ The previous configuration using the Projects API will be removed in v5 of the G
 
 ## `restrict_user_defined_variables` parameter with the projects API endpoint
 
-In GitLab 17.7, the [`restrict_user_defined_variables` parameter in Projects API](../projects.md#edit-a-project)
+In GitLab 17.7, the [`restrict_user_defined_variables` parameter in Projects API](../projects.md#update-a-project)
 is deprecated in favour of using only `ci_pipeline_variables_minimum_override_role`.
 
 To match the same behavior of `restrict_user_defined_variables: false` set `ci_pipeline_variables_minimum_override_role` as `developer`.

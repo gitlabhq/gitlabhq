@@ -35,7 +35,7 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnMemberInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
@@ -55,7 +55,7 @@ import {
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('InviteMembersModal', () => {
   let wrapper;
@@ -559,10 +559,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
           expect(findMembersSelect().props('exceptionState')).toBe(false);
-          expect(captureException).toHaveBeenCalledWith({
-            error: new Error(SERVER_ERROR_MESSAGE),
-            component: wrapper.vm.$options.name,
-          });
+          expect(captureException).toHaveBeenCalledWith(new Error(SERVER_ERROR_MESSAGE));
         });
 
         it('displays the restricted user api message for response with bad request', async () => {

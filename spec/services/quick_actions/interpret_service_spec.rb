@@ -2693,7 +2693,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
 
         it 'return correct execution message' do
-          expect(unlink_issues[2]).to eq('No linked issue matches the provided parameter.')
+          expect(unlink_issues[2]).to eq('No linked item matches the provided parameter.')
         end
       end
 
@@ -2703,7 +2703,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'executes command successfully' do
           expect { unlink_issues }.to change { IssueLink.count }.by(-1)
-          expect(unlink_issues[2]).to eq("Removed linked item #{other_issue.to_reference(issue)}.")
+          expect(unlink_issues[2]).to eq("Removed linked item #{other_issue.to_reference(project)}.")
           expect(issue.notes.last.note).to eq("removed the relation with #{other_issue.to_reference}")
           expect(other_issue.notes.last.note).to eq("removed the relation with #{issue.to_reference}")
         end
@@ -4242,7 +4242,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe 'relate and unlink commands' do
-      let_it_be(:other_issue) { create(:issue, project: project).to_reference(issue) }
+      let_it_be(:other_issue) { create(:issue, project: project).to_reference(project) }
       let(:relate_content) { "/relate #{other_issue}" }
       let(:unlink_content) { "/unlink #{other_issue}" }
 

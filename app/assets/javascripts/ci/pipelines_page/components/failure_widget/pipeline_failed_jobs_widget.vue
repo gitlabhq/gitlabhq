@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlButton, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __ } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
@@ -11,6 +12,7 @@ import FailedJobsList from './failed_jobs_list.vue';
 import { POLL_INTERVAL } from './constants';
 
 export default {
+  name: 'PipelineFailedJobsWidget',
   fetchError: __('An error occured fetching failed jobs count'),
   components: {
     GlBadge,
@@ -54,8 +56,9 @@ export default {
 
         return project?.pipeline?.jobs?.count || 0;
       },
-      error() {
+      error(err) {
         createAlert({ message: this.$options.fetchError });
+        reportToSentry(this.$options.name, err);
       },
     },
   },
@@ -107,8 +110,9 @@ export default {
         // to avoid redundant calls
         this.$apollo.queries.failedJobsCount.stopPolling();
         await this.$apollo.queries.failedJobsCount.refetch();
-      } catch {
+      } catch (err) {
         createAlert({ message: this.$options.fetchError });
+        reportToSentry(this.$options.name, err);
       } finally {
         if (this.isPipelineActive) {
           this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);

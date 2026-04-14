@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrations do
-  let_it_be(:installation) { create(:jira_connect_installation) }
+RSpec.describe JiraConnect::RepositoriesController, :with_current_organization, feature_category: :integrations do
+  let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :small_repo, namespace: group) }
 

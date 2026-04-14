@@ -10,6 +10,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 
+const defaultProvide = {
+  canSetPipelineVariables: true,
+};
+
 describe('Job Sidebar Retry Button', () => {
   let store;
   let wrapper;
@@ -21,7 +25,7 @@ describe('Job Sidebar Retry Button', () => {
   const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
   const findActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
-  const createWrapper = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
+  const createWrapper = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
     store = createStore();
     wrapper = mountFn(JobsSidebarRetryButton, {
       propsData: {
@@ -32,6 +36,7 @@ describe('Job Sidebar Retry Button', () => {
         confirmationMessage: null,
         ...props,
       },
+      provide: { ...defaultProvide, ...provide },
       store,
     });
   };
@@ -136,16 +141,26 @@ describe('Job Sidebar Retry Button', () => {
     });
 
     it.each`
-      isManualJob | shouldShowDropdown | description
-      ${true}     | ${true}            | ${'shows dropdown for manual job'}
-      ${false}    | ${true}            | ${'shows dropdown for retryable job'}
-    `('$description', async ({ isManualJob, shouldShowDropdown }) => {
-      createWrapper({
-        props: { isManualJob },
-      });
-      await waitForPromises();
+      isManualJob | canSetPipelineVariables | hasInputs | shouldShowDropdown | description
+      ${true}     | ${true}                 | ${true}   | ${true}            | ${'shows dropdown for manual job with inputs'}
+      ${true}     | ${true}                 | ${false}  | ${true}            | ${'shows dropdown for manual job without inputs'}
+      ${true}     | ${false}                | ${true}   | ${true}            | ${'shows dropdown for manual job (no permissions) with inputs'}
+      ${true}     | ${false}                | ${false}  | ${false}           | ${'does not show dropdown for manual job (no permissions) without inputs'}
+      ${false}    | ${false}                | ${true}   | ${true}            | ${'shows dropdown for retryable job with inputs'}
+      ${false}    | ${true}                 | ${false}  | ${false}           | ${'does not show dropdown for retryable job without inputs'}
+    `(
+      '$description',
+      async ({ isManualJob, canSetPipelineVariables, hasInputs, shouldShowDropdown }) => {
+        createWrapper({
+          props: { isManualJob, hasInputs },
+          provide: {
+            canSetPipelineVariables,
+          },
+        });
+        await waitForPromises();
 
-      expect(findActionsDropdown().exists()).toBe(shouldShowDropdown);
-    });
+        expect(findActionsDropdown().exists()).toBe(shouldShowDropdown);
+      },
+    );
   });
 });

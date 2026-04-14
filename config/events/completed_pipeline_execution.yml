@@ -9,6 +9,8 @@ identifiers:
 additional_properties:
   label:
     description: Completion status (ie. success, failed, skipped, canceled)
+  failure_reason:
+    description: Pipeline failure reason (e.g. config_error, unknown_failure). Only present for failed pipelines.
 product_group: pipeline_execution
 product_categories:
 - pipeline_reports

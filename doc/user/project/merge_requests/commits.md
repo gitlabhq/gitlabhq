@@ -14,7 +14,7 @@ title: Commits
 {{< /details >}}
 
 A commit records and sends the source code changes to the [repository](../repository/_index.md).
-For more information, see [Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).
+For more information, see [recording changes to the repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).
 
 ## Commit changes using the command line
 
@@ -57,7 +57,7 @@ You can add multiple commits before pushing your changes.
 
   Add extra security by [signing your commits](../repository/signed_commits/_index.md).
 
-For additional information, see [Stage, commit, and push changes](../../../topics/git/commit.md).
+For more information, see [stage, commit, and push changes](../../../topics/git/commit.md).
 
 ## Merge request commits
 
@@ -107,7 +107,7 @@ To add previously merged commits to a merge request for more context:
 1. Select **Save changes**.
 
 Previously merged commits are referred to as **Context Commits** in
-the [API](../../../api/merge_request_context_commits.md).
+the [merge request context commits API](../../../api/merge_request_context_commits.md).
 
 ### Add a comment to a commit
 

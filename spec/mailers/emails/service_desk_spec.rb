@@ -531,6 +531,19 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
     # rubocop:enable RSpec/MultipleMemoizedHelpers
 
+    context 'when note contains a table of contents tag' do
+      let_it_be(:note) do
+        create(:note_on_issue, noteable: item, project: project,
+          note: "[[_TOC_]]\n\n# Heading 1\n\n## Heading 2")
+      end
+
+      it 'does not render the table of contents' do
+        is_expected.to have_body_text('_TOC_')
+        is_expected.not_to have_body_text('#heading-1')
+        is_expected.not_to have_body_text('#heading-2')
+      end
+    end
+
     context 'when custom email is enabled' do
       subject { Notify.service_desk_new_note_email(item_id, note.id, email_participant) }
 

@@ -21,6 +21,10 @@ module ActiveContext
         SLICE_SIZE = 1_000
         SHARD_LIMIT = 1_000
 
+        def limit_throughput?
+          false
+        end
+
         def number_of_shards
           raise NotImplementedError
         end

@@ -413,13 +413,17 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       let!(:downstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
 
       context 'when the strategy is `depend`' do
-        let!(:bridge) { create(:ci_bridge, :strategy_depend, status: 'success', pipeline: downstream_pipeline) }
+        let!(:bridge) do
+          create(:ci_bridge, :strategy_depend, status: 'success', pipeline: downstream_pipeline, downstream: project)
+        end
 
         it_behaves_like 'updates the bridge status when authorized'
       end
 
       context 'when the strategy is `mirror`' do
-        let!(:bridge) { create(:ci_bridge, :strategy_mirror, status: 'success', pipeline: downstream_pipeline) }
+        let!(:bridge) do
+          create(:ci_bridge, :strategy_mirror, status: 'success', pipeline: downstream_pipeline, downstream: project)
+        end
 
         it_behaves_like 'updates the bridge status when authorized'
       end

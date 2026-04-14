@@ -215,6 +215,7 @@ export default {
         this.sortable = Sortable.create(
           list,
           getSortableDefaultOptions({
+            forceFallback: true,
             handle: '.drag-icon',
             onUpdate: (event) => {
               const description = convertDescriptionWithNewSort(this.descriptionText, event.to);

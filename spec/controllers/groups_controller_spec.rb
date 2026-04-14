@@ -182,8 +182,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
     subject { get :details, params: { id: group.to_param }, format: format }
 
-    it { is_expected.to redirect_to(group_path(group)) }
-
     it_behaves_like 'details view as atom'
   end
 
@@ -464,26 +462,19 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         sign_in(user)
       end
 
-      context 'when user has ability to write update_default_branch_protection' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
+      context 'for users who have the ability to create a group with `default_branch_protection_defaults`' do
+        it 'creates group with the specified default branch protection level' do
+          post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "true", default_branch_protection_defaults: protection_defaults } }, as: :json
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
         end
 
-        context 'for users who have the ability to create a group with `default_branch_protection_defaults`' do
-          it 'creates group with the specified default branch protection level' do
-            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "true", default_branch_protection_defaults: protection_defaults } }, as: :json
+        it 'ignores default_branch_protection_defaults if default_branch_protected is set to false' do
+          post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "false", default_branch_protection_defaults: protection_defaults } }, as: :json
 
-            expect(response).to have_gitlab_http_status(:found)
-            expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
-          end
-
-          it 'ignores default_branch_protection_defaults if default_branch_protected is set to false' do
-            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "false", default_branch_protection_defaults: protection_defaults } }, as: :json
-
-            expect(response).to have_gitlab_http_status(:found)
-            expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protection_none.stringify_keys)
-          end
+          expect(response).to have_gitlab_http_status(:found)
+          expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protection_none.stringify_keys)
         end
       end
 
@@ -540,31 +531,16 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       expect(user.reload.user_preference.issues_sort).to eq('priority')
     end
 
-    context 'when work_item_planning_view feature flag is enabled' do
-      it 'redirects to work items path without type filter in FOSS' do
-        get :issues, params: { id: group.to_param }
+    it 'redirects to work items path without type filter in FOSS' do
+      get :issues, params: { id: group.to_param }
 
-        expect(response).to redirect_to(group_work_items_path(group))
-      end
-
-      it 'preserves query parameters except type when redirecting' do
-        get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
-
-        expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc' }))
-      end
+      expect(response).to redirect_to(group_work_items_path(group))
     end
 
-    context 'when work_item_planning_view feature flag is disabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
+    it 'preserves query parameters except type when redirecting' do
+      get :issues, params: { id: group.to_param, search: 'bug', sort: 'created_desc', type: 'old_type' }
 
-      it 'renders the issues page' do
-        get :issues, params: { id: group.to_param }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template 'groups/issues'
-      end
+      expect(response).to redirect_to(group_work_items_path(group, params: { search: 'bug', sort: 'created_desc' }))
     end
   end
 
@@ -612,10 +588,10 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         end
 
         context 'for a html request' do
-          it 'redirects to group path' do
+          it 'redirects to groups dashboard' do
             subject
 
-            expect(response).to redirect_to(group_path(group.reload))
+            expect(response).to redirect_to(dashboard_groups_path)
           end
         end
 
@@ -671,12 +647,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           let(:params) { { permanently_remove: true } }
 
           context 'for a html request' do
-            it 'deletes the group immediately and redirects to root path' do
+            it 'deletes the group immediately and redirects to groups dashboard' do
               expect(GroupDestroyWorker).to receive(:perform_async)
 
               subject
 
-              expect(response).to redirect_to(root_path)
+              expect(response).to redirect_to(dashboard_groups_path)
               expect(flash[:toast]).to include "#{group.name} is being deleted."
             end
           end
@@ -1175,6 +1151,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   describe 'PUT transfer' do
     before do
       sign_in(user)
+      stub_feature_flags(groups_and_projects_async_transfer: false)
     end
 
     context 'when transferring to a subgroup goes right' do
@@ -1298,6 +1275,132 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       it 'does not allow the group to be transferred' do
         expect(controller).to set_flash[:alert].to match(/Docker images in their container registry/)
         expect(response).to redirect_to(edit_group_path(group))
+      end
+    end
+
+    context 'when groups_and_projects_async_transfer feature flag is enabled' do
+      let(:group) { create(:group, :public) }
+      let(:new_parent_group) { create(:group, :public) }
+
+      before do
+        stub_feature_flags(groups_and_projects_async_transfer: true)
+        group.add_owner(user)
+        new_parent_group.add_owner(user)
+      end
+
+      context 'when transferring to a new parent group' do
+        it 'enqueues the async transfer worker and redirects' do
+          expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
+            group.id,
+            new_parent_group.id,
+            user.id
+          )
+
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: new_parent_group.id
+            }
+
+          expect(flash[:notice]).to eq("Group transfer has been queued. You will be notified when it completes.")
+          expect(response).to redirect_to(group_path(group))
+        end
+
+        it 'transitions the group to transfer_scheduled state' do
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: new_parent_group.id
+            }
+
+          expect(group.reload.state).to eq('transfer_scheduled')
+        end
+
+        it 'stores transfer metadata in state_metadata' do
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: new_parent_group.id
+            }
+
+          metadata = group.reload.state_metadata
+          expect(metadata['transfer_target_parent_id']).to eq(new_parent_group.id)
+          expect(metadata['transfer_scheduled_by_user_id']).to eq(user.id)
+          expect(metadata['transfer_scheduled_at']).to be_present
+        end
+      end
+
+      context 'when transferring to root (no parent group)' do
+        let(:group) { create(:group, :public, :nested) }
+
+        before do
+          group.add_owner(user)
+        end
+
+        it 'enqueues the worker with nil parent group id' do
+          expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
+            group.id,
+            nil,
+            user.id
+          )
+
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: ''
+            }
+
+          expect(flash[:notice]).to eq("Group transfer has been queued. You will be notified when it completes.")
+          expect(response).to redirect_to(group_path(group))
+        end
+
+        it 'stores nil transfer_target_parent_id in state_metadata' do
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: ''
+            }
+
+          expect(group.reload.state_metadata['transfer_target_parent_id']).to be_nil
+        end
+      end
+
+      context 'when the state transition fails' do
+        before do
+          group.update_column(:state, Group.states[:creation_in_progress])
+        end
+
+        it 'does not enqueue the worker and shows an error with last_error fallback' do
+          expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: new_parent_group.id
+            }
+
+          expect(flash[:alert]).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+          expect(response).to redirect_to(edit_group_path(group))
+        end
+      end
+
+      context 'when the group is already in transfer_scheduled state' do
+        before do
+          group.schedule_transfer!(transition_user: user)
+        end
+
+        it 'does not enqueue the worker and shows an error' do
+          expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+          put :transfer,
+            params: {
+              id: group.to_param,
+              new_parent_group_id: new_parent_group.id
+            }
+
+          expect(flash[:alert]).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+          expect(response).to redirect_to(edit_group_path(group))
+        end
       end
     end
   end
@@ -1578,10 +1681,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     describe 'GET #issues' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
       subject { get :issues, params: { id: group.to_param } }
 
       it_behaves_like 'disabled when using an external authorization service'

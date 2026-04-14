@@ -8,6 +8,9 @@ module Gitlab
     JWT_ISSUER = 'gitlab-kas'
     JWT_AUDIENCE = 'gitlab'
     K8S_PROXY_PATH = 'k8s-proxy'
+    # The name of the cookie that will be used for the KAS cookie
+    COOKIE_KEY = '_gitlab_kas'
+    DEFAULT_ENCRYPTED_COOKIE_CIPHER = 'aes-256-gcm'
 
     include JwtAuthenticatable
 

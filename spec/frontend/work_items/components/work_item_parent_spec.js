@@ -1,10 +1,10 @@
-import { GlLink, GlPopover } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import IssuePopover from '~/issuable/popover/components/issue_popover.vue';
+import WorkItemPopover from '~/issuable/popover/components/work_item_popover.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -13,8 +13,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_parent.mutation.
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
-import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowed_parent_types.query.graphql';
-import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
+import workItemAllowedParentTypesQuery from '~/work_items/graphql/work_item_allowed_parent_types.query.graphql';
 import {
   availableObjectivesResponse,
   mockParentWidgetResponse,
@@ -26,7 +25,6 @@ import {
   allowedParentTypesResponse,
   groupEpicsWithMilestonesQueryResponse,
   groupEpicsWithMilestonesQueryResponseWithFeatures,
-  mockFullWorkItemTypeConfiguration,
   mockMilestone,
   mockFeaturesMilestone,
   availableObjectivesResponseWithoutParent,
@@ -52,8 +50,18 @@ describe('WorkItemParent component', () => {
     .mockResolvedValue(groupEpicsWithMilestonesQueryResponse);
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const failedQueryHandler = jest.fn().mockRejectedValue(new Error());
-  const allowedParentTypesHandler = jest.fn().mockResolvedValue(allowedParentTypesResponse);
-
+  const allowedParentTypesHandler = jest.fn().mockResolvedValue({
+    data: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/634',
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/6',
+          name: 'Objective',
+          widgetDefinitions: [],
+        },
+      },
+    },
+  });
   const workItemReferencesSuccessHandler = jest
     .fn()
     .mockResolvedValue(mockWorkItemReferenceQueryResponse);
@@ -61,8 +69,8 @@ describe('WorkItemParent component', () => {
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAncestorUnavailable = () => wrapper.findByTestId('ancestor-not-available');
   const findLink = () => wrapper.findComponent(GlLink);
-  const findPopover = () => wrapper.findComponent(GlPopover);
-  const findIssuePopover = () => wrapper.findComponent(IssuePopover);
+  const findInaccessibleParentPopover = () => wrapper.findByTestId('inaccessible-parent-popover');
+  const findWorkItemPopover = () => wrapper.findComponent(WorkItemPopover);
 
   const successUpdateWorkItemMutationHandler = jest
     .fn()
@@ -97,8 +105,8 @@ describe('WorkItemParent component', () => {
     searchQueryHandler = availableWorkItemsSuccessHandler,
     groupSearchQueryHandler = groupWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
+    allowedParentTypesQueryHandler = allowedParentTypesHandler,
     hasParent = true,
-    isGroup = false,
     provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemParent, {
@@ -107,7 +115,7 @@ describe('WorkItemParent component', () => {
         [groupWorkItemsQuery, groupSearchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemsByReferencesQuery, workItemReferencesSuccessHandler],
-        [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
+        [workItemAllowedParentTypesQuery, allowedParentTypesQueryHandler],
       ]),
       propsData: {
         canUpdate,
@@ -116,16 +124,28 @@ describe('WorkItemParent component', () => {
         workItemId,
         workItemType,
         hasParent,
-        isGroup,
         allowedParentTypesForNewWorkItem,
       },
       provide: {
+        glFeatures: {
+          workItemConfigurableTypes: true,
+        },
         getWorkItemTypeConfiguration: mockWorkItemConfigGetter,
-        workItemTypesConfiguration: mockFullWorkItemTypeConfiguration,
+        workItemTypesConfiguration: [
+          { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/3', name: 'Test Case', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/4', name: 'Requirement', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/5', name: 'Task', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/6', name: 'Objective', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/7', name: 'Key Result', isGroupWorkItemType: false },
+          { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+          { id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket', isGroupWorkItemType: false },
+        ],
         ...provide,
       },
       stubs: {
-        IssuePopover: true,
+        WorkItemPopover,
       },
     });
   };
@@ -184,7 +204,11 @@ describe('WorkItemParent component', () => {
         searchByIid: false,
         searchByText: true,
         searchTerm: '',
-        types: ['ISSUE', 'INCIDENT', 'TICKET'],
+        workItemTypeIds: [
+          'gid://gitlab/WorkItems::Type/1',
+          'gid://gitlab/WorkItems::Type/2',
+          'gid://gitlab/WorkItems::Type/9',
+        ],
       });
     });
   });
@@ -238,8 +262,8 @@ describe('WorkItemParent component', () => {
     it('renders IssuePopover for parent link', () => {
       createComponent({ parent: mockParentWidgetResponse });
 
-      expect(findIssuePopover().exists()).toBe(true);
-      expect(findIssuePopover().props('target')).toBe(findLink().props('id'));
+      expect(findWorkItemPopover().exists()).toBe(true);
+      expect(findWorkItemPopover().props('target')).toBe(findLink().attributes('id'));
     });
 
     it('does not show ancestor not available message', () => {
@@ -251,7 +275,7 @@ describe('WorkItemParent component', () => {
     it('does not render inaccessible parent popover', () => {
       createComponent({ parent: mockParentWidgetResponse });
 
-      expect(findPopover().exists()).toBe(false);
+      expect(findInaccessibleParentPopover().exists()).toBe(false);
     });
   });
 
@@ -310,7 +334,7 @@ describe('WorkItemParent component', () => {
       ]);
     });
 
-    it('skips the work item query when the getAllowedWorkItemParentTypes query fails', () => {
+    it('skips the work item query when the workItemAllowedParentTypesQuery query fails', () => {
       createComponent({ allowedParentTypesHandler: failedQueryHandler });
 
       expect(availableWorkItemsSuccessHandler).not.toHaveBeenCalled();
@@ -326,28 +350,28 @@ describe('WorkItemParent component', () => {
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
         searchTerm: '',
-        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: undefined,
         iid: null,
         isNumber: false,
         searchByIid: false,
         searchByText: true,
         includeAncestors: true,
+        workItemTypeIds: [],
       });
 
       findSidebarDropdownWidget().vm.$emit('searchStarted', mockText);
       await waitForPromises();
 
-      expect(searchedItemQueryHandler).toHaveBeenCalledWith({
+      expect(searchedItemQueryHandler).toHaveBeenLastCalledWith({
         fullPath: 'full-path',
         searchTerm: mockText,
-        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: 'TITLE',
         iid: null,
         isNumber: false,
         searchByIid: false,
         searchByText: true,
         includeAncestors: true,
+        workItemTypeIds: [],
       });
       expect(workItemReferencesSuccessHandler).not.toHaveBeenCalled();
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
@@ -368,13 +392,13 @@ describe('WorkItemParent component', () => {
       expect(availableWorkItemsSuccessHandler).toHaveBeenCalledWith({
         fullPath: mockFullPath,
         searchTerm: '',
-        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: undefined,
         iid: null,
         isNumber: false,
         searchByIid: false,
         searchByText: true,
         includeAncestors: true,
+        workItemTypeIds: [],
       });
 
       findSidebarDropdownWidget().vm.$emit('searchStarted', input);
@@ -526,7 +550,7 @@ describe('WorkItemParent component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([
-        ['Something went wrong while updating the objective. Please try again.'],
+        ['Something went wrong while updating the Objective. Please try again.'],
       ]);
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
@@ -542,8 +566,8 @@ describe('WorkItemParent component', () => {
     });
 
     it('displays appropriate message in popover on hover and focus', () => {
-      expect(findPopover().props('triggers')).toBe('hover focus');
-      expect(findPopover().text()).toEqual(
+      expect(findInaccessibleParentPopover().props('triggers')).toBe('hover focus');
+      expect(findInaccessibleParentPopover().text()).toEqual(
         `You don't have the necessary permission to view the ancestor.`,
       );
     });
@@ -551,7 +575,14 @@ describe('WorkItemParent component', () => {
 
   describe('on group level', () => {
     beforeEach(() => {
-      createComponent({ isGroup: true, hasParent: false, workItemType: 'Epic' });
+      mockWorkItemConfigGetter.mockImplementation(() => ({
+        widgetDefinitions: [{ type: 'HIERARCHY', propagatesMilestone: true }],
+      }));
+      createComponent({
+        hasParent: false,
+        workItemType: 'Epic',
+        allowedParentTypesQueryHandler: jest.fn().mockResolvedValue(allowedParentTypesResponse),
+      });
     });
 
     it('calls group mutation when selecting a parent', async () => {
@@ -578,11 +609,13 @@ describe('WorkItemParent component', () => {
           .mockResolvedValue(groupEpicsWithMilestonesQueryResponseWithFeatures);
 
         createComponent({
-          isGroup: true,
           hasParent: false,
           workItemType: 'Epic',
           groupSearchQueryHandler: featuresHandler,
-          provide: { glFeatures: { workItemFeaturesField: true } },
+          allowedParentTypesQueryHandler: jest.fn().mockResolvedValue(allowedParentTypesResponse),
+          provide: {
+            glFeatures: { workItemFeaturesField: true },
+          },
         });
 
         showDropdown();
@@ -612,21 +645,24 @@ describe('WorkItemParent component', () => {
   describe('work item type configuration', () => {
     describe('query selection based on configuration', () => {
       it.each`
-        workItemType   | isGroup  | isIssue  | isGroupWorkItemType | expectedQuery
-        ${'Epic'}      | ${true}  | ${false} | ${true}             | ${'group'}
-        ${'Epic'}      | ${true}  | ${false} | ${null}             | ${'group'}
-        ${'Objective'} | ${false} | ${false} | ${false}            | ${'project'}
-        ${'Objective'} | ${false} | ${false} | ${null}             | ${'project'}
-        ${'Issue'}     | ${true}  | ${true}  | ${false}            | ${'group'}
-        ${'Issue'}     | ${false} | ${true}  | ${null}             | ${'group'}
+        workItemType   | isGroupWorkItemType | expectedQuery
+        ${'Epic'}      | ${true}             | ${'group'}
+        ${'Epic'}      | ${null}             | ${'project'}
+        ${'Objective'} | ${false}            | ${'project'}
+        ${'Objective'} | ${null}             | ${'project'}
+        ${'Issue'}     | ${true}             | ${'group'}
+        ${'Issue'}     | ${null}             | ${'project'}
       `(
-        'selects correct query when workItemType=$workItemType, isGroup=$isGroup, isGroupWorkItemType=$isGroupWorkItemType',
-        async ({ workItemType, isGroup, isGroupWorkItemType, expectedQuery }) => {
+        'selects correct query when workItemType=$workItemType, isGroupWorkItemType=$isGroupWorkItemType',
+        async ({ workItemType, isGroupWorkItemType, expectedQuery }) => {
           mockWorkItemConfigGetter.mockImplementation(() => {
             return { isGroupWorkItemType };
           });
 
-          createComponent({ workItemType, isGroup });
+          createComponent({
+            workItemType,
+            allowedParentTypesQueryHandler: jest.fn().mockResolvedValue(allowedParentTypesResponse),
+          });
 
           showDropdown();
           await waitForPromises();
@@ -642,19 +678,19 @@ describe('WorkItemParent component', () => {
 
     describe('propagatesMilestone', () => {
       it.each`
-        workItemType | propagatesMilestone | shouldEmitMilestone
-        ${'Epic'}    | ${true}             | ${true}
-        ${'Epic'}    | ${false}            | ${true}
-        ${'Epic'}    | ${null}             | ${true}
-        ${'Issue'}   | ${true}             | ${true}
-        ${'Issue'}   | ${false}            | ${false}
-        ${'Issue'}   | ${null}             | ${false}
+        workItemType | propagatesMilestone | isGroupWorkItemType | shouldEmitMilestone
+        ${'Epic'}    | ${true}             | ${true}             | ${true}
+        ${'Epic'}    | ${false}            | ${true}             | ${false}
+        ${'Epic'}    | ${null}             | ${true}             | ${false}
+        ${'Issue'}   | ${true}             | ${true}             | ${true}
+        ${'Issue'}   | ${false}            | ${true}             | ${false}
+        ${'Issue'}   | ${null}             | ${true}             | ${false}
       `(
         'emits parentMilestone correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
-        async ({ workItemType, propagatesMilestone, shouldEmitMilestone }) => {
+        async ({ workItemType, propagatesMilestone, isGroupWorkItemType, shouldEmitMilestone }) => {
           mockWorkItemConfigGetter.mockImplementation(() => {
             return {
-              isGroupWorkItemType: null,
+              isGroupWorkItemType,
               widgetDefinitions: [
                 {
                   type: 'HIERARCHY',
@@ -665,7 +701,10 @@ describe('WorkItemParent component', () => {
             };
           });
 
-          createComponent({ workItemType, isGroup: true });
+          createComponent({
+            workItemType,
+            allowedParentTypesQueryHandler: jest.fn().mockResolvedValue(allowedParentTypesResponse),
+          });
           showDropdown();
           await waitForPromises();
 

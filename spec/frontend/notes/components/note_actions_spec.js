@@ -12,6 +12,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import noteActions from '~/notes/components/note_actions.vue';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import TimelineEventButton from '~/notes/components/note_actions/timeline_event_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -590,6 +591,70 @@ describe('noteActions', () => {
 
         // Should only have the basic label without preview
         expect(ariaLabel).toBe(`Edit comment, @${props.author.username}`);
+      });
+    });
+
+    describe('toggle-aria-label on emoji picker and more actions', () => {
+      const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
+      const findMoreActionsDropdown = () =>
+        wrapper.find('.more-actions-toggle').findComponent(GlDisclosureDropdown);
+
+      const mountWithEmojiPicker = (propsData) => {
+        return shallowMount(noteActions, {
+          pinia,
+          propsData,
+          stubs: {
+            EmojiPicker,
+            GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+              methods: { close: mockCloseDropdown },
+            }),
+            GlDisclosureDropdownGroup,
+            GlDisclosureDropdownItem,
+          },
+        });
+      };
+
+      it('passes toggle-aria-label to emoji picker with note preview', () => {
+        wrapper = mountWithEmojiPicker({
+          ...props,
+          notePreview: '<p>This is a test comment</p>',
+          canAwardEmoji: true,
+        });
+
+        const ariaLabel = findEmojiPicker().props('toggleAriaLabel');
+
+        expect(ariaLabel).toContain(`Add reaction to @${props.author.username}`);
+        expect(ariaLabel).toContain('This is a test comment');
+      });
+
+      it('passes toggle-aria-label to more actions dropdown with note preview', () => {
+        wrapper = mountWithEmojiPicker({
+          ...props,
+          notePreview: '<p>This is a test comment</p>',
+          canReportAsAbuse: true,
+        });
+
+        const ariaLabel = findMoreActionsDropdown().props('toggleAriaLabel');
+
+        expect(ariaLabel).toContain(`More actions for @${props.author.username}`);
+        expect(ariaLabel).toContain('This is a test comment');
+      });
+
+      it('passes toggle-aria-label without preview when notePreview is empty', () => {
+        wrapper = mountWithEmojiPicker({
+          ...props,
+          notePreview: '',
+          canAwardEmoji: true,
+          canReportAsAbuse: true,
+        });
+
+        expect(findEmojiPicker().props('toggleAriaLabel')).toBe(
+          `Add reaction to @${props.author.username}`,
+        );
+
+        expect(findMoreActionsDropdown().props('toggleAriaLabel')).toBe(
+          `More actions for @${props.author.username}`,
+        );
       });
     });
   });

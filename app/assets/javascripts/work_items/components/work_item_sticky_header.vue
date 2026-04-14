@@ -6,6 +6,7 @@ import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import { NAMESPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
@@ -28,6 +29,9 @@ export default {
     GlButton,
     GlLink,
     WorkItemTypeIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -148,11 +152,13 @@ export default {
             show-tooltip-on-hover
             icon-class="gl-fill-icon-subtle"
           />
-          <span v-if="isDrawer" :class="$options.TITLE_CLASS">
-            {{ workItem.title }}
-          </span>
+          <span
+            v-if="isDrawer"
+            v-safe-html="workItem.titleHtml"
+            :class="$options.TITLE_CLASS"
+          ></span>
           <gl-link v-else :class="$options.TITLE_CLASS" href="#top" :title="workItem.title">
-            {{ workItem.title }}
+            <span v-safe-html="workItem.titleHtml"></span>
           </gl-link>
           <gl-button
             v-if="canUpdate"

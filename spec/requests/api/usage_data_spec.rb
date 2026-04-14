@@ -338,6 +338,82 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
         end
       end
 
+      describe 'project_path resolution' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        context 'when project_path is provided without project_id' do
+          it 'resolves the project and namespace from project_path' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                known_event,
+                send_snowplow_event: false,
+                user: user,
+                namespace: project.namespace,
+                project: project,
+                additional_properties: {}
+              )
+
+            post api(endpoint, user), params: { event: known_event, project_path: project.full_path }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when project_path and namespace_id are provided' do
+          it 'resolves project from project_path and uses the provided namespace_id' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                known_event,
+                send_snowplow_event: false,
+                user: user,
+                namespace: project.namespace,
+                project: project,
+                additional_properties: {}
+              )
+
+            post api(endpoint, user), params: {
+              event: known_event,
+              namespace_id: project.namespace_id,
+              project_path: project.full_path
+            }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when both project_id and project_path are provided' do
+          it 'returns bad request due to mutual exclusivity' do
+            post api(endpoint, user), params: {
+              event: known_event,
+              project_id: project.id,
+              project_path: project.full_path
+            }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'when project_path does not resolve to a project' do
+          it 'tracks the event without project or namespace' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                known_event,
+                send_snowplow_event: false,
+                user: user,
+                namespace: nil,
+                project: nil,
+                additional_properties: {}
+              )
+
+            post api(endpoint, user), params: { event: known_event, project_path: 'non/existent' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
       describe 'send_to_snowplow param' do
         it 'does not send the event to snowplow when send_to_snowplow is false' do
           expect(Gitlab::InternalEvents).to receive(:track_event)
@@ -503,6 +579,124 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
         it 'returns bad request' do
           expect { post(api(endpoint, user), params: params) }
             .not_to trigger_internal_events(event)
+        end
+      end
+
+      context 'with project_path resolution' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        context 'when project_path is provided without project_id' do
+          let(:params) do
+            {
+              events: [
+                {
+                  event: event,
+                  project_path: project.full_path,
+                  additional_properties: additional_properties
+                }
+              ]
+            }
+          end
+
+          it 'resolves the project and namespace from project_path' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                event,
+                send_snowplow_event: false,
+                namespace: project.namespace,
+                user: user,
+                project: project,
+                additional_properties: additional_properties
+              )
+
+            post api(endpoint, user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when project_path and namespace_id are provided' do
+          let(:params) do
+            {
+              events: [
+                {
+                  event: event,
+                  namespace_id: project.namespace_id,
+                  project_path: project.full_path,
+                  additional_properties: additional_properties
+                }
+              ]
+            }
+          end
+
+          it 'resolves project from project_path and uses the provided namespace_id' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                event,
+                send_snowplow_event: false,
+                namespace: project.namespace,
+                user: user,
+                project: project,
+                additional_properties: additional_properties
+              )
+
+            post api(endpoint, user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when both project_id and project_path are provided' do
+          let(:params) do
+            {
+              events: [
+                {
+                  event: event,
+                  project_id: project.id,
+                  project_path: project.full_path,
+                  additional_properties: additional_properties
+                }
+              ]
+            }
+          end
+
+          it 'returns bad request due to mutual exclusivity' do
+            post api(endpoint, user), params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'when project_path does not resolve to a project' do
+          let(:params) do
+            {
+              events: [
+                {
+                  event: event,
+                  project_path: 'non/existent',
+                  additional_properties: additional_properties
+                }
+              ]
+            }
+          end
+
+          it 'tracks the event without project or namespace' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                event,
+                send_snowplow_event: false,
+                namespace: nil,
+                user: user,
+                project: nil,
+                additional_properties: additional_properties
+              )
+
+            post api(endpoint, user), params: params
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

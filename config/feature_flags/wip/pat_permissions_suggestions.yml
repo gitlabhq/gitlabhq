@@ -1,0 +1,10 @@
+---
+name: pat_permissions_suggestions
+description: Enables Duo permission suggestions for granular personal access tokens
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592230
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227997
+rollout_issue_url:
+milestone: '18.11'
+group: group::authorization
+type: wip
+default_enabled: false

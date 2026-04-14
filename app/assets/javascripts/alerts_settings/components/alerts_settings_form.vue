@@ -14,7 +14,7 @@ import {
   GlTabs,
   GlTab,
 } from '@gitlab/ui';
-import { isEqual, isEmpty, omit } from 'lodash';
+import { isEqual, isEmpty, omit } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { PROMO_URL, DOCS_URL } from '~/constants';

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe AnalyticsBuildSerializer do
-  let(:resource) { create(:ci_build) }
+RSpec.describe AnalyticsBuildSerializer, feature_category: :continuous_integration do
+  let(:resource) { build_stubbed(:ci_build) }
 
   subject { described_class.new.represent(resource) }
 

@@ -8,6 +8,7 @@ FactoryBot.define do
     owner
     owner_type { 'User' }
     organization
+    device_code_enabled { false }
   end
 
   trait :group_owned do
@@ -25,5 +26,9 @@ FactoryBot.define do
     owner { nil }
     owner_type { nil }
     dynamic { false }
+  end
+
+  trait :with_device_code_enabled do
+    device_code_enabled { true }
   end
 end

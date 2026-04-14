@@ -21,9 +21,7 @@ issues:
 - sentry_issue
 - issuable_severity
 - label_links
-- own_label_links
 - labels
-- own_labels
 - own_notes
 - own_resource_state_events
 - own_resource_label_events
@@ -37,7 +35,6 @@ issues:
 - moved_to
 - moved_from
 - duplicated_to
-- promoted_to_epic
 - events
 - merge_requests_closing_issues
 - metrics
@@ -60,11 +57,11 @@ issues:
 - vulnerability_links
 - related_vulnerabilities
 - user_mentions
-- system_note_metadata
 - alert_management_alert
 - alert_management_alerts
 - status_page_published_incident
 - namespace
+- notes_with_possible_mentions
 - note_authors
 - user_note_authors
 - issue_email_participants
@@ -72,8 +69,6 @@ issues:
 - requirement
 - incident_management_issuable_escalation_status
 - incident_management_timeline_events
-- incident_management_timeline_event_tags
-- incident_management_timeline_event_links
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
@@ -87,6 +82,8 @@ issues:
 - current_status
 - work_item_description
 - work_item_transition
+- work_item_position
+- duo_workflows
 work_item_description:
 - namespace
 - work_item
@@ -97,32 +94,24 @@ work_item_transition:
 - promoted_to_epic
 - duplicated_to
 - moved_to
-work_item_type:
-- issues
+work_item_position:
 - namespace
-- widget_definitions
-- enabled_widget_definitions
-- child_restrictions
-- parent_restrictions
-- allowed_child_types_by_name
-- allowed_parent_types_by_name
+- work_item
+work_item_type:
 - user_preferences
 events:
 - author
-- project
 - group
 - target
 - push_event_payload
 - personal_namespace
 notes:
 - award_emoji
-- project
 - namespace
 - organization
 - noteable
 - author
 - updated_by
-- last_edited_by
 - resolved_by
 - todos
 - events
@@ -143,7 +132,6 @@ commit_notes:
 - noteable
 - author
 - updated_by
-- last_edited_by
 - resolved_by
 - todos
 - events
@@ -161,7 +149,6 @@ label_links:
 - namespace
 label:
 - subscriptions
-- project
 - parent_container
 - lists
 - label_links
@@ -175,11 +162,9 @@ label:
 - resource_label_events
 milestone:
 - group
-- project
 - issues
 - labels
 - merge_requests
-- participants
 - events
 - boards
 - milestone_releases
@@ -187,7 +172,6 @@ milestone:
 - user_agent_detail
 snippets:
 - author
-- project
 - notes
 - award_emoji
 - user_agent_detail
@@ -198,7 +182,6 @@ snippets:
 - organization
 releases:
 - author
-- project
 - links
 - sorted_links
 - milestone_releases
@@ -211,7 +194,6 @@ project_members:
 - created_by
 - user
 - source
-- project
 - member_namespace
 - member_role
 - member_approvals
@@ -225,12 +207,10 @@ merge_requests:
 - subscriptions
 - award_emoji
 - author
-- assignee
 - reviewers
 - reviewed_by_users
 - updated_by
 - milestone
-- iteration
 - notes
 - resource_label_events
 - resource_milestone_events
@@ -263,7 +243,6 @@ merge_requests:
 - merge_request_assignees
 - merge_request_reviewers
 - suggestions
-- diff_note_positions
 - unresolved_notes
 - assignees
 - reviews
@@ -271,12 +250,8 @@ merge_requests:
 - approval_merge_request_rule_sources
 - approval_project_rules
 - approvals
-- approvers
-- approver_users
-- approver_groups
 - approved_by_users
 - v2_approval_rules
-- v2_approval_rules_projects
 - v2_approval_rules_merge_requests
 - draft_notes
 - merge_train_car
@@ -288,7 +263,7 @@ merge_requests:
 - deployment_merge_requests
 - deployments
 - user_mentions
-- system_note_metadata
+- notes_with_possible_mentions
 - note_authors
 - user_note_authors
 - cleanup_schedule
@@ -309,11 +284,9 @@ merge_requests:
 - approval_policy_merge_request_bypass_events
 - generated_ref_commits
 - policy_dismissals
-- security_scan_profiles
-- security_scan_profiles_projects
 - duo_workflows
+- vulnerability_merge_request_links
 external_pull_requests:
-- project
 merge_data:
 - merge_request
 - project
@@ -323,7 +296,6 @@ merge_request_diff:
 - merge_request_diff_commits
 - merge_request_diff_detail
 - merge_request_diff_files
-- merge_request_diff_llm_summary
 merge_request_diff_commits:
 - merge_request_diff
 - commit_author
@@ -345,7 +317,6 @@ merge_schedule:
 cleanup_schedule:
 - merge_request
 ci_pipelines: &pipeline_definition
-- project
 - user
 - ci_ref
 - stages
@@ -378,12 +349,9 @@ ci_pipelines: &pipeline_definition
 - merge_requests_as_head_pipeline
 - merge_request
 - external_pull_request
-- deployments
-- environments
 - job_environments
 - chat_data
 - source_pipeline
-- ref_status
 - source_bridge
 - source_job
 - sourced_pipelines
@@ -394,15 +362,12 @@ ci_pipelines: &pipeline_definition
 - parent_pipeline
 - downstream_bridges
 - job_artifacts
-- vulnerability_findings
-- pipeline_config
 - security_scans
 - security_findings
 - daily_build_group_report_results
 - latest_builds
 - latest_successful_jobs
 - latest_finished_jobs
-- daily_report_results
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
@@ -411,10 +376,6 @@ ci_pipelines: &pipeline_definition
 - pipeline_artifacts_pipeline_variables
 - dast_profile
 - dast_profiles_pipeline
-- dast_site_profile
-- dast_site_profiles_pipeline
-- package_build_infos
-- package_file_build_infos
 - build_trace_chunks
 - pipeline_metadata
 - build_execution_configs
@@ -422,7 +383,6 @@ ci_pipelines: &pipeline_definition
 - workload
 - sbom_occurrence_refs
 pipeline_metadata:
-- project
 - pipeline
 ci_refs:
 - project
@@ -430,7 +390,6 @@ ci_refs:
 pipeline_variables:
 - pipeline
 stages:
-- project
 - pipeline
 - statuses
 - processables
@@ -504,6 +463,7 @@ builds:
 - job_artifacts_api_fuzzing
 - job_artifacts_cluster_image_scanning
 - job_artifacts_cyclonedx
+- job_artifacts_sarif
 - job_artifacts_requirements_v2
 - job_artifacts_repository_xray
 - job_definition
@@ -516,11 +476,7 @@ builds:
 - trace_metadata
 - terraform_state_versions
 - taggings
-- base_tags
-- tag_links
-- tag_taggings
 - tags
-- simple_tags
 - security_scans
 - security_report_artifacts
 - dast_site_profiles_build
@@ -565,10 +521,8 @@ triggers:
 - project
 - owner
 pipeline_schedules:
-- project
 - owner
 - pipelines
-- last_pipeline
 - variables
 - inputs
 pipeline_schedule:
@@ -594,7 +548,6 @@ hooks:
 - project
 - web_hook_logs
 protected_branches:
-- project
 - group
 - merge_access_levels
 - push_access_levels
@@ -606,7 +559,6 @@ protected_branches:
 - squash_option
 - merge_request_approval_setting
 protected_tags:
-- project
 - create_access_levels
 merge_access_levels:
 - protected_branch
@@ -637,11 +589,8 @@ project:
 - ci_components
 - ci_component_last_usages
 - external_status_checks
-- base_tags
 - project_topics
 - topics
-- chat_services
-- cluster
 - clusters
 - cluster_agents
 - ci_access_project_authorizations
@@ -649,15 +598,11 @@ project:
 - workspaces
 - workspace_agentk_states
 - creator
-- cycle_analytics_stages
-- value_streams
 - group
 - namespace
-- namespace_details
 - project_namespace
 - management_clusters
 - boards
-- application_setting
 - last_event
 - integrations
 - push_hooks_integrations
@@ -713,9 +658,7 @@ project:
 - jira_cloud_app_integration
 - zentao_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
-- dingtalk_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/640
-- feishu_integration
 - redmine_integration
 - youtrack_integration
 - custom_issue_tracker_integration
@@ -731,13 +674,11 @@ project:
 - forked_from_project
 - forks
 - merge_requests
-- fork_merge_requests
 - issues
 - work_items
 - labels
 - events
 - milestones
-- iterations
 - notes
 - snippets
 - snippet_repositories
@@ -768,7 +709,6 @@ project:
 - import_data
 - commit_statuses
 - ci_pipelines
-- build_execution_configs
 - all_pipelines
 - stages
 - ci_refs
@@ -816,9 +756,7 @@ project:
 - internal_ids
 - project_deploy_tokens
 - deploy_tokens
-- settings
 - ci_cd_settings
-- project_settings
 - import_export_uploads
 - repository_languages
 - pool_repository
@@ -838,18 +776,11 @@ project:
 - regular_or_any_approver_approval_rules
 - approval_rules
 - approval_merge_request_rules
-- approval_merge_request_rule_sources
-- approval_project_rules
 - v2_approval_rules
 - v2_approval_rules_projects
-- v2_approval_rules_merge_requests
-- approvers
-- approver_users
 - audit_events
 - path_locks
-- approver_groups
 - wiki_repository
-- wiki_repository_state
 - source_pipelines
 - sourced_pipelines
 - vulnerabilities
@@ -864,15 +795,12 @@ project:
 - dast_scanner_profiles
 - dast_sites
 - dast_site_tokens
-- dast_site_validations
 - operations_feature_flags
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
 - software_license_policies
 - custom_software_licenses
-- project_registry
 - packages
-- package_files
 - package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
@@ -887,7 +815,6 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
-- remove_source_branch_after_merge
 - deleting_user
 - upstream_projects
 - upstream_project_subscriptions
@@ -899,7 +826,6 @@ project:
 - import_failures
 - container_expiration_policy
 - resource_groups
-- autoclose_referenced_issues
 - status_page_setting
 - requirements
 - export_jobs
@@ -916,11 +842,10 @@ project:
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
-- vulnerability_namespace_historical_statistics
 - vulnerability_remediations
-- product_analytics_events
 - pipeline_artifacts
 - terraform_states
+- terraform_state_protection_rules
 - alert_management_http_integrations
 - exported_protected_branches
 - incident_management_oncall_schedules
@@ -932,11 +857,11 @@ project:
 - merge_request_metrics
 - security_orchestration_policy_configuration
 - timelogs
-- error_tracking_errors
 - error_tracking_client_keys
 - pending_builds
 - security_scans
 - security_ascp_scans
+- security_ascp_components
 - ci_feature_usages
 - bulk_import_exports
 - ci_project_mirror
@@ -947,7 +872,6 @@ project:
 - build_artifacts_size_refresh
 - project_callouts
 - pipeline_metadata
-- disable_download_button
 - dependency_list_exports
 - sbom_occurrences
 - sbom_occurrence_refs
@@ -956,9 +880,7 @@ project:
 - targeting_dashboards_pointers
 - targeting_dashboards_pointer_projects
 - design_management_repository
-- design_management_repository_state
 - compliance_standards_adherence
-- compliance_requirements
 - scan_result_policy_reads
 - scan_result_policy_violations
 - project_state
@@ -1001,7 +923,7 @@ project:
 - policy_dismissals
 - security_scan_profiles
 - security_scan_profiles_projects
-- enabled_foundational_flows
+- security_scan_profile_project_statuses
 - enabled_foundational_flow_records
 - provisioned_user_details
 - provisioned_users
@@ -1025,6 +947,7 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
+- namespace
 search_data:
 - issue
 merge_request_assignees:
@@ -1036,7 +959,6 @@ merge_request_reviewers:
 lfs_file_locks:
 - user
 project_badges:
-- project
 metrics:
 - target_project
 - merge_request
@@ -1052,13 +974,13 @@ resource_label_events:
 - label
 - namespace
 error_tracking_setting:
-- project
 suggestions:
 - note
+- namespace
 diff_note_positions:
 - note
+- namespace
 protected_environments:
-- project
 - group
 - deploy_access_levels
 - approval_rules
@@ -1110,7 +1032,6 @@ lists:
 - label
 - list_user_preferences
 - group
-- project
 - custom_status
 milestone_releases:
 - milestone
@@ -1126,12 +1047,14 @@ design: &design
 - user_mentions
 - events
 - subscriptions
+- namespace
 designs: *design
 actions:
 - design
 - version
 - uploads
 - file_uploads
+- namespace
 versions: &version
 - author
 - issue
@@ -1157,9 +1080,7 @@ epic:
 - milestone
 - notes
 - label_links
-- own_label_links
 - labels
-- own_labels
 - own_notes
 - own_resource_state_events
 - own_resource_label_events
@@ -1167,10 +1088,8 @@ epic:
 - own_events
 - sync_object
 - todos
-- metrics
 - group
 - parent
-- children
 - updated_by
 - last_edited_by
 - closed_by
@@ -1182,6 +1101,7 @@ epic:
 - resource_label_events
 - resource_state_events
 - user_mentions
+- notes_with_possible_mentions
 - note_authors
 - user_note_authors
 - boards_epic_user_preferences
@@ -1194,9 +1114,11 @@ epic_issue:
 - issue
 - work_item
 - work_item_parent_link
+- namespace
 system_note_metadata:
 - note
 - description_version
+- namespace
 status_page_published_incident:
 - issue
 issuable_sla:
@@ -1307,6 +1229,7 @@ vulnerabilities:
   - user_mentions
   - sbom_occurrences_vulnerabilities
   - sbom_occurrences
+  - security_finding_enrichments
 vulnerability_finding:
   - scanner
   - primary_identifier
@@ -1337,6 +1260,7 @@ vulnerability_finding:
   - detection_transitions
   - project_tracked_context
   - security_finding_enrichments
+  - finding_due_date
 scanner:
   - findings
   - security_findings

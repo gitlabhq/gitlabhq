@@ -93,6 +93,21 @@ RSpec.describe Tooling::PredictiveTests::DuoTestSelector, feature_category: :too
       end
     end
 
+    context 'when diff exceeds byte limit' do
+      let(:changed_files) { ['large.rb'] }
+      let(:git_diff) do
+        header = "diff --git a/large.rb b/large.rb\n+++ b/large.rb\n"
+        # Generate a diff large enough to exceed MAX_DIFF_BYTES but within MAX_DIFF_LINES
+        filler = "+#{'x' * 200}\n"
+        "#{header}#{filler * ((described_class::MAX_DIFF_BYTES / filler.bytesize) + 1)}"
+      end
+
+      it 'returns low confidence result citing the byte limit' do
+        expect(select_tests).to include(confidence: 0.0, specs: [])
+        expect(select_tests[:reasoning]).to include(described_class::MAX_DIFF_BYTES.to_s)
+      end
+    end
+
     context 'when diff exceeds line limit' do
       let(:changed_files) { ['large.rb'] }
       let(:git_diff) do
@@ -196,6 +211,36 @@ RSpec.describe Tooling::PredictiveTests::DuoTestSelector, feature_category: :too
           specs: [],
           reasoning: 'Failed to parse Duo response'
         )
+      end
+    end
+
+    context 'when the diff is large enough to exceed OS per-argument size limits' do
+      it 'passes the diff as a context item via env var, not embedded in --goal' do
+        expect(Open3).to receive(:capture2e) do |env, *cmd|
+          context_items = Gitlab::Json.safe_parse(env['DUO_WORKFLOW_ADDITIONAL_CONTEXT_CONTENT'])
+          expect(context_items.first['content']).to eq(git_diff)
+
+          goal_index = cmd.index('--goal')
+          expect(goal_index).not_to be_nil, "expected --goal to be present in cmd: #{cmd.inspect}"
+          expect(cmd[goal_index + 1]).not_to include(git_diff)
+
+          ['output', instance_double(Process::Status, success?: false, exitstatus: 1)]
+        end
+
+        selector.select_tests
+      end
+
+      context 'when Errno::E2BIG is raised' do
+        before do
+          allow(Open3).to receive(:capture2e).and_raise(Errno::E2BIG)
+        end
+
+        it 'falls back gracefully without raising' do
+          result = nil
+
+          expect { result = selector.select_tests }.not_to raise_error
+          expect(result).to include(confidence: 0.0, specs: [], reasoning: 'Duo CLI failed')
+        end
       end
     end
 

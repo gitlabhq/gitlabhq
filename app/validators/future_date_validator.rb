@@ -12,6 +12,6 @@
 
 class FutureDateValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    record.errors.add(attribute, _('cannot be a date in the past')) if value < Date.current
+    record.errors.add(attribute, _('cannot be a date in the past')) if value && value < Date.current
   end
 end

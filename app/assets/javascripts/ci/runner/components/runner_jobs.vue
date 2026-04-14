@@ -5,9 +5,9 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import runnerJobsQuery from '../graphql/show/runner_jobs.query.graphql';
 import { I18N_FETCH_ERROR, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '../constants';
-import { captureException } from '../sentry_utils';
 import { getPaginationVariables } from '../utils';
 import RunnerJobsTable from './runner_jobs_table.vue';
 import RunnerPagination from './runner_pagination.vue';
@@ -58,7 +58,7 @@ export default {
       },
       error(error) {
         createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
+        captureException(error);
       },
     },
   },

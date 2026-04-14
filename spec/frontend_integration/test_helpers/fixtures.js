@@ -5,7 +5,7 @@
 // We don't want to require *all* fixtures to be generated (especailly in a local environment).
 // We use `eslint` instead of `eslint-disable`, so that we also don't trigger an `Unused eslint-disable directive` when all fixtures are present.
 
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 const createFactoryWithDefault = (fn, defaultValue) => () => {
   try {

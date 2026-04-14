@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildActionEntity do
-  let(:job) { create(:ci_build, name: 'test_job') }
+RSpec.describe BuildActionEntity, feature_category: :continuous_integration do
+  let(:job) { build_stubbed(:ci_build, name: 'test_job') }
   let(:request) { double('request') }
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   let(:entity) do
     described_class.new(job, request: request)
@@ -31,7 +31,7 @@ RSpec.describe BuildActionEntity do
     end
 
     context 'when job is scheduled' do
-      let(:job) { create(:ci_build, :scheduled) }
+      let(:job) { build_stubbed(:ci_build, :scheduled) }
 
       it 'returns scheduled' do
         expect(subject[:scheduled]).to be_truthy

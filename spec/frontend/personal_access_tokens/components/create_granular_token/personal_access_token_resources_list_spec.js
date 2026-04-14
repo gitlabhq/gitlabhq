@@ -18,7 +18,7 @@ describe('PersonalAccessTokenResourcesList', () => {
     wrapper = shallowMountExtended(PersonalAccessTokenResourcesList, {
       propsData: {
         scope: 'namespace',
-        permissions: mockGroupPermissions,
+        permissionsFilteredBySearch: mockGroupPermissions,
         ...props,
       },
     });

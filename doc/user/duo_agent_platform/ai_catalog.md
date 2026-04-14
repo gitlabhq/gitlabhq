@@ -8,7 +8,7 @@ title: AI Catalog
 {{< details >}}
 
 - Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -29,10 +29,6 @@ title: AI Catalog
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
 The AI Catalog is a central list of agents and flows.
 Add these agents and flows to your project to get started orchestrating agentic AI tasks.
 
@@ -44,19 +40,28 @@ Use the AI Catalog to:
 
 ## View the AI Catalog
 
+{{< history >}}
+
+- Ability to use the GitLab Duo sidebar to view the AI Catalog [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592493) in GitLab 18.11.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must meet the [prerequisites](_index.md#prerequisites).
-- On GitLab.com, you must be a member of a top-level group that has
-  [turned on GitLab Duo experiment and beta features](../gitlab_duo/turn_on_off.md#on-gitlabcom-2).
 - To enable agents and flows from the AI Catalog:
   - In a group, you must have the Maintainer or Owner role.
   - In a project, you must have the Maintainer or Owner role.
 
-To view the AI Catalog:
+To view the AI Catalog, you can either:
 
-1. In the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**.
+- Use the top bar:
+  1. In the top bar, select **Search or go to** > **Explore**.
+  1. Select **AI Catalog**.
+
+- Use the GitLab Duo sidebar:
+  1. In the top bar, select **Search or go to** and find your project.
+  1. On the GitLab Duo sidebar, select **GitLab Duo AI Catalog** ({{< icon name="tanuki-ai" >}}).
 
 A list of agents is displayed.
 

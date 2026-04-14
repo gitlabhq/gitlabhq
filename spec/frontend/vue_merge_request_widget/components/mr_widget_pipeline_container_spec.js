@@ -1,3 +1,4 @@
+import { createMockSubscription } from 'mock-apollo-client';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
@@ -14,7 +15,8 @@ import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pi
 import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
 
 import getMergePipeline from '~/vue_merge_request_widget/queries/get_merge_pipeline.query.graphql';
-import { mockStore, mockMergePipelineQueryResponse } from '../mock_data';
+import mrPipelineUpdatedSubscription from '~/vue_merge_request_widget/subscriptions/mr_pipeline_updated.subscription.graphql';
+import { mockStore, mockMergePipelineQueryResponse, mockPipelineSubscription } from '../mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -23,21 +25,41 @@ describe('MrWidgetPipelineContainer', () => {
   let wrapper;
   let mock;
   let mergePipelineResponse;
+  let apolloProvider;
+  let mockSubscription;
+  let subscriptionHandler;
 
   const createComponent = async ({
+    featureFlags = { mrWidgetPipelineSubscription: false },
     props = {},
     mergePipelineHandler = mergePipelineResponse,
   } = {}) => {
     const handlers = [[getMergePipeline, mergePipelineHandler]];
-    const mockApollo = createMockApollo(handlers);
+
+    apolloProvider = createMockApollo(handlers);
+
+    subscriptionHandler = jest.fn(() => {
+      mockSubscription = createMockSubscription();
+      return mockSubscription;
+    });
+
+    apolloProvider.defaultClient.setRequestHandler(
+      mrPipelineUpdatedSubscription,
+      subscriptionHandler,
+    );
 
     wrapper = extendedWrapper(
       mount(MrWidgetPipelineContainer, {
+        provide: {
+          glFeatures: {
+            ...featureFlags,
+          },
+        },
         propsData: {
           mr: { ...mockStore },
           ...props,
         },
-        apolloProvider: mockApollo,
+        apolloProvider,
       }),
     );
 
@@ -174,6 +196,54 @@ describe('MrWidgetPipelineContainer', () => {
       createComponent();
 
       expect(wrapper.findComponent(ArtifactsApp).isVisible()).toBe(true);
+    });
+  });
+
+  describe('with feature flag disabled', () => {
+    describe('subscription', () => {
+      it('skips subscription setup', async () => {
+        await createComponent();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('with feature flag enabled', () => {
+    describe('subscription', () => {
+      const mockSetPipelineStatusData = jest.fn();
+
+      beforeEach(async () => {
+        await createComponent({
+          props: {
+            mr: {
+              ...mockStore,
+              pipeline: {
+                ...mockStore.pipeline,
+                id: 1,
+              },
+              setPipelineStatusData: mockSetPipelineStatusData,
+            },
+          },
+          featureFlags: {
+            mrWidgetPipelineSubscription: true,
+          },
+        });
+      });
+
+      it('when subscription data is received the data is stored in the store', async () => {
+        mockSubscription.next({
+          data: {
+            ciPipelineStatusUpdated: {
+              ...mockPipelineSubscription,
+            },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(mockSetPipelineStatusData).toHaveBeenCalledWith(mockPipelineSubscription, false);
+      });
     });
   });
 });

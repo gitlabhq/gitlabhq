@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Security::ConfigurationController, 'routing' do
+RSpec.describe Projects::Security::ConfigurationController, :routing, feature_category: :security_testing_configuration do
   let(:base_params) { { namespace_id: 'gitlab', project_id: 'gitlabhq' } }
 
   before do

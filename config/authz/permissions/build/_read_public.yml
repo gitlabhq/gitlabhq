@@ -1,0 +1,3 @@
+---
+name: _read_public_build
+description: Grants the ability to read builds when the project has public builds enabled. Does not apply when builds are private.

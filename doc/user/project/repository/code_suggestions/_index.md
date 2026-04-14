@@ -8,8 +8,7 @@ title: Code Suggestions
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -37,8 +36,15 @@ title: Code Suggestions
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
+
+> [!note]
+> Code Suggestions is available for:
+>
+> - GitLab Duo Agent Platform. Billing is [usage-based](../../../../subscriptions/gitlab_credits.md).
+> - GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q. Billing is based on your add-on.
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -46,8 +52,6 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
   [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
   <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://youtu.be/ds7SG1wgcVM)
-
-Code Suggestions is also available as part of the [GitLab Duo Agent Platform](../../../duo_agent_platform/code_suggestions/_index.md).
 
 ## Prerequisites
 
@@ -148,42 +152,6 @@ To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo/use_cases.md).
 
-## Truncation of file content
-
-Because of LLM limits and performance reasons, the content of the currently
-opened file is truncated:
-
-- For code completion: to 32,000 tokens (roughly 128,000 characters).
-- For code generation: to 80,000 tokens (roughly 320,000 characters).
-
-Content above the cursor is prioritized over content below the cursor. The content
-above the cursor is truncated from the left side, and content below the cursor
-is truncated from the right side. These numbers represent the maximum input context
-size for Code Suggestions.
-
-Support for increasing the code generation limit is proposed in [issue 585841](https://gitlab.com/gitlab-org/gitlab/-/issues/585841).
-
-## Output length
-
-Because of LLM limits and for performance reasons, the output of Code Suggestions
-is limited:
-
-- For code completion: to 64 tokens (roughly 256 characters).
-- For code generation: to 2048 tokens (roughly 7168 characters).
-
-## Accuracy of results
-
-We are continuing to work on the accuracy of overall generated content.
-However, Code Suggestions might generate suggestions that are:
-
-- Irrelevant.
-- Incomplete.
-- Likely to result in failed pipelines.
-- Potentially insecure.
-- Offensive or insensitive.
-
-When using Code Suggestions, code review best practices still apply.
-
 ## Available language models
 
 Different language models can be the source for Code Suggestions.
@@ -191,22 +159,34 @@ Different language models can be the source for Code Suggestions.
 - On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
 - On GitLab Self-Managed, two options exist:
   - GitLab can [host the models and connects to them through the cloud-based AI Gateway](set_up.md).
-  - Your organization can [use GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/_index.md),
+  - Your organization can use [self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
     which means you host the AI Gateway and language models. You can use GitLab-managed models,
-    other supported language models, or to bring your own compatible model.
+    other supported language models, or bring your own compatible model.
 
-## How the prompt is built
+## Performance
 
-To learn about the code that builds the prompt, see these files:
+Learn about the default response times for Code Suggestions, and options for streaming, prompt
+caching, and configuring connections.
 
-- Code generation:
-  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
-  in the `gitlab` repository.
-- Code completion:
-  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
-  in the `modelops` repository.
+### Response time
 
-## Prompt caching
+Code Suggestions is powered by a generative AI model.
+
+- For code completion, suggestions are usually low latency and take less than one second.
+- For code generation, algorithms or large code blocks might take more than five seconds to generate.
+
+Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+
+### Streaming
+
+Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
+perceived faster response times.
+Other supported IDEs will return the generated code in a single block.
+
+Streaming is not enabled for code completion.
+
+### Prompt caching
 
 {{< history >}}
 
@@ -214,12 +194,19 @@ To learn about the code that builds the prompt, see these files:
 
 {{< /history >}}
 
-Prompt caching is enabled by default to improve Code Suggestions latency. When prompt caching is enabled, code completion prompt data is temporarily stored in memory by the model vendor. Prompt caching significantly improves latency by avoiding the re-processing of cached prompt and input data. The cached data is never logged to any persistent storage.
+Prompt caching is enabled by default on all Fireworks-hosted models to improve
+Code Suggestions latency.
 
-### Turn off prompt caching
+When prompt caching is enabled, code completion prompt data is temporarily stored
+in memory by the model vendor.
+
+Prompt caching significantly improves latency by avoiding the re-processing of
+cached prompt and input data. The cached data is never logged to any persistent storage.
+
+#### Turn off prompt caching
 
 You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Chat (agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+This also turns off prompt caching for [GitLab Duo Agentic Chat](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 Prerequisites:
 
@@ -240,24 +227,6 @@ On GitLab Self-Managed:
 1. Select **Change configuration**.
 1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.
-
-## Response time
-
-Code Suggestions is powered by a generative AI model.
-
-- For code completion, suggestions are usually low latency and take less than one second.
-- For code generation, algorithms or large code blocks might take more than five seconds to generate.
-
-Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
-
-### Streaming
-
-Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
-perceived faster response times.
-Other supported IDEs will return the generated code in a single block.
-
-Streaming is not enabled for code completion.
 
 ### Direct and indirect connections
 
@@ -305,6 +274,44 @@ Prerequisites:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Limitations
+
+### Truncation of file content
+
+Because of LLM limits and performance reasons, the content of the currently
+opened file is truncated:
+
+- For code completion: to 32,000 tokens (roughly 128,000 characters).
+- For code generation: to 80,000 tokens (roughly 320,000 characters).
+
+Content above the cursor is prioritized over content below the cursor. The content
+above the cursor is truncated from the left side, and content below the cursor
+is truncated from the right side. These numbers represent the maximum input context
+size for Code Suggestions.
+
+Support for increasing the code generation limit is proposed in [issue 585841](https://gitlab.com/gitlab-org/gitlab/-/issues/585841).
+
+### Output length
+
+Because of LLM limits and for performance reasons, the output of Code Suggestions
+is limited:
+
+- For code completion: to 64 tokens (roughly 256 characters).
+- For code generation: to 2048 tokens (roughly 7168 characters).
+
+### Accuracy of results
+
+We are continuing to work on the accuracy of overall generated content.
+However, Code Suggestions might generate suggestions that are:
+
+- Irrelevant.
+- Incomplete.
+- Likely to result in failed pipelines.
+- Potentially insecure.
+- Offensive or insensitive.
+
+When using Code Suggestions, code review best practices still apply.
 
 ## Feedback
 

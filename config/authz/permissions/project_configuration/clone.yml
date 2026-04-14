@@ -1,0 +1,6 @@
+---
+name: clone_project_configuration
+description: Allows duplicating sensitive project configuration — including deploy
+  keys and webhooks with encrypted secrets — from a source project when creating
+  a project from a custom template. This permission is checked against the source
+  project to ensure the user is trusted to read and copy its secrets.

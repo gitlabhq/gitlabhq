@@ -11,7 +11,7 @@ workhorse:verify:
       - GO_VERSION: ["1.25"]
   script:
     - go version
-    - make -C workhorse  # test build
+    - make -C workhorse # test build
     - make -C workhorse verify
 
 .workhorse:test:
@@ -130,3 +130,13 @@ workhorse-coverage:
       - workhorse/coverage.html
       - workhorse-test-reports/
       - workhorse-test-mapping/
+
+workhorse:logging-field-validator:
+  needs: []
+  stage: lint
+  extends:
+    - .workhorse-job-cache
+    - .workhorse:rules:workhorse
+    - .default-utils-before_script
+  script:
+    - make -C workhorse validate-log-fields

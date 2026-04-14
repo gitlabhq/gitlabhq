@@ -35,16 +35,22 @@ module Repositories
       Sidekiq.logger.info "changes: #{changes.inspect}" if SidekiqLogArguments.enabled?
       post_received = Gitlab::GitPostReceive.new(container, identifier, changes, push_options, gitaly_context)
 
+      user = identify_user(post_received)
+      return false unless user
+
       if repo_type.wiki?
-        process_wiki_changes(post_received, container)
+        process_wiki_changes(post_received, container, user)
       elsif repo_type.project?
-        process_project_changes(post_received, container)
+        process_project_changes(post_received, container, user)
       elsif repo_type.snippet?
         process_snippet_changes(post_received, container)
       elsif repo_type.design?
         process_design_management_repository_changes(post_received, container)
-        # Other repos don't have hooks for now
+      else
+        return # Other repos don't have hooks for now
       end
+
+      geo_log_update_event(container)
     end
 
     private
@@ -55,11 +61,7 @@ module Repositories
       end
     end
 
-    def process_project_changes(post_received, project)
-      user = identify_user(post_received)
-
-      return false unless user
-
+    def process_project_changes(post_received, project, user)
       push_options = post_received.push_options
       changes = post_received.changes
       gitaly_context = post_received.gitaly_context
@@ -73,10 +75,7 @@ module Repositories
       after_project_changes_hooks(project, user, changes.refs, changes.repository_data)
     end
 
-    def process_wiki_changes(post_received, wiki)
-      user = identify_user(post_received)
-      return false unless user
-
+    def process_wiki_changes(post_received, wiki, user)
       # We only need to expire certain caches once per push
       expire_caches(post_received, wiki.repository)
       wiki.repository.expire_statistics_caches
@@ -85,32 +84,17 @@ module Repositories
     end
 
     def process_snippet_changes(post_received, snippet)
-      user = identify_user(post_received)
-
-      return false unless user
-
-      replicate_snippet_changes(snippet)
-
       expire_caches(post_received, snippet.repository)
       snippet.touch
       Snippets::UpdateStatisticsService.new(snippet).execute
     end
 
     def process_design_management_repository_changes(post_received, design_management_repository)
-      user = identify_user(post_received)
-
-      return false unless user
-
-      replicate_design_management_repository_changes(design_management_repository)
       expire_caches(post_received, design_management_repository.repository)
     end
 
-    def replicate_snippet_changes(snippet)
-      # Used by Gitlab Geo
-    end
-
-    def replicate_design_management_repository_changes(design_management_repository)
-      # Used by GitLab Geo
+    def geo_log_update_event(container)
+      # Used by GitLab Geo: overridden in EE
     end
 
     # Expire the repository status, branch, and tag cache once per push.

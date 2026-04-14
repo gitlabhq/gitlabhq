@@ -22,7 +22,7 @@ After you are added to the project test if your access propagated,
 run:
 
 ```shell
-/chatops run feature --help
+/chatops gitlab run feature --help
 ```
 
 ## Rolling out changes
@@ -43,7 +43,7 @@ time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/ch
 
 For an up to date list of feature flag commands see
 [the source code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
-All the examples in that file must be preceded by `/chatops run`.
+All the examples in that file must be preceded by `/chatops gitlab run`.
 
 If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
@@ -72,8 +72,8 @@ For these pre-production environments, it's strongly encouraged to run the comma
 To enable a feature 25% of the time for any given actor, run the following in Slack:
 
 ```shell
-/chatops run feature set new_navigation_bar 25 --actors --dev
-/chatops run feature set new_navigation_bar 25 --actors --staging
+/chatops gitlab run feature set new_navigation_bar 25 --actors --dev
+/chatops gitlab run feature set new_navigation_bar 25 --actors --staging
 ```
 
 See [percentage of actors](#percentage-based-actor-selection) for your choices of actors
@@ -98,7 +98,7 @@ This depends on the feature and what sort of impact it might have.
 Guidelines:
 
 - Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
-  - Include a brief description of what the feature flag does. You can start by asking GitLab Duo Chat (agentic): `Explain the feature flag <feature-flag-name> in the gitlab-org/gitlab project`.
+  - Include a brief description of what the feature flag does. You can start by asking GitLab Duo Agentic Chat: `Explain the feature flag <feature-flag-name> in the gitlab-org/gitlab project`.
 - If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 - For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
@@ -185,7 +185,7 @@ ChatOps command from succeeding if there are active `"severity::1"` or `~"severi
 incidents or in-progress change issues, for example:
 
 ```shell
-/chatops run feature set gitaly_lfs_pointers_pipeline true
+/chatops gitlab run feature set gitaly_lfs_pointers_pipeline true
 
 - Production checks fail!
 - active incidents
@@ -204,7 +204,7 @@ To enable a feature for 25% of actors such as users, projects, groups or the cur
 run the following in Slack:
 
 ```shell
-/chatops run feature set some_feature 25 --actors
+/chatops gitlab run feature set some_feature 25 --actors
 ```
 
 This sets a feature flag to `true` based on the following formula:
@@ -246,13 +246,13 @@ enabled for only the `gitlab` project. The project is passed by supplying a
 `--project` flag:
 
 ```shell
-/chatops run feature set --project=gitlab-org/gitlab some_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
 You can use the `--user` option to enable a feature flag for a specific user:
 
 ```shell
-/chatops run feature set --user=myusername some_feature true
+/chatops gitlab run feature set --user=myusername some_feature true
 ```
 
 If you would like to gather feedback internally first,
@@ -261,21 +261,21 @@ for GitLab team members with the `gitlab_team_members`
 [feature group](_index.md#feature-groups):
 
 ```shell
-/chatops run feature set --feature-group=gitlab_team_members some_feature true
+/chatops gitlab run feature set --feature-group=gitlab_team_members some_feature true
 ```
 
 You can use the `--group` flag to enable a feature flag for a specific group:
 
 ```shell
-/chatops run feature set --group=gitlab-org some_feature true
+/chatops gitlab run feature set --group=gitlab-org some_feature true
 ```
 
 Note that `--group` does not work with user namespaces. To enable a feature flag for a
 generic namespace (including groups) use `--namespace`:
 
 ```shell
-/chatops run feature set --namespace=gitlab-org some_feature true
-/chatops run feature set --namespace=myusername some_feature true
+/chatops gitlab run feature set --namespace=gitlab-org some_feature true
+/chatops gitlab run feature set --namespace=myusername some_feature true
 ```
 
 Actor-based gates are applied before percentages. For example, considering the
@@ -283,8 +283,8 @@ Actor-based gates are applied before percentages. For example, considering the
 you run these 2 commands:
 
 ```shell
-/chatops run feature set --project=gitlab-org/gitlab some_feature true
-/chatops run feature set some_feature 25 --actors
+/chatops gitlab run feature set --project=gitlab-org/gitlab some_feature true
+/chatops gitlab run feature set some_feature 25 --actors
 ```
 
 Then `some_feature` will be enabled for both 25% of actors and always when interacting with
@@ -298,18 +298,18 @@ Feature.enabled?(:some_feature, group)
 Multiple actors can be passed together in a comma-separated form:
 
 ```shell
-/chatops run feature set --project=gitlab-org/gitlab,example-org/example-project some_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab,example-org/example-project some_feature true
 
-/chatops run feature set --group=gitlab-org,example-org some_feature true
+/chatops gitlab run feature set --group=gitlab-org,example-org some_feature true
 
-/chatops run feature set --namespace=gitlab-org,example-org some_feature true
+/chatops gitlab run feature set --namespace=gitlab-org,example-org some_feature true
 ```
 
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
 you should fully roll out the feature by enabling the flag **globally** by running:
 
 ```shell
-/chatops run feature set some_feature true
+/chatops gitlab run feature set some_feature true
 ```
 
 This changes the feature flag state to be **enabled** always, which overrides the
@@ -322,14 +322,14 @@ will not have any effect. The feature gate must be deleted first.
 For example, a feature flag is set via ChatOps:
 
 ```shell
-/chatops run feature set --project=gitlab-org/gitlab some_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
 When the `default_enabled` attribute in the YAML definition is switched to
 `true`, the feature gate must be deleted to have the desired effect:
 
 ```shell
-/chatops run feature delete some_feature
+/chatops gitlab run feature delete some_feature
 ```
 
 ##### Percentage of time roll out (deprecated)
@@ -337,7 +337,7 @@ When the `default_enabled` attribute in the YAML definition is switched to
 Previously, to enable a feature 25% of the time, we would run the following in Slack:
 
 ```shell
-/chatops run feature set new_navigation_bar 25 --random
+/chatops gitlab run feature set new_navigation_bar 25 --random
 ```
 
 This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does not enable the feature for 25% of the total users.
@@ -360,13 +360,13 @@ During rollout, you can force it using the `--ignore-random-deprecation-check` s
 To disable a feature flag that has been globally enabled you can run:
 
 ```shell
-/chatops run feature set some_feature false
+/chatops gitlab run feature set some_feature false
 ```
 
 To disable a feature flag that has been enabled for a specific project you can run:
 
 ```shell
-/chatops run feature set --project=gitlab-org/gitlab some_feature false
+/chatops gitlab run feature set --project=gitlab-org/gitlab some_feature false
 ```
 
 You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](controls.md#selectively-disable-by-actor) the feature flags.
@@ -379,8 +379,8 @@ By default you cannot selectively disable a feature flag by actor.
 
 ```shell
 # This will not work how you would expect.
-/chatops run feature set some_feature true
-/chatops run feature set --project=gitlab-org/gitlab some_feature false
+/chatops gitlab run feature set some_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab some_feature false
 ```
 
 However, if you add two feature flags, you can write your conditional statement in such a way that the equivalent selective disable is possible.
@@ -391,8 +391,8 @@ Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, 
 
 ```shell
 # This will enable a feature flag globally, except for gitlab-org/gitlab
-/chatops run feature set a_feature true
-/chatops run feature set --project=gitlab-org/gitlab a_feature_override true
+/chatops gitlab run feature set a_feature true
+/chatops gitlab run feature set --project=gitlab-org/gitlab a_feature_override true
 ```
 
 #### Percentage-based actor selection
@@ -402,8 +402,8 @@ When using the percentage rollout of actors on multiple feature flags, the actor
 For example, the following feature flags are enabled for a certain percentage of actors:
 
 ```plaintext
-/chatops run feature set feature-set-1 25 --actors
-/chatops run feature set feature-set-2 25 --actors
+/chatops gitlab run feature set feature-set-1 25 --actors
+/chatops gitlab run feature set feature-set-2 25 --actors
 ```
 
 If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
@@ -488,7 +488,7 @@ To remove a feature flag, open **one merge request** to make the changes. In the
 
 Once the above MR has been merged, you should:
 
-1. [Clean up the feature flag from all environments](#cleanup-chatops) with `/chatops run feature delete some_feature`.
+1. [Clean up the feature flag from all environments](#cleanup-chatops) with `/chatops gitlab run feature delete some_feature`.
 1. Close the rollout issue for the feature flag after the feature flag is removed from the codebase.
 
 ### Cleanup ChatOps
@@ -498,7 +498,7 @@ record still exists in the database that the flag was deployed too.
 The record can be deleted once the MR is deployed to all the environments:
 
 ```shell
-/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
+/chatops gitlab run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
 ```
 
 ## Checking feature flag status
@@ -506,7 +506,7 @@ The record can be deleted once the MR is deployed to all the environments:
 You can use the following ChatOps command to see a feature flag's current state:
 
 ```shell
-/chatops run feature get <feature-flag-name>
+/chatops gitlab run feature get <feature-flag-name>
 ```
 
 Since this is a read-only command, you can avoid cluttering the production channels by either:

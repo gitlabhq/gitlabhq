@@ -23,7 +23,7 @@ description: "Migrate from Bitbucket Server to GitLab."
 - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461211) in GitLab 17.2.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/_index.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/post_migration_mapping.md) in GitLab 17.8.
 - Post-migration user and contribution membership mapping [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
@@ -56,7 +56,7 @@ Footnotes:
 
 ## Importer workflow
 
-The Bitbucket Server importer supports [post-migration mapping](mapping/_index.md) of user contributions for GitLab.com and
+The Bitbucket Server importer supports [post-migration mapping](mapping/post_migration_mapping.md) of user contributions for GitLab.com and
 GitLab Self-Managed. The importer also supports an [alternative method](#alternative-method-of-mapping) of mapping.
 
 When Bitbucket Server items are imported:
@@ -112,12 +112,12 @@ To import your Bitbucket Server repositories:
 You can disable the `bitbucket_server_user_mapping` feature flag to use the alternative user contribution mapping method
 for imports.
 
-For imports to GitLab.com, you must use the [post-migration method](mapping/_index.md) instead.
+For imports to GitLab.com, you must use the [post-migration method](mapping/post_migration_mapping.md) instead.
 
 > [!flag]
 > The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
 > migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
-> [post-migration method](mapping/_index.md) instead that doesn't have these limitations.
+> [post-migration method](mapping/post_migration_mapping.md) instead that doesn't have these limitations.
 >
 > For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
 

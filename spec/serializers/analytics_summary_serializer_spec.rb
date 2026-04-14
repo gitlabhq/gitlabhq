@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe AnalyticsSummarySerializer do
+RSpec.describe AnalyticsSummarySerializer, feature_category: :value_stream_management do
   subject do
     described_class.new.represent(resource)
   end
 
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:project) { build_stubbed(:project) }
+  let(:user) { build_stubbed(:user) }
 
   let(:resource) do
     Gitlab::CycleAnalytics::Summary::Issue

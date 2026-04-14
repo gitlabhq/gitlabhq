@@ -35,7 +35,7 @@ module Notes
     def execute_note_hooks
       return unless note.project
 
-      note_data = hook_data
+      note_data = Gitlab::Lazy.new { hook_data }
       is_confidential = note.confidential?(include_noteable: true)
       hooks_scope = is_confidential ? :confidential_note_hooks : :note_hooks
 

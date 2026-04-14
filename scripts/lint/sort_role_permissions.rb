@@ -16,7 +16,7 @@ FIX_MODE = ARGV.include?('--fix')
 def sort_value(value)
   case value
   when Array
-    value.sort
+    value.sort.uniq
   when Hash
     sort_hash_values(value)
   else

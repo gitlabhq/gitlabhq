@@ -12,13 +12,6 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
   let_it_be(:wiki_home_page) { create(:wiki_page, project: project, title: 'home') }
   let_it_be(:wiki_sub_page) { create(:wiki_page, project: project, title: 'home/subpage') }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   it 'generates the breadcrumb schema for user projects' do
     visit project_url(project)
 
@@ -62,7 +55,7 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
   end
 
   it 'generates the breadcrumb schema for issues' do
-    visit project_issues_url(project)
+    visit project_work_items_url(project)
 
     item_list = get_schema_content
 
@@ -73,8 +66,8 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
     expect(item_list[1]['name']).to eq project.name
     expect(item_list[1]['item']).to eq project_url(project)
 
-    expect(item_list[2]['name']).to eq 'Issues'
-    expect(item_list[2]['item']).to eq project_issues_url(project)
+    expect(item_list[2]['name']).to eq 'Work items'
+    expect(item_list[2]['item']).to eq project_work_items_url(project)
   end
 
   it 'generates the breadcrumb schema for specific issue' do
@@ -90,7 +83,7 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
     expect(item_list[1]['item']).to eq project_url(project)
 
     expect(item_list[2]['name']).to eq issue.to_reference
-    expect(item_list[2]['item']).to eq project_issue_url(project, issue)
+    expect(item_list[2]['item']).to eq project_work_item_url(project, issue.iid)
   end
 
   it 'generates the breadcrumb schema for wiki pages' do

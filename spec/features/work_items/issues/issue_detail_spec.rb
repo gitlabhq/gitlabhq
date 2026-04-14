@@ -9,13 +9,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
   let(:issue)    { create(:issue, project: project, author: user) }
   let(:incident) { create(:incident, project: project, author: user) }
 
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
-
   context 'when issue description has emojis' do
     let(:issue) { create(:issue, project: project, author: user, description: 'hello world :100:') }
 
@@ -131,9 +124,9 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
           within_testid('issuable-form') do
             update_type_select('Incident', 'Issue')
-
-            expect(page).to have_current_path(project_issue_path(project, incident))
           end
+
+          expect(page).to have_current_path(project_work_item_path(project, incident.iid))
         end
       end
     end

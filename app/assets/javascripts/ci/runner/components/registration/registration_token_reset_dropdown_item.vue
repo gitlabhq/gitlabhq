@@ -5,7 +5,7 @@ import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import runnersRegistrationTokenResetMutation from '~/ci/runner/graphql/list/runners_registration_token_reset.mutation.graphql';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 
 const i18n = {
@@ -114,7 +114,7 @@ export default {
       const { message } = error;
 
       createAlert({ message });
-      captureException({ error, component: this.$options.name });
+      captureException(error);
     },
     onSuccess(token) {
       this.$toast?.show(s__('Runners|New registration token generated!'));

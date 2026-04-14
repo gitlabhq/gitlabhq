@@ -1,9 +1,8 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 import service from '../../../services/drafts_service';
 import * as types from './mutation_types';
@@ -85,9 +84,9 @@ export const publishReview = ({ commit, getters }, noteData = {}) => {
     });
 };
 
-export const updateDraft = (
+export const updateDraft = async (
   { commit, getters },
-  { note, noteText, resolveDiscussion, position, flashContainer, callback, errorCallback },
+  { note, noteText, resolveDiscussion, position },
 ) => {
   const params = {
     draftId: note.id,
@@ -98,19 +97,8 @@ export const updateDraft = (
   // https://gitlab.com/gitlab-org/gitlab/-/issues/298827
   if (!isEmpty(position)) params.position = JSON.stringify(position);
 
-  return service
-    .update(getters.getNotesData.draftsPath, params)
-    .then((res) => res.data)
-    .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
-    .then(callback)
-    .catch((e) => {
-      createAlert({
-        message: updateNoteErrorMessage(e),
-        parent: flashContainer,
-      });
-
-      errorCallback();
-    });
+  const { data } = await service.update(getters.getNotesData.draftsPath, params);
+  commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data);
 };
 
 export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {

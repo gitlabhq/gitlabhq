@@ -59,4 +59,10 @@ RSpec.describe ::Search::EmptySearchResults, feature_category: :global_search do
       end
     end
   end
+
+  describe '#server_error?' do
+    it 'returns false' do
+      expect(results.server_error?).to be false
+    end
+  end
 end

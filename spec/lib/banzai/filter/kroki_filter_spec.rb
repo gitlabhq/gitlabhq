@@ -134,7 +134,7 @@ RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :markdown do
     stub_application_setting(kroki_enabled: true, kroki_url: "http://localhost:8000")
     doc = filter(%(<a><pre data-canonical-lang='f/" onerror=alert(1) onload=alert(1) '><code data-canonical-lang="wavedrom">xss</code></pre></a>))
 
-    expect(doc.to_s).to eq %(<a><pre data-canonical-lang='f/" onerror=alert(1) onload=alert(1) '><code data-canonical-lang="wavedrom">xss</code></pre></a>)
+    expect(doc.to_s).to eq_html %(<a><pre data-canonical-lang='f/" onerror=alert(1) onload=alert(1) '><code data-canonical-lang="wavedrom">xss</code></pre></a>)
   end
 
   it "strips at most one trailing newline from the diagram's source" do

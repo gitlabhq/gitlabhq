@@ -29,7 +29,7 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
 
           expect(page).to have_button 'New related item'
           expect(page).to have_button 'Report abuse'
-          expect(page).to have_button 'Delete issue'
+          expect(page).to have_button 'Delete Issue'
           expect(page).not_to have_link 'Submit as spam'
         end
       end

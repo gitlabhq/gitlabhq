@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 // rspec spec/frontend/fixtures/search_navigation.rb to generate this file
 import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
 import testAction from 'helpers/vuex_action_helper';

@@ -43,8 +43,8 @@ Use iterations to plan and execute work in fixed time periods, and help teams ma
 predictable delivery cadence.
 When teams work in sprints, each iteration provides a clear timebox for planning,
 execution, and delivery of work items.
-For more information, see
-[Tutorial: Use GitLab to facilitate Scrum](../../../tutorials/scrum_events/_index.md).
+For more information, see the
+[use GitLab to facilitate Scrum tutorial](../../../tutorials/scrum_events/_index.md).
 
 For example, when running two-week sprints, teams often need to coordinate multiple workstreams.
 The development team tracks implementation in the current sprint, while product managers prepare
@@ -132,8 +132,8 @@ To create an iteration cadence:
    - Select the automation start date of the iteration cadence. Iterations are scheduled to
      begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
-   - From the **Upcoming iterations** dropdown list, select how many upcoming iterations should be
-     created and maintained by GitLab.
+   - From the **Upcoming iterations** dropdown list, select how many future iterations to schedule
+     in addition to the current one.
    - Optional. To move incomplete issues to the next iteration, select the **Enable roll over** checkbox.
      At the end of the current iteration, [Automation Bot](#gitlab-automation-bot-user) moves all open
      issues to the next iteration.
@@ -141,7 +141,7 @@ To create an iteration cadence:
      Administrators can change the instance time zone.
 1. Select **Create cadence**. The cadence list page opens.
 
-To manually manage the created cadence, see [Create an iteration manually](#create-an-iteration-manually).
+To manually manage the created cadence, see [create an iteration manually](#create-an-iteration-manually).
 
 ### View the iterations list
 
@@ -248,7 +248,7 @@ to the next iteration.
 
 Iterations are changed by the special GitLab Automation Bot user, which you can see in the issue
 [system notes](../../project/system_notes.md).
-This user isn't a [billable user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users),
+This user isn't a [billable user](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users),
 so it does not count toward the license limit count.
 
 On GitLab.com, this is the `automation-bot1` user.

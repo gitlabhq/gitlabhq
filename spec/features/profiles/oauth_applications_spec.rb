@@ -13,13 +13,35 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
   end
 
   describe 'User manages applications', :js do
-    it 'views an application' do
-      visit oauth_application_path(application)
+    context 'when viewing an application' do
+      it 'includes application name' do
+        visit oauth_application_path(application)
 
-      expect(page).to have_content("Application: #{application.name}")
+        expect(page).to have_content("Application: #{application.name}")
 
-      within_testid 'breadcrumb-links' do
-        expect(find('li:last-of-type')).to have_link(application.name)
+        within_testid 'breadcrumb-links' do
+          expect(find('li:last-of-type')).to have_link(application.name)
+        end
+      end
+
+      it "has 'Device authorization grant' disabled" do
+        visit oauth_application_path(application)
+
+        expect(find_by_testid('device-code-enabled-value')).to have_content('No')
+      end
+    end
+
+    context 'when updating an application' do
+      it "supports enabling 'Device authorization grant'" do
+        visit edit_oauth_application_path(application)
+
+        expect(find_by_testid('device-code-enabled-checkbox')).not_to be_checked
+
+        find_by_testid('device-code-enabled-checkbox').click
+
+        click_button 'Save application'
+
+        expect(find_by_testid('device-code-enabled-value')).to have_content('Yes')
       end
     end
 

@@ -10,17 +10,7 @@ class Explore::GroupsController < Explore::ApplicationController
 
   def index
     respond_to do |format|
-      format.html do
-        @explore_groups_vue_enabled = Feature.enabled?(:explore_groups_vue, current_user)
-
-        if @explore_groups_vue_enabled
-          push_force_frontend_feature_flag(:explore_groups_vue, true)
-          push_frontend_feature_flag(:groups_list_keyset_pagination, current_user)
-          next render :index
-        end
-
-        render_groups
-      end
+      format.html { render :index }
       format.json { render_groups }
     end
   end
@@ -28,11 +18,10 @@ class Explore::GroupsController < Explore::ApplicationController
   private
 
   def render_groups
-    finder_params = { active: safe_params[:active] }
-
-    if Feature.enabled?(:explore_groups_non_members_only, current_user)
-      finder_params[:visibility] = Gitlab::VisibilityLevel.levels_for_user(current_user)
-    end
+    finder_params = {
+      active: safe_params[:active],
+      visibility: Gitlab::VisibilityLevel.levels_for_user(current_user)
+    }
 
     render_group_tree GroupsFinder.new(current_user, finder_params).execute.limit(MAX_QUERY_SIZE)
   end

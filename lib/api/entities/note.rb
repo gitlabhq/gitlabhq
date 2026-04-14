@@ -18,19 +18,19 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
       expose :project_id
-      expose :commit_id, if: ->(note, options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) }
+      expose :commit_id, if: ->(note, _options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) }
 
-      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
+      expose :position, if: ->(note, _options) { note.is_a?(DiffNote) } do |note|
         note.position.to_h.except(:ignore_whitespace_change)
       end
 
       expose :resolvable?, as: :resolvable
-      expose :resolved?, as: :resolved, if: ->(note, options) { note.resolvable? }
-      expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
-      expose :resolved_at, if: ->(note, options) { note.resolvable? }
+      expose :resolved?, as: :resolved, if: ->(note, _options) { note.resolvable? }
+      expose :resolved_by, using: Entities::UserBasic, if: ->(note, _options) { note.resolvable? }
+      expose :resolved_at, if: ->(note, _options) { note.resolvable? }
 
       expose :suggestions,
-        if: ->(note, options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) },
+        if: ->(note, _options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) },
         using: Entities::Suggestion
 
       expose :confidential?, as: :confidential

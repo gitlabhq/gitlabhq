@@ -17,19 +17,20 @@ module Packages
       attr_reader :package, :gemspec
 
       def write_gemspec_to_file
-        file = Tempfile.new
+        file = Tempfile.new(binmode: true)
 
         begin
-          content = gemspec.to_ruby
+          content = Gem.deflate(Marshal.dump(gemspec))
           file.write(content)
           file.flush
+          file.rewind
 
           md5 = Gitlab::FIPS.enabled? ? nil : Digest::MD5.hexdigest(content) # rubocop:disable Fips/MD5 -- MD5 is not used when in FIPS-compliant mode
 
           package.package_files.create!(
             file: file,
             size: file.size,
-            file_name: "#{gemspec.name}.gemspec",
+            file_name: "#{gemspec.name}-#{gemspec.version}.gemspec.rz",
             file_sha1: Digest::SHA1.hexdigest(content),
             file_md5: md5,
             file_sha256: Digest::SHA256.hexdigest(content),

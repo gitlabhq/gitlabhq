@@ -82,6 +82,8 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
         relation_names.each do |relation_name|
           relation_name = overrides[relation_name] || relation_name
           model_class = relation_class(relation_name)
+          next unless model_class.respond_to?(:columns)
+
           table_columns = model_class.columns.collect(&:name)
           user_associations = model_class.reflect_on_all_associations(:belongs_to)
             .reject(&:polymorphic?)

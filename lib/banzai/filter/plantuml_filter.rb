@@ -39,7 +39,7 @@ module Banzai
         def plantuml_img_tag(diagram_src)
           Gitlab::Plantuml.configure
 
-          Nokogiri::HTML::DocumentFragment.parse(
+          Nokogiri::HTML5::DocumentFragment.parse(
             Asciidoctor::PlantUml::Processor.plantuml_content(diagram_src, {})).css('img').first
         end
 

@@ -1,0 +1,3 @@
+---
+name: _update_authored_work_item
+description: Grants the ability to update work items that were authored by the user. Does not apply to incidents.

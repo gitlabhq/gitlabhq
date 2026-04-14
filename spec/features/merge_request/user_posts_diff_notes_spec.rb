@@ -49,7 +49,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
         should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
       end
 
-      it 'allows commenting on the right side' do
+      it 'allows commenting on the right side', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9330' do
         should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
-    context 'after deleteing a note' do
+    context 'after deleting a note' do
       it 'allows commenting' do
         should_allow_commenting(find_in_page_or_panel_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 

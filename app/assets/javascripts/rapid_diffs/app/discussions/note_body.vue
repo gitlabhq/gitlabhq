@@ -5,6 +5,7 @@ import NoteAttachment from '~/notes/components/note_attachment.vue';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import NoteForm from './note_form.vue';
+import NoteSuggestions from './note_suggestions.vue';
 
 export default {
   name: 'NoteBody',
@@ -13,6 +14,7 @@ export default {
     NoteEditedText,
     NoteAttachment,
     NoteForm,
+    NoteSuggestions,
   },
   directives: {
     gfm,
@@ -66,13 +68,19 @@ export default {
     currentUserId() {
       return window.gon?.current_user_id;
     },
+    hasSuggestion() {
+      return this.note.suggestions?.length > 0;
+    },
   },
 };
 </script>
 
 <template>
   <div :class="{ 'js-task-list-container': canEdit }">
+    <div class="flash-container !gl-mt-0 gl-mb-3 !gl-px-0"></div>
+    <note-suggestions v-if="hasSuggestion && !isEditing" :note="note" />
     <div
+      v-else
       v-gfm="note.note_html"
       :class="{ '[content-visibility:hidden]': isEditing }"
       class="md"

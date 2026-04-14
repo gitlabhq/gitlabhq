@@ -1,0 +1,25 @@
+---
+features:
+  secondary:
+  - name: "macOS Tahoe 26 and Xcode 26 job image"
+    available_in: [premium, ultimate]
+    gitlab_com: true
+    self_managed: false
+    gitlab_dedicated: false
+    gitlab_dedicated_for_government: false
+    add_ons: []
+    documentation_link: 'https://docs.gitlab.com/ci/runners/hosted_runners/macos/'
+    reporter: gabrielengel_gl
+    stage: verify
+    categories:
+    - GitLab Hosted Runners
+    epic_url: 'https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/1694'
+    description: |
+      You can now create, test, and deploy applications for the newest
+      generations of Apple devices using macOS Tahoe 26 and Xcode 26.
+
+      With [hosted runners on macOS](https://docs.gitlab.com/ci/runners/hosted_runners/macos/),
+      your development teams can build and deploy macOS applications faster in a secure,
+      on-demand build environment integrated with GitLab CI/CD.
+
+      Try it out today by using the `macos-26-xcode-26` image in your `.gitlab-ci.yml` file.

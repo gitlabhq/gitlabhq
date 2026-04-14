@@ -115,8 +115,7 @@ $crud-header-min-height: px-to-rem(40px);
   }
 
   tr:hover td {
-    @apply gl-bg-strong;
-    @apply dark:gl-bg-neutral-700;
+    @apply gl-bg-subtle;
   }
 }
 

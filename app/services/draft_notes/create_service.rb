@@ -15,6 +15,10 @@ module DraftNotes
           return base_error(_('Thread to reply to cannot be found'))
         end
 
+        if discussion.first_note.system?
+          return base_error(_('Replies to system notes are not allowed'))
+        end
+
         params[:discussion_id] = discussion.reply_id
       end
 

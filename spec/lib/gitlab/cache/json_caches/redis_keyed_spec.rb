@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Cache::JsonCaches::RedisKeyed, feature_category: :shared 
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(true)
 
-        expect(Gitlab::Json).to receive(:parse).with("true").and_call_original
+        expect(Gitlab::Json).to receive(:safe_parse).with("true").and_call_original
         expect(cache.read(key, System::BroadcastMessage)).to eq(true)
       end
     end
@@ -29,8 +29,17 @@ RSpec.describe Gitlab::Cache::JsonCaches::RedisKeyed, feature_category: :shared 
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(false)
 
-        expect(Gitlab::Json).to receive(:parse).with("false").and_call_original
+        expect(Gitlab::Json).to receive(:safe_parse).with("false").and_call_original
         expect(cache.read(key, System::BroadcastMessage)).to eq(false)
+      end
+    end
+
+    context 'when the cached value exceeds safe_parse limits' do
+      it 'returns nil' do
+        allow(backend).to receive(:read).with(expanded_key).and_return('some_value')
+        allow(Gitlab::Json).to receive(:safe_parse).and_raise(JSON::ParserError)
+
+        expect(cache.read(key, System::BroadcastMessage)).to be_nil
       end
     end
   end

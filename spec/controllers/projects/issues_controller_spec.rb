@@ -43,19 +43,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
           expect(response).to redirect_to(project_work_items_path(project))
         end
-
-        context 'when work_item_planning_view: false' do
-          before do
-            stub_feature_flags(work_item_planning_view: false)
-          end
-
-          it 'renders the "index" template' do
-            get :index, params: { namespace_id: project.namespace, project_id: project }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:index)
-          end
-        end
       end
 
       context 'when project has moved' do
@@ -94,22 +81,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
         expect(response).to redirect_to(project_work_items_path(project))
-      end
-
-      context 'when work_item_planning_view: false' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it "returns index" do
-          get :index, params: { namespace_id: project.namespace, project_id: project }
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it_behaves_like 'set sort order from user preference' do
-          let(:sorting_param) { 'updated_asc' }
-        end
       end
 
       it "returns 301 if request path doesn't match project path" do
@@ -171,94 +142,54 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       project.add_developer(user)
     end
 
-    context 'when work_item_planning_view: true' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
+    it 'redirects to work item' do
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-      it 'redirects to work item' do
-        get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-
-        expect(response).to redirect_to project_work_item_path(project, issue.iid)
-      end
+      expect(response).to redirect_to project_work_item_path(project, issue.iid)
     end
 
-    context 'when work_item_planning_view: false' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
+    context 'when issue is of type task' do
+      let(:query) { {} }
+
+      let_it_be(:task) { create(:issue, :task, project: project) }
+
+      shared_examples 'redirects to show work item page' do
+        it 'redirects to work item' do
+          make_request
+
+          expect(response).to redirect_to(project_work_item_path(project, task.iid, query))
+        end
       end
 
-      context 'issue email participants' do
-        context 'when issue is confidential' do
-          let(:issue) { create(:issue, project: project, confidential: true) }
-          let!(:participants) { create_list(:issue_email_participant, 2, issue: issue) }
+      context 'show action' do
+        let(:query) { { query: 'any' } }
 
-          it "returns issue email participants" do
-            get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to include(
-              'issue_email_participants' => contain_exactly(
-                { "email" => participants[0].email }, { "email" => participants[1].email }
-              ),
-              'type' => 'ISSUE'
-            )
-          end
-        end
-
-        context 'when issue is not confidential' do
-          it "returns empty email participants" do
-            get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to include('issue_email_participants' => [])
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
           end
         end
       end
 
-      context 'when issue is of type task' do
-        let(:query) { {} }
+      context 'edit action' do
+        let(:query) { { query: 'any', edit: 'true' } }
 
-        let_it_be(:task) { create(:issue, :task, project: project) }
-
-        shared_examples 'redirects to show work item page' do
-          it 'redirects to work item' do
-            make_request
-
-            expect(response).to redirect_to(project_work_item_path(project, task.iid, query))
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, query: 'any' }
           end
         end
+      end
 
-        context 'show action' do
-          let(:query) { { query: 'any' } }
-
-          it_behaves_like 'redirects to show work item page' do
-            subject(:make_request) do
-              get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
-            end
-          end
-        end
-
-        context 'edit action' do
-          let(:query) { { query: 'any', edit: 'true' } }
-
-          it_behaves_like 'redirects to show work item page' do
-            subject(:make_request) do
-              get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, query: 'any' }
-            end
-          end
-        end
-
-        context 'update action' do
-          it_behaves_like 'redirects to show work item page' do
-            subject(:make_request) do
-              put :update, params: {
-                namespace_id: project.namespace,
-                project_id: project,
-                id: task.iid,
-                issue: { title: 'New title' }
-              }
-            end
+      context 'update action' do
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            put :update, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: task.iid,
+              issue: { title: 'New title' }
+            }
           end
         end
       end
@@ -266,40 +197,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #edit' do
-    context 'when work_item_planning_view: false' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      context 'when visiting issues edit route and user can edit issue' do
-        before do
-          project.add_developer(user)
-          sign_in(user)
-        end
-
-        it 'redirects to issues detail page with edit parameter' do
-          get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-
-          expect(response).to redirect_to(project_issue_path(project, issue, edit: 'true'))
-          expect(response).to have_gitlab_http_status(:found)
-        end
-      end
-
-      context 'when visiting issues edit route and user cannot edit issue' do
-        before do
-          project.add_guest(user)
-          sign_in(user)
-        end
-
-        it 'redirects to issue detail page without edit parameter' do
-          get :edit, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-
-          expect(response).to redirect_to(project_issue_path(project, issue, params: {}))
-          expect(response).to have_gitlab_http_status(:found)
-        end
-      end
-    end
-
     context 'when visiting issues edit route and user can edit issue' do
       before do
         project.add_developer(user)
@@ -354,26 +251,15 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     context 'on internal issue tracker' do
-      context 'when work_item_planning_view: false' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it_behaves_like 'issue building actions'
+      before do
+        project.add_guest(user)
+        sign_in user
       end
 
-      context 'when work_item_planning_view: true' do
-        before do
-          project.add_guest(user)
-          sign_in user
-          stub_feature_flags(work_item_planning_view: true)
-        end
+      it 'redirects to new work item' do
+        get :new, params: { namespace_id: project.namespace, project_id: project }
 
-        it 'redirects to new work item' do
-          get :new, params: { namespace_id: project.namespace, project_id: project }
-
-          expect(response).to redirect_to new_project_work_item_url(project)
-        end
+        expect(response).to redirect_to new_project_work_item_url(project)
       end
     end
 
@@ -398,21 +284,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           get :new, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when GitLab issues enabled' do
-        context 'when work_item_planning_view: false' do
-          before do
-            stub_feature_flags(work_item_planning_view: false)
-          end
-
-          it 'renders the "new" template' do
-            get :new, params: { namespace_id: project.namespace, project_id: project }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:new)
-          end
         end
       end
     end
@@ -753,11 +624,8 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: id
-        }
-    end
-
-    before do
-      stub_feature_flags(work_item_planning_view: false)
+        },
+        format: :json
     end
 
     context 'when an issue was edited' do
@@ -822,10 +690,6 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
     let_it_be(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
-
-    before do
-      stub_feature_flags(work_item_planning_view: false)
-    end
 
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do
@@ -1046,7 +910,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     describe 'GET #show' do
-      it_behaves_like 'restricted action', success: 200
+      it_behaves_like 'restricted action', success: 302
 
       def go(id:)
         get :show,
@@ -1057,59 +921,16 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           }
       end
 
-      context 'when work_item_planning_view: true' do
-        before do
-          stub_feature_flags(work_item_planning_view: true)
-        end
+      it 'redirects to consolidated list' do
+        sign_in(user)
+        go(id: issue.to_param)
 
-        it 'redirects to consolidated list' do
-          sign_in(user)
-          go(id: issue.to_param)
-
-          expect(response).to redirect_to(project_work_item_path(project, issue.iid))
-        end
-      end
-
-      context 'when work_item_planning_view: false' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it 'avoids (most) N+1s loading labels', :request_store do
-          label = create(:label, project: project).to_reference
-          labels = create_list(:label, 10, project: project).map(&:to_reference)
-          issue = create(:issue, project: project, description: 'Test issue')
-
-          control = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }
-
-          # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
-          expect { issue.update!(description: [issue.description, labels].join(' ')) }
-            .not_to exceed_query_limit(control).with_threshold(2 * labels.count)
-        end
-
-        it 'logs the view with Gitlab::Search::RecentIssues' do
-          sign_in(user)
-          recent_issues_double = instance_double(::Gitlab::Search::RecentIssues, log_view: nil)
-          expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues_double)
-
-          go(id: issue.to_param)
-
-          expect(response).to be_successful
-          expect(recent_issues_double).to have_received(:log_view).with(issue)
-        end
-
-        context 'when not logged in' do
-          it 'does not log the view with Gitlab::Search::RecentIssues' do
-            expect(::Gitlab::Search::RecentIssues).not_to receive(:new)
-
-            go(id: issue.to_param)
-          end
-        end
+        expect(response).to redirect_to(project_work_item_path(project, issue.iid))
       end
     end
 
     describe 'GET #realtime_changes' do
-      it_behaves_like 'restricted action', success: 200
+      it_behaves_like 'restricted action', success: 302
 
       def go(id:)
         get :realtime_changes,
@@ -1324,7 +1145,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         end
 
         it 'creates an issue' do
-          expect { post_new_issue(title: 'Some title') }.to change(Issue, :count)
+          expect { post_new_issue(title: 'Some title') }.to change { Issue.count }
         end
       end
 
@@ -1342,7 +1163,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
           context 'when allow_possible_spam application setting is false' do
             it 'rejects an issue recognized as spam' do
-              expect { post_spam_issue }.not_to change(Issue, :count)
+              expect { post_spam_issue }.not_to change { Issue.count }
             end
 
             it 'creates a spam log' do
@@ -1351,13 +1172,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             end
 
             it 'does not create an issue when it is not valid' do
-              expect { post_new_issue(title: '') }.not_to change(Issue, :count)
+              expect { post_new_issue(title: '') }.not_to change { Issue.count }
             end
 
             it 'does not create an issue when reCAPTCHA is not enabled' do
               stub_application_setting(recaptcha_enabled: false)
 
-              expect { post_spam_issue }.not_to change(Issue, :count)
+              expect { post_spam_issue }.not_to change { Issue.count }
             end
           end
 
@@ -1367,7 +1188,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             end
 
             it 'creates an issue recognized as spam' do
-              expect { post_spam_issue }.to change(Issue, :count)
+              expect { post_spam_issue }.to change { Issue.count }
             end
 
             it 'creates a spam log' do
@@ -1376,7 +1197,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             end
 
             it 'does not create an issue when it is not valid' do
-              expect { post_new_issue(title: '') }.not_to change(Issue, :count)
+              expect { post_new_issue(title: '') }.not_to change { Issue.count }
             end
           end
         end
@@ -1396,7 +1217,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
           end
 
           it 'accepts an issue after reCAPTCHA is verified' do
-            expect { post_verified_issue }.to change(Issue, :count)
+            expect { post_verified_issue }.to change { Issue.count }
           end
 
           it 'marks spam log as recaptcha_verified' do
@@ -1420,7 +1241,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       it 'creates a user agent detail' do
-        expect { post_new_issue }.to change(UserAgentDetail, :count).by(1)
+        expect { post_new_issue }.to change { UserAgentDetail.count }.by(1)
       end
     end
 
@@ -1446,11 +1267,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       subject { post_new_issue(sentry_issue_attributes: { sentry_issue_identifier: 1234567 }) }
 
       it 'creates an issue' do
-        expect { subject }.to change(Issue, :count)
+        expect { subject }.to change { Issue.count }
       end
 
       it 'creates a sentry issue' do
-        expect { subject }.to change(SentryIssue, :count)
+        expect { subject }.to change { SentryIssue.count }
       end
     end
 
@@ -1513,104 +1334,66 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
   end
 
-  describe 'POST #mark_as_spam' do
-    context 'properly submits to Akismet' do
-      before do
-        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-          expect(akismet_service).to receive_messages(submit_spam: true)
-        end
-        stub_application_setting(akismet_enabled: true)
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      def post_spam
-        admin = create(:admin)
-        create(:user_agent_detail, subject: issue)
-        project.add_maintainer(admin)
-        sign_in(admin)
-        post :mark_as_spam, params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: issue.iid
-        }
-      end
-
-      it 'updates issue', :enable_admin_mode do
-        post_spam
-        expect(issue.submittable_as_spam?).to be_falsey
-      end
-    end
-  end
-
   describe "DELETE #destroy" do
     let_it_be(:owner)     { create(:user) }
     let_it_be(:namespace) { create(:namespace, owner: owner) }
     let_it_be(:project)   { create(:project, namespace: namespace) }
 
-    context 'when work_item_planning_view: true' do
+    before do
+      sign_in(owner)
+    end
+
+    it 'redirects to work item' do
+      delete :destroy, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.iid,
+        destroy_confirm: true
+      }
+
+      expect(response).to redirect_to project_work_item_path(project, issue.iid)
+    end
+
+    context "when the user is a developer" do
       before do
-        sign_in(owner)
-        stub_feature_flags(work_item_planning_view: true)
+        sign_in(user)
       end
 
-      it 'redirects to work item' do
-        delete :destroy, params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: issue.iid,
-          destroy_confirm: true
-        }
+      it "does not delete the issue, returning :not_found" do
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-        expect(response).to redirect_to project_work_item_path(project, issue.iid)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    context 'when work_item_planning_view: false' do
+    context "when the user is owner" do
       before do
-        stub_feature_flags(work_item_planning_view: false)
+        sign_in(owner)
       end
 
-      context "when the user is a developer" do
-        before do
-          sign_in(user)
-        end
+      it "deletes the issue" do
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true, format: :json }
 
-        it "does not delete the issue, returning :not_found" do
-          delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
-      context "when the user is owner" do
-        before do
-          sign_in(owner)
-        end
+      it "prevents deletion if destroy_confirm is not set" do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
-        it "deletes the issue" do
-          delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-          expect(response).to have_gitlab_http_status(:see_other)
-          expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
-        end
+        expect(response).to have_gitlab_http_status(:found)
+        expect(controller).to set_flash[:notice].to('Destroy confirmation not provided for issue')
+      end
 
-        it "prevents deletion if destroy_confirm is not set" do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+      it "prevents deletion in JSON format if destroy_confirm is not set" do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
-          delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, format: 'json' }
 
-          expect(response).to have_gitlab_http_status(:found)
-          expect(controller).to set_flash[:notice].to('Destroy confirmation not provided for issue')
-        end
-
-        it "prevents deletion in JSON format if destroy_confirm is not set" do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
-
-          delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, format: 'json' }
-
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for issue' })
-        end
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for issue' })
       end
     end
   end
@@ -1632,44 +1415,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
     let(:emoji_name) { AwardEmoji::THUMBS_UP }
 
-    context 'when work_item_planning_view: true' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
+    it 'redirects to work item' do
+      make_request
 
-      it 'redirects to work item' do
-        make_request
-
-        expect(response).to redirect_to project_work_item_path(project, issue.iid)
-      end
-    end
-
-    context 'when work_item_planning_view: false' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it "toggles the award emoji" do
-        expect { make_request }.to change { issue.award_emoji.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it "removes the already awarded emoji" do
-        create(:award_emoji, awardable: issue, name: emoji_name, user: user)
-
-        expect { make_request }.to change { AwardEmoji.count }.by(-1)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'marks Todos on the Issue as done' do
-        todo = create(:todo, target: issue, project: project, user: user)
-
-        make_request
-
-        expect(todo.reload).to be_done
-      end
+      expect(response).to redirect_to project_work_item_path(project, issue.iid)
     end
   end
 
@@ -1684,7 +1433,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     end
 
     it 'creates a new merge request' do
-      expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
+      expect { create_merge_request }.to change { project.merge_requests.count }.by(1)
     end
 
     it 'render merge request as json' do
@@ -1735,7 +1484,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       let(:target_project_id) { target_project.id }
 
       it 'creates a new merge request', :sidekiq_might_not_need_inline do
-        expect { create_merge_request }.to change(target_project.merge_requests, :count).by(1)
+        expect { create_merge_request }.to change { target_project.merge_requests.count }.by(1)
       end
     end
 
@@ -2057,6 +1806,17 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'GET #designs' do
+    before do
+      sign_in(user)
+      project.add_developer(user)
+    end
+
+    it 'redirects to work item path' do
+      get :designs, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+      expect(response).to redirect_to(project_work_item_path(project, issue.iid, params: {}))
+    end
+
     context 'when project has moved' do
       let(:new_project) { create(:project) }
       let(:issue) { create(:issue, project: new_project) }

@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: The runner type, which can be `project_type`, `group_type`, or `instance_type`
-product_group: runner
+product_group: runner_core
 product_categories:
 - runner_core
 milestone: '17.6'

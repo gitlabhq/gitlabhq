@@ -37,7 +37,7 @@ module Gitlab
         # ConflictSideMissing, which means a conflict exists but its `theirs` or
         # `ours` data is nil due to a non-existent file in one of the trees.
         #
-        # GRPC::Unknown comes from Rugged::ReferenceError and Rugged::OdbError.
+        # GRPC::Unknown can come from reference or object database errors on the Gitaly side.
         true
       end
 

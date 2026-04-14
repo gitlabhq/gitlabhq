@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { isEqual, inRange } from 'lodash';
+import { isEqual, inRange } from 'lodash-es';
 import { __ } from '~/locale';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';

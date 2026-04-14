@@ -219,7 +219,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it 'updates stage status correctly' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('running') }
           .to change { stage.reload.status }
           .to eq 'running'
       end
@@ -243,7 +243,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it 'updates status to skipped' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('skipped') }
           .to change { stage.reload.status }
           .to eq 'skipped'
       end
@@ -255,7 +255,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it 'updates status to scheduled' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('scheduled') }
           .to change { stage.reload.status }
           .to 'scheduled'
       end
@@ -267,7 +267,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it 'updates status to waiting for resource' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('waiting_for_resource') }
           .to change { stage.reload.status }
           .to 'waiting_for_resource'
       end
@@ -279,7 +279,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it 'updates status to waiting for callback' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('waiting_for_callback') }
           .to change { stage.reload.status }
           .to 'waiting_for_callback'
       end
@@ -287,7 +287,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
 
     context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status(nil) }
           .to change { stage.reload.status }
           .to eq('skipped')
       end
@@ -301,21 +301,15 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       it 'retries a lock to update a stage status' do
         stage.lock_version = 100
 
-        stage.update_legacy_status
+        stage.set_status('failed')
 
         expect(stage.reload).to be_failed
       end
     end
 
     context 'when statuses status was not recognized' do
-      before do
-        allow(stage)
-          .to receive(:latest_stage_status)
-          .and_return(:unknown)
-      end
-
       it 'raises an exception' do
-        expect { stage.update_legacy_status }
+        expect { stage.set_status('unknown') }
           .to raise_error(Ci::HasStatus::UnknownStatusError)
       end
     end
@@ -336,7 +330,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       %w[skipped]         | :skipped
       %w[canceled]        | :canceled
       %w[success failed]  | :failed
-      %w[running pending] | :running
+      %w[running pending] | :pending
     end
 
     with_them do
@@ -350,7 +344,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
             status: status
           )
 
-          stage.update_legacy_status
+          stage.set_status(status)
         end
       end
 
@@ -370,7 +364,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
           allow_failure: true
         )
 
-        stage.update_legacy_status
+        stage.set_status('success')
       end
 
       it 'is passed with warnings' do
@@ -417,7 +411,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
         it 'recalculates index before updating status' do
           expect(stage.reload.position).to be_nil
 
-          stage.update_legacy_status
+          stage.set_status('running')
 
           expect(stage.reload.position).to eq 10
         end
@@ -431,7 +425,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
         end
 
         it 'sets index to a non-empty value' do
-          expect { stage.update_legacy_status }.to change { stage.reload.position }.from(nil).to(10)
+          expect { stage.set_status('running') }.to change { stage.reload.position }.from(nil).to(10)
         end
       end
 
@@ -439,7 +433,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
         it 'fallbacks to zero' do
           expect(stage.reload.position).to be_nil
 
-          stage.update_legacy_status
+          stage.set_status(nil)
 
           expect(stage.reload.position).to eq 0
         end

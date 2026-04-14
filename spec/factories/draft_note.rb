@@ -4,6 +4,7 @@ FactoryBot.define do
     note { generate(:title) }
     association :author, factory: :user
     association :merge_request, factory: :merge_request
+    project { merge_request.target_project }
 
     factory :draft_note_on_text_diff do
       transient do

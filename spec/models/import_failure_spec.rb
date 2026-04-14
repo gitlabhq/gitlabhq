@@ -2,7 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe ImportFailure do
+RSpec.describe ImportFailure, feature_category: :importers do
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').optional }
+  end
+
   describe 'Scopes' do
     let_it_be(:project) { create(:project) }
     let_it_be(:correlation_id) { 'ABC' }

@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import DiscussionActions from '~/notes/components/discussion_actions.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
-import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import { discussionMock } from '../mock_data';
 

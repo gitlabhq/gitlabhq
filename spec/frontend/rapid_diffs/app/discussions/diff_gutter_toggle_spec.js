@@ -22,9 +22,9 @@ describe('DiffGutterToggle', () => {
     ...overrides,
   });
 
-  const createComponent = (discussions = []) => {
+  const createComponent = (discussions = [], expanded = true) => {
     wrapper = shallowMount(DiffGutterToggle, {
-      propsData: { discussions },
+      propsData: { discussions, expanded },
       attachTo: document.body,
     });
   };
@@ -41,7 +41,7 @@ describe('DiffGutterToggle', () => {
   });
 
   it('renders avatars when discussions are collapsed', () => {
-    createComponent([createDiscussion({ hidden: true })]);
+    createComponent([createDiscussion()], false);
     expect(findCollapseToggle().exists()).toBe(false);
     expect(wrapper.findAllComponents(GlAvatar)).toHaveLength(1);
   });
@@ -52,7 +52,7 @@ describe('DiffGutterToggle', () => {
       note: `Comment ${i}`,
       author: { name: `Author ${i}`, avatar_url: `avatar${i}.png`, id: i },
     }));
-    createComponent([createDiscussion({ hidden: true, notes })]);
+    createComponent([createDiscussion({ notes })], false);
     expect(findGutterAvatars()).toHaveLength(3);
     expect(findMoreCount().text()).toBe('+2');
   });
@@ -64,7 +64,7 @@ describe('DiffGutterToggle', () => {
   });
 
   it('emits toggle with false when avatar is clicked', () => {
-    createComponent([createDiscussion({ hidden: true })]);
+    createComponent([createDiscussion()], false);
     wrapper.find('button').trigger('click');
     expect(wrapper.emitted('toggle')).toStrictEqual([[false]]);
   });
@@ -77,9 +77,25 @@ describe('DiffGutterToggle', () => {
   });
 
   it('retains focus on button after expanding', async () => {
-    createComponent([createDiscussion({ hidden: true })]);
+    createComponent([createDiscussion()], false);
     wrapper.find('button').element.focus();
     await wrapper.find('button').trigger('click');
     expect(document.activeElement).toBe(wrapper.find('button').element);
+  });
+
+  it('excludes draft replies from avatars', () => {
+    const discussion = createDiscussion({
+      notes: [
+        { id: 'note-1', note: 'A comment', author: { name: 'Author', avatar_url: 'a.png', id: 1 } },
+        {
+          id: 'draft-1',
+          isDraft: true,
+          note: 'Draft',
+          author: { name: 'Drafter', avatar_url: 'b.png', id: 2 },
+        },
+      ],
+    });
+    createComponent([discussion], false);
+    expect(findGutterAvatars()).toHaveLength(1);
   });
 });

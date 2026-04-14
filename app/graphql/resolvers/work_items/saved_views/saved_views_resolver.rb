@@ -42,7 +42,8 @@ module Resolvers
 
         def preloads
           {
-            author: [:author]
+            author: [:author],
+            last_updated_by: [:updated_by]
           }
         end
       end

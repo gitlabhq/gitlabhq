@@ -16,14 +16,14 @@ RSpec.describe "User views issue", :js, feature_category: :team_planning do
 
     it { expect(page).to have_header_with_correct_id_and_link(1, "Description header", "description-header") }
 
-    it_behaves_like 'page meta description', 'Description header  Lorem ipsum dolor sit amet'
+    it_behaves_like 'page meta description', 'Description header Lorem ipsum dolor sit amet'
 
     it 'shows the merge request and issue actions', :aggregate_failures do
       click_button 'More actions', match: :first
 
       expect(page).to have_button('New related item')
       expect(page).to have_button('Create merge request')
-      expect(page).to have_button('Close issue')
+      expect(page).to have_button('Close Issue')
     end
   end
 

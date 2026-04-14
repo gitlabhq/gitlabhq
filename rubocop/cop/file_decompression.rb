@@ -4,10 +4,10 @@ module RuboCop
   module Cop
     # Check for symlinks when extracting files to avoid arbitrary file reading.
     class FileDecompression < RuboCop::Cop::Base
-      MSG = <<~EOF
+      MSG = <<~TEXT
       While extracting files check for symlink to avoid arbitrary file reading.
       https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6132
-      EOF
+      TEXT
 
       # @!method system?(node)
       def_node_matcher :system?, <<~PATTERN

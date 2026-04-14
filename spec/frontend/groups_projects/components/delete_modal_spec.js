@@ -7,8 +7,8 @@ import { stubComponent } from 'helpers/stub_component';
 import { useFakeDate } from 'helpers/fake_date';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
   uniqueId: (prefix) => `${prefix}fake-id`,
 }));
 

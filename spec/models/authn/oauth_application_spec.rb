@@ -63,6 +63,12 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     end
   end
 
+  describe 'set_device_code_enabled after_initialize' do
+    it 'returns a new instance but with device_code_enabled disabled' do
+      expect(described_class.new.device_code_enabled).to be_falsy
+    end
+  end
+
   describe '.find_by_fallback_token' do
     let(:plain_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
     let(:pbkdf2_secret) { '$pbkdf2-sha512$20000$$.c0G5XJV...' }

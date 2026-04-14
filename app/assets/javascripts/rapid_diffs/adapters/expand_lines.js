@@ -69,8 +69,6 @@ export const expandLinesAdapter = {
         );
       }
       hunkHeaderRow.remove();
-      const totalRows = this.diffElement.querySelectorAll('[data-file-body] tbody tr').length;
-      this.diffElement.style.setProperty('--virtual-total-rows', totalRows);
       this.trigger(EXPANDED_LINES);
     },
   },

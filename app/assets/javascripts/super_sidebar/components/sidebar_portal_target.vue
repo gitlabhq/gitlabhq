@@ -1,5 +1,6 @@
 <script>
-import { SIDEBAR_PORTAL_ID, portalState } from '../constants';
+import { SIDEBAR_PORTAL_ID } from '../constants';
+import { portalState } from '../state';
 
 export default {
   mounted() {

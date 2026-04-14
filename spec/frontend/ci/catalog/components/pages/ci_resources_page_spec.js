@@ -295,25 +295,6 @@ describe('CiResourcesPage', () => {
   });
 
   describe('pages count', () => {
-    describe('when the fetchMore call succeeds', () => {
-      beforeEach(async () => {
-        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
-
-        await createComponent();
-      });
-    });
-
-    describe.each`
-      event                   | payload
-      ${'update-search-term'} | ${'cat'}
-      ${'update-sorting'}     | ${'CREATED_ASC'}
-    `('when $event event is emitted', () => {
-      beforeEach(async () => {
-        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
-        await createComponent();
-      });
-    });
-
     describe('when the fetchMore call fails', () => {
       const errorMessage = 'there was an error';
 

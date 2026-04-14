@@ -51,6 +51,13 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       dependency_scanning: 4
     }.freeze
 
+    SCAN_PROFILE_STATUSES = {
+      not_configured: 0,
+      success: 1,
+      failed: 2,
+      warning: 3
+    }.freeze
+
     SCAN_PROFILE_TRIGGER_TYPES = {
       default_branch_pipeline: 0,
       merge_request_pipeline: 1,
@@ -99,6 +106,10 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def self.scan_profile_types
       SCAN_PROFILES_TYPES
+    end
+
+    def self.scan_profile_statuses
+      SCAN_PROFILE_STATUSES
     end
 
     def self.scan_profile_trigger_types

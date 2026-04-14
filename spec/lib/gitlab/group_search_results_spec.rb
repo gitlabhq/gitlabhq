@@ -229,7 +229,6 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
       before do
         project.add_developer(user)
-        stub_feature_flags(search_scope_work_item: true)
       end
 
       it 'filters by work_item_type_ids when present in filters' do

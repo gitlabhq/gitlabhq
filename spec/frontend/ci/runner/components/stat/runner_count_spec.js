@@ -5,14 +5,14 @@ import RunnerCount from '~/ci/runner/components/stat/runner_count.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, STATUS_ONLINE } from '~/ci/runner/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 
 import { runnersCountData, groupRunnersCountData } from '../../mock_data';
 
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 
@@ -109,10 +109,7 @@ describe('RunnerCount', () => {
     it('data is not shown and error is reported', () => {
       expect(wrapper.html()).toBe('<strong></strong>');
 
-      expect(captureException).toHaveBeenCalledWith({
-        component: 'RunnerCount',
-        error: mockError,
-      });
+      expect(captureException).toHaveBeenCalledWith(mockError);
     });
   });
 

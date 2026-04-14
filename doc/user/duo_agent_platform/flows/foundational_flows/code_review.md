@@ -8,13 +8,13 @@ title: Code Review Flow
 {{< details >}}
 
 - Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- LLM: Anthropic [Claude Sonnet 4.6 Vertex](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-6)
 - Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -28,7 +28,12 @@ title: Code Review Flow
 {{< /history >}}
 
 > [!note]
-> Depending on your add-on, you might have access to GitLab Duo Code Review instead.
+> Depending on your add-on, GitLab runs one of two code review features:
+>
+> - Code Review Flow: the agentic version, part of GitLab Duo Agent Platform.
+> - GitLab Duo Code Review: the non-agentic version, available only for users with the GitLab Duo Enterprise add-on.
+>
+> This page describes the agentic version.
 > Learn how [the two features compare](../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
@@ -163,7 +168,9 @@ You might get an error that states
 This error occurs when Code Review Flow is turned on, but the service account for the top-level group
 is not ready or is still being created.
 
-Wait a few minutes for the service account to activate, then try again. If the error persists, contact your administrator.
+Wait a few minutes for the service account to activate, then try again. If the error persists,
+contact your administrator and ask them to verify that a service account has been created
+in the top-level group with the Developer role.
 
 ### `Error DCR4002`
 
@@ -229,6 +236,15 @@ This error occurs when Code Review Flow cannot create or configure the CI/CD pip
 
 Try to restart the review. If the error persists, contact your administrator.
 
+### `Error DCR4009`
+
+You might get an error that states
+`Code Review Flow could not retrieve the source branch for this merge request. Please request a new review. Error code: DCR4009`.
+
+This error occurs when Code Review Flow is unable to retrieve the source branch for the merge request.
+
+Try to restart the review.
+
 ### `Error DCR5000`
 
 You might get an error that states
@@ -241,3 +257,4 @@ Try to restart the review. If the error persists, contact your administrator.
 ## Related topics
 
 - [GitLab Duo in merge requests](../../../project/merge_requests/duo_in_merge_requests.md)
+- [Agent Platform AI models](../../model_selection.md)

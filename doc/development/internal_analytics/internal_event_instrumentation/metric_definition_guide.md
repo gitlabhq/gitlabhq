@@ -75,7 +75,7 @@ An example is: Weekly count of Runner usage CSV report exports
 ```yaml
 key_path: counts.count_total_export_runner_usage_by_project_as_csv_weekly
 description: Weekly count of Runner usage CSV report exports
-product_group: runner
+product_group: runner_core
 performance_indicator_type: []
 value_type: number
 status: active

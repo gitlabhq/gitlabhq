@@ -46,11 +46,6 @@ system tests, parameterized tests etc.
 Everything you should know about [how to write good Frontend tests](frontend_testing.md): Jest,
 testing promises, stubbing etc.
 
-## Getting started with Feature tests
-
-Need to [get started with feature tests](frontend_testing.md#get-started-with-feature-tests)? Here are some general guidelines,
-tips and tricks to get the most out of white-box testing.
-
 ## Flaky tests
 
 What are [flaky tests](unhealthy_tests.md#flaky-tests), the different kind of flaky tests we encountered, and what
@@ -77,6 +72,11 @@ Everything you should know about [how to run end-to-end tests](end_to_end/_index
 ## Migrations tests
 
 Everything you should know about [how to test migrations](testing_migrations_guide.md).
+
+## MSW integration tests
+
+[MSW integration tests](frontend_testing.md#msw-integration-tests) can replace Capybara feature specs
+with fast, MSW-backed Jest tests that verify full-page frontend interactions.
 
 ## Contract tests
 

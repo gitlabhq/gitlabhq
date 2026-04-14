@@ -6,6 +6,7 @@
     "description",
     "user_id",
     "active",
+    "granular",
     "created_at",
     "expires_at",
     "revoked",
@@ -32,6 +33,9 @@
       "type": "integer"
     },
     "active": {
+      "type": "boolean"
+    },
+    "granular": {
       "type": "boolean"
     },
     "created_at": {

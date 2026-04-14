@@ -208,6 +208,95 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       end
     end
 
+    describe '#resource_name' do
+      let(:file_path) { Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/action.yml').to_s }
+
+      context 'when resource has a metadata file with a name' do
+        let(:resource_def) do
+          Authz::PermissionGroups::Resource.new({ name: 'SSH Key' }, 'path/ssh_key/.metadata.yml')
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with('ci_cd/pipeline')
+            .and_return(resource_def)
+        end
+
+        it 'returns the name from the metadata' do
+          expect(assignable.resource_name).to eq('SSH Key')
+        end
+      end
+
+      context 'when resource has no metadata file' do
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with('ci_cd/pipeline')
+            .and_call_original
+        end
+
+        it 'returns the titlecased directory name' do
+          expect(assignable.resource_name).to eq('Pipeline')
+        end
+      end
+    end
+
+    describe '#resource_description' do
+      let(:file_path) { Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/action.yml').to_s }
+      let(:resource_dir) { File.dirname(file_path).sub('action.yml', '') }
+      let(:metadata_path) { File.join(File.dirname(file_path), '..', 'pipeline', '.metadata.yml') }
+
+      before do
+        allow(Authz::PermissionGroups::Resource).to receive(:get)
+          .with('ci_cd/pipeline')
+          .and_call_original
+      end
+
+      context 'when resource has no metadata file' do
+        it 'generates a description from action files' do
+          expect(assignable.resource_description).to match(/Grants the ability to .+ pipelines\./)
+        end
+      end
+
+      context 'when resource has a description with <actions> interpolation' do
+        let(:resource_def) do
+          Authz::PermissionGroups::Resource.new(
+            { description: 'Grants the ability to <actions> CI pipelines.' },
+            Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/.metadata.yml').to_s
+          )
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with('ci_cd/pipeline')
+            .and_return(resource_def)
+        end
+
+        it 'interpolates the action list into the description' do
+          expect(assignable.resource_description).to match(/Grants the ability to .+ CI pipelines\./)
+          expect(assignable.resource_description).not_to include('<actions>')
+        end
+      end
+
+      context 'when resource has a fully custom description' do
+        let(:resource_def) do
+          Authz::PermissionGroups::Resource.new(
+            { description: 'Grants the ability to delete all artifacts from a project.' },
+            Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/.metadata.yml').to_s
+          )
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with('ci_cd/pipeline')
+            .and_return(resource_def)
+        end
+
+        it 'returns the custom description as-is' do
+          expect(assignable.resource_description).to eq('Grants the ability to delete all artifacts from a project.')
+        end
+      end
+    end
+
     describe '#resource_definition' do
       let(:file_path) { Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/action.yml').to_s }
       let(:resource_def) { instance_double(Authz::PermissionGroups::Resource) }

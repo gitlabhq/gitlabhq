@@ -125,6 +125,7 @@ module Gitlab
       def signer_certificate(p7)
         p7.certificates.each do |cert|
           next if cert.serial != p7.signers[0].serial
+          next if cert.issuer != p7.signers[0].issuer
 
           return cert
         end

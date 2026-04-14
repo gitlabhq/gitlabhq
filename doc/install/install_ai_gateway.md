@@ -25,14 +25,23 @@ Prerequisites:
   a minimum of 512 MB of RAM.
 - Ensure the container has access to at least two CPUs for
   the `ai_gateway` and `duo-workflow-service` services.
-- Generate a JWT signing key for GitLab Duo Agent Platform functionality:
+- Generate JWT signing keys:
+  - For the GitLab Duo Agent Platform:
 
-  ```shell
-  openssl genrsa -out duo_workflow_jwt.key 2048
-  ```
+    ```shell
+    openssl genrsa -out duo_workflow_jwt.key 2048
+    openssl genrsa -out duo_workflow_validation.key 2048
+    ```
+
+  - For the AI Gateway (required for features like Duo Chat):
+
+    ```shell
+    openssl genrsa -out aigw_signing.key 2048
+    openssl genrsa -out aigw_validation.key 2048
+    ```
 
   > [!warning]
-  > Keep the `duo_workflow_jwt.key` file secure and do not share it publicly. This key is used for signing JWT tokens and must be treated as a sensitive credential.
+  > Keep all generated key files secure and do not share them publicly. These keys are used for signing JWTs and must be treated as sensitive credentials.
 
 To ensure better performance, especially under heavy usage, consider allocating
 more disk space, memory, and resources than the minimum requirements.
@@ -51,7 +60,7 @@ The GitLab official Docker image is available:
   - [Stable](https://hub.docker.com/r/gitlab/model-gateway/tags)
   - [Nightly](https://hub.docker.com/r/gitlab/model-gateway-self-hosted/tags)
 
-[View the release process for the self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
+[View the release process for the self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/delivery/release.md).
 
 If your GitLab version is `vX.Y.*-ee`, use the AI Gateway Docker image with the latest `self-hosted-vX.Y.*-ee` tag. For example, if GitLab is on version `v18.2.1-ee`, and the AI Gateway Docker image has:
 
@@ -72,7 +81,11 @@ Newer features are available from nightly builds, but backwards compatibility is
    docker run -d -p 5052:5052 -p 50052:50052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
+    -e AIGW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat aigw_signing.key)" \
+    -e AIGW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat aigw_validation.key)" \
+    -e DUO_WORKFLOW_AUTH__ENABLED="true" \
     -e DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat duo_workflow_jwt.key)" \
+    -e DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat duo_workflow_validation.key)" \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
    ```
 
@@ -250,10 +263,13 @@ To set up an SSL certificate:
 
 ### Create an environment file
 
-Create a `.env` file to store the JWT signing key:
+Create a `.env` file to store the JWT signing and validation keys:
 
 ```shell
-echo "DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat duo_workflow_jwt.key)\"" > .env
+echo "AIGW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat aigw_signing.key)\"" > .env
+echo "AIGW_SELF_SIGNED_JWT__VALIDATION_KEY=\"$(cat aigw_validation.key)\"" >> .env
+echo "DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat duo_workflow_jwt.key)\"" >> .env
+echo "DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY=\"$(cat duo_workflow_validation.key)\"" >> .env
 ```
 
 ### Create a Docker Compose file
@@ -386,8 +402,16 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set "ingress.tls[0].secretName=ai-gateway-tls" \
      --set "ingress.tls[0].hosts[0]=<your_gateway_domain>" \
      --set="ingress.className=nginx" \
-     --set "extraEnvironmentVariables[0].name=DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY" \
-     --set "extraEnvironmentVariables[0].value=$(cat duo_workflow_jwt.key)" \
+     --set "extraEnvironmentVariables[0].name=AIGW_SELF_SIGNED_JWT__SIGNING_KEY" \
+     --set "extraEnvironmentVariables[0].value=$(cat aigw_signing.key)" \
+     --set "extraEnvironmentVariables[1].name=AIGW_SELF_SIGNED_JWT__VALIDATION_KEY" \
+     --set "extraEnvironmentVariables[1].value=$(cat aigw_validation.key)" \
+     --set "extraEnvironmentVariables[2].name=DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY" \
+     --set "extraEnvironmentVariables[2].value=$(cat duo_workflow_jwt.key)" \
+     --set "extraEnvironmentVariables[3].name=DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY" \
+     --set "extraEnvironmentVariables[3].value=$(cat duo_workflow_validation.key)" \
+     --set "extraEnvironmentVariables[4].name=DUO_WORKFLOW_AUTH__ENABLED" \
+     --set "extraEnvironmentVariables[4].value={{ true | quote }}" \
      --timeout=300s --wait --wait-for-jobs
    ```
 
@@ -587,6 +611,9 @@ docker run -d -p 5052:5052 -p 50052:50052 \
  -e AIGW_GITLAB_URL=<your_gitlab_instance> \
  -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
  -e DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat duo_workflow_jwt.key)" \
+ -e DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat duo_workflow_validation.key)" \
+ -e AIGW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat aigw_signing.key)" \
+ -e AIGW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat aigw_validation.key)" \
  registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-v18.2.1-ee@sha256:abc123...
 ```
 
@@ -858,6 +885,42 @@ A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certi
 when the AI Gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
 
 To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).
+
+### Token creation failed
+
+If you encounter a `Token creation failed` error when you use features like Duo Chat,
+the `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` and `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY`
+environment variables might not be set on the AI Gateway.
+
+These keys are required for the AI Gateway to issue short-lived user JWTs.
+Without these keys, the AI Gateway cannot sign tokens, which causes a JWK
+deserialization failure.
+
+To resolve this issue:
+
+1. Generate the required keys:
+
+   ```shell
+   openssl genrsa -out aigw_signing.key 2048
+   openssl genrsa -out aigw_validation.key 2048
+   ```
+
+1. Add the keys to your AI Gateway container by passing them as environment variables:
+
+   ```shell
+   -e AIGW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat aigw_signing.key)" \
+   -e AIGW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat aigw_validation.key)"
+   ```
+
+1. Restart the AI Gateway container.
+
+> [!note]
+> `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` is used by the AI Gateway to sign user JWTs.
+> `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY` is a secondary key used for token validation
+> during key rotation to ensure previously issued tokens remain valid.
+> Both keys must use RSA 2048-bit private keys in PEM format.
+> These keys are separate from `DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY`,
+> which is used by the GitLab Duo Agent Platform.
 
 ### SSL certificate errors when loading PEM files
 

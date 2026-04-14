@@ -102,7 +102,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       expected_fields = %i[
         global_search_snippet_titles_enabled
         global_search_users_enabled
-        global_search_issues_enabled
+        global_search_work_items_enabled
         global_search_merge_requests_enabled
         global_search_block_anonymous_searches_enabled
         anonymous_searches_allowed
@@ -154,6 +154,14 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
     it 'contains :inactive_resource_access_tokens_delete_after_days' do
       expect(helper.visible_attributes).to include(:inactive_resource_access_tokens_delete_after_days)
+    end
+
+    it 'includes :enforce_granular_tokens' do
+      expect(helper.visible_attributes).to include(:enforce_granular_tokens)
+    end
+
+    it 'includes :granular_tokens_enforced_after' do
+      expect(helper.visible_attributes).to include(:granular_tokens_enforced_after)
     end
   end
 
@@ -407,7 +415,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     let_it_be(:application_setting) { build(:application_setting) }
 
     before do
-      application_setting.global_search_issues_enabled = true
+      application_setting.global_search_work_items_enabled = true
       application_setting.global_search_merge_requests_enabled = false
       application_setting.global_search_users_enabled = false
       application_setting.global_search_snippet_titles_enabled = true
@@ -420,7 +428,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         result = helper.global_search_settings_checkboxes(form)
         expect(result[0]).to have_checked_field('Allow unauthenticated users to use search', with: 1)
         expect(result[1]).to have_checked_field('Restrict global search to authenticated users only', with: 1)
-        expect(result[2]).to have_checked_field('Show issues in global search results', with: 1)
+        expect(result[2]).to have_checked_field('Show work items in global search results', with: 1)
         expect(result[3]).not_to have_checked_field('Show merge requests in global search results', with: 1)
         expect(result[4]).to have_checked_field('Show snippets in global search results', with: 1)
         expect(result[5]).not_to have_checked_field('Show users in global search results', with: 1)
@@ -535,9 +543,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       # Extract values (second element of each pair), excluding the first "system default"
       values = options[1..].map(&:last)
 
-      expected_order = %w[projects blobs work_items epics issues merge_requests wiki_blobs commits notes milestones
+      expected_order = %w[projects blobs work_items merge_requests wiki_blobs commits notes milestones
         users snippet_titles]
-      expected_order.delete('epics') unless Gitlab.ee?
 
       expect(values).to eq(expected_order)
     end
@@ -548,8 +555,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       projects_option = options.find { |_label, value| value == 'projects' }
       expect(projects_option.first).to eq('Projects')
 
-      issues_option = options.find { |_label, value| value == 'issues' }
-      expect(issues_option.first).to eq('Issues')
+      work_items_option = options.find { |_label, value| value == 'work_items' }
+      expect(work_items_option.first).to eq('Work items')
     end
   end
 end

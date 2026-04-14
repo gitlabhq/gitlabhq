@@ -403,11 +403,90 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
       end
 
       before do
+        stub_feature_flags(groups_and_projects_async_transfer: false)
         sign_in(user)
         parent_group.add_owner(user)
       end
 
       it_behaves_like 'enforces step-up authentication (request spec)'
+    end
+
+    context 'when groups_and_projects_async_transfer feature flag is enabled' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:group) { create(:group, :public) }
+      let_it_be(:new_parent_group) { create(:group, :public) }
+
+      before_all do
+        group.add_owner(user)
+        new_parent_group.add_owner(user)
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      it 'enqueues the async transfer worker' do
+        expect(Namespaces::Groups::TransferWorker).to receive(:perform_async).with(
+          group.id,
+          new_parent_group.id,
+          user.id
+        )
+
+        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(group_path(group))
+        expect(flash[:notice]).to eq("Group transfer has been queued. You will be notified when it completes.")
+      end
+
+      it 'transitions the group to transfer_scheduled and stores metadata' do
+        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+        group.reload
+        expect(group.state).to eq('transfer_scheduled')
+        expect(group.state_metadata['transfer_target_parent_id']).to eq(new_parent_group.id)
+      end
+
+      context 'when the state transition fails' do
+        before do
+          group.update_column(:state, Group.states[:creation_in_progress])
+        end
+
+        it 'does not enqueue the worker and redirects with an error' do
+          expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+          put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+          expect(response).to redirect_to(edit_group_path(group))
+          expect(flash[:alert]).to eq('Unable to initiate transfer. The group may already have a transfer in progress.')
+        end
+      end
+    end
+
+    context 'when groups_and_projects_async_transfer feature flag is disabled' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:group) { create(:group, :public) }
+      let_it_be(:new_parent_group) { create(:group, :public) }
+
+      before_all do
+        group.add_owner(user)
+        new_parent_group.add_owner(user)
+      end
+
+      before do
+        stub_feature_flags(groups_and_projects_async_transfer: false)
+        sign_in(user)
+      end
+
+      it 'transfers the group synchronously' do
+        expect(Namespaces::Groups::TransferWorker).not_to receive(:perform_async)
+
+        put transfer_group_path(group), params: { new_parent_group_id: new_parent_group.id }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
+        expect(group.reload.parent).to eq(new_parent_group)
+      end
     end
   end
 

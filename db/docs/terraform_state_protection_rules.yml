@@ -1,0 +1,14 @@
+---
+table_name: terraform_state_protection_rules
+classes:
+- Terraform::StateProtectionRule
+feature_categories:
+- infrastructure_as_code
+description: Represents protection rules for Terraform state backends, controlling
+  who can write to a state based on project role and request source.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225580
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

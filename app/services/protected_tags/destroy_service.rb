@@ -3,7 +3,7 @@
 module ProtectedTags
   class DestroyService < BaseService
     def execute(protected_tag)
-      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :destroy_protected_tags, project)
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :delete_protected_tag, project)
 
       protected_tag.destroy
     end

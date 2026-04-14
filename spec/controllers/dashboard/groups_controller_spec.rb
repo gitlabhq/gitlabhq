@@ -73,12 +73,4 @@ RSpec.describe Dashboard::GroupsController do
 
     it_behaves_like 'groups controller with active parameter'
   end
-
-  it 'pushes groups_list_keyset_pagination feature flag' do
-    stub_feature_flags(groups_list_keyset_pagination: true)
-
-    get :index
-
-    expect(response.body).to have_pushed_frontend_feature_flags(groupsListKeysetPagination: true)
-  end
 end

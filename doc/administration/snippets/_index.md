@@ -57,7 +57,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
 ```
 
-To [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings)
+To [retrieve the current value](../../api/settings.md#retrieve-details-on-current-application-settings)
 from the API:
 
 ```shell

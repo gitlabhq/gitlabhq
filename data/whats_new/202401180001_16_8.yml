@@ -5,10 +5,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/secrets/gcp_secret_manager.html
+  documentation_link: https://docs.gitlab.com/ci/secrets/gcp_secret_manager/
   image_url: https://about.gitlab.com/images/16_8/gcp_secrets_mgr.png
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"
 
 - name: Speed up your builds with the Maven dependency proxy
   description: |
@@ -23,10 +23,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/package_registry/dependency_proxy/
+  documentation_link: https://docs.gitlab.com/user/packages/package_registry/dependency_proxy/
   image_url: https://img.youtube.com/vi/9NPTXObsSrE/hqdefault.jpg
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"
 
 - name: Workspaces are now generally available
   description: |
@@ -39,10 +39,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/workspace/
+  documentation_link: https://docs.gitlab.com/user/workspace/
   image_url: https://about.gitlab.com/images/16_8/workspaces-ga.png
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"
 
 - name: Enforce 2FA for GitLab administrators
   description: |
@@ -51,22 +51,22 @@
   self-managed: true
   gitlab-com: false
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/security/two_factor_authentication.html#enforce-2fa-for-administrator-users
+  documentation_link: https://docs.gitlab.com/security/two_factor_authentication/#enforce-2fa-for-administrator-users
   image_url: https://img.youtube.com/vi/fHleeXzoB6k/hqdefault.jpg
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"
 
 - name: Deeper insights into velocity in the Issue Analytics report
   description: |
-    The **Issue Analytics** report now contains information on the number of closed issues in a month to allow for a detailed velocity analysis. With this valuable addition, GitLab users can now gain insights into trends associated with their projects, and improve the overall turn-around time and value delivered to their customers. The **Issue Analytics** visualization contains a bar chart with the number of issues for each month, with a default time span of 13 months. You can access this chart from the drill-down in the [Value Streams Dashboard](https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#dashboard-metrics-and-drill-down-reports).
+    The **Issue Analytics** report now contains information on the number of closed issues in a month to allow for a detailed velocity analysis. With this valuable addition, GitLab users can now gain insights into trends associated with their projects, and improve the overall turn-around time and value delivered to their customers. The **Issue Analytics** visualization contains a bar chart with the number of issues for each month, with a default time span of 13 months. You can access this chart from the drill-down in the [Value Streams Dashboard](https://docs.gitlab.com/user/analytics/value_streams_dashboard/#dashboard-metrics-and-drill-down-reports).
   stage: Plan
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/issues_analytics/
+  documentation_link: https://docs.gitlab.com/user/group/issues_analytics/
   image_url: https://about.gitlab.com/images/16_8/closed_issues_analytics.png
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"
 
 - name: New organization-level DevOps view with DORA-based industry benchmarks
   description: |
@@ -79,7 +79,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#dora-performers-score-panel
+  documentation_link: https://docs.gitlab.com/user/analytics/value_streams_dashboard/#dora-performers-score-panel
   image_url: https://about.gitlab.com/images/16_8/16.8_vsd_dora.png
   published_at: 2024-01-18
-  release: 16.8
+  release: "16.8"

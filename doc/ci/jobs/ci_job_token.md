@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab CI/CD job token
+title: CI/CD job token
 ---
 
 {{< details >}}
@@ -113,6 +113,7 @@ When the setting is enforced, the CI/CD job token is always restricted to the pr
 - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
+- [**Authorized groups and projects** setting renamed to **CI/CD job token allowlist**](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078) in GitLab 17.3.
 - **Add project** option [renamed to **Add**](https://gitlab.com/gitlab-org/gitlab/-/issues/470880/) in GitLab 17.6.
 
 {{< /history >}}
@@ -140,7 +141,8 @@ To add a group or project to the allowlist:
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
-1. Select **Add group or project**.
+1. To the right of **CI/CD job token allowlist**, select **Add**.
+1. Select **Group or project**
 1. Input the path to the group or project to add to the allowlist, and select **Add**.
 
 You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject).
@@ -190,6 +192,7 @@ To set a feature to be only visible to project members:
 
 - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
+- [**Authorized groups and projects** setting renamed to **CI/CD job token allowlist**](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078) in GitLab 17.3.
 
 {{< /history >}}
 
@@ -216,11 +219,11 @@ To disable the job token allowlist:
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Job token permissions**.
-1. Under **Authorized groups and projects**, select **All groups and projects**.
+1. Select **All groups and projects**.
 1. Recommended. When finished testing, select **This project and any groups and projects in the allowlist** to re-enable the job token allowlist.
 
 You can also modify this setting with the [GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate)
-(`inboundJobTokenScopeEnabled`) or [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
+(`inboundJobTokenScopeEnabled`) or [REST](../../api/project_job_token_scopes.md#update-the-cicd-job-token-access-settings-for-a-project) API.
 
 ### Allow Git push requests to your project repository
 
@@ -228,6 +231,7 @@ You can also modify this setting with the [GraphQL](../../api/graphql/reference/
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags/_index.md) named `allow_push_repository_for_job_token`. Disabled by default.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
+- [**Authorized groups and projects** setting renamed to **CI/CD job token allowlist**](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160078) in GitLab 17.3.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.3
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.4. Feature flag `allow_push_repository_for_job_token` removed.
 
@@ -263,7 +267,7 @@ To grant permission to job tokens generated in your project to push to the proje
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
 
 You can also control this setting with the `ci_push_repository_for_job_token_allowed` parameter in
-the [projects API](../../api/projects.md#edit-a-project).
+the [projects API](../../api/projects.md#update-a-project).
 
 ## Fine-grained permissions for job tokens
 

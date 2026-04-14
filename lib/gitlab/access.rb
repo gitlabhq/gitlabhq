@@ -86,7 +86,7 @@ module Gitlab
         {
           NO_ACCESS => s_('MemberRole|The None role is assigned to the invited group users of a shared project when project sharing is disabled in group setting.'),
           GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
-          PLANNER => s_('The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
+          PLANNER => s_('MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
           SECURITY_MANAGER => (Gitlab::Security::SecurityManagerConfig.enabled? ? s_('MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.') : nil),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
@@ -236,7 +236,7 @@ module Gitlab
     end
 
     def human_access_labeled
-      "#{s_('Default role')}: #{human_access}"
+      format(s_('MemberRole|Default role: %{role}'), role: human_access)
     end
 
     def owner?

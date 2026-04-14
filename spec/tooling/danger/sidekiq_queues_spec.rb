@@ -26,7 +26,7 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
     end
 
     with_them do
-      it do
+      it 'returns correct changed_queue_files' do
         allow(fake_git).to receive(:modified_files).and_return(modified_files)
 
         expect(sidekiq_queues.changed_queue_files).to match_array(changed_queue_files)

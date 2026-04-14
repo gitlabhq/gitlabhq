@@ -21,26 +21,24 @@ To access your instance details, sign in to [Switchboard](https://console.gitlab
 
 The **Overview** page displays:
 
-- Any pending configuration changes
-- When the instance was updated
+- Instance status
 - Instance details
 - Maintenance windows
 - Hosted runners
-- Customer communication
 
 ## Tenant overview
 
 The top section shows important information about your tenant, including:
 
-- Tenant name and URL
-- [Repository storage](create_instance/storage_types.md#repository-storage)
+- Instance status
+- Tenant URL
 - Current GitLab version
 - Reference architecture
+- [Total purchased storage](create_instance/storage_types.md#total-purchased-storage)
 - Maintenance window
-- Instance status
 - Primary and secondary AWS regions for data storage, with their availability zone IDs
 - Backup AWS region
-- AWS account IDs for the tenant and hosted runners
+- AWS account ID for the tenant
 
 ## Tenant status indicators
 
@@ -125,19 +123,18 @@ If you're experiencing issues but the status displays `Normal`, the issue might 
 
 ## Maintenance windows
 
-The **Maintenance windows** section displays the:
+The **Overview** page displays the:
 
-- Next scheduled maintenance window
+- Next scheduled maintenance window and upcoming GitLab version upgrade
 - Most recent completed maintenance window
 - Most recent emergency maintenance window (if applicable)
-- Upcoming GitLab version upgrade
 
 > [!note]
 > Every Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](maintenance.md#maintenance-windows).
 
 ## Hosted runners
 
-The **Hosted runners** section shows the [hosted runners](hosted_runners.md) associated with your instance.
+The **Overview** page displays the available [hosted runners](hosted_runners.md) associated with your instance.
 
 ## Resource access
 
@@ -236,15 +233,3 @@ The additional details include:
 - Digest: Cryptographic hash of the public key.
 
 Use these values to configure DNS delegation and DNSSEC validation with your DNS provider.
-
-## Contact information
-
-The **Contact information** section shows the operational email addresses configured for
-your GitLab Dedicated instance. These email addresses receive notifications about your instance, including:
-
-- Emergency maintenance
-- Incidents
-- Other critical updates
-
-To update your operational email addresses,
-see [manage email addresses for operational contacts](configure_instance/users_notifications.md#manage-email-addresses-for-operational-contacts).

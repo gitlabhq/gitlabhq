@@ -3,6 +3,12 @@ default:
 
 workflow:
   name: $PIPELINE_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
+    # catch all rule as this is only used in child pipeline context so should be triggered always
+    - when: always
 
 include:
   - local: .gitlab/ci/version.yml
@@ -206,12 +212,13 @@ stages:
 # ==========================================
 dont-interrupt-me:
   stage: .pre
+  image: alpine:latest
   interruptible: false
+  variables:
+    GIT_STRATEGY: none
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ci/yaml/#interruptible."
   rules:
-    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
-      allow_failure: true
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       when: manual
       allow_failure: true

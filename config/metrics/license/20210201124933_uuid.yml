@@ -2,6 +2,8 @@
 key_path: uuid
 description: GitLab instance unique identifier
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: string
 status: active
 milestone: "9.1"

@@ -12,15 +12,15 @@ with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 After you [install and configure](setup.md) the extension, you can access the following features:
 
 - On the right tool window bar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
-  - The chat tab: Interact with GitLab Duo Chat (agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+  - The chat tab: Interact with GitLab Duo Agentic Chat, or use the **New chat** ({{< icon name="duo-chat-new" >}})
     dropdown list to select a foundational or custom agent to work with.
   - The flows tab: Use the Software Development Flow. Learn more about the
     [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
 - In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
   GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.
-- On the right tool window bar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
-  GitLab Duo Chat (non-agentic). Or select some code and then, in the floating toolbar, select
+- On the right tool window bar, **GitLab Duo Non-Agentic Chat** ({{< icon name="duo-chat" >}}): Interact with
+  GitLab Duo Non-Agentic Chat. Or select some code and then, in the floating toolbar, select
   **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}) for in-line conversations.
 
 ## Use with remote development
@@ -84,12 +84,12 @@ Prerequisites:
 - You have the [1Password](https://1password.com) desktop app installed.
 - You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) tool installed.
 
-To integrate GitLab for JetBrains with the 1Password CLI:
+To integrate the GitLab Duo plugin for JetBrains IDEs with the 1Password CLI:
 
 1. Authenticate with GitLab. Either:
    - [Install the `glab`](https://docs.gitlab.com/cli/#install-the-cli) CLI and
      configure the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/).
-   - Follow the GitLab for JetBrains [set up steps](setup.md).
+   - Follow the GitLab Duo plugin for JetBrains IDEs [set up steps](setup.md).
 1. Open the 1Password item.
 1. [Copy the secret reference](https://developer.1password.com/docs/cli/secret-references/#step-1-copy-secret-references).
 
@@ -126,6 +126,7 @@ built-in error reporting tool:
 
 ## Related topics
 
+- [GitLab Duo plugin for JetBrains IDEs releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases)
 - [Security considerations for editor extensions](../security_considerations.md)
 - [JetBrains troubleshooting](jetbrains_troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)

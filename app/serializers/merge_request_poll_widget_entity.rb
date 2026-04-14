@@ -15,6 +15,13 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     merge_request.project.merge_requests_ff_only_enabled
   end
 
+  expose :show_automatic_rebase_info do |merge_request|
+    merge_request.project.project_setting.automatic_rebase_available? &&
+      merge_request.open? &&
+      !merge_request.project.merge_trains_enabled? &&
+      merge_request.diverged_from_target_branch?
+  end
+
   expose :ff_merge_possible?, as: :ff_merge_possible
 
   # User entities

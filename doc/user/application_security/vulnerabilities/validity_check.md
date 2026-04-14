@@ -54,6 +54,21 @@ GitLab checks the status of detected secrets when the `secret_detection` CI/CD j
 To view a secret's status, view the vulnerability details page. To update the status of a secret,
 for example after revoking it, re-run the `secret_detection` CI/CD job.
 
+To turn on validity checks at the group level, as a Maintainer or higher role, use a [GraphQL API mutation](../../../api/graphql/reference/_index.md#mutationsetgroupvaliditychecks):
+
+```graphql
+mutation {
+  setGroupValidityChecks(input: {
+    validityChecksEnabled: true,
+    namespacePath: "my-group/my-subgroup",
+    projectsToExclude: [100, 105, 108]
+  }) {
+    clientMutationId
+    validityChecksEnabled
+  }
+}
+```
+
 ### Coverage
 
 {{< history >}}

@@ -1,4 +1,4 @@
-import { has, mapKeys, pick } from 'lodash';
+import { has, mapKeys, pick } from 'lodash-es';
 
 /**
  * This method is used to type-safely set values on the given object

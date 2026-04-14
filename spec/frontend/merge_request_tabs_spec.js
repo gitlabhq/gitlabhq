@@ -11,6 +11,8 @@ import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
+import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
@@ -417,6 +419,22 @@ describe('MergeRequestTabs', () => {
       });
     });
 
+    it.each`
+      tab          | hidden
+      ${'show'}    | ${true}
+      ${'diffs'}   | ${false}
+      ${'commits'} | ${true}
+    `('rapid diffs toggle hidden=$hidden on $tab tab', ({ tab, hidden }) => {
+      const toggle = document.createElement('div');
+      toggle.id = 'js-rapid-diffs-toggle';
+      document.body.appendChild(toggle);
+
+      testContext.class = new MergeRequestTabs({ stubLocation });
+      testContext.class.tabShown(tab, 'foobar');
+
+      expect(toggle.classList.contains('!gl-hidden')).toBe(hidden);
+    });
+
     describe('when switching tabs', () => {
       const SCROLL_TOP = 100;
 
@@ -634,6 +652,177 @@ describe('MergeRequestTabs', () => {
       ${'/group/reports/project/-/merge_requests/1/reports'} | ${'reports'}
     `('returns $action for $location', ({ pathName, action }) => {
       expect(getActionFromHref(pathName)).toBe(action);
+    });
+  });
+
+  describe('navigateToDiffNote', () => {
+    const discussion = {
+      active: true,
+      notes: [{ id: '100' }],
+      discussion_path: '/project/-/merge_requests/1/diffs#abc',
+      original_position: {
+        base_sha: 'abc',
+        head_sha: 'def',
+        start_sha: 'ghi',
+        old_path: 'old/file.js',
+        new_path: 'new/file.js',
+      },
+    };
+
+    beforeEach(() => {
+      setHTMLFixture(htmlMergeRequestsWithTaskList);
+      testContext.class = new MergeRequestTabs({ stubLocation });
+      testContext.class.createRapidDiffsApp = jest.fn();
+    });
+
+    describe('legacy fallbacks', () => {
+      it('follows discussion_path when Rapid Diffs is not enabled', async () => {
+        testContext.class.createRapidDiffsApp = null;
+        await testContext.class.navigateToDiffNote(discussion);
+        expect(visitUrl).toHaveBeenCalledWith(discussion.discussion_path);
+      });
+
+      it.each(['for_commit', 'commit_id'])(
+        'navigates to legacy diffs when discussion has %s',
+        async (field) => {
+          const disc = { ...discussion, [field]: 'abc123' };
+          await testContext.class.navigateToDiffNote(disc);
+          const url = new URL(visitUrl.mock.calls[0][0]);
+          expect(url.searchParams.get('rapid_diffs_disabled')).toBe('true');
+          expect(url.searchParams.get('reason')).toBe('unsupported');
+        },
+      );
+
+      it('navigates to legacy diffs when discussion has no position', async () => {
+        const disc = { ...discussion, original_position: undefined, position: undefined };
+        await testContext.class.navigateToDiffNote(disc);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.searchParams.get('rapid_diffs_disabled')).toBe('true');
+      });
+    });
+
+    describe('full page navigation with rapid_diffs=true', () => {
+      it('navigates when discussion is not active and app is not loaded', async () => {
+        const disc = { ...discussion, active: false };
+        await testContext.class.navigateToDiffNote(disc);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.searchParams.get('rapid_diffs')).toBe('true');
+        expect(url.pathname).toBe('/project/-/merge_requests/1/diffs');
+      });
+
+      it('navigates when app is loaded but version does not match', async () => {
+        testContext.class.rapidDiffsApp = { scrollToDiffNote: jest.fn() };
+        useMergeRequestVersions().$patch({
+          sourceVersions: [{ selected: true, base_sha: 'x', head_sha: 'y' }],
+          targetVersions: [{ selected: true, start_sha: 'z' }],
+        });
+        await testContext.class.navigateToDiffNote(discussion);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.searchParams.get('rapid_diffs')).toBe('true');
+      });
+
+      it('includes linked file params from discussion position', async () => {
+        const disc = { ...discussion, active: false };
+        await testContext.class.navigateToDiffNote(disc);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.searchParams.get('old_path')).toBe('old/file.js');
+        expect(url.searchParams.get('new_path')).toBe('new/file.js');
+      });
+
+      it('includes note hash', async () => {
+        const disc = { ...discussion, active: false };
+        await testContext.class.navigateToDiffNote(disc);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.hash).toBe('#note_100');
+      });
+
+      it('uses file_path when paths are the same', async () => {
+        const disc = {
+          ...discussion,
+          active: false,
+          original_position: {
+            ...discussion.original_position,
+            old_path: 'same.js',
+            new_path: 'same.js',
+          },
+        };
+        await testContext.class.navigateToDiffNote(disc);
+        const url = new URL(visitUrl.mock.calls[0][0]);
+        expect(url.searchParams.get('file_path')).toBe('same.js');
+        expect(url.searchParams.has('old_path')).toBe(false);
+      });
+    });
+
+    describe('SPA navigation when app loaded with matching older version', () => {
+      it('does not full-page navigate', async () => {
+        testContext.class.rapidDiffsApp = { scrollToDiffNote: jest.fn() };
+        useMergeRequestVersions().$patch({
+          sourceVersions: [{ selected: true, base_sha: 'abc', head_sha: 'def' }],
+          targetVersions: [{ selected: true, start_sha: 'ghi' }],
+        });
+        jest.spyOn(testContext.class, 'tabShown').mockResolvedValue();
+        const disc = { ...discussion, active: false };
+        await testContext.class.navigateToDiffNote(disc);
+        expect(visitUrl).not.toHaveBeenCalled();
+        expect(testContext.class.rapidDiffsApp.scrollToDiffNote).toHaveBeenCalledWith(disc);
+      });
+    });
+
+    describe('SPA navigation', () => {
+      const navigate = () => testContext.class.navigateToDiffNote(discussion);
+
+      beforeEach(() => {
+        useMergeRequestVersions().$reset();
+        jest.spyOn(testContext.class, 'tabShown').mockImplementation(() => {
+          testContext.class.rapidDiffsApp ||= { scrollToDiffNote: jest.fn() };
+          return Promise.resolve();
+        });
+      });
+
+      it('stores scroll position before switching tabs', async () => {
+        jest.spyOn(testContext.class, 'storeScroll');
+        await navigate();
+        expect(testContext.class.storeScroll).toHaveBeenCalled();
+      });
+
+      it('sets note hash in URL', async () => {
+        const replaceStateSpy = jest.spyOn(window.history, 'replaceState');
+        await navigate();
+        expect(replaceStateSpy).toHaveBeenCalledWith(
+          null,
+          '',
+          expect.objectContaining({ hash: '#note_100' }),
+        );
+      });
+
+      it('switches to diffs tab and scrolls to note position', async () => {
+        await navigate();
+        expect(testContext.class.tabShown).toHaveBeenCalledWith('diffs', null, false);
+        expect(testContext.class.rapidDiffsApp.scrollToDiffNote).toHaveBeenCalledWith(discussion);
+      });
+
+      it('does not call visitUrl', async () => {
+        await navigate();
+        expect(visitUrl).not.toHaveBeenCalled();
+      });
+
+      it('sets linked file data on store when app is not yet loaded', async () => {
+        const store = useDiffsList();
+        jest.spyOn(store, 'setLinkedFileData');
+        await navigate();
+        expect(store.setLinkedFileData).toHaveBeenCalledWith({
+          old_path: 'old/file.js',
+          new_path: 'new/file.js',
+        });
+      });
+
+      it('does not set linked file data when app is already loaded', async () => {
+        testContext.class.rapidDiffsApp = { scrollToDiffNote: jest.fn() };
+        const store = useDiffsList();
+        jest.spyOn(store, 'setLinkedFileData');
+        await navigate();
+        expect(store.setLinkedFileData).not.toHaveBeenCalled();
+      });
     });
   });
 

@@ -196,18 +196,6 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
 
       expect(mrdf[:new_path]).to be_nil
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(deduplicate_new_path_value: false)
-      end
-
-      it 'does not set new_path to nil when it equals old_path' do
-        mrdf.update!(new_path: 'example/path', old_path: 'example/path')
-
-        expect(mrdf[:new_path]).not_to be_nil
-      end
-    end
   end
 
   describe '#new_path' do

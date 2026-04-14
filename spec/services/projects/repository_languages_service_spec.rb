@@ -30,7 +30,7 @@ RSpec.describe Projects::RepositoryLanguagesService, feature_category: :source_c
       end
 
       it 'sets detected_repository_languages flag' do
-        expect { service.execute }.to change(project, :detected_repository_languages).from(nil).to(true)
+        expect { service.execute }.to change { project.detected_repository_languages }.from(nil).to(true)
       end
     end
   end

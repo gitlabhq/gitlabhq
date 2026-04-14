@@ -1,6 +1,6 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
-import { unionBy } from 'lodash';
+import { unionBy } from 'lodash-es';
 import { concatPagination } from '@apollo/client/utilities';
 import { makeVar } from '@apollo/client/core';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
@@ -75,6 +75,19 @@ export const config = {
               return { ...existing, ...incoming };
             },
           },
+          savedViews: {
+            keyArgs: ['subscribedOnly', 'sort', 'search', 'id'],
+            merge(existing, incoming, context) {
+              if (!context.variables.after || context.variables.id) {
+                return incoming;
+              }
+
+              return {
+                ...incoming,
+                nodes: [...existing.nodes, ...incoming.nodes],
+              };
+            },
+          },
         },
       },
       WorkItemPermissions: {
@@ -129,6 +142,16 @@ export const config = {
           // kills any possibility to handle it on the widget level without hardcoding a string.
           awardEmoji: {
             keyArgs: false,
+            // we want to concat next page of awardEmoji to the existing ones
+            merge(existing, incoming, { variables }) {
+              if (existing && incoming && variables.after) {
+                return {
+                  ...incoming,
+                  nodes: [...existing.nodes, ...incoming.nodes],
+                };
+              }
+              return incoming;
+            },
           },
         },
       },
@@ -179,7 +202,20 @@ export const config = {
           features: {
             keyArgs: false,
             merge(existing = {}, incoming = {}) {
-              return { ...existing, ...incoming };
+              const merged = { ...existing, ...incoming };
+
+              // preserve existing awardEmoji connection when incoming only has summary data
+              // (e.g. upvotes/downvotes from main query or subscription)
+              if (
+                incoming.awardEmoji &&
+                existing.awardEmoji &&
+                !incoming.awardEmoji.awardEmoji &&
+                existing.awardEmoji.awardEmoji
+              ) {
+                merged.awardEmoji = { ...existing.awardEmoji, ...incoming.awardEmoji };
+              }
+
+              return merged;
             },
           },
           // widgets policy because otherwise the subscriptions invalidate the cache
@@ -277,7 +313,11 @@ export const config = {
                     return { ...existingNode, ...incomingNode };
                   });
 
-                  // we only set up linked items when the widget is present and has `workItem` property
+                  // We only set up linked items when the widget is present and has `workItem` property
+                  //
+                  // The added null checks and .filter call is to address a situation where a work item
+                  // that's still hasn't loaded remains undefined during extraction, causing the linked
+                  // items widget to fail, see https://gitlab.com/gitlab-org/gitlab/-/work_items/595004
                   if (context.variables.iid) {
                     const items = resultNodes
                       .filter((node) => node.workItem)
@@ -285,9 +325,11 @@ export const config = {
                       .map((node) => {
                         /* eslint-disable no-underscore-dangle */
                         const itemRef = context.cache.extract()[node.workItem.__ref];
+                        if (!itemRef?.workItemType?.__ref) return null;
                         const { __typename, id, name, iconName } =
                           context.cache.extract()[itemRef.workItemType.__ref];
                         /* eslint-enable no-underscore-dangle */
+                        if (!__typename) return null;
 
                         const workItem = {
                           ...itemRef,
@@ -300,7 +342,8 @@ export const config = {
                         };
 
                         return workItem;
-                      });
+                      })
+                      .filter(Boolean);
 
                     // Ensure that any existing linked items are retained
                     const existingLinkedItems = linkedItems();

@@ -276,29 +276,37 @@ await this.$apollo.mutate({
 
 ## Mapping widgets to work item types
 
-All Work Item types share the same pool of predefined widgets and are customized by which widgets are active on a specific type. Because we plan to allow users to create new Work Item types and define a set of widgets for them, mapping of widgets for each Work Item type is stored in database. Mapping of widgets is stored in widget_definitions table and it can be used for defining widgets both for default Work Item types and also in future for custom types. More details about expected database table structure can be found in [this issue description](https://gitlab.com/gitlab-org/gitlab/-/issues/374092).
+All work item types share the same pool of predefined widgets and are
+customized by which widgets are active on a specific type. Widget
+mappings are defined in-memory through Ruby definition classes, not in
+the database.
 
-### Adding new widget to a work item type
+Each work item type has a definition class under
+`app/models/work_items/types_framework/system_defined/definitions/`.
+The `widgets` method in each class returns an array of widget type
+strings that determine which widgets are available for that type:
 
-Because information about what widgets are assigned to each work item type is stored in database, adding new widget to a work item type needs to be done through a database migration. Also widgets importer (`lib/gitlab/database_importers/work_items/widgets_importer.rb`) should be updated.
+```ruby
+# app/models/work_items/types_framework/system_defined/definitions/issue.rb
+def self.widgets
+  %w[assignees description labels milestone hierarchy weight ...]
+end
+```
 
-### Structure of widget definitions table
+The in-memory model
+`WorkItems::TypesFramework::SystemDefined::WidgetDefinition` builds
+its records from these definition classes at application startup. It
+uses [`ActiveRecord::FixedItemsModel`](fixed_items_model.md) to
+provide an ActiveRecord-like query interface (`find_by`, `where`,
+`all`) without database queries.
 
-Each record in the table defines mapping of a widget to a work item type. Currently only "global" definitions (definitions with NULL `namespace_id`) are used. In next iterations we plan to allow customization of these mappings. For example table below defines that:
+### Add a new widget to a work item type
 
-- Weight widget is enabled for work item types 0 and 1
-- Weight widget is not editable for work item type 1 and only includes the rollup value while work item type 0 only includes the editable value
-- in namespace 1 Weight widget is renamed to MyWeight. When user renames widget's name, it makes sense to rename all widget mappings in the namespace - because `name` attribute is denormalized, we have to create namespaced mappings for all work item types for this widget type.
-- Weight widget can be disabled for specific work item types (in namespace 3 it's disabled for work item type 0, while still left enabled for work item type 1)
-
-| ID | `namespace_id` | `work_item_type_id` | `widget_type`      | `widget_options`                         | Name         | Disabled |
-|:---|:---------------|:--------------------|:-------------------|:-----------------------------------------|:-------------|:---------|
-| 1  |                | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Weight       | false    |
-| 2  |                | 1                   | 1                  | {'editable' => false, 'rollup' => true } | Weight       | false    |
-| 3  | 1              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | MyWeight     | false    |
-| 4  | 1              | 1                   | 1                  | {'editable' => false, 'rollup' => true } | MyWeight     | false    |
-| 5  | 2              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Other Weight | false    |
-| 6  | 3              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Weight       | true     |
+To add a widget to a work item type, add the widget type string to the
+`widgets` method in the relevant definition class. For example, to add
+a `designs` widget to the Ticket type, add `'designs'` to the array
+returned by `Definitions::Ticket.widgets`. No database migration is
+needed.
 
 ## Backend architecture
 
@@ -341,9 +349,13 @@ This is typically a trigger to remove associated records which are no longer rel
 - `after_save_commit` is called after the creation or DB update transaction is committed by the
   `CreateService` or `UpdateService`.
 
-## Creating a new backend widget
+## Create a new backend widget
 
-Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158688) for an example of the process of adding a new work item widget.
+> [!warning]
+> [Merge request !158688](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158688)
+> is referenced as a historical example but uses the legacy database-backed
+> approach for widget definitions. Follow the steps below instead, which
+> reflect the current in-memory system.
 
 1. Add the widget argument to the work item mutation(s):
    - For CE features where the widget is available and has identical arguments for creating and updating work items: `app/graphql/mutations/concerns/mutations/work_items/shared_arguments.rb`.
@@ -355,51 +367,17 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
 1. Define the widget fields, by adding the widget type in `app/graphql/types/work_items/widgets/<widget_name>_type.rb` or `ee/app/graphql/types/work_items/widgets/<widget_name>_type.rb`.
 1. Add the widget to the `WorkItemWidget` array in `app/assets/javascripts/graphql_shared/possible_types.json`.
 1. Add the widget type mapping to `TYPE_MAPPINGS` in `app/graphql/types/work_items/widget_interface.rb` or `EE_TYPE_MAPPINGS` in `ee/app/graphql/ee/types/work_items/widget_interface.rb`.
-1. Add the widget type to `widget_type` enum in `app/models/work_items/widget_definition.rb`.
+1. Add the widget type string to the `widget_types` method in
+   `app/models/work_items/types_framework/system_defined/widget_definition.rb`.
 1. Define the quick actions available as part of the widget in `app/models/work_items/widgets/<widget_name>.rb`.
 1. Define how the mutation(s) create/update work items, by adding [callbacks](#widget-callbacks) in `app/services/work_items/callbacks/<widget_name>.rb`.
    - Consider if it is necessary to handle `if excluded_in_new_type?`.
    - Use `raise_error` to handle errors.
-1. Define the widget in `WIDGET_NAMES` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
-1. Assign the widget to the appropriate work item types, by:
-   - Adding it to the `WIDGETS_FOR_TYPE` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
-   - Creating a migration in `db/migrate/<version>_add_<widget_name>_widget_to_work_item_types.rb`.
-     Refer to `db/migrate/20250121163545_add_custom_fields_widget_to_work_item_types.rb` for [the latest best practice](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176206/diffs#diff-content-b6944f559968654c39493bb9f786ee97f12fd370).
-     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680).
-     See `lib/gitlab/database/migration_helpers/work_items/widgets.rb` if you want to learn more about the structure of the migration.
-
-     ```ruby
-     # frozen_string_literal: true
-
-     class AddDesignsAndDevelopmentWidgetsToTicketWorkItemType < Gitlab::Database::Migration[2.2]
-       # Include this helper module as it's not included in Gitlab::Database::migration by default
-       include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
-
-       restrict_gitlab_migration gitlab_schema: :gitlab_main_org
-       milestone '17.9'
-
-       WORK_ITEM_TYPE_ENUM_VALUES = 8 # ticket, use [8,9] for multiple types
-       # If you want to add one widget, only use one item here.
-       WIDGETS = [
-         {
-           name: 'Designs',
-           widget_type: 22
-         },
-         {
-           name: 'Development',
-           widget_type: 23
-         }
-       ]
-
-       def up
-         add_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
-       end
-
-       def down
-         remove_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
-       end
-     end
-     ```
+1. Assign the widget to the appropriate work item types by adding the widget
+   type string to the `widgets` method in each relevant definition class under
+   `app/models/work_items/types_framework/system_defined/definitions/`.
+   For example, to add a widget to the Issue type, add the string to
+   `Definitions::Issue.widgets`. No database migration is needed.
 
 1. Update the GraphQL docs: `bundle exec rake gitlab:graphql:compile_docs`.
 1. Update translations: `tooling/bin/gettext_extractor locale/gitlab.pot`.
@@ -409,7 +387,6 @@ At this point you should be able to use the [GraphQL query and mutation](#graphq
 Now you can update tests for existing files and write tests for the new files:
 
 1. `spec/graphql/types/work_items/widget_interface_spec.rb` or `ee/spec/graphql/ee/types/work_items/widget_interface_spec.rb`.
-1. `spec/models/work_items/widget_definition_spec.rb` or `ee/spec/models/ee/work_items/widget_definition_spec.rb`.
 1. `spec/models/work_items/widgets/<widget_name>_spec.rb` or `ee/spec/models/work_items/widgets/<widget_name>_spec.rb`.
 1. Request:
    - CE: `spec/requests/api/graphql/mutations/work_items/update_spec.rb` and/or `spec/requests/api/graphql/mutations/work_items/create_spec.rb`.
@@ -419,16 +396,3 @@ Now you can update tests for existing files and write tests for the new files:
 1. GraphQL input type(s):
    - CE: `spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
    - EE: `ee/spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `ee/spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `ee/spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
-1. Migration: `spec/migrations/<version>_add_<widget_name>_widget_to_work_item_types_spec.rb`. Add the shared example that uses the constants from `described_class`.
-
-   ```ruby
-   # frozen_string_literal: true
-
-   require 'spec_helper'
-   require_migration!
-
-   RSpec.describe AddDesignsAndDevelopmentWidgetsToTicketWorkItemType, :migration, feature_category: :team_planning do
-     # Tests for `n` widgets in your migration when using the work items widgets migration helper
-     it_behaves_like 'migration that adds widgets to a work item type'
-   end
-   ```

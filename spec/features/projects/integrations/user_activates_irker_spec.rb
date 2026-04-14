@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates irker (IRC gateway)', feature_category: :integrations do
+RSpec.describe 'User activates irker (IRC gateway)', feature_category: :team_planning do
   include_context 'project integration activation'
 
   it 'activates integration', :js do

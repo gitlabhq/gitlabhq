@@ -66,7 +66,8 @@ module Gitlab
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
       if current_organization && ui_for_organizations_enabled?
-        gon.current_organization = current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
+        gon.current_organization = current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
+          .merge({ has_scoped_paths: current_organization.scoped_paths? })
       end
 
       add_gon_user_specific
@@ -95,13 +96,14 @@ module Gitlab
       # Use `push_to_gon_attributes` directly since we have a computed feature flag with
       # an opt-out in ui_for_organizations_enabled?
       push_to_gon_attributes(:features, :ui_for_organizations, ui_for_organizations_enabled?)
+      push_frontend_feature_flag(:page_breadcrumbs_in_top_bar, current_user)
       push_frontend_feature_flag(:organization_switching, current_user)
       push_frontend_feature_flag(:find_and_replace, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
+      push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
 
       push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
     end

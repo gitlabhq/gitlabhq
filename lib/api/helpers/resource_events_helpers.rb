@@ -10,6 +10,14 @@ module API
           MergeRequest => { feature_category: :code_review_workflow, id_field: 'IID' }
         }
       end
+
+      def present_resource_state_event_collection(events, _eventable, _eventable_type)
+        present events, with: Entities::ResourceStateEvent
+      end
+
+      def present_single_resource_state_event(event, _eventable, _eventable_type)
+        present event, with: Entities::ResourceStateEvent
+      end
     end
   end
 end

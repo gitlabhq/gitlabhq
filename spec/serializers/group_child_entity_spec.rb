@@ -18,6 +18,44 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
     stub_commonmark_sourcepos_disabled
   end
 
+  shared_examples 'edit permission attribute' do |action|
+    context "when user has #{action} permission" do
+      before do
+        object.add_owner(user)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when user does not have #{action} permission" do
+      before do
+        object.add_guest(user)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when user is not a member' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when current_user is nil' do
+      before do
+        allow(request).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when request does not respond to current_user' do
+      before do
+        allow(request).to receive(:respond_to?).with(:current_user).and_return(false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   shared_examples 'group child json' do
     it 'renders json' do
       is_expected.not_to be_nil
@@ -300,7 +338,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
     before do
       enable_external_authorization_service_check
-      object.add_maintainer(user)
+      object.add_owner(user)
     end
 
     it 'does not hit the external authorization service' do
@@ -527,56 +565,36 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
   describe 'can_archive attribute' do
     subject { json[:can_archive] }
 
-    shared_examples 'archive permission attribute' do
-      context 'when user has archive permission' do
-        before do
-          object.add_owner(user)
-        end
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'when user does not have archive permission' do
-        before do
-          object.add_guest(user)
-        end
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'when user is not a member' do
-        it { is_expected.to be(false) }
-      end
-
-      context 'when current_user is nil' do
-        before do
-          allow(request).to receive(:current_user).and_return(nil)
-        end
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'when request does not respond to current_user' do
-        before do
-          allow(request).to receive(:respond_to?).with(:current_user).and_return(false)
-        end
-
-        it { is_expected.to be(false) }
-      end
-    end
-
     describe 'for a project' do
       let_it_be_with_reload(:project) { create(:project) }
       let(:object) { project }
 
-      include_examples 'archive permission attribute'
+      include_examples 'edit permission attribute', 'archive'
     end
 
     describe 'for a group' do
       let_it_be_with_reload(:group) { create(:group) }
       let(:object) { group }
 
-      include_examples 'archive permission attribute'
+      include_examples 'edit permission attribute', 'archive'
+    end
+  end
+
+  describe 'can_transfer attribute' do
+    subject { json[:can_transfer] }
+
+    describe 'for a project' do
+      let_it_be(:project) { create(:project) }
+      let(:object) { project }
+
+      include_examples 'edit permission attribute', 'transfer'
+    end
+
+    describe 'for a group' do
+      let_it_be(:group) { create(:group) }
+      let(:object) { group }
+
+      include_examples 'edit permission attribute', 'transfer'
     end
   end
 

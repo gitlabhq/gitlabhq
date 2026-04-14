@@ -6,7 +6,7 @@
  */
 
 const { tailwindCQsMQsPlugin } = require('@gitlab/ui/tailwind_cqs_mqs_plugin');
-const { cloneDeep } = require('lodash');
+const { cloneDeep } = require('lodash-es');
 const config = cloneDeep(require('./tailwind.config'));
 
 /**

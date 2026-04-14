@@ -335,7 +335,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
             s_('IdentityVerification|The code has expired. Send a new code and try again.')
           )
 
-          # succssful validation with valid token
+          # successful validation with valid token
           click_request_new_code_button
           code = expect_instructions_email_and_extract_code
           perform_verification_with_code(code)
@@ -463,7 +463,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
           gitlab_sign_in(user)
           code = expect_instructions_email_and_extract_code
           perform_verification_with_code(code)
-          expect_successful_verification
+          expect(page).to have_current_path(root_path)
         end
       end
     end

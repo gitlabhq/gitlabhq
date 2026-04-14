@@ -8,13 +8,14 @@ module Search
 
     SCOPE_TO_SETTING = {
       blobs: :code,
-      wiki_blobs: :wiki
+      wiki_blobs: :wiki,
+      issues: :work_items
     }.freeze
 
     class << self
       def global
         enabled_global_scopes = global_scopes.select do |scope|
-          setting_name = SCOPE_TO_SETTING[scope.to_sym] || scope
+          setting_name = scope_to_setting[scope.to_sym] || scope
           ::Gitlab::CurrentSettings.public_send(:"global_search_#{setting_name}_enabled") # rubocop:disable GitlabSecurity/PublicSend -- needed for application settings
         end
 
@@ -33,6 +34,10 @@ module Search
 
       def global_scopes
         GLOBAL_SCOPES
+      end
+
+      def scope_to_setting
+        SCOPE_TO_SETTING
       end
     end
   end

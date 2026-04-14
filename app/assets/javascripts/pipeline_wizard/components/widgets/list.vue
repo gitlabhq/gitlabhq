@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlButton, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
 

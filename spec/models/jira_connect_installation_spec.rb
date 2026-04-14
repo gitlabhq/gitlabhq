@@ -11,7 +11,7 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     subject(:installation) { build(:jira_connect_installation) }
 
     it { is_expected.to validate_presence_of(:client_key) }
-    it { is_expected.to validate_uniqueness_of(:client_key) }
+    it { is_expected.to validate_uniqueness_of(:client_key).scoped_to(:organization_id) }
     it { is_expected.to validate_presence_of(:shared_secret) }
     it { is_expected.to validate_presence_of(:base_url) }
 

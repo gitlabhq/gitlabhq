@@ -178,6 +178,8 @@ class GlobalPolicy < BasePolicy
   # We can't use `read_statistics` because the user may have different permissions for different projects
   rule { admin }.enable :use_project_statistics_filters
 
+  rule { admin }.enable :admin_service_accounts
+
   rule { external_user }.prevent :create_snippet
 end
 

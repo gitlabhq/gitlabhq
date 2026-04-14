@@ -23,12 +23,9 @@ module Projects
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
           secret_push_protection_available: secret_push_protection_available?,
           secret_push_protection_enabled: secret_push_protection_enabled,
-          secret_push_protection_licensed: secret_push_protection_licensed?,
           validity_checks_available: validity_checks_available,
           validity_checks_enabled: validity_checks_enabled,
           user_is_project_admin: user_is_project_admin?,
-          can_enable_spp: can_enable_spp?,
-          is_gitlab_com: gitlab_com?,
           secret_detection_configuration_path: secret_detection_configuration_path,
           license_configuration_source: license_configuration_source,
           vulnerability_training_docs_path: vulnerability_training_docs_path,
@@ -39,7 +36,8 @@ module Projects
           can_manage_attributes: can_manage_attributes?,
           security_scan_profiles_licensed: security_scan_profiles_licensed?,
           group_manage_attributes_path: group_manage_attributes_path,
-          max_tracked_refs: max_tracked_refs
+          max_tracked_refs: max_tracked_refs,
+          merge_requests_enabled: project.merge_requests_enabled?
         }
       end
 
@@ -56,10 +54,6 @@ module Projects
         Gitlab::CurrentSettings.current_application_settings.secret_push_protection_available
       end
 
-      def secret_push_protection_licensed?
-        project.licensed_feature_available?(:secret_push_protection)
-      end
-
       def security_scan_profiles_licensed?
         project.licensed_feature_available?(:security_scan_profiles)
       end
@@ -72,10 +66,6 @@ module Projects
 
       def user_is_project_admin?
         can?(current_user, :admin_security_testing, self)
-      end
-
-      def can_enable_spp?
-        can?(current_user, :enable_secret_push_protection, self)
       end
 
       def gitlab_ci_history_path
@@ -109,7 +99,8 @@ module Projects
       end
 
       def scan(type, configured: false)
-        scan = ::Gitlab::Security::ScanConfiguration.new(project: project, type: type, configured: configured)
+        scan = ::Gitlab::Security::ScanConfiguration.new(user: current_user, project: project, type: type,
+          configured: configured)
 
         {
           type: scan.type,
@@ -119,7 +110,8 @@ module Projects
           can_enable_by_merge_request: scan.can_enable_by_merge_request?,
           meta_info_path: scan.meta_info_path,
           on_demand_available: scan.on_demand_available?,
-          security_features: scan.security_features
+          security_features: scan.security_features,
+          can_user_configure: scan.can_user_configure?
         }
       end
 

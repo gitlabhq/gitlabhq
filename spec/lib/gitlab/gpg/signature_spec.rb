@@ -22,6 +22,14 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
     subject { gpg_signature }
   end
 
+  shared_examples_for 'called with temporary keychain' do
+    it 'calls within using_tmp_keychain' do
+      expect(Gitlab::Gpg).to receive(:using_tmp_keychain).at_least(:once).and_call_original
+
+      subject
+    end
+  end
+
   describe '#verification_status' do
     subject { gpg_signature.verification_status }
 
@@ -94,6 +102,16 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
       it { is_expected.to eq(:unverified_key) }
     end
 
+    context 'when the signature is not cryptographically valid' do
+      before do
+        invalid_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: false)
+        allow(GPGME::Crypto).to receive(:new).and_return(crypto)
+        allow(crypto).to receive(:verify).and_yield(invalid_signature)
+      end
+
+      it { is_expected.to eq(:unverified) }
+    end
+
     context 'when there is no matching gpg key' do
       let(:gpg_key) { nil }
 
@@ -106,6 +124,22 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
 
       it { is_expected.to eq(:verified_system) }
     end
+
+    context 'when gpg_signatures returns signatures initially but empty array on re-verification' do
+      before do
+        verified_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: true)
+        call_count = 0
+        allow(GPGME::Crypto).to receive(:new).and_return(crypto)
+        allow(crypto).to receive(:verify) do |*_args, &block|
+          call_count += 1
+          block.call(verified_signature) if call_count == 1
+        end
+      end
+
+      it { is_expected.to eq(:unverified) }
+    end
+
+    it_behaves_like 'called with temporary keychain'
   end
 
   describe '#gpg_key' do
@@ -118,10 +152,13 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
 
       it { is_expected.to eq(gpg_key) }
 
-      it 'does not need to query for a gpg key' do
-        recorder = ActiveRecord::QueryRecorder.new { get_gpg_key }
+      it 'does not query for a gpg key' do
+        expect(GpgKey).not_to receive(:find_by_fingerprint)
+        expect(GpgKey).not_to receive(:find_by_primary_keyid)
+        expect(GpgKeySubkey).not_to receive(:find_by_fingerprint)
+        expect(GpgKeySubkey).not_to receive(:find_by_keyid)
 
-        expect(recorder.count).to eq(0)
+        get_gpg_key
       end
     end
 
@@ -183,6 +220,14 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
 
       it { is_expected.to be_nil }
     end
+
+    context 'when the signature is invalid' do
+      let(:signature) { GpgHelpers::User1.signed_commit_signature.tr('=', 'a') }
+
+      it { is_expected.to be_nil }
+    end
+
+    it_behaves_like 'called with temporary keychain'
   end
 
   describe '#gpg_key_primary_keyid' do
@@ -217,5 +262,27 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
 
       expect(fingerprint).to eq('stubbed_fingerprint')
     end
+
+    context 'when the signature is invalid' do
+      let(:signature) { GpgHelpers::User1.signed_commit_signature.tr('=', 'a') }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when gpg_signatures returns signatures initially but empty array on re-verification' do
+      before do
+        verified_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint, valid?: true)
+        call_count = 0
+        allow(GPGME::Crypto).to receive(:new).and_return(crypto)
+        allow(crypto).to receive(:verify) do |*_args, &block|
+          call_count += 1
+          block.call(verified_signature) if call_count == 1
+        end
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    it_behaves_like 'called with temporary keychain'
   end
 end

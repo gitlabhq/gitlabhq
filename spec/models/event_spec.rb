@@ -210,6 +210,31 @@ RSpec.describe Event, feature_category: :user_profile do
       end
     end
 
+    describe '.count_by_dates_in_timezone' do
+      it 'groups event counts by date in the given timezone' do
+        create(:event, created_at: Time.utc(2026, 3, 28, 22, 30))
+        create(:event, created_at: Time.utc(2026, 3, 28, 23, 30))
+
+        result = described_class.count_by_dates_in_timezone('Europe/Berlin')
+
+        # 22:30 UTC = 23:30 CET -> March 28, 23:30 UTC = 00:30 CET -> March 29
+        expect(result[Date.new(2026, 3, 28)]).to eq(1)
+        expect(result[Date.new(2026, 3, 29)]).to eq(1)
+      end
+
+      it 'applies DST rules correctly per timestamp' do
+        # Before DST switch (CET, UTC+1): 2026-03-28 22:00 UTC = 2026-03-28 23:00 CET
+        create(:event, created_at: Time.utc(2026, 3, 28, 22, 0))
+        # After DST switch (CEST, UTC+2): 2026-03-29 10:00 UTC = 2026-03-29 12:00 CEST
+        create(:event, created_at: Time.utc(2026, 3, 29, 10, 0))
+
+        result = described_class.count_by_dates_in_timezone('Europe/Berlin')
+
+        expect(result[Date.new(2026, 3, 28)]).to eq(1)
+        expect(result[Date.new(2026, 3, 29)]).to eq(1)
+      end
+    end
+
     describe '.for_fingerprint' do
       let_it_be(:with_fingerprint) { create(:event, fingerprint: 'aaa', project: project) }
 

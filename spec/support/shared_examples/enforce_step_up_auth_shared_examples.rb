@@ -90,6 +90,70 @@ RSpec.shared_examples 'enforces step-up authentication' do
         expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
       end
     end
+
+    context 'with multiple OAuth providers configured' do
+      let(:provider_without_step_up) do
+        GitlabSettings::Options.new(name: 'github')
+      end
+
+      let(:another_step_up_provider) do
+        GitlabSettings::Options.new(
+          name: 'saml',
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: { acr: 'silver' }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(
+          enabled: true,
+          providers: [oidc_provider_config, provider_without_step_up, another_step_up_provider]
+        )
+        allow(Devise).to receive(:omniauth_providers).and_return(
+          [oidc_provider_name, provider_without_step_up.name, another_step_up_provider.name]
+        )
+      end
+
+      context 'when user has succeeded with a different step-up provider' do
+        let(:session_data) do
+          {
+            'omniauth_step_up_auth' => {
+              another_step_up_provider.name => { 'namespace' => { 'state' => 'succeeded' } }
+            }
+          }
+        end
+
+        it 'still requires step-up auth with the configured provider' do
+          subject
+
+          # User has step-up auth succeeded with 'saml' but group requires 'openid_connect'
+          expect(response).to redirect_to(new_group_step_up_auth_path(group))
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when user has succeeded with the correct provider' do
+        let(:session_data) do
+          {
+            'omniauth_step_up_auth' => {
+              oidc_provider_name => { 'namespace' => { 'state' => 'succeeded' } }
+            }
+          }
+        end
+
+        it 'allows access with matching provider session' do
+          subject
+
+          expect(response).to have_gitlab_http_status(expected_success_status)
+          expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
+        end
+      end
+    end
   end
 
   context 'when group does not require step-up auth' do
@@ -102,6 +166,42 @@ RSpec.shared_examples 'enforces step-up authentication' do
 
       expect(response).to have_gitlab_http_status(expected_success_status)
       expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
+    end
+
+    context 'with multiple OAuth providers configured' do
+      let(:provider_without_step_up) do
+        GitlabSettings::Options.new(name: 'github')
+      end
+
+      let(:another_step_up_provider) do
+        GitlabSettings::Options.new(
+          name: 'saml',
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: { acr: 'silver' }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(
+          enabled: true,
+          providers: [oidc_provider_config, provider_without_step_up, another_step_up_provider]
+        )
+        allow(Devise).to receive(:omniauth_providers).and_return(
+          [oidc_provider_name, provider_without_step_up.name, another_step_up_provider.name]
+        )
+      end
+
+      it 'allows access without requiring step-up auth from any provider' do
+        subject
+
+        expect(response).to have_gitlab_http_status(expected_success_status)
+        expect(response).not_to redirect_to(new_group_step_up_auth_path(group))
+      end
     end
   end
 

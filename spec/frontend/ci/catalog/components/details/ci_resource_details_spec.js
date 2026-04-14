@@ -27,16 +27,6 @@ describe('CiResourceDetails', () => {
   const findCiResourceReadme = () => wrapper.findComponent(CiResourceReadme);
   const findCiResourceComponents = () => wrapper.findComponent(CiResourceComponents);
 
-  describe('UI', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('passes the right props to the readme component', () => {
-      expect(findCiResourceReadme().props().resourceId).toBe(defaultProps.resourceId);
-    });
-  });
-
   describe('tabs', () => {
     beforeEach(() => {
       createComponent();
@@ -72,6 +62,7 @@ describe('CiResourceDetails', () => {
 
       it('passes the right props to the components tab', () => {
         expect(findCiResourceComponents().props().resourceId).toBe(defaultProps.resourceId);
+        expect(findCiResourceComponents().props().version).toBe(defaultProps.version);
       });
     });
   });

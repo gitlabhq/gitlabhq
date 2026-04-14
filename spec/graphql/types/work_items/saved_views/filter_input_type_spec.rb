@@ -20,7 +20,7 @@ RSpec.describe Types::WorkItems::SavedViews::FilterInputType, feature_category: 
     # Arguments that exist in the work items resolver but should NOT be in Types::WorkItems::SavedViews::FilterInputType
     excluded_from_saved_views = %w[
       ids iids includeAncestors includeArchived parentIds parentWildcardId requirementLegacyWidget sort timeframe
-      verificationStatusWidget workItemTypeIds
+      verificationStatusWidget
     ]
 
     # Arguments that exist in Types::WorkItems::SavedViews::FilterInputType but NOT in the resolver
@@ -66,6 +66,18 @@ RSpec.describe Types::WorkItems::SavedViews::FilterInputType, feature_category: 
 
       expect { state_argument.prepare.call('locked', nil) }
         .to raise_error(Gitlab::Graphql::Errors::ArgumentError, ::Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE)
+    end
+
+    it 'prepares work_item_type_ids by extracting model_ids from GlobalIDs' do
+      argument = described_class.arguments['workItemTypeIds']
+      global_ids = [
+        ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input('gid://gitlab/WorkItems::Type/1'),
+        ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input('gid://gitlab/WorkItems::Type/2')
+      ]
+
+      prepared_value = argument.prepare.call(global_ids, nil)
+
+      expect(prepared_value).to eq(%w[1 2])
     end
   end
 end

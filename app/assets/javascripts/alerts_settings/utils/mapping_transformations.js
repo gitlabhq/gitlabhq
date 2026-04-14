@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 /**

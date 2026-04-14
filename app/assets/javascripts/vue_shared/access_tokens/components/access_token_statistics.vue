@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlCard } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { mapActions, mapState } from 'pinia';
 import { useAccessTokens } from '../stores/access_tokens';
 
@@ -10,7 +9,6 @@ export default {
   components: {
     GlButton,
     GlCard,
-    GlSingleStat,
   },
   computed: {
     ...mapState(useAccessTokens, ['statistics', 'urlParams']),
@@ -33,13 +31,16 @@ export default {
 
 <template>
   <div class="gl-my-5 gl-grid gl-gap-4 @sm/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-4">
-    <gl-card v-for="statistic in statistics" :key="statistic.title">
-      <gl-single-stat
-        class="!gl-p-0"
-        :data-testid="slugifyStat(statistic.title)"
-        :title="statistic.title"
-        :value="statistic.value"
-      />
+    <gl-card
+      v-for="statistic in statistics"
+      :key="statistic.title"
+      :data-testid="slugifyStat(statistic.title)"
+    >
+      <template #header>
+        <h2>{{ statistic.title }}</h2>
+      </template>
+
+      <p class="gl-heading-1 gl-mb-0">{{ statistic.value }}</p>
       <gl-button
         class="gl-mt-3"
         :title="statistic.tooltipTitle"

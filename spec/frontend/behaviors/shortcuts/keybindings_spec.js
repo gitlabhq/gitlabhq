@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   keysFor,

@@ -19,11 +19,10 @@ module WorkItems
       return Array.wrap(provider.find_by_base_type(name)) if name.present? && !only_available
       return provider.all_ordered_by_name unless only_available
 
-      ::WorkItems::TypesFilter
-        .new(container: @container)
-        .allowed_types
-        .then { |types| name.present? ? types.intersection(Array.wrap(name)) : types }
-        .then { |types| provider.by_base_types_ordered_by_name(types) }
+      types = provider.allowed_types
+      names = Array.wrap(name)
+      types = types.select { |type| names.include?(type.base_type.to_s) } if name.present?
+      types.sort_by { |type| type.name.downcase }
     end
 
     private

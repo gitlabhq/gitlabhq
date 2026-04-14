@@ -29,6 +29,14 @@ module Ci
         scope :by_sha, ->(sha) { joins(:release).merge(Release.where(sha: sha)) }
         scope :with_semver, -> { where.not(semver_major: nil) }
         scope :without_prerelease, -> { where(semver_prerelease: nil) }
+        scope :search_by_version, ->(term) {
+          sanitized_term = sanitize_sql_like(term)
+          where(
+            "concat_ws('.', semver_major, semver_minor, semver_patch) " \
+              "|| COALESCE('-' || semver_prerelease, '') ILIKE :term",
+            term: "%#{sanitized_term}%"
+          )
+        }
 
         delegate :sha, :author_id, to: :release
 

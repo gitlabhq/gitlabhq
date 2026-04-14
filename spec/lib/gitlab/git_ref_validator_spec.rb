@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
-  # Valid ref names that should pass validation in both implementations
+  # Valid ref names that should pass validation
   let(:valid_refs) do
     [
       'feature/new',
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_managemen
     ]
   end
 
-  # Invalid ref names that should fail validation in both implementations
+  # Invalid ref names that should fail validation
   # Format: [ref_name, description]
   # Ordered according to git-check-ref-format rules:
   # https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
@@ -30,6 +30,10 @@ RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_managemen
       # Rule 1: No component can begin with '.' or end with '.lock'
       ['.tag', 'component starts with dot (rule 1)'],
       ['sub.lock/webmatrix', '.lock in middle component (rule 1)'],
+      ['feature/.hidden', 'hidden nested component (rule 1)'],
+      ['branch.lock', '.lock as entire ref (rule 1)'],
+      ['feature/branch.lock', '.lock in last component (rule 1)'],
+      ['feature/branch.lock/sub', '.lock in middle of path (rule 1)'],
 
       # Rule 3: Cannot have two consecutive dots '..'
       ['feature..branch', 'double dots (rule 3)'],
@@ -42,6 +46,12 @@ RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_managemen
       ['my branch', 'space in name (rule 4)'],
       ['+foo:bar', 'plus and colon (rule 4)'],
       ['foo:bar', 'colon (rule 4)'],
+
+      # Rule 4: DEL character (0x7F)
+      ["test\x7fbranch", 'DEL in middle (rule 4)'],
+      ["\x7f", 'single DEL (rule 4)'],
+      ["\x7ftest", 'DEL at start (rule 4)'],
+      ["test\x7f", 'DEL at end (rule 4)'],
 
       # Rule 5: Cannot have ?, *, or [
       ['feature/?new/', 'question mark (rule 5)'],
@@ -82,244 +92,129 @@ RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_managemen
       ["te\x00st", 'NULL in middle (rule 4)'],
       ["feature\tbranch", 'TAB (rule 4)'],
       ["feature\nbranch", 'newline (rule 4)'],
-      ["feature\rbranch", 'carriage return (rule 4)']
+      ["feature\rbranch", 'carriage return (rule 4)'],
+      ["\x00\x1F\x7F", 'multiple control chars with DEL (rule 4)'],
+      ["feature\x08\x7fbranch", 'BS + DEL (rule 4)']
     ]
   end
 
-  shared_examples 'ref name validation' do
-    describe '.validate' do
-      context 'with valid ref names' do
-        where(:ref_name) { valid_refs }
+  describe '.validate' do
+    context 'with valid ref names' do
+      where(:ref_name) { valid_refs }
 
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be true }
-        end
-      end
-
-      context 'with invalid ref names' do
-        where(:ref_name, :description) { invalid_refs }
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
-      end
-
-      context 'with control characters (0x00-0x1F)' do
-        where(:ref_name, :description) { control_char_refs }
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
-      end
-
-      context 'with control characters in different positions' do
-        where(:ref_name, :description) { control_char_position_refs }
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
-      end
-
-      context 'with refs/heads/ and refs/remotes/ prefixes' do
-        where(:ref_name) do
-          ['refs/heads/', 'refs/remotes/', 'refs/heads/feature', 'refs/remotes/origin']
-        end
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
-      end
-
-      it 'rejects empty string' do
-        expect(described_class.validate("")).to be false
-      end
-
-      it 'rejects nil' do
-        expect(described_class.validate(nil)).to be false
-      end
-
-      it 'rejects HEAD without skip_head_ref_check' do
-        expect(described_class.validate('HEAD')).to be false
-      end
-
-      it 'rejects invalid byte sequences' do
-        expect(described_class.validate("\xA0\u0000\xB0")).to be false
-      end
-
-      context 'when skip_head_ref_check is true' do
-        it 'allows HEAD' do
-          expect(described_class.validate('HEAD', skip_head_ref_check: true)).to be true
-        end
+      with_them do
+        it { expect(described_class.validate(ref_name)).to be true }
       end
     end
 
-    describe '.validate_merge_request_branch' do
-      context 'with valid ref names' do
-        where(:ref_name) { valid_refs + ['HEAD', 'refs/heads/master'] }
+    context 'with invalid ref names' do
+      where(:ref_name, :description) { invalid_refs }
 
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be true }
-        end
+      with_them do
+        it { expect(described_class.validate(ref_name)).to be false }
+      end
+    end
+
+    context 'with control characters (0x00-0x1F)' do
+      where(:ref_name, :description) { control_char_refs }
+
+      with_them do
+        it { expect(described_class.validate(ref_name)).to be false }
+      end
+    end
+
+    context 'with control characters in different positions' do
+      where(:ref_name, :description) { control_char_position_refs }
+
+      with_them do
+        it { expect(described_class.validate(ref_name)).to be false }
+      end
+    end
+
+    context 'with refs/heads/ and refs/remotes/ prefixes' do
+      where(:ref_name) do
+        ['refs/heads/', 'refs/remotes/', 'refs/heads/feature', 'refs/remotes/origin']
       end
 
-      context 'with invalid ref names' do
-        where(:ref_name, :description) { invalid_refs }
-
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
+      with_them do
+        it { expect(described_class.validate(ref_name)).to be false }
       end
+    end
 
-      context 'with control characters (0x00-0x1F)' do
-        where(:ref_name, :description) { control_char_refs }
+    it 'rejects empty string' do
+      expect(described_class.validate("")).to be false
+    end
 
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
-      end
+    it 'rejects nil' do
+      expect(described_class.validate(nil)).to be false
+    end
 
-      context 'with control characters in different positions' do
-        where(:ref_name, :description) { control_char_position_refs }
+    it 'rejects HEAD without skip_head_ref_check' do
+      expect(described_class.validate('HEAD')).to be false
+    end
 
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
-      end
+    it 'rejects invalid byte sequences' do
+      expect(described_class.validate("\xA0\u0000\xB0")).to be false
+    end
 
-      context 'with empty refs/heads/ and refs/remotes/' do
-        where(:ref_name) { ['refs/heads/', 'refs/remotes/'] }
-
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
-      end
-
-      it 'rejects empty string' do
-        expect(described_class.validate_merge_request_branch("")).to be false
-      end
-
-      it 'rejects nil' do
-        expect(described_class.validate_merge_request_branch(nil)).to be false
-      end
-
-      it 'rejects invalid byte sequences' do
-        expect(described_class.validate_merge_request_branch("\xA0\u0000\xB0")).to be false
+    context 'when skip_head_ref_check is true' do
+      it 'allows HEAD' do
+        expect(described_class.validate('HEAD', skip_head_ref_check: true)).to be true
       end
     end
   end
 
-  context 'with git_ref_validator_custom_validation feature flag enabled' do
-    before do
-      stub_feature_flags(git_ref_validator_custom_validation: true)
-    end
+  describe '.validate_merge_request_branch' do
+    context 'with valid ref names' do
+      where(:ref_name) { valid_refs + ['HEAD', 'refs/heads/master'] }
 
-    include_examples 'ref name validation'
-
-    describe '.validate with custom validation specific cases' do
-      # DEL character (0x7F) - only rejected by custom validation (Rugged bug)
-      # Rule 4: Cannot have ASCII control characters including DEL (0x7F)
-      context 'with DEL character (0x7F)' do
-        where(:ref_name, :description) do
-          [
-            ["test\x7fbranch", 'DEL in middle'],
-            ["\x7f", 'single DEL'],
-            ["\x7ftest", 'DEL at start'],
-            ["test\x7f", 'DEL at end'],
-            ["\x00\x1F\x7F", 'multiple control chars with DEL'],
-            ["feature\x08\x7fbranch", 'BS + DEL']
-          ]
-        end
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
-      end
-
-      # Rule 1: Component cannot start with . or end with .lock
-      context 'with .lock suffix and hidden components' do
-        where(:ref_name, :description) do
-          [
-            ['feature/.hidden', 'hidden component'],
-            ['branch.lock', '.lock suffix'],
-            ['feature/branch.lock', '.lock in last component'],
-            ['feature/branch.lock/sub', '.lock in middle component']
-          ]
-        end
-
-        with_them do
-          it { expect(described_class.validate(ref_name)).to be false }
-        end
+      with_them do
+        it { expect(described_class.validate_merge_request_branch(ref_name)).to be true }
       end
     end
 
-    describe '.validate_merge_request_branch with custom validation specific cases' do
-      # Rule 4: Cannot have ASCII control characters including DEL (0x7F)
-      context 'with DEL character (0x7F)' do
-        where(:ref_name, :description) do
-          [
-            ["test\x7fbranch", 'DEL in middle'],
-            ["\x7f", 'single DEL'],
-            ["\x7ftest", 'DEL at start'],
-            ["test\x7f", 'DEL at end'],
-            ["\x00\x1F\x7F", 'multiple control chars with DEL'],
-            ["feature\x08\x7fbranch", 'BS + DEL']
-          ]
-        end
+    context 'with invalid ref names' do
+      where(:ref_name, :description) { invalid_refs }
 
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
-      end
-
-      # Rule 1: Component cannot start with . or end with .lock
-      context 'with .lock suffix and hidden components' do
-        where(:ref_name, :description) do
-          [
-            ['feature/.hidden', 'hidden component'],
-            ['branch.lock', '.lock suffix'],
-            ['feature/branch.lock', '.lock in last component'],
-            ['feature/branch.lock/sub', '.lock in middle component']
-          ]
-        end
-
-        with_them do
-          it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
-        end
-      end
-    end
-  end
-
-  context 'with git_ref_validator_custom_validation feature flag disabled' do
-    before do
-      stub_feature_flags(git_ref_validator_custom_validation: false)
-    end
-
-    include_examples 'ref name validation'
-
-    describe '.validate with legacy Rugged validation (known bug)' do
-      # DEL character (0x7F) - Rugged incorrectly allows this (rule 4 violation)
-      it 'allows DEL character (Rugged bug)' do
-        expect(described_class.validate("test\x7fbranch")).to be true
-        expect(described_class.validate("\x7f")).to be true
-      end
-
-      # .lock suffix - Rugged correctly rejects this
-      it 'rejects .lock suffix' do
-        expect(described_class.validate('branch.lock')).to be false
+      with_them do
+        it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
       end
     end
 
-    describe '.validate_merge_request_branch with legacy Rugged validation (known bug)' do
-      # DEL character (0x7F) - Rugged incorrectly allows this (rule 4 violation)
-      it 'allows DEL character (Rugged bug)' do
-        expect(described_class.validate_merge_request_branch("test\x7fbranch")).to be true
-        expect(described_class.validate_merge_request_branch("\x7f")).to be true
-      end
+    context 'with control characters (0x00-0x1F)' do
+      where(:ref_name, :description) { control_char_refs }
 
-      # .lock suffix - Rugged correctly rejects this
-      it 'rejects .lock suffix' do
-        expect(described_class.validate_merge_request_branch('branch.lock')).to be false
+      with_them do
+        it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
       end
+    end
+
+    context 'with control characters in different positions' do
+      where(:ref_name, :description) { control_char_position_refs }
+
+      with_them do
+        it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
+      end
+    end
+
+    context 'with empty refs/heads/ and refs/remotes/' do
+      where(:ref_name) { ['refs/heads/', 'refs/remotes/'] }
+
+      with_them do
+        it { expect(described_class.validate_merge_request_branch(ref_name)).to be false }
+      end
+    end
+
+    it 'rejects empty string' do
+      expect(described_class.validate_merge_request_branch("")).to be false
+    end
+
+    it 'rejects nil' do
+      expect(described_class.validate_merge_request_branch(nil)).to be false
+    end
+
+    it 'rejects invalid byte sequences' do
+      expect(described_class.validate_merge_request_branch("\xA0\u0000\xB0")).to be false
     end
   end
 end

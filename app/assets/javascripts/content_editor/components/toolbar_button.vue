@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import EditorStateObserver from './editor_state_observer.vue';
 
 export default {
+  name: 'ToolbarButton',
   components: {
     GlButton,
     EditorStateObserver,

@@ -30,7 +30,6 @@ import {
   i18n,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
-  WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WIDGET_TYPE_NOTES,
@@ -54,7 +53,12 @@ import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
-import { findAssigneesWidget, findHierarchyWidgetDefinition, activeWorkItemIds } from '../utils';
+import {
+  findAssigneesWidget,
+  findAwardEmojiWidget,
+  findHierarchyWidgetDefinition,
+  activeWorkItemIds,
+} from '../utils';
 import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
@@ -416,7 +420,7 @@ export default {
       return findAssigneesWidget(this.workItem);
     },
     workItemAwardEmoji() {
-      return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
+      return findAwardEmojiWidget(this.workItem);
     },
     workItemErrorTracking() {
       return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};

@@ -101,12 +101,16 @@ module Gitlab
               "Useful for reproducing CI deployments. Only valid with --ci flag.",
             type: :boolean,
             default: false
+          option :kind_image,
+            desc: "Docker image for kind cluster nodes, only applicable when --create-cluster is true",
+            type: :string
+
           def kind(name = DEFAULT_HELM_RELEASE_NAME)
             return print_deploy_args("kind") if options[:print_deploy_args] && options[:ci]
 
             if options[:create_cluster]
               Kind::Cluster.new(**symbolized_options.slice(
-                :docker_hostname, :ci, :host_http_port, :host_ssh_port, :host_registry_port
+                :docker_hostname, :ci, :host_http_port, :host_ssh_port, :host_registry_port, :kind_image
               )).create
             end
 
@@ -154,6 +158,7 @@ module Gitlab
             cmd.push(*options[:set].flat_map { |opt| ["--set", opt] }) if options[:set]
             cmd.push(*options[:env].flat_map { |opt| ["--env", opt] }) if options[:env]
             cmd.push("--chart-sha", options[:chart_sha]) if options[:chart_sha]
+            cmd.push("--kind-image", options[:kind_image]) if options[:kind_image]
 
             log("Received --print-deploy-args option, printing example of all deployment arguments!", :warn)
             log("To reproduce CI deployment, run orchestrator with following arguments:")

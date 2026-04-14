@@ -30,7 +30,7 @@ module API
       # to `#cache_key`.
       #
       # To override the Grape formatter we return a custom wrapper in
-      # `Gitlab::Json::PrecompiledJson` which tells the `Gitlab::Json::GrapeFormatter`
+      # `Gitlab::Json::Precompiled` which tells the `Gitlab::Json::GrapeFormatter`
       # to export the string without conversion.
       #
       # A cache context can be supplied to add more context to the cache key. This
@@ -41,7 +41,7 @@ module API
       # @param cache_context [Proc] a proc to call for each object to provide more context to the cache key
       # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
       # @param presenter_args [Hash] keyword arguments to be passed to the entity
-      # @return [Gitlab::Json::PrecompiledJson]
+      # @return [Gitlab::Json::Precompiled]
       def present_cached(obj_or_collection, with:, cache_context: ->(_) { current_user&.cache_key }, expires_in: Gitlab::Cache::Helpers::DEFAULT_EXPIRY, **presenter_args)
         json =
           if obj_or_collection.is_a?(Enumerable)
@@ -62,7 +62,7 @@ module API
             )
           end
 
-        body Gitlab::Json::PrecompiledJson.new(json)
+        body Gitlab::Json::Precompiled.new(json)
       end
 
       # Action caching implementation
@@ -70,19 +70,19 @@ module API
       # This allows you to wrap an entire API endpoint call in a cache, useful
       # for short TTL caches to effectively rate-limit an endpoint. The block
       # will be converted to JSON and cached, and returns a
-      # `Gitlab::Json::PrecompiledJson` object which will be exported without
+      # `Gitlab::Json::Precompiled` object which will be exported without
       # secondary conversion.
       #
       # @param key [Object] any object that can be converted into a cache key
       # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
-      # @return [Gitlab::Json::PrecompiledJson]
+      # @return [Gitlab::Json::Precompiled]
       def cache_action(key, **custom_cache_opts)
         cache_opts = apply_default_cache_options(custom_cache_opts)
 
         json, cached_headers = cache.fetch(key, **cache_opts) do
           response = yield
 
-          cached_body = response.is_a?(Gitlab::Json::PrecompiledJson) ? response.to_s : Gitlab::Json.dump(response.as_json)
+          cached_body = response.is_a?(Gitlab::Json::Precompiled) ? response.to_s : Gitlab::Json.dump(response.as_json)
           cached_headers = header.slice(*PAGINATION_HEADERS)
 
           [cached_body, cached_headers]
@@ -94,7 +94,7 @@ module API
           header key, value
         end
 
-        body Gitlab::Json::PrecompiledJson.new(json)
+        body Gitlab::Json::Precompiled.new(json)
       end
 
       # Conditionally cache an action

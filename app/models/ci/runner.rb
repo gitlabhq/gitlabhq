@@ -252,6 +252,7 @@ module Ci
 
     validate :no_projects, unless: :project_type?
     validate :no_organization_id, if: :instance_type?
+    validate :organization_id_matches_owner, unless: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
@@ -673,6 +674,14 @@ module Ci
 
     def no_allowed_plan_ids
       errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_ids.empty?
+    end
+
+    def organization_id_matches_owner
+      return unless owner
+
+      if organization_id != owner.organization_id
+        errors.add(:organization_id, 'must match the organization of the parent group/project')
+      end
     end
 
     def legacy_partition_id_prefix_in_16_bit_encode

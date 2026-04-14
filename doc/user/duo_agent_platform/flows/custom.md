@@ -28,6 +28,7 @@ title: Custom flows
 - Pipeline events trigger [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
+- Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 
 {{< /history >}}
 
@@ -101,8 +102,9 @@ To create a flow:
 1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
 1. Under **Configuration**:
    1. Select **Flow**.
-   1. In the editor, enter your flow configuration.
-      To learn how to write custom flow YAML, see the [flow registry framework documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/flow_registry/v1.md).
+   1. In the editor, enter your flow configuration:
+
+      - For more information on the YAML syntax and schema, see [custom flow YAML schema](custom_flows_schema.md).
 1. Select **Create flow**.
 
 {{< /tab >}}
@@ -118,8 +120,9 @@ To create a flow:
 1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
 1. Under **Configuration**:
    1. Select **Flow**.
-   1. In the editor, enter your flow configuration.
-      To learn how to write custom flow YAML, see the [flow registry framework documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/flow_registry/v1.md).
+   1. In the editor, enter your flow configuration:
+
+      - For more information on the YAML syntax and schema, see [custom flow YAML schema](custom_flows_schema.md).
 1. Select **Create flow**.
 
 {{< /tab >}}

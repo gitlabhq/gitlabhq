@@ -1,7 +1,7 @@
 import { GlLoadingIcon, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import { merge, last } from 'lodash';
+import { merge, last } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import tags from 'test_fixtures/api/tags/tags.json';

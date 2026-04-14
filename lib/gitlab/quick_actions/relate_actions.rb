@@ -8,93 +8,55 @@ module Gitlab
 
       included do
         desc { _('Link items related to this item') }
-        explanation do |target_issues|
+        explanation do |items|
           format(
             _('Added %{target} as a linked item related to this %{work_item_type}.'),
-            target: target_issues.to_sentence,
-            work_item_type: work_item_type(quick_action_target)
+            target: dependency_service.format_refs(items),
+            work_item_type: dependency_service.type_name
           )
         end
-        execution_message do |target_issues|
+        execution_message do |items|
           format(
             _('Added %{target} as a linked item related to this %{work_item_type}.'),
-            target: target_issues.to_sentence,
-            work_item_type: work_item_type(quick_action_target)
+            target: dependency_service.format_refs(items),
+            work_item_type: dependency_service.type_name
           )
         end
-        params '<#item | group/project#item | item URL>'
+        params { dependency_service.param_hint }
         types Issue
-        condition { can_admin_link? }
-        parse_params { |issues| format_params(issues) }
-        command :relate do |target_issues|
-          create_links(target_issues)
+        condition { dependency_service.can_admin_link? }
+        parse_params { |items| dependency_service.parse_params(items) }
+        command :relate do |items|
+          dependency_service.create_link(items, link_type: 'relates_to')
         end
 
         desc { _("Remove linked item") }
-        explanation do |issue|
-          _('Removes linked item %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
+        explanation do |item|
+          format(_('Removes linked item %{ref}.'), ref: dependency_service.format_ref(item))
         end
-        execution_message do |issue|
-          _('Removed linked item %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
+        execution_message do |item|
+          format(_('Removed linked item %{ref}.'), ref: dependency_service.format_ref(item))
         end
-        params '<#item | group/project#item | item URL>'
-        types Issue
-        condition { can_admin_link? }
-        parse_params do |issue_param|
-          extract_unlink_references(issue_param).first
+        params { dependency_service.param_hint }
+        types Issue, MergeRequest
+        condition { dependency_service.can_admin_link? }
+        parse_params do |item_param|
+          dependency_service.parse_params(item_param).first
         end
-        command :unlink do |issue|
-          link = IssueLink.for_items(quick_action_target, issue).first
+        command :unlink do |item|
+          next if dependency_service.destroy_link(item)
 
-          if link
-            user = current_user
-
-            call_link_service(proc { IssueLinks::DestroyService.new(link, user).execute })
-          else
-            @execution_message[:unlink] = _('No linked issue matches the provided parameter.')
-          end
-        end
-
-        private
-
-        def can_admin_link?
-          current_user.can?(:admin_issue_link, quick_action_target)
-        end
-
-        def create_links(references, type: 'relates_to')
-          target = quick_action_target
-          user = current_user
-
-          link_service = proc do
-            ::WorkItems::RelatedWorkItemLinks::CreateService.new(
-              WorkItem.find(target.id),
-              user, { issuable_references: references, link_type: type }
-            ).execute
-          end
-
-          call_link_service(link_service)
-        end
-
-        def call_link_service(link_service)
-          if quick_action_target.persisted?
-            link_service.call
-          else
-            quick_action_target.run_after_commit(&link_service)
-          end
-        end
-
-        def format_params(issue_references)
-          issue_references.split(' ')
-        end
-
-        def work_item_type(work_item)
-          work_item.work_item_type.name.downcase
+          @execution_message[:unlink] = _('No linked item matches the provided parameter.')
         end
       end
 
-      # overriden in EE
-      def extract_unlink_references(issue_param)
-        extract_references(issue_param, :issue) + extract_references(issue_param, :work_item)
+      private
+
+      # Overridden in EE.
+      def dependency_service
+        @dependency_service ||= ::WorkItems::QuickActions::DependencyService.new(
+          quick_action_target, current_user, project, group
+        )
       end
     end
   end

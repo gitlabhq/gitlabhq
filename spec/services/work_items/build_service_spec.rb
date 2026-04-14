@@ -49,7 +49,7 @@ RSpec.describe WorkItems::BuildService, feature_category: :team_planning do
     end
 
     context 'with work item type parameters' do
-      let_it_be(:type_task) { WorkItems::Type.default_by_type(:task) }
+      let_it_be(:type_task) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
 
       it 'builds a work item with the specified type' do
         params = { work_item_type_id: type_task.id }

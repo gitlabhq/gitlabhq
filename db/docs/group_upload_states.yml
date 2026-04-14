@@ -1,0 +1,13 @@
+---
+table_name: group_upload_states
+description: Separate table for Group Upload verification states
+introduced_by_url:
+milestone: '18.11'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::GroupUploadState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+organization_transfer_support: todo

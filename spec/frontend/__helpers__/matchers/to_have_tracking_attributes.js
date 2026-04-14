@@ -1,5 +1,5 @@
 import { diff } from 'jest-diff';
-import { isObject, mapValues, isEqual } from 'lodash';
+import { isObject, mapValues, isEqual } from 'lodash-es';
 
 export const toHaveTrackingAttributes = (actual, obj) => {
   if (!(actual instanceof Element)) {

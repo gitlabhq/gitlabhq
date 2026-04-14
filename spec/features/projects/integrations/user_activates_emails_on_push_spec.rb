@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Emails on push', feature_category: :integrations do
+RSpec.describe 'User activates Emails on push', feature_category: :source_code_management do
   include_context 'project integration activation'
 
   it 'activates integration', :js do

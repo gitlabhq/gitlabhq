@@ -1,6 +1,6 @@
 <script>
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import {
   EXCLUDED_NODES,

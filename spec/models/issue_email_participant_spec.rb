@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe IssueEmailParticipant, feature_category: :service_desk do
   describe "Associations" do
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'Modules' do

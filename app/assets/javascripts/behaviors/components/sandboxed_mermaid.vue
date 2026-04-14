@@ -49,9 +49,9 @@ export default {
 
       // Potential risk associated with '*' discussed in below thread
       // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74414#note_735183398
-      container.contentWindow?.postMessage(this.source, '*');
+      container.contentWindow?.postMessage({ source: this.source, proxiedUrls: null }, '*');
       container.addEventListener('load', () => {
-        container.contentWindow?.postMessage(this.source, '*');
+        container.contentWindow?.postMessage({ source: this.source, proxiedUrls: null }, '*');
       });
     },
   },

@@ -23,7 +23,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_cancel_pipeline!, only: [:cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
-  before_action :push_pipeline_mini_graph_subscription_ff, only: [:index]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -246,7 +245,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type secret_value])
+    params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type value])
   end
 
   def create_execute_params
@@ -340,10 +339,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def tracking_project_source
     project
-  end
-
-  def push_pipeline_mini_graph_subscription_ff
-    push_frontend_feature_flag(:pipeline_mini_graph_subscription, @project)
   end
 end
 

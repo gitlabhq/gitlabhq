@@ -1,6 +1,6 @@
 <script>
 import { GlFormCheckbox, GlFormGroup, GlSprintf } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import {
   PACKAGE_FORWARDING_CHECKBOX_LABEL,
   PACKAGE_FORWARDING_ENFORCE_LABEL,

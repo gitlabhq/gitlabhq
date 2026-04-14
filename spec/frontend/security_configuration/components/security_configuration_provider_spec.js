@@ -28,19 +28,16 @@ describe('SecurityConfigurationProvider', () => {
     autoDevopsHelpPagePath: '/help/autodevops',
     autoDevopsPath: '/autodevops',
     canEnableAutoDevops: true,
-    canEnableSpp: false,
     containerScanningForRegistryEnabled: false,
     features: [],
     gitlabCiHistoryPath: '/ci/history',
     gitlabCiPresent: true,
     helpPagePath: '/help',
-    isGitlabCom: false,
     latestPipelinePath: '/pipelines/latest',
     licenseConfigurationSource: 'gitlab',
     secretDetectionConfigurationPath: '/secret_detection',
     secretPushProtectionAvailable: false,
     secretPushProtectionEnabled: false,
-    secretPushProtectionLicensed: false,
     securityTrainingEnabled: false,
     userIsProjectAdmin: true,
     validityChecksAvailable: false,
@@ -122,6 +119,7 @@ describe('SecurityConfigurationProvider', () => {
         gitlabCiHistoryPath: '/ci/history',
         latestPipelinePath: '/pipelines/latest',
         securityTrainingEnabled: false,
+        mergeRequestsEnabled: true,
       });
     });
 

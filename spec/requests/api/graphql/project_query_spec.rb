@@ -94,6 +94,12 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
       project.add_developer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_project do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
     it 'includes the project' do
       post_graphql(query, current_user: current_user)
 

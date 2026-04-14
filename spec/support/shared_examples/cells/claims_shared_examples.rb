@@ -12,13 +12,26 @@ RSpec.shared_context 'with claiming tools' do
     claims_records_for(subject, only: only)
   end
 
+  def destroy_claims_records(only: {})
+    destroy_claims_records_for(subject, only: only)
+  end
+
   def claims_records_for(instance, only: {})
     instance.class.cells_claims_attributes.filter_map do |attribute, config|
       value = only[attribute]
+      next unless only.empty? || value
+      next unless instance.__send__(:cells_claims_attribute_claimable?, config)
 
-      if only.empty? || value # rubocop:disable Style/IfUnlessModifier -- I think this is easier to read
-        claims_records_attribute_for(instance, attribute, config, value)
-      end
+      claims_records_attribute_for(instance, attribute, config, value)
+    end
+  end
+
+  def destroy_claims_records_for(instance, only: {})
+    instance.class.cells_claims_attributes.filter_map do |attribute, config|
+      value = only[attribute]
+      next unless only.empty? || value
+
+      claims_records_attribute_for(instance, attribute, config, value)
     end
   end
 
@@ -177,7 +190,7 @@ RSpec.shared_examples 'deleting existing claims' do
   context 'when deleting the record' do
     subject! { super().tap(&:save!) }
 
-    let(:destroy_records) { claims_records }
+    let(:destroy_records) { destroy_claims_records }
 
     it 'deletes the claimed attributes cleanly when created' do
       expect_begin_update(:destroy)
@@ -231,7 +244,7 @@ RSpec.shared_examples 'updating existing claims' do
   context 'when updating the record' do
     subject! { super().tap(&:save!) }
 
-    let!(:destroy_records) { claims_records(only: original_attributes) }
+    let!(:destroy_records) { destroy_claims_records(only: original_attributes) }
     let!(:create_records) { claims_records(only: transform_attributes) }
 
     let(:original_attributes) do

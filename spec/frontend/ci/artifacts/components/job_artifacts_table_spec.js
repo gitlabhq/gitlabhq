@@ -2,7 +2,7 @@ import {
   GlSkeletonLoader,
   GlTable,
   GlLink,
-  GlPagination,
+  GlKeysetPagination,
   GlPopover,
   GlModal,
   GlFormCheckbox,
@@ -14,6 +14,7 @@ import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
@@ -22,7 +23,6 @@ import BulkDeleteModal from '~/ci/artifacts/components/bulk_delete_modal.vue';
 import JobCheckbox from '~/ci/artifacts/components/job_checkbox.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import getJobArtifactsQuery from '~/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql';
 import bulkDestroyArtifactsMutation from '~/ci/artifacts/graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
@@ -31,7 +31,6 @@ import {
   ARCHIVE_FILE_TYPE,
   JOBS_PER_PAGE,
   I18N_FETCH_ERROR,
-  INITIAL_CURRENT_PAGE,
   I18N_BULK_DELETE_ERROR,
 } from '~/ci/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
@@ -97,9 +96,13 @@ describe('JobArtifactsTable component', () => {
   const findBulkDelete = () => wrapper.findComponent(ArtifactsBulkDelete);
   const findBulkDeleteContainer = () => wrapper.findByTestId('bulk-delete-container');
 
-  const findPagination = () => wrapper.findComponent(GlPagination);
-  const setPage = async (page) => {
-    findPagination().vm.$emit('input', page);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const nextPage = async () => {
+    findPagination().vm.$emit('next');
+    await waitForPromises();
+  };
+  const prevPage = async () => {
+    findPagination().vm.$emit('prev');
     await waitForPromises();
   };
 
@@ -901,43 +904,38 @@ describe('JobArtifactsTable component', () => {
 
     it('renders pagination and passes page props', () => {
       expect(findPagination().props()).toMatchObject({
-        value: INITIAL_CURRENT_PAGE,
-        prevPage: Number(pageInfo.hasPreviousPage),
-        nextPage: Number(pageInfo.hasNextPage),
+        hasPreviousPage: pageInfo.hasPreviousPage,
+        hasNextPage: pageInfo.hasNextPage,
       });
 
       expect(query).toHaveBeenCalledWith({
         projectPath: 'project/path',
         firstPageSize: JOBS_PER_PAGE,
-        lastPageSize: null,
         nextPageCursor: '',
         prevPageCursor: '',
       });
     });
 
     it('updates query variables when going to previous page', async () => {
-      await setPage(1);
+      await prevPage();
 
       expect(query).toHaveBeenLastCalledWith({
         projectPath: 'project/path',
-        firstPageSize: null,
         lastPageSize: JOBS_PER_PAGE,
         prevPageCursor: pageInfo.startCursor,
+        nextPageCursor: '',
       });
-      expect(findPagination().props('value')).toEqual(1);
     });
 
     it('updates query variables when going to next page', async () => {
-      await setPage(2);
+      await nextPage();
 
       expect(query).toHaveBeenLastCalledWith({
         projectPath: 'project/path',
         firstPageSize: JOBS_PER_PAGE,
-        lastPageSize: null,
-        prevPageCursor: '',
         nextPageCursor: pageInfo.endCursor,
+        prevPageCursor: '',
       });
-      expect(findPagination().props('value')).toEqual(2);
     });
   });
 
@@ -954,54 +952,71 @@ describe('JobArtifactsTable component', () => {
         data: { pageInfo },
       });
 
-      await nextTick();
+      await waitForPromises();
     });
 
-    it.each`
-      fromPage | toPage | expectedFirstPageSize | expectedLastPageSize | expectedPrevPageCursor  | expectedNextPageCursor
-      ${1}     | ${2}   | ${JOBS_PER_PAGE}      | ${null}              | ${''}                   | ${pageInfo.endCursor}
-      ${2}     | ${1}   | ${null}               | ${JOBS_PER_PAGE}     | ${pageInfo.startCursor} | ${undefined}
-    `(
-      'updates when going from page $fromPage to $toPage',
-      async ({
-        fromPage,
-        toPage,
-        expectedFirstPageSize,
-        expectedLastPageSize,
-        expectedPrevPageCursor,
-        expectedNextPageCursor,
-      }) => {
-        findPagination().vm.$emit('input', fromPage);
-        findPagination().vm.$emit('input', toPage);
+    it('updates when navigating to next page', async () => {
+      nextPage();
 
-        // pushes page change to browser history
-        expect(window.history.pushState).toHaveBeenCalledWith(
-          {},
-          '',
-          `http://test.host/?page=${toPage}`,
-        );
+      // pushes page change to browser history
+      expect(window.history.pushState).toHaveBeenCalledWith(
+        {},
+        '',
+        `http://test.host/?next=${pageInfo.endCursor}`,
+      );
 
-        await waitForPromises();
+      await waitForPromises();
 
-        // updates artifact data  and page in pagination
-        expect(findPagination().props('value')).toBe(toPage);
-        expect(query).toHaveBeenLastCalledWith({
-          projectPath: 'project/path',
-          firstPageSize: expectedFirstPageSize,
-          lastPageSize: expectedLastPageSize,
-          prevPageCursor: expectedPrevPageCursor,
-          nextPageCursor: expectedNextPageCursor,
-        });
-      },
-    );
+      // updates artifact data with correct cursor parameters
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        nextPageCursor: pageInfo.endCursor,
+        prevPageCursor: '',
+      });
+    });
+
+    it('updates when navigating to previous page', async () => {
+      prevPage();
+
+      // pushes page change to browser history
+      expect(window.history.pushState).toHaveBeenCalledWith(
+        {},
+        '',
+        `http://test.host/?prev=${pageInfo.startCursor}`,
+      );
+
+      await waitForPromises();
+
+      // updates artifact data with correct cursor parameters
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        lastPageSize: JOBS_PER_PAGE,
+        prevPageCursor: pageInfo.startCursor,
+        nextPageCursor: '',
+      });
+    });
 
     it('starts on page from URL when provided', async () => {
-      const currentpage = 2;
-      await setPage(currentpage);
+      const cursor = 'cursor-value';
 
-      setWindowLocation(`?page=${currentpage}`);
+      setWindowLocation(`?next=${cursor}`);
 
-      expect(findPagination().props('value')).toEqual(2);
+      createComponent({
+        handlers: {
+          getJobArtifactsQuery: query,
+        },
+        data: { pageInfo },
+      });
+
+      await waitForPromises();
+
+      expect(query).toHaveBeenLastCalledWith({
+        projectPath: 'project/path',
+        firstPageSize: JOBS_PER_PAGE,
+        nextPageCursor: cursor,
+        prevPageCursor: '',
+      });
     });
   });
 

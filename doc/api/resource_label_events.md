@@ -79,7 +79,8 @@ GET /projects/:id/issues/:issue_iid/resource_label_events
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events"
 ```
 
 ### Retrieve a single issue label event

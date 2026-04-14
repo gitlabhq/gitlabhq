@@ -1,0 +1,10 @@
+---
+name: ci_expire_pipeline_cache_workers
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228054
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594089
+milestone: '18.11'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

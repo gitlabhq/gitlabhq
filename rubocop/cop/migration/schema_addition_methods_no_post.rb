@@ -9,7 +9,7 @@ module RuboCop
       class SchemaAdditionMethodsNoPost < RuboCop::Cop::Base
         include MigrationHelpers
 
-        MSG = "This method may not be used in post migrations. Please see documentation here: https://docs.gitlab.com/ee/development/migration_style_guide.html#choose-an-appropriate-migration-type"
+        MSG = "This method may not be used in post migrations. Please see documentation here: https://docs.gitlab.com/development/migration_style_guide/#choose-an-appropriate-migration-type"
 
         FORBIDDEN_METHODS = %w[
           add_column

@@ -114,6 +114,36 @@ RSpec.describe 'User', feature_category: :user_profile do
     end
   end
 
+  describe 'granular PAT authorization' do
+    let(:query) { graphql_query_for(:user, { username: current_user.username }, '__typename') }
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_user do
+      let(:user) { current_user }
+      let(:boundary_object) { :user }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    context 'when querying emails field' do
+      let(:query) { graphql_query_for(:user, { username: current_user.username }, 'emails { nodes { email } }') }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_user, :read_user_email] do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'when querying userPreferences field' do
+      let(:query) { graphql_query_for(:user, { username: current_user.username }, 'userPreferences { issuesSort }') }
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_user, :read_user_preference] do
+        let(:user) { current_user }
+        let(:boundary_object) { :user }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+    end
+  end
+
   describe 'organizations field' do
     let_it_be(:organization) { current_user.organization }
     let_it_be(:another_organization) { create(:organization) }

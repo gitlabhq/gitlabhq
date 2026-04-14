@@ -470,6 +470,23 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'issue_type'))
     end
 
+    def move_child_to_new_parent(child, new_parent)
+      note_body = "moved child %{child_type} %{child_ref} to %{new_parent_ref}"
+      child_ref, new_parent_ref = if child.namespace_id == new_parent.namespace_id
+                                    [child.to_reference, new_parent.to_reference]
+                                  else
+                                    [child.to_reference(full: true), new_parent.to_reference(full: true)]
+                                  end
+
+      note_body_params = {
+        child_type: child.issue_type.humanize(capitalize: false),
+        child_ref: child_ref,
+        new_parent_ref: new_parent_ref
+      }
+
+      create_note(NoteSummary.new(noteable, project, author, note_body % note_body_params, action: 'moved'))
+    end
+
     private
 
     def cross_reference_note_content(gfm_reference)

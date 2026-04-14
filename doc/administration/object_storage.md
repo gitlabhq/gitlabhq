@@ -1324,7 +1324,7 @@ these are separate buckets. Use of bucket prefixes
 [may not work correctly with Helm backups](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3376).
 
 Helm-based installs require separate buckets to
-[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy).
+[handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy-secure-files).
 
 ### S3 API compatibility issues
 

@@ -21,12 +21,12 @@ module RuboCop
       #
       #   run_cheap_queries_with_each_batch
       class RescueStatementTimeout < RuboCop::Cop::Base
-        MSG = <<~EOF
+        MSG = <<~TEXT
           Avoid rescuing the `ActiveRecord::StatementTimeout` class.
 
           Using this pattern should be a very rare exception or a temporary patch only.
           Consider refactoring using less expensive queries and `each_batch`.
-        EOF
+        TEXT
 
         def on_resbody(node)
           return unless node.children.first

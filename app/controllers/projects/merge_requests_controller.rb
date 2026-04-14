@@ -14,6 +14,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include MergeRequestsHelper
   include ParseCommitDate
   include RapidDiffs::Resource
+  include ProductAnalyticsTracking
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -40,9 +41,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:pipeline_mini_graph_subscription, project)
-    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :wip)
+    push_frontend_feature_flag(:mr_related_work_items, project)
+    push_frontend_feature_flag(:mr_widget_pipeline_subscription, project)
   end
 
   before_action do
@@ -96,6 +97,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   helper_method :rapid_diffs_page_enabled?
 
+  track_internal_event :diffs, name: 'view_merge_request_diffs', additional_properties: { label: 'legacy_diffs' }
+  track_internal_event :rapid_diffs, name: 'view_merge_request_diffs', additional_properties: { label: 'rapid_diffs' }
+
   def index
     @merge_requests = @issuables
 
@@ -116,7 +120,30 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rapid_diffs
     return render_404 unless rapid_diffs_page_enabled?
 
+    rapid_diffs_presenter.offset = 5
     show_merge_request
+  rescue StandardError => exception
+    log_exception(exception)
+
+    # Turns off the rapid diffs toggle
+    cookies.delete(:rapid_diffs_enabled)
+
+    feedback_link = view_context.link_to(
+      _("Leave feedback"),
+      "https://gitlab.com/gitlab-org/gitlab/-/work_items/596236",
+      class: 'gl-link',
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    )
+
+    redirect_to(
+      diffs_project_merge_request_path(project, @merge_request),
+      alert: safe_format(
+        _("Rapid Diffs encountered an error and has been temporarily disabled. " \
+          "The page has loaded using the standard diff view. %{feedback_link}"),
+        feedback_link: feedback_link
+      )
+    )
   end
 
   def commits
@@ -536,7 +563,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge!
-    return :failed unless @merge_request.mergeable?(**skipped_checks)
+    if auto_merge_requested?
+      return :failed unless @merge_request.auto_merge_eligible?(strategy: auto_merge_strategy)
+    else
+      return :failed unless @merge_request.mergeable?
+    end
 
     squashing = params.fetch(:squash, false)
     merge_service = ::MergeRequests::MergeService
@@ -718,21 +749,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def rapid_diffs_page_enabled?
     ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
-      params[:rapid_diffs] == 'true'
-  end
-
-  def skipped_checks
-    if auto_merge_requested?
-      @merge_request.skipped_auto_merge_checks(
-        auto_merge_strategy: auto_merge_strategy
-      )
-    else
-      {}
-    end
+      (params[:rapid_diffs] == 'true' || cookies[:rapid_diffs_enabled] == 'true')
   end
 
   def auto_merge_strategy
     params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
+  end
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
   end
 end
 

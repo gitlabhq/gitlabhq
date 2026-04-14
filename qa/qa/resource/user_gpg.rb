@@ -13,7 +13,7 @@ module QA
 
       def fabricate_via_api!
         super
-        @id = self.api_response[:id]
+        @id = api_response[:id]
       rescue ResourceFabricationFailedError => error
         if error.message.include? 'has already been taken'
           self

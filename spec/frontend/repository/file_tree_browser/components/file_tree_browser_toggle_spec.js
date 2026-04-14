@@ -235,5 +235,19 @@ describe('FileTreeBrowserToggle', () => {
 
       expect(findTooltip().exists()).toBe(false);
     });
+
+    it('does not render tooltip when restoreToggleFocus is called', async () => {
+      createComponent();
+      expect(findTooltip().exists()).toBe(true);
+
+      const mockFocus = jest.fn();
+      wrapper.vm.$refs.toggle.$el.focus = mockFocus;
+
+      wrapper.vm.restoreToggleFocus();
+      await nextTick();
+
+      expect(mockFocus).toHaveBeenCalled();
+      expect(findTooltip().exists()).toBe(false);
+    });
   });
 });

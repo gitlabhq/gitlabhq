@@ -107,7 +107,7 @@ RSpec.describe RapidDiffs::DiffSourceVersionEntity, feature_category: :code_revi
 
       before do
         allow_next_instance_of(
-          ::Gitlab::MergeRequests::DiffVersion,
+          ::Gitlab::MergeRequests::DiffResolver,
           merge_request,
           diff_id: diff_id
         ) do |resolver|

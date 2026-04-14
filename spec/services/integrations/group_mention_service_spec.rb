@@ -36,6 +36,14 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
     allow(mentionable).to receive(:referenced_groups).with(author).and_return(groups)
   end
 
+  def group_mention_data_matcher(group, event_type:)
+    satisfy("be group mention hook data for #{group.full_path}") do |data|
+      data[:object_kind] == 'group_mention' &&
+        data[:event_type] == event_type &&
+        data[:mentioned] == { object_kind: 'group', name: group.full_path, url: group.web_url }
+    end
+  end
+
   shared_examples 'public_group_mention_hooks' do
     let(:groups) { groups_with_integrations }
 
@@ -46,10 +54,12 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
       expect(groups).to receive_message_chain(:with_integrations,
         :merge).with(Integration.group_mention_hooks).and_return(groups)
 
-      expect(group_1).to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_1).to receive(:execute_integrations)
+        .with(group_mention_data_matcher(group_1, event_type: 'group_mention'), :group_mention_hooks)
       expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
-      expect(group_2).to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_2).to receive(:execute_integrations)
+        .with(group_mention_data_matcher(group_2, event_type: 'group_mention'), :group_mention_hooks)
       expect(group_2).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
       expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
@@ -70,10 +80,14 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
         :merge).with(Integration.group_confidential_mention_hooks).and_return(groups)
 
       expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-      expect(group_1).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_1).to receive(:execute_integrations)
+        .with(group_mention_data_matcher(group_1, event_type: 'group_confidential_mention'),
+          :group_confidential_mention_hooks)
 
       expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
-      expect(group_2).to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+      expect(group_2).to receive(:execute_integrations)
+        .with(group_mention_data_matcher(group_2, event_type: 'group_confidential_mention'),
+          :group_confidential_mention_hooks)
 
       expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
       expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
@@ -418,7 +432,8 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
       expect(groups).to receive_message_chain(:with_integrations,
         :merge).with(Integration.group_mention_hooks).and_return(groups)
 
-      expect(group_1).to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_1).to receive(:execute_integrations)
+        .with(group_mention_data_matcher(group_1, event_type: 'group_mention'), :group_mention_hooks)
       expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
 
       expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
@@ -442,6 +457,25 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
       expect(Gitlab::IntegrationsLogger).to receive(:error).with('Mentionable without to_ability_name: Object')
 
       execute
+    end
+  end
+
+  context 'when mentionable is nil' do
+    let_it_be(:mentionable) { nil }
+    let_it_be(:hook_data) { {} }
+    let_it_be(:is_confidential) { false }
+
+    it 'returns success without executing any integrations' do
+      expect(group_1).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_1).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+
+      expect(group_2).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_2).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_mention_hooks)
+      expect(group_3).not_to receive(:execute_integrations).with(anything, :group_confidential_mention_hooks)
+
+      expect(execute).to be_success
     end
   end
 end

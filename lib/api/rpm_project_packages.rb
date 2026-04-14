@@ -114,6 +114,7 @@ module API
           ]
           tags %w[packages]
         end
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
         post 'authorize' do
           not_found!
         end

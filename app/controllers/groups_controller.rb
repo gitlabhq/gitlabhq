@@ -43,6 +43,10 @@ class GroupsController < Groups::ApplicationController
 
   before_action :set_group_markdown_flags
 
+  before_action only: [:issues] do
+    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
+  end
+
   before_action :group_projects, only: [:activity, :merge_requests] # rubocop:disable Rails/LexicallyScopedActionFilter -- merge_requests defined in IssuableCollectionsAction concern
   before_action :event_filter, only: [:activity]
 
@@ -61,7 +65,8 @@ class GroupsController < Groups::ApplicationController
     :index, :new, :create, :show, :edit, :update,
     :destroy, :details, :transfer, :activity, :restore
   ]
-  feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
+  feature_category :portfolio_management, [:issues, :issues_calendar]
+  feature_category :team_planning, [:preview_markdown]
   feature_category :code_review_workflow, [:merge_requests]
   feature_category :importers, [:export, :download_export]
   feature_category :continuous_delivery, [:unfoldered_environment_names]
@@ -128,15 +133,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def details
-    respond_to do |format|
-      format.html do
-        redirect_to group_path(group)
-      end
-
-      format.atom do
-        render_details_view_atom
-      end
-    end
+    render_details_view_atom
   end
 
   def activity
@@ -190,7 +187,7 @@ class GroupsController < Groups::ApplicationController
     if result.success?
       respond_to do |format|
         format.html do
-          redirect_to group_path(group), status: :found
+          redirect_to dashboard_groups_path, status: :found
         end
 
         format.json do
@@ -232,14 +229,11 @@ class GroupsController < Groups::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def transfer
     parent_group = Group.find_by(id: params[:new_parent_group_id])
-    service = ::Groups::TransferService.new(@group, current_user)
 
-    if service.execute(parent_group)
-      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
-      redirect_to group_path(@group)
+    if Feature.enabled?(:groups_and_projects_async_transfer, @group)
+      enqueue_async_transfer(parent_group)
     else
-      flash[:alert] = service.error.html_safe
-      redirect_to edit_group_path(@group)
+      execute_sync_transfer(parent_group)
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -289,13 +283,7 @@ class GroupsController < Groups::ApplicationController
 
     set_sort_order
 
-    return redirect_issues_to_work_items if group&.work_items_consolidated_list_enabled?(current_user)
-
-    return if redirect_if_epic_params
-
-    respond_to do |format|
-      format.html
-    end
+    redirect_issues_to_work_items
   end
 
   protected
@@ -394,6 +382,30 @@ class GroupsController < Groups::ApplicationController
     %w[details show index].include?(action_name)
   end
 
+  def enqueue_async_transfer(parent_group)
+    service = ::Groups::TransferService.new(@group, current_user)
+
+    if service.schedule_async_transfer(parent_group)
+      flash[:notice] = s_("TransferGroup|Group transfer has been queued. You will be notified when it completes.")
+      redirect_to group_path(@group)
+    else
+      flash[:alert] = service.error
+      redirect_to edit_group_path(@group)
+    end
+  end
+
+  def execute_sync_transfer(parent_group)
+    service = ::Groups::TransferService.new(@group, current_user)
+
+    if service.execute(parent_group)
+      flash[:notice] = "Group '#{@group.name}' was successfully transferred."
+      redirect_to group_path(@group)
+    else
+      flash[:alert] = service.error.html_safe
+      redirect_to edit_group_path(@group)
+    end
+  end
+
   def destroy_immediately
     Groups::DestroyService.new(@group, current_user).async_execute
     message = format(_("%{group_name} is being deleted."), group_name: @group.name)
@@ -401,7 +413,7 @@ class GroupsController < Groups::ApplicationController
     respond_to do |format|
       format.html do
         flash[:toast] = message
-        redirect_to root_path, status: :found
+        redirect_to dashboard_groups_path, status: :found
       end
 
       format.json do

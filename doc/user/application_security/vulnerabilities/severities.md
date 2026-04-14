@@ -33,15 +33,14 @@ classification.
 Vulnerabilities identified at the critical severity level should be investigated immediately.
 Vulnerabilities at this level assume exploitation of the flaw could lead to full system or data
 compromise. Examples of critical severity flaws are command/code injection and SQL injection.
-Typically these flaws are rated with CVSS 3.1 between 9.0-10.0.
+Typically these flaws are rated with a CVSS 4.0 score between 9.0-10.0.
 
 ## High severity
 
 High severity vulnerabilities can be characterized as flaws that may lead to an attacker accessing
 application resources or unintended exposure of data. Examples of high severity flaws are external
 XML entity injection (XXE), server side request forgery (SSRF), local file include/path traversal
-and certain forms of cross-site scripting (XSS). Typically these flaws are rated with CVSS 3.1
-between 7.0-8.9.
+and certain forms of cross-site scripting (XSS). Typically these flaws are rated with a CVSS 4.0 score between 7.0-8.9.
 
 ## Medium severity
 
@@ -49,7 +48,7 @@ Medium severity vulnerabilities usually arise from misconfiguration of systems o
 controls. Exploitation of these vulnerabilities may lead to accessing a restricted amount of data or
 could be used in conjunction with other flaws to gain unintended access to systems or resources.
 Examples of medium severity flaws are reflected XSS, incorrect HTTP session handling, and missing
-security controls. Typically these flaws are rated with CVSS 3.1 between 4.0-6.9.
+security controls. Typically these flaws are rated with a CVSS 4.0 score between 4.0-6.9.
 
 ## Low severity
 
@@ -57,7 +56,7 @@ Low severity vulnerabilities contain flaws that may not be directly exploitable 
 unnecessary weakness to an application or system. These flaws are usually due to missing security
 controls, or unnecessary disclose information about the application environment. Examples of low
 severity vulnerabilities are missing cookie security directives, verbose error or exception
-messages. Typically these flaws are rated with CVSS 3.1 between 0.1-3.9.
+messages. Typically these flaws are rated with a CVSS 4.0 score between 0.1-3.9.
 
 ## Info severity
 
@@ -78,6 +77,7 @@ can be one of the following:
 | Integer                                                                                                                           | `1`, `2`, `5`                                  |
 | [CVSS v2.0 Rating](https://nvd.nist.gov/vuln-metrics/cvss)                                                                        | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`                 |
 | [CVSS v3.1 Qualitative Severity Rating](https://www.first.org/cvss/v3.1/specification-document#Qualitative-Severity-Rating-Scale) | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
+| [CVSS v4.0 Qualitative Severity Rating](https://www.first.org/cvss/v4.0/specification-document#Qualitative-Severity-Rating-Scale) | `CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N` |
 
 To provide consistent vulnerability severity level values, the GitLab vulnerability analyzers
 convert from the previous values to a standardized GitLab vulnerability severity level, as outlined in
@@ -90,9 +90,8 @@ the following tables:
 | [`container-scanning`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| {{< yes >}} | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
 
 When available, the vendor severity level takes precedence and is used by the analyzer. If that is
-not available then it falls back on the CVSS v3.1 rating. If that is also not available, then the
-CVSS v2.0 rating is used instead. Details on this implementation are available in
-[Trivy issue 310](https://github.com/aquasecurity/trivy/issues/310).
+not available then it falls back on the CVSS v4.0 rating. If that is also not available, then the
+CVSS v3.1 rating is used. If that is also not available, then the CVSS v2.0 rating is used instead.
 
 ## Dynamic application security testing (DAST)
 
@@ -110,10 +109,10 @@ CVSS v2.0 rating is used instead. Details on this implementation are available i
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | {{< yes >}}       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating <sup>1</sup> | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
+| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | {{< yes >}}       | CVSS v2.0 Rating, CVSS v3.1 Qualitative Severity Rating <sup>1</sup> and CVSS v4.0 Qualitative Severity Rating <sup>1</sup> | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H`, `CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N` |
 
-The CVSS v3.1 rating is used to calculate the severity level. If it's not available, the CVSS v2.0
-rating is used instead.
+The CVSS v4.0 rating is used to calculate the severity level. If it's not available, the CVSS v3.1
+rating is used. If that is also not available, the CVSS v2.0 rating is used instead.
 
 ## Fuzz testing
 

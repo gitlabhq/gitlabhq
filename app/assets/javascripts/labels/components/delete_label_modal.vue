@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlButton } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';

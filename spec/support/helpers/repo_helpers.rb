@@ -13,20 +13,20 @@ module RepoHelpers
   #   blob.path # => 'files/js/commit.js.coffee'
   #   blob.data # => 'class Commit...'
   #
-  # Build the options hash that's passed to Rugged::Commit#create
+  # Build the options hash for a sample commit
 
   def sample_blob
     OpenStruct.new(
       oid: '5f53439ca4b009096571d3c8bc3d09d30e7431b3',
       path: "files/js/commit.js.coffee",
-      data: <<EOS
+      data: <<COFFEE
 class Commit
   constructor: ->
     $('.files .diff-file').each ->
       new CommitFile(this)
 
 @Commit = Commit
-EOS
+COFFEE
     )
   end
 
@@ -42,10 +42,10 @@ EOS
       line_code_path: 'files/ruby/popen.rb',
       del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
       referenced_by: [],
-      message: <<EOS
+      message: <<TEXT
 Change some files
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-EOS
+TEXT
     )
   end
 
@@ -58,7 +58,7 @@ EOS
       author_email: "sytse@gitlab.com",
       files_changed_count: 1,
       referenced_by: [],
-      message: <<EOS
+      message: <<TEXT
 Add directory structure for tree_helper spec
 
 This directory structure is needed for a testing the method flatten_tree(tree) in the TreeHelper module
@@ -66,7 +66,7 @@ This directory structure is needed for a testing the method flatten_tree(tree) i
 See [merge request #275](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/275#note_732774)
 
 See merge request !2
-EOS
+TEXT
     )
   end
 
@@ -77,10 +77,10 @@ EOS
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
       referenced_by: [],
-      message: <<EOS
+      message: <<TEXT
 Files, encoding and much more
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-EOS
+TEXT
     )
   end
 
@@ -93,10 +93,10 @@ EOS
       old_blob_id: '33f3729a45c02fc67d00adb1b8bca394b0e761d9',
       new_blob_id: '2f63565e7aac07bcdadb654e253078b727143ec4',
       referenced_by: [],
-      message: <<EOS
+      message: <<TEXT
 Modified image
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-EOS
+TEXT
     )
   end
 

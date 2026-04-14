@@ -98,8 +98,8 @@ To remove a page:
 1. Update the YAML metadata:
    - For `remove_date`, set the value to a date three months after
      the release when the feature was removed.
-   - For the `redirect_to`, set a path to a file that makes sense. If no obvious
-     page exists, use the docs home page.
+   - For the `redirect_to`, set a path to a file that has relevant context for users and for AI crawlers.
+     Avoid redirecting to the home page or a generic landing page. If there is no suitable replacement for the feature, redirect to the [deprecation notice](../../../update/deprecations.md) that explains the removal.
 
    ```markdown
    ---
@@ -136,6 +136,8 @@ To remove a page:
      ```shell
      bin/rake gitlab:docs:compile_deprecations
      ```
+
+1. Search for and [update links in other repositories](../redirects.md#update-links-in-other-repositories).
 
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
@@ -181,6 +183,8 @@ To remove a topic:
      ```shell
      bin/rake gitlab:docs:compile_deprecations
      ```
+
+1. Search for and [update links in other repositories](../redirects.md#update-links-in-other-repositories).
 
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).

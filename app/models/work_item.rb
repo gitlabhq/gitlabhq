@@ -253,6 +253,22 @@ class WorkItem < Issue
         .in_namespaces_with_cte(namespaces)
         .includes(:work_item_type)
     end
+
+    # Returns descendant work item IDs for base work items and all their descendants.
+    # This is a generic method for traversing work item hierarchy.
+    def descendant_ids_for(work_item_ids, work_item_type: nil)
+      return [] if work_item_ids.blank?
+
+      base_scope = id_in(work_item_ids)
+      hierarchy = ::Gitlab::WorkItems::WorkItemHierarchy.new(base_scope).base_and_descendants
+
+      if work_item_type
+        work_item_type_id = ::WorkItems::TypesFramework::Provider.new.find_by_base_type(work_item_type).id
+        hierarchy = hierarchy.where(work_item_type_id: work_item_type_id)
+      end
+
+      hierarchy.pluck(:id) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- Limited number of work items
+    end
   end
 
   def create_dates_source_from_current_dates

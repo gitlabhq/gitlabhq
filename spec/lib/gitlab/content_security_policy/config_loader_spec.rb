@@ -283,7 +283,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
       end
     end
 
-    describe 'LFS connect-src headers' do
+    describe 'LFS connect-src headers', :freeze_time do
       let(:url_for_provider) { described_class.send(:build_lfs_url) }
 
       context 'when LFS is enabled' do

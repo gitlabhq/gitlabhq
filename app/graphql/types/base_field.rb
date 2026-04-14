@@ -26,8 +26,15 @@ module Types
       @skip_type_authorization = Array.wrap(kwargs.delete(:skip_type_authorization))
       @scopes = Array.wrap(kwargs.delete(:scopes) || %i[api read_api])
       after_connection_extensions = kwargs.delete(:late_extensions) || []
+      multi_directives = Array.wrap(kwargs.delete(:directives))
 
       super(**kwargs, &block)
+
+      multi_directives.each do |dir_hash|
+        dir_hash.each do |(dir_class, options)|
+          directive(dir_class, **options)
+        end
+      end
 
       # We want to avoid the overhead of this in prod
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?

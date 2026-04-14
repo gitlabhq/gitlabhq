@@ -18,8 +18,8 @@ module QA
           click_element('nav-item-link', submenu_item: 'Emails')
         end
 
-        def click_password
-          open_access_submenu('Password')
+        def click_password_and_authentication
+          open_access_submenu('Password and authentication')
         end
 
         def click_personal_access_tokens

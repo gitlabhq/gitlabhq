@@ -99,14 +99,18 @@ module Packages
       end
 
       def generate_component_file(component, component_file_type, architecture, package_file_type)
-        paragraphs = @distribution.package_files
-                                  .preload_package
-                                  .preload_debian_file_metadata
-                                  .with_debian_component_name(component.name)
-                                  .with_debian_architecture_name(architecture&.name)
-                                  .with_debian_file_type(package_file_type)
-                                  .find_each
-                                  .map { |package_file| package_stanza_from_fields(package_file) }
+        deduped_ids = @distribution.package_files
+                                   .with_debian_component_name(component.name)
+                                   .with_debian_architecture_name(architecture&.name)
+                                   .with_debian_file_type(package_file_type)
+                                   .latest_id_per_file_name
+
+        paragraphs = ::Packages::PackageFile
+          .preload_package
+          .preload_debian_file_metadata
+          .id_in(deduped_ids)
+          .find_each
+          .map { |package_file| package_stanza_from_fields(package_file) }
         reuse_or_create_component_file(component, component_file_type, architecture, paragraphs.join("\n"))
       end
 

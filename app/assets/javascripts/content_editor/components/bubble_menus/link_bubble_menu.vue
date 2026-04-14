@@ -17,6 +17,7 @@ import EditorStateObserver from '../editor_state_observer.vue';
 import BubbleMenu from './bubble_menu.vue';
 
 export default {
+  name: 'LinkBubbleMenu',
   components: {
     BubbleMenu,
     GlSprintf,

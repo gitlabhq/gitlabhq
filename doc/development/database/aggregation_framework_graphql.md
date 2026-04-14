@@ -41,7 +41,6 @@ module Types
 end
 ```
 
-- You MUST take care of authorization and proper base scope or define elevated permission requirements for the GraphQL field.
 - Note: ALL filters, metrics & dimensions are exposed automatically.
 
 ### Mounter Options
@@ -49,10 +48,36 @@ end
 | Option | Type | Description |
 |--------|------|-------------|
 | `field_name` | String/Symbol | The GraphQL field name. Defaults to `:aggregation` |
-| `types_prefix` | String/Symbol | Prefix for all child types like `*AggregationResponse` and `*AggregationDimensions`. Defaults to `field_name` |
+| `types_prefix` | String/Symbol | Prefix for all child types like `*AggregationResponse`. Defaults to `field_name` |
 | `description` | String | Description for the GraphQL field |
+| `authorize` | Symbol | Permission required to access the field (e.g. `:read_project`). Passed directly to the GraphQL field definition |
+
+### Authorization
+
+Use the `authorize` option to restrict access to the field:
+
+```ruby
+mount_aggregation_engine(
+  IssueAggregationEngine,
+  field_name: 'issue_analytics',
+  description: 'Issue analytics aggregation',
+  authorize: :read_project
+) do
+  # authorize :read_project - this also supported.
+  def aggregation_scope
+    object.issues
+  end
+end
+```
+
+If `authorize` is not specified, you MUST take care of authorization manually.
 
 ## Example GraphQL Query for generated GraphQL subtree
+
+The generated GraphQL subtree uses a two-level structure:
+
+- The outer field (`issueAnalytics`) accepts **filter** arguments.
+- The inner `aggregated` field accepts **ordering** and **pagination** arguments, and returns the paginated connection.
 
 ```graphql
 query IssueAnalytics($projectId: ID!) {
@@ -61,21 +86,24 @@ query IssueAnalytics($projectId: ID!) {
       state: ["opened", "closed"]
       createdAtFrom: "2024-01-01"
       createdAtTo: "2024-12-31"
-      orderBy: [{ identifier: "totalCount", direction: DESC }]
-      first: 10
     ) {
-      nodes {
-        dimensions {
-          createdAt(granularity: "monthly")
+      aggregated(
+        orderBy: [{ identifier: "totalCount", direction: DESC }]
+        first: 10
+      ) {
+        nodes {
+          dimensions {
+            createdAt(granularity: "monthly")
+          }
+          totalCount
+          meanWeight
+          highQuantile: durationQuantile(0.9)
+          medianQuantile: durationQuantile(0.5)
         }
-        totalCount
-        meanWeight
-        highQuantile: durationQuantile(0.9)
-        medianQuantile: durationQuantile(0.5)
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   }
@@ -163,9 +191,11 @@ query {
   project(fullPath: "gitlab-org/gitlab") {
     aiUsage {
       agentPlatformSessions {
-        nodes {
-          dimensions {
-            userId  # Returns: 123 (integer)
+        aggregated {
+          nodes {
+            dimensions {
+              userId  # Returns: 123 (integer)
+            }
           }
         }
       }
@@ -182,14 +212,17 @@ query {
     aiUsage {
       agentPlatformSessions(
         userId: [1, 2]  # Filter still uses original dimension identifier
-        orderBy: [{ identifier: "user", direction: DESC }]  # Order uses association name
       ) {
-        nodes {
-          dimensions {
-            user {  # Returns: full User object
-              id
-              username
-              name
+        aggregated(
+          orderBy: [{ identifier: "user", direction: DESC }]  # Order uses association name
+        ) {
+          nodes {
+            dimensions {
+              user {  # Returns: full User object
+                id
+                username
+                name
+              }
             }
           }
         }

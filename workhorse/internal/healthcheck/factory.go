@@ -40,6 +40,7 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 		opts := []PumaReadinessCheckerOption{
 			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
 			WithSkipInterval(cfg.RailsSkipInterval.Duration),
+			WithProbeDurationHistogram(server.GetProbeDurationHistogram()),
 		}
 
 		pumaReadinessChecker := NewPumaReadinessChecker(

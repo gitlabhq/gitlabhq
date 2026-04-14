@@ -1,0 +1,8 @@
+---
+name: create_gitlab_subscription
+description: Grants the ability to create GitLab subscriptions
+boundaries:
+  - group
+  - user
+permissions:
+  - create_gitlab_subscription

@@ -1,9 +1,8 @@
-import { isEmpty, chunk } from 'lodash';
+import { isEmpty, chunk } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import diffsEventHub from '~/diffs/event_hub';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import { CHANGES_TAB, SHOW_TAB } from '../constants';
 import service from '../services/drafts_service';
 import * as types from '../stores/modules/batch_comments/mutation_types';
@@ -32,8 +31,12 @@ export function createNewDraft({ endpoint, data }) {
     .then((res) => {
       this[types.ADD_NEW_DRAFT](res);
 
-      if (res.position?.position_type === FILE_DIFF_POSITION_TYPE) {
-        this.tryStore('legacyDiffs').addDraftToFile({ filePath: res.file_path, draft: res });
+      try {
+        if (res.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+          this.tryStore('legacyDiffs').addDraftToFile({ filePath: res.file_path, draft: res });
+        }
+      } catch {
+        // legacyDiffs store is not available in Rapid Diffs
       }
 
       return res;
@@ -57,24 +60,29 @@ export function deleteDraft(draft) {
 }
 
 export function fetchDrafts() {
-  return service
+  if (this.fetchDraftsPromise) return this.fetchDraftsPromise;
+
+  this.fetchDraftsPromise = service
     .fetchDrafts(this.getNotesData.draftsPath)
-    .then((res) => res.data)
-    .then((data) => this[types.SET_BATCH_COMMENTS_DRAFTS](data))
-    .then(() => {
+    .then(({ data }) => {
+      this[types.SET_BATCH_COMMENTS_DRAFTS](data);
       this.drafts.forEach((draft) => {
-        if (draft.position?.position_type === FILE_DIFF_POSITION_TYPE) {
-          this.tryStore('legacyDiffs').addDraftToFile({ filePath: draft.file_path, draft });
-        } else if (!draft.line_code) {
-          this.tryStore('legacyNotes').convertToDiscussion(draft.discussion_id);
+        try {
+          if (draft.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+            this.tryStore('legacyDiffs').addDraftToFile({ filePath: draft.file_path, draft });
+          } else if (!draft.line_code) {
+            this.tryStore('legacyNotes').convertToDiscussion(draft.discussion_id);
+          }
+        } catch {
+          // legacyDiffs/legacyNotes stores may not be available in Rapid Diffs
         }
       });
     })
-    .catch(() =>
-      createAlert({
-        message: __('An error occurred while fetching pending comments'),
-      }),
-    );
+    .finally(() => {
+      this.isDraftsFetched = true;
+    });
+
+  return this.fetchDraftsPromise;
 }
 
 export function publishReview(noteData = {}) {
@@ -118,15 +126,7 @@ export async function publishReviewInBatches(noteData = {}, batchSize = 20) {
   }
 }
 
-export function updateDraft({
-  note,
-  noteText,
-  resolveDiscussion,
-  position,
-  flashContainer,
-  callback,
-  errorCallback,
-}) {
+export async function updateDraft({ note, noteText, resolveDiscussion, position }) {
   const params = {
     draftId: note.id,
     note: noteText,
@@ -136,19 +136,8 @@ export function updateDraft({
   // https://gitlab.com/gitlab-org/gitlab/-/issues/298827
   if (!isEmpty(position)) params.position = JSON.stringify(position);
 
-  return service
-    .update(this.getNotesData.draftsPath, params)
-    .then((res) => res.data)
-    .then((data) => this[types.RECEIVE_DRAFT_UPDATE_SUCCESS](data))
-    .then(callback)
-    .catch((e) => {
-      createAlert({
-        message: updateNoteErrorMessage(e),
-        parent: flashContainer,
-      });
-
-      errorCallback();
-    });
+  const { data } = await service.update(this.getNotesData.draftsPath, params);
+  this[types.RECEIVE_DRAFT_UPDATE_SUCCESS](data);
 }
 
 export function scrollToDraft(draft) {

@@ -73,7 +73,7 @@ class UsersFinder
 
       scope = ::Autocomplete::GroupUsersFinder.new(group: group, current_user: current_user).execute # rubocop: disable CodeReuse/Finder -- For SQL optimization sake we need to scope out group members first see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137647#note_1664081899
     else
-      scope = current_user&.can_admin_all_resources? ? User.all : User.without_forbidden_states
+      scope = current_user&.can?(:read_admin_users) ? User.all : User.without_forbidden_states
     end
 
     scope.order_id_desc
@@ -98,7 +98,7 @@ class UsersFinder
   end
 
   def by_admins(users)
-    return users unless params[:admins] && current_user&.can_read_all_resources?
+    return users unless params[:admins] && current_user&.can?(:read_admin_users)
 
     users.admins
   end
@@ -120,7 +120,7 @@ class UsersFinder
 
     users.search(
       params[:search],
-      with_private_emails: current_user&.can_admin_all_resources?,
+      with_private_emails: current_user&.can?(:read_admin_users),
       use_minimum_char_limit: params[:use_minimum_char_limit]
     )
   end

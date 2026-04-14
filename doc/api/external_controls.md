@@ -24,7 +24,8 @@ You can configure external controls with periodic ping functionality. When ping 
 
 {{< /history >}}
 
-For a single external control, use the API to inform GitLab that a control has passed or failed a check by an external service.
+Sets the status of a specified external control. Use this operation to inform GitLab that a
+control has passed or failed a check by an external service.
 
 Prerequisites
 

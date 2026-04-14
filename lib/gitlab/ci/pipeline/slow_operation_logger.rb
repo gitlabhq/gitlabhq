@@ -3,6 +3,38 @@
 module Gitlab
   module Ci
     module Pipeline
+      # SlowOperationLogger detects and logs slow operations.
+      # It captures DB, Gitaly, and Redis counter deltas and emits a structured
+      # log entry via Gitlab::AppJsonLogger when an operation exceeds
+      # SLOW_THRESHOLD_SECONDS (default: 5 seconds, configurable via
+      # CI_SLOW_OPERATION_THRESHOLD_SECONDS env var).
+      #
+      # Usage:
+      #   include Gitlab::Ci::Pipeline::SlowOperationLogger
+      #
+      #   def my_method
+      #     log_slow_operation(
+      #       operation_name: :my_operation,
+      #       context: { project_id: project.id, user_id: user&.id }
+      #     ) do
+      #       # the operation to monitor
+      #     end
+      #   end
+      #
+      # When adding slow operation logging to a new call site, consider guarding
+      # it behind a dedicated feature flag specific to that operation rather than
+      # using a single global flag. For example:
+      #
+      #   def my_method
+      #     if Feature.enabled?(:ci_slow_my_operation_logger, project, type: :ops)
+      #       log_slow_operation(
+      #         operation_name: :my_operation,
+      #         context: { project_id: project.id }
+      #       ) { perform_work }
+      #     else
+      #       perform_work
+      #     end
+      #   end
       module SlowOperationLogger
         extend ActiveSupport::Concern
 
@@ -10,9 +42,7 @@ module Gitlab
 
         private
 
-        def log_slow_operation(operation_name:, project:, context: {})
-          return yield unless slow_operation_logging_enabled?(project)
-
+        def log_slow_operation(operation_name:, context: {})
           start_counters = safe_capture_counters
           start_time = Gitlab::Metrics::System.monotonic_time
 
@@ -26,10 +56,6 @@ module Gitlab
           end
 
           result
-        end
-
-        def slow_operation_logging_enabled?(project)
-          Feature.enabled?(:ci_slow_operation_logger, project, type: :ops)
         end
 
         # Wrapper methods to ensure logging errors don't affect the main application flow.

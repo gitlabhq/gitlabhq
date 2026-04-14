@@ -278,6 +278,43 @@ describe('common_utils', () => {
     });
   });
 
+  describe('parseCursorPagination', () => {
+    it('parses pagination headers', () => {
+      const pagination = {
+        'X-PER-PAGE': '10',
+        'X-PREV-PAGE': 'prev-cursor',
+        'X-NEXT-PAGE': 'next-cursor',
+      };
+
+      const expectedPagination = {
+        perPage: 10,
+        startCursor: 'prev-cursor',
+        endCursor: 'next-cursor',
+        hasNextPage: true,
+        hasPreviousPage: true,
+      };
+
+      expect(commonUtils.parseCursorPagination(pagination)).toEqual(expectedPagination);
+    });
+
+    describe('when X-PREV-PAGE and X-NEXT_PAGE is falsy', () => {
+      it('parses cursor as null and booleans as false', () => {
+        const pagination = {
+          'X-PER-PAGE': '10',
+          'X-PREV-PAGE': '',
+          'X-NEXT-PAGE': '',
+        };
+
+        const result = commonUtils.parseCursorPagination(pagination);
+
+        expect(result.startCursor).toBe(null);
+        expect(result.endCursor).toBe(null);
+        expect(result.hasNextPage).toBe(false);
+        expect(result.hasPreviousPage).toBe(false);
+      });
+    });
+  });
+
   describe('isMetaKey', () => {
     it('should identify ctrlKey click on Windows/Linux', () => {
       const e = {

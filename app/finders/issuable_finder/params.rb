@@ -245,7 +245,7 @@ class IssuableFinder
     def projects_in_group_hierarchy_by_traversal_join
       sql = Project.sanitize_sql([
         "INNER JOIN namespaces ns ON ns.type = 'Project' AND ns.id = projects.project_namespace_id " \
-          "AND ns.traversal_ids @> ARRAY[?]::bigint[]",
+          "AND ns.traversal_ids @> ARRAY[?]::#{Namespace.traversal_ids_type}",
         group.id
       ])
 

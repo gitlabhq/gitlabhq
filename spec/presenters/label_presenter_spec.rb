@@ -53,12 +53,26 @@ RSpec.describe LabelPresenter do
   end
 
   describe '#filter_path' do
+    context 'with group as context subject and type as :work_item' do
+      let(:label_in_group) { build_stubbed(:label).present(issuable_subject: group) }
+
+      subject { label_in_group.filter_path(type: :work_item) }
+
+      it { is_expected.to eq(group_work_items_path(group, label_name: [label_in_group.title])) }
+    end
+
     context 'with group as context subject' do
       let(:label_in_group) { build_stubbed(:label, project: project).present(issuable_subject: group) }
 
       subject { label_in_group.filter_path }
 
       it { is_expected.to eq(issues_group_path(group, label_name: [label_in_group.title])) }
+    end
+
+    context 'with project as context subject and type as :work_item' do
+      subject { label.filter_path(type: :work_item) }
+
+      it { is_expected.to eq(namespace_project_work_items_path(group, project, label_name: [label.title])) }
     end
 
     context 'with project as context subject' do

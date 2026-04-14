@@ -24,7 +24,7 @@ Epics make complex projects manageable. They:
 
 Teams use epics to coordinate across multiple iterations and track progress toward long-term goals.
 
-In the Ultimate tier, [nested epics](manage_epics.md#multi-level-child-epics) provide additional
+In the Ultimate tier, [nested epics](../../work_items/child_items.md#work-with-multi-level-hierarchies) provide additional
 structure through work hierarchies that align with agile frameworks.
 Break down complex projects into more manageable child epics, which can further contain their own
 sets of issues and tasks.
@@ -44,7 +44,7 @@ losing sight of the overarching goals.
 The possible relationships between epics and other items are:
 
 - An epic is the parent of one or more issues.
-- An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
+- An epic is the parent of one or more [child epics](../../work_items/child_items.md#work-with-multi-level-hierarchies). Ultimate only.
 - An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
 
 Example set of relationships:
@@ -76,7 +76,7 @@ graph TD
 
 You can add issues from a different group hierarchy to an epic.
 To do it, paste the issue URL when
-[adding an existing issue](manage_epics.md#add-an-existing-issue-to-an-epic).
+[adding an existing issue](../../work_items/child_items.md#add-an-existing-issue-to-an-epic).
 
 ## Epics as work items
 

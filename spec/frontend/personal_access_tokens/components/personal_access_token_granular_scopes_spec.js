@@ -1,12 +1,8 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlIcon, GlLink, GlButton, GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import PersonalAccessTokenGranularScopes from '~/personal_access_tokens/components/personal_access_token_granular_scopes.vue';
-import {
-  mockGranularGroupScope,
-  mockGranularInstanceScope,
-  mockGranularUserScope,
-} from '../mock_data';
+import { mockGranularGroupScope, mockGranularUserScope } from '../mock_data';
 
 describe('PersonalAccessTokenGranularScopes', () => {
   let wrapper;
@@ -21,31 +17,13 @@ describe('PersonalAccessTokenGranularScopes', () => {
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findIcons = () => wrapper.findAllComponents(GlIcon);
 
-  beforeEach(() => {
-    createComponent();
-  });
+  const findToggleButtons = () => wrapper.findAllComponents(GlButton);
+  const findGroupToggleButton = () => findToggleButtons().at(0);
+  const findUserToggleButton = () => findToggleButtons().at(1);
 
-  describe('permissions text', () => {
-    it('renders group permissions text when scoped on group', () => {
-      expect(wrapper.text()).toContain('Group and project permissions');
-    });
-
-    it('renders user permissions text when scoped on user', () => {
-      createComponent({
-        scopes: [mockGranularUserScope],
-      });
-
-      expect(wrapper.text()).toContain('User permissions');
-    });
-
-    it('renders instance permissions text when scoped on instance', () => {
-      createComponent({
-        scopes: [mockGranularInstanceScope],
-      });
-
-      expect(wrapper.text()).toContain('Instance permissions');
-    });
-  });
+  const findCollapses = () => wrapper.findAllComponents(GlCollapse);
+  const findGroupCollapse = () => findCollapses().at(0);
+  const findUserCollapse = () => findCollapses().at(1);
 
   describe('group access descriptions', () => {
     it('renders personal projects description', () => {
@@ -53,7 +31,8 @@ describe('PersonalAccessTokenGranularScopes', () => {
         scopes: [{ ...mockGranularGroupScope, access: 'PERSONAL_PROJECTS' }],
       });
 
-      expect(wrapper.text()).toContain('Only personal projects');
+      expect(wrapper.text()).toContain('Group and project access');
+      expect(wrapper.text()).toContain('Only my personal projects, including future ones');
     });
 
     it('renders selected memberships description', () => {
@@ -61,6 +40,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
         scopes: [{ ...mockGranularGroupScope, access: 'SELECTED_MEMBERSHIPS' }],
       });
 
+      expect(wrapper.text()).toContain('Group and project access');
       expect(wrapper.text()).toContain("Only specific group or projects that I'm a member of");
     });
 
@@ -69,28 +49,27 @@ describe('PersonalAccessTokenGranularScopes', () => {
         scopes: [{ ...mockGranularGroupScope, access: 'ALL_MEMBERSHIPS' }],
       });
 
-      expect(wrapper.text()).toContain("All groups and projects that I'm a member of");
-    });
-  });
-
-  describe('permissions grouping', () => {
-    it('groups permissions by resource and formats them', () => {
-      expect(wrapper.text()).toContain('read, write: project');
-      expect(wrapper.text()).toContain('admin: group');
+      expect(wrapper.text()).toContain('Group and project access');
+      expect(wrapper.text()).toContain(
+        "All groups and projects that I'm a member of, including future ones",
+      );
     });
 
-    it('shows check icon', () => {
-      expect(findIcons().at(1).props()).toMatchObject({
-        name: 'check-sm',
-        variant: 'success',
+    it('does not render when only user scopes are present', () => {
+      createComponent({
+        scopes: [mockGranularUserScope],
       });
+
+      expect(wrapper.text()).not.toContain('Group and project access');
     });
   });
 
   describe('namespace', () => {
-    it('renders namespace when scoped on group', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('renders namespace when scoped on group', () => {
       expect(findProjectAvatar().exists()).toBe(true);
       expect(findProjectAvatar().props()).toMatchObject({
         projectId: mockGranularGroupScope.namespace.id,
@@ -101,15 +80,11 @@ describe('PersonalAccessTokenGranularScopes', () => {
     });
 
     it('renders link to namespace', () => {
-      createComponent();
-
       expect(findLinks().at(0).attributes('href')).toBe(mockGranularGroupScope.namespace.webUrl);
       expect(findLinks().at(0).text()).toBe(mockGranularGroupScope.namespace.fullName);
     });
 
     it('renders group icon for namespace', () => {
-      createComponent();
-
       expect(findIcons().at(0).props()).toMatchObject({
         name: 'group',
       });
@@ -134,7 +109,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
 
       expect(wrapper.findAllComponents(ProjectAvatar)).toHaveLength(2);
 
-      expect(findIcons().at(1).props()).toMatchObject({
+      expect(findIcons().at(2).props()).toMatchObject({
         name: 'project',
       });
     });
@@ -146,21 +121,46 @@ describe('PersonalAccessTokenGranularScopes', () => {
     });
   });
 
-  describe('multiple scopes', () => {
-    it('renders multiple scopes', () => {
+  describe('permissions', () => {
+    beforeEach(() => {
       createComponent({
-        scopes: [mockGranularGroupScope, mockGranularUserScope, mockGranularInstanceScope],
+        scopes: [mockGranularGroupScope, mockGranularUserScope],
+      });
+    });
+
+    it('renders group permissions toggle', () => {
+      expect(findGroupToggleButton().text()).toContain('Group and project permissions (4)');
+    });
+
+    it('renders user permissions toggle', () => {
+      expect(findUserToggleButton().text()).toContain('User permissions (2)');
+    });
+
+    it('renders group permissions with their categories, resources and actions', () => {
+      expect(findGroupCollapse().text()).toContain('Groups and projects');
+      expect(findGroupCollapse().text()).toContain('Project: Read, Write');
+      expect(findGroupCollapse().text()).toContain('Contributed project: Read');
+
+      expect(findGroupCollapse().text()).toContain('Merge request');
+      expect(findGroupCollapse().text()).toContain('Repository: Read');
+    });
+
+    it('renders user permissions with their categories, resources and actions', () => {
+      expect(findUserCollapse().text()).toContain('User access');
+      expect(findUserCollapse().text()).toContain('User: Read');
+
+      expect(findUserCollapse().text()).toContain('Projects');
+      expect(findUserCollapse().text()).toContain('Project: Read contributed');
+    });
+
+    it('renders placeholder when only one type of scope is present', () => {
+      createComponent({
+        scopes: [mockGranularGroupScope],
       });
 
-      expect(wrapper.text()).toContain('Group and project permissions');
-      expect(wrapper.text()).toContain('read, write: project');
-      expect(wrapper.text()).toContain('admin: group');
+      expect(findUserToggleButton().text()).toContain('User permissions (0)');
 
-      expect(wrapper.text()).toContain('User permissions');
-      expect(wrapper.text()).toContain('read, create: profile');
-
-      expect(wrapper.text()).toContain('Instance permissions');
-      expect(wrapper.text()).toContain('read, create: admin member role');
+      expect(findUserCollapse().text()).toContain('No resources added');
     });
   });
 });

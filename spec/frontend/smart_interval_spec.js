@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { assignIn } from 'lodash';
+import { assignIn } from 'lodash-es';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import SmartInterval from '~/smart_interval';

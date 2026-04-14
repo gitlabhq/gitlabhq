@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 namespace :admin do
+  namespace :registrations do
+    resources :groups, only: [:new, :create]
+  end
+
   resources :users, constraints: { id: %r{[a-zA-Z./0-9_\-]+} } do
     resources :keys, only: [:show, :destroy]
     resources :identities, except: [:show]

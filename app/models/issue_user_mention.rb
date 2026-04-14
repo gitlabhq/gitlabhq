@@ -3,4 +3,5 @@
 class IssueUserMention < UserMention
   belongs_to :issue
   belongs_to :note
+  belongs_to :namespace
 end

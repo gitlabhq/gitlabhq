@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import OfflineTransferApp from '~/import/offline_transfer/components/app.vue';
+import OfflineTransferApp from '~/import/offline_transfer/app.vue';
 
 export const initOfflineTransfer = () => {
   const el = document.getElementById('js-offline-transfer');

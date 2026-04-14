@@ -2,17 +2,17 @@ import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import AxiosMockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { createAlert } from '~/alert';
+import { COMMENT_FORM } from '~/notes/i18n';
 import CommitTimeline from '~/rapid_diffs/app/discussions/timeline.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { useCommitDiffDiscussions } from '~/rapid_diffs/stores/commit_discussions_store';
 import { useDiscussions } from '~/notes/store/discussions';
 
+jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/lib/utils/secret_detection');
 
@@ -21,7 +21,6 @@ Vue.use(PiniaVuePlugin);
 describe('CommitTimeline', () => {
   let pinia;
   let wrapper;
-  let axiosMock;
 
   const createDiscussion = (overrides = {}) => ({
     id: 'discussion-1',
@@ -42,7 +41,7 @@ describe('CommitTimeline', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
     store = useCommitDiffDiscussions(pinia);
-    axiosMock = new AxiosMockAdapter(axios);
+    store.createNewDiscussion = jest.fn().mockResolvedValue();
     isLoggedIn.mockReturnValue(true);
     detectAndConfirmSensitiveTokens.mockResolvedValue(true);
   });
@@ -70,15 +69,24 @@ describe('CommitTimeline', () => {
   });
 
   describe('saveNote', () => {
-    it('adds discussion on successful save', async () => {
-      const newDiscussion = { id: 'new-1', notes: [{ id: 'note-1' }] };
-      axiosMock.onPost('/api/discussions').reply(HTTP_STATUS_OK, { discussion: newDiscussion });
+    it('calls store.createNewDiscussion on successful save', async () => {
       createComponent([createDiscussion()]);
 
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
 
-      expect(useDiscussions(pinia).discussions).toContainEqual(
-        expect.objectContaining({ id: 'new-1' }),
+      expect(store.createNewDiscussion).toHaveBeenCalledWith({ note: 'test note' });
+    });
+
+    it('shows alert when save fails', async () => {
+      store.createNewDiscussion.mockRejectedValue(new Error('fail'));
+      createComponent([createDiscussion()]);
+
+      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
+        }),
       );
     });
   });

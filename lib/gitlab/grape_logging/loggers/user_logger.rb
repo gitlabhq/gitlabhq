@@ -12,7 +12,7 @@ module Gitlab
 
           return {} unless params
 
-          params.slice(:user_id, :username)
+          params.slice(:user_id, :username, :global_user_id)
         end
       end
     end

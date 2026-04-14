@@ -22,6 +22,16 @@
             %br
             = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
 
+  = render ::Layouts::SettingsSectionComponent.new(_('Site name')) do |c|
+    - c.with_description do
+      = _('Add a custom site name after the page title in the browser tab. Visible to all visitors and users.')
+    - c.with_body do
+      .form-group
+        = f.label :site_name, class: 'col-form-label'
+        = f.text_field :site_name, class: "form-control gl-form-input"
+        .form-text.gl-text-subtle
+          = _("Maximum length is 255 characters.")
+
   = render ::Layouts::SettingsSectionComponent.new(_('Member guidelines')) do |c|
     - c.with_description do
       = _('These guidelines are displayed on the group\'s or project\'s members page, and are visible to users who can manage team member permissions.')

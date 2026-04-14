@@ -1131,7 +1131,7 @@ These fields are populated by default:
 | `predicate.buildDefinition.internalParameters.job`                | The ID of the CI/CD job that triggered the build. |
 | `predicate.buildDefinition.resolvedDependencies[0].uri`           | The URL of the project. |
 | `predicate.buildDefinition.resolvedDependencies[0].digest.sha256` | The commit revision of the project. |
-| `predicate.runDetails.metadata.invocationID`                      | The ID of the CI/CD job that triggered the build. |
+| `predicate.runDetails.metadata.invocationId`                      | The ID of the CI/CD job that triggered the build. |
 | `predicate.runDetails.metadata.startedOn`                         | The time when the build was started. This field is `RFC3339` formatted. |
 | `predicate.runDetails.metadata.finishedOn`                        | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
 
@@ -1194,7 +1194,7 @@ A provenance statement should look similar to this example:
     }
    },
    "metadata": {
-    "invocationID": "10340684631",
+    "invocationId": "10340684631",
     "startedOn": "2025-06-13T07:25:13Z",
     "finishedOn": "2025-06-13T07:25:40Z"
    }

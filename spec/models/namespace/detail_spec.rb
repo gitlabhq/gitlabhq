@@ -52,9 +52,9 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
         expect(namespace_detail).to be_valid
       end
 
-      it 'accepts start_transfer in preserved_states' do
+      it 'accepts schedule_transfer in preserved_states' do
         namespace_detail.state_metadata = {
-          preserved_states: { start_transfer: 'archived' }
+          preserved_states: { schedule_transfer: 'archived' }
         }
 
         expect(namespace_detail).to be_valid

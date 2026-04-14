@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus/testutil"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -41,13 +40,13 @@ func TestInstrumentGeoProxyRoute(t *testing.T) {
 	local := routeMetadata{`\A/local\z`, "local", "local"}
 	main := routeMetadata{"", "default", "default"}
 
-	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
+	u := newUpstream(config.Config{}, testDependencies(t), func(u *upstream) {
 		u.Routes = []routeEntry{
 			handleRouteWithMatchers(u, remote, withGeoProxy()),
 			handleRouteWithMatchers(u, local),
 			handleRouteWithMatchers(u, main),
 		}
-	}, nil, nil, nil, nil, nil)
+	})
 	ts := httptest.NewServer(u)
 	defer ts.Close()
 

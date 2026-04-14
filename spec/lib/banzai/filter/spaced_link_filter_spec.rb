@@ -96,9 +96,10 @@ RSpec.describe Banzai::Filter::SpacedLinkFilter, feature_category: :markdown do
   described_class::IGNORE_PARENTS.each do |xpath|
     it "ignores valid links contained inside '#{xpath}' element" do
       match = xpath.match(/(?<element>\w+)(?:\[@(?<attribute>.*)\])?/)
-      exp = act = "<#{match[:element]}#{" #{match[:attribute]}" if match[:attribute]}>See #{link}</#{match[:element]}>"
+      act = "<#{match[:element]}#{" #{match[:attribute]}" if match[:attribute]}>See #{link}</#{match[:element]}>"
+      result = filter(act)
 
-      expect(filter(act).to_html).to eq exp
+      expect(result.text).to include("See [example](page slug)")
     end
   end
 

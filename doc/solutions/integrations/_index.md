@@ -14,3 +14,5 @@ This documentation section covers a variety of Integrations.
 ## Self-Hosted Model
 
 [Complete AWS/Google Cloud Deployment Guide with Ollama Integration](aws_googlecloud_ollama.md)
+
+[AWS Bedrock BYOM deployment guide](aws_bedrock_byom.md)

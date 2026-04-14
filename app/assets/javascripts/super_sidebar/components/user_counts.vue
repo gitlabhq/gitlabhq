@@ -8,7 +8,6 @@ import {
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
-import { WORK_ITEMS_ICON, WORK_ITEM_ISSUE_ICON } from '~/homepage/constants';
 import Counter from './counter.vue';
 
 export default {
@@ -31,7 +30,6 @@ export default {
     },
   },
   i18n: {
-    issues: __('Assigned issues'),
     mergeRequests: __('Merge requests'),
     todoList: __('To-do items'),
     workItems: __('Assigned work items'),
@@ -39,16 +37,6 @@ export default {
   computed: {
     userCounts() {
       return userCounts;
-    },
-    assignedIssuesTitle() {
-      return this.sidebarData.work_item_planning_view_enabled
-        ? this.$options.i18n.workItems
-        : this.$options.i18n.issues;
-    },
-    assignedIssuesIcon() {
-      return this.sidebarData.work_item_planning_view_enabled
-        ? WORK_ITEMS_ICON
-        : WORK_ITEM_ISSUE_ICON;
     },
   },
   created() {
@@ -72,13 +60,13 @@ export default {
 <template>
   <div class="gl-flex gl-items-center gl-justify-between gl-gap-0">
     <counter
-      v-gl-tooltip.bottom="assignedIssuesTitle"
+      v-gl-tooltip.bottom="$options.i18n.workItems"
       class="dashboard-shortcuts-issues gl-basis-1/3"
-      :icon="assignedIssuesIcon"
+      icon="work-items"
       :class="counterClass"
       :count="userCounts.assigned_issues"
       :href="sidebarData.issues_dashboard_path"
-      :label="assignedIssuesTitle"
+      :label="$options.i18n.workItems"
       data-testid="issues-shortcut-button"
       data-track-action="click_link"
       data-track-label="issues_link"

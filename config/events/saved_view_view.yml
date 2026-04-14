@@ -1,0 +1,21 @@
+---
+description: Saved view was viewed
+internal_events: true
+status: active
+action: saved_view_view
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: user role
+product_group: product_planning
+product_categories:
+- portfolio_management
+milestone: '18.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225736
+tiers:
+- free
+- premium
+- ultimate

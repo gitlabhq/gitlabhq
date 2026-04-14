@@ -224,4 +224,180 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
       yield(pipeline) if block_given?
     end
   end
+
+  context 'when including multiple components from the same project' do
+    let(:template_a) do
+      <<~YAML
+        spec:
+          inputs:
+            stage:
+        ---
+        component-a-job:
+          stage: $[[ inputs.stage ]]
+          script: run component a
+      YAML
+    end
+
+    let(:template_b) do
+      <<~YAML
+        spec:
+          inputs:
+            stage:
+        ---
+        component-b-job:
+          stage: $[[ inputs.stage ]]
+          script: run component b
+      YAML
+    end
+
+    let(:template_c) do
+      <<~YAML
+        spec:
+          inputs:
+            stage:
+        ---
+        component-c-job:
+          stage: $[[ inputs.stage ]]
+          script: run component c
+      YAML
+    end
+
+    let(:sha) do
+      components_project.repository.create_file(
+        user,
+        'templates/component-a.yml',
+        template_a,
+        message: 'Add component a',
+        branch_name: 'master'
+      )
+
+      components_project.repository.create_file(
+        user,
+        'templates/component-b.yml',
+        template_b,
+        message: 'Add component b',
+        branch_name: 'master'
+      )
+
+      components_project.repository.create_file(
+        user,
+        'templates/component-c.yml',
+        template_c,
+        message: 'Add component c',
+        branch_name: 'master'
+      )
+    end
+
+    let(:config_one_component) do
+      <<~YAML
+        include:
+          - component: #{Gitlab.config.gitlab.host}/#{components_project.full_path}/component-a@v0.1
+            inputs:
+              stage: build
+
+        stages:
+          - build
+      YAML
+    end
+
+    let(:config_three_components) do
+      <<~YAML
+        include:
+          - component: #{Gitlab.config.gitlab.host}/#{components_project.full_path}/component-a@v0.1
+            inputs:
+              stage: build
+          - component: #{Gitlab.config.gitlab.host}/#{components_project.full_path}/component-b@v0.1
+            inputs:
+              stage: test
+          - component: #{Gitlab.config.gitlab.host}/#{components_project.full_path}/component-c@v0.1
+            inputs:
+              stage: deploy
+
+        stages:
+          - build
+          - test
+          - deploy
+      YAML
+    end
+
+    before do
+      components_project.repository.add_tag(user, 'v0.1', sha)
+    end
+
+    def execute_service_with_request_store
+      Gitlab::SafeRequestStore.ensure_request_store do
+        control_count = Gitlab::GitalyClient.get_request_count
+        execute_service
+        Gitlab::GitalyClient.get_request_count - control_count
+      end
+    end
+
+    it 'creates a pipeline with jobs from multiple components' do
+      stub_ci_pipeline_yaml_file(config_three_components)
+
+      response = execute_service
+      pipeline = response.payload
+
+      expect(pipeline).to be_persisted
+      expect(pipeline.error_messages).to be_empty
+      expect(pipeline.statuses.map(&:name)).to match_array(%w[component-a-job component-b-job component-c-job])
+    end
+
+    it 'caches DB calls when including multiple components from the same project', :use_sql_query_cache do
+      # Warm up
+      stub_ci_pipeline_yaml_file(config_one_component)
+      execute_service
+
+      stub_ci_pipeline_yaml_file(config_three_components)
+      execute_service
+
+      stub_ci_pipeline_yaml_file(config_one_component)
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        execute_service_with_request_store
+      end
+
+      accepted_threshold = 8 # 2 stages + 2 builds + 2 job definitions + 2 build sources
+      stub_ci_pipeline_yaml_file(config_three_components)
+      expect do
+        execute_service_with_request_store
+      end.to issue_same_number_of_queries_as(control).with_threshold(accepted_threshold)
+    end
+
+    context 'when ci_optimize_component_instance_path feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_optimize_component_instance_path: false)
+      end
+
+      it 'creates a pipeline using legacy component fetching' do
+        stub_ci_pipeline_yaml_file(config_three_components)
+
+        response = execute_service
+        pipeline = response.payload
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages).to be_empty
+        expect(pipeline.statuses.map(&:name)).to match_array(%w[component-a-job component-b-job component-c-job])
+      end
+
+      it 'does not cache DB calls when including multiple components from the same project', :use_sql_query_cache do
+        # Warm up
+        stub_ci_pipeline_yaml_file(config_one_component)
+        execute_service
+
+        stub_ci_pipeline_yaml_file(config_three_components)
+        execute_service
+
+        stub_ci_pipeline_yaml_file(config_one_component)
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          execute_service_with_request_store
+        end
+
+        accepted_threshold = 8 # 2 stages + 2 builds + 2 job definitions + 2 build sources
+        stub_ci_pipeline_yaml_file(config_three_components)
+        expect do
+          execute_service_with_request_store
+        end.not_to issue_same_number_of_queries_as(control).with_threshold(accepted_threshold)
+      end
+    end
+  end
 end

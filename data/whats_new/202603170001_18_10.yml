@@ -13,7 +13,7 @@
   documentation_link: https://docs.gitlab.com/user/application_security/vulnerabilities/false_positive_detection
   image_url: https://about.gitlab.com/images/18_10/sast-false-positive-detection.png
   published_at: 2026-03-19
-  release: 18.10
+  release: "18.10"
 
 - name: "Purchase GitLab Credits on the Free tier on GitLab.com"
   description: |
@@ -29,7 +29,7 @@
   documentation_link: https://docs.gitlab.com/subscriptions/gitlab_credits/#for-the-free-tier-on-gitlabcom
   image_url: https://about.gitlab.com/images/18_10/Free_Credits_Purchase_Image.png
   published_at: 2026-03-19
-  release: 18.10
+  release: "18.10"
 
 - name: "Sign in securely with passkeys"
   description: |
@@ -44,7 +44,7 @@
   documentation_link: https://docs.gitlab.com/auth/passkeys/
   image_url: https://img.youtube.com/vi/LN5MGRdTHR8/hqdefault.jpg
   published_at: 2026-03-19
-  release: 18.10
+  release: "18.10"
 
 - name: "Introducing the work items list and saved views"
   description: |
@@ -60,7 +60,7 @@
   documentation_link: https://docs.gitlab.com/user/work_items/
   image_url: https://about.gitlab.com/images/18_10/work_items_list_and_saved_views.png
   published_at: 2026-03-19
-  release: 18.10
+  release: "18.10"
 
 - name: "Enforce merge request title naming conventions with regex"
   description: |
@@ -74,4 +74,4 @@
   documentation_link: https://docs.gitlab.com/user/project/merge_requests/title_validation/
   image_url: https://about.gitlab.com/images/18_10/create-enforce-mr-title-naming-convention.png
   published_at: 2026-03-19
-  release: 18.10
+  release: "18.10"

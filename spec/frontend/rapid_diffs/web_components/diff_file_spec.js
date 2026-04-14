@@ -1,15 +1,29 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
-import { CLICK, INVISIBLE, MOUNTED, VISIBLE } from '~/rapid_diffs/adapter_events';
+import {
+  CLICK,
+  EXPAND_FILE,
+  HIGHLIGHT_LINES,
+  INVISIBLE,
+  MOUNTED,
+  VISIBLE,
+} from '~/rapid_diffs/adapter_events';
+import { settledScrollIntoView } from '~/rapid_diffs/utils/settled_scroll_into_view';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
+
+jest.mock('~/rapid_diffs/utils/settled_scroll_into_view');
+jest.mock('~/lib/utils/sticky');
 
 describe('DiffFile Web Component', () => {
   const fileData = JSON.stringify({ viewer: 'current', custom: 'bar' });
   const html = `
-    <diff-file data-file-data='${fileData}' id="fileHash">
-      <article>
-        <button data-click="foo"></button>
-      </article>
-    </diff-file>
+    <div data-rapid-diffs>
+      <diff-file data-file-data='${fileData}' id="fileHash">
+        <article>
+          <button data-click="foo"></button>
+        </article>
+      </diff-file>
+    </div>
   `;
   let app;
   let adapter;
@@ -125,9 +139,76 @@ describe('DiffFile Web Component', () => {
 
   it('#selectFile', () => {
     mount();
-    const spy = jest.spyOn(getWebComponentElement(), 'scrollIntoView');
-    getWebComponentElement().selectFile();
-    expect(spy).toHaveBeenCalled();
+    const element = getWebComponentElement();
+    const root = document.querySelector('[data-rapid-diffs]');
+    element.selectFile();
+    expect(settledScrollIntoView).toHaveBeenCalledWith(element, root);
+  });
+
+  describe('#selectLine', () => {
+    const lineHtml = `
+      <div data-rapid-diffs>
+        <diff-file data-file-data='${fileData}' id="fileHash">
+          <article>
+            <table><tbody>
+              <tr>
+                <td data-position="old"><span data-line-number="5"></span></td>
+                <td data-position="new"><span data-line-number="10"></span></td>
+              </tr>
+            </tbody></table>
+          </article>
+        </diff-file>
+      </div>
+    `;
+
+    const mountWithLines = (customAdapter) => {
+      initRapidDiffsApp(customAdapter);
+      document.body.innerHTML = lineHtml;
+      document.elementFromPoint = jest.fn(() => null);
+      getWebComponentElement().mount(app);
+    };
+
+    it('triggers EXPAND_FILE and HIGHLIGHT_LINES', async () => {
+      const expandFile = jest.fn();
+      const highlightLines = jest.fn();
+      mountWithLines({
+        [EXPAND_FILE]: expandFile,
+        [HIGHLIGHT_LINES]: highlightLines,
+        [MOUNTED]: jest.fn(),
+      });
+      await getWebComponentElement().selectLine(5, 10);
+      expect(expandFile).toHaveBeenCalled();
+      expect(highlightLines).toHaveBeenCalledWith({
+        start: { old_line: 5, new_line: 10 },
+        end: { old_line: 5, new_line: 10 },
+      });
+    });
+
+    it('scrolls to the line row and adjusts for covering elements', async () => {
+      settledScrollIntoView.mockResolvedValue();
+      mountWithLines({
+        [MOUNTED]: jest.fn(),
+        [EXPAND_FILE]: jest.fn(),
+        [HIGHLIGHT_LINES]: jest.fn(),
+      });
+      const row = getDiffElement().querySelector('tr');
+      await getWebComponentElement().selectLine(5, 10);
+      expect(settledScrollIntoView).toHaveBeenCalledWith(row, expect.any(HTMLElement));
+      expect(scrollPastCoveringElements).toHaveBeenCalledWith(row);
+    });
+
+    it('falls back to selectFile when line is not found', async () => {
+      mountWithLines({
+        [MOUNTED]: jest.fn(),
+        [EXPAND_FILE]: jest.fn(),
+        [HIGHLIGHT_LINES]: jest.fn(),
+      });
+      settledScrollIntoView.mockClear();
+      await getWebComponentElement().selectLine(999, 999);
+      const element = getWebComponentElement();
+      const root = document.querySelector('[data-rapid-diffs]');
+      expect(settledScrollIntoView).toHaveBeenCalledWith(element, root);
+    });
   });
 
   describe('when visible', () => {

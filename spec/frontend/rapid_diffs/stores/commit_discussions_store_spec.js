@@ -1,7 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import { createTestingPinia } from '@pinia/testing';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_GONE,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import { useCommitDiffDiscussions } from '~/rapid_diffs/stores/commit_discussions_store';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { useDiscussions } from '~/notes/store/discussions';
@@ -35,7 +39,6 @@ describe('commitDiffDiscussions store', () => {
     'setEditingMode',
     'requestLastNoteEditing',
     'toggleAward',
-    'replyToLineDiscussion',
     'addNewLineDiscussionForm',
     'replaceDiscussionForm',
     'removeNewLineDiscussionForm',
@@ -56,10 +59,10 @@ describe('commitDiffDiscussions store', () => {
 
   it.each([
     'discussionsWithForms',
-    'getImageDiscussions',
+    'findAllImageDiscussionsForFile',
     'findDiscussionsForPosition',
     'findDiscussionsForFile',
-    'findAllDiscussionsForFile',
+    'findAllLineDiscussionsForFile',
   ])('exposes %s getter', (getter) => {
     expect(useCommitDiffDiscussions()[getter]).toBeDefined();
   });
@@ -153,6 +156,23 @@ describe('commitDiffDiscussions store', () => {
           expect.objectContaining(updatedNote),
         );
       });
+
+      it('deletes note and resolves when server returns GONE', async () => {
+        const note = { id: 1, path: '/note/1', noteable_id: 10, discussion_id: 'disc-1' };
+        mockAxios.onPut('/note/1').reply(HTTP_STATUS_GONE);
+        useDiscussions().discussions = [{ id: 'disc-1', notes: [note] }];
+
+        await useCommitDiffDiscussions().saveNote(note, 'updated');
+
+        expect(useDiscussions().discussions).toHaveLength(0);
+      });
+
+      it('re-throws on other errors', async () => {
+        const note = { id: 1, path: '/note/1', noteable_id: 10 };
+        mockAxios.onPut('/note/1').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+        await expect(useCommitDiffDiscussions().saveNote(note, 'updated')).rejects.toThrow();
+      });
     });
 
     describe('destroyNote', () => {
@@ -181,65 +201,6 @@ describe('commitDiffDiscussions store', () => {
 
         expect(JSON.parse(mockAxios.history.post[0].data)).toEqual({ name: 'thumbsup' });
       });
-    });
-  });
-
-  describe('replyToLineDiscussion', () => {
-    const oldPath = 'old/file.js';
-    const newPath = 'new/file.js';
-
-    it('collapses multi-line range to single-line using end position', () => {
-      const multiLineRange = {
-        start: { old_line: 5, new_line: 15 },
-        end: { old_line: 10, new_line: 20 },
-      };
-
-      useCommitDiffDiscussions().replyToLineDiscussion({
-        oldPath,
-        newPath,
-        lineRange: multiLineRange,
-      });
-
-      const forms = useDiffDiscussions().discussionForms;
-      expect(forms).toHaveLength(1);
-      expect(forms[0].position.line_range).toStrictEqual({
-        start: { old_line: 10, new_line: 20 },
-        end: { old_line: 10, new_line: 20 },
-      });
-    });
-
-    it('replies to existing discussion at end position', () => {
-      const existingDiscussion = {
-        id: 'existing',
-        diff_discussion: true,
-        repliesExpanded: false,
-        isReplying: false,
-        position: { old_path: oldPath, new_path: newPath, old_line: 10, new_line: 20 },
-        notes: [],
-      };
-      useDiffDiscussions().setInitialDiscussions([existingDiscussion]);
-
-      const result = useCommitDiffDiscussions().replyToLineDiscussion({
-        oldPath,
-        newPath,
-        lineRange: { start: { old_line: 5, new_line: 15 }, end: { old_line: 10, new_line: 20 } },
-      });
-
-      expect(result).toBe('existing');
-      expect(useDiffDiscussions().discussionForms).toHaveLength(0);
-    });
-
-    it('creates a single-line form when no existing discussion', () => {
-      const lineRange = {
-        start: { old_line: 10, new_line: 20 },
-        end: { old_line: 10, new_line: 20 },
-      };
-
-      useCommitDiffDiscussions().replyToLineDiscussion({ oldPath, newPath, lineRange });
-
-      const forms = useDiffDiscussions().discussionForms;
-      expect(forms).toHaveLength(1);
-      expect(forms[0].position.line_range).toStrictEqual(lineRange);
     });
   });
 });

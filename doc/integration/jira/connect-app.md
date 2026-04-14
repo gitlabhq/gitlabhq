@@ -388,6 +388,10 @@ A `403 Forbidden` is returned if the user information cannot be fetched from Jir
 To resolve this issue, ensure you meet certain
 [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
+If the Jira user has administrator privileges but is not explicitly a member of
+the `site-admins` or `org-admins` group, see
+[Error: The Jira user is not a site or organization administrator](../../administration/settings/jira_cloud_app_troubleshooting.md#error-the-jira-user-is-not-a-site-or-organization-administrator).
+
 ### Jira Code does not work after linking to a GitLab group
 
 [Jira Code](https://support.atlassian.com/jira-software-cloud/docs/enable-code/) might not work after you

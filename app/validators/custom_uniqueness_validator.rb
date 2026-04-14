@@ -35,34 +35,6 @@
 #   1 AS one
 #   FROM "work_item_types" WHERE (TRIM(BOTH FROM lower(work_item_types.name)) = TRIM(BOTH FROM lower('Test'))) LIMIT 1
 #
-#
-#   class WorkItems::WidgetDefinition < ActiveRecord::Base
-#     validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))', scope: :work_item_type_id }
-#   end
-# This will generate a query like:
-#
-#   SELECT
-#   1 AS one
-#   FROM
-#     "work_item_widget_definitions"
-#   WHERE
-#     (
-#       TRIM(
-#         BOTH
-#         FROM
-#           lower(
-#             work_item_widget_definitions.name
-#           )
-#       ) = TRIM(
-#         BOTH
-#         FROM
-#           lower('test')
-#       )
-#     )
-#     AND "work_item_widget_definitions"."work_item_type_id" = 5
-#   LIMIT
-#     1
-#
 # rubocop:disable CodeReuse/ActiveRecord -- Validator used in models
 class CustomUniquenessValidator < ActiveModel::EachValidator # rubocop:disable Gitlab/BoundedContexts,Gitlab/NamespacedClass -- Validators can belong to multiple bounded contexts
   include Gitlab::Utils::StrongMemoize

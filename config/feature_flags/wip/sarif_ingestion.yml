@@ -1,0 +1,10 @@
+---
+name: sarif_ingestion
+description: Enable ingestion of SARIF 2.1.0 security report artifacts into the GitLab vulnerability pipeline
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452042
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230156
+rollout_issue_url:
+milestone: '18.11'
+group: group::security insights
+type: wip
+default_enabled: false

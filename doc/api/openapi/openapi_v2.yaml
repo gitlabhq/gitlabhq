@@ -143,6 +143,8 @@ tags:
   description: Operations about ci_runners
 - name: jobs
   description: Operations about jobs
+- name: chaos
+  description: Operations about chaos
 - name: glql
   description: Operations about glqls
 - name: internal_operations
@@ -347,17 +349,9 @@ paths:
         required: true
       responses:
         '200':
-          description: successful operation
+          description: Requests access for the authenticated user to a group.
           schema:
             "$ref": "#/definitions/API_Entities_AccessRequester"
-          examples:
-            successfull_response:
-              id: 1
-              username: raymond_smith
-              name: Raymond Smith
-              state: active
-              created_at: '2012-10-22T14:13:35Z'
-              access_level: 20
       tags:
       - access_requests
       operationId: postApiV4GroupsIdAccessRequests
@@ -388,18 +382,10 @@ paths:
         schema:
           "$ref": "#/definitions/putApiV4GroupsIdAccessRequestsUserIdApprove"
       responses:
-        '200':
-          description: successful operation
+        '201':
+          description: Approves an access request for the given user.
           schema:
-            "$ref": "#/definitions/API_Entities_AccessRequester"
-          examples:
-            successfull_response:
-              id: 1
-              username: raymond_smith
-              name: Raymond Smith
-              state: active
-              created_at: '2012-10-22T14:13:35Z'
-              access_level: 20
+            "$ref": "#/definitions/API_Entities_Member"
       tags:
       - access_requests
       operationId: putApiV4GroupsIdAccessRequestsUserIdApprove
@@ -9025,6 +9011,7 @@ paths:
         - notes
         - projects
         - issues
+        - work_items
         - merge_requests
         - milestones
         - users
@@ -9043,6 +9030,15 @@ paths:
         name: confidential
         description: Filter results by confidentiality
         type: boolean
+        required: false
+      - in: query
+        name: type
+        description: 'Filter work items by type. Only applies to work_items scope.
+          Available types: issue, task, epic, incident, test_case, requirement, objective,
+          key_result, ticket.'
+        type: array
+        items:
+          type: string
         required: false
       - in: query
         name: include_archived
@@ -9065,6 +9061,15 @@ paths:
         description: Excludes forked projects in the search. Available with exact
           code search. Introduced in GitLab 18.9.
         type: boolean
+        required: false
+      - in: query
+        name: num_context_lines
+        description: Number of context lines around each match. Available with advanced
+          and exact code search. Introduced in GitLab 18.11.
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 20
         required: false
       - in: query
         name: regex
@@ -9334,17 +9339,9 @@ paths:
         required: true
       responses:
         '200':
-          description: successful operation
+          description: Requests access for the authenticated user to a project.
           schema:
             "$ref": "#/definitions/API_Entities_AccessRequester"
-          examples:
-            successfull_response:
-              id: 1
-              username: raymond_smith
-              name: Raymond Smith
-              state: active
-              created_at: '2012-10-22T14:13:35Z'
-              access_level: 20
       tags:
       - access_requests
       operationId: postApiV4ProjectsIdAccessRequests
@@ -9375,18 +9372,10 @@ paths:
         schema:
           "$ref": "#/definitions/putApiV4ProjectsIdAccessRequestsUserIdApprove"
       responses:
-        '200':
-          description: successful operation
+        '201':
+          description: Approves an access request for the given user.
           schema:
-            "$ref": "#/definitions/API_Entities_AccessRequester"
-          examples:
-            successfull_response:
-              id: 1
-              username: raymond_smith
-              name: Raymond Smith
-              state: active
-              created_at: '2012-10-22T14:13:35Z'
-              access_level: 20
+            "$ref": "#/definitions/API_Entities_Member"
       tags:
       - access_requests
       operationId: putApiV4ProjectsIdAccessRequestsUserIdApprove
@@ -12365,6 +12354,7 @@ paths:
         - container_registry_push
         - duo_workflow
         - pipeline_execution_policy_schedule
+        - dependency_management_security_update
         required: false
         example: push
       - in: query
@@ -38551,6 +38541,8 @@ paths:
           description: Download the gemspec file
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
       tags:
@@ -38698,6 +38690,7 @@ paths:
         type: string
         enum:
         - issues
+        - work_items
         - merge_requests
         - milestones
         - notes
@@ -38728,6 +38721,15 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: type
+        description: 'Filter work items by type. Only applies to work_items scope.
+          Available types: issue, task, epic, incident, test_case, requirement, objective,
+          key_result, ticket.'
+        type: array
+        items:
+          type: string
+        required: false
+      - in: query
         name: fields
         description: Array of fields you wish to search. Available with advanced search.
         type: array
@@ -38735,6 +38737,15 @@ paths:
           type: string
           enum:
           - title
+        required: false
+      - in: query
+        name: num_context_lines
+        description: Number of context lines around each match. Available with advanced
+          and exact code search. Introduced in GitLab 18.11.
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 20
         required: false
       - in: query
         name: regex
@@ -39433,6 +39444,35 @@ paths:
       tags:
       - terraform
       operationId: deleteApiV4ProjectsIdTerraformStateNameLock
+  "/api/v4/projects/{id}/terraform/state_protection_rules":
+    get:
+      summary: List all Terraform state protection rules for a project
+      description: Lists all Terraform state protection rules for a project. This
+        feature was introduced in GitLab 18.11.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      responses:
+        '200':
+          description: List all Terraform state protection rules for a project
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_Terraform_StateProtectionRule"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdTerraformStateProtectionRules
   "/api/v4/projects/{id}/terraform/state/{name}/versions/{serial}":
     get:
       summary: Get a Terraform state version
@@ -41680,6 +41720,27 @@ paths:
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts
+  "/api/v4/chaos/test":
+    get:
+      summary: Chaos test endpoint for feature flag observability
+      description: |
+        Picks a project by random ID and checks the `ebonet_chaos_tests` feature flag.
+        When enabled, introduces a 20% chance of a 500 error and a 20% chance of
+        a 300ms delay. Returns 200 OK otherwise.
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error (chaos-induced)
+      tags:
+      - chaos
+      operationId: getApiV4ChaosTest
   "/api/v4/group/{id}/-/packages/composer/packages":
     get:
       summary: Composer packages endpoint at group level
@@ -45228,6 +45289,12 @@ paths:
         default: 20
         required: false
         example: 20
+      - in: query
+        name: non_archived
+        description: Returns merge requests from non archived projects only.
+        type: boolean
+        default: false
+        required: false
       responses:
         '200':
           description: List merge requests
@@ -45595,7 +45662,6 @@ paths:
       summary: Create an organization
       description: |-
         This feature was introduced in GitLab 17.5. \
-                            This feature is currently in an experimental state. \
                             This feature is behind the `allow_organization_creation` feature flag. \
                             In GitLab 18.3, feature flag changed to `organization_switching`.
       produces:
@@ -45968,6 +46034,7 @@ paths:
         - notes
         - projects
         - issues
+        - work_items
         - merge_requests
         - milestones
         - snippet_titles
@@ -45987,6 +46054,15 @@ paths:
         name: confidential
         description: Filter results by confidentiality
         type: boolean
+        required: false
+      - in: query
+        name: type
+        description: 'Filter work items by type. Only applies to work_items scope.
+          Available types: issue, task, epic, incident, test_case, requirement, objective,
+          key_result, ticket.'
+        type: array
+        items:
+          type: string
         required: false
       - in: query
         name: include_archived
@@ -46009,6 +46085,15 @@ paths:
         description: Excludes forked projects in the search. Available with exact
           code search. Introduced in GitLab 18.9.
         type: boolean
+        required: false
+      - in: query
+        name: num_context_lines
+        description: Number of context lines around each match. Available with advanced
+          and exact code search. Introduced in GitLab 18.11.
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 20
         required: false
       - in: query
         name: regex
@@ -47194,6 +47279,11 @@ paths:
         description: Add header and footer to all outgoing emails if enabled
         type: boolean
         required: false
+      - in: formData
+        name: site_name
+        description: Last part of the webpage title. Defaults to empty.
+        type: string
+        required: false
       responses:
         '200':
           description: Modify appearance
@@ -48049,46 +48139,76 @@ definitions:
         description: 'A valid access level (defaults: `30`, the Developer role)'
         default: 30
     description: Approves an access request for the given user.
-  API_Entities_AwardEmoji:
+  API_Entities_Member:
     type: object
     properties:
       id:
         type: integer
         format: int32
         example: 1
+      username:
+        type: string
+        example: admin
+      public_email:
+        type: string
+        example: john@example.com
       name:
         type: string
-        example: lizard
-      user:
-        "$ref": "#/definitions/API_Entities_UserBasic"
+        example: Administrator
+      state:
+        type: string
+        example: active
+      locked:
+        type: boolean
+      avatar_url:
+        type: string
+        example: https://gravatar.com/avatar/1
+      avatar_path:
+        type: string
+        example: "/user/avatar/28/The-Big-Lebowski-400-400.png"
+      custom_attributes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_CustomAttribute"
+      web_url:
+        type: string
+        example: https://gitlab.example.com/root
+      access_level:
+        type: string
       created_at:
         type: string
-        format: date-time
-        example: '2019-01-10T13:39:08Z'
-      updated_at:
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      expires_at:
         type: string
-        format: date-time
-        example: '2020-06-28T10:52:04Z'
-      awardable_id:
-        type: integer
-        format: int32
-        example: 42
-      awardable_type:
+      group_saml_identity:
+        "$ref": "#/definitions/API_Entities_Identity"
+      group_scim_identity:
+        "$ref": "#/definitions/API_Entities_ScimIdentity"
+      email:
         type: string
-        example: Issue
-      url:
+      is_using_seat:
         type: string
-        example: https://example.com/emojis/example.gif
+      override:
+        type: string
+      membership_state:
+        type: string
+      member_role:
+        "$ref": "#/definitions/API_Entities_MemberRole"
     required:
     - id
+    - username
+    - public_email
     - name
-    - user
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - access_level
     - created_at
-    - updated_at
-    - awardable_id
-    - awardable_type
-    - url
-    description: API_Entities_AwardEmoji model
+    - expires_at
+    - membership_state
+    description: API_Entities_Member model
   API_Entities_UserBasic:
     type: object
     properties:
@@ -48133,6 +48253,217 @@ definitions:
     - avatar_url
     - web_url
     description: API_Entities_UserBasic model
+  API_Entities_Identity:
+    type: object
+    properties:
+      provider:
+        type: string
+      extern_uid:
+        type: string
+      saml_provider_id:
+        type: string
+    required:
+    - provider
+    - extern_uid
+    - saml_provider_id
+  API_Entities_ScimIdentity:
+    type: object
+    properties:
+      extern_uid:
+        type: string
+      group_id:
+        type: string
+      active:
+        type: string
+    required:
+    - extern_uid
+    - group_id
+    - active
+  API_Entities_MemberRole:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 2
+      group_id:
+        type: integer
+        format: int32
+        example: 2
+      name:
+        type: text
+        example: Custom guest
+      description:
+        type: text
+        example: Guest user who can also read_code
+      base_access_level:
+        type: integer
+        format: int32
+        enum:
+        - 5
+        - 10
+        - 15
+        - 20
+        - 30
+        - 40
+        example: 40
+      apply_security_scan_profiles:
+        type: boolean
+      admin_merge_request:
+        type: boolean
+      archive_project:
+        type: boolean
+      remove_project:
+        type: boolean
+      remove_group:
+        type: boolean
+      manage_security_policy_link:
+        type: boolean
+      admin_compliance_framework:
+        type: boolean
+      admin_cicd_variables:
+        type: boolean
+      manage_deploy_tokens:
+        type: boolean
+      manage_group_access_tokens:
+        type: boolean
+      admin_group_member:
+        type: boolean
+      admin_integrations:
+        type: boolean
+      manage_merge_request_settings:
+        type: boolean
+      manage_project_access_tokens:
+        type: boolean
+      admin_protected_branch:
+        type: boolean
+      admin_protected_environments:
+        type: boolean
+      manage_protected_tags:
+        type: boolean
+      admin_push_rules:
+        type: boolean
+      admin_runners:
+        type: boolean
+      admin_security_attributes:
+        type: boolean
+      admin_terraform_state:
+        type: boolean
+      admin_vulnerability:
+        type: boolean
+      admin_web_hook:
+        type: boolean
+      read_compliance_dashboard:
+        type: boolean
+      read_security_scan_profiles:
+        type: boolean
+      read_admin_cicd:
+        type: boolean
+      read_crm_contact:
+        type: boolean
+      read_dependency:
+        type: boolean
+      read_admin_groups:
+        type: boolean
+      read_admin_projects:
+        type: boolean
+      read_code:
+        type: boolean
+      read_runners:
+        type: boolean
+      read_security_attribute:
+        type: boolean
+      read_admin_subscription:
+        type: boolean
+      read_admin_monitoring:
+        type: boolean
+      read_admin_users:
+        type: boolean
+      read_vulnerability:
+        type: boolean
+    required:
+    - id
+    - group_id
+    - name
+    - description
+    - base_access_level
+    - apply_security_scan_profiles
+    - admin_merge_request
+    - archive_project
+    - remove_project
+    - remove_group
+    - manage_security_policy_link
+    - admin_compliance_framework
+    - admin_cicd_variables
+    - manage_deploy_tokens
+    - manage_group_access_tokens
+    - admin_group_member
+    - admin_integrations
+    - manage_merge_request_settings
+    - manage_project_access_tokens
+    - admin_protected_branch
+    - admin_protected_environments
+    - manage_protected_tags
+    - admin_push_rules
+    - admin_runners
+    - admin_security_attributes
+    - admin_terraform_state
+    - admin_vulnerability
+    - admin_web_hook
+    - read_compliance_dashboard
+    - read_security_scan_profiles
+    - read_admin_cicd
+    - read_crm_contact
+    - read_dependency
+    - read_admin_groups
+    - read_admin_projects
+    - read_code
+    - read_runners
+    - read_security_attribute
+    - read_admin_subscription
+    - read_admin_monitoring
+    - read_admin_users
+    - read_vulnerability
+  API_Entities_AwardEmoji:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: lizard
+      user:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      created_at:
+        type: string
+        format: date-time
+        example: '2019-01-10T13:39:08Z'
+      updated_at:
+        type: string
+        format: date-time
+        example: '2020-06-28T10:52:04Z'
+      awardable_id:
+        type: integer
+        format: int32
+        example: 42
+      awardable_type:
+        type: string
+        example: Issue
+      url:
+        type: string
+        example: https://example.com/emojis/example.gif
+    required:
+    - id
+    - name
+    - user
+    - created_at
+    - updated_at
+    - awardable_id
+    - awardable_type
+    - url
+    description: API_Entities_AwardEmoji model
   postApiV4GroupsIdEpicsEpicIidAwardEmoji:
     type: object
     properties:
@@ -48239,7 +48570,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       web_url:
         type: string
       name:
@@ -48251,11 +48583,12 @@ definitions:
       visibility:
         type: string
       share_with_group_lock:
-        type: string
+        type: boolean
       require_two_factor_authentication:
-        type: string
+        type: boolean
       two_factor_grace_period:
-        type: string
+        type: integer
+        format: int32
       project_creation_level:
         type: string
       auto_devops_enabled:
@@ -48271,7 +48604,7 @@ definitions:
       mentions_disabled:
         type: string
       lfs_enabled:
-        type: string
+        type: boolean
       archived:
         type: boolean
       math_rendering_limits_enabled:
@@ -48281,13 +48614,14 @@ definitions:
       default_branch:
         type: string
       default_branch_protection:
-        type: string
+        type: integer
+        format: int32
       default_branch_protection_defaults:
         type: string
       avatar_url:
         type: string
       request_access_enabled:
-        type: string
+        type: boolean
       full_name:
         type: string
       full_path:
@@ -48297,7 +48631,8 @@ definitions:
       parent_id:
         type: string
       organization_id:
-        type: string
+        type: integer
+        format: int32
       shared_runners_setting:
         type: string
       max_artifacts_size:
@@ -48701,6 +49036,9 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
+      tool_approval_for_session_availability:
+        type: boolean
+        description: Enable tool approval for session for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -48975,6 +49313,9 @@ definitions:
       duo_foundational_flows_availability:
         type: boolean
         description: Enable GitLab foundational Duo flows for this group
+      tool_approval_for_session_availability:
+        type: boolean
+        description: Enable tool approval for session for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -49192,7 +49533,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       web_url:
         type: string
       name:
@@ -49204,11 +49546,12 @@ definitions:
       visibility:
         type: string
       share_with_group_lock:
-        type: string
+        type: boolean
       require_two_factor_authentication:
-        type: string
+        type: boolean
       two_factor_grace_period:
-        type: string
+        type: integer
+        format: int32
       project_creation_level:
         type: string
       auto_devops_enabled:
@@ -49224,7 +49567,7 @@ definitions:
       mentions_disabled:
         type: string
       lfs_enabled:
-        type: string
+        type: boolean
       archived:
         type: boolean
       math_rendering_limits_enabled:
@@ -49234,13 +49577,14 @@ definitions:
       default_branch:
         type: string
       default_branch_protection:
-        type: string
+        type: integer
+        format: int32
       default_branch_protection_defaults:
         type: string
       avatar_url:
         type: string
       request_access_enabled:
-        type: string
+        type: boolean
       full_name:
         type: string
       full_path:
@@ -49250,7 +49594,8 @@ definitions:
       parent_id:
         type: string
       organization_id:
-        type: string
+        type: integer
+        format: int32
       shared_runners_setting:
         type: string
       max_artifacts_size:
@@ -49345,6 +49690,8 @@ definitions:
       prevent_forking_outside_group:
         type: string
       service_access_tokens_expiration_enforced:
+        type: string
+      experiment_features_enabled:
         type: string
       membership_lock:
         type: string
@@ -49837,6 +50184,10 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      security_policy_pipeline_must_succeed:
+        type: boolean
+        description: Require all security policy pipelines to succeed before merge
+          requests can be merged.
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
@@ -50284,7 +50635,7 @@ definitions:
       organization:
         type: string
       bot:
-        type: string
+        type: boolean
       work_information:
         type: string
       followers:
@@ -50338,7 +50689,7 @@ definitions:
         type: boolean
         example: true
       external:
-        type: string
+        type: boolean
       private_profile:
         type: boolean
         example: 'null'
@@ -50395,32 +50746,6 @@ definitions:
     - extra_shared_runners_minutes_limit
     - scim_identities
     description: API_Entities_UserPublic model
-  API_Entities_Identity:
-    type: object
-    properties:
-      provider:
-        type: string
-      extern_uid:
-        type: string
-      saml_provider_id:
-        type: string
-    required:
-    - provider
-    - extern_uid
-    - saml_provider_id
-  API_Entities_ScimIdentity:
-    type: object
-    properties:
-      extern_uid:
-        type: string
-      group_id:
-        type: string
-      active:
-        type: string
-    required:
-    - extern_uid
-    - group_id
-    - active
   API_Entities_SshCertificate:
     type: object
     properties:
@@ -50816,7 +51141,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       web_url:
         type: string
       name:
@@ -51262,6 +51588,11 @@ definitions:
         type: string
         format: date-time
         example: '2022-09-19T11:32:35.169Z'
+      creator_id:
+        type: integer
+        format: int32
+        example: 1
+        description: ID of the user who created the package
       project_id:
         type: integer
         format: int32
@@ -51286,6 +51617,7 @@ definitions:
     - _links
     - created_at
     - last_downloaded_at
+    - creator_id
     - tags
     description: API_Entities_Package model
   API_Entities_Package_Pipeline:
@@ -53709,13 +54041,17 @@ definitions:
       assignee:
         "$ref": "#/definitions/API_Entities_UserBasic"
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       merge_requests_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       start_date:
         type: string
         format: date
@@ -53832,11 +54168,14 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       iid:
-        type: string
+        type: integer
+        format: int32
       project_id:
-        type: string
+        type: integer
+        format: int32
       group_id:
         type: string
       title:
@@ -53854,7 +54193,7 @@ definitions:
       start_date:
         type: string
       expired:
-        type: string
+        type: boolean
       web_url:
         type: string
     required:
@@ -54026,221 +54365,6 @@ definitions:
     - username
     - public_email
     - name
-  API_Entities_Member:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      username:
-        type: string
-        example: admin
-      public_email:
-        type: string
-        example: john@example.com
-      name:
-        type: string
-        example: Administrator
-      state:
-        type: string
-        example: active
-      locked:
-        type: boolean
-      avatar_url:
-        type: string
-        example: https://gravatar.com/avatar/1
-      avatar_path:
-        type: string
-        example: "/user/avatar/28/The-Big-Lebowski-400-400.png"
-      custom_attributes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_CustomAttribute"
-      web_url:
-        type: string
-        example: https://gitlab.example.com/root
-      access_level:
-        type: string
-      created_at:
-        type: string
-      created_by:
-        "$ref": "#/definitions/API_Entities_UserBasic"
-      expires_at:
-        type: string
-      group_saml_identity:
-        "$ref": "#/definitions/API_Entities_Identity"
-      group_scim_identity:
-        "$ref": "#/definitions/API_Entities_ScimIdentity"
-      email:
-        type: string
-      is_using_seat:
-        type: string
-      override:
-        type: string
-      membership_state:
-        type: string
-      member_role:
-        "$ref": "#/definitions/API_Entities_MemberRole"
-    required:
-    - id
-    - username
-    - public_email
-    - name
-    - state
-    - locked
-    - avatar_url
-    - web_url
-    - access_level
-    - created_at
-    - expires_at
-    - membership_state
-    description: API_Entities_Member model
-  API_Entities_MemberRole:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 2
-      group_id:
-        type: integer
-        format: int32
-        example: 2
-      name:
-        type: text
-        example: Custom guest
-      description:
-        type: text
-        example: Guest user who can also read_code
-      base_access_level:
-        type: integer
-        format: int32
-        enum:
-        - 5
-        - 10
-        - 15
-        - 20
-        - 30
-        - 40
-        example: 40
-      apply_security_scan_profiles:
-        type: boolean
-      admin_merge_request:
-        type: boolean
-      archive_project:
-        type: boolean
-      remove_project:
-        type: boolean
-      remove_group:
-        type: boolean
-      manage_security_policy_link:
-        type: boolean
-      admin_compliance_framework:
-        type: boolean
-      admin_cicd_variables:
-        type: boolean
-      manage_deploy_tokens:
-        type: boolean
-      manage_group_access_tokens:
-        type: boolean
-      admin_group_member:
-        type: boolean
-      admin_integrations:
-        type: boolean
-      manage_merge_request_settings:
-        type: boolean
-      manage_project_access_tokens:
-        type: boolean
-      admin_protected_branch:
-        type: boolean
-      admin_protected_environments:
-        type: boolean
-      manage_protected_tags:
-        type: boolean
-      admin_push_rules:
-        type: boolean
-      admin_runners:
-        type: boolean
-      admin_security_attributes:
-        type: boolean
-      admin_terraform_state:
-        type: boolean
-      admin_vulnerability:
-        type: boolean
-      admin_web_hook:
-        type: boolean
-      read_compliance_dashboard:
-        type: boolean
-      read_security_scan_profiles:
-        type: boolean
-      read_admin_cicd:
-        type: boolean
-      read_crm_contact:
-        type: boolean
-      read_dependency:
-        type: boolean
-      read_admin_groups:
-        type: boolean
-      read_admin_projects:
-        type: boolean
-      read_code:
-        type: boolean
-      read_runners:
-        type: boolean
-      read_security_attribute:
-        type: boolean
-      read_admin_subscription:
-        type: boolean
-      read_admin_monitoring:
-        type: boolean
-      read_admin_users:
-        type: boolean
-      read_vulnerability:
-        type: boolean
-    required:
-    - id
-    - group_id
-    - name
-    - description
-    - base_access_level
-    - apply_security_scan_profiles
-    - admin_merge_request
-    - archive_project
-    - remove_project
-    - remove_group
-    - manage_security_policy_link
-    - admin_compliance_framework
-    - admin_cicd_variables
-    - manage_deploy_tokens
-    - manage_group_access_tokens
-    - admin_group_member
-    - admin_integrations
-    - manage_merge_request_settings
-    - manage_project_access_tokens
-    - admin_protected_branch
-    - admin_protected_environments
-    - manage_protected_tags
-    - admin_push_rules
-    - admin_runners
-    - admin_security_attributes
-    - admin_terraform_state
-    - admin_vulnerability
-    - admin_web_hook
-    - read_compliance_dashboard
-    - read_security_scan_profiles
-    - read_admin_cicd
-    - read_crm_contact
-    - read_dependency
-    - read_admin_groups
-    - read_admin_projects
-    - read_code
-    - read_runners
-    - read_security_attribute
-    - read_admin_subscription
-    - read_admin_monitoring
-    - read_admin_users
-    - read_vulnerability
   postApiV4GroupsIdMembers:
     type: object
     properties:
@@ -54385,11 +54509,14 @@ definitions:
       source_branch:
         type: string
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
       assignees:
@@ -54399,24 +54526,26 @@ definitions:
       reviewers:
         "$ref": "#/definitions/API_Entities_UserBasic"
       source_project_id:
-        type: string
+        type: integer
+        format: int32
       target_project_id:
-        type: string
+        type: integer
+        format: int32
       labels:
         type: string
       draft:
-        type: string
+        type: boolean
       imported:
-        type: string
+        type: boolean
       imported_from:
         type: string
         example: bitbucket
       work_in_progress:
-        type: string
+        type: boolean
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       merge_when_pipeline_succeeds:
-        type: string
+        type: boolean
       merge_status:
         type: string
       detailed_merge_status:
@@ -54965,11 +55094,14 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       iid:
-        type: string
+        type: integer
+        format: int32
       project_id:
-        type: string
+        type: integer
+        format: int32
       group_id:
         type: string
       title:
@@ -54987,7 +55119,7 @@ definitions:
       start_date:
         type: string
       expired:
-        type: string
+        type: boolean
       web_url:
         type: string
       issue_stats:
@@ -55109,6 +55241,8 @@ definitions:
         example: '2020-08-31T15:53:00.073Z'
       active:
         type: boolean
+      granular:
+        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -55145,6 +55279,7 @@ definitions:
     - user_id
     - last_used_at
     - active
+    - granular
     - expires_at
     - access_level
     - resource_type
@@ -55725,7 +55860,7 @@ definitions:
       organization:
         type: string
       bot:
-        type: string
+        type: boolean
       work_information:
         type: string
       followers:
@@ -55860,6 +55995,7 @@ definitions:
         - repository_xray
         - jacoco
         - scip
+        - sarif
         example: archive
       size:
         type: integer
@@ -63325,13 +63461,17 @@ definitions:
       assignee:
         "$ref": "#/definitions/API_Entities_UserBasic"
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       merge_requests_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       start_date:
         type: string
         format: date
@@ -63553,13 +63693,17 @@ definitions:
       assignee:
         "$ref": "#/definitions/API_Entities_UserBasic"
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       merge_requests_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       start_date:
         type: string
         format: date
@@ -64253,11 +64397,14 @@ definitions:
       source_branch:
         type: string
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
       assignees:
@@ -64267,24 +64414,26 @@ definitions:
       reviewers:
         "$ref": "#/definitions/API_Entities_UserBasic"
       source_project_id:
-        type: string
+        type: integer
+        format: int32
       target_project_id:
-        type: string
+        type: integer
+        format: int32
       labels:
         type: string
       draft:
-        type: string
+        type: boolean
       imported:
-        type: string
+        type: boolean
       imported_from:
         type: string
         example: bitbucket
       work_in_progress:
-        type: string
+        type: boolean
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       merge_when_pipeline_succeeds:
-        type: string
+        type: boolean
       merge_status:
         type: string
       detailed_merge_status:
@@ -64506,11 +64655,14 @@ definitions:
       source_branch:
         type: string
       user_notes_count:
-        type: string
+        type: integer
+        format: int32
       upvotes:
-        type: string
+        type: integer
+        format: int32
       downvotes:
-        type: string
+        type: integer
+        format: int32
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
       assignees:
@@ -64520,24 +64672,26 @@ definitions:
       reviewers:
         "$ref": "#/definitions/API_Entities_UserBasic"
       source_project_id:
-        type: string
+        type: integer
+        format: int32
       target_project_id:
-        type: string
+        type: integer
+        format: int32
       labels:
         type: string
       draft:
-        type: string
+        type: boolean
       imported:
-        type: string
+        type: boolean
       imported_from:
         type: string
         example: bitbucket
       work_in_progress:
-        type: string
+        type: boolean
       milestone:
         "$ref": "#/definitions/API_Entities_Milestone"
       merge_when_pipeline_succeeds:
-        type: string
+        type: boolean
       merge_status:
         type: string
       detailed_merge_status:
@@ -66104,6 +66258,12 @@ definitions:
             - PUT
             - POST
             default: PUT
+      excluded_relations:
+        type: array
+        description: List of project relation names to exclude from the export (e.g.
+          ["merge_requests", "issues"])
+        items:
+          type: string
     description: Start export
   postApiV4ProjectsIdExportRelations:
     type: object
@@ -66729,6 +66889,7 @@ definitions:
         type: string
         description: Package type protected by the rule. For example npm.
         enum:
+        - cargo
         - conan
         - generic
         - helm
@@ -66736,6 +66897,7 @@ definitions:
         - npm
         - nuget
         - pypi
+        - terraform_module
       minimum_access_level_for_delete:
         type: string
         description: Minimum GitLab access level required to delete a package. Valid
@@ -66772,6 +66934,7 @@ definitions:
         type: string
         description: Package type protected by the rule. For example npm.
         enum:
+        - cargo
         - conan
         - generic
         - helm
@@ -66779,6 +66942,7 @@ definitions:
         - npm
         - nuget
         - pypi
+        - terraform_module
       minimum_access_level_for_delete:
         type: string
         description: Minimum GitLab access level required to delete a package. Valid
@@ -68411,6 +68575,10 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      security_policy_pipeline_must_succeed:
+        type: boolean
+        description: Require all security policy pipelines to succeed before merge
+          requests can be merged.
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
@@ -69103,6 +69271,10 @@ definitions:
       web_based_commit_signing_enabled:
         type: boolean
         description: Enable web based commit signing for this project
+      security_policy_pipeline_must_succeed:
+        type: boolean
+        description: Require all security policy pipelines to succeed before merge
+          requests can be merged
     description: Update an existing project
   postApiV4ProjectsIdShare:
     type: object
@@ -69173,7 +69345,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       web_url:
         type: string
       name:
@@ -69338,15 +69511,6 @@ definitions:
         type: boolean
         description: Allow force push for all users with push access.
         default: false
-      unprotect_access_level:
-        type: integer
-        format: int32
-        description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
-          access level)'
-        enum:
-        - 30
-        - 40
-        - 60
       allowed_to_push:
         type: array
         description: Array of users, groups, deploy keys, or access levels allowed
@@ -69354,6 +69518,11 @@ definitions:
         items:
           type: object
           properties:
+            deploy_key_id:
+              type: integer
+              format: int32
+              description: Deploy key allowed to push
+              example: 1
             access_level:
               type: integer
               format: int32
@@ -69363,11 +69532,6 @@ definitions:
               - 40
               - 60
               - 0
-            deploy_key_id:
-              type: integer
-              format: int32
-              description: Deploy key allowed to push
-              example: 1
             user_id:
               type: integer
               format: int32
@@ -69386,6 +69550,15 @@ definitions:
             _destroy:
               type: boolean
               description: Delete the object when true
+      unprotect_access_level:
+        type: integer
+        format: int32
+        description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
+          access level)'
+        enum:
+        - 30
+        - 40
+        - 60
       allowed_to_merge:
         type: array
         description: Array of users, groups, or access levels allowed to merge protected
@@ -69465,15 +69638,6 @@ definitions:
       allow_force_push:
         type: boolean
         description: Allow force push for all users with push access.
-      unprotect_access_level:
-        type: integer
-        format: int32
-        description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
-          access level)'
-        enum:
-        - 30
-        - 40
-        - 60
       allowed_to_push:
         type: array
         description: Array of users, groups, deploy keys, or access levels allowed
@@ -69481,6 +69645,11 @@ definitions:
         items:
           type: object
           properties:
+            deploy_key_id:
+              type: integer
+              format: int32
+              description: Deploy key allowed to push
+              example: 1
             access_level:
               type: integer
               format: int32
@@ -69490,11 +69659,6 @@ definitions:
               - 40
               - 60
               - 0
-            deploy_key_id:
-              type: integer
-              format: int32
-              description: Deploy key allowed to push
-              example: 1
             user_id:
               type: integer
               format: int32
@@ -69513,6 +69677,15 @@ definitions:
             _destroy:
               type: boolean
               description: Delete the object when true
+      unprotect_access_level:
+        type: integer
+        format: int32
+        description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
+          access level)'
+        enum:
+        - 30
+        - 40
+        - 60
       allowed_to_merge:
         type: array
         description: Array of users, groups, or access levels allowed to merge protected
@@ -69621,6 +69794,10 @@ definitions:
         items:
           type: object
           properties:
+            deploy_key_id:
+              type: integer
+              format: int32
+              description: ID of a deploy key
             access_level:
               type: integer
               format: int32
@@ -69638,10 +69815,6 @@ definitions:
               type: integer
               format: int32
               description: ID of a group
-            deploy_key_id:
-              type: integer
-              format: int32
-              description: ID of a deploy key
     required:
     - name
     description: Protect a single tag or wildcard
@@ -69954,6 +70127,13 @@ definitions:
       mirror_branch_regex:
         type: string
         description: Determines if only matched branches are mirrored
+      host_keys:
+        type: array
+        description: SSH host keys in bare format (ssh-ed25519 AAAA...) or full known_hosts
+          format (hostname ssh-ed25519 AAAA...). Bare keys use the hostname from the
+          mirror URL.
+        items:
+          type: string
     required:
     - url
     description: Create remote mirror for a project
@@ -69976,6 +70156,13 @@ definitions:
       mirror_branch_regex:
         type: string
         description: Determines if only matched branches are mirrored
+      host_keys:
+        type: array
+        description: SSH host keys in bare format (ssh-ed25519 AAAA...) or full known_hosts
+          format (hostname ssh-ed25519 AAAA...). Bare keys use the hostname from the
+          mirror URL.
+        items:
+          type: string
     description: Update the attributes of a single remote mirror
   API_Entities_TreeObject:
     type: object
@@ -70536,6 +70723,33 @@ definitions:
     - Created
     - Path
     description: Lock a Terraform state of a certain name
+  API_Entities_Terraform_StateProtectionRule:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      project_id:
+        type: integer
+        format: int32
+        example: 1
+      state_name:
+        type: string
+        example: production
+      minimum_access_level_for_write:
+        type: string
+        example: maintainer
+      allowed_from:
+        type: string
+        example: ci_only
+    required:
+    - id
+    - project_id
+    - state_name
+    - minimum_access_level_for_write
+    - allowed_from
+    description: API_Entities_Terraform_StateProtectionRule model
   postApiV4ProjectsIdWikis:
     type: object
     properties:
@@ -70870,7 +71084,8 @@ definitions:
     type: object
     properties:
       id:
-        type: string
+        type: integer
+        format: int32
       message:
         type: string
       starts_at:
@@ -70887,12 +71102,12 @@ definitions:
         type: string
       broadcast_type:
         type: string
-      dismissable:
-        type: string
       theme:
         type: string
+      dismissable:
+        type: boolean
       active:
-        type: string
+        type: boolean
     required:
     - id
     - message
@@ -70903,8 +71118,8 @@ definitions:
     - target_access_levels
     - target_path
     - broadcast_type
-    - dismissable
     - theme
+    - dismissable
     - active
     description: API_Entities_System_BroadcastMessage model
   postApiV4BroadcastMessages:
@@ -71076,6 +71291,11 @@ definitions:
       confidential:
         type: boolean
         example: true
+      scopes:
+        type: array
+        example:
+        - api
+        - read_user
       secret:
         type: string
         example: ee1dd64b6adc89cf7e2c23099301ccc2c61b441064e9324d963c46902a85ec34
@@ -71085,6 +71305,7 @@ definitions:
     - application_name
     - callback_url
     - confidential
+    - scopes
     - secret
     description: API_Entities_ApplicationWithSecret model
   API_Entities_Application:
@@ -71104,12 +71325,18 @@ definitions:
       confidential:
         type: boolean
         example: true
+      scopes:
+        type: array
+        example:
+        - api
+        - read_user
     required:
     - id
     - application_id
     - application_name
     - callback_url
     - confidential
+    - scopes
     description: API_Entities_Application model
   API_Entities_Avatar:
     type: object
@@ -71779,6 +72006,7 @@ definitions:
         - repository_xray
         - jacoco
         - scip
+        - sarif
         default: archive
     description: Authorize uploading job artifact
   postApiV4JobsIdArtifacts:
@@ -71830,6 +72058,7 @@ definitions:
         - repository_xray
         - jacoco
         - scip
+        - sarif
         default: archive
       artifact_format:
         type: string
@@ -73052,6 +73281,86 @@ definitions:
         type: string
       packages_helm_metadata_caches_verification_failed_count:
         type: string
+      design_management_action_uploads_count:
+        type: string
+      design_management_action_uploads_checksum_total_count:
+        type: string
+      design_management_action_uploads_checksummed_count:
+        type: string
+      design_management_action_uploads_checksum_failed_count:
+        type: string
+      design_management_action_uploads_synced_count:
+        type: string
+      design_management_action_uploads_failed_count:
+        type: string
+      design_management_action_uploads_registry_count:
+        type: string
+      design_management_action_uploads_verification_total_count:
+        type: string
+      design_management_action_uploads_verified_count:
+        type: string
+      design_management_action_uploads_verification_failed_count:
+        type: string
+      user_uploads_count:
+        type: string
+      user_uploads_checksum_total_count:
+        type: string
+      user_uploads_checksummed_count:
+        type: string
+      user_uploads_checksum_failed_count:
+        type: string
+      user_uploads_synced_count:
+        type: string
+      user_uploads_failed_count:
+        type: string
+      user_uploads_registry_count:
+        type: string
+      user_uploads_verification_total_count:
+        type: string
+      user_uploads_verified_count:
+        type: string
+      user_uploads_verification_failed_count:
+        type: string
+      achievement_uploads_count:
+        type: string
+      achievement_uploads_checksum_total_count:
+        type: string
+      achievement_uploads_checksummed_count:
+        type: string
+      achievement_uploads_checksum_failed_count:
+        type: string
+      achievement_uploads_synced_count:
+        type: string
+      achievement_uploads_failed_count:
+        type: string
+      achievement_uploads_registry_count:
+        type: string
+      achievement_uploads_verification_total_count:
+        type: string
+      achievement_uploads_verified_count:
+        type: string
+      achievement_uploads_verification_failed_count:
+        type: string
+      group_uploads_count:
+        type: string
+      group_uploads_checksum_total_count:
+        type: string
+      group_uploads_checksummed_count:
+        type: string
+      group_uploads_checksum_failed_count:
+        type: string
+      group_uploads_synced_count:
+        type: string
+      group_uploads_failed_count:
+        type: string
+      group_uploads_registry_count:
+        type: string
+      group_uploads_verification_total_count:
+        type: string
+      group_uploads_verified_count:
+        type: string
+      group_uploads_verification_failed_count:
+        type: string
       project_uploads_count:
         type: string
       project_uploads_checksum_total_count:
@@ -73183,6 +73492,22 @@ definitions:
       packages_helm_metadata_caches_synced_in_percentage:
         type: string
       packages_helm_metadata_caches_verified_in_percentage:
+        type: string
+      design_management_action_uploads_synced_in_percentage:
+        type: string
+      design_management_action_uploads_verified_in_percentage:
+        type: string
+      user_uploads_synced_in_percentage:
+        type: string
+      user_uploads_verified_in_percentage:
+        type: string
+      achievement_uploads_synced_in_percentage:
+        type: string
+      achievement_uploads_verified_in_percentage:
+        type: string
+      group_uploads_synced_in_percentage:
+        type: string
+      group_uploads_verified_in_percentage:
         type: string
       project_uploads_synced_in_percentage:
         type: string
@@ -73452,6 +73777,46 @@ definitions:
     - packages_helm_metadata_caches_verification_total_count
     - packages_helm_metadata_caches_verified_count
     - packages_helm_metadata_caches_verification_failed_count
+    - design_management_action_uploads_count
+    - design_management_action_uploads_checksum_total_count
+    - design_management_action_uploads_checksummed_count
+    - design_management_action_uploads_checksum_failed_count
+    - design_management_action_uploads_synced_count
+    - design_management_action_uploads_failed_count
+    - design_management_action_uploads_registry_count
+    - design_management_action_uploads_verification_total_count
+    - design_management_action_uploads_verified_count
+    - design_management_action_uploads_verification_failed_count
+    - user_uploads_count
+    - user_uploads_checksum_total_count
+    - user_uploads_checksummed_count
+    - user_uploads_checksum_failed_count
+    - user_uploads_synced_count
+    - user_uploads_failed_count
+    - user_uploads_registry_count
+    - user_uploads_verification_total_count
+    - user_uploads_verified_count
+    - user_uploads_verification_failed_count
+    - achievement_uploads_count
+    - achievement_uploads_checksum_total_count
+    - achievement_uploads_checksummed_count
+    - achievement_uploads_checksum_failed_count
+    - achievement_uploads_synced_count
+    - achievement_uploads_failed_count
+    - achievement_uploads_registry_count
+    - achievement_uploads_verification_total_count
+    - achievement_uploads_verified_count
+    - achievement_uploads_verification_failed_count
+    - group_uploads_count
+    - group_uploads_checksum_total_count
+    - group_uploads_checksummed_count
+    - group_uploads_checksum_failed_count
+    - group_uploads_synced_count
+    - group_uploads_failed_count
+    - group_uploads_registry_count
+    - group_uploads_verification_total_count
+    - group_uploads_verified_count
+    - group_uploads_verification_failed_count
     - project_uploads_count
     - project_uploads_checksum_total_count
     - project_uploads_checksummed_count
@@ -73518,6 +73883,14 @@ definitions:
     - supply_chain_attestations_verified_in_percentage
     - packages_helm_metadata_caches_synced_in_percentage
     - packages_helm_metadata_caches_verified_in_percentage
+    - design_management_action_uploads_synced_in_percentage
+    - design_management_action_uploads_verified_in_percentage
+    - user_uploads_synced_in_percentage
+    - user_uploads_verified_in_percentage
+    - achievement_uploads_synced_in_percentage
+    - achievement_uploads_verified_in_percentage
+    - group_uploads_synced_in_percentage
+    - group_uploads_verified_in_percentage
     - project_uploads_synced_in_percentage
     - project_uploads_verified_in_percentage
     - abuse_report_uploads_synced_in_percentage
@@ -73924,7 +74297,7 @@ definitions:
       organization:
         type: string
       bot:
-        type: string
+        type: boolean
       work_information:
         type: string
       followers:
@@ -73978,7 +74351,7 @@ definitions:
         type: boolean
         example: true
       external:
-        type: string
+        type: boolean
       private_profile:
         type: boolean
         example: 'null'
@@ -74543,6 +74916,8 @@ definitions:
         example: '2020-08-31T15:53:00.073Z'
       active:
         type: boolean
+      granular:
+        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74563,6 +74938,7 @@ definitions:
     - user_id
     - last_used_at
     - active
+    - granular
     - expires_at
     - last_used_ips
     description: API_Entities_PersonalAccessTokenWithLastUsedIps model
@@ -74598,6 +74974,8 @@ definitions:
         example: '2020-08-31T15:53:00.073Z'
       active:
         type: boolean
+      granular:
+        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74612,6 +74990,7 @@ definitions:
     - user_id
     - last_used_at
     - active
+    - granular
     - expires_at
     description: API_Entities_PersonalAccessToken model
   postApiV4PersonalAccessTokensSelfRotate:
@@ -74655,6 +75034,8 @@ definitions:
         example: '2020-08-31T15:53:00.073Z'
       active:
         type: boolean
+      granular:
+        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74671,6 +75052,7 @@ definitions:
     - user_id
     - last_used_at
     - active
+    - granular
     - expires_at
     - token
     description: API_Entities_PersonalAccessTokenWithToken model
@@ -75263,6 +75645,10 @@ definitions:
               format: int32
               description: Project ID
               example: 1234
+            project_path:
+              type: string
+              description: Project path (used to resolve project_id if not provided)
+              example: namespace/project
             additional_properties:
               type: object
               description: Additional properties to be tracked
@@ -75296,6 +75682,10 @@ definitions:
         format: int32
         description: Project ID
         example: 1234
+      project_path:
+        type: string
+        description: Project path (used to resolve project_id if not provided)
+        example: namespace/project
       additional_properties:
         type: object
         description: Additional properties to be tracked
@@ -75711,6 +76101,8 @@ definitions:
         type: string
       email_header_and_footer_enabled:
         type: string
+      site_name:
+        type: string
     required:
     - title
     - description
@@ -75729,6 +76121,7 @@ definitions:
     - message_background_color
     - message_font_color
     - email_header_and_footer_enabled
+    - site_name
     description: API_Entities_Appearance model
   API_Entities_ApplicationStatistics:
     type: object

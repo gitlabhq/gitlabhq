@@ -8,7 +8,7 @@ identifiers:
 additional_properties:
   value:
     description: Number of project ids
-product_group: runner
+product_group: runner_core
 product_categories:
 - fleet_visibility
 milestone: '18.2'

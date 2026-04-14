@@ -8,47 +8,21 @@ import {
   sleep,
 } from '../test_utils';
 
-const SAMPLE_README_CONTENT = `# Sample README
-
-This is a sample README.
-
-## Usage
-
-\`\`\`yaml
-foo: bar
-\`\`\`
-`;
-
 const CODE_SUGGESTION_HTML = `<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="1:1-3:3" data-canonical-lang="suggestion" data-lang-params="-0+0" class="code highlight js-syntax-highlight language-suggestion" v-pre="true"><code class="js-render-suggestion"><span id="LC1" class="line" lang="suggestion">    options = [</span></code></pre></div>`;
 
 const EMPTY_CODE_SUGGESTION_HTML = `<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="1:1-2:3" data-canonical-lang="suggestion" data-lang-params="-0+0" class="code highlight js-syntax-highlight language-suggestion" v-pre="true"><code class="js-render-suggestion"></code></pre></div>`;
-
-jest.mock('~/content_editor/services/utils', () => ({
-  memoizedGet: jest.fn().mockResolvedValue(SAMPLE_README_CONTENT),
-}));
 
 describe('content_editor/extensions/code_suggestion', () => {
   let tiptapEditor;
   let doc;
   let codeSuggestion;
 
-  const codeSuggestionsConfig = {
-    canSuggest: true,
-    line: { new_line: 5 },
-    lines: [{ new_line: 5 }],
-    showPopover: false,
-    diffFile: {
-      view_path:
-        '/gitlab-org/gitlab-test/-/blob/468abc807a2b2572f43e72c743b76cee6db24025/README.md',
-    },
-  };
-
   const createEditor = (config = {}) => {
     tiptapEditor = createTestEditor({
       extensions: [
         CodeBlockHighlight,
         CodeSuggestion.configure({
-          codeSuggestionsConfig: { ...codeSuggestionsConfig, ...config },
+          codeSuggestionsConfig: { canSuggest: true, showPopover: false, ...config },
         }),
       ],
     });
@@ -57,8 +31,8 @@ describe('content_editor/extensions/code_suggestion', () => {
   };
 
   describe('insertCodeSuggestion command', () => {
-    it('creates a correct suggestion for a single line selection', async () => {
-      createEditor({ line: { new_line: 5 }, lines: [] });
+    it('uses pre-fetched lines directly when provided', async () => {
+      createEditor({ lines: ['## Usage'] });
 
       await expectDocumentAfterTransaction({
         number: 1,
@@ -68,17 +42,8 @@ describe('content_editor/extensions/code_suggestion', () => {
       });
     });
 
-    it('creates a correct suggestion for a multi-line selection', async () => {
-      createEditor({
-        line: { new_line: 9 },
-        lines: [
-          { new_line: 5 },
-          { new_line: 6 },
-          { new_line: 7 },
-          { new_line: 8 },
-          { new_line: 9 },
-        ],
-      });
+    it('creates a correct suggestion for a multi-line selection via lines', async () => {
+      createEditor({ lines: ['## Usage', '', '```yaml', 'foo: bar', '```'] });
 
       await expectDocumentAfterTransaction({
         number: 1,
@@ -90,10 +55,22 @@ describe('content_editor/extensions/code_suggestion', () => {
       });
     });
 
+    it('creates an empty suggestion when no lines are provided', async () => {
+      createEditor({ lines: [] });
+
+      await expectDocumentAfterTransaction({
+        number: 1,
+        tiptapEditor,
+        action: () => tiptapEditor.commands.insertCodeSuggestion(),
+        // empty strings are not allowed in ProseMirror text nodes, so a space is used
+        expectedDoc: doc(codeSuggestion({ langParams: '-0+0' }, ' ')),
+      });
+    });
+
     it('does not insert a new suggestion if already inside a suggestion', async () => {
       const initialDoc = codeSuggestion({ langParams: '-0+0' }, '## Usage');
 
-      createEditor({ line: { new_line: 5 }, lines: [] });
+      createEditor({ lines: ['## Usage'] });
 
       tiptapEditor.commands.setContent(doc(initialDoc).toJSON());
 

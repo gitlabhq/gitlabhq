@@ -1,4 +1,4 @@
-import { omitBy } from 'lodash';
+import { omitBy } from 'lodash-es';
 import { nextTick } from 'vue';
 import Api from '~/api';
 import { createAlert } from '~/alert';

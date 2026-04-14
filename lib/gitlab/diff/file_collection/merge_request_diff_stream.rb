@@ -7,16 +7,21 @@ module Gitlab
         include PaginatedDiffs
 
         def initialize(merge_request_diff, diff_options:)
+          # We delete the `offset_index` from `diff_options` since we only
+          # need it here and we don't want it to be included in the cache
+          # key used for highlight cache.
+          offset = diff_options.delete(:offset_index)
+
           super
 
-          @paginated_collection = load_paginated_collection(diff_options)
+          @paginated_collection = load_paginated_collection(offset)
         end
 
         private
 
         # rubocop: disable CodeReuse/ActiveRecord -- No need to abstract
-        def load_paginated_collection(diff_options)
-          relation.offset(diff_options[:offset_index].to_i || 0)
+        def load_paginated_collection(offset)
+          relation.offset(offset.to_i)
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end

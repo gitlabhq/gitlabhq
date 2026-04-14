@@ -1,12 +1,14 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { s__, __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { createAlert } from '~/alert';
+import { getNoteFormErrorMessages } from '~/notes/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
@@ -15,15 +17,16 @@ export default {
   name: 'NoteableDiscussion',
   components: {
     DiscussionReplyPlaceholder,
+    ResolveDiscussionButton,
     NoteSignedOutWidget,
     NoteForm,
     DiscussionNotes,
   },
   inject: {
-    userPermissions: {
+    store: {
       type: Object,
     },
-    endpoints: {
+    userPermissions: {
       type: Object,
     },
   },
@@ -35,6 +38,11 @@ export default {
     requestLastNoteEditing: {
       type: Function,
       required: true,
+    },
+    toggleResolveNote: {
+      type: Function,
+      required: false,
+      default: null,
     },
     timelineLayout: {
       type: Boolean,
@@ -50,6 +58,7 @@ export default {
   data() {
     return {
       isLoggedIn: isLoggedIn(),
+      isResolving: false,
     };
   },
   computed: {
@@ -63,10 +72,46 @@ export default {
       return this.discussion.internal ? __('Reply internally') : __('Reply');
     },
     canReply() {
-      return !this.discussion.notes[0]?.system && !this.discussion.individual_note;
+      return (
+        !this.discussion.isDraft &&
+        !this.discussion.notes[0]?.system &&
+        !this.discussion.individual_note
+      );
+    },
+    resolvable() {
+      return this.discussion.resolvable;
+    },
+    canResolve() {
+      return this.discussion.notes
+        .filter((note) => note.resolvable)
+        .every((note) => note.current_user?.can_resolve_discussion);
+    },
+    resolveButtonTitle() {
+      return this.discussion.resolved ? __('Reopen thread') : __('Resolve thread');
+    },
+    hasDraftReply() {
+      return this.discussion.notes.some((note) => note.isDraft);
+    },
+    canStartReview() {
+      return Boolean(this.store.addDraftToDiscussion) && !this.hasDraftReply;
     },
   },
   methods: {
+    async toggleResolve() {
+      this.isResolving = true;
+      try {
+        await this.toggleResolveNote(this.discussion);
+      } catch (error) {
+        createAlert({
+          message: __('Something went wrong while resolving this discussion. Please try again.'),
+          error,
+          captureError: true,
+          parent: this.$el,
+        });
+      } finally {
+        this.isResolving = false;
+      }
+    },
     showReplyForm(text) {
       this.$emit('startReplying');
       if (typeof text !== 'undefined') {
@@ -106,16 +151,33 @@ export default {
         return;
       }
 
-      const postData = {
-        in_reply_to_discussion_id: this.discussion.reply_id,
-        note: { note: noteText },
-      };
+      try {
+        await this.store.replyToDiscussion(this.discussion, noteText);
+        this.$emit('stopReplying');
+      } catch (e) {
+        const message = getNoteFormErrorMessages(e.response)[0];
+        createAlert({ message, parent: this.$el });
+      }
+    },
+    async saveDraft(noteText) {
+      if (!noteText) {
+        this.cancelReplyForm();
+        return;
+      }
 
-      const {
-        data: { discussion },
-      } = await axios.post(this.endpoints.discussions, postData);
-      this.$emit('discussionUpdated', discussion);
-      this.$emit('stopReplying');
+      const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
+
+      if (!confirmSubmit) {
+        return;
+      }
+
+      try {
+        await this.store.addDraftToDiscussion(this.discussion, noteText);
+        this.$emit('stopReplying');
+      } catch (e) {
+        const message = getNoteFormErrorMessages(e.response)[0];
+        createAlert({ message, parent: this.$el });
+      }
     },
   },
 };
@@ -125,6 +187,8 @@ export default {
   <li
     class="js-discussion-container gl-@container/discussion"
     :data-discussion-id="discussion.id"
+    :data-discussion-resolvable="resolvable || undefined"
+    :data-discussion-resolved="discussion.resolved || undefined"
     data-testid="discussion-content"
   >
     <discussion-notes
@@ -133,14 +197,15 @@ export default {
       :expanded="discussion.repliesExpanded"
       :individual="discussion.individual_note"
       :is-last-discussion="isLastDiscussion"
+      :can-resolve="Boolean(toggleResolveNote) && resolvable && canResolve"
+      :is-resolved="discussion.resolved"
+      :is-resolving="isResolving"
+      @resolve="toggleResolve"
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
       @startReplying="showReplyForm"
-      @noteUpdated="$emit('noteUpdated', $event)"
-      @noteDeleted="$emit('noteDeleted', $event)"
       @noteEdited="$emit('noteEdited', $event)"
       @startEditing="$emit('startEditing', $event)"
       @cancelEditing="$emit('cancelEditing', $event)"
-      @toggleAward="$emit('toggleAward', $event)"
     >
       <template #avatar-badge>
         <slot name="avatar-badge"></slot>
@@ -149,7 +214,7 @@ export default {
         <div
           v-if="canReply"
           data-testid="reply-wrapper"
-          class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
+          class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-4 gl-py-4"
           :class="{ 'gl-border-t': !hasReplies, 'gl-pt-0': hasReplies }"
         >
           <div class="flash-container !gl-mt-0 gl-mb-2"></div>
@@ -160,13 +225,25 @@ export default {
             :internal="discussion.internal"
             :save-button-title="saveButtonTitle"
             :save-note="saveNote"
+            :save-draft="canStartReview ? saveDraft : null"
+            :has-drafts="Boolean(store.hasDrafts)"
             :request-last-note-editing="() => requestLastNoteEditing(discussion)"
             autofocus
             :autosave-key="autosaveKey"
             @cancel="cancelReplyForm"
           />
-          <div v-else-if="userPermissions.can_create_note">
-            <discussion-reply-placeholder @focus="showReplyForm" />
+          <div v-else-if="userPermissions.can_create_note" class="gl-flex gl-flex-wrap gl-gap-4">
+            <discussion-reply-placeholder
+              class="gl-min-w-0 gl-flex-[9999] gl-basis-15"
+              @focus="showReplyForm"
+            />
+            <resolve-discussion-button
+              v-if="toggleResolveNote && resolvable && canResolve"
+              class="!gl-m-0 !gl-w-auto !gl-min-w-0 gl-flex-1 gl-basis-auto"
+              :is-resolving="isResolving"
+              :button-title="resolveButtonTitle"
+              @on-click="toggleResolve"
+            />
           </div>
         </div>
       </template>

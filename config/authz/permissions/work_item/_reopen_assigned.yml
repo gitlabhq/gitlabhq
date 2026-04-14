@@ -1,0 +1,3 @@
+---
+name: _reopen_assigned_work_item
+description: Grants the ability to reopen work items that are assigned to the user. Does not apply to incidents.

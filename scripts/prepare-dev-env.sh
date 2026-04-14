@@ -46,6 +46,18 @@ if ((BASH_VERSINFO[0] < 4)); then
   echo "WARNING: You're running bash < v4.0.0. Please upgrade to a newer version." >&2
 fi
 
+# ---- Homebrew dependencies -----------------------------------------------
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  if command -v brew >/dev/null 2>&1; then
+    echo "Checking development dependencies from Brewfile..."
+    brew bundle check || brew bundle install
+  else
+    warn "Homebrew is not installed. You may need to ensure manually that dependencies from $(pwd)/Brewfile are available."
+    exit 1
+  fi
+fi
+
 echo "Installing tool versions from .tool-versions via mise..."
 mise plugins update -q
 mise install

@@ -1192,7 +1192,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         it 'restores project members' do
           restorer.restore
 
-          expect(project.members.map(&:user)).to contain_exactly(user, user2)
+          expect(project.members.map(&:user)).to contain_exactly(project.owner, user, user2)
         end
       end
     end

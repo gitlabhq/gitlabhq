@@ -1,8 +1,7 @@
 - add_page_specific_style 'page_bundles/labels'
 - show_lock_on_merge = local_assigns.fetch(:show_lock_on_merge, false)
-- group = @label.group || @label.project&.group
 
-- if @label.persisted? && Feature.enabled?(:labels_archive, group) && @label.archived?
+- if @label.persisted? && @label.archived?
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
     - c.with_body do
       = _('This label is archived and not available for use. Unarchive to use it again.')

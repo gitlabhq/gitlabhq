@@ -81,6 +81,36 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
     end
   end
 
+  context 'when yaml uses a YAML tag that triggers an ArgumentError during deserialization' do
+    around do |example|
+      # ActiveSupport::OrderedHash registers a global YAML !!omap handler that is
+      # incompatible with Psych 4+ (where Psych::Omap inherits from Hash, not Array).
+      # We require it to reproduce the production behavior, then save and restore
+      # YAML.domain_types to prevent this global state from leaking into other specs.
+      require 'active_support/ordered_hash'
+      saved_domain_types = YAML.domain_types.dup
+      example.run
+    ensure
+      YAML.domain_types.replace(saved_domain_types)
+    end
+
+    let(:yml) do
+      <<~YAML
+        variables: !!omap
+          - VARIABLE_NAME: 'variable_value'
+      YAML
+    end
+
+    describe '#initialize' do
+      it 'raises FormatError instead of unhandled ArgumentError' do
+        expect { loader }.to raise_error(
+          Gitlab::Config::Loader::FormatError,
+          'Invalid YAML syntax'
+        )
+      end
+    end
+  end
+
   context 'when yaml config is empty' do
     let(:yml) { '' }
 

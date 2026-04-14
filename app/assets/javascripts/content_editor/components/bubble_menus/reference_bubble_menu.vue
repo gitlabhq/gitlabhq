@@ -15,6 +15,7 @@ import BubbleMenu from './bubble_menu.vue';
 const REFERENCE_NODE_TYPES = [Reference.name, ReferenceLabel.name];
 
 export default {
+  name: 'ReferenceBubbleMenu',
   components: {
     BubbleMenu,
     EditorStateObserver,

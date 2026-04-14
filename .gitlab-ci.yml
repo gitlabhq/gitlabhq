@@ -146,11 +146,15 @@ workflow:
       variables:
         <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+      auto_cancel:
+        on_new_commit: none
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+      auto_cancel:
+        on_new_commit: none
     - if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
@@ -170,6 +174,8 @@ workflow:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch (triggered by a project token)'
+      auto_cancel:
+        on_new_commit: none
     # For `$CI_DEFAULT_BRANCH` from wider community contributors, we don't want to run any pipelines on pushes,
     # because normally we want to run merge request pipelines and scheduled pipelines, not for repository synchronization.
     # This can avoid accidentally using up pipeline minutes quota while synchronizing the repository for wider community contributors.
@@ -180,11 +186,15 @@ workflow:
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+      auto_cancel:
+        on_new_commit: none
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_TAG tag'
+      auto_cancel:
+        on_new_commit: none
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
@@ -193,14 +203,22 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+    # Do not create a pipeline when an auto-deploy branch is first created (branch creation push),
+    # but allow pipelines for subsequent commits pushed to the branch or when triggered manually.
+    - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/ && $CI_COMMIT_BEFORE_SHA == "0000000000000000000000000000000000000000" && $CI_PIPELINE_SOURCE == "push"'
+      when: never
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+      auto_cancel:
+        on_new_commit: none
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+      auto_cancel:
+        on_new_commit: none
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
       variables:
         <<: *default-ruby-variables

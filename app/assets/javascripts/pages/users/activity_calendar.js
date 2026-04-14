@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
 import $ from 'jquery';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {

@@ -3,7 +3,7 @@
 module API
   module Entities
     class BasicGroupDetails < Grape::Entity
-      expose :id
+      expose :id, documentation: { type: 'Integer' }
       expose :web_url
       expose :name
     end

@@ -1,0 +1,12 @@
+---
+table: security_scans
+database: sec
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_security_scans
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - project_id

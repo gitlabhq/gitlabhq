@@ -61,10 +61,10 @@ module Integrations
       tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
       texts = [
-        s_("Use this integration to connect to Google Play with fastlane in CI/CD pipelines."),
-        s_("After you enable the integration, the following protected variables are created for CI/CD use:"),
+        _("Use this integration to connect to Google Play with fastlane in CI/CD pipelines."),
+        _("After you enable the integration, the following protected variables are created for CI/CD use:"),
         ActionController::Base.helpers.safe_join(variable_list, ActionController::Base.helpers.tag(:br)),
-        safe_format(s_("For more information, see the %{link_start}documentation%{link_end}."), tag_pair_docs_link)
+        safe_format(_("For more information, see the %{link_start}documentation%{link_end}."), tag_pair_docs_link)
       ]
 
       ActionController::Base.helpers.safe_join(texts, ActionController::Base.helpers.tag(:br) * 2)

@@ -7,6 +7,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
@@ -55,6 +56,9 @@ export default {
       },
       update({ project }) {
         return project?.pipeline?.jobs?.nodes || [];
+      },
+      error(err) {
+        reportToSentry(this.$options.name, err);
       },
     },
   },
@@ -111,9 +115,10 @@ export default {
           this.isLoading = false;
           this.$emit('refresh-pipeline-table');
         })
-        .catch(() => {
+        .catch((err) => {
           this.isLoading = false;
           createAlert({ message: __('An error occurred while making the request.') });
+          reportToSentry(this.$options.name, err);
         });
     },
     fetchActions() {

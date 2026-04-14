@@ -255,7 +255,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def play_params
-    params.permit(job_variables_attributes: %i[key secret_value])
+    params.permit(job_variables_attributes: %i[key value])
   end
 
   def find_job_as_build

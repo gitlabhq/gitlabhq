@@ -16,7 +16,8 @@ limit: 10
 query: label = "AI Model Migration" AND opened = true
 ```
 
-*Note: This table is dynamically generated using GitLab Query Language (GLQL) when viewing the rendered documentation. It shows up to 10 open issues with the AI Model Migration label, sorted by most recently updated.*
+> [!note]
+> This table is dynamically generated using GitLab Query Language (GLQL) when viewing the rendered documentation. It shows up to 10 open issues with the AI Model Migration label, sorted by most recently updated.
 
 ## Quick Links
 
@@ -29,7 +30,8 @@ query: label = "AI Model Migration" AND opened = true
 
 LLM models are constantly evolving, and GitLab needs to regularly update our AI features to support newer models. This guide provides a structured approach for migrating AI features to new models while maintaining stability and reliability.
 
-*Note: GitLab strives to leverage the latest AI model capabilities to help provide optimal performance and features, which means model updates from existing GitLab subprocessors might occur without specific customer notifications beyond documentation updates.*
+> [!note]
+> GitLab strives to leverage the latest AI model capabilities to help provide optimal performance and features, which means model updates from existing GitLab subprocessors might occur without specific customer notifications beyond documentation updates.
 
 ## Model Migration Timelines
 

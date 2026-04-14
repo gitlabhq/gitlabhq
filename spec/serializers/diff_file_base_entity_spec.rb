@@ -129,7 +129,7 @@ RSpec.describe DiffFileBaseEntity do
     let(:merge_request) { create(:merge_request, iid: 123, target_project: target_project, source_project: source_project) }
     let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
     let(:options) { { request: EntityRequest.new(current_user: user), merge_request: merge_request } }
-    let(:expected_merge_request_path) { "/-/ide/project/#{source_project.full_path}/merge_requests/#{merge_request.iid}" }
+    let(:expected_merge_request_path) { "/-/ide/project/#{source_project.full_path}?merge_request_id=#{merge_request.iid}" }
 
     context 'when source_project and target_project are the same' do
       let(:target_project) { source_project }
@@ -137,7 +137,9 @@ RSpec.describe DiffFileBaseEntity do
       it_behaves_like 'nil if removed source branch', :ide_edit_path
 
       it 'returns the merge_request ide route' do
-        expect(entity[:ide_edit_path]).to eq expected_merge_request_path
+        params = { merge_request_id: merge_request.iid }
+        expected_path = "/-/ide/project/#{source_project.full_path}/-/#{diff_file.new_path}?#{params.to_query}"
+        expect(entity[:ide_edit_path]).to eq(expected_path)
       end
     end
 
@@ -145,7 +147,9 @@ RSpec.describe DiffFileBaseEntity do
       let(:target_project) { fork_project(source_project, source_project.first_owner, repository: true) }
 
       it 'returns the merge_request ide route with the target_project as param' do
-        expect(entity[:ide_edit_path]).to eq("#{expected_merge_request_path}?target_project=#{ERB::Util.url_encode(target_project.full_path)}")
+        params = { merge_request_id: merge_request.iid, target_project: target_project.full_path }
+        expected_path = "/-/ide/project/#{source_project.full_path}/-/#{diff_file.new_path}?#{params.to_query}"
+        expect(entity[:ide_edit_path]).to eq(expected_path)
       end
     end
   end

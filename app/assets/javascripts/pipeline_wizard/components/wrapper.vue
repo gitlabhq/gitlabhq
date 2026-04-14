@@ -1,7 +1,7 @@
 <script>
 import { GlProgressBar } from '@gitlab/ui';
 import { Document } from 'yaml';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { merge } from '~/lib/utils/yaml';
 import { __ } from '~/locale';
 import { isValidStepSeq } from '~/pipeline_wizard/validators';

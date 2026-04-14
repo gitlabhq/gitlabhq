@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= webpack_bundle_tag("sandboxed_mermaid_v11") %>
+    <% if params[:darkMode] == 'true' %>
+      <meta name="color-scheme" content="dark">
+    <% end %>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

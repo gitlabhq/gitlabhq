@@ -552,7 +552,8 @@ Require all projects to control job token access using an allowlist.
 When this setting is enabled:
 
 - CI/CD job tokens can only access projects when the token's source project is added to the allowlist.
-- The [CI/CD job token scope API](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) returns an error if a user attempts to disable the allowlist.
+- The [CI/CD job token scope API](../../api/project_job_token_scopes.md#update-the-cicd-job-token-access-settings-for-a-project)
+  returns an error if a user attempts to disable the allowlist.
 
 For more information, see [control job token access to your project](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project).
 
@@ -670,7 +671,7 @@ Projects not in the allowlist receive a `not authorized to publish` error when a
 > and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
 > Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
 
-You can set a [CI/CD template](../../ci/examples/_index.md#cicd-templates)
+You can set a CI/CD template
 as a required pipeline configuration for all projects on a GitLab instance. You can
 use a template from:
 

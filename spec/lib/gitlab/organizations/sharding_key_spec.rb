@@ -10,16 +10,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/work_items/589058
       'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
-      'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/work_items/589058
       'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
       'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
       'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
       'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
       'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
-      'supply_chain_attestation_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
-      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+      'supply_chain_attestation_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
     ]
   end
 
@@ -42,17 +41,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
-      'web_hook_logs_daily.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
-      'web_hook_logs_daily.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
-      'web_hook_logs_daily.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+      'web_hook_logs_daily.organization_id', # No LFK needed: daily partitions are dropped after 14 days
+      'web_hook_logs_daily.group_id', # No LFK needed: daily partitions are dropped after 14 days
+      'web_hook_logs_daily.project_id', # No LFK needed: daily partitions are dropped after 14 days
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
       'p_ci_pipeline_variables.project_id',
       'ci_pipeline_messages.project_id',
-      'security_findings.project_id', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588191
+      'security_findings.project_id', # No LFK needed: sliding_list partitions are detached once stale and purged
       # LFK already present on ci_pipeline_schedules and cascade delete all ci resources.
       'ci_pipeline_schedule_variables.project_id',
+      'p_ci_build_needs.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_secure_file_states.project_id', # LFK already present on ci_secure_files and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
@@ -99,7 +99,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'p_duo_workflows_checkpoints.namespace_id',
       # No LFK needed: daily partitions are dropped after 1 day via retain_for
       # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
-      'p_knowledge_graph_code_indexing_tasks.project_id'
+      'p_knowledge_graph_code_indexing_tasks.project_id',
+      'merge_request_diff_commits_b5377a7a34.project_id'
+      # No need for FK, rows will be deleted by the LFK to merge_request_diffs
     ]
   end
 
@@ -246,40 +248,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
+      "ai_catalog_item_consumers" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/596012",
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
-      "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
       "web_hook_logs_daily" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/524820",
-      # All the tables below related to uploads are part of the same work to
-      # add sharding key to the table
       "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",
-      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "abuse_report_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "ai_vectorizable_file_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "appearance_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "bulk_import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "dependency_list_export_part_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "dependency_list_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "design_management_action_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "issuable_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "namespace_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "organization_detail_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "project_import_export_relation_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "project_topic_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "project_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "snippet_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "uploads_9ba88c4165" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "user_permission_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "user_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "vulnerability_export_part_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "vulnerability_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "vulnerability_archive_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      # End of uploads related tables
+      "uploads_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "clusters" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553452",
@@ -303,7 +278,27 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291"
     }
 
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+    uploads_partitions_without_organization_id_in_sharding_key = %w[
+      achievement_uploads
+      ai_vectorizable_file_uploads
+      alert_management_alert_metric_image_uploads
+      appearance_uploads
+      bulk_import_export_upload_uploads
+      design_management_action_uploads
+      import_export_upload_uploads
+      issuable_metric_image_uploads
+      namespace_uploads
+      project_import_export_relation_export_upload_uploads
+      project_uploads
+      uploads
+      user_permission_export_upload_uploads
+      vulnerability_archive_export_uploads
+      vulnerability_remediation_uploads
+    ]
+
     columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }
+      .reject { |column| uploads_partitions_without_organization_id_in_sharding_key.include?(column[0]) }
     messages = columns_to_check.filter_map do |column|
       table_name = column[0]
       violations = column[1..].compact

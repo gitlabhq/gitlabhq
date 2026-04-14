@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting container repositories in a project', :without_current_organization, feature_category: :container_registry do
+RSpec.describe 'getting container repositories in a project', feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
@@ -316,7 +316,7 @@ RSpec.describe 'getting container repositories in a project', :without_current_o
         end
       end
 
-      it 'avoids N+1 database queries', :use_sql_query_cache do
+      it 'avoids N+1 database queries', :without_current_organization, :use_sql_query_cache do
         query = graphql_query_for('project', { 'fullPath' => project.full_path }, fields)
 
         first_user = create(:user, developer_of: project)

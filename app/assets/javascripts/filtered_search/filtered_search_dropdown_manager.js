@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import AvailableDropdownMappings from 'ee_else_ce/filtered_search/available_dropdown_mappings';
 import DropLab from './droplab/drop_lab_deprecated';
 import { DROPDOWN_TYPE } from './constants';

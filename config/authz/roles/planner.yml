@@ -8,20 +8,34 @@ inherits_from:
 project:
   permissions: []
   raw_permissions:
+  - _delete_shared_saved_view
+  - _update_shared_saved_view
   - admin_issue
   - admin_issue_board
   - admin_issue_board_list
+  - admin_iteration
   - admin_label
   - admin_milestone
+  - admin_requirement
   - admin_wiki
   - admin_work_item
   - create_design
+  - create_epic
+  - create_iteration
+  - create_requirement
+  - create_requirement_test_report
   - create_saved_view
+  - create_test_case
+  - create_ticket
+  - create_timelog
   - create_wiki
   - destroy_design
   - destroy_issue
   - download_code
   - download_wiki_code
+  - export_requirements
+  - import_requirements
+  - mark_note_as_internal
   - move_design
   - read_code
   - read_confidential_issues
@@ -30,20 +44,40 @@ project:
   - reopen_issue
   - update_design
   - update_issue
+  - update_requirement
 group:
   permissions: []
   raw_permissions:
+  - _delete_shared_saved_view
+  - _update_shared_saved_view
+  - admin_epic
+  - admin_epic_board
+  - admin_epic_board_list
   - admin_issue
   - admin_issue_board
   - admin_issue_board_list
+  - admin_iteration
+  - admin_iteration_cadence
   - admin_label
   - admin_milestone
+  - admin_wiki
   - admin_work_item
+  - create_epic
+  - create_iteration
+  - create_iteration_cadence
   - create_saved_view
+  - create_timelog
+  - create_wiki
+  - destroy_epic
   - destroy_issue
+  - download_wiki_code
   - guest_access
+  - mark_note_as_internal
+  - read_confidential_epic
   - read_confidential_issues
   - read_crm_contact
   - read_crm_organization
   - read_internal_note
+  - reopen_issue
+  - update_epic
   - update_issue

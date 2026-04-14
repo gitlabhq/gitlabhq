@@ -2,6 +2,8 @@
 key_path: usage_activity_by_stage_monthly.manage.count_user_auth
 description: Number of unique user logins
 product_group: authentication
+product_categories:
+- system_access
 value_type: number
 status: active
 milestone: "15.4"

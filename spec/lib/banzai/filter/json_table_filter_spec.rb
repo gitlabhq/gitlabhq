@@ -177,43 +177,43 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
 
   context 'when fields are provided' do
     it 'generates the correct HTML' do
-      expect(filter(table_with_fields).to_html).to eq table_with_fields_html
+      expect(filter(table_with_fields).to_html).to eq_html(table_with_fields_html, trim_text_nodes: true)
     end
   end
 
   context 'when fields are not provided' do
     it 'generates the correct HTML' do
-      expect(filter(table_without_fields).to_html).to eq table_without_fields_html
+      expect(filter(table_without_fields).to_html).to eq_html(table_without_fields_html, trim_text_nodes: true)
     end
   end
 
   context 'when items are not provided' do
     it 'does not change the HTML' do
-      expect(filter(table_without_items).to_html).to eq table_without_items
+      expect(filter(table_without_items).to_html).to eq_html table_without_items
     end
   end
 
   context 'when item format is invalid' do
     it 'does not change the HTML' do
-      expect(filter(table_with_invalid_items).to_html).to eq table_with_invalid_items
+      expect(filter(table_with_invalid_items).to_html).to eq_html table_with_invalid_items
     end
   end
 
   context 'when markdown is not enabled' do
     it 'does not change the HTML' do
-      expect(filter(table_no_markdown).to_html).to eq table_no_markdown
+      expect(filter(table_no_markdown).to_html).to eq_html table_no_markdown
     end
   end
 
   context 'when json is invalid' do
     it 'does not change the HTML' do
-      expect(filter(table_invalid_json).to_html).to eq table_invalid_json
+      expect(filter(table_invalid_json).to_html).to eq_html table_invalid_json
     end
   end
 
   context 'when json is not a hash' do
     it 'does not change the HTML' do
-      expect(filter(table_json_not_hash).to_html).to eq table_json_not_hash
+      expect(filter(table_json_not_hash).to_html).to eq_html table_json_not_hash
     end
   end
 
@@ -233,7 +233,7 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
 
     it 'does not raise and does not change the HTML' do
       expect { filter(deep_json).to_html }.not_to raise_error
-      expect(filter(deep_json).to_html).to eq deep_json
+      expect(filter(deep_json).to_html).to eq_html deep_json
     end
   end
 

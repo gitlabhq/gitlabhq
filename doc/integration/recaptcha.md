@@ -13,7 +13,7 @@ title: reCAPTCHA
 {{< /details >}}
 
 GitLab leverages [reCAPTCHA](https://www.google.com/recaptcha/about/)
-to protect against spam and abuse. GitLab displays the CAPTCHA form on the sign-up page
+to protect against spam and abuse. GitLab displays the CAPTCHA form on the new user account page
 to confirm that a real user, not a bot, is attempting to create an account.
 
 ## Configuration

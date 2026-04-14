@@ -19,7 +19,7 @@
 #   CS_DOCKERFILE_PATH variable.
 #
 # Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
-# List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
+# List of available variables: https://docs.gitlab.com/user/application_security/container_scanning/#available-cicd-variables
 
 variables:
   CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"

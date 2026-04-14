@@ -7,6 +7,7 @@ module Routing
     PSEUDONOMIZED_USERNAME = "username"
     PSEUDONOMIZED_GROUP = "group"
     PSEUDONOMIZED_ID = "id"
+    PSEUDONOMIZED_ORGANIZATION = "organization"
 
     class MaskHelper
       QUERY_PARAMS_TO_NOT_MASK = %w[
@@ -26,10 +27,11 @@ module Routing
         utm_budget
       ].freeze
 
-      def initialize(request_object, group, project)
+      def initialize(request_object, group, project, organization)
         @request = request_object
         @group = group
         @project = project
+        @organization = organization
       end
 
       def mask_params
@@ -44,6 +46,8 @@ module Routing
           when :namespace_id, :group_id
             namespace = @group || @project&.namespace
             [key, "namespace#{namespace&.id}"]
+          when :organization_path
+            [key, "organization#{@organization&.id}"]
           when :id
             [key, mask_id(value)]
           else
@@ -76,6 +80,7 @@ module Routing
           request_params.key?(:project_id) ||
           request_params.key?(:id) ||
           request_params.key?(:username) ||
+          request_params.key?(:organization_path) ||
           @request.query_string.present?
       end
 
@@ -98,7 +103,7 @@ module Routing
       # Disabling of page url masking is only available when Snowplow is configured.
       return if Gitlab::CurrentSettings.snowplow_enabled? && Feature.disabled?(:mask_page_urls, type: :ops)
 
-      mask_helper = MaskHelper.new(request, group, project)
+      mask_helper = MaskHelper.new(request, group, project, get_organization)
       mask_helper.mask_params
 
     # We rescue all exception for time being till we test this helper extensively.
@@ -129,10 +134,7 @@ module Routing
         params[:id] = PSEUDONOMIZED_ID if params[:id]
       end
 
-      params[:project_id] = PSEUDONOMIZED_PROJECT if params[:project_id]
-      params[:group_id] = PSEUDONOMIZED_GROUP if params[:group_id]
-      params[:namespace_id] = PSEUDONOMIZED_NAMESPACE if params[:namespace_id]
-
+      mask_additional_params(params)
       masked_query_params = masked_query_params(URI.parse(url))
 
       Gitlab::Routing.url_helpers.url_for(params.merge(params: masked_query_params))
@@ -140,6 +142,13 @@ module Routing
       # If URL cannot be constructed with placeholder, use original ID
       params[:id] = original_id
       Gitlab::Routing.url_helpers.url_for(params.merge(params: masked_query_params))
+    end
+
+    def mask_additional_params(params)
+      params[:project_id] = PSEUDONOMIZED_PROJECT if params[:project_id]
+      params[:group_id] = PSEUDONOMIZED_GROUP if params[:group_id]
+      params[:namespace_id] = PSEUDONOMIZED_NAMESPACE if params[:namespace_id]
+      params[:organization_path] = PSEUDONOMIZED_ORGANIZATION if params[:organization_path]
     end
 
     def masked_query_params(uri)
@@ -160,6 +169,12 @@ module Routing
     rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, url: request.original_fullpath)
       nil
+    end
+
+    def get_organization
+      return unless ::Current.organization_assigned
+
+      ::Current.organization
     end
   end
 end

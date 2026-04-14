@@ -152,6 +152,38 @@ module Gitlab
         ]
       end
 
+      def send_changed_paths(repository, requests)
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'FindChangedPathsRequest' => Gitaly::FindChangedPathsRequest.new(
+            repository: repository.gitaly_repository,
+            requests: requests
+          ).to_json
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-changed-paths:#{encode(params)}"
+        ]
+      end
+
+      def send_list_blobs(repository, revisions, bytes_limit:)
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'ListBlobsRequest' => Gitaly::ListBlobsRequest.new(
+            repository: repository.gitaly_repository,
+            revisions: revisions,
+            bytes_limit: bytes_limit,
+            with_paths: true
+          ).to_json
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-list-blobs:#{encode(params)}"
+        ]
+      end
+
       def send_git_patch(repository, diff_refs)
         params = {
           'GitalyServer' => gitaly_server_hash(repository),
@@ -431,3 +463,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Workhorse.prepend_mod

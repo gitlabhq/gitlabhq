@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_category: :team_planning do
   include FilteredSearchHelpers
+  include ListboxHelpers
 
   let_it_be(:current_user) { create(:user, organization: current_organization) }
   let_it_be(:user) { current_user } # Shared examples depend on this being available
@@ -16,7 +17,6 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
   let_it_be(:other_issue) { create :issue, project: project }
 
   before do
-    stub_feature_flags(work_items_consolidated_list_user: false, work_item_planning_view: false)
     [project, project_with_issues_disabled].each { |project| project.add_maintainer(current_user) }
     sign_in(current_user)
   end
@@ -108,41 +108,21 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
 
     it 'shows projects only with issues feature enabled' do
       click_button _('Select project to create issue')
+      wait_for_requests
 
       within_testid('new-resource-dropdown') do
-        within('[role="menu"]') do
-          expect(page).to have_content(project.full_name)
-          expect(page).not_to have_content(project_with_issues_disabled.full_name)
-        end
+        expect_listbox_item(project.full_name)
+        expect_no_listbox_item(project_with_issues_disabled.full_name)
       end
     end
 
-    context 'when work_item_planning_view: true' do
-      before do
-        stub_feature_flags(work_item_planning_view: true)
-      end
+    it 'shows the new issue page' do
+      click_button _('Select project to create issue')
+      wait_for_requests
+      select_listbox_item(project.full_name)
+      click_link format(_('New issue in %{project}'), project: project.name)
 
-      it 'shows the new issue page' do
-        click_button _('Select project to create issue')
-        click_button project.full_name
-        click_link format(_('New issue in %{project}'), project: project.name)
-
-        expect(page).to have_current_path("/#{project.full_path}/-/work_items/new")
-      end
-    end
-
-    context 'when work_item_planning_view: false' do
-      before do
-        stub_feature_flags(work_item_planning_view: false)
-      end
-
-      it 'shows the new issue page' do
-        click_button _('Select project to create issue')
-        click_button project.full_name
-        click_link format(_('New issue in %{project}'), project: project.name)
-
-        expect(page).to have_current_path("/#{project.full_path}/-/issues/new")
-      end
+      expect(page).to have_current_path("/#{project.full_path}/-/work_items/new")
     end
   end
 end

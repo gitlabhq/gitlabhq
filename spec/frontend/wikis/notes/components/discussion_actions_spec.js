@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import DiscussionActions from '~/wikis/wiki_notes/components/discussion_actions.vue';
-import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import discussionToggleResolveMutation from '~/wikis/wiki_notes/graphql/discussion_toggle_resolve.mutation.graphql';

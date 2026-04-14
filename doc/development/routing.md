@@ -94,7 +94,8 @@ All routes are redrawn under the `/o/:organization_path` prefix using a scope bl
 
 This approach creates organization-scoped versions of all routes without requiring separate controller or route definitions.
 
-**Note:** Some routes are not yet organization-scoped, including Devise OmniAuth callbacks (which cannot be scoped under a dynamic segment) and API routes.
+> [!note]
+> Some routes are not yet organization-scoped, including Devise OmniAuth callbacks (which cannot be scoped under a dynamic segment) and API routes.
 
 For more details on organization routing implementation, see the [Organization development documentation](organization/_index.md#organization-routing).
 

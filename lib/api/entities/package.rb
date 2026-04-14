@@ -39,6 +39,7 @@ module API
 
       expose :created_at, documentation: { type: 'DateTime', example: '2022-09-16T12:47:31.949Z' }
       expose :last_downloaded_at, documentation: { type: 'DateTime', example: '2022-09-19T11:32:35.169Z' }
+      expose :creator_id, documentation: { type: 'Integer', example: 1, desc: 'ID of the user who created the package' }
       expose :project_id, documentation: { type: 'Integer', example: 2 }, if: ->(_, opts) { opts[:group] }
       expose :project_path, documentation: { type: 'String', example: 'gitlab/foo/bar' }, if: ->(obj, opts) do
         opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project)

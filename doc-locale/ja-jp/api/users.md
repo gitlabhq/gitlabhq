@@ -98,7 +98,8 @@ GET /users?username=:username
 GET /users?username=jack_smith
 ```
 
-> [!note]ユーザー名検索では大文字と小文字が区別されません。
+> [!note]
+> ユーザー名検索では大文字と小文字が区別されません。
 
 また、`blocked`状態と`active`状態に基づいてユーザーをフィルタリングできます。`active=false`と`blocked=false`はサポートされていません。
 
@@ -493,7 +494,8 @@ GET /users/:id
 }
 ```
 
-> [!note] `plan`および`trial`パラメータは、GitLab Enterprise Editionでのみ利用可能です。
+> [!note]
+> `plan`および`trial`パラメータは、GitLab Enterprise Editionでのみ利用可能です。
 
 [GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`shared_runners_minutes_limit`、`is_auditor`、`extra_shared_runners_minutes_limit`パラメータも表示されます。
 
@@ -725,7 +727,8 @@ GET /user
 
 - 管理者である必要があります。
 
-> [!note] `private_profile`は[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)設定の値にデフォルトで設定されます。`bio`は`null`の代わりに`""`にデフォルトで設定されます。
+> [!note]
+> `private_profile`は[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)設定の値にデフォルトで設定されます。`bio`は`null`の代わりに`""`にデフォルトで設定されます。
 
 ```plaintext
 POST /users

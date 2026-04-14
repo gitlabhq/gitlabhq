@@ -338,7 +338,7 @@ module IntegrationsHelper
     when "build_events"
       s_("ProjectService|Trigger event when a build is created.")
     when "archive_trace_events"
-      s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.')
+      _('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.')
     end
   end
   # rubocop:enable Metrics/CyclomaticComplexity

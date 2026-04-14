@@ -21,3 +21,7 @@ export { default as localRulesGraphqlRequireFeatureCategory } from './local-rule
 export { default as localRulesVueRequireVueConstructorName } from './local-rules-vue-require-vue-constructor-name.mjs';
 
 export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-rules-no-orphaned-feature-flag-references.mjs';
+
+export { default as localRulesNoWebUrl } from './local-rules-no-web-url.mjs';
+
+export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.mjs';

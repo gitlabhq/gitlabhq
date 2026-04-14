@@ -220,24 +220,18 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
       expect(menu_items.find { |i| i.item_id == :services }.link).to include('services')
       expect(menu_items.find { |i| i.item_id == :traces_explorer }.link).to include('traces-explorer')
-      expect(menu_items.find do |i|
-        i.item_id == :logs_explorer
-      end.link).to include(ERB::Util.url_encode('logs/logs-explorer'))
-      expect(menu_items.find { |i| i.item_id == :metrics_explorer }.link).to include('metrics-explorer')
+      expect(menu_items.find { |i| i.item_id == :logs_explorer }.link).to include('logs/logs-explorer')
+      expect(menu_items.find { |i| i.item_id == :metrics_explorer }.link).to include('metrics-explorer/summary')
       expect(menu_items.find do |i|
         i.item_id == :infrastructure_monitoring
-      end.link).to include('infrastructure-monitoring')
+      end.link).to include('infrastructure-monitoring/hosts')
       expect(menu_items.find { |i| i.item_id == :dashboard }.link).to include('dashboard')
       expect(menu_items.find { |i| i.item_id == :messaging_queues }.link).to include('messaging-queues')
-      expect(menu_items.find do |i|
-        i.item_id == :api_monitoring
-      end.link).to include(ERB::Util.url_encode('api-monitoring/explorer'))
+      expect(menu_items.find { |i| i.item_id == :api_monitoring }.link).to include('api-monitoring/explorer')
       expect(menu_items.find { |i| i.item_id == :alerts }.link).to include('alerts')
       expect(menu_items.find { |i| i.item_id == :exceptions }.link).to include('exceptions')
       expect(menu_items.find { |i| i.item_id == :service_map }.link).to include('service-map')
-      expect(menu_items.find do |i|
-        i.item_id == :notification_channels
-      end.link).to include(ERB::Util.url_encode('settings/channels'))
+      expect(menu_items.find { |i| i.item_id == :notification_channels }.link).to include('settings/channels')
     end
   end
 

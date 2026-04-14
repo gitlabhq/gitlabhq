@@ -4,6 +4,8 @@ import { graphqlRequireFeatureCategory } from './graphql_require_feature_categor
 import { graphqlRequireValidUrgency } from './graphql_require_valid_urgency.mjs';
 import { vueRequireVueConstructorName } from './vue_require_vue_constructor_name.mjs';
 import { noOrphanedFeatureFlagReferences } from './no_orphaned_feature_flag_references.mjs';
+import { noWebUrl } from './no_web_url.mjs';
+import { vueNoWebUrl } from './vue_no_web_url.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -13,5 +15,7 @@ export const eslintLocalRules = {
     'graphql-require-valid-urgency': graphqlRequireValidUrgency,
     'vue-require-vue-constructor-name': vueRequireVueConstructorName,
     'no-orphaned-feature-flag-references': noOrphanedFeatureFlagReferences,
+    'no-web-url': noWebUrl,
+    'vue-no-web-url': vueNoWebUrl,
   },
 };

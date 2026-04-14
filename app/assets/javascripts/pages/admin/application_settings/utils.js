@@ -1,4 +1,4 @@
-import { includes } from 'lodash';
+import { includes } from 'lodash-es';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 /**

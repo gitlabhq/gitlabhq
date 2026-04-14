@@ -29,9 +29,11 @@ RSpec.shared_examples 'applications controller - GET #new' do
       read_repository
       read_service_ping
       read_user
+      read_virtual_registry
       sudo
       write_observability
       write_repository
+      write_virtual_registry
     ])
   end
 end

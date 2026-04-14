@@ -1659,6 +1659,63 @@ RSpec.describe Integration, feature_category: :integrations do
         expect(hash['filter']).to be_empty
       end
     end
+
+    context 'when filter is already a hash {}' do
+      it 'leaves the value unchanged and does not log an error' do
+        record.filter = {}
+
+        expect(record).not_to receive(:log_error)
+        expect(record.filter).to eq({})
+        expect(record.to_database_hash['filter']).to eq({})
+      end
+    end
+
+    context 'when filter is the string {}' do
+      it 'normalizes filter to a hash' do
+        record.filter = '{}'
+
+        expect(record.filter).to eq({})
+        expect(record.to_database_hash['filter']).to eq({})
+      end
+
+      it 'normalizes filter before validation' do
+        record.update_column(:filter, '{}')
+
+        record.assign_attributes(active: false)
+        expect(record).to be_valid
+        expect(record.filter).to eq({})
+      end
+
+      it 'logs an error with a stack trace when normalizing a string filter value' do
+        expect(record).to receive(:log_error).with(
+          'Integration filter value is a string, normalizing',
+          filter_value: '{}',
+          caller: be_an(Array)
+        )
+
+        record.filter = '{}'
+      end
+    end
+
+    context 'when filter is the string "\"{}\"" (a double-encoded JSON string)' do
+      it 'normalizes to an empty hash in a single save cycle' do
+        allow(record).to receive(:log_error)
+
+        record.filter = '"{}"'
+
+        expect(record.filter).to eq({})
+        expect(record.to_database_hash['filter']).to eq({})
+      end
+    end
+
+    context 'when normalized_jsonb_value is called with a non-filter column' do
+      it 'falls back to reading the raw attribute' do
+        record.filter = { 'rules' => [] }
+
+        expect(record.send(:normalized_jsonb_value, 'filter')).to eq({ 'rules' => [] })
+        expect(record.send(:normalized_jsonb_value, 'other_column')).to eq(record['other_column'])
+      end
+    end
   end
 
   describe 'field DSL' do

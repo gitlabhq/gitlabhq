@@ -285,7 +285,7 @@ Before doing any migration work, you should first:
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
-   and share [CI/CD templates](../examples/_index.md#cicd-templates) or [CI/CD components](../components/_index.md).
+   and share [CI/CD components](../components/_index.md).
 1. See [pipeline efficiency](../pipelines/pipeline_efficiency.md)
    to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 

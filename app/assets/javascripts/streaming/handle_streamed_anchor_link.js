@@ -1,4 +1,4 @@
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import LineHighlighter from '~/blob/line_highlighter';
 

@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlTable, GlBadge, GlPagination, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { stubComponent } from 'helpers/stub_component';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import {

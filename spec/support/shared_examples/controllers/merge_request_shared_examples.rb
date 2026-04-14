@@ -28,6 +28,18 @@ RSpec.shared_examples 'api merge with auto merge' do
     end
   end
 
+  context 'when the merge request is not auto merge eligible' do
+    before do
+      allow_any_instance_of(MergeRequest).to receive(:auto_merge_eligible?).and_return(false) # rubocop:disable RSpec/AnyInstanceOf -- controller loads its own instance
+    end
+
+    it 'returns failed status' do
+      set_auto_merge
+
+      expect(json_response).to eq('status' => 'failed')
+    end
+  end
+
   context 'for logging' do
     let(:expected_params) { { merge_action_status: status } }
     let(:subject_proc) { proc { subject } }

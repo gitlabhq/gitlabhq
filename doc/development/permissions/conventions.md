@@ -91,3 +91,146 @@ can?(:read_insights_dashboard, group)
 ### Exceptions
 
 If you believe a new permission is needed that does not follow these conventions, consult the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization). We're always open to discussion, these guidelines are meant to make the work of Engineers easier, not to complicate it.
+
+## Private permissions
+
+Private permissions are narrowly-scoped permissions that represent conditional
+or nuanced capabilities. They are prefixed with an underscore (`_`) to signal
+that they are **private to policy logic only** and must not be checked directly
+at enforcement points (controllers, services, finders, GraphQL).
+
+### Why private permissions exist
+
+In the GitLab RBAC model, the same action can behave differently depending on the
+role. For example:
+
+- **Guest** can read confidential issues **they authored or are assigned to**.
+- **Planner+** can read **any** confidential issue.
+
+Without private permissions, both cases map to a single `read_issue`
+permission and the nuance is buried in procedural policy logic. This creates problems:
+
+- **Privilege escalation risk**: When a user invites another user, the system
+  must verify that the invited role's permissions do not exceed the inviting
+  user's own. With a flat permission like `read_issue`, a Guest who can only
+  read authored issues and an Owner who can read all issues appear identical.
+- **Custom role ambiguity**: Custom roles built from flat permissions cannot
+  express "read only authored issues." A custom role either gets full
+  `read_issue` (too broad) or nothing (too restrictive).
+
+Private permissions solve these problems by making the nuance explicit and
+machine-readable.
+
+### Naming convention
+
+Private permissions follow the pattern **`_<action>_<qualifier>_<resource>`**,
+where the qualifier describes the condition under which the permission applies:
+
+| Permission | Description | Typical roles |
+|---|---|---|
+| `_read_authored_issue` | Read an issue you authored regardless of confidentiality | Guest+, Internal |
+| `_read_assigned_issue` | Read an issue you are assigned to regardless of confidentiality | Guest+, Internal |
+| `_read_confidential_issue` | Read any confidential issue | Planner, Reporter+ |
+
+The underscore prefix serves several purposes:
+
+1. It visually distinguishes private permissions from public permissions in
+   code and YAML definitions.
+1. It signals to developers and tooling that this permission must not appear in
+   a `can?` check outside of a policy file.
+1. It makes it easy for linters to flag inappropriate use.
+1. Convention over configuration. The underscore syntax is preferable to storing metadata in the permission definition.
+
+#### Qualifier Naming Conventions
+
+The qualifier should generally be an attribute of the resource. It describes a subset of the resource that the permission applies to, based on a property that exists on the resource itself.
+
+Guidelines for qualifiers:
+
+1. The qualifier must correspond to a real attribute or relationship on the resource. Do not use qualifiers that describe the actor (e.g., avoid `admin_read_issue`).
+1. Prefer past-participle or adjective forms that read naturally as a description of the resource (e.g., `confidential`, `authored`, `assigned`).
+1. Qualifiers should only be introduced when the same action on the same resource requires different access levels depending on the resource's state. If all instances of the resource require the same access level, a qualifier is unnecessary.
+
+### How to use private permissions in a policy
+
+Private permissions act as gates. A role enables the private permission via
+the role YAML definition. The policy then combines the private permission with
+a subject-level condition to enable the broader public permission:
+
+```ruby
+# In the role YAML (e.g., config/authz/roles/guest.yml):
+#   raw_permissions:
+#     - _read_authored_issue
+#     - _read_assigned_issue
+#     - read_issue
+#
+# In the role YAML (e.g., config/authz/roles/reporter.yml):
+#   raw_permissions:
+#     - _read_authored_issue
+#     - _read_assigned_issue
+#     - _read_confidential_issue
+#     - read_issue
+
+# In the issue policy (e.g., app/policies/issue_policy.rb):
+condition(:is_author) { @subject.author == @user }
+condition(:is_assignee) { @subject.assignees.include?(@user) }
+condition(:is_confidential) { @subject.confidential? }
+
+rule { is_author & can?(:_read_authored_issue) }.policy do
+  enable :read_issue
+  enable :_read_confidential_issue
+end
+
+rule { is_assignee & can?(:_read_assigned_issue) }.policy do
+  enable :read_issue
+  enable :_read_confidential_issue
+end
+
+rule { is_confidential & ~can?(:_read_confidential_issue) }.prevent :read_issue
+```
+
+Enforcement points (controllers, services, GraphQL) only check the public
+permission:
+
+```ruby
+# Correct - check the public permission
+authorize :read_issue
+
+# Wrong - never check a private permission at an enforcement point
+authorize :_read_authored_issue
+```
+
+### When to use private permissions
+
+Use a private permission when:
+
+1. A role can perform an action **only when a subject-level condition is met**
+   (authored by the user, assigned to the user, created by the user).
+1. Different roles have different levels of access to the same action (some
+   unconditional, some conditional).
+1. The distinction matters for **privilege escalation checks** or
+   **custom role composition**.
+
+Do **not** use private permissions for:
+
+- Feature flag or license checks. Use `prevent` rules instead.
+- Settings-based restrictions. Use `prevent` rules instead.
+- Conditions that apply equally to all roles. Use a single `prevent` rule.
+
+### Permission definition files
+
+Private permissions require a definition file like any other permission.
+The file name uses the underscore prefix to match the permission name:
+
+```plaintext
+config/authz/permissions/<resource>/_<action>_<qualifier>.yml
+```
+
+For example:
+
+```yaml
+# config/authz/permissions/issue/_read_authored.yml
+---
+name: _read_authored_issue
+description: Allows users to read issues they authored when they would not otherwise have access
+```

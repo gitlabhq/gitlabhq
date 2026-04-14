@@ -7,6 +7,10 @@ module Mutations
         graphql_name 'PersonalAccessTokenCreate'
         description 'Creates a personal access token for the current user.'
 
+        authorize_granular_token permissions: :create_personal_access_token,
+          boundary: :user,
+          boundary_type: :user
+
         field :token, GraphQL::Types::String,
           null: true,
           description: 'Created personal access token.'

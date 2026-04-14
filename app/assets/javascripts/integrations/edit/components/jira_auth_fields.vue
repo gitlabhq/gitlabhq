@@ -1,7 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GlFormGroup, GlFormRadio, GlFormRadioGroup } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 

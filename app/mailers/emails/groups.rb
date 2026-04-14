@@ -12,6 +12,19 @@ module Emails
       group_email(current_user, group, _('Group export error'), errors: errors)
     end
 
+    def group_was_transferred_email(group_id, user_id, old_path_with_namespace)
+      @current_user = @user = User.find_by_id(user_id)
+      @group = Group.find_by_id(group_id)
+      return unless @user && @group
+
+      @target_url = group_url(@group)
+      @old_path_with_namespace = old_path_with_namespace
+      email_with_layout(
+        to: @user.notification_email_for(@group),
+        subject: subject(s_('Notify|Group was transferred'))
+      )
+    end
+
     def group_email(current_user, group, subj, errors: nil)
       @group = group
       @errors = errors

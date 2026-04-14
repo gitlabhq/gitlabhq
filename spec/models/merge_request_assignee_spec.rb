@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestAssignee do
+RSpec.describe MergeRequestAssignee, feature_category: :code_review_workflow do
   let(:assignee) { create(:user) }
   let(:merge_request) { create(:merge_request) }
 
@@ -11,6 +11,7 @@ RSpec.describe MergeRequestAssignee do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request).class_name('MergeRequest') }
     it { is_expected.to belong_to(:assignee).class_name('User') }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do

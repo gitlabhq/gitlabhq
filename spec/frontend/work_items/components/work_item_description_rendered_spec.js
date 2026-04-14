@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import Sortable from 'sortablejs';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -242,6 +243,32 @@ describe('WorkItemDescriptionRendered', () => {
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
       expect(findReadMore().exists()).toBe(false);
+    });
+  });
+
+  describe('sortable lists', () => {
+    beforeEach(async () => {
+      createComponent({
+        canEdit: true,
+        workItemDescription: {
+          description: '- item 1\n- item 2\n- item 3',
+          descriptionHtml: `<ul data-sourcepos="1:1-3:8" dir="auto" class="description">
+            <li data-sourcepos="1:1-1:8">item 1</li>
+            <li data-sourcepos="2:1-2:8">item 2</li>
+            <li data-sourcepos="3:1-3:8">item 3</li>
+          </ul>`,
+        },
+      });
+      await nextTick();
+    });
+
+    it('creates Sortable with forceFallback enabled', () => {
+      expect(Sortable.create).toHaveBeenCalled();
+      const options = Sortable.create.mock.calls[0][1];
+      expect(options).toMatchObject({
+        forceFallback: true,
+        handle: '.drag-icon',
+      });
     });
   });
 

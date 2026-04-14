@@ -8,7 +8,7 @@
   documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/
   image_url: https://about.gitlab.com/images/18_4/model_selection_gtm.png
   published_at: 2025-09-18
-  release: 18.4
+  release: "18.4"
 
 - name: "GitLab Knowledge Graph"
   description: |  # Do not modify this line, instead modify the lines below.
@@ -20,7 +20,7 @@
   documentation_link: https://gitlab-org.gitlab.io/rust/knowledge-graph/
   image_url: https://about.gitlab.com/images/18_4/KnowledgeGraph.png
   published_at: 2025-09-18
-  release: 18.4
+  release: "18.4"
 
 - name: "End user model selection now available with GitLab Duo"
   description: |  # Do not modify this line, instead modify the lines below.
@@ -32,7 +32,7 @@
   documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/
   image_url: https://about.gitlab.com/images/18_4/end_user_model_selection.png
   published_at: 2025-09-18
-  release: 18.4
+  release: "18.4"
 
 - name: "CI/CD job tokens can authenticate Git push requests"
   description: |  # Do not modify this line, instead modify the lines below.
@@ -44,4 +44,4 @@
   documentation_link: https://docs.gitlab.com/ci/jobs/ci_job_token/#allow-git-push-requests-to-your-project-repository
   image_url: https://about.gitlab.com/images/18_4/job_token_push.png
   published_at: 2025-09-18
-  release: 18.4
+  release: "18.4"

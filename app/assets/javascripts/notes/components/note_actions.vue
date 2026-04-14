@@ -409,7 +409,7 @@ export default {
       v-if="canAwardEmoji"
       toggle-class="add-reaction-button btn-default-tertiary"
       data-testid="note-emoji-button"
-      :aria-label="addReactionAriaLabel"
+      :toggle-aria-label="addReactionAriaLabel"
       @click="setAwardEmoji"
     />
     <reply-button
@@ -450,7 +450,7 @@ export default {
         placement="bottom-end"
         class="note-action-button more-actions-toggle"
         no-caret
-        :aria-label="moreActionsAriaLabel"
+        :toggle-aria-label="moreActionsAriaLabel"
       >
         <gl-disclosure-dropdown-item
           v-if="noteUrl"

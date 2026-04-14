@@ -16,5 +16,10 @@ else
   fi
 fi
 
+
+if ! [[ -d app/assets/javascripts/lib/utils/path_helpers ]]; then
+  bundle exec rake gitlab:js:routes
+fi
+
 yarn tailwindcss:build
 yarn --cwd ./storybook start

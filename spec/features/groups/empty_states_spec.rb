@@ -19,11 +19,7 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
   end
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 
@@ -52,13 +48,13 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             wait_for_all_requests
 
             within_testid('issuable-empty-state') do
-              empty_state_copy_start = issuable == :issue ? 'No open' : 'There are no open'
-              expect(page).to have_content("#{empty_state_copy_start} #{issuable.to_s.humanize.downcase}")
-              new_issuable_path = issuable == :issue ? 'new_project_issue_path' : 'project_new_merge_request_path'
-
-              path = public_send(new_issuable_path, project)
-
-              expect(page.find('a')['href']).to have_content(path)
+              if issuable == :issue
+                expect(page).to have_content('No results found')
+                expect(page).to have_link('New item')
+              else
+                expect(page).to have_content("There are no open #{issuable.to_s.humanize.downcase}")
+                expect(find('a')['href']).to have_content(project_new_merge_request_path(project))
+              end
             end
           end
 
@@ -84,8 +80,11 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             wait_for_all_requests
 
             within_testid('issuable-empty-state') do
-              empty_state_copy_start = issuable == :issue ? 'No closed' : 'There are no closed'
-              expect(page).to have_content("#{empty_state_copy_start} #{issuable.to_s.humanize.downcase}")
+              if issuable == :issue
+                expect(page).to have_content('No results found')
+              else
+                expect(page).to have_content("There are no closed #{issuable.to_s.humanize.downcase}")
+              end
             end
           end
         end

@@ -31,8 +31,7 @@ RSpec.shared_examples 'OTP devices work independently of WebAuthn authenticators
       end
 
       it 'allows registering a new device' do
-        visit profile_account_path
-        click_on _('Manage authentication')
+        visit profile_two_factor_auth_path
 
         device = register_device(device_type, password: user.password)
         expect(page).to have_content("Your #{device_type} device was registered")

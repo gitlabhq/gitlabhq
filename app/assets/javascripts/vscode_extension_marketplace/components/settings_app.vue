@@ -1,5 +1,5 @@
 <script>
-import { isObject } from 'lodash';
+import { isObject } from 'lodash-es';
 import { GlAccordion, GlAccordionItem, GlAlert, GlToggle } from '@gitlab/ui';
 import { updateApplicationSettings } from '~/rest_api';
 import { sprintf, s__ } from '~/locale';

@@ -24,7 +24,6 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
 
   let(:yaml_variables) do
     [
-      { key: 'SIGSTORE_ID_TOKEN', value: id_token, public: true },
       # Temporary mechanism to prevent running in test suite while UX is discused.
       # https://gitlab.com/gitlab-org/gitlab/-/issues/547903#note_2654845642
       { key: 'ATTEST_BUILD_ARTIFACTS', value: 'true', public: true }

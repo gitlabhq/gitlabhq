@@ -2,6 +2,8 @@
 key_path: counts.user_with_nil_external_attribute
 description: "Count of users with an external attribute value of nil"
 product_group: authentication
+product_categories:
+- system_access
 value_type: number
 status: active
 milestone: "17.11"

@@ -21,16 +21,8 @@ module HomepageData
       duo_code_review_bot_username: duo_code_review_bot_username(user),
       merge_requests_review_requested_title: dashboard_list_title(mr_requested_id),
       merge_requests_your_merge_requests_title: dashboard_list_title(mr_requests_id),
-      last_push_event: prepare_last_push_event_data(last_push_event)&.to_json,
-      show_feedback_widget: show_feedback_widget?.to_s,
-      work_item_planning_view_enabled: user.work_items_consolidated_list_enabled?.to_s
+      last_push_event: prepare_last_push_event_data(last_push_event)&.to_json
     }
-  end
-
-  def show_feedback_widget?
-    return true unless Gitlab.ee?
-
-    !License.current&.offline_cloud_license?
   end
 
   def prepare_last_push_event_data(last_push_event)

@@ -52,6 +52,7 @@ export const useNotes = defineStore('legacyNotes', {
       descriptionVersions: {},
       isTimelineEnabled: false,
       isFetching: false,
+      fetchNotesPromise: null,
       isPollingInitialized: false,
       mergeRequestFilters: MR_FILTER_OPTIONS.map((f) => f.value),
     };

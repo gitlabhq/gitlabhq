@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
+  name: 'PipelineSchedulesEmptyState',
   i18n: {
     pipelineSchedules: s__('PipelineSchedules|Pipeline schedules'),
     description: s__(

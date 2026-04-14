@@ -9,11 +9,11 @@ class ProjectSetting < ApplicationRecord
   include AfterCommitQueue
   include SafelyChangeColumnDefault
 
-  columns_changing_default :auto_duo_code_review_enabled, :duo_remote_flows_enabled
+  columns_changing_default :auto_duo_code_review_enabled, :duo_remote_flows_enabled, :duo_secret_detection_fp_enabled
 
-  CODE_OWNER_REVIEWER_ASSIGNMENT_STRATEGIES = {
+  REVIEWER_ASSIGNMENT_STRATEGIES = {
     disabled: 0,
-    all_members: 1
+    code_owners: 1
   }.freeze
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
@@ -22,6 +22,7 @@ class ProjectSetting < ApplicationRecord
 
   ignore_column :pages_multiple_versions_enabled, remove_with: '17.9', remove_after: '2025-02-20'
   ignore_column :pages_default_domain_redirect, remove_with: '17.9', remove_after: '2025-02-20'
+  ignore_column :code_owner_reviewer_assignment_strategy, remove_with: '19.0', remove_after: '2026-04-22'
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
@@ -44,15 +45,15 @@ class ProjectSetting < ApplicationRecord
 
   self.primary_key = :project_id
 
-  # TODO: Remove in 18.11 once backfill_security_project_tracked_contexts_default_branch BBM is removed.
-  # Needed because that spec uses `create(:user)` which loads ProjectSetting after schema rollback.
-  attribute :code_owner_reviewer_assignment_strategy, :integer, default: 0, limit: 2
+  # TODO: Remove once we confirm schema rollback scenarios no longer require this explicit attribute declaration.
+  attribute :reviewer_assignment_strategy, :integer, default: 0, limit: 2
 
-  enum :code_owner_reviewer_assignment_strategy, CODE_OWNER_REVIEWER_ASSIGNMENT_STRATEGIES,
+  enum :reviewer_assignment_strategy, REVIEWER_ASSIGNMENT_STRATEGIES,
     prefix: :reviewer_assignment
 
   validates :merge_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
   validates :squash_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
+  validates :mr_default_title_template, length: { maximum: Project::MAX_MR_TITLE_TEMPLATE_LENGTH }
   validates :issue_branch_template, length: { maximum: Issue::MAX_BRANCH_TEMPLATE }
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
   validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
@@ -108,7 +109,13 @@ class ProjectSetting < ApplicationRecord
     ::Projects::AllBranchesRule.new(project)
   end
 
-  def code_owner_reviewer_auto_assignment_enabled?
+  def automatic_rebase_available?
+    ::Feature.enabled?(:rebase_on_merge_automatic, project) &&
+      automatic_rebase_enabled
+  end
+  strong_memoize_attr :automatic_rebase_available?
+
+  def reviewer_auto_assignment_enabled?
     ::Feature.enabled?(:auto_assign_code_owner_reviewers, project) &&
       !reviewer_assignment_disabled?
   end

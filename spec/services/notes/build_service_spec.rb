@@ -53,6 +53,15 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
             expect(new_note.discussion_id).not_to eq(individual_note.discussion_id)
           end
         end
+
+        context 'when the discussion is a system note' do
+          let_it_be(:system_note) { create(:note_on_issue, :system, project: project) }
+          let(:params) { { in_reply_to_discussion_id: system_note.discussion_id } }
+
+          it 'returns an error' do
+            expect(new_note.errors[:base]).to include('Replies to system notes are not allowed')
+          end
+        end
       end
 
       context 'personal snippet note' do

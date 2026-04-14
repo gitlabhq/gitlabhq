@@ -122,7 +122,7 @@ The flow of a PQL lead is as follows:
 
 1. A user triggers a [`HandRaiseLeadButton` component](#embed-a-hand-raise-lead-form) on `gitlab.com`.
 1. The `HandRaiseLeadButton` submits any information to the following API endpoint: `/-/gitlab_subscriptions/hand_raise_leads`.
-1. That endpoint reposts the form to the CustomersDot `trials/create_hand_raise_lead` endpoint.
+1. That endpoint reposts the form to the CustomersDot `leads/gitlab_com/hand_raises` endpoint.
 1. CustomersDot records the form data to the `leads` table and posts the form to [Workato](https://handbook.gitlab.com/handbook/marketing/marketing-operations/workato/).
 1. Workato sends the form to Marketo.
 1. Marketo does scoring and sends the form to Salesforce.
@@ -176,15 +176,15 @@ sequenceDiagram
     HandRaiseForm Vue Component->>HandRaiseLeadsController#create: GitLab.com frontend sends [lead] to backend
     HandRaiseLeadsController#create->>CreateHandRaiseLeadService: [lead]
     CreateHandRaiseLeadService->>SubscriptionPortalClient: [lead]
-    SubscriptionPortalClient->>CustomersDot|TrialsController#create_hand_raise_lead: GitLab.com sends [lead] to CustomersDot
+    SubscriptionPortalClient->>CustomersDot|HandRaisesController#create: GitLab.com sends [lead] to CustomersDot
 ```
 
 #### Hand raise flow on CustomersDot
 
 ```mermaid
 sequenceDiagram
-    CustomersDot|TrialsController#create_hand_raise_lead->>CreateLeadService: Save [lead] to leads table for monitoring purposes
-    CustomersDot|TrialsController#create_hand_raise_lead->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
+    CustomersDot|HandRaisesController#create->>CreateLeadService: Save [lead] to leads table for monitoring purposes
+    CustomersDot|HandRaisesController#create->>Workato|CreateLeadWorker: Async worker to submit [lead] to Workato
     Workato|CreateLeadWorker->>Workato|CreateLeadService: [lead]
     Workato|CreateLeadService->>WorkatoApp#create_lead: [lead]
     WorkatoApp#create_lead->>Workato: [lead] is sent to Workato

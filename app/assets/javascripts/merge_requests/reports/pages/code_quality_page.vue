@@ -1,10 +1,12 @@
 <script>
 import CodeQualityProvider from '~/merge_requests/reports/components/code_quality_provider.vue';
+import CodeQualityContent from '~/merge_requests/reports/components/code_quality_content.vue';
 
 export default {
   name: 'CodeQualityPage',
   components: {
     CodeQualityProvider,
+    CodeQualityContent,
   },
   props: {
     mr: {
@@ -17,6 +19,6 @@ export default {
 
 <template>
   <code-quality-provider :mr="mr">
-    <div>{{ s__('MrReports|Code quality') }}</div>
+    <code-quality-content />
   </code-quality-provider>
 </template>

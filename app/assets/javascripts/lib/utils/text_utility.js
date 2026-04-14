@@ -1,4 +1,4 @@
-import { isString, memoize } from 'lodash';
+import { isString, memoize } from 'lodash-es';
 import { sprintf, __ } from '~/locale';
 import { base64ToBuffer, bufferToBase64 } from '~/authentication/webauthn/util';
 import {

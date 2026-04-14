@@ -1,4 +1,5 @@
 import { __ } from '~/locale';
+import initDatePickers from '~/behaviors/date_picker';
 
 export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE = __('Regex pattern');
 export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE = __(
@@ -36,7 +37,7 @@ function initUserInternalRegexPlaceholder() {
  * @param {*} inputErrorId - custom invalid state behavior
  * @returns
  */
-export function initDormantUsersInputSection(checkboxId, inputId, inputErrorId) {
+export function initCheckboxControlledInput(checkboxId, inputId, inputErrorId) {
   const DISPLAY_NONE_CLASS = 'gl-hidden';
 
   /** @type {HTMLInputElement} */
@@ -89,14 +90,29 @@ export function initDormantUsersInputSection(checkboxId, inputId, inputErrorId) 
  * - shows/hides an inline error on input validation
  */
 function initDeactivateDormantUsersPeriodInputSection() {
-  initDormantUsersInputSection(
+  initCheckboxControlledInput(
     'application_setting_deactivate_dormant_users',
     'application_setting_deactivate_dormant_users_period',
     'application_setting_deactivate_dormant_users_period_error',
   );
 }
 
+/**
+ * Sets up logic inside "Fine-grained personal access tomens" subsection:
+ * - checkbox enables/disables datepicker
+ * - shows/hides an inline error on input validation
+ */
+function initGranularTokenInput() {
+  initCheckboxControlledInput(
+    'application_setting_enforce_granular_tokens',
+    'application_setting_granular_tokens_enforced_after',
+    'application_setting_granular_tokens_enforced_after_error',
+  );
+}
+
 export default function initAccountAndLimitsSection() {
   initUserInternalRegexPlaceholder();
   initDeactivateDormantUsersPeriodInputSection();
+  initGranularTokenInput();
+  initDatePickers();
 }

@@ -784,7 +784,7 @@ RSpec.describe ProjectPresenter do
         have_attributes(
           is_link: false,
           label: a_string_ending_with('Wiki'),
-          link: wiki_path(project.wiki),
+          link: wiki_path(project.wiki, action: :index),
           class_modifier: 'btn-default'
         )
       end
@@ -797,7 +797,7 @@ RSpec.describe ProjectPresenter do
         )
       end
 
-      where(:wiki_enabled, :can_read_wiki, :has_home_page, :can_create_wiki, :expected_result) do
+      where(:wiki_enabled, :can_read_wiki, :wiki_exists, :can_create_wiki, :expected_result) do
         true  | true  | true  | true  | ref(:anchor_goto_wiki)
         true  | true  | true  | false | ref(:anchor_goto_wiki)
         true  | true  | false | true  | ref(:anchor_add_wiki)
@@ -807,7 +807,6 @@ RSpec.describe ProjectPresenter do
         true  | false | false | true  | nil
         true  | false | false | false | nil
         false | true  | true  | true  | nil
-        false | true  | true  | false | nil
         false | true  | true  | false | nil
         false | true  | false | true  | nil
         false | true  | false | false | nil
@@ -821,7 +820,7 @@ RSpec.describe ProjectPresenter do
         before do
           allow(project).to receive(:wiki_enabled?).and_return(wiki_enabled)
           allow(presenter).to receive(:can?).with(user, :read_wiki, project).and_return(can_read_wiki)
-          allow(project.wiki).to receive(:has_home_page?).and_return(has_home_page)
+          allow(project.wiki).to receive(:exists?).and_return(wiki_exists)
           allow(presenter).to receive(:can?).with(user, :create_wiki, project).and_return(can_create_wiki)
         end
 

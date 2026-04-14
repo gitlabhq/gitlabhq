@@ -39,20 +39,18 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-badge v-if="isTokenRevoked" icon="remove" variant="danger">
-      {{ $options.i18n.revoked }}
-    </gl-badge>
-    <gl-badge v-if="isTokenExpired" icon="time-out">
-      {{ $options.i18n.expired }}
-    </gl-badge>
-    <gl-badge
-      v-if="isTokenExpiringSoon"
-      v-gl-tooltip.d0="$options.i18n.expiringSoonTooltip"
-      icon="expire"
-      variant="warning"
-    >
-      {{ $options.i18n.expiringSoon }}
-    </gl-badge>
-  </div>
+  <gl-badge v-if="isTokenRevoked" icon="remove" variant="danger">
+    {{ $options.i18n.revoked }}
+  </gl-badge>
+  <gl-badge v-else-if="isTokenExpired" icon="time-out">
+    {{ $options.i18n.expired }}
+  </gl-badge>
+  <gl-badge
+    v-else-if="isTokenExpiringSoon"
+    v-gl-tooltip.d0="$options.i18n.expiringSoonTooltip"
+    icon="expire"
+    variant="warning"
+  >
+    {{ $options.i18n.expiringSoon }}
+  </gl-badge>
 </template>

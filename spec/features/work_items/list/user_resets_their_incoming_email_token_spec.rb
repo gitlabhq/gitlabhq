@@ -13,7 +13,6 @@ RSpec.describe 'Work Items > User resets their incoming email token', feature_ca
   end
 
   before do
-    stub_feature_flags(work_item_planning_view: true)
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
     sign_in(user)
 

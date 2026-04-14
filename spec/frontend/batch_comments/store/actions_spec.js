@@ -1,13 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import { createTestingPinia } from '@pinia/testing';
 import { TEST_HOST } from 'helpers/test_constants';
-import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import service from '~/batch_comments/services/drafts_service';
 import axios from '~/lib/utils/axios_utils';
 import diffsEventHub from '~/diffs/event_hub';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { createTestPiniaAction, createCustomGetters } from 'helpers/pinia_helpers';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useBatchComments } from '~/batch_comments/store';
@@ -238,52 +236,31 @@ describe('Batch comments store actions', () => {
       params = { note: { id: 1 }, noteText: 'test' };
     });
 
-    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', () => {
-      return store.updateDraft({ ...params, callback() {} }).then(() => {
-        expect(store[types.RECEIVE_DRAFT_UPDATE_SUCCESS]).toHaveBeenCalledWith({ id: 1 });
-      });
+    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', async () => {
+      await store.updateDraft(params);
+      expect(store[types.RECEIVE_DRAFT_UPDATE_SUCCESS]).toHaveBeenCalledWith({ id: 1 });
     });
 
-    it('calls passed callback', () => {
-      const callback = jest.fn();
-      return store.updateDraft({ ...params, callback }).then(() => {
-        expect(callback).toHaveBeenCalled();
-      });
+    it('does not stringify empty position', async () => {
+      await store.updateDraft({ ...params, position: {} });
+      expect(service.update.mock.calls[0][1].position).toBeUndefined();
     });
 
-    it('does not stringify empty position', () => {
-      return store.updateDraft({ ...params, position: {}, callback() {} }).then(() => {
-        expect(service.update.mock.calls[0][1].position).toBeUndefined();
-      });
-    });
-
-    it('stringifies a non-empty position', () => {
+    it('stringifies a non-empty position', async () => {
       const position = { test: true };
       const expectation = JSON.stringify(position);
-      return store.updateDraft({ ...params, position, callback() {} }).then(() => {
-        expect(service.update.mock.calls[0][1].position).toBe(expectation);
-      });
+      await store.updateDraft({ ...params, position });
+      expect(service.update.mock.calls[0][1].position).toBe(expectation);
     });
 
     describe('when updating a draft returns an error', () => {
-      const errorCallback = jest.fn();
-      const flashContainer = null;
       const error = 'server error';
 
-      beforeEach(async () => {
+      it('rejects the promise', async () => {
         service.update.mockRejectedValue({ response: { data: { errors: error } } });
-        await store.updateDraft({ ...params, flashContainer, errorCallback });
-      });
-
-      it('renders an error message', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: sprintf(UPDATE_COMMENT_FORM.error, { reason: error }),
-          parent: flashContainer,
-        });
-      });
-
-      it('calls errorCallback', () => {
-        expect(errorCallback).toHaveBeenCalledTimes(1);
+        await expect(store.updateDraft(params)).rejects.toEqual(
+          expect.objectContaining({ response: expect.any(Object) }),
+        );
       });
     });
   });

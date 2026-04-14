@@ -214,6 +214,40 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules > Branch rule de
       end
     end
 
+    describe 'Squash commits settings' do
+      it 'renders squash commits section for non-wildcard branch without edit button' do
+        within_testid('squash-setting-content') do
+          expect(page).to have_text 'Squash commits when merging'
+          expect(page).not_to have_button 'Edit'
+        end
+      end
+
+      context 'with wildcard branch rule' do
+        it 'does not render squash commits section' do
+          repo_project = create(:project, :repository)
+          repo_project.add_maintainer(user)
+          wildcard_rule = create(:protected_branch, name: '*-stable', project: repo_project)
+
+          visit project_settings_repository_branch_rules_path(repo_project, params: { branch: wildcard_rule.name })
+          wait_for_requests
+
+          expect(page).not_to have_css('[data-testid="squash-setting-content"]')
+        end
+      end
+
+      context 'with All branches rule' do
+        it 'renders squash commits section with edit button' do
+          visit project_settings_repository_branch_rules_path(project, params: { branch: 'All branches' })
+          wait_for_requests
+
+          within_testid('squash-setting-content') do
+            expect(page).to have_text 'Squash commits when merging'
+            expect(page).to have_button 'Edit'
+          end
+        end
+      end
+    end
+
     it 'passes axe automated accessibility testing' do
       expect(page).to be_axe_clean.skipping :'link-in-text-block'
     end

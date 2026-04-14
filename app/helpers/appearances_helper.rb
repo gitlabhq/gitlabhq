@@ -65,6 +65,10 @@ module AppearancesHelper
         "CI/CD, security, and more to deliver software rapidly.")
   end
 
+  def site_name
+    current_appearance&.site_name.presence
+  end
+
   def default_brand_title
     # This resides in a separate method so that EE can easily redefine it.
     _('GitLab Community Edition')

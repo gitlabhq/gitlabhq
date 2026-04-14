@@ -24,7 +24,7 @@
     }.merge(vue_readme_header_additional_data) }
 
   %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }
-    .js-file-title.file-title-flex-parent
+    .js-file-title.file-title-flex-parent.gl-px-4.gl-py-3
       .file-header-content
         = blob_icon readme.mode, readme.name
         = link_to project_blob_path(@project, tree_join(@ref, readme.path)) do

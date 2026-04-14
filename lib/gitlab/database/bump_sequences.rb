@@ -44,7 +44,7 @@ module Gitlab
           end
         end
 
-        sequences
+        sequences.uniq
       end
 
       # This method is going to increase the sequence next_value by:

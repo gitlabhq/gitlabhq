@@ -1,0 +1,19 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+/vendor/
+
+# rspec failure tracking
+.rspec_status
+
+# Rust build artifacts
+target/
+/mkmf.log
+/Makefile
+*.so
+/lib/pg_query_rewriter/

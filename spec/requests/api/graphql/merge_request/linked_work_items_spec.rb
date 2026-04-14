@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
 
@@ -216,6 +216,26 @@ RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_rev
       expect(work_item_ids).to contain_exactly(
         global_id_of(closing_issue, model_name: 'WorkItem').to_s
       )
+    end
+  end
+
+  context 'when project has autoclose_referenced_issues disabled' do
+    let(:linked_work_items_fields) do
+      <<~GRAPHQL
+        linkedWorkItems(types: [CLOSES]) {
+          linkType
+          workItem { id }
+        }
+      GRAPHQL
+    end
+
+    before do
+      project.update!(autoclose_referenced_issues: false)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'excludes issues from projects with autoclose disabled' do
+      expect(linked_work_items_data).to be_empty
     end
   end
 

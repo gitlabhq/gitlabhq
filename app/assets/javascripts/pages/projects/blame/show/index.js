@@ -15,7 +15,9 @@ const initBlamePreferences = () => {
     el,
     name: 'BlamePreferencesRoot',
     render: (createElement) =>
-      createElement(BlamePreferences, { props: { hasRevsFile: parseBoolean(hasRevsFile) } }),
+      createElement(BlamePreferences, {
+        props: { hasRevsFile: parseBoolean(hasRevsFile), showAgeIndicatorToggle: false },
+      }),
   });
 };
 

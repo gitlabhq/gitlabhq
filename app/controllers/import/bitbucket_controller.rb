@@ -133,7 +133,7 @@ class Import::BitbucketController < Import::BaseController
     bitbucket_repos.page_info
   end
 
-  def user_role(user, namespace)
+  def user_role(_user, namespace)
     if current_user.id == namespace&.owner_id
       Gitlab::Access.options_with_owner.key(Gitlab::Access::OWNER)
     else

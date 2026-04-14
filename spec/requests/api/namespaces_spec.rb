@@ -21,6 +21,13 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
   end
 
   describe "GET /namespaces" do
+    it_behaves_like 'authorizing granular token permissions', :read_namespace do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
+
     context "when unauthenticated" do
       it "returns authentication error" do
         get api(path)
@@ -198,6 +205,13 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
   end
 
   describe 'GET /namespaces/:id' do
+    it_behaves_like 'authorizing granular token permissions', :read_namespace do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api("#{path}/#{user.namespace.id}", personal_access_token: pat)
+      end
+    end
+
     let(:owned_group) { group1 }
 
     let_it_be(:user2) { create(:user) }
@@ -358,6 +372,13 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
   end
 
   describe 'GET /namespaces/:namespace/exists' do
+    it_behaves_like 'authorizing granular token permissions', :read_namespace do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api("#{path}/test-namespace/exists", personal_access_token: pat)
+      end
+    end
+
     let_it_be(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
     let_it_be(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
     let_it_be(:namespace_with_dot) { create(:group, name: 'With Dot', path: 'with.dot') }

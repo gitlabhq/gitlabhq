@@ -17,6 +17,7 @@ const alertTypes = Object.values(ALERT_TYPES).map((type) => ({
 }));
 
 export default {
+  name: 'AlertBubbleMenu',
   components: {
     BubbleMenu,
     EditorStateObserver,

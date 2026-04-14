@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['NamespaceSidebar'], feature_category: :navigation do
   let(:fields) do
-    %i[open_issues_count open_merge_requests_count]
+    %i[open_issues_count open_merge_requests_count open_work_items_count]
   end
 
   specify { expect(described_class.graphql_name).to eq('NamespaceSidebar') }

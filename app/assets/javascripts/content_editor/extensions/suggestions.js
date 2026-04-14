@@ -151,6 +151,24 @@ function createSuggestionPlugin({
             interactive: true,
             trigger: 'manual',
             placement: 'bottom-start',
+            popperOptions: {
+              modifiers: [
+                {
+                  name: 'flip',
+                  enabled: true,
+                  options: {
+                    fallbackPlacements: ['top-start'],
+                  },
+                },
+                {
+                  name: 'preventOverflow',
+                  enabled: true,
+                  options: {
+                    boundary: 'clippingParents',
+                  },
+                },
+              ],
+            },
           });
         },
 

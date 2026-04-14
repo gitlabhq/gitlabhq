@@ -1,7 +1,7 @@
 ---
 key_path: settings.allow_runner_registration_token
 description: Whether runner registration tokens are allowed on the instance
-product_group: runner
+product_group: runner_core
 product_categories:
   - runner_core
 value_type: boolean

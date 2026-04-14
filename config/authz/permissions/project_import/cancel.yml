@@ -1,0 +1,3 @@
+---
+name: cancel_project_import
+description: Grants the ability to cancel an in-progress project import

@@ -69,7 +69,9 @@ RSpec.shared_examples 'User views a wiki page' do
 
       expect(find('[data-testid="page-heading"]')).to have_content('three')
 
-      click_on('Edit')
+      page.within('.wiki-page-header') do
+        click_on('Edit')
+      end
 
       expect(page).to have_current_path(%r{one/two/three-test})
       expect(page).to have_css('#wiki_title')

@@ -29,8 +29,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_link(label.title)
     end
 
-    it 'has Issues link' do
-      expect(rendered).to have_link('Issues')
+    it 'has Work items link' do
+      expect(rendered).to have_link('Work items')
     end
 
     it 'has Merge request link' do
@@ -61,8 +61,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_link(label.title)
     end
 
-    it 'has Issues link' do
-      expect(rendered).to have_link('Issues')
+    it 'has Work items link' do
+      expect(rendered).to have_link('Work items')
     end
 
     it 'has Merge request link' do
@@ -89,8 +89,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_link(label.title)
     end
 
-    it 'has Issues link' do
-      expect(rendered).to have_link('Issues')
+    it 'has Work items link' do
+      expect(rendered).to have_link('Work items')
     end
 
     it 'has Merge request link' do
@@ -111,8 +111,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_link(label.title)
     end
 
-    it 'does not show Issues link' do
-      expect(rendered).not_to have_link('Issues')
+    it 'does not show Work items link' do
+      expect(rendered).not_to have_link('Work items')
     end
 
     it 'does not show Merge request link' do

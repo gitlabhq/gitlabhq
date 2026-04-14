@@ -8,6 +8,7 @@ RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_wo
 
   describe 'associations' do
     it { is_expected.to belong_to(:note) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   it_behaves_like 'model with associated note' do

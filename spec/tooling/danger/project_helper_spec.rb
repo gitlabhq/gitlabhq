@@ -193,8 +193,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'spec/lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :analytics_instrumentation]
       'spec/support/matchers/internal_events_matchers.rb' | [:backend, :analytics_instrumentation]
       'spec/support_specs/matchers/internal_events_matchers_spec.rb' | [:backend, :analytics_instrumentation]
-      'scripts/internal_events/cli/global_state.rb' | [:backend, :analytics_instrumentation]
-      'spec/scripts/internal_events/cli_spec.rb' | [:backend, :analytics_instrumentation]
 
       'app/models/integration.rb' | [:backend]
       'ee/app/models/integrations/github.rb' | [:backend]

@@ -79,6 +79,15 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
     end
   end
 
+  describe 'granular PAT authorization' do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :rotate_personal_access_token do
+      let(:user) { current_user }
+      let(:boundary_object) { :user }
+      let(:authz_mutation) { graphql_mutation(:personalAccessTokenRotate, input, 'errors') }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
+  end
+
   context 'when expires_at is provided', :freeze_time do
     let(:new_expires_at) { 2.weeks.from_now.to_date }
     let(:input) { super().merge('expiresAt' => new_expires_at) }

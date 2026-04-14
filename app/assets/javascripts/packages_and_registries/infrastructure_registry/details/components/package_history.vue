@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { first } from 'lodash';
+import { first } from 'lodash-es';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';

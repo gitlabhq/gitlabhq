@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category: :package_registry do
   let_it_be_with_reload(:namespace) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
 
   let(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
@@ -180,6 +180,54 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
           reason: :unprocessable_entity,
           message: 'Validation failed: Name is invalid'
         )
+      end
+    end
+
+    context 'with package protection rule' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule,
+          package_type: :terraform_module,
+          project: project,
+          package_name_pattern: 'foo/bar',
+          minimum_access_level_for_push: :owner
+        )
+      end
+
+      let_it_be(:developer) { create(:user, developer_of: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:owner) { create(:user, owner_of: namespace) }
+
+      context 'when user has lower access level than required' do
+        let(:user) { maintainer }
+
+        it 'returns package protected error' do
+          is_expected.to be_error.and have_attributes(
+            reason: :package_protected,
+            message: 'Package protected.'
+          )
+        end
+      end
+
+      context 'when user meets minimum access level' do
+        let(:user) { owner }
+
+        it_behaves_like 'creating a package and its metadatum'
+      end
+
+      context 'when package name does not match protection rule pattern' do
+        let(:overrides) { { module_name: 'other', module_system: 'module' } }
+        let(:user) { developer }
+
+        it_behaves_like 'creating a package and its metadatum'
+      end
+
+      context 'when module_name is blank' do
+        let(:overrides) { { module_name: '' } }
+        let(:user) { developer }
+
+        it 'skips protection check' do
+          is_expected.to be_error.and have_attributes(reason: :unprocessable_entity)
+        end
       end
     end
   end

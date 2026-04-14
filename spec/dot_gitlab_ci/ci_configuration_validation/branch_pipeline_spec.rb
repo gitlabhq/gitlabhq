@@ -157,7 +157,40 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
           let(:ci_commit_branch)  { '17-3-auto-deploy-2024080508' }
           let(:expected_job_name) { 'build-qa-image' }
 
-          it_behaves_like 'default branch pipeline'
+          context 'when a new commit is pushed to the branch' do
+            let(:variables_attributes) do
+              # Simulate a subsequent commit push (not branch creation).
+              # CI_COMMIT_BEFORE_SHA is all zeros on branch creation, which skips the pipeline.
+              super() << { key: 'CI_COMMIT_BEFORE_SHA', value: 'abc1234def5678abc1234def5678abc1234def56' }
+            end
+
+            it_behaves_like 'default branch pipeline'
+          end
+
+          context 'when the branch is first created' do
+            let(:variables_attributes) do
+              # Simulate branch creation: CI_COMMIT_BEFORE_SHA is all zeros.
+              # CI_PIPELINE_SOURCE defaults to 'push' in the shared context.
+              super() << { key: 'CI_COMMIT_BEFORE_SHA', value: '0000000000000000000000000000000000000000' }
+            end
+
+            it 'does not create a pipeline' do
+              expect(pipeline.errors.map(&:message)).to include(
+                'The pipeline did not run. Review the workflow:rules configuration for the pipeline.'
+              )
+            end
+          end
+
+          context 'when triggered manually on a freshly created branch' do
+            let(:ci_pipeline_source) { 'web' }
+            let(:variables_attributes) do
+              # Simulate manual trigger on branch creation: CI_COMMIT_BEFORE_SHA is all zeros
+              # but CI_PIPELINE_SOURCE is 'web', so the pipeline should still run.
+              super() << { key: 'CI_COMMIT_BEFORE_SHA', value: '0000000000000000000000000000000000000000' }
+            end
+
+            it_behaves_like 'default branch pipeline'
+          end
         end
 
         context 'with stable-ee branch pipeline' do

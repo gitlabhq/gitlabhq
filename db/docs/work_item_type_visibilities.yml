@@ -1,0 +1,13 @@
+---
+table_name: work_item_type_visibilities
+classes:
+  - WorkItems::TypesFramework::Visibility
+feature_categories:
+  - team_planning
+description: Stores explicit visibility overrides per namespace per work item type, used for SIWAR (Sparse Inheritance with Ancestor Resolution)
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227971
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

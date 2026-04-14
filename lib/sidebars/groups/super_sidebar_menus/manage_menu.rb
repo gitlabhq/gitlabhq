@@ -19,7 +19,8 @@ module Sidebars
           [
             :activity,
             :members,
-            :labels
+            :labels,
+            :achievements
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

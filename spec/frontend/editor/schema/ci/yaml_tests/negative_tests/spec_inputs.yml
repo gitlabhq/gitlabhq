@@ -61,3 +61,27 @@ trigger_invalid_input:
       project: "group/project"
       inputs:
         number_input: "not a number"
+
+# Omitted type with number default (should fail - defaults to string)
+omitted_type_number_default:
+  spec:
+    inputs:
+      count:
+        default: 42
+        description: "Should fail - when type omitted, default must be string"
+
+# Omitted type with boolean default (should fail - defaults to string)
+omitted_type_boolean_default:
+  spec:
+    inputs:
+      enabled:
+        default: true
+        description: "Should fail - when type omitted, default must be string"
+
+# Omitted type with array default (should fail - defaults to string)
+omitted_type_array_default:
+  spec:
+    inputs:
+      items:
+        default: ["one", "two"]
+        description: "Should fail - when type omitted, default must be string"

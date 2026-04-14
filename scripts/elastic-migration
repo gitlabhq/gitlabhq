@@ -79,7 +79,7 @@ module GitLab
 
           # See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#elasticsearch-specs
           # for more information on how to write search migration specs for GitLab.
-          RSpec.describe #{options.name}, feature_category: :#{options.group.parameterize.underscore} do
+          RSpec.describe #{options.name}, :elastic, feature_category: :#{options.group.parameterize.underscore} do
             let(:version) { #{timestamp} }
           end
         RUBY

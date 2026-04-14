@@ -7,7 +7,10 @@ import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import MergeRequest from '~/merge_request';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
 import { __ } from '~/locale';
+import GpgBadges from '~/gpg_badges';
 import { createRapidDiffsApp } from '~/rapid_diffs';
+
+GpgBadges.fetch();
 
 const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
 if (mrNewCompareNode) {

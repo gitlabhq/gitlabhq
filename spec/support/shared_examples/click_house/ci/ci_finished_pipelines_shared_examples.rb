@@ -51,6 +51,47 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     end
   end
 
+  describe '#for_subgroups' do
+    let_it_be(:subgroup1, freeze: true) { create(:group, parent: group) }
+    let_it_be(:subgroup2, freeze: true) { create(:group, parent: group) }
+
+    subject { instance.for_subgroups(subgroups).to_sql.strip }
+
+    context 'with multiple subgroups' do
+      let(:subgroups) { [subgroup1, subgroup2] }
+
+      it 'builds the correct SQL with OR conditions' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT * FROM `#{table_name}`
+          WHERE (startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path}') OR startsWith(`#{table_name}`.`path`, '#{subgroup2.traversal_path}'))
+        SQL
+
+        is_expected.to eq(expected_sql.strip)
+      end
+    end
+
+    context 'with an empty array' do
+      let(:subgroups) { [] }
+
+      it 'returns unfiltered query' do
+        is_expected.to eq("SELECT * FROM `#{table_name}`")
+      end
+    end
+
+    context 'with a single subgroup' do
+      let(:subgroups) { [subgroup1] }
+
+      it 'builds the correct SQL with a single startsWith' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT * FROM `#{table_name}`
+          WHERE startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path}')
+        SQL
+
+        is_expected.to eq(expected_sql.strip)
+      end
+    end
+  end
+
   describe '#for_ref' do
     subject(:result_sql) { instance.for_ref(ref).to_sql }
 

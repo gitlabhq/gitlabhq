@@ -17,6 +17,10 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
     it 'leaves ROPC enabled' do
       expect(service.execute.ropc_enabled?).to be_truthy
     end
+
+    it 'sets device_code_enabled to false for new applications' do
+      expect(service.execute.device_code_enabled?).to be_falsy
+    end
   end
 
   context 'when scopes are missing' do

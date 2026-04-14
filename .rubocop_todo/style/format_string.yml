@@ -136,7 +136,6 @@ Style/FormatString:
     - 'lib/gitlab/quick_actions/issue_actions.rb'
     - 'lib/gitlab/quick_actions/issue_and_merge_request_actions.rb'
     - 'lib/gitlab/quick_actions/merge_request_actions.rb'
-    - 'lib/gitlab/quick_actions/relate_actions.rb'
     - 'lib/peek/views/detailed_view.rb'
     - 'lib/tasks/test.rake'
     - 'spec/controllers/graphql_controller_spec.rb'

@@ -2,6 +2,8 @@
 key_path: settings.access_to_snowplow_gitlab_net
 description: Whether an instance can access snowplowstg.trx.gitlab.net
 product_group: analytics_instrumentation
+product_categories:
+- application_instrumentation
 value_type: boolean
 status: active
 milestone: "17.9"

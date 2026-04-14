@@ -13,7 +13,7 @@ module QA
 
       module ClassMethods
         def launch!(argv)
-          return self.perform(*argv) unless has_attributes?
+          return perform(*argv) unless has_attributes?
 
           arguments = OptionParser.new do |parser|
             options.to_a.each do |opt|
@@ -49,7 +49,7 @@ module QA
 
           arguments.parse!(argv)
 
-          self.perform(Runtime::Scenario.attributes, *argv)
+          perform(Runtime::Scenario.attributes, *argv)
         end
 
         private

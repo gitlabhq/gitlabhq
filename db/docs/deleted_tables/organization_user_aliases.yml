@@ -3,7 +3,7 @@ table_name: organization_user_aliases
 classes:
 - Organizations::OrganizationUserAlias
 feature_categories:
-- cell
+- organization
 description: |
   Store aliases so that internally-managed bot users can be referenced inside an organization by a convenient alias rather than unique username
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189052

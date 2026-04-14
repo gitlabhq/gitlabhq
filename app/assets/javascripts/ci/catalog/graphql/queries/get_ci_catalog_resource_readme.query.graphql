@@ -1,8 +1,10 @@
+# @feature_category: pipeline_composition
+
 query getCiCatalogResourceReadme($fullPath: ID!, $version: String) {
   ciCatalogResource(fullPath: $fullPath) {
     id
     webPath
-    versions(name: $version) {
+    versions(name: $version, first: 1) {
       nodes {
         id
         readmeHtml

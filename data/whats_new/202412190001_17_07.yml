@@ -5,10 +5,10 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Free", "Premium", "Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/user/permissions.html
+  documentation_link: https://docs.gitlab.com/user/permissions/
   image_url: https://about.gitlab.com/images/17_7/new_planner_user_role.png
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"
 
 - name: Instance administrators can control which integrations can be enabled
   description: |
@@ -17,10 +17,10 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/administration/settings/project_integration_management.html#integration-allowlist
+  documentation_link: https://docs.gitlab.com/administration/settings/project_integration_management/#integration-allowlist
   image_url: https://about.gitlab.com/images/17_7/integrations_allowlist.png
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"
 
 - name: New user contribution and membership mapping available in direct transfer
   description: |
@@ -29,10 +29,10 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Free", "Premium", "Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/user/project/import/#user-contribution-and-membership-mapping
+  documentation_link: https://docs.gitlab.com/user/project/import/#user-contribution-and-membership-mapping
   image_url: https://about.gitlab.com/images/17_7/user_contributions_mapping.png
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"
 
 - name: Auto-resolve vulnerabilities when not found in subsequent scans
   description: |
@@ -41,10 +41,10 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/vulnerability_management_policy.html
+  documentation_link: https://docs.gitlab.com/user/application_security/policies/vulnerability_management_policy/
   image_url: https://about.gitlab.com/images/17_7/auto-resolve-when-not-found-in-subsequent-scan.png
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"
 
 - name: Rotate personal, project, and group access tokens in the UI
   description: |
@@ -53,10 +53,10 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Free", "Premium", "Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#revoke-or-rotate-a-personal-access-token
+  documentation_link: https://docs.gitlab.com/user/profile/personal_access_tokens/#revoke-or-rotate-a-personal-access-token
   image_url: https://img.youtube.com/vi/YqK2CF655OE/hqdefault.jpg
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"
 
 - name: Track CI/CD component usage across projects
   description: |
@@ -65,7 +65,7 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Premium", "Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/api/graphql/reference/#queryprojectsusingcomponents
+  documentation_link: https://docs.gitlab.com/api/graphql/reference/#queryprojectsusingcomponents
   image_url: https://about.gitlab.com/images/17_7/catalog.png
   published_at: 2024-12-19
-  release: 17.7
+  release: "17.7"

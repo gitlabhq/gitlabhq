@@ -27,6 +27,9 @@ const sortFieldsByType = {
   MergeRequestReviewer: 'username',
   MergeRequestAssignee: 'username',
   Project: 'nameWithNamespace',
+  Pipeline: 'name',
+  CiJob: 'name',
+  CiStage: 'name',
 };
 
 function valueByType(field, type) {

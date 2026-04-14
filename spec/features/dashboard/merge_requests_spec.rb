@@ -6,6 +6,7 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
   include Features::SortingHelpers
   include FilteredSearchHelpers
   include ProjectForksHelper
+  include ListboxHelpers
 
   seed_internal_bot(:duo_code_review_bot)
 
@@ -53,6 +54,9 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
     before do
+      create(:callout, user: user, feature_name: :merge_request_dashboard_display_preferences_popover)
+      create(:callout, user: user, feature_name: :merge_request_dashboard_show_drafts)
+
       project_with_disabled_merge_requests.add_maintainer(current_user)
       visit merge_requests_dashboard_path
     end
@@ -62,10 +66,10 @@ RSpec.describe 'Dashboard Merge Requests', :with_current_organization, :js, feat
       wait_for_requests
 
       within_testid('new-resource-dropdown') do
-        expect(page).to have_content(project.full_name)
-        expect(page).not_to have_content(project_with_disabled_merge_requests.full_name)
+        expect_listbox_item(project.full_name)
+        expect_no_listbox_item(project_with_disabled_merge_requests.full_name)
 
-        find_button(project.full_name).click
+        select_listbox_item(project.full_name)
 
         expect(page).to have_link("New merge request in #{project.name}")
       end

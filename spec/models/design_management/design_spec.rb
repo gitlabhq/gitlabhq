@@ -29,6 +29,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
   describe 'relations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:issue) }
+    it { is_expected.to belong_to(:namespace) }
     it { is_expected.to have_many(:actions) }
     it { is_expected.to have_many(:versions) }
     it { is_expected.to have_many(:authors) }

@@ -8,7 +8,7 @@
   documentation_link: 'https://docs.gitlab.com/runner/install/#fips-compliant-gitlab-runner'
   image_url: https://about.gitlab.com/images/growth/verify.png
   published_at: 2022-01-22
-  release: 14.7
+  release: "14.7"
 - name: Streaming audit events
   description: |
     You can now stream audit events to a destination of your choosing! This is a great way to correlate GitLab audit events with other data streams you have, maintain a backup of audit events, or build out your own automation to take action when a specific audit event happens.
@@ -20,10 +20,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/administration/audit_event_streaming.html'
+  documentation_link: 'https://docs.gitlab.com/administration/audit_event_streaming/'
   image_url: https://about.gitlab.com/images/growth/manage.jpg
   published_at: 2022-01-22
-  release: 14.7
+  release: "14.7"
 - name: Group access tokens
   description: |
      With group access tokens, you can use a single token to perform actions for groups, manage the projects within the group, and, in GitLab 14.2 and later, authenticate with Git over HTTPS.
@@ -35,7 +35,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html'
+  documentation_link: 'https://docs.gitlab.com/user/group/settings/group_access_tokens/'
   image_url: https://about.gitlab.com/images/14_7/group_access_token.png
   published_at: 2022-01-22
-  release: 14.7
+  release: "14.7"

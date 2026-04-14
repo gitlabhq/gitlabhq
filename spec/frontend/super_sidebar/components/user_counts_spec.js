@@ -24,7 +24,6 @@ describe('UserCounts component', () => {
       propsData: {
         sidebarData: {
           ...mockSidebarData,
-          work_item_planning_view_enabled: false,
           ...props.sidebarData,
         },
         ...props,
@@ -53,8 +52,8 @@ describe('UserCounts component', () => {
       const issuesCounter = findIssuesCounter();
       expect(issuesCounter.props('count')).toBe(userCounts.assigned_issues);
       expect(issuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
-      expect(issuesCounter.props('label')).toBe('Assigned issues');
-      expect(issuesCounter.props('icon')).toBe('work-item-issue');
+      expect(issuesCounter.props('label')).toBe('Assigned work items');
+      expect(issuesCounter.props('icon')).toBe('work-items');
       expect(issuesCounter.attributes('data-track-action')).toBe('click_link');
       expect(issuesCounter.attributes('data-track-label')).toBe('issues_link');
       expect(issuesCounter.attributes('data-track-property')).toBe('nav_core_menu');
@@ -103,42 +102,6 @@ describe('UserCounts component', () => {
         document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: -2 } }));
         await nextTick();
         expect(findTodosCounter().props('count')).toBe(1);
-      });
-    });
-  });
-
-  describe('work items planning view feature flag', () => {
-    describe('when work_item_planning_view_enabled is false', () => {
-      beforeEach(() => {
-        createWrapper({
-          sidebarData: {
-            ...mockSidebarData,
-            work_item_planning_view_enabled: false,
-          },
-        });
-      });
-
-      it('renders issues counter with "Assigned issues" label', () => {
-        const issuesCounter = findIssuesCounter();
-        expect(issuesCounter.props('label')).toBe('Assigned issues');
-        expect(issuesCounter.props('icon')).toBe('work-item-issue');
-      });
-    });
-
-    describe('when work_item_planning_view_enabled is true', () => {
-      beforeEach(() => {
-        createWrapper({
-          sidebarData: {
-            ...mockSidebarData,
-            work_item_planning_view_enabled: true,
-          },
-        });
-      });
-
-      it('renders issues counter with "Assigned work items" label', () => {
-        const issuesCounter = findIssuesCounter();
-        expect(issuesCounter.props('label')).toBe('Assigned work items');
-        expect(issuesCounter.props('icon')).toBe('work-items');
       });
     });
   });

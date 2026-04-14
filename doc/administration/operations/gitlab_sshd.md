@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Configure `gitlab-sshd`, a lightweight alternative to OpenSSH, for your GitLab instance.
+description: Configure a lightweight alternative to OpenSSH for your GitLab instance.
 title: '`gitlab-sshd`'
 ---
 
@@ -31,8 +31,9 @@ If you are considering switching from OpenSSH to `gitlab-sshd`, consider:
 
 - PROXY protocol: `gitlab-sshd` supports the PROXY protocol, allowing it to run behind proxy
   servers like HAProxy. This feature is not enabled by default but [can be enabled](#proxy-protocol-support).
-- SSH certificates: `gitlab-sshd` does not support SSH certificates. For more information, see
-  [issue 655](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/655).
+- SSH certificates: `gitlab-sshd` supports instance-level SSH certificate authentication
+  by using trusted CA keys configured in `config.yml`. For more information, see
+  [Instance-level SSH certificates with `gitlab-sshd`](gitlab_sshd_ssh_certificates.md).
 - 2FA recovery codes: `gitlab-sshd` does not support 2FA recovery code regeneration.
   Attempting to run `2fa_recovery_codes` results in the error:
   `remote: ERROR: Unknown command: 2fa_recovery_codes`. See

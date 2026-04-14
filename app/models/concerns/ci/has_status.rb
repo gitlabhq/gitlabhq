@@ -54,13 +54,6 @@ module Ci
     UnknownStatusError = Class.new(StandardError)
 
     class_methods do
-      # This will be removed with ci_remove_ensure_stage_service
-      def composite_status
-        Gitlab::Ci::Status::Composite
-          .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
-          .status
-      end
-
       def started_at
         all.minimum(:started_at)
       end

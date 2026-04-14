@@ -203,7 +203,7 @@ module Gitlab
         end
 
         def work_item_type?
-          klass == ::WorkItems::Type
+          klass == ::WorkItems::TypesFramework::SystemDefined::Type
         end
 
         def pipeline?
@@ -238,17 +238,14 @@ module Gitlab
         def find_work_item_type
           base_type = @attributes['base_type']
 
-          find_with_cache([::WorkItems::Type, base_type]) do
-            if ::WorkItems::Type.base_types.key?(base_type)
-              ::WorkItems::Type.default_by_type(base_type)
-            else
-              ::WorkItems::Type.default_issue_type
-            end
+          find_with_cache([:system_defined_work_item_type, base_type]) do
+            ::WorkItems::TypesFramework::Provider.new.find_by_base_type(base_type) ||
+              ::WorkItems::TypesFramework::Provider.new.default_issue_type
           end
         end
 
         def find_pipeline
-          # Here we should referencing only existing pipelines
+          # Here we should be referencing only existing pipelines
           # Only the 'iid' and `project` attributes should be present
           ::Ci::Pipeline.find_by(iid: attributes['iid'], project_id: project.id)
         end

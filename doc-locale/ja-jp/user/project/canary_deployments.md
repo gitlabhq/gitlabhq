@@ -45,7 +45,8 @@ title: カナリアデプロイ
 
 ### カナリアIngressのデプロイをデプロイボードに表示する (非推奨) {#show-canary-ingress-deployments-on-deploy-boards-deprecated}
 
-> [!warning]この機能はGitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
+> [!warning]
+> この機能はGitLab 14.5で[非推奨](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)になりました。
 
 カナリアデプロイを表示するには、デプロイボードを適切に設定する必要があります:
 

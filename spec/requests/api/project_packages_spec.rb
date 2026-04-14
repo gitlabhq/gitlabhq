@@ -333,6 +333,31 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
       end
 
+      context 'with creator_id' do
+        let_it_be(:creator) { create(:user) }
+        let_it_be(:package_with_creator) { create(:npm_package, project: project, creator: creator) }
+        let(:package_url) { "/projects/#{project.id}/packages/#{package_with_creator.id}" }
+
+        it 'includes creator_id' do
+          get api(package_url, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['creator_id']).to eq(creator.id)
+        end
+      end
+
+      context 'without creator' do
+        let_it_be(:package_without_creator) { create(:npm_package, project: project, creator: nil) }
+        let(:package_url) { "/projects/#{project.id}/packages/#{package_without_creator.id}" }
+
+        it 'returns null creator_id when creator is nil' do
+          get api(package_url, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['creator_id']).to be_nil
+        end
+      end
+
       context 'with build info' do
         let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
         let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }

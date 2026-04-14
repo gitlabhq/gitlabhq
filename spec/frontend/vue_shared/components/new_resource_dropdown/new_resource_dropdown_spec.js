@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButtonGroup, GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -11,7 +11,6 @@ import { RESOURCE_TYPES } from '~/vue_shared/components/new_resource_dropdown/co
 import searchProjectsWithinGroupQuery from '~/work_items/list/graphql/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import { stubComponent } from 'helpers/stub_component';
 import {
   emptySearchProjectsQueryResponse,
   emptySearchProjectsWithinGroupQueryResponse,
@@ -29,7 +28,6 @@ describe('NewResourceDropdown component', () => {
 
   Vue.use(VueApollo);
 
-  // Props
   const withinGroupProps = {
     query: searchProjectsWithinGroupQuery,
     queryVariables: { fullPath: 'mushroom-kingdom' },
@@ -55,12 +53,13 @@ describe('NewResourceDropdown component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
-  const findInput = () => wrapper.findComponent(GlSearchBoxByType);
+  const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
+  const findMainButton = () => wrapper.findComponent(GlButton);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
+
   const showDropdown = async () => {
-    findDropdown().vm.$emit('shown');
+    findListbox().vm.$emit('shown');
     await waitForPromises();
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
     await waitForPromises();
@@ -70,33 +69,16 @@ describe('NewResourceDropdown component', () => {
     localStorage.clear();
   });
 
-  it('renders a split dropdown', () => {
+  it('renders a button group with main button and dropdown', () => {
     mountComponent();
-
-    expect(findDropdown().props('split')).toBe(true);
+    expect(findButtonGroup().exists()).toBe(true);
+    expect(findMainButton().exists()).toBe(true);
+    expect(findListbox().exists()).toBe(true);
   });
 
-  it('renders a label for the dropdown toggle button', () => {
+  it('renders a label for the main button', () => {
     mountComponent();
-
-    expect(findDropdown().attributes('toggle-text')).toBe(
-      NewResourceDropdown.i18n.toggleButtonLabel,
-    );
-  });
-
-  it('focuses on input when dropdown is shown', async () => {
-    const inputMock = jest.fn();
-    mountComponent({
-      stubs: {
-        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
-          methods: { focusInput: inputMock },
-        }),
-      },
-    });
-
-    await showDropdown();
-
-    expect(inputMock).toHaveBeenCalledTimes(1);
+    expect(findMainButton().text()).toBe('Select project to create issue');
   });
 
   describe.each`
@@ -104,18 +86,18 @@ describe('NewResourceDropdown component', () => {
     ${'by default'}     | ${undefined}        | ${searchUserProjectsWithIssuesEnabledQuery} | ${searchProjectsQueryResponse}            | ${emptySearchProjectsQueryResponse}
     ${'within a group'} | ${withinGroupProps} | ${searchProjectsWithinGroupQuery}           | ${searchProjectsWithinGroupQueryResponse} | ${emptySearchProjectsWithinGroupQueryResponse}
   `('$description', ({ propsData, query, queryResponse, emptyResponse }) => {
-    it('renders projects options', async () => {
+    it('renders project options', async () => {
       mountComponent({ mountFn: mount, query, queryResponse, propsData });
       await showDropdown();
 
-      const listItems = wrapper.findAll('li');
-
-      expect(listItems.at(0).text()).toBe(project1.nameWithNamespace);
-      expect(listItems.at(1).text()).toBe(project2.nameWithNamespace);
-      expect(listItems.at(2).text()).toBe(project3.nameWithNamespace);
+      const items = findListbox().props('items');
+      expect(items).toHaveLength(3);
+      expect(items[0].text).toBe(project1.nameWithNamespace);
+      expect(items[1].text).toBe(project2.nameWithNamespace);
+      expect(items[2].text).toBe(project3.nameWithNamespace);
     });
 
-    it('renders `No matches found` when there are no matches', async () => {
+    it('renders "No matches found" when there are no matches', async () => {
       mountComponent({
         query,
         queryResponse: emptyResponse,
@@ -123,10 +105,10 @@ describe('NewResourceDropdown component', () => {
         propsData,
       });
 
-      await findInput().vm.$emit('input', 'no matches');
       await showDropdown();
 
-      expect(wrapper.find('li').text()).toBe(NewResourceDropdown.i18n.noMatchesFound);
+      expect(findListbox().props('noResultsText')).toBe(NewResourceDropdown.i18n.noMatchesFound);
+      expect(findListbox().props('items')).toHaveLength(0);
     });
 
     describe.each`
@@ -143,15 +125,24 @@ describe('NewResourceDropdown component', () => {
               query,
               queryResponse,
               propsData: { ...propsData, resourceType },
+              mountFn: mount,
             });
           });
 
-          it('dropdown button is not a link', () => {
-            expect(findDropdown().props('splitHref')).toBe('');
+          it('main button is not a link', () => {
+            expect(findMainButton().props('href')).toBeUndefined();
           });
 
-          it('displays default text on the dropdown button', () => {
-            expect(findDropdown().props('text')).toBe(expectedDefaultLabel);
+          it('displays default text on the main button', () => {
+            expect(findMainButton().text()).toBe(expectedDefaultLabel);
+          });
+
+          describe('when main button is clicked', () => {
+            it('opens dropdown', async () => {
+              await findMainButton().trigger('click');
+
+              expect(findListbox().emitted('shown')).toEqual([[]]);
+            });
           });
         });
 
@@ -165,17 +156,19 @@ describe('NewResourceDropdown component', () => {
             });
             await showDropdown();
 
-            findGlDropdownItem().vm.$emit('click', project1);
+            // Simulate user selecting a project
+            const listboxItems = findListbox().props('items');
+            findListbox().vm.$emit('select', listboxItems[0].value);
+            await nextTick();
           });
 
-          it('dropdown button is a link', () => {
+          it('main button is a link', () => {
             const href = joinPaths(project1.webUrl, DASH_SCOPE, expectedPath);
-
-            expect(findDropdown().props('splitHref')).toBe(href);
+            expect(findMainButton().props('href')).toBe(href);
           });
 
-          it('displays project name on the dropdown button', () => {
-            expect(findDropdown().props('text')).toBe(`${expectedLabel} ${project1.name}`);
+          it('displays project name on the main button', () => {
+            expect(findMainButton().text()).toBe(`${expectedLabel} ${project1.name}`);
           });
         });
       },
@@ -183,11 +176,9 @@ describe('NewResourceDropdown component', () => {
   });
 
   describe('local storage sync', () => {
-    it('retrieves the selected project from the localStorage', async () => {
+    it('retrieves the selected project from localStorage', async () => {
       mountComponent();
-      const dropdown = findDropdown();
-
-      expect(dropdown.props('splitHref')).toBe('');
+      expect(findMainButton().props('href')).toBeUndefined();
 
       findLocalStorageSync().vm.$emit('input', {
         webUrl: project1.webUrl,
@@ -195,29 +186,27 @@ describe('NewResourceDropdown component', () => {
       });
       await nextTick();
 
-      expect(dropdown.props('splitHref')).toBe(
+      expect(findMainButton().props('href')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
       );
-      expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);
+      expect(findMainButton().text()).toBe(`New issue in ${project1.name}`);
     });
 
-    it('retrieves legacy cache from the localStorage', async () => {
+    it('retrieves legacy cache from localStorage', async () => {
       mountComponent();
-      const dropdown = findDropdown();
 
-      expect(dropdown.props('splitHref')).toBe('');
+      expect(findMainButton().props('href')).toBeUndefined();
 
       findLocalStorageSync().vm.$emit('input', {
         url: `${project1.webUrl}/issues/new`,
         name: project1.name,
       });
-
       await nextTick();
 
-      expect(dropdown.props('splitHref')).toBe(
+      expect(findMainButton().props('href')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
       );
-      expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);
+      expect(findMainButton().text()).toBe(`New issue in ${project1.name}`);
     });
 
     describe.each(RESOURCE_TYPES)('with resource type %s', (resourceType) => {

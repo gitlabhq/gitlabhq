@@ -8,20 +8,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe 'associations' do
-    it 'has many `widget_definitions`' do
-      is_expected.to have_many(:widget_definitions)
-        .class_name('::WorkItems::WidgetDefinition')
-        .with_foreign_key('work_item_type_id')
-    end
-
-    it 'has many `enabled_widget_definitions`' do
-      type = create(:work_item_type, :non_default)
-      widget1 = create(:widget_definition, work_item_type: type, name: 'Enabled widget')
-      create(:widget_definition, work_item_type: type, disabled: true, name: 'Disabled widget')
-
-      expect(type.enabled_widget_definitions).to match_array([widget1])
-    end
-
     describe '#allowed_child_types_by_name' do
       # epic type is not available in CE
       it 'returns child types from hierarchy restrictions', if: Gitlab.ee? do
@@ -174,42 +160,20 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe '#supports_assignee?' do
     let(:parent) { build_stubbed(:project) }
-    let_it_be_with_reload(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be_with_reload(:widget_definition) do
-      create(:widget_definition, work_item_type: work_item_type, widget_type: :assignees)
-    end
+    let_it_be(:work_item_type) { described_class.find_by(base_type: :issue) }
 
     subject(:supports_assignee) { work_item_type.supports_assignee?(parent) }
 
     it { is_expected.to be_truthy }
-
-    context 'when the assignees widget is not supported' do
-      before do
-        widget_definition.update!(disabled: true)
-      end
-
-      it { is_expected.to be_falsey }
-    end
   end
 
   describe '#supports_time_tracking?' do
     let(:parent) { build_stubbed(:project) }
-    let_it_be_with_reload(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be_with_reload(:widget_definition) do
-      create(:widget_definition, work_item_type: work_item_type, widget_type: :time_tracking)
-    end
+    let_it_be(:work_item_type) { described_class.find_by(base_type: :issue) }
 
     subject(:supports_time_tracking) { work_item_type.supports_time_tracking?(parent) }
 
     it { is_expected.to be_truthy }
-
-    context 'when the time tracking widget is not supported' do
-      before do
-        widget_definition.update!(disabled: true)
-      end
-
-      it { is_expected.to be_falsey }
-    end
   end
 
   describe '#allowed_child_types' do
@@ -316,6 +280,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe 'temporary configuration methods' do
     let_it_be(:work_item_type) { create(:work_item_type) }
+    let_it_be(:ticket_type) { create(:work_item_type, :ticket) }
+    let_it_be(:incident_type) { create(:work_item_type, :incident) }
 
     describe '#supports_roadmap_view?' do
       it 'returns nil' do
@@ -348,14 +314,22 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
 
     describe '#service_desk?' do
-      it 'returns nil' do
-        expect(work_item_type.service_desk?).to be_nil
+      it 'returns false for issue type' do
+        expect(work_item_type.service_desk?).to be false
+      end
+
+      it 'returns true for ticket type' do
+        expect(ticket_type.service_desk?).to be true
       end
     end
 
     describe '#incident_management?' do
-      it 'returns nil' do
-        expect(work_item_type.incident_management?).to be_nil
+      it 'returns false for issue type' do
+        expect(work_item_type.incident_management?).to be false
+      end
+
+      it 'returns true for incident type' do
+        expect(incident_type.incident_management?).to be true
       end
     end
 

@@ -1,0 +1,34 @@
+# See lib/gitlab/markdown/iframe_url_transforms.rb.
+#
+# Each rule has:
+#   from:
+#     host:   exact hostname to match (required)
+#     path:   path prefix pattern with {named} captures (required)
+#     params: list of query parameter names to extract (optional)
+#     match:  per-capture constraints, e.g. type: [proto, design] (optional)
+#   to: template string with {named} placeholders (required)
+#
+# Path matching is prefix-based: segments beyond those in the pattern are ignored.
+#
+# Rules are evaluated in order; the first matching rule wins.
+
+# YouTube: watch page URL -> embed URL
+- from:
+    host: www.youtube.com
+    path: /watch
+    params: [v]
+  to: 'https://www.youtube.com/embed/{v}'
+
+# YouTube: short URL -> embed URL
+- from:
+    host: youtu.be
+    path: /{id}
+  to: 'https://www.youtube.com/embed/{id}'
+
+# Figma: www view URL -> embed URL
+- from:
+    host: www.figma.com
+    path: /{type}/{id}
+    match:
+      type: [proto, design, board, file, slides]
+  to: 'https://embed.figma.com/{type}/{id}?embed-host=gitlab'

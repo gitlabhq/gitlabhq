@@ -37,7 +37,8 @@ title: カスタムルール
 - JetBrains IDEの場合は、バージョン3.12.2以降の[JetBrains用GitLabプラグインをインストールして設定](../../../editor_extensions/jetbrains_ide/setup.md)します。
 - Visual Studioの場合は、バージョン0.60.0以降の[Visual Studio用GitLab拡張機能をインストールして設定](../../../editor_extensions/visual_studio/setup.md)します。
 
-> [!note] カスタムルールを作成する前に存在していた会話は、これらのルールに従いません。
+> [!note]
+> カスタムルールを作成する前に存在していた会話は、これらのルールに従いません。
 
 ### ユーザーレベルのカスタムルールを作成する {#create-user-level-custom-rules}
 

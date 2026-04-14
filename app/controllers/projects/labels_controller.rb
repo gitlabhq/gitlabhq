@@ -12,10 +12,6 @@ class Projects::LabelsController < Projects::ApplicationController
     :set_priorities]
   before_action :authorize_admin_group_labels!, only: [:promote]
 
-  before_action only: [:index] do
-    push_frontend_feature_flag(:labels_archive, project.group) if project.group
-  end
-
   respond_to :js, :html
 
   feature_category :team_planning
@@ -24,7 +20,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @prioritized_labels = if Feature.enabled?(:labels_archive, @project.group) && params[:archived] == 'true'
+        @prioritized_labels = if params[:archived] == 'true'
                                 Label.none
                               else
                                 @available_labels.prioritized(@project)
@@ -46,7 +42,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = Labels::CreateService.new(label_params).execute(project: @project)
+    @label = Labels::CreateService.new(current_user, label_params).execute(project: @project)
 
     if @label.valid?
       respond_to do |format|
@@ -64,7 +60,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def edit; end
 
   def update
-    @label = Labels::UpdateService.new(label_params).execute(@label)
+    @label = Labels::UpdateService.new(current_user, label_params).execute(@label)
 
     if @label.valid?
       redirect_to project_labels_path(@project)
@@ -87,12 +83,14 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def destroy
-    if @label.destroy
+    label = Labels::DestroyService.new(current_user, @label).execute
+
+    if label.destroyed?
       redirect_to project_labels_path(@project), status: :found,
-        notice: format(_('%{label_name} was removed'), label_name: @label.name)
+        notice: format(_('%{label_name} was removed'), label_name: label.name)
     else
       redirect_to project_labels_path(@project), status: :found,
-        alert: @label.errors.full_messages.to_sentence
+        alert: label.errors.full_messages.to_sentence
     end
   end
 
@@ -165,8 +163,7 @@ class Projects::LabelsController < Projects::ApplicationController
   protected
 
   def label_params
-    allowed = [:title, :description, :color]
-    allowed << :archived if Feature.enabled?(:labels_archive, @project.group)
+    allowed = [:title, :description, :color, :archived]
     allowed << :lock_on_merge if @project.supports_lock_on_merge?
 
     params.require(:label).permit(allowed)
@@ -181,9 +178,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def find_labels
-    archived_param = if Feature.enabled?(:labels_archive, @project.group)
-                       params[:archived].nil? ? false : params[:archived]
-                     end
+    archived_param = params[:archived].nil? ? false : params[:archived]
 
     @available_labels ||= LabelsFinder.new(
       current_user,

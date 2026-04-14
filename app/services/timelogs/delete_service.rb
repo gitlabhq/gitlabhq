@@ -11,7 +11,7 @@ module Timelogs
     end
 
     def execute
-      unless can?(current_user, :admin_timelog, timelog)
+      unless can?(current_user, :delete_timelog, timelog)
         return error(_("Timelog doesn't exist or you don't have permission to delete it"), 404)
       end
 

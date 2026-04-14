@@ -74,7 +74,7 @@ Prerequisites:
   cannot weigh the content of open tabs more heavily than other files in your project.
 - A supported extension:
   - GitLab for VS Code extension 6.2.2 or later.
-  - GitLab plugin for JetBrains IDEs 3.6.5 or later.
+  - GitLab Duo plugin for JetBrains IDEs 3.6.5 or later.
   - GitLab plugin for Neovim 1.1.0 or later.
   - GitLab for Visual Studio extension 0.51.0 or later.
 
@@ -84,11 +84,11 @@ To change open files being used as context:
 
 {{< tab title="Visual Studio Code" >}}
 
-1. In the top bar, go to **Code** > **Settings** > **Extensions**.
-1. Search for **GitLab** in the list, and select the gear icon.
-1. Select **Settings**.
-1. In your **User** settings, search for `open tabs`.
-1. Under **GitLab** > **Duo Code Suggestions: Open Tabs Context**,
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Code Suggestions: Open Tabs Context**,
    select or clear **Use the contents of open tabs as context**.
 
 {{< /tab >}}

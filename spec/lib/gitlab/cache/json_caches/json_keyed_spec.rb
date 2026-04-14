@@ -39,6 +39,15 @@ RSpec.describe Gitlab::Cache::JsonCaches::JsonKeyed, feature_category: :shared d
   end
 
   describe '#read' do
+    it 'uses safe_parse for cached JSON values' do
+      cached_value = json_value(true)
+      allow(backend).to receive(:read).with(expanded_key).and_return(cached_value)
+
+      expect(Gitlab::Json).to receive(:safe_parse).with(cached_value).and_call_original
+
+      cache.read(key)
+    end
+
     context 'when the cached value is a hash' do
       it 'returns nil when the data is not in a nested structure' do
         allow(backend).to receive(:read).with(expanded_key).and_return(%w[a b].to_json)
@@ -68,6 +77,15 @@ RSpec.describe Gitlab::Cache::JsonCaches::JsonKeyed, feature_category: :shared d
   end
 
   describe '#write' do
+    it 'uses safe_parse when merging with an existing cached value' do
+      current_cache = { '_other_revision_' => '_other_value_' }.to_json
+      allow(backend).to receive(:read).with(expanded_key).and_return(current_cache)
+
+      expect(Gitlab::Json).to receive(:safe_parse).with(current_cache).and_call_original
+
+      cache.write(key, broadcast_message)
+    end
+
     context 'when there is an existing value in the cache' do
       it 'preserves the existing value when writing a different key' do
         current_cache = { '_other_revision_' => broadcast_message }

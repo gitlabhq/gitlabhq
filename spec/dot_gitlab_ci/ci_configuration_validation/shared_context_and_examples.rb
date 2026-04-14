@@ -124,7 +124,6 @@ RSpec.shared_examples 'merge train pipeline' do
   let(:ci_merge_request_event_type) { 'merge_train' }
   let(:expected_job_names) do
     %w[
-      dont-interrupt-me
       pre-merge-checks
     ]
   end

@@ -127,6 +127,71 @@ Signing in to the main GitLab application sets a `_gitlab_session` session cooki
 The [interactive GraphQL explorer](#interactive-graphql-explorer) and the web frontend of
 GitLab itself use this method of authentication.
 
+### Authorization
+
+After you authenticate, the GraphQL API checks your permissions
+for each requested resource. How the API reports authorization
+failures depends on the operation type.
+
+#### Query fields
+
+Query fields return `null` when you do not have permission to
+access a resource. The response does not include an error message.
+
+This behavior is intentional. The API returns the same `null`
+response for unauthorized and nonexistent resources, so that
+clients cannot enumerate which resources exist on the server.
+
+For example, if you query a field that requires a role or add-on
+that you do not have, no entry is displayed in the `errors` array:
+
+```json
+{
+  "data": {
+    "group": {
+      "fieldRequiringPermission": null
+    }
+  }
+}
+```
+
+For [connection fields](getting_started.md#pagination) that use the Relay pagination pattern, you can
+distinguish between an authorization failure and an empty result:
+
+- `"field": null` means you do not have permission to access this resource.
+- `"field": { "nodes": [] }` means you have permission, but no data matches your query.
+
+If you receive an unexpected `null`, verify that:
+
+- Your token has the required [scopes](#token-scopes).
+- Your role meets the minimum access level documented in the
+  [GraphQL API reference](reference/_index.md).
+- Your instance has the required subscription tier, features,
+  or add-ons enabled.
+
+#### Mutations
+
+Mutations return an error message when authorization fails.
+The error appears in the top-level `errors` array alongside a
+`null` data field:
+
+```json
+{
+  "data": {
+    "mutationName": null
+  },
+  "errors": [
+    {
+      "message": "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+      "locations": [{ "line": 2, "column": 3 }],
+      "path": ["mutationName"]
+    }
+  ]
+}
+```
+
+The error message may differ depending on the resource type.
+
 ## Object identifiers
 
 The GitLab GraphQL API uses a mix of identifiers.

@@ -54,7 +54,7 @@ access the project.
 > [!note]
 > On GitLab.com, the `Internal` visibility setting is disabled for new projects, groups,
 > and snippets. Existing snippets using the `Internal` visibility setting keep this setting.
-> You can read more about the change in the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+> For more information, see [issue 12388](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 For personal snippets, the snippet's visibility setting controls access directly:
 
@@ -67,7 +67,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
 
 1. Select the kind of snippet you want to create:
    - To create a personal snippet, do one of the following:
-     - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
+     - On the [snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
      - From a project: In the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
      - From any other page: In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
      - From the `glab` CLI, using the
@@ -174,7 +174,7 @@ Snippets with multiple files display a file count in the [snippet list](https://
 ![A tooltip displaying details of a GitLab snippet.](img/snippet_tooltip_v17_4.png)
 
 You can manage snippets with Git (because they're [versioned](#versioned-snippets)
-by a Git repository), through the [Snippets API](../api/snippets.md), and in the GitLab UI.
+by a Git repository), through the [snippets API](../api/snippets.md), and in the GitLab UI.
 
 To add a new file to your snippet through the GitLab UI:
 
@@ -286,8 +286,8 @@ GitLab forwards the spam to Akismet.
 - Git tags are not supported in snippet repositories.
 - Snippets' repositories are limited to 10 files. Attempting to push more
   than 10 files results in an error.
-- Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
-  for updates.
+- Revisions are not visible to the user on the GitLab UI, but [issue 39271](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
+  proposes updates.
 - The default [maximum size for a snippet](../administration/snippets/_index.md) and current (as of 2024-04-17) is 50 MB.
 - Git LFS is not supported.
 
@@ -307,7 +307,7 @@ creating a new snippet, use this workaround:
 1. Enter a title for your snippet.
 1. Scroll to the bottom of the **Files** field, then select
    **Add another file**. GitLab displays a second set of fields to add a second file.
-1. In the filename field for the second file, enter a filename to avoid a [known copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
+1. In the filename field for the second file, enter a filename to avoid [issue 22870](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
 1. Enter any string into the text area for the second file.
 1. Scroll back to the first filename, and select **Delete file**.
 1. Create the rest of your file, and select **Create snippet** when done.

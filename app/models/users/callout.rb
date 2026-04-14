@@ -119,7 +119,7 @@ module Users
       merge_request_dashboard_show_drafts: 115,
       focused_vulnerability_reporting: 116,
       expired_trial_status_widget: 117, # EE-only
-      work_item_consolidated_list_feedback: 118,
+      # 118 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227569
       # 119 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221219
       vulnerability_report_limited_experience: 120, # EE-only
       file_tree_browser_popover: 121,

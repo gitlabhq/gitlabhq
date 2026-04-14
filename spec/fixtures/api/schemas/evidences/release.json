@@ -7,7 +7,8 @@
     "description",
     "created_at",
     "project",
-    "milestones"
+    "milestones",
+    "packages"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -19,6 +20,10 @@
     "milestones": {
       "type": "array",
       "items": { "$ref": "milestone.json" }
+    },
+    "packages": {
+      "type": "array",
+      "items": { "$ref": "package.json" }
     },
     "report_artifacts": {
       "type": "array",

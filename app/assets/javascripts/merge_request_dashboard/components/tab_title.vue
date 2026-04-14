@@ -1,6 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
-import { camelCase } from 'lodash';
+import { camelCase } from 'lodash-es';
 import { QUERIES } from '../constants';
 
 export default {

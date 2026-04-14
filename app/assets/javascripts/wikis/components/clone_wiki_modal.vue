@@ -44,6 +44,11 @@ export default {
       required: false,
       default: false,
     },
+    modalId: {
+      type: String,
+      required: false,
+      default: 'clone-wiki-modal',
+    },
   },
   computed: {
     httpLabel() {
@@ -73,11 +78,7 @@ export default {
 
 <template>
   <div v-if="cloneSshUrl || cloneHttpUrl">
-    <gl-disclosure-dropdown-item
-      v-if="showAsDropdownItem"
-      v-gl-modal="$options.modal.modalId"
-      :item="listItem"
-    >
+    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" v-gl-modal="modalId" :item="listItem">
       <template #list-item>
         <gl-icon name="branch" class="gl-mr-2" variant="subtle" />
         {{ listItem.text }}
@@ -85,7 +86,7 @@ export default {
     </gl-disclosure-dropdown-item>
     <gl-button
       v-else
-      v-gl-modal="$options.modal.modalId"
+      v-gl-modal="modalId"
       category="secondary"
       variant="confirm"
       data-testid="page-clone-button"
@@ -93,7 +94,7 @@ export default {
       {{ listItem.text }}
     </gl-button>
 
-    <gl-modal :modal-id="$options.modal.modalId" hide-footer>
+    <gl-modal :modal-id="modalId" hide-footer>
       <template #modal-title>
         <h3 class="gl-heading-4 !gl-m-0" data-testid="wiki-clone-modal-title">
           {{ $options.i18n.steps.step1 }}

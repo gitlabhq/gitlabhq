@@ -11,6 +11,23 @@ module ActiveContext
         def search(_)
           raise NotImplementedError
         end
+
+        private
+
+        def log_search(collection:)
+          start_time = Time.current
+          result = yield
+          duration_s = Time.current - start_time
+
+          ActiveContext::Logger.info(
+            message: 'ActiveContext client search completed',
+            collection: collection,
+            duration_s: duration_s.round(3),
+            result_count: result.count
+          )
+
+          result
+        end
       end
     end
   end

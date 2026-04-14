@@ -1,5 +1,6 @@
 description: Permissions that are disabled when a project is archived
 permissions:
+  - _delete_authored_timelog
   - admin_ai_catalog_item
   - admin_approvers
   - admin_build
@@ -69,6 +70,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_timelog
   - destroy_approvers
   - destroy_build
   - destroy_cluster

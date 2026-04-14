@@ -29,8 +29,8 @@
 module BulkImports
   class CreateService
     ENTITY_TYPES_MAPPING = {
-      'group_entity' => 'groups',
-      'project_entity' => 'projects'
+      Entity::GROUP_ENTITY_SOURCE_TYPE => 'groups',
+      Entity::PROJECT_ENTITY_SOURCE_TYPE => 'projects'
     }.freeze
 
     attr_reader :current_user, :params, :credentials, :fallback_organization
@@ -60,7 +60,6 @@ module BulkImports
       BulkImportWorker.perform_async(bulk_import.id)
 
       ServiceResponse.success(payload: bulk_import)
-
     rescue ActiveRecord::RecordInvalid, BulkImports::Error, BulkImports::NetworkError => e
       ServiceResponse.error(
         message: e.message,
@@ -77,6 +76,7 @@ module BulkImports
       client.validate_import_scopes!
       validate_source_full_path!
       validate_setting_enabled!
+      validate_import_destinations!
     end
 
     def create_bulk_import
@@ -92,12 +92,6 @@ module BulkImports
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 
         Array.wrap(params).each do |entity_params|
-          track_access_level(entity_params)
-
-          validate_destination_namespace(entity_params)
-          validate_destination_slug(entity_params[:destination_slug] || entity_params[:destination_name])
-          validate_destination_full_path(entity_params)
-
           BulkImports::Entity.create!(
             bulk_import: bulk_import,
             organization: organization(entity_params[:destination_namespace]),
@@ -150,69 +144,26 @@ module BulkImports
     end
 
     def track_access_level(entity_params)
-      Gitlab::Tracking.event(
-        self.class.name,
-        'create',
-        label: 'import_access_level',
-        user: current_user,
-        extra: { user_role: user_role(entity_params[:destination_namespace]), import_type: 'bulk_import_group' }
-      )
+      ::Import::Framework::UserRoleTracker
+        .new(current_user: current_user, tracking_class_name: self.class.name, import_type: 'bulk_import_group')
+        .track(entity_params[:destination_namespace])
     end
 
-    def validate_destination_namespace(entity_params)
-      destination_namespace = entity_params[:destination_namespace]
-      source_type = entity_params[:source_type]
+    def validate_import_destinations!
+      Array.wrap(params).each do |entity_params|
+        track_access_level(entity_params)
 
-      return if destination_namespace.blank?
-
-      group = Group.find_by_full_path(destination_namespace)
-      if group.nil? ||
-          (source_type == 'group_entity' && !current_user.can?(:create_subgroup, group)) ||
-          (source_type == 'project_entity' && !current_user.can?(:import_projects, group))
-        raise BulkImports::Error.destination_namespace_validation_failure(destination_namespace)
+        destination_validator.validate!(
+          entity_params[:destination_namespace],
+          entity_params[:destination_slug],
+          entity_params[:destination_name],
+          entity_params[:source_type]
+        )
       end
     end
 
-    def validate_destination_slug(destination_slug)
-      return if Gitlab::Regex.oci_repository_path_regex.match?(destination_slug)
-
-      raise BulkImports::Error.destination_slug_validation_failure
-    end
-
-    def validate_destination_full_path(entity_params)
-      source_type = entity_params[:source_type]
-
-      full_path = [
-        entity_params[:destination_namespace],
-        entity_params[:destination_slug] || entity_params[:destination_name]
-      ].reject(&:blank?).join('/')
-
-      case source_type
-      when 'group_entity'
-        return if Namespace.find_by_full_path(full_path).nil?
-      when 'project_entity'
-        return if Project.find_by_full_path(full_path).nil?
-      end
-
-      raise BulkImports::Error.destination_full_path_validation_failure(full_path)
-    end
-
-    def user_role(destination_namespace)
-      namespace = Namespace.find_by_full_path(destination_namespace)
-      # if there is no parent namespace we assume user will be group creator/owner
-      return owner_role unless destination_namespace
-      return owner_role unless namespace
-      return owner_role unless namespace.group_namespace? # user namespace
-
-      membership = current_user.group_members.find_by(source_id: namespace.id) # rubocop:disable CodeReuse/ActiveRecord
-
-      return 'Not a member' unless membership
-
-      Gitlab::Access.human_access(membership.access_level)
-    end
-
-    def owner_role
-      Gitlab::Access.human_access(Gitlab::Access::OWNER)
+    def destination_validator
+      @destination_validator ||= ::Import::Framework::DestinationValidator.new(current_user: current_user)
     end
 
     def client

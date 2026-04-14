@@ -150,4 +150,21 @@ RSpec.describe Gitlab::Access::DefaultBranchProtection, feature_category: :sourc
       expect(described_class.new({ developer_can_initial_push: false }).developer_can_initial_push?).to be_falsey
     end
   end
+
+  describe '#can_initial_push?' do
+    where(:setting, :member_access, :result) do
+      Gitlab::Access::BranchProtection.protection_none                    | Gitlab::Access::DEVELOPER  | true
+      Gitlab::Access::BranchProtection.protection_partial                 | Gitlab::Access::DEVELOPER  | true
+      Gitlab::Access::BranchProtection.protected_fully                    | Gitlab::Access::DEVELOPER  | false
+      Gitlab::Access::BranchProtection.protected_after_initial_push       | Gitlab::Access::DEVELOPER  | true
+      Gitlab::Access::BranchProtection.protected_against_developer_pushes | Gitlab::Access::DEVELOPER  | false
+      Gitlab::Access::BranchProtection.protected_fully                    | Gitlab::Access::MAINTAINER | true
+      Gitlab::Access::BranchProtection.protected_fully                    | Gitlab::Access::GUEST      | false
+      Gitlab::Access::BranchProtection.protected_fully                    | Gitlab::Access::REPORTER   | false
+    end
+
+    with_them do
+      it { expect(described_class.new(setting).can_initial_push?(member_access)).to eq(result) }
+    end
+  end
 end

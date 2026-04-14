@@ -73,11 +73,11 @@ RSpec.describe Ability, feature_category: :system_access do
       end
 
       it 'returns external users if they are the project owner' do
-        user1 = build(:user, external: true)
-        user2 = build(:user, external: true)
+        user1 = build_stubbed(:user, external: true)
+        user2 = build_stubbed(:user, external: true)
         users = [user1, user2]
 
-        expect(project).to receive(:owner).at_least(:once).and_return(user1)
+        allow(project).to receive_message_chain(:namespace, :owner_id).and_return(user1.id)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])
@@ -122,11 +122,11 @@ RSpec.describe Ability, feature_category: :system_access do
       end
 
       it 'returns external users if they are the project owner' do
-        user1 = build(:user, external: true)
-        user2 = build(:user, external: true)
+        user1 = build_stubbed(:user, external: true)
+        user2 = build_stubbed(:user, external: true)
         users = [user1, user2]
 
-        expect(project).to receive(:owner).at_least(:once).and_return(user1)
+        allow(project).to receive_message_chain(:namespace, :owner_id).and_return(user1.id)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])

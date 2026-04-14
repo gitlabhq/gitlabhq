@@ -39,22 +39,6 @@ export const getNoteFormErrorMessages = (response, messages) => {
   return [defaultErrorMessage || COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK];
 };
 
-export const createNoteErrorMessages = (data, status) => {
-  const errors = data?.errors;
-
-  if (status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
-    if (data.quick_actions_status?.error_messages?.length) {
-      return data.quick_actions_status.error_messages;
-    }
-
-    if (errors) {
-      return [sprintf(COMMENT_FORM.error, { reason: errors.toLowerCase() }, false)];
-    }
-  }
-
-  return [COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK];
-};
-
 export const updateNoteErrorMessage = (e) => {
   const errors = e?.response?.data?.errors;
 

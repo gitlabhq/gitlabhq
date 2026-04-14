@@ -6,7 +6,7 @@ import {
   GlDisclosureDropdown,
   GlButton,
 } from '@gitlab/ui';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';

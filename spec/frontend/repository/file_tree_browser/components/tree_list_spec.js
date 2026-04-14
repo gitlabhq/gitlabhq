@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';

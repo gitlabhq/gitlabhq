@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "last_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_changed_by_user_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "last_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deletion_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deletion_scheduled_by_user_id": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false
+}

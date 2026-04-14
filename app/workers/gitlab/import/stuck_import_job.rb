@@ -68,7 +68,8 @@ module Gitlab
           error_source: self.class.name,
           fail_import: true,
           message: 'Marking stuck import job as failed',
-          extra_attributes: { jid: import_state.jid }
+          capture_exception: false,
+          extra_attributes: { jid: import_state.jid, mirror: import_state.project.mirror }
         )
       end
 

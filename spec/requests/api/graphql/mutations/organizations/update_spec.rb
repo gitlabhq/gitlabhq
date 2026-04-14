@@ -28,6 +28,12 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :organization
 
   it { expect(described_class).to require_graphql_authorizations(:admin_organization) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_organization do
+    let(:boundary_object) { :instance }
+    let(:mutation) { graphql_mutation(:organization_update, params, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   def mutation_response
     graphql_mutation_response(:organization_update)
   end

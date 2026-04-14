@@ -1,11 +1,11 @@
 - merge_request = local_assigns.fetch(:issuable)
 
-- popover_title = s_("What is squashing?")
+- popover_title = _("What is squashing?")
 - popover_content = capture do
   %p.gl-mb-0
-    = s_("Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.")
+    = _("Squashing combines multiple commits into a single commit on merge. This keeps your repository history clean and makes it easier to revert changes.")
 
-  = link_to s_("Learn more"), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
+  = link_to _("Learn more"), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
 
 - popover_data = { container: 'body', toggle: 'popover', placement: "top", html: 'true', triggers: 'hover focus', title: popover_title, content: popover_content }
 

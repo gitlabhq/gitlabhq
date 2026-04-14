@@ -111,7 +111,7 @@ image: node:20-alpine
 If you use a custom Docker image, ensure that the following commands are available for the agent to function correctly:
 
 - `git`
-- `npm`
+- `npm` with a Node.js version compatible with `@gitlab/duo-cli`. For more information, see [GitLab Duo CLI prerequisites](../../gitlab_duo_cli/_index.md#install).
 
 Most base images include these commands by default. However, minimal images (like `alpine` variants)
 might require you to install them explicitly. If needed, you can install missing commands in the
@@ -267,6 +267,7 @@ cache:
 # Network configuration
 network_policy:
   include_recommended_allowed: true
+  allow_all_unix_sockets: true
   allowed_domains:
     - my-own-site.com
   denied_domains:

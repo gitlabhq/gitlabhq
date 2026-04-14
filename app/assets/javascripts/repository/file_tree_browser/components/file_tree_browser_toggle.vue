@@ -28,6 +28,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      suppressTooltip: false,
+    };
+  },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, [
       'fileTreeBrowserIsVisible',
@@ -61,6 +66,11 @@ export default {
     restoreToggleFocus() {
       this.$refs.toggle?.$el?.focus();
       this.clearRestoreFocusFlag();
+
+      this.suppressTooltip = true;
+      setTimeout(() => {
+        this.suppressTooltip = false;
+      }, 0);
     },
     onClickToggle() {
       this.handleFileTreeBrowserToggleClick();
@@ -87,7 +97,7 @@ export default {
     @click="onClickToggle"
   >
     <gl-tooltip
-      v-if="!isAnimating"
+      v-if="!isAnimating && !suppressTooltip"
       custom-class="gl-tooltip file-browser-toggle-tooltip"
       :target="target"
       placement="left"

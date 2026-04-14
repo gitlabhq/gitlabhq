@@ -143,9 +143,9 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
         move_to_position.click
 
         click_button 'Move to end of list'
-      end
 
-      expect(all('.board-card').last).to have_content(issue3.title)
+        expect(page).to have_selector('.board-card:last-child', text: issue3.title)
+      end
     end
 
     it 'moves to start of list' do
@@ -156,9 +156,9 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
         move_to_position.click
 
         click_button 'Move to start of list'
-      end
 
-      expect(all('.board-card').first).to have_content(issue1.title)
+        expect(page).to have_selector('.board-card:first-child', text: issue1.title)
+      end
     end
   end
 

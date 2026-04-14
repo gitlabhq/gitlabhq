@@ -38,7 +38,7 @@ module RuboCop
 
         return false if tests_code.blank?
         return false unless tests_code.match?(stub_experiments_matcher)
-        return false unless tests_code.include?(experiment_name(node))
+        return false unless tests_code.match?(experiment_name_matcher(node))
 
         experiment_variants(node).map { |variant| tests_code.include?(variant) }.all?(&:present?)
       end
@@ -70,12 +70,15 @@ module RuboCop
         File.exist?(file_path) ? File.read(file_path) : ''
       end
 
-      def experiment_name(node)
-        if node.is_a?(RuboCop::AST::ClassNode)
-          File.basename(filepath, '_experiment.rb')
-        else
-          block_node_value(node)
-        end
+      def experiment_name_matcher(node)
+        name = if node.is_a?(RuboCop::AST::ClassNode)
+                 File.basename(filepath, '_experiment.rb')
+               else
+                 block_node_value(node)
+               end
+
+        # validates that test files contain the experiment name or a method to get the experiment name
+        /(#{name}|described_class\.experiment_name)/
       end
 
       def experiment_variants(node)

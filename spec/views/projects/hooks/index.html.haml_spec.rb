@@ -32,7 +32,7 @@ RSpec.describe 'projects/hooks/index' do
     it 'renders "Rate limited" badge' do
       render
 
-      expect(rendered).to have_css('.gl-badge', text: _('Webhooks|Rate limited'))
+      expect(rendered).to have_css('.gl-badge', text: s_('Webhooks|Rate limited'))
     end
   end
 

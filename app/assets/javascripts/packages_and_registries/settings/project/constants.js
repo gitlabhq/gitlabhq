@@ -110,11 +110,17 @@ export const CADENCE_OPTIONS = [
 ];
 
 export const OLDER_THAN_OPTIONS = [
+  { key: 'ONE_DAY', variable: 1, default: false },
+  { key: 'THREE_DAYS', variable: 3, default: false },
   { key: 'SEVEN_DAYS', variable: 7, default: false },
   { key: 'FOURTEEN_DAYS', variable: 14, default: false },
   { key: 'THIRTY_DAYS', variable: 30, default: false },
   { key: 'SIXTY_DAYS', variable: 60, default: false },
   { key: 'NINETY_DAYS', variable: 90, default: true },
+  { key: 'ONE_HUNDRED_EIGHTY_DAYS', variable: 180, default: false },
+  { key: 'THREE_HUNDRED_SIXTY_FIVE_DAYS', variable: 365, default: false },
+  { key: 'SEVEN_HUNDRED_THIRTY_DAYS', variable: 730, default: false },
+  { key: 'ONE_THOUSAND_NINETY_FIVE_DAYS', variable: 1095, default: false },
 ];
 
 // Needs to be an empty string instead of `null` for @vue/compat. The value

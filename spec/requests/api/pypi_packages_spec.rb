@@ -380,17 +380,6 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_pypi_package do
-      before_all do
-        project.add_developer(user)
-      end
-
-      let(:boundary_object) { project }
-      let(:request) do
-        post api(url), headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers)
-      end
-    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/pypi' do

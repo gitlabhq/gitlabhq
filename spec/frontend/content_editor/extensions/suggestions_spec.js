@@ -1,5 +1,7 @@
+import tippy from 'tippy.js';
 import { Plugin as MockPMPlugin } from '@tiptap/pm/state';
 import Suggestions from '~/content_editor/extensions/suggestions';
+
 import { createTestEditor } from '../test_utils';
 
 jest.mock('@tiptap/suggestion', () => {
@@ -11,6 +13,8 @@ jest.mock('@tiptap/suggestion', () => {
   mock.getCaptured = () => captured;
   return mock;
 });
+
+jest.mock('tippy.js');
 
 describe('content_editor/extensions/suggestions', () => {
   let editor;
@@ -95,6 +99,43 @@ describe('content_editor/extensions/suggestions', () => {
       const result = await items({ query: 'a', editor: mockEditorCtx() });
 
       expect(result.map((r) => r.name)).toEqual(['beta', 'alpha', 'zebra']);
+    });
+  });
+
+  describe('popup positioning', () => {
+    it('tippy menu keyboard navigation prevents page scrolling on smaller viewports', () => {
+      tippy.mockReturnValue([{ setProps: jest.fn(), destroy: jest.fn(), hide: jest.fn() }]);
+
+      buildEditorWithExtension([]);
+
+      const SuggestionMock = jest.requireMock('@tiptap/suggestion');
+      const config = SuggestionMock.getCaptured().find((c) => c.char === '/');
+      const handlers = config.render();
+
+      handlers.onBeforeStart({
+        editor: { view: { dom: document.createElement('div') } },
+        clientRect: () => new DOMRect(0, 0, 100, 20),
+        items: [],
+        command: jest.fn(),
+      });
+
+      const tippyConfig = tippy.mock.calls[0][1];
+
+      expect(tippyConfig).toMatchObject({
+        placement: 'bottom-start',
+        popperOptions: {
+          modifiers: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'flip',
+              options: { fallbackPlacements: ['top-start'] },
+            }),
+            expect.objectContaining({
+              name: 'preventOverflow',
+              options: { boundary: 'clippingParents' },
+            }),
+          ]),
+        },
+      });
     });
   });
 });

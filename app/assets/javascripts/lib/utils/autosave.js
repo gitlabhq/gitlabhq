@@ -1,4 +1,4 @@
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 const normalizeKey = (autosaveKey) => {

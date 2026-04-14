@@ -251,5 +251,11 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
 
       expect { service.execute }.not_to exceed_query_limit(control)
     end
+
+    describe '#exporters' do
+      it 'includes MaxIidsSaver' do
+        expect(service.exporters).to include(an_instance_of(Gitlab::ImportExport::Project::MaxIidsSaver))
+      end
+    end
   end
 end

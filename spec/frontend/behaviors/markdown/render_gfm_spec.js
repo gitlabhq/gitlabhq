@@ -3,6 +3,7 @@ import { renderGlql } from '~/behaviors/markdown/render_glql';
 import { renderJSONTable } from '~/behaviors/markdown/render_json_table';
 import { renderImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
 import renderSandboxedMermaid from '~/behaviors/markdown/render_sandboxed_mermaid';
+import renderStickyTableHeaders from '~/behaviors/markdown/render_table_headers';
 
 jest.mock('~/behaviors/markdown/render_glql', () => ({
   renderGlql: jest.fn(),
@@ -18,6 +19,8 @@ jest.mock('~/behaviors/markdown/render_image_lightbox', () => ({
 }));
 
 jest.mock('~/behaviors/markdown/render_sandboxed_mermaid', () => jest.fn());
+
+jest.mock('~/behaviors/markdown/render_table_headers', () => jest.fn());
 
 describe('renderGFM', () => {
   it('handles a missing element', () => {
@@ -101,6 +104,31 @@ describe('renderGFM', () => {
 
       const images = Array.from(element.querySelectorAll('a>img'));
       expect(renderImageLightbox).toHaveBeenCalledWith(images, element);
+    });
+  });
+
+  describe('rendering sticky table headers', () => {
+    let element;
+
+    beforeEach(() => {
+      element = document.createElement('div');
+      element.innerHTML = `
+        <table>
+          <thead><tr><th>Header 1</th><th>Header 2</th></tr></thead>
+          <tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>
+        </table>
+        <table class="code">
+          <thead><tr><th>Code Header</th></tr></thead>
+          <tbody><tr><td>Code Data</td></tr></tbody>
+        </table>
+      `;
+    });
+
+    it('calls renderStickyTableHeaders with non-code tables', () => {
+      renderGFM(element);
+
+      const tables = Array.from(element.querySelectorAll('table:not(.code)'));
+      expect(renderStickyTableHeaders).toHaveBeenCalledWith(tables);
     });
   });
 });

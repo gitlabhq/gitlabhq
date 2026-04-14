@@ -205,6 +205,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         expect(feature['meta_info_path']).to be_nil
         expect(feature['on_demand_available']).to eq(false)
         expect(feature['security_features']).not_to be_empty
+        expect(feature['can_user_configure']).to eq(false)
       end
 
       context 'when checking features configured status' do

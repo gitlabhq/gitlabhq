@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
-title: Sign-up restrictions
+title: New user account restrictions
 ---
 
 {{< details >}}
@@ -13,50 +13,50 @@ title: Sign-up restrictions
 
 {{< /details >}}
 
-You can enforce the following restrictions on sign ups:
+You can enforce the following restrictions on new user accounts:
 
-- Disable new sign ups.
-- Require administrator approval for new sign ups.
+- Prevent account creation.
+- Require administrator approval for new accounts.
 - Require user email confirmation.
-- Allow or deny sign ups using specific email domains.
+- Allow or deny new accounts that use specific email domains.
 
 ## Prerequisites
 
 You must have administrator access.
 
-## Disable new sign ups
+## Disable new user account creation
 
-By default, any user visiting your GitLab domain can sign up for an account. For customers running
-public-facing GitLab instances, we highly recommend that you consider disabling new sign ups if
-you do not expect public users to sign up for an account. For GitLab Dedicated, new sign ups are
-disabled by default when your instance is provisioned.
+By default, any user visiting your GitLab domain can create an account. For customers running
+public-facing GitLab instances, we highly recommend that you consider disabling new accounts if
+you do not expect public users to create accounts. For GitLab Dedicated, new account creation is
+prevented by default when your instance is provisioned.
 
-To disable sign ups:
+To prevent new account creation:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
-1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
+1. Expand **New user account restrictions**.
+1. Clear the **Allow new user accounts** checkbox, then select **Save changes**.
 
-You can also disable new sign ups with the [Rails console](../operations/rails_console.md) by running the following command:
+You can also prevent new user accounts with the [Rails console](../operations/rails_console.md) by running the following command:
 
 ```ruby
 ::Gitlab::CurrentSettings.update!(signup_enabled: false)
 ```
 
-## Require administrator approval for new sign ups
+## Require administrator approval for new user accounts
 
 This setting is enabled by default for new GitLab instances.
 When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
-must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
-administrator before they can start using their account. It is only applicable if sign ups are enabled.
+must be explicitly [approved](../moderate_users.md#approve-or-reject-a-new-user-account) by an
+administrator before they can start using their account. It is only applicable if user accounts are allowed.
 
-To require administrator approval for new sign ups:
+To require administrator approval for new user accounts:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
-1. Select the **Require admin approval for new sign-ups** checkbox, then select **Save changes**.
+1. Expand **New user account restrictions**.
+1. Select the **Require admin approval for new user accounts** checkbox, then select **Save changes**.
 
 If an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
@@ -76,21 +76,21 @@ automatically approved in a background job.
 
 {{< /history >}}
 
-You can send confirmation emails during sign up and require that users confirm
+You can send confirmation emails upon account creation and require that users confirm
 their email address before they are allowed to sign in.
 
-To enforce confirmation of the email address used for new sign ups:
+To enforce confirmation of the email address used for new accounts:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
 
 The following settings are available:
 
-- **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can sign in.
-- **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
-- **Off** - New users can sign up without confirming their email address.
+- **Hard** - Send a confirmation email during account creation. New users must confirm their email address before they can sign in.
+- **Soft** - Send a confirmation email during account creation. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
+- **Off** - New users can sign in without confirming their email address.
 
 ## Restricted access
 
@@ -129,7 +129,7 @@ Prerequisites:
 To turn on restricted access:
 
 1. In the left sidebar, select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. Under **Seat control**, select **Restricted access**.
 
 When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on. This setting prevents unexpectedly adding new billable users, which might result in overage fees.
@@ -152,7 +152,7 @@ Users with the Minimal Access role can authenticate and access the group, but ha
 When seats become available, the users can be promoted to their intended access level.
 Existing users with billable roles are not affected by this behavior.
 
-You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+You can [view seat usage](../../subscriptions/manage_seats.md#view-seat-usage) and manage users with Minimal Access.
 
 ### Known issues
 
@@ -181,21 +181,22 @@ Additionally, restricted access might block the standard non-overage flows:
 
 {{< /details >}}
 
-The user cap is the maximum number of billable users who can sign up or be added to a subscription
-without administrator approval. After the user cap is reached, users who sign up or are
-added must be [approved](../moderate_users.md#approve-or-reject-a-user-sign-up)
+The user cap is the maximum number of billable users who can create accounts or be added to a subscription
+without administrator approval. After the user cap is reached, users who create accounts or are
+added must be [approved](../moderate_users.md#approve-or-reject-a-new-user-account)
 by an administrator. Users can use their account only after they have been approved by an administrator.
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
-The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
+The number of [billable users](../../subscriptions/manage_seats.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
 If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
 > [!note]
-> For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
+> For instances that use LDAP or OmniAuth, when
+> [administrator approval for new user accounts](#require-administrator-approval-for-new-user-accounts)
 > is enabled or disabled, downtime might occur due to changes in the Rails configuration.
 > You can set a user cap to enforce approvals for new users.
 
@@ -209,13 +210,13 @@ To set a user cap:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. In the **User cap** field, enter a number or leave blank for unlimited.
 1. Select **Save changes**.
 
 ### Remove the user cap
 
-Remove the user cap so that the number of new users who can sign up without
+Remove the user cap so that the number of new users who can create accounts without
 administrator approval is not restricted.
 
 After you remove the user cap, users pending approval are automatically approved.
@@ -228,7 +229,7 @@ To remove the user cap:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
 
@@ -252,7 +253,7 @@ To modify password complexity requirements:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. Modify the complexity requirements:
 
    | Setting | Description |
@@ -265,17 +266,17 @@ To modify password complexity requirements:
 
 1. Select **Save changes**.
 
-## Allow or deny sign ups using specific email domains
+## Allow or deny account creation by using specific email domains
 
-You can specify an inclusive or exclusive list of email domains which can be used for user sign up.
+You can specify an inclusive or exclusive list of email domains that can be used for new user accounts.
 
-These restrictions are only applied during sign up from an external user. An administrator can add a
+These restrictions are only applied during new account creation by an external user. An administrator can add a
 user through the administrator panel with a disallowed domain. The users can also change their
-email addresses to disallowed domains after sign up.
+email addresses to disallowed domains after they create an account.
 
 ### Allowlist email domains
 
-You can restrict users only to sign up using email addresses matching the given
+You can restrict users to creating user accounts with email addresses that match the given
 domains list.
 
 ### Denylist email domains
@@ -289,7 +290,7 @@ To create an email domain allowlist or denylist:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list
    manually or upload a `.txt` file that contains list entries.
 
@@ -328,7 +329,7 @@ turn on administrator approval for role promotions. You can then approve or reje
 that are [pending administrator approval](../moderate_users.md#view-users-pending-role-promotion).
 
 - If an administrator adds a user to a group or project:
-  - If the new user role is [billable](../../subscriptions/manage_users_and_seats.md#billable-users),
+  - If the new user role is [billable](../../subscriptions/manage_seats.md#billable-users),
     all other membership requests for that user are automatically approved.
   - If the new user role is not billable, other requests for that user remain pending until administrator approval.
 - If a user who isn't an administrator adds a user to a group or project:
@@ -344,5 +345,12 @@ To turn on approvals for role promotions:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **Sign-up restrictions**.
+1. Expand **New user account restrictions**.
 1. In the **Seat control** section, select **Approve role promotions**.
+
+> [!note]
+> This approval requirement does not apply to memberships granted by
+> [LDAP synchronization](../auth/ldap/ldap_synchronization.md)
+> or [SAML group links](../../user/group/saml_sso/group_sync.md). Users who receive a role promotion
+> through LDAP or SAML do not require administrator approval, regardless of whether they previously
+> had a billable role.

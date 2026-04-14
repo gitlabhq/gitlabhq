@@ -2,7 +2,6 @@
 import { GlFormGroup, GlSprintf, GlDatepicker, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { localeDateFormat, setUTCTime } from '~/lib/utils/datetime_utility';
-import { defaultDate } from '~/vue_shared/access_tokens/utils';
 import { s__, __ } from '~/locale';
 
 export default {
@@ -37,9 +36,6 @@ export default {
     };
   },
   computed: {
-    defaultExpirationDate() {
-      return defaultDate(this.maxExpirationDate);
-    },
     formattedMaxDate() {
       return localeDateFormat.asDate.format(this.maxExpirationDate);
     },
@@ -48,11 +44,6 @@ export default {
       const diffInMilliseconds = this.maxExpirationDate - today;
       return Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
     },
-  },
-  mounted() {
-    if (!this.value) {
-      this.$emit('input', this.defaultExpirationDate);
-    }
   },
   methods: {},
   i18n: {
@@ -81,7 +72,7 @@ export default {
           <template #days>{{ daysBetween }}</template>
           <template #maxDate>{{ formattedMaxDate }}</template>
           <template #link="{ content }">
-            <gl-link :href="$options.tokenLifetimeHelpPage">{{ content }}</gl-link>
+            <gl-link :href="$options.tokenLifetimeHelpPage" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </span>
@@ -92,7 +83,6 @@ export default {
 
     <gl-datepicker
       :value="value"
-      :default-date="defaultExpirationDate"
       :show-clear-button="!maxExpirationDate"
       :max-date="maxExpirationDate"
       :min-date="minExpirationDate"

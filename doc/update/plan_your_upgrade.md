@@ -32,11 +32,15 @@ When planning the upgrade:
    - Create an upgrade and rollback plan for each Geo site (primary and each secondary).
 1. Determine the appropriate [upgrade path](upgrade_paths.md) for your instance, including any required upgrade stops.
    Upgrade stops might require you to perform multiple upgrades.
+1. Run [upgrade health checks](#run-upgrade-health-checks) to find and resolve potential issues early.
 1. Create an upgrade plan that documents:
    - The steps to take to upgrade your instance including, if possible and required, a
      [zero-downtime upgrade](zero_downtime.md).
    - The steps to take if the upgrade doesn't go smoothly including how to
      [roll back GitLab if necessary](#create-a-rollback-plan-and-backup).
+1. Test your upgrade plan in a clone of your production environment.
+   This helps reduce the risk of unplanned outages
+   and helps you measure the duration of [potentially long-running migrations](background_migrations.md#execute-a-migration).
 
 With all pre-upgrade information gathered, you can move on to performing pre-upgrade steps.
 
@@ -80,8 +84,7 @@ If restoring from a snapshot, you must already know how to do this. **This proce
 
 Shortly before you perform the upgrade:
 
-1. Test your upgrade in a test environment first to reduce the risk of unplanned outages and extended downtime.
-1. Run [upgrade health checks](#run-upgrade-health-checks).
+1. Rerun [upgrade health checks](#run-upgrade-health-checks).
 1. Perform [upgrades for any optional features](#upgrades-for-optional-features) that you use.
 
 ### Run upgrade health checks

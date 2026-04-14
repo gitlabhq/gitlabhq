@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"path"
 	"sort"
 	"strconv"
@@ -115,7 +116,11 @@ func GenerateZipMetadata(w io.Writer, archive *zip.Reader) error {
 }
 
 func writeBytes(output io.Writer, data []byte) error {
-	err := binary.Write(output, binary.BigEndian, uint32(len(data)))
+	n := uint64(len(data))
+	if n > math.MaxUint32 {
+		return fmt.Errorf("data too large: %d bytes exceeds maximum of %d", n, uint64(math.MaxUint32))
+	}
+	err := binary.Write(output, binary.BigEndian, uint32(n))
 	if err == nil {
 		_, err = output.Write(data)
 	}

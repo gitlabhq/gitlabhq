@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'digest'
 
 RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_security do
-  let(:service) { described_class.new(build) }
+  let(:publisher) { described_class.new(build) }
   let(:success_message) { "Attestations persisted" }
 
   include_context 'with mocked cosign execution'
@@ -14,7 +14,17 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
       let(:build) { nil }
 
       it 'raises the appropriate exception' do
-        expect { service }.to raise_exception(described_class::Error)
+        expect { publisher }.to raise_exception(described_class::Error)
+      end
+    end
+
+    context "when id_token is nil" do
+      before do
+        allow(build).to receive(:project).and_return(nil)
+      end
+
+      it 'raises the appropriate exception' do
+        expect { publisher }.to raise_exception(described_class::JwtGenerationError)
       end
     end
   end
@@ -24,14 +34,14 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
     let(:blob_name) { "test.txt" }
 
     subject(:cosign_attest_blob) do
-      service.send(:cosign_attest_blob, blob_name: 'test.txt', hash: hash)
+      publisher.send(:cosign_attest_blob, blob_name: 'test.txt', hash: hash)
     end
 
     context "when called normally" do
       it 'calls the validate* methods' do
-        expect(service).to receive(:validate_blob_name!).with(blob_name)
-        expect(service).to receive(:validate_hash!).with(hash)
-        expect(service).to receive(:validate_id_token!).with(id_token)
+        expect(publisher).to receive(:validate_blob_name!).with(blob_name)
+        expect(publisher).to receive(:validate_hash!).with(hash)
+        expect(publisher).to receive(:validate_id_token!).with(publisher.send(:id_token))
 
         cosign_attest_blob
       end
@@ -47,7 +57,7 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
   end
 
   describe '#validate_id_token!' do
-    subject(:validate_id_token) { service.send(:validate_id_token!, id_token) }
+    subject(:validate_id_token) { publisher.send(:validate_id_token!, id_token) }
 
     context "when an valid looking JWT is passed" do
       it 'does not raise_error when a valid JWT is passed' do
@@ -73,7 +83,7 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
   end
 
   describe '#validate_hash!' do
-    subject(:validate_hash) { service.send(:validate_hash!, hash) }
+    subject(:validate_hash) { publisher.send(:validate_hash!, hash) }
 
     context "when an valid SHA-256 is passed" do
       let(:hash) { "5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa" }
@@ -93,7 +103,7 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
   end
 
   describe '#validate_blob_name!' do
-    subject(:validate_blob_name) { service.send(:validate_blob_name!, blob_name) }
+    subject(:validate_blob_name) { publisher.send(:validate_blob_name!, blob_name) }
 
     context "when a valid base name is passed" do
       let(:blob_name) { "artifact.tar.gz" }
@@ -124,6 +134,21 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
 
       it 'raises an exception' do
         expect { validate_blob_name }.to raise_exception(Gitlab::PathTraversal::PathTraversalAttackError)
+      end
+    end
+  end
+
+  describe '#id_token' do
+    subject(:id_token) { publisher.send(:id_token) }
+
+    context "when run normally" do
+      it "is expected to return a valid JWT token" do
+        sub_components = build.project.ci_id_token_sub_claim_components.map(&:to_sym)
+        return_value = "test.test.test"
+        expect(Gitlab::Ci::JwtV2).to receive(:for_build).with(build, aud: "sigstore",
+          sub_components: sub_components).and_return(return_value)
+
+        expect(id_token).to eq(return_value)
       end
     end
   end

@@ -94,6 +94,14 @@ To create a project from the HIPAA Audit Protocol template:
 
 ## Create a project from a custom template
 
+{{< history >}}
+
+- Group selector for browsing group templates outside a group context [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590012)
+  in GitLab 18.11 [with a feature flag](../../administration/feature_flags/_index.md) named `constrain_group_project_templates`.
+  Disabled by default.
+
+{{< /history >}}
+
 Custom project templates are available for your [instance](../../administration/custom_project_templates.md)
 and [group](../group/custom_project_templates.md).
 
@@ -102,6 +110,8 @@ To create a project from a custom template:
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
+   - On the **Group** tab, if you are not in a group context and no group is pre-selected,
+     a group dropdown list is displayed. Select a group to load its templates.
 1. From the list of templates:
    - To preview the template, select **Preview**.
    - To use a template, select **Use template**.

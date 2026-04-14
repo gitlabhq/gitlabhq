@@ -5,6 +5,17 @@ module Gitlab
     module Aggregation
       class QueryPlan
         class Filter < BasePart
+          def initialize(definition, configuration)
+            super(definition, format_configuration(definition, configuration))
+          end
+
+          private
+
+          def format_configuration(definition, configuration)
+            return configuration unless definition&.formatter
+
+            configuration.merge(values: definition.formatter.call(configuration[:values]))
+          end
         end
       end
     end

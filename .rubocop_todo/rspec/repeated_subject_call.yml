@@ -30,7 +30,6 @@ RSpec/RepeatedSubjectCall:
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
     - 'ee/spec/workers/search/zoekt/lost_node_event_worker_spec.rb'
     - 'spec/controllers/admin/runners_controller_spec.rb'
-    - 'spec/controllers/concerns/page_limiter_spec.rb'
     - 'spec/controllers/groups/releases_controller_spec.rb'
     - 'spec/finders/notes_finder_spec.rb'
     - 'spec/finders/releases/group_releases_finder_spec.rb'

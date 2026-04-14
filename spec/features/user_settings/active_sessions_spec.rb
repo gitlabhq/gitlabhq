@@ -2,7 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_state, feature_category: :user_profile do
+RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_state, feature_category: :user_profile,
+  quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/39378',
+    type: :flaky
+  } do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) do
@@ -166,7 +170,7 @@ RSpec.describe 'Profile > Active sessions', :js, :clean_gitlab_redis_shared_stat
           expect(page).to have_content('with Step-up Authentication')
         end
 
-        gitlab_disable_admin_mode
+        leave_admin_mode
 
         visit user_settings_active_sessions_path
 

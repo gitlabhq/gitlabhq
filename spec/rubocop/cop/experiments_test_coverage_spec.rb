@@ -79,6 +79,22 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
       end
     end
 
+    context 'when experiment with another name is stubbed' do
+      let(:tests_code) do
+        "#\nstub_experiments(experiment_another_name: :candidate, experiment_another_name: :third)"
+      end
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          class ExperimentName < ApplicationExperiment
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{class_offense}
+            candidate
+            variant(:third) { 'third option' }
+          end
+        RUBY
+      end
+    end
+
     context 'when all tests are present' do
       let(:tests_code) do
         "#\nstub_experiments(experiment_name: :candidate, experiment_name: :third)"
@@ -91,6 +107,35 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
             variant(:third) { 'third option' }
           end
         RUBY
+      end
+
+      context 'when variant is registered without block' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class ExperimentName < ApplicationExperiment
+              candidate
+              variant(:third)
+            end
+          RUBY
+        end
+      end
+
+      context 'when experiment name is referenced via described_class.experiment_name' do
+        let(:file_path) { 'app/experiments/new_experiment_name_experiment.rb' }
+        let(:test_file_path) { 'spec/experiments/new_experiment_name_experiment_spec.rb' }
+
+        let(:tests_code) do
+          "described_class.experiment_name#\nstub_experiments(exp => :candidate, exp => :third)"
+        end
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class NewExperimentName < ApplicationExperiment
+              candidate
+              variant(:third) { 'third option' }
+            end
+          RUBY
+        end
       end
     end
   end
@@ -225,14 +270,14 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
           allow(Dir).to receive(:children).with(dir).and_return([child])
 
           stub_file_read(child_path,
-            content: "stub_experiments(premium_trial_positioning: :candidate)"
+            content: "stub_experiments(experiment_with_base_class: :candidate)"
           )
         end
 
         it 'does not register an offense, if the child class has tests' do
           expect_no_offenses(<<~RUBY)
             class BaseClassExample
-              experiment(:premium_trial_positioning, actor: user) do |e|
+              experiment(:experiment_with_base_class, actor: user) do |e|
                 e.candidate { 'candidate' }
               end
             end
@@ -246,8 +291,8 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
 
           expect_offense(<<~RUBY)
             class BaseClassExample
-              experiment(:premium_trial_positioning, actor: user) do |e|
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+              experiment(:experiment_with_base_class, actor: user) do |e|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
                 e.candidate { 'candidate' }
               end
             end
@@ -259,8 +304,8 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
 
           expect_offense(<<~RUBY)
             class BaseClassExample
-              experiment(:premium_trial_positioning, actor: user) do |e|
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
+              experiment(:experiment_with_base_class, actor: user) do |e|
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{block_offense}
                 e.candidate { 'candidate' }
               end
             end
@@ -272,7 +317,7 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
 
           expect_no_offenses(<<~RUBY)
             class BaseClassExample
-              experiment(:premium_trial_positioning, actor: user) do |e|
+              experiment(:experiment_with_base_class, actor: user) do |e|
                 e.candidate { 'candidate' }
               end
             end

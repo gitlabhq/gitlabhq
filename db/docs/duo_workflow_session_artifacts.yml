@@ -1,0 +1,16 @@
+---
+table_name: duo_workflow_session_artifacts
+classes:
+- Ai::DuoWorkflows::SessionArtifact
+feature_categories:
+- compliance_management
+description: Stores denormalized session data for the Agents Artifacts dashboard including
+  credits and model information. Used as a fallback on Self-Managed instances without
+  ClickHouse.
+introduced_by_url:
+milestone: '18.11'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: small

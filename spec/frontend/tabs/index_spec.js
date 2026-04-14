@@ -220,6 +220,7 @@ describe('GlTabsBehavior', () => {
         const inactiveTab = findTab('bar');
 
         // clicks do nothing
+        inactiveTab.addEventListener('click', (e) => e.preventDefault(), { once: true });
         inactiveTab.click();
         expectActiveTabAndPanel('foo');
         expect(tabShownEventSpy).not.toHaveBeenCalled();

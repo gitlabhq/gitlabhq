@@ -26,12 +26,8 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
   CREATION_CONTEXT_RELATED_ITEM,
-  NAME_TO_TEXT_LOWERCASE_MAP,
   STATE_CLOSED,
-  WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_ISSUE,
   VIEW_CONTEXT,
   WIDGET_TYPE_NOTIFICATIONS,
 } from '../constants';
@@ -300,28 +296,28 @@ export default {
     i18n() {
       return {
         deleteWorkItem: sprintf(s__('WorkItem|Delete %{workItemType}'), {
-          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          workItemType: this.workItemType,
         }),
         convertError: sprintf(
           s__(
             'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
           ),
-          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+          { workItemType: this.workItemType },
         ),
         copyCreateNoteEmail: sprintf(s__('WorkItem|Copy %{workItemType} email address'), {
-          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          workItemType: this.workItemType,
         }),
         copyReferenceError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
           ),
-          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+          { workItemType: this.workItemType },
         ),
         copyCreateNoteEmailError: sprintf(
           s__(
             'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
           ),
-          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
+          { workItemType: this.workItemType },
         ),
       };
     },
@@ -334,20 +330,16 @@ export default {
             'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
           );
       return sprintf(message, {
-        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        workItemType: this.workItemType,
       });
     },
     workItemTypeConfiguration() {
       return this.getWorkItemTypeConfiguration(this.workItemType);
     },
     canPromoteToObjective() {
-      // User permissions
       if (!this.canUpdateMetadata) return false;
 
-      return (
-        this.workItemTypeConfiguration?.canPromoteToObjective ||
-        this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT
-      );
+      return this.workItemTypeConfiguration?.canPromoteToObjective;
     },
     confidentialItem() {
       return {
@@ -396,9 +388,6 @@ export default {
         webUrl: this.workItemWebUrl,
       };
     },
-    isEpic() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
-    },
     showChangeType() {
       if (!this.canUpdateMetadata) {
         return false;
@@ -411,14 +400,10 @@ export default {
       return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);
     },
     showMoveButton() {
-      return (
-        (this.workItemTypeConfiguration?.supportsMoveAction ||
-          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
-        this.canMove
-      );
+      return this.workItemTypeConfiguration?.supportsMoveAction && this.canMove;
     },
     showProjectSelector() {
-      return this.workItemTypeConfiguration?.showProjectSelector || !this.isEpic;
+      return this.workItemTypeConfiguration?.showProjectSelector;
     },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
@@ -533,6 +518,7 @@ export default {
                 discussionLocked: !this.isDiscussionLocked,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         })
         .then(({ data }) => {

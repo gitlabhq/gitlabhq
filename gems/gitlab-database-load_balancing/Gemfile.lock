@@ -12,6 +12,7 @@ PATH
       activesupport (>= 6.1, < 8)
       gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
+      test-prof (~> 1.5)
 
 PATH
   remote: ../gitlab-safe_request_store
@@ -27,7 +28,13 @@ PATH
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
+      batch-loader (~> 2.0)
+      bigdecimal (~> 3.2)
+      nokogiri (~> 1.0)
+      oj (~> 3.16)
       rake (~> 13.0)
+      toml-rb (~> 4.1)
+      yajl-ruby (~> 1.4)
 
 PATH
   remote: .
@@ -120,12 +127,14 @@ GEM
       tins (~> 1.0)
     ast (2.4.2)
     base64 (0.3.0)
+    batch-loader (2.0.6)
     benchmark (0.4.1)
     bigdecimal (3.2.2)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     builder (3.2.4)
     cgi (0.5.0)
+    citrus (3.0.2)
     coderay (1.1.3)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
@@ -324,7 +333,11 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.8-x86_64-linux)
       racc (~> 1.4)
+    oj (3.16.16)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     os (1.1.4)
+    ostruct (0.6.3)
     parallel (1.22.1)
     parser (3.3.8.0)
       ast (~> 2.4.1)
@@ -476,12 +489,16 @@ GEM
     table_print (1.5.7)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
+    test-prof (1.6.0)
     thor (1.3.0)
     timeout (0.4.0)
     tins (1.48.0)
       bigdecimal
       mize (~> 0.6)
       sync
+    toml-rb (4.1.0)
+      citrus (~> 3.0, > 3.0)
+      racc (~> 1.7)
     trailblazer-option (0.1.2)
     tsort (0.2.0)
     tzinfo (2.0.6)
@@ -497,6 +514,7 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    yajl-ruby (1.4.3)
     zeitwerk (2.6.12)
 
 PLATFORMS
@@ -541,11 +559,13 @@ CHECKSUMS
   amatch (0.4.2) sha256=5a7c8c08882864621b81bf3bbc0447bb638afe6066ceeead6b9d11f34cf0d911
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  batch-loader (2.0.6) sha256=93e313b8880740d5d8be32861bf4e1631f5975ad34f4cb8fb9cf7662ee009267
   benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
   bigdecimal (3.2.2) sha256=39085f76b495eb39a79ce07af716f3a6829bc35eb44f2195e2753749f2fa5adc
   binding_of_caller (1.0.0) sha256=3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d
   builder (3.2.4) sha256=99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10
   cgi (0.5.0) sha256=fe99f65bb2c146e294372ebb27602adbc3b4c008e9ea7038c6bd48c1ec9759da
+  citrus (3.0.2) sha256=4ec2412fc389ad186735f4baee1460f7900a8e130ffe3f216b30d4f9c684f650
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
   connection_pool (2.5.3) sha256=cfd74a82b9b094d1ce30c4f1a346da23ee19dc8a062a16a85f58eab1ced4305b
@@ -634,7 +654,9 @@ CHECKSUMS
   nokogiri (1.16.8-x86-linux) sha256=f97760e6320166d48234029bed9e999521a888376bd2b7e04f4c054537154f16
   nokogiri (1.16.8-x86_64-darwin) sha256=6c40d7dc444f752634bf6ee8b53a55c3cfca3f9df52be46b8abcc559ccd49e47
   nokogiri (1.16.8-x86_64-linux) sha256=ed7b1f80713ac968dd93fe2b96fc3df6e448b73bd02dd77d5fc89ba92a1ed6d9
+  oj (3.16.16) sha256=3635b36128991796434f55da8decc0de236a323535adcb36fc04e6d0253c013d
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
+  ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (1.22.1) sha256=ebdf1f0c51f182df38522f70ba770214940bef998cdb6e00f36492b29699761f
   parser (3.3.8.0) sha256=2476364142b307fa5a1b1ece44f260728be23858a9c71078e956131a75453c45
   pg (1.5.9) sha256=761efbdf73b66516f0c26fcbe6515dc7500c3f0aa1a1b853feae245433c64fdc
@@ -687,9 +709,11 @@ CHECKSUMS
   sync (0.5.0) sha256=668356cc07c59ac7ed9ecf34fec3929831f179c07adb1f3e1c3b7a1609a638fd
   table_print (1.5.7) sha256=436664281f93387b882335795e16cfeeb839ad0c785ff7f9110fc0f17c68b5cb
   terminal-table (4.0.0) sha256=f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2
+  test-prof (1.6.0) sha256=b04cee7b9684b9b31e23e258f835ba67ee5b4fd5f6cc7204d076ef695805c335
   thor (1.3.0) sha256=1adc7f9e5b3655a68c71393fee8bd0ad088d14ee8e83a0b73726f23cbb3ca7c3
   timeout (0.4.0) sha256=cd6d1f3e83594a90ac1f3de8235399bff87112d97fec928ee2b77de240dd2cb5
   tins (1.48.0) sha256=547352491d5af17bc1af4ca8fcee884ffde3ff60c9799c7961977d697cde99c3
+  toml-rb (4.1.0) sha256=14456ec4549e4703881bf04b83a56f3264ef99884880092d83c98a2058d95846
   trailblazer-option (0.1.2) sha256=20e4f12ea4e1f718c8007e7944ca21a329eee4eed9e0fa5dde6e8ad8ac4344a3
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
@@ -701,6 +725,7 @@ CHECKSUMS
   webrick (1.9.1) sha256=b42d3c94f166f3fb73d87e9b359def9b5836c426fc8beacf38f2184a21b2a989
   websocket-driver (0.7.6) sha256=f69400be7bc197879726ad8e6f5869a61823147372fd8928836a53c2c741d0db
   websocket-extensions (0.1.5) sha256=1c6ba63092cda343eb53fc657110c71c754c56484aad42578495227d717a8241
+  yajl-ruby (1.4.3) sha256=8c974d9c11ae07b0a3b6d26efea8407269b02e4138118fbe3ef0d2ec9724d1d2
   zeitwerk (2.6.12) sha256=561e12975d0332fd3b62cc859aff3bab432e5f320689c8a10cd4674b5c0439be
 
 BUNDLED WITH

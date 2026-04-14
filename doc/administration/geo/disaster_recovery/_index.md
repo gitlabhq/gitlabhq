@@ -23,6 +23,12 @@ Some [known issues](../_index.md#known-issues) exist.
 > - After the secondary site is promoted, the primary site is detached entirely.
 >   If you wish to restore the primary site, you must add it as a new secondary site.
 
+## Secondary sites with selective synchronization enabled
+
+Promoting a **secondary** site with selective synchronization enabled results in **permanent data loss**  
+for all data that was not replicated to that secondary site. For more information, see 
+[Promoting a secondary site with selective synchronization enabled](../replication/selective_synchronization.md#promoting-a-secondary-site-with-selective-synchronization-enabled).
+
 ## The `gitlab-cluster.json` file
 
 When you promote a secondary site to a primary site with `gitlab-ctl geo promote`,
@@ -166,6 +172,7 @@ Note the following when promoting a secondary:
 - If the secondary site [has been paused](../replication/pause_resume_replication.md), the promotion
   performs a point-in-time recovery to the last known state.
   Data that was created on the primary while the secondary was paused is lost.
+- If the secondary site [has been paused](../replication/pause_resume_replication.md) and you encouter an `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute DELETE in a read-only transaction` error message during this process, see this knowledge base article: [Geo promotion fails with read-only transaction error or timeout after unexpected primary shutdown](https://support.gitlab.com/hc/en-us/articles/21019042667804-Geo-promotion-fails-with-read-only-transaction-error-or-timeout-after-unexpected-primary-shutdown).
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
@@ -174,6 +181,7 @@ Note the following when promoting a secondary:
   [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 - If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 - If you are using [location-aware DNS](../secondary_proxy/_index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
+- After the primary site is down, run `gitlab-ctl promotion-preflight-checks` on the secondary to check the Geo sync status and perform final validation checks.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
     1. In the upper-right corner, select **Admin**.
@@ -609,6 +617,53 @@ must disable the **primary** site:
 
 1. Verify you can connect to the newly promoted primary using the URL used previously for the secondary.
 1. Success! The secondary has now been promoted to primary.
+
+### Step 4. (Optional) Promote the OpenBao HA cluster
+
+If you have GitLab Secrets Manager enabled, complete the following steps to promote the OpenBao High Availability (HA) cluster
+after promoting the Kubernetes cluster.
+
+#### Restart OpenBao pods
+
+After the PostgreSQL replica is promoted to primary, restart the OpenBao pods so they
+reconnect to the database now that it's writable:
+
+```shell
+kubectl --namespace gitlab rollout restart deployment -l app=openbao
+```
+
+#### (Optional) Configure JWT authentication
+
+Skip this step if you've updated DNS records for the primary domain to point to the secondary site.
+
+Using recovery keys, connect to OpenBao API to reconfigure [JWT authentication](https://openbao.org/docs/auth/jwt/#configuration) for the secondary domain.
+
+For more information, see
+[Geo configuration](https://docs.gitlab.com/charts/charts/openbao/#geo-configuration).
+
+#### Restore the unseal secret if needed
+
+The unseal key on the secondary cluster must be the same as the one on the primary key,
+otherwise OpenBao won't be able to unseal the vault on the secondary.
+
+If there's a mismatch, restore the `gitlab-openbao-unseal` secret on the secondary cluster
+from your [secrets backup](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets),
+then restart the OpenBao pods:
+
+```shell
+kubectl --namespace gitlab rollout restart deployment -l app=openbao
+```
+
+#### Verify OpenBao is functional
+
+1. Check that all OpenBao pods are running:
+
+   ```shell
+   kubectl --namespace gitlab get pods -l app=openbao
+   ```
+
+1. Test OpenBao integration by running a CI pipeline that uses a
+   [Secrets Manager variable](../../../ci/secrets/secrets_manager/_index.md).
 
 ## Troubleshooting
 

@@ -13,6 +13,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import AccessTokenForm from '~/vue_shared/access_tokens/components/access_token_form.vue';
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
 
 Vue.use(PiniaVuePlugin);
 
@@ -95,13 +96,13 @@ describe('AccessTokenForm', () => {
   it('contains a name field', () => {
     createComponent();
 
-    expect(findInput().exists()).toBe(true);
+    expect(findInput().attributes('maxlength')).toBe(`${MAX_NAME_LENGTH}`);
   });
 
   it('contains a description field', () => {
     createComponent();
 
-    expect(findTextArea().exists()).toBe(true);
+    expect(findTextArea().attributes('maxlength')).toBe(`${MAX_DESCRIPTION_LENGTH}`);
   });
 
   describe('expiration field', () => {

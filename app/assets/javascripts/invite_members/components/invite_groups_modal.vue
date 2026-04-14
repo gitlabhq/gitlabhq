@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import Tracking from '~/tracking';

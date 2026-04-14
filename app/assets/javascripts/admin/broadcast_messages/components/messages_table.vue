@@ -44,6 +44,7 @@ export default {
       required: true,
     },
   },
+  emits: ['delete-message'],
   fields: [
     {
       key: 'status',

@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlButton, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';

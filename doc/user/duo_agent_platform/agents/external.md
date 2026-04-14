@@ -24,6 +24,7 @@ title: External agents
 - Renamed from CLI agents in GitLab 18.6.
 - Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578318) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
 - Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
+- Feature flag `ai_catalog_project_level_enablement` removed in GitLab 18.11.
 
 {{< /history >}}
 
@@ -205,15 +206,26 @@ For GitLab-managed credentials, the following AI models are supported:
 
 Anthropic Claude:
 
-- `claude-3-haiku-20240307`
 - `claude-haiku-4-5-20251001`
+- `claude-opus-4-5-20251101`
+- `claude-opus-4-6`
 - `claude-sonnet-4-20250514`
 - `claude-sonnet-4-5-20250929`
+- `claude-sonnet-4-6`
 
 OpenAI Codex:
 
 - `gpt-5`
 - `gpt-5-codex`
+- `gpt-5-mini-2025-08-07`
+- `gpt-5.1`
+- `gpt-5.1-2025-11-13`
+- `gpt-5.1-codex`
+- `gpt-5.2-2025-12-11`
+- `gpt-5.3-codex`
+- `gpt-5.4-2026-03-05`
+- `gpt-5.4-mini`
+- `gpt-5.4-nano`
 
 ## Configure CI/CD variables
 
@@ -354,9 +366,8 @@ This account is assigned the Developer role.
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
-- If you created an external agent from the AI Catalog, the agent must be enabled in your project.
-- To allow the agent to push to agent created branches `^duo/(fix|feature|refactor|docs/).*`, you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
-- GitLab Self-Managed only. If you created an external agent from the AI Catalog, the agent must be enabled in your project.
+- For GitLab-managed external agents and custom external agents created in the AI Catalog, the external agent must be enabled in your project.
+- To allow the agent to push to agent-created branches (branches starting with ^duo/(fix|feature|refactor|docs/).*`), you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
 
 1. In your project, open an issue, merge request, or epic.
 1. Mention, assign, or request a review from the service account user.
@@ -391,6 +402,9 @@ Prerequisites:
 
 On GitLab Self-Managed, if the `ai_catalog_create_third_party_flows` feature flag is enabled,
 you can create an external agent with the AI Catalog and configure it to run in your environment.
+
+On GitLab.com, you cannot create custom external agents.
+Instead, use a [GitLab-managed external agent](#quickstart-for-gitlab-managed-external-agents).
 
 The preferred workflow is:
 

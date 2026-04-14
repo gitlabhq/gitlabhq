@@ -3,6 +3,8 @@ data_category: standard
 key_path: recorded_at
 description: When the Usage Ping computation was started
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: string
 status: active
 milestone: "8.10"

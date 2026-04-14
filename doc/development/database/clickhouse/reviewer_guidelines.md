@@ -33,8 +33,9 @@ The current ClickHouse database schema is stored in a single [`main.sql`](https:
 Sometimes, the `main.sql` file is not updated or committed in a merge request, leading to inconsistencies between the schema built from migrations and the committed schema file.
 To detect this issue, a CI job (`clickhouse:check-schema`) runs during the **test** stage. This job compares the newly built schema with `main.sql` and fails if discrepancies are found.
 
-- The job is currently allowed to fail due to possible false positives between ClickHouse versions and our schema dump logic.
+- This job is **not** allowed to fail. If it fails, the MR pipeline fails.
 - As a reviewer, always check the job logs. If it fails, inspect the differences carefully. Non-whitespace related differences should be discussed with the MR author.
+- In cases of false positives (for example, differences caused by ClickHouse version mismatches), add the `pipeline:skip-check-clickhouse-schema` label to the MR to skip this check.
 
 To resolve legitimate schema differences, the author may try to ensure that all migrations are executed and dump the schema:
 

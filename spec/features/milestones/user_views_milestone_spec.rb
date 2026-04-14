@@ -10,11 +10,6 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
   let_it_be(:labels) { create_list(:label, 2, project: project) }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     sign_in(user)
   end
 
@@ -38,7 +33,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
     expect { visit_milestone }.not_to exceed_query_limit(control)
   end
 
-  context 'issues list', :js do
+  context 'work items list', :js do
     before_all do
       2.times do
         create(:issue, milestone: milestone, project: project)
@@ -74,30 +69,13 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
         stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 3)
       end
 
-      context 'when work_item_planning_view feature flag is disabled' do
-        it "limits issues to display and shows warning with link to issues path" do
-          visit(project_milestone_path(project, milestone))
+      it "limits issues to display and shows warning with link to work items path" do
+        visit(project_milestone_path(project, milestone))
 
-          expect(page).to have_selector('#tab-issues li', count: 3)
-          expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
-          expect(page).to have_link('View all', href: project_issues_path(project, { milestone_title: milestone.title }))
-          expect(page).not_to have_selector('#milestone-issue-count-warning [aria-label="Dismiss"]')
-        end
-      end
-
-      context 'when work_item_planning_view feature flag is enabled' do
-        before do
-          stub_feature_flags(work_item_planning_view: true)
-        end
-
-        it "limits issues to display and shows warning with link to work items path" do
-          visit(project_milestone_path(project, milestone))
-
-          expect(page).to have_selector('#tab-issues li', count: 3)
-          expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
-          expect(page).to have_link('View all', href: project_work_items_path(project, { milestone_title: milestone.title }))
-          expect(page).not_to have_selector('#milestone-issue-count-warning [aria-label="Dismiss"]')
-        end
+        expect(page).to have_selector('#tab-issues li', count: 3)
+        expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 items. View all')
+        expect(page).to have_link('View all', href: project_work_items_path(project, { milestone_title: milestone.title }))
+        expect(page).not_to have_selector('#milestone-issue-count-warning [aria-label="Dismiss"]')
       end
     end
 

@@ -1,5 +1,9 @@
 - page_title _('Analytics dashboards')
 
+.page-title-holder.gl-flex.gl-align-items
+  %div
+    %h1.page-title.gl-text-size-h-display= page_title
+    %p
+      = s_("AnalyticsDashboards|Keep your teams aligned around the metrics that matter most.")
+      -# TODO: add a link to updated docs when we have a place for this
 #js-explore-analytics-dashboards
-  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-dashboard-md.svg',
-    title: s_('Analytics|Analytics dashboards'))

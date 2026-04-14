@@ -5202,6 +5202,88 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#incremental_ref_cache_update' do
+    let(:repository) { project.repository }
+    let(:redis_set_cache) { instance_double(Gitlab::Repositories::RebuildableSetCache) }
+
+    before do
+      allow(repository).to receive(:redis_set_cache).and_return(redis_set_cache)
+    end
+
+    context 'when ref is a branch' do
+      let(:branch_ref) { 'refs/heads/feature-branch' }
+
+      it 'adds branch name to cache and clears memoization' do
+        expect(redis_set_cache).to receive(:handle_ref_change).with('branch_names', branch_ref, false)
+        expect(repository).to receive(:clear_memoization).with('branch_names')
+
+        repository.incremental_ref_cache_update(branch_ref, false)
+      end
+
+      it 'removes branch name from cache and clears memoization' do
+        expect(redis_set_cache).to receive(:handle_ref_change).with('branch_names', branch_ref, true)
+        expect(repository).to receive(:clear_memoization).with('branch_names')
+
+        repository.incremental_ref_cache_update(branch_ref, true)
+      end
+
+      context 'when ref_cache_with_rebuild_queue FF is disabled' do
+        before do
+          stub_feature_flags(ref_cache_with_rebuild_queue: false)
+        end
+
+        it 'does nothing' do
+          expect(redis_set_cache).not_to receive(:handle_ref_change)
+          expect(repository).not_to receive(:clear_memoization)
+
+          repository.incremental_ref_cache_update(branch_ref, true)
+        end
+      end
+    end
+
+    context 'when ref is a tag' do
+      let(:tag_ref) { 'refs/tags/v1.0.0' }
+
+      it 'adds tag name to cache and clears memoization' do
+        expect(redis_set_cache).to receive(:handle_ref_change).with('tag_names', tag_ref, false)
+        expect(repository).to receive(:clear_memoization).with('tag_names')
+
+        repository.incremental_ref_cache_update(tag_ref, false)
+      end
+
+      it 'removes tag name from cache and clears memoization' do
+        expect(redis_set_cache).to receive(:handle_ref_change).with('tag_names', tag_ref, true)
+        expect(repository).to receive(:clear_memoization).with('tag_names')
+
+        repository.incremental_ref_cache_update(tag_ref, true)
+      end
+    end
+
+    context 'when ref is neither branch nor tag' do
+      let(:other_ref) { 'refs/notes/commits' }
+
+      it 'does nothing' do
+        expect(redis_set_cache).not_to receive(:handle_ref_change)
+        expect(repository).not_to receive(:clear_memoization)
+
+        repository.incremental_ref_cache_update(other_ref, true)
+      end
+    end
+
+    context 'with edge cases' do
+      [nil, '', 'invalid-ref-format'].each do |value|
+        context "when value is #{value.inspect}" do
+          it 'handles ref gracefully' do
+            expect(redis_set_cache).not_to receive(:handle_ref_change)
+            expect(repository).not_to receive(:clear_memoization)
+
+            repository.incremental_ref_cache_update(value, true)
+          end
+        end
+      end
+    end
+  end
+
   describe '#squash' do
     let(:merge_request) { build(:merge_request, source_project: project) }
 

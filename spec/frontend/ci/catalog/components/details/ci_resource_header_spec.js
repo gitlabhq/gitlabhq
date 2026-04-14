@@ -1,4 +1,4 @@
-import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlBadge, GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -12,10 +12,29 @@ describe('CiResourceHeader', () => {
   let wrapper;
 
   const resource = { ...catalogSharedDataMock.data.ciCatalogResource };
+  const versions = [
+    {
+      value: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+      text: '1.1.0',
+      createdAt: '2025-01-01',
+    },
+    {
+      value: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
+      text: '1.0.0',
+      createdAt: '2023-01-01',
+    },
+  ];
+  const initialVersionId = 'gid://gitlab/Ci::Catalog::Resources::Version/1';
 
   const defaultProps = {
     isLoadingData: false,
     resource,
+    versions,
+    initialVersionId,
+  };
+
+  const $router = {
+    push: jest.fn(),
   };
 
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-button');
@@ -27,6 +46,8 @@ describe('CiResourceHeader', () => {
   const findVersionBadge = () => wrapper.findComponent(GlBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
   const findArchiveBadge = () => wrapper.findByTestId('archive-badge');
+  const findVersionDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findVersionButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(CiResourceHeader, {
@@ -36,6 +57,12 @@ describe('CiResourceHeader', () => {
       },
       provide: {
         reportAbusePath: '/report/abuse/path',
+      },
+      mocks: {
+        $router,
+        $route: {
+          query: {},
+        },
       },
     });
   };
@@ -220,6 +247,89 @@ describe('CiResourceHeader', () => {
         createComponent({ props: { resource: { ...resource, archived: false } } });
         expect(findArchiveBadge().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('version selector dropdown', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders the version dropdown with initial version selected', () => {
+      expect(findVersionButton().text()).toBe('1.0.0 (2023-01-01)');
+    });
+
+    it('passes versions array to the dropdown', () => {
+      expect(findVersionDropdown().props('items')).toEqual(versions);
+    });
+
+    it('emits version-selected event when a version is selected', async () => {
+      await findVersionDropdown().vm.$emit('select', versions[0].value);
+
+      expect(wrapper.emitted('version-selected')).toEqual([['1.1.0']]);
+    });
+
+    it('updates the URL query parameter when a version is selected', async () => {
+      await findVersionDropdown().vm.$emit('select', versions[0].value);
+
+      expect($router.push).toHaveBeenCalledWith({
+        query: { version: '1.1.0' },
+      });
+    });
+
+    describe('when loading', () => {
+      beforeEach(() => {
+        createComponent({ props: { isLoadingData: true, versions: [], initialVersionId: null } });
+      });
+
+      it('shows "Loading" text in button', () => {
+        expect(findVersionButton().text()).toBe('Loading');
+      });
+
+      it('shows loading state on button', () => {
+        expect(findVersionButton().props('loading')).toBe(true);
+      });
+    });
+
+    describe('when no versions available', () => {
+      beforeEach(() => {
+        createComponent({ props: { versions: [], initialVersionId: null } });
+      });
+
+      it('shows "No versions available" text', () => {
+        expect(findVersionButton().text()).toContain('No versions available');
+      });
+    });
+  });
+
+  describe.each`
+    versionId                                           | versionName | isLatest | expectedVariant
+    ${'gid://gitlab/Ci::Catalog::Resources::Version/2'} | ${'1.1.0'}  | ${true}  | ${'info'}
+    ${'gid://gitlab/Ci::Catalog::Resources::Version/1'} | ${'1.0.0'}  | ${false} | ${'neutral'}
+  `('version badge variant', ({ versionId, versionName, isLatest, expectedVariant }) => {
+    it(`shows ${expectedVariant} variant when viewing ${isLatest ? 'latest' : 'older'} version`, () => {
+      const versionResource = {
+        ...resource,
+        versions: {
+          nodes: [
+            {
+              id: versionId,
+              name: versionName,
+              path: '/path',
+              createdAt: isLatest ? '2025-01-01' : '2023-01-01',
+              author: { id: 1, name: 'author', state: 'active', webUrl: '/user/1' },
+            },
+          ],
+        },
+      };
+      createComponent({
+        props: {
+          resource: versionResource,
+          initialVersionId: versionId,
+        },
+      });
+
+      expect(findVersionBadge().props('variant')).toBe(expectedVariant);
     });
   });
 });

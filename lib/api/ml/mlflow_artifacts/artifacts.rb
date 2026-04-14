@@ -28,6 +28,7 @@ module API
           optional :path, type: String,
             desc: 'Path to the artifact, model version id, optionally followed by path. E.g. 15/MLmodel'
         end
+        route_setting :authorization, permissions: :read_ml_flow_artifact, boundary_type: :project
         get 'artifacts', urgency: :low do
           model_version, path = params[:path].split('/', 2)
 
@@ -48,6 +49,7 @@ module API
           detail 'Retrieves an MLflow artifact file'
           tags ['mlops']
         end
+        route_setting :authorization, permissions: :read_ml_flow_artifact, boundary_type: :project
         get 'artifacts/:model_version/*file_path', format: false, urgency: :low do
           if candidate_version?(params[:model_version])
             version = params[:model_version].delete_prefix(CANDIDATE_PREFIX)

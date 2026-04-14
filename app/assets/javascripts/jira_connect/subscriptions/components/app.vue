@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapMutations, mapActions } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';

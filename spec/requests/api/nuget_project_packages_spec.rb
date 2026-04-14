@@ -357,17 +357,6 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{target.id}/packages/nuget/authorize" }
 
     it_behaves_like 'nuget authorize upload endpoint'
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
-      include_context 'workhorse headers'
-
-      let(:boundary_object) { project }
-      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
-
-      before do
-        project.add_developer(user)
-      end
-    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget' do
@@ -401,17 +390,6 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage/authorize" }
 
     it_behaves_like 'nuget authorize upload endpoint'
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
-      include_context 'workhorse headers'
-
-      let(:boundary_object) { project }
-      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
-
-      before do
-        project.add_developer(user)
-      end
-    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/symbolpackage' do
@@ -549,17 +527,6 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{target.id}/packages/nuget/v2/authorize" }
 
     it_behaves_like 'nuget authorize upload endpoint'
-
-    it_behaves_like 'authorizing granular token permissions', :authorize_nuget_package do
-      include_context 'workhorse headers'
-
-      let(:boundary_object) { project }
-      let(:request) { put api(url), headers: workhorse_headers.merge(basic_auth_header(user.username, pat.token)) }
-
-      before do
-        project.add_developer(user)
-      end
-    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/v2' do

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import {
   PACKAGE_FORWARDING_SECURITY_DESCRIPTION,
   PACKAGE_FORWARDING_SETTINGS_HEADER,

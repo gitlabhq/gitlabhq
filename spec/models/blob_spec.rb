@@ -305,6 +305,14 @@ RSpec.describe Blob, feature_category: :source_code_management do
     end
   end
 
+  describe '#short_file_hash' do
+    it 'returns the first 9 characters of file_hash' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.short_file_hash.length).to eq(9)
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do
@@ -562,7 +570,7 @@ RSpec.describe Blob, feature_category: :source_code_management do
   end
 
   describe 'policy' do
-    let(:project) { build(:project) }
+    let(:project) { build_stubbed(:project) }
 
     subject { described_class.new(fake_blob(path: 'foo'), project) }
 

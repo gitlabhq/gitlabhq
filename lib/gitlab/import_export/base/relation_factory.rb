@@ -285,7 +285,27 @@ module Gitlab
           # attachment is deprecated and note uploads are handled by Markdown uploader
           @relation_hash['attachment'] = nil
 
+          setup_merge_request_note
           setup_diff_note
+        end
+
+        def setup_merge_request_note
+          return unless @relation_hash['noteable_type'] == 'MergeRequest'
+          return unless @relation_hash['system'] == true
+          return if @relation_hash['note'].blank?
+
+          @relation_hash['note'] = remove_compare_link(@relation_hash['note'])
+        end
+
+        def remove_compare_link(content)
+          # Remove the "Compare with previous version" link added by SystemNotes::CommitService
+          # as it is not valid after import.
+          # Limit URL to max 1000 characters to prevent ReDoS attacks.
+          # Removes excessive blank lines but preserves at least one newline between content.
+          content
+            .gsub(/\[Compare with previous version\]\([^)]{0,1000}\)/, '')
+            .gsub(/\n\n+/, "\n\n")
+            .strip
         end
 
         def setup_diff_note
@@ -387,7 +407,7 @@ module Gitlab
         end
 
         def importable_foreign_key
-          relation_class.reflect_on_association(importable_class_name.to_sym)&.foreign_key
+          relation_class.try(:reflect_on_association, importable_class_name.to_sym)&.foreign_key
         end
       end
     end

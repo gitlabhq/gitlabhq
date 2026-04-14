@@ -262,7 +262,24 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
           end
         end
 
-        context 'with different scope' do
+        context 'with mcp_orbit scope' do
+          let(:request_body) { valid_request_body.merge(scope: 'mcp_orbit') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'uses mcp_orbit scope' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+          end
+
+          it 'returns mcp_orbit scope in response' do
+            expect(response.parsed_body['scope']).to eq('mcp_orbit')
+          end
+        end
+
+        context 'with non-MCP scope' do
           let(:request_body) { valid_request_body.merge(scope: 'api') }
           let(:created_application) { Authn::OauthApplication.last }
 
@@ -270,7 +287,83 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
             create_registration
           end
 
-          it 'uses default mcp scope' do
+          it 'falls back to default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
+          end
+        end
+
+        context 'with scope containing trailing whitespace' do
+          let(:request_body) { valid_request_body.merge(scope: '  mcp_orbit  ') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'strips whitespace and uses mcp_orbit scope' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+          end
+        end
+
+        context 'with space-delimited multiple scopes' do
+          let(:request_body) { valid_request_body.merge(scope: 'mcp_orbit openid') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'uses the first recognized scope' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+          end
+        end
+
+        context 'with space-delimited scopes where first is not recognized' do
+          let(:request_body) { valid_request_body.merge(scope: 'openid mcp_orbit') }
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'falls back to default mcp scope' do
+            expect(created_application.scopes.to_s).to eq('mcp')
+          end
+        end
+
+        context 'when resource takes precedence over scope' do
+          let(:request_body) do
+            valid_request_body.merge(
+              scope: 'mcp',
+              resource: 'https://gitlab.example.com/api/v4/orbit/mcp'
+            )
+          end
+
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'uses scope from resource URL over scope field' do
+            expect(created_application.scopes.to_s).to eq('mcp_orbit')
+          end
+        end
+
+        context 'when resource is present but does not match any known path' do
+          let(:request_body) do
+            valid_request_body.merge(
+              resource: 'https://gitlab.example.com/api/v4/unknown'
+            )
+          end
+
+          let(:created_application) { Authn::OauthApplication.last }
+
+          before do
+            create_registration
+          end
+
+          it 'falls back to default mcp scope' do
             expect(created_application.scopes.to_s).to eq('mcp')
           end
         end

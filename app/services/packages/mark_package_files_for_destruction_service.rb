@@ -15,7 +15,7 @@ module Packages
       min_batch_size = [batch_size, BATCH_SIZE].min
 
       @package_files.each_batch(of: min_batch_size) do |batched_package_files|
-        if batch_deadline && Time.zone.now > batch_deadline
+        if batch_deadline&.past?
           timeout = true
           break
         end

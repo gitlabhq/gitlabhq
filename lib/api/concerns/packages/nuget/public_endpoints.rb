@@ -26,7 +26,7 @@ module API
               ]
               tags %w[packages]
             end
-            route_setting :authorization, skip_granular_token_authorization: true
+            route_setting :authorization, skip_granular_token_authorization: :public_endpoint
             get 'index', format: :json, urgency: :default do
               track_package_event(
                 'cli_metadata',
@@ -76,7 +76,7 @@ module API
                 requires :same_file_name, same_as: :file_name, allow_blank: false, type: String,
                   desc: 'The symbol file name'
               end
-              route_setting :authorization, skip_granular_token_authorization: true
+              route_setting :authorization, skip_granular_token_authorization: :public_endpoint
               get '*file_name/*signature/*same_file_name', format: false, urgency: :low do
                 bad_request!('Missing checksum header') if headers['Symbolchecksum'].blank?
 
@@ -98,7 +98,7 @@ module API
             end
 
             namespace '/v2' do
-              route_setting :authorization, skip_granular_token_authorization: true
+              route_setting :authorization, skip_granular_token_authorization: :public_endpoint
               get format: :xml, urgency: :low do
                 env['api.format'] = :xml
                 content_type 'application/xml; charset=utf-8'
@@ -123,7 +123,7 @@ module API
                 tags %w[packages]
               end
 
-              route_setting :authorization, skip_granular_token_authorization: true
+              route_setting :authorization, skip_granular_token_authorization: :public_endpoint
               get '$metadata', format: :xml, urgency: :low do
                 env['api.format'] = :xml
                 content_type 'application/xml; charset=utf-8'

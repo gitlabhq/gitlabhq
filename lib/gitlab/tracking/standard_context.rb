@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-7'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-8'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
       GITLAB_REALM_SELF_MANAGED = 'self-managed'
 
@@ -66,7 +66,8 @@ module Gitlab
           unique_instance_id: Gitlab::GlobalAnonymousId.instance_uuid,
           host_name: Gitlab.config.gitlab.host,
           instance_version: Gitlab.version_info.to_s,
-          context_generated_at: Time.current
+          context_generated_at: Time.current,
+          organization_id: organization_id
         }
       end
 
@@ -102,6 +103,14 @@ module Gitlab
         return unless user.is_a? User
 
         Gitlab::GlobalAnonymousId.user_id(user)
+      end
+
+      def organization_id
+        return unless ::Current.organization_assigned
+
+        ::Gitlab::Organizations::FallbackOrganizationTracker.without_tracking do
+          ::Current.organization&.id # rubocop:disable Gitlab/AvoidCurrentOrganization, Gitlab/DisallowCurrentOrganizationIdSafeNavigation -- tracking layer is always called from approved layers
+        end
       end
 
       # Overridden in EE

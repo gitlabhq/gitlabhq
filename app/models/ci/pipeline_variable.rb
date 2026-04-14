@@ -7,6 +7,8 @@ module Ci
     include Ci::RawVariable
     include Ci::ProjectsWithVariablesQuery
 
+    ignore_column :value, remove_with: '19.1', remove_after: '2026-05-21' # https://gitlab.com/gitlab-org/gitlab/-/work_items/592747
+
     before_validation :ensure_project_id
 
     belongs_to :pipeline,
@@ -27,7 +29,7 @@ module Ci
     # Should not be mutated outside of pipeline creation because it has to stay
     # in sync with data stored in pipeline_artifacts_pipeline_variables.
     def readonly?
-      persisted? && Feature.enabled?(:ci_stop_writing_to_pipeline_variables, pipeline&.project)
+      persisted?
     end
 
     def hook_attrs

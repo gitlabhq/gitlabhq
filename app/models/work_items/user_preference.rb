@@ -8,10 +8,6 @@ module WorkItems
 
     belongs_to :user
     belongs_to :namespace
-    belongs_to :work_item_type,
-      class_name: 'WorkItems::Type',
-      inverse_of: :user_preferences,
-      optional: true
 
     validate :validate_sort_value
     validates :display_settings, json_schema: { filename: 'work_item_user_preference_display_settings' }

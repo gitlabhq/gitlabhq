@@ -1,4 +1,4 @@
-- title: "Trending tab in Explore > Projects is deprecated"
+- title: "Trending tab in Explore projects page is deprecated"
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "19.0"
   announcement_milestone: "18.8"

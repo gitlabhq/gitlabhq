@@ -406,7 +406,7 @@ backend pgbouncer
     server pgbouncer3 10.6.0.33:6432 check
 
 # Praefect load balancing (skip both sections below if using DNS service discovery for Praefect)
-# For more information, see https://docs.gitlab.com/ee/administration/gitaly/praefect/configure.html#service-discovery
+# For more information, see https://docs.gitlab.com/administration/gitaly/praefect/configure/#service-discovery
 frontend internal-praefect-tcp-in
     bind *:2305
     mode tcp
@@ -1946,7 +1946,7 @@ On each node perform the following:
    # Alternatively, use service discovery DNS with TLS (requires DNS infrastructure and GitLab 18.9+):
    # gitlab_rails['repositories_storages'] = {
    #   "default" => {
-   #     "gitaly_address" => "dns+tls://PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305",
+   #     "gitaly_address" => "dns+tls://DNS_SERVER_ADDRESS:53/PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305",
    #     "gitaly_token" => '<praefect_external_token>'
    #   }
    # }

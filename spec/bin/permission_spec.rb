@@ -87,7 +87,7 @@ RSpec.describe 'bin/permission', feature_category: :permissions do
 
         it 'creates metadata file when it does not exist' do
           expect(File).to receive(:write).with(
-            'config/authz/permissions/test_resource/_metadata.yml',
+            'config/authz/permissions/test_resource/.metadata.yml',
             anything
           )
 
@@ -95,11 +95,11 @@ RSpec.describe 'bin/permission', feature_category: :permissions do
         end
 
         it 'does not create metadata file when it already exists' do
-          allow(File).to receive(:exist?).with('config/authz/permissions/test_resource/_metadata.yml')
+          allow(File).to receive(:exist?).with('config/authz/permissions/test_resource/.metadata.yml')
             .and_return(true)
 
           expect(File).not_to receive(:write).with(
-            'config/authz/permissions/test_resource/_metadata.yml',
+            'config/authz/permissions/test_resource/.metadata.yml',
             anything
           )
 
@@ -308,7 +308,7 @@ RSpec.describe 'bin/permission', feature_category: :permissions do
         end
 
         it 'does not prompt for metadata when file exists' do
-          allow(File).to receive(:exist?).with('config/authz/permissions/test_resource/_metadata.yml')
+          allow(File).to receive(:exist?).with('config/authz/permissions/test_resource/.metadata.yml')
             .and_return(true)
 
           expect(PermissionOptionParser).not_to receive(:read_feature_category)
@@ -342,7 +342,7 @@ RSpec.describe 'bin/permission', feature_category: :permissions do
           argv.push('--resource-display-name', 'Test Resource', '--resource-description', 'A test resource')
 
           expect(File).to receive(:write).with(
-            'config/authz/permissions/test_resource/_metadata.yml',
+            'config/authz/permissions/test_resource/.metadata.yml',
             /name: Test Resource/
           )
 

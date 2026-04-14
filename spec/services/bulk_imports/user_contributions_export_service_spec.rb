@@ -7,10 +7,11 @@ RSpec.describe BulkImports::UserContributionsExportService, :clean_gitlab_redis_
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:group) }
   let_it_be(:cached_users) { create_list(:user, 2) }
+  let_it_be(:offline_export) { create(:offline_export, :with_configuration, user: user) }
 
   let(:jid) { 'jid' }
 
-  subject(:service) { described_class.new(user.id, portable, jid) }
+  subject(:service) { described_class.new(user.id, portable, jid, offline_export.id) }
 
   describe '#execute' do
     shared_examples 'exports cached user contributions as a relation' do
@@ -18,6 +19,7 @@ RSpec.describe BulkImports::UserContributionsExportService, :clean_gitlab_redis_
 
       before do
         Gitlab::Cache::Import::Caching.set_add(cache_key, cached_users.map(&:id))
+        stub_offline_import_object_storage(offline_export.configuration)
       end
 
       it 'assigns cached contributing user ids to user_contributions attribute' do

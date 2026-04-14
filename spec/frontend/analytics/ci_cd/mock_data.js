@@ -1,4 +1,4 @@
-import pipelineAnalyticsData from 'test_fixtures/graphql/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql.json';
+import pipelineAnalyticsData from 'test_fixtures/graphql/ci/analytics/project_ci_cd_analytics/graphql/queries/get_pipeline_analytics.query.graphql.json';
 
 export const counts = {
   failed: 20000,

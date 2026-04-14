@@ -38,9 +38,60 @@ module WithUploads
       dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
     use_fast_destroy :file_uploads
+
+    # NOTE:
+    #
+    # The uploads table is partitioned by model_type and has FK constraints
+    # on sharding key columns (namespace_id, project_id, organization_id)
+    # that reference their parent tables with ON DELETE CASCADE. When a
+    # model (e.g., Project, Group, User) is destroyed, PostgreSQL cascade-
+    # deletes the associated Upload rows inside the same transaction,
+    # before carrierwave's after_commit hook fires. Since Rails also
+    # freezes the model after destroy, carrierwave cannot look up the
+    # mounter or the upload record to find the remote file path.
+    #
+    # The capture_mounted_remote_uploaders callback runs before_destroy to
+    # snapshot any remote mounted uploaders while the Upload rows still
+    # exist. It then schedules remote file deletion in an after_commit
+    # hook, ensuring object storage files are cleaned up.
+    #
+    # This only matters for sharding keys with ON DELETE CASCADE. The
+    # uploaded_by_user_id FK uses ON DELETE SET NULL, so the Upload row
+    # survives the user's deletion and carrierwave's normal after_commit
+    # cleanup path works without intervention.
+    before_destroy :capture_mounted_remote_uploaders, prepend: true
   end
 
   def retrieve_upload(_identifier, paths)
     uploads.find_by(path: paths)
+  end
+
+  private
+
+  def capture_mounted_remote_uploaders
+    return unless uploads_cascade_deleted_on_destroy?
+
+    mounted_remote_uploaders = uploads.where.not(uploader: FILE_UPLOADERS).filter_map do |upload|
+      next unless upload.store == ObjectStorage::Store::REMOTE
+
+      upload.retrieve_uploader(upload.read_attribute(:mount_point)&.to_sym)
+    end
+
+    return if mounted_remote_uploaders.empty?
+
+    run_after_commit do
+      mounted_remote_uploaders.each do |uploader|
+        uploader.file&.delete
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e)
+      end
+    end
+  end
+
+  def uploads_cascade_deleted_on_destroy?
+    sharding_key = try(:uploads_sharding_key)
+    return false unless sharding_key.present?
+
+    (sharding_key.keys & %i[namespace_id project_id organization_id]).any?
   end
 end

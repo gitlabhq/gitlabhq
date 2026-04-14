@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Silent Mode
+description: Silence outbound communication from GitLab.
 ---
 
 {{< details >}}
@@ -135,7 +136,7 @@ Outbound communications from the following features are not silenced by Silent M
 | [Dependency proxy](../packages/dependency_proxy.md)                                                         | Pulling images that are not cached will fetch from the source as usual. Consider pull rate limits.                                                                                                                                              |
 | [File hooks](../file_hooks.md)                                                                              |                                                                                                                                                                                                                                                 |
 | [Server hooks](../server_hooks.md)                                                                          |                                                                                                                                                                                                                                                 |
-| [Advanced search](../../integration/advanced_search/elasticsearch.md)                                       | If two GitLab instances are using the same Advanced Search instance, then they can both modify Search data. This is a split-brain scenario which can occur for example after promoting a secondary Geo site while the primary Geo site is live. |
+| [Advanced search](../../integration/advanced_search/elasticsearch.md)                                       | If two GitLab instances are using the same advanced search instance, then they can both modify Search data. This is a split-brain scenario which can occur for example after promoting a secondary Geo site while the primary Geo site is live. |
 | [ClickHouse calls](../../integration/clickhouse.md)                                                         | ClickHouse requests are not silenced because they are considered internal to a site.                                                                                                                                                            |
 | Snowplow                                                                                                    | A proposal exists in [issue 409661](https://gitlab.com/gitlab-org/gitlab/-/issues/409661) to silence these requests.                                                                                                                                          |
 | [Deprecated Kubernetes Connections](../../user/clusters/agent/_index.md)                                    | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/396470).                                                                                                                                          |

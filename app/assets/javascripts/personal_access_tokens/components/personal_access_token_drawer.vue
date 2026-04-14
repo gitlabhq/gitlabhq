@@ -1,10 +1,9 @@
 <script>
-import { GlDrawer, GlSprintf, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
-import { s__ } from '~/locale';
-import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { GlIcon, GlTooltipDirective, GlButton, GlAttributeList } from '@gitlab/ui';
+import { MountingPortal } from 'portal-vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { s__, __, sprintf } from '~/locale';
 import { timeFormattedAsDate, timeFormattedAsDateFull } from '../utils';
-import PersonalAccessTokenStatusAlert from './personal_access_token_status_alert.vue';
 import PersonalAccessTokenStatusBadge from './personal_access_token_status_badge.vue';
 import PersonalAccessTokenGranularScopes from './personal_access_token_granular_scopes.vue';
 import PersonalAccessTokenLegacyScopes from './personal_access_token_legacy_scopes.vue';
@@ -15,11 +14,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlDrawer,
-    GlSprintf,
+    MountingPortal,
+    CrudComponent,
     GlIcon,
     GlButton,
-    PersonalAccessTokenStatusAlert,
+    GlAttributeList,
     PersonalAccessTokenStatusBadge,
     PersonalAccessTokenGranularScopes,
     PersonalAccessTokenLegacyScopes,
@@ -31,7 +30,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ['close', 'rotate', 'revoke'],
+  emits: ['close', 'rotate', 'revoke', 'duplicate'],
   computed: {
     isTokenActive() {
       return this.token?.active;
@@ -51,8 +50,35 @@ export default {
     lastUsedTimestamp() {
       return timeFormattedAsDateFull(this.token.lastUsedAt);
     },
+    createdDate() {
+      return timeFormattedAsDate(this.token.createdAt);
+    },
     createdTimestamp() {
       return timeFormattedAsDateFull(this.token.createdAt);
+    },
+    createdOnText() {
+      return sprintf(this.$options.i18n.created, {
+        date: this.createdDate,
+      });
+    },
+    attributesList() {
+      return [
+        {
+          icon: 'token',
+          label: this.$options.i18n.type,
+          text: this.isTokenGranular
+            ? this.$options.i18n.fineGrainedToken
+            : this.$options.i18n.legacyToken,
+        },
+        {
+          icon: 'text-description',
+          label: this.$options.i18n.description,
+          text: this.token.description || this.$options.i18n.noDescription,
+        },
+        { icon: 'expire', type: 'expiresAt', label: this.$options.i18n.expires, text: '' },
+        { icon: 'history', type: 'lastUsedAt', label: this.$options.i18n.lastUsed, text: '' },
+        { icon: 'earth', type: 'ipUsage', label: this.$options.i18n.ipUsage, text: '' },
+      ];
     },
   },
   methods: {
@@ -64,122 +90,120 @@ export default {
     },
   },
   i18n: {
-    title: s__(`AccessTokens|Details for '%{name}'`),
-    name: s__('AccessTokens|Name'),
+    panelHeader: s__('AccessTokens|Personal access token detail'),
     description: s__('AccessTokens|Description'),
     noDescription: s__('AccessTokens|No description provided.'),
     rotate: s__('AccessTokens|Rotate'),
     revoke: s__('AccessTokens|Revoke'),
+    duplicate: s__('AccessTokens|Duplicate'),
     expires: s__('AccessTokens|Expires'),
     lastUsed: s__('AccessTokens|Last used'),
     ipUsage: s__('AccessTokens|IP Usage'),
+    noIpUsage: s__('AccessTokens|No IP activity recorded yet.'),
     type: s__('AccessTokens|Type'),
     legacyToken: s__('AccessTokens|Legacy token'),
     fineGrainedToken: s__('AccessTokens|Fine-grained token'),
-    created: s__('AccessTokens|Created'),
+    created: s__('AccessTokens|Created on %{date}'),
+    scopes: s__('AccessTokens|Scopes'),
+    closePanel: __('Close panel'),
   },
-  getContentWrapperHeight,
-  DRAWER_Z_INDEX,
 };
 </script>
 
 <template>
-  <gl-drawer
-    :header-height="$options.getContentWrapperHeight()"
-    :z-index="$options.DRAWER_Z_INDEX"
-    :open="Boolean(token)"
-    @close="$emit('close')"
-  >
-    <template v-if="token" #title>
-      <h2 class="gl-heading-3 gl-my-0 gl-line-clamp-1 gl-text-size-h2">
-        <gl-sprintf :message="$options.i18n.title">
-          <template #name>{{ token.name }}</template>
-        </gl-sprintf>
-      </h2>
-    </template>
-
-    <template v-if="token" #header>
-      <div v-if="isTokenActive" class="gl-mt-3 gl-flex gl-gap-3">
-        <gl-button data-testid="rotate-token" @click="handleRotate">
-          {{ $options.i18n.rotate }}
-        </gl-button>
-        <gl-button
-          variant="danger"
-          category="secondary"
-          data-testid="revoke-token"
-          @click="handleRevoke"
-        >
-          {{ $options.i18n.revoke }}
-        </gl-button>
+  <mounting-portal v-if="Boolean(token)" mount-to="#contextual-panel-portal" append>
+    <div class="panel-content gl-h-full gl-pt-4 gl-leading-reset">
+      <div class="gl-border-b gl-px-5 gl-pb-4">
+        <div class="gl-flex gl-grow gl-items-center gl-justify-between">
+          <span class="gl-text-sm gl-font-bold">{{ $options.i18n.panelHeader }}</span>
+          <gl-button
+            category="tertiary"
+            icon="close"
+            size="small"
+            :title="$options.i18n.closePanel"
+            @click="$emit('close')"
+          />
+        </div>
       </div>
+      <div class="js-dynamic-panel-inner panel-content-inner !gl-px-5">
+        <section>
+          <div>
+            <div class="gl-flex gl-items-center">
+              <div>
+                <h2 class="gl-heading-1 !gl-mt-5 gl-mb-2">
+                  {{ token.name }}
+                </h2>
+                <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
+                  <personal-access-token-status-badge :token="token" />
+                  <span v-gl-tooltip="createdTimestamp" data-testid="token-created-on">
+                    {{ createdOnText }}
+                  </span>
+                </div>
+              </div>
+              <div class="gl-ml-auto">
+                <gl-button
+                  v-if="isTokenGranular"
+                  data-testid="duplicate-token"
+                  @click="$emit('duplicate', token)"
+                >
+                  {{ $options.i18n.duplicate }}
+                </gl-button>
 
-      <personal-access-token-status-alert :token="token" class="gl-mt-3" />
-    </template>
-
-    <template v-if="token">
-      <div>
-        <div class="gl-font-bold">{{ $options.i18n.name }}</div>
-        <div class="gl-mt-2 gl-wrap-anywhere">{{ token.name }}</div>
-
-        <div class="gl-mt-5 gl-font-bold">{{ $options.i18n.description }}</div>
-        <div v-if="token.description" class="gl-mt-2 gl-wrap-anywhere">{{ token.description }}</div>
-        <div v-else>{{ $options.i18n.noDescription }}</div>
-
-        <div class="gl-mt-5 gl-font-bold">
-          <gl-icon name="expire" class="gl-mr-2" />
-          {{ $options.i18n.expires }}
-        </div>
-        <div class="gl-mt-2 gl-flex gl-flex-wrap gl-items-center">
-          <div class="gl-mr-2">
-            <span v-gl-tooltip="expiryTimestamp">
-              {{ expiryDate }}
-            </span>
-          </div>
-          <personal-access-token-status-badge :token="token" />
-        </div>
-
-        <div class="gl-mt-5 gl-font-bold">
-          <gl-icon name="hourglass" class="gl-mr-2" />
-          {{ $options.i18n.lastUsed }}
-        </div>
-        <div class="gl-mt-2">
-          <span v-gl-tooltip="lastUsedTimestamp">
-            {{ lastUsedDate }}
-          </span>
-        </div>
-
-        <template v-if="token.lastUsedIps.length">
-          <div class="gl-mt-5 gl-font-bold">
-            {{ $options.i18n.ipUsage }}
-          </div>
-          <div class="gl-mt-2">
-            <div v-for="(ip, index) in token.lastUsedIps" :key="index">
-              {{ ip }}
+                <template v-if="isTokenActive">
+                  <gl-button data-testid="rotate-token" @click="handleRotate">
+                    {{ $options.i18n.rotate }}
+                  </gl-button>
+                  <gl-button
+                    variant="danger"
+                    category="secondary"
+                    data-testid="revoke-token"
+                    @click="handleRevoke"
+                  >
+                    {{ $options.i18n.revoke }}
+                  </gl-button>
+                </template>
+              </div>
             </div>
           </div>
-        </template>
+
+          <gl-attribute-list :items="attributesList" class="gl-mt-4" description-class="gl-ml-6">
+            <template #description="{ item }">
+              <template v-if="item.type === 'expiresAt'">
+                <span v-gl-tooltip="expiryTimestamp" data-testid="token-expiry">
+                  {{ expiryDate }}
+                </span>
+              </template>
+
+              <template v-else-if="item.type === 'lastUsedAt'">
+                <span v-gl-tooltip="lastUsedTimestamp" data-testid="token-last-used">
+                  {{ lastUsedDate }}
+                </span>
+              </template>
+
+              <template v-else-if="item.type === 'ipUsage'">
+                <template v-if="token.lastUsedIps.length">
+                  <div v-for="(ip, index) in token.lastUsedIps" :key="index" class="gl-mb-2">
+                    {{ ip }}
+                  </div>
+                </template>
+                <template v-else>
+                  <span class="gl-text-subtle">{{ $options.i18n.noIpUsage }}</span>
+                </template>
+              </template>
+            </template>
+          </gl-attribute-list>
+
+          <crud-component class="gl-mt-5">
+            <template #title>
+              <gl-icon name="token-permissions" />
+              <span>{{ $options.i18n.scopes }}</span>
+            </template>
+
+            <personal-access-token-granular-scopes v-if="isTokenGranular" :scopes="token.scopes" />
+            <personal-access-token-legacy-scopes v-else :scopes="token.scopes" />
+          </crud-component>
+        </section>
       </div>
-
-      <hr class="!gl-my-0 gl-mx-5 !gl-p-0" />
-
-      <div>
-        <personal-access-token-granular-scopes v-if="isTokenGranular" :scopes="token.scopes" />
-        <personal-access-token-legacy-scopes v-else :scopes="token.scopes" />
-      </div>
-
-      <hr class="!gl-my-0 gl-mx-5 !gl-p-0" />
-
-      <div>
-        <div class="gl-font-bold">{{ $options.i18n.type }}</div>
-        <div v-if="isTokenGranular" class="gl-mt-2">{{ $options.i18n.fineGrainedToken }}</div>
-        <div v-else class="gl-mt-2">{{ $options.i18n.legacyToken }}</div>
-
-        <div class="gl-mt-4 gl-font-bold">
-          <gl-icon name="clock" class="gl-mr-2" />
-          {{ $options.i18n.created }}
-        </div>
-        <div class="gl-mt-2">{{ createdTimestamp }}</div>
-      </div>
-    </template>
-  </gl-drawer>
+    </div>
+  </mounting-portal>
 </template>

@@ -340,14 +340,14 @@ module Gitlab
         #
         #   replace_with_partitioned_table :audit_events
         #
-        def replace_with_partitioned_table(table_name)
+        def replace_with_partitioned_table(table_name, rename_partitions: true)
           assert_table_is_allowed(table_name)
 
           partitioned_table_name = make_partitioned_table_name(table_name)
           archived_table_name = make_archived_table_name(table_name)
           primary_key_name = connection.primary_key(table_name)
 
-          replace_table(table_name, partitioned_table_name, archived_table_name, primary_key_name)
+          replace_table(table_name, partitioned_table_name, archived_table_name, primary_key_name, rename_partitions: rename_partitions)
         end
 
         # Rolls back a migration that replaced a non-partitioned table with its partitioned copy. This can be used to
@@ -357,14 +357,14 @@ module Gitlab
         #
         #   rollback_replace_with_partitioned_table :audit_events
         #
-        def rollback_replace_with_partitioned_table(table_name)
+        def rollback_replace_with_partitioned_table(table_name, rename_partitions: true)
           assert_table_is_allowed(table_name)
 
           partitioned_table_name = make_partitioned_table_name(table_name)
           archived_table_name = make_archived_table_name(table_name)
           primary_key_name = connection.primary_key(archived_table_name)
 
-          replace_table(table_name, archived_table_name, partitioned_table_name, primary_key_name)
+          replace_table(table_name, archived_table_name, partitioned_table_name, primary_key_name, rename_partitions: rename_partitions)
         end
 
         def drop_nonpartitioned_archive_table(table_name)
@@ -678,9 +678,9 @@ module Gitlab
           create_trigger(table_name, trigger_name, function_name, fires: 'AFTER INSERT OR UPDATE OR DELETE')
         end
 
-        def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name)
+        def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name, rename_partitions: true)
           replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(connection,
-            original_table_name.to_s, replacement_table_name, replaced_table_name, primary_key_name)
+            original_table_name.to_s, replacement_table_name, replaced_table_name, primary_key_name, rename_partitions: rename_partitions)
 
           transaction do
             drop_sync_trigger(original_table_name)

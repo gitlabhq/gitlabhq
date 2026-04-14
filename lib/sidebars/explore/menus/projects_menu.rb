@@ -30,7 +30,6 @@ module Sidebars
             page: [
               link,
               explore_root_path,
-              starred_explore_projects_path,
               trending_explore_projects_path,
               active_explore_projects_path,
               inactive_explore_projects_path,

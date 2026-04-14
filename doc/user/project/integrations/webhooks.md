@@ -34,7 +34,7 @@ Various events in GitLab can trigger webhooks. For example:
 
 ## Webhook limits
 
-GitLab.com enforces webhook limits, including:
+GitLab.com enforces [webhook limits](../../gitlab_com/_index.md#webhooks), including:
 
 - Maximum number of webhooks per project or group.
 - Number of webhook calls per minute.

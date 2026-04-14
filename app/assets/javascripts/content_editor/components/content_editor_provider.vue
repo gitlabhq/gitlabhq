@@ -2,6 +2,7 @@
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
+  name: 'ContentEditorProvider',
   provide() {
     const { contentEditor } = this;
 

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { defer } from 'lodash';
+import { defer } from 'lodash-es';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import { getScrollingElement } from '~/lib/utils/panels';
 import { contentTop } from './common_utils';

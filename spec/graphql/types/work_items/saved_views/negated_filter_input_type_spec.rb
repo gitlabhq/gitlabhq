@@ -19,7 +19,7 @@ RSpec.describe Types::WorkItems::SavedViews::NegatedFilterInputType, feature_cat
 
     # Arguments that exist in NegatedWorkItemFilterInputType but should NOT be in
     # Types::WorkItems::SavedViews::NegatedFilterInputType
-    excluded_from_saved_views = %w[workItemTypeIds]
+    excluded_from_saved_views = %w[]
 
     # Arguments that exist in Types::WorkItems::SavedViews::NegatedFilterInputType but NOT in
     # NegatedWorkItemFilterInputType (i.e. saved view-specific filters)
@@ -40,6 +40,18 @@ RSpec.describe Types::WorkItems::SavedViews::NegatedFilterInputType, feature_cat
       prepared_value = argument.prepare.call(global_ids, nil)
 
       expect(prepared_value).to match_array(work_items.map { |wi| wi.id.to_s })
+    end
+
+    it 'prepares work_item_type_ids by extracting model_ids from GlobalIDs' do
+      argument = described_class.arguments['workItemTypeIds']
+      global_ids = [
+        ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input('gid://gitlab/WorkItems::Type/1'),
+        ::Types::GlobalIDType[::WorkItems::Type].coerce_isolated_input('gid://gitlab/WorkItems::Type/2')
+      ]
+
+      prepared_value = argument.prepare.call(global_ids, nil)
+
+      expect(prepared_value).to eq(%w[1 2])
     end
   end
 end

@@ -306,6 +306,14 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be false }
     end
 
+    context 'when user is not allowed to use password for authentication' do
+      before do
+        allow(user).to receive(:allow_password_authentication?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
     context 'when email_otp_required_after is more than 60 days away' do
       let(:email_otp_required_after) { 61.days.from_now }
 

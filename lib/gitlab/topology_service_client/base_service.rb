@@ -3,6 +3,7 @@
 module Gitlab
   module TopologyServiceClient
     DEFAULT_TIMEOUT_IN_SECONDS = 1
+    MAX_RECEIVE_MESSAGE_BYTES = 10 * 1024 * 1024 # 10 MiB
 
     class BaseService
       def initialize(timeout: nil)
@@ -22,6 +23,7 @@ module Gitlab
           topology_service_address,
           service_credentials,
           interceptors: build_interceptors,
+          channel_args: { 'grpc.max_receive_message_length' => MAX_RECEIVE_MESSAGE_BYTES },
           **options
         )
       end

@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
     end
 
     context 'when it is an empty file' do
-      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret', 'masked' => true }]) }
+      let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret', masked: true }]) }
       let(:location) { '/lib/gitlab/ci/templates/secret/existent-file.yml' }
 
       before do
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
 
   describe '#error_message' do
     let(:location) { '/lib/gitlab/ci/templates/secret_file.yml' }
-    let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
+    let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret_file', masked: true }]) }
 
     before do
       Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([local_file])

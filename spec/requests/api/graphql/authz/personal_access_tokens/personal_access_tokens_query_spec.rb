@@ -39,6 +39,9 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
             namespace {
               id
             }
+            project {
+              id
+            }
             permissions {
               name
             }
@@ -98,6 +101,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'scopes' => [{
             'access' => 'SELECTED_MEMBERSHIPS',
             'namespace' => { 'id' => group.to_gid.to_s },
+            'project' => nil,
             'permissions' => [{ 'name' => 'read_member_role' }]
           }],
           'active' => true,
@@ -134,14 +138,18 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
     end
 
     it 'avoids N+1 queries' do
+      send_query
+
+      boundary = ::Authz::Boundary.for(create(:project))
+      create(:granular_pat, permissions: ['read_member_role'], user: user, boundary: boundary)
+
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
 
-      boundary = ::Authz::Boundary.for(create(:group))
-      create_list(:granular_pat, 10, permissions: ['read_member_role'], user: user, boundary: boundary)
+      create_list(:granular_pat, 9, permissions: ['read_member_role'], user: user, boundary: boundary)
 
-      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+      expect { post_graphql(query, current_user: current_user) }.to issue_same_number_of_queries_as(control)
     end
 
     describe 'scope access' do
@@ -170,6 +178,16 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
     describe 'filters' do
       before do
         send_query
+      end
+
+      context 'with { id: <id> }' do
+        let(:args) { { id: granular_token.to_global_id.to_s } }
+
+        it 'returns only the personal access token with the matching id' do
+          expect(personal_access_tokens_data).to contain_exactly(
+            a_hash_including('id' => granular_token.to_gid.to_s)
+          )
+        end
       end
 
       context 'with { search: "<query>" }' do

@@ -78,7 +78,7 @@ export default {
       searchable
       is-check-centered
       :searching="$apollo.loading"
-      @click.capture.native="clearTransform"
+      @click.capture="clearTransform"
       @search="search = $event"
     >
       <template #list-item="{ item }">

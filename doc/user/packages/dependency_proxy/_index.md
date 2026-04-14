@@ -111,13 +111,15 @@ The token should have the scope set to one of the following:
 - `api`: Grants full API access.
 - `read_registry`: Grants read-only access to the container registry.
 - `write_registry`: Grants both read and write access to the container registry.
-- `read_virtual_registry`: Grants read-only access (pull) to container images through the dependency proxy.
-- `write_virtual_registry`: Grants read (pull), write (push), and delete access to container images through the dependency proxy.
+- `read_virtual_registry`: Grants read-only (pull) access to container images through the group-level Dependency Proxy. Available only when the Dependency Proxy is enabled.
+- `write_virtual_registry`: Grants write access to the group-level dependency proxy cache, including populating and pruning cached images. Also grants pull access through that cache.
+  Does not grant push or delete access to the project's container registry.
+  Available only when the Dependency Proxy is turned on.
 
-When authenticating with the dependency proxy for container images:
+When authenticating with the Dependency Proxy for container images, tokens must include one of the following scope combinations:
 
-- Tokens with the `read_virtual_registry` scope must also include the `read_registry` scope.
-- Tokens with the `write_virtual_registry` scope must also include the `write_registry` scope.
+- Container registry scopes: `read_registry` and `write_registry`.
+- Dependency Proxy scopes: `read_virtual_registry` and `write_virtual_registry`. When you pull images through the Dependency Proxy, GitLab writes data into the group-level Dependency Proxy cache.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
 have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group they pull images from.

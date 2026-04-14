@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlButton } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import LockTooltip from './lock_tooltip.vue';
 

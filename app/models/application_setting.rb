@@ -11,9 +11,6 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
-  ignore_column :duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
-  ignore_column :lock_duo_sast_fp_detection_enabled, remove_with: '18.11', remove_after: '2026-02-19'
-  ignore_column :namespace_deletion_settings, remove_with: '18.11', remove_after: '2026-03-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -540,7 +537,6 @@ class ApplicationSetting < ApplicationRecord
     {
       pipeline_variables_default_allowed: [:boolean, { default: true }],
       ci_job_live_trace_enabled: [:boolean, { default: false }],
-      ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }]
@@ -552,7 +548,6 @@ class ApplicationSetting < ApplicationRecord
   chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
-  validates :ci_partitions_size_limit, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :ci_partitions_in_seconds_limit, presence: true,
     numericality: {
       only_integer: true,
@@ -746,6 +741,20 @@ class ApplicationSetting < ApplicationRecord
 
   validates :resource_access_tokens_settings, json_schema: { filename: 'resource_access_tokens_settings' }
 
+  jsonb_accessor :personal_access_token_settings,
+    enforce_granular_tokens: [:boolean, { default: false }],
+    granular_tokens_enforced_after: [:date, { default: nil }]
+
+  validates :personal_access_token_settings, json_schema: { filename: 'personal_access_token_settings' }
+
+  validates :granular_tokens_enforced_after,
+    presence: true,
+    if: :enforce_granular_tokens?
+
+  validates :granular_tokens_enforced_after,
+    future_date: true,
+    if: :granular_tokens_enforced_after_changed?
+
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
     disable_invite_members: [:boolean, { default: false }]
@@ -794,6 +803,7 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :search,
     global_search_issues_enabled: [:boolean, { default: true }],
+    global_search_work_items_enabled: [:boolean, { default: true }],
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],

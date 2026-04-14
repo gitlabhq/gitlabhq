@@ -75,6 +75,12 @@ RSpec.describe 'groups autocomplete', feature_category: :groups_and_projects do
         expect(json_response.size).to eq(issues.size)
         expect(json_response.map { |issue| issue['iid'] })
           .to match_array(issues.map(&:iid))
+        next if issues.empty?
+
+        json_response.each do |item| # rubocop:disable RSpec/IteratedExpectation -- `all` matcher shadowed by `let(:all)`
+          expect(item).to have_key('icon_name')
+          expect(item).to have_key('reference')
+        end
       end
     end
   end

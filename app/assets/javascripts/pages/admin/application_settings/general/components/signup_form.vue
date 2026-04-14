@@ -133,7 +133,7 @@ export default {
     requireAdminApprovalHelpText() {
       return sprintf(
         s__(
-          'ApplicationSettings|Any user that visits %{host} and creates an account must be explicitly approved by an administrator before they can sign in. Only effective if sign-ups are enabled.',
+          'ApplicationSettings|Any user that visits %{host} and creates an account must be explicitly approved by an administrator before they can sign in. Only effective if new user accounts are allowed.',
         ),
         {
           host: this.host,
@@ -175,49 +175,51 @@ export default {
   },
   i18n: {
     buttonText: s__('ApplicationSettings|Save changes'),
-    signupEnabledLabel: s__('ApplicationSettings|Sign-up enabled'),
-    requireAdminApprovalLabel: s__('ApplicationSettings|Require admin approval for new sign-ups'),
+    signupEnabledLabel: s__('ApplicationSettings|Allow new user accounts'),
+    requireAdminApprovalLabel: s__(
+      'ApplicationSettings|Require admin approval for new user accounts',
+    ),
     emailConfirmationSettingsLabel: s__('ApplicationSettings|Email confirmation settings'),
     emailConfirmationSettingsOffLabel: s__('ApplicationSettings|Off'),
     emailConfirmationSettingsOffHelpText: s__(
-      'ApplicationSettings|New users can sign up without confirming their email address.',
+      'ApplicationSettings|New users can create an account without confirming their email address.',
     ),
     emailConfirmationSettingsSoftLabel: s__('ApplicationSettings|Soft'),
     emailConfirmationSettingsSoftHelpText: s__(
-      'ApplicationSettings|Send a confirmation email during sign up. New users can log in immediately, but must confirm their email within three days.',
+      'ApplicationSettings|Send a confirmation email when a user creates an account. New users can sign in immediately, but must confirm their email address within three days.',
     ),
     emailConfirmationSettingsHardLabel: s__('ApplicationSettings|Hard'),
     emailConfirmationSettingsHardHelpText: s__(
-      'ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in.',
+      'ApplicationSettings|Send a confirmation email when a user creates an account. New users must confirm their email address before they can sign in.',
     ),
     minimumPasswordLengthLabel: s__(
       'ApplicationSettings|Minimum password length (number of characters)',
     ),
-    domainAllowListLabel: s__('ApplicationSettings|Allowed domains for sign-ups'),
+    domainAllowListLabel: s__('ApplicationSettings|Domains allowed for new users'),
     domainAllowListDescription: s__(
-      'ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
+      'ApplicationSettings|Only users with email addresses that match these domains can create accounts. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
     domainDenyListGroupLabel: s__('ApplicationSettings|Domain denylist'),
-    domainDenyListLabel: s__('ApplicationSettings|Enable domain denylist for sign-ups'),
+    domainDenyListLabel: s__('ApplicationSettings|Enable domain denylist for new users'),
     domainDenyListTypeFileLabel: s__('ApplicationSettings|Upload denylist file'),
     domainDenyListTypeRawLabel: s__('ApplicationSettings|Enter denylist manually'),
     domainDenyListFileLabel: s__('ApplicationSettings|Denylist file'),
     domainDenyListFileDescription: s__(
-      'ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines or commas for multiple entries.',
+      'ApplicationSettings|Users with email addresses that match these domains cannot create accounts. Wildcards allowed. Use separate lines or commas for multiple entries.',
     ),
-    domainDenyListListLabel: s__('ApplicationSettings|Denied domains for sign-ups'),
+    domainDenyListListLabel: s__('ApplicationSettings|Domains denied to new users'),
     domainDenyListListDescription: s__(
-      'ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
+      'ApplicationSettings|Users with email addresses that match these domains cannot create accounts. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
     domainPlaceholder: s__('ApplicationSettings|domain.com'),
     emailRestrictionsEnabledGroupLabel: s__('ApplicationSettings|Email restrictions'),
     emailRestrictionsEnabledLabel: s__(
-      'ApplicationSettings|Enable email restrictions for sign-ups',
+      'ApplicationSettings|Enable email restrictions for new users',
     ),
-    emailRestrictionsGroupLabel: s__('ApplicationSettings|Email restrictions for sign-ups'),
-    afterSignUpTextGroupLabel: s__('ApplicationSettings|After sign-up text'),
+    emailRestrictionsGroupLabel: s__('ApplicationSettings|Email restrictions for new users'),
+    afterSignUpTextGroupLabel: s__('ApplicationSettings|Text shown to new users'),
     afterSignUpTextGroupDescription: s__(
-      'ApplicationSettings|Text shown after a user signs up. Markdown enabled.',
+      'ApplicationSettings|Text shown to a new user. Markdown enabled.',
     ),
   },
 };
@@ -414,7 +416,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. %{linkStart}What is the supported syntax?%{linkEnd}',
+                'ApplicationSettings|Restricts new user email addresses to those that match this regex. %{linkStart}What is the supported syntax?%{linkEnd}',
               )
             "
           >

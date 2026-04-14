@@ -277,17 +277,22 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
       expect(find_partitioned_upload(bulk_import_export_upload_upload_to_be_removed.id)).not_to be_truthy
       expect(find_partitioned_upload(bulk_import_export_upload_upload_synced.id)).to be_truthy
 
-      expect do
-        described_class.new(
-          start_id: uploads_table.minimum(:id),
-          end_id: uploads_table.maximum(:id),
-          batch_table: :uploads,
-          batch_column: :id,
-          sub_batch_size: 100,
-          pause_ms: 0,
-          connection: connection
-        ).perform
-      end.not_to raise_error
+      # Allow cross-schema queries - after the table swap, uploads moves from gitlab_main_org
+      # to gitlab_main_cell_local schema (see db/docs/uploads.yml), but the backfill migration
+      # still needs to join with models in other schemas.
+      allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/398199') do
+        expect do
+          described_class.new(
+            start_id: uploads_table.minimum(:id),
+            end_id: uploads_table.maximum(:id),
+            batch_table: :uploads,
+            batch_column: :id,
+            sub_batch_size: 100,
+            pause_ms: 0,
+            connection: connection
+          ).perform
+        end.not_to raise_error
+      end
 
       verify_backfilled_values(abuse_report_upload_to_be_synced)
       verify_backfilled_values(abuse_report_upload_synced)
@@ -477,11 +482,20 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   def create_upload(model_type, model, delete_model: false, user_id: nil, uploads_sharding_key: {})
     user_id ||= create_user(organization_id: create_organization.id).id
     model_id = Array.wrap(model.id).first
-    uploads_table.create!(model_type: model_type, model_id: model_id, size: 42, path: '/some/path',
-      uploader: 'FileUploader', created_at: Time.current, uploaded_by_user_id: user_id,
-      **uploads_sharding_key).tap do
-      model.delete if delete_model
-    end
+
+    upload = uploads_table.create!(
+      model_type: model_type,
+      model_id: model_id,
+      size: 42,
+      path: '/some/path',
+      uploader: 'FileUploader',
+      created_at: Time.current,
+      uploaded_by_user_id: user_id,
+      **uploads_sharding_key
+    )
+
+    model.delete if delete_model
+    upload
   end
 
   def create_achievement

@@ -479,12 +479,9 @@ displays to the right of the mini graph.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18311) in GitLab 18.6.
-- Security reports from child pipelines [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18377) in GitLab 18.9 [with a feature flag](../../administration/feature_flags/_index.md) named `show_child_security_reports_in_mr_widget`. Enabled by default.
+- Security reports from child pipelines [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18377) in GitLab 18.9.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 You can view and download reports from child pipelines in merge request widgets.
 This provides a unified view of test results and quality checks across your pipeline hierarchy
@@ -897,50 +894,9 @@ the ones defined in the upstream project take precedence.
 
 ### Pass dotenv variables created in a job
 
-{{< details >}}
+You can pass variables to a downstream pipeline with dotenv variable inheritance.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-environment-variables-to-later-jobs).
-
-For example, in a [multi-project pipeline](#multi-project-pipelines):
-
-1. Save the variables in a `.env` file.
-1. Save the `.env` file as a `dotenv` report.
-1. Trigger the downstream pipeline.
-
-   ```yaml
-   build_vars:
-     stage: build
-     script:
-       - echo "BUILD_VERSION=hello" >> build.env
-     artifacts:
-       reports:
-         dotenv: build.env
-
-   deploy:
-     stage: deploy
-     trigger: my/downstream_project
-   ```
-
-1. Set the `test` job in the downstream pipeline to inherit the variables from the `build_vars`
-   job in the upstream project with `needs`. The `test` job inherits the variables in the
-   `dotenv` report and it can access `BUILD_VERSION` in the script:
-
-   ```yaml
-   test:
-     stage: test
-     script:
-       - echo $BUILD_VERSION
-     needs:
-       - project: my/upstream_project
-         job: build_vars
-         ref: master
-         artifacts: true
-   ```
+For more information, see [pass variables to downstream pipelines](../variables/dotenv_variables.md#pass-variables-to-downstream-pipelines).
 
 ### Control what type of variables to forward to downstream pipelines
 

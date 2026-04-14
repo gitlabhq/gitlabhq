@@ -21,7 +21,7 @@ title: Compliance center
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group or project.
+- You must be an administrator or have the Security Manager, or Owner role for the group or project.
 
 The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
 

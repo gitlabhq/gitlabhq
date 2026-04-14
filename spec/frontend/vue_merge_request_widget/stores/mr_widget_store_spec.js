@@ -1,6 +1,6 @@
 import MergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import mockData from '../mock_data';
+import mockData, { mockPipelineSubscription } from '../mock_data';
 
 describe('MergeRequestStore', () => {
   let store;
@@ -217,6 +217,192 @@ describe('MergeRequestStore', () => {
 
       expect(result.closedAt).toBeNull();
       expect(result.mergedAt).not.toBeNull();
+    });
+  });
+
+  describe('setPipelineStatusData', () => {
+    it('sets ciStatus field', () => {
+      expect(store.ciStatus).toBe('success');
+
+      store.setPipelineStatusData(mockPipelineSubscription);
+
+      expect(store.ciStatus).toBe('running');
+    });
+
+    it('sets isPipelineActive field', () => {
+      expect(store.isPipelineActive).toBe(false);
+
+      store.setPipelineStatusData(mockPipelineSubscription);
+
+      expect(store.isPipelineActive).toBe(true);
+    });
+
+    it('sets isPipelineBlocked field', () => {
+      store.onlyAllowMergeIfPipelineSucceeds = true;
+
+      expect(store.isPipelineBlocked).toBe(false);
+
+      store.setPipelineStatusData({ ...mockPipelineSubscription, status: 'MANUAL' });
+
+      expect(store.isPipelineBlocked).toBe(true);
+    });
+
+    it('sets isPipelineFailed field', () => {
+      expect(store.isPipelineFailed).toBe(false);
+
+      store.setPipelineStatusData({ ...mockPipelineSubscription, status: 'FAILED' });
+
+      expect(store.isPipelineFailed).toBe(true);
+    });
+
+    it('sets isPipelinePassing field', () => {
+      expect(store.isPipelinePassing).toBe(true);
+
+      store.setPipelineStatusData(mockPipelineSubscription);
+
+      expect(store.isPipelinePassing).toBe(false);
+    });
+
+    it('sets isPipelineSkipped field', () => {
+      expect(store.isPipelineSkipped).toBe(false);
+
+      store.setPipelineStatusData({ ...mockPipelineSubscription, status: 'SKIPPED' });
+
+      expect(store.isPipelineSkipped).toBe(true);
+    });
+
+    it('sets pipelineDetailedStatus field', () => {
+      store.setPipelineStatusData(mockPipelineSubscription);
+
+      expect(store.pipelineDetailedStatus).toMatchObject({
+        icon: 'status_running',
+        id: 'running-1027-1027',
+        label: 'running',
+        name: 'RUNNING',
+        text: 'Running',
+        tooltip: 'running',
+        details_path: '/root/ci-project/-/pipelines/1027',
+      });
+    });
+
+    describe('stage updates', () => {
+      it('does not modify stages that are not in the subscription data', () => {
+        expect(store.pipeline.details.stages[0].status).toMatchObject({
+          text: 'failed',
+          label: 'failed',
+        });
+
+        // current mock data does not contain a stage with ID matching
+        // the current store data
+        store.setPipelineStatusData(mockPipelineSubscription);
+
+        expect(store.pipeline.details.stages[0].status).toMatchObject({
+          text: 'failed',
+          label: 'failed',
+        });
+      });
+
+      it('updates stage status while preserving existing stage properties', () => {
+        // update current store pipeline to have IDs that match
+        // subscription returned data
+        store.pipeline = {
+          details: {
+            status: {},
+            stages: [
+              {
+                name: 'build',
+                id: 1296,
+                title: 'build: failed',
+                status: {
+                  icon: 'status_failed',
+                  favicon: 'favicon_status_failed',
+                  text: 'failed',
+                  label: 'failed',
+                  group: 'failed',
+                  has_details: true,
+                  details_path: '/root/ci-project/-/pipelines/1027#build',
+                },
+                path: '/root/ci-project/-/pipelines/1027#build',
+                dropdown_path: '/root/ci-project/-/pipelines/1027/stage.json?stage=build',
+              },
+              {
+                name: 'test',
+                id: 1297,
+                title: 'test: pending',
+                status: {
+                  icon: 'status_pending',
+                  favicon: 'favicon_status_pending',
+                  text: 'Pending',
+                  label: 'pending',
+                  group: 'pending',
+                  has_details: true,
+                  details_path: '/root/ci-project/-/pipelines/1027#test',
+                },
+                path: '/root/ci-project/-/pipelines/1027#test',
+                dropdown_path: '/root/ci-project/-/pipelines/1027/stage.json?stage=test',
+              },
+            ],
+          },
+        };
+
+        store.setPipelineStatusData(mockPipelineSubscription);
+
+        const [buildStage, testStage] = store.pipeline.details.stages;
+
+        // status updated from subscription
+        expect(buildStage.status.icon).toBe('status_success');
+        expect(buildStage.status.text).toBe('Passed');
+        expect(buildStage.status.group).toBe('success');
+        expect(buildStage.status.details_path).toBe('/root/ci-project/-/pipelines/1027#build');
+
+        // existing properties preserved
+        expect(buildStage.name).toBe('build');
+        expect(buildStage.dropdown_path).toBe(
+          '/root/ci-project/-/pipelines/1027/stage.json?stage=build',
+        );
+        expect(buildStage.path).toBe('/root/ci-project/-/pipelines/1027#build');
+        expect(buildStage.status.has_details).toBe(true);
+
+        // second stage also updated
+        expect(testStage.status.icon).toBe('status_running');
+        expect(testStage.status.text).toBe('Running');
+        expect(testStage.dropdown_path).toBe(
+          '/root/ci-project/-/pipelines/1027/stage.json?stage=test',
+        );
+      });
+    });
+
+    describe('when isPostMerge is true', () => {
+      it('updates mergePipeline instead of pipeline', () => {
+        const originalPipeline = { ...store.pipeline };
+
+        expect(store.mergePipeline).toEqual({});
+
+        store.setPipelineStatusData(mockPipelineSubscription, true);
+
+        expect(store.mergePipeline.details.status.name).toBe('RUNNING');
+        expect(store.pipeline).toEqual(originalPipeline);
+      });
+    });
+
+    it('preserves existing pipeline details properties', () => {
+      expect(store.pipeline.details.status.text).toBe('passed');
+      expect(store.pipeline.details.artifacts[0]).toEqual({
+        job_name: 'generate-artifact',
+        job_path: 'bar',
+        name: 'generate-artifact',
+        path: 'bar',
+      });
+
+      store.setPipelineStatusData(mockPipelineSubscription);
+
+      expect(store.pipeline.details.status.text).toBe('Running');
+      expect(store.pipeline.details.artifacts[0]).toEqual({
+        job_name: 'generate-artifact',
+        job_path: 'bar',
+        name: 'generate-artifact',
+        path: 'bar',
+      });
     });
   });
 });

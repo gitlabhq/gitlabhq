@@ -1,4 +1,4 @@
-import { isString, isArray } from 'lodash';
+import { isString, isArray } from 'lodash-es';
 
 export function responseMessageFromError(response) {
   if (!response?.response?.data) {

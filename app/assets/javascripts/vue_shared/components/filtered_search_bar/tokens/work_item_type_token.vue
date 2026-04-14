@@ -1,8 +1,10 @@
 <script>
 import { GlIcon, GlIntersperse, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import BaseToken from './base_token.vue';
@@ -16,6 +18,7 @@ export default {
     GlFilteredSearchSuggestion,
     WorkItemTypeIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     active: {
       type: Boolean,
@@ -63,11 +66,16 @@ export default {
   },
   computed: {
     filteredWorkItemTypes() {
-      return this.workItemTypes.filter(
-        (type) =>
-          type.isFilterableListView &&
-          type.name.toLocaleLowerCase().includes(this.searchTerm.toLocaleLowerCase()),
-      );
+      const filterName = this.config.isFilterableBoardView
+        ? 'isFilterableBoardView'
+        : 'isFilterableListView';
+      return this.workItemTypes
+        .filter((type) => type[filterName])
+        .filter(
+          (type) =>
+            type.name.toLocaleLowerCase().includes(this.searchTerm.toLocaleLowerCase()) ||
+            this.getTypeValue(type) === this.searchTerm,
+        );
     },
   },
   methods: {
@@ -78,7 +86,9 @@ export default {
       return types.find((type) => this.getTypeValue(type) === data);
     },
     getTypeValue(type) {
-      return type.name.toUpperCase().replace(/\s+/g, '_'); // 'Key Results' -> 'KEY_RESULTS');
+      return this.glFeatures.workItemConfigurableTypes
+        ? String(getIdFromGraphQLId(type.id))
+        : type.name.toUpperCase().replace(/\s+/g, '_'); // 'Key Results' -> 'KEY_RESULTS');
     },
   },
 };

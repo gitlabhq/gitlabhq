@@ -31,6 +31,9 @@ RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflo
       diff_refs: diff_refs
     )
 
+    allow_next_instance_of(DraftNote) do |instance|
+      allow(instance).to receive(:project).and_return(project)
+    end
     expect(project.repository).to receive(:keep_around)
 
     create_draft(note: 'Comment on diff', position: position.to_json)
@@ -78,6 +81,17 @@ RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflo
       expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
 
       create_draft(note: 'This is a test')
+    end
+  end
+
+  context 'when replying to a system note' do
+    it 'returns an error' do
+      system_note = create(:note_on_merge_request, :system, noteable: merge_request, project: project)
+
+      draft = create_draft(note: 'A reply!', in_reply_to_discussion_id: system_note.discussion_id)
+
+      expect(draft.errors[:base]).to include('Replies to system notes are not allowed')
+      expect(draft).not_to be_persisted
     end
   end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SearchServicePresenter, feature_category: :global_search do
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:search) { '' }
   let(:search_service) { SearchService.new(user, search: search, scope: scope) }
   let(:presenter) { described_class.new(search_service, current_user: user) }

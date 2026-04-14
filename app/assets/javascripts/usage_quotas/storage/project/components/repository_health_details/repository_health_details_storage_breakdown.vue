@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlCard, GlSprintf, GlProgressBar } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { formatNumber, __ } from '~/locale';
 

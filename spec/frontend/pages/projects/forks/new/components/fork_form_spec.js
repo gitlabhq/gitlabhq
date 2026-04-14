@@ -7,7 +7,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { kebabCase, merge } from 'lodash';
+import { kebabCase, merge } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import axios from '~/lib/utils/axios_utils';
@@ -186,7 +186,7 @@ describe('ForkForm component', () => {
 
     expect(findForkNameInput().props('required')).toBe(true);
     expect(findForkSlugInput().props('required')).toBe(true);
-    expect(findVisibilityRadioGroup().attributes('required')).not.toBeUndefined();
+    expect(findVisibilityRadioGroup().props('required')).not.toBeUndefined();
     expect(findForkDescriptionTextarea().attributes('required')).toBeUndefined();
   });
 
@@ -267,7 +267,7 @@ describe('ForkForm component', () => {
       it('resets the visibility to max allowed below current level', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().props().checked).toBe('public');
 
         fillForm({
           name: 'one',
@@ -282,7 +282,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when current level is allowed', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().props().checked).toBe('public');
 
         fillForm({
           name: 'two',
@@ -297,7 +297,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when visibility cap is increased', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(findVisibilityRadioGroup().vm.$attrs.checked).toBe('public');
+        expect(findVisibilityRadioGroup().props().checked).toBe('public');
 
         fillForm({
           name: 'three',

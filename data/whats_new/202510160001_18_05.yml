@@ -12,7 +12,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/planner/
   image_url: https://about.gitlab.com/images/18_5/duo_planner.png
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: GitLab Security Analyst Agent for Duo Agent Catalog (beta)
   description: |
@@ -35,7 +35,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/
   image_url: https://about.gitlab.com/images/18_5/security_analyst_agent.png
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: Maven virtual registry now available in beta
   description: |
@@ -53,7 +53,7 @@
   documentation_link: https://docs.gitlab.com/user/packages/virtual_registry/maven/#manage-virtual-registries
   image_url: https://img.youtube.com/vi/CiOZJPhAvaI/hqdefault.jpg
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: Pick up where you left off on the new personal homepage
   description: |
@@ -65,7 +65,7 @@
   documentation_link: https://docs.gitlab.com/tutorials/personal_homepage/
   image_url: https://about.gitlab.com/images/18_5/personal_homepage.png
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: GPT-5 now available as a model option for GitLab Duo Agentic Chat
   description: |
@@ -79,7 +79,7 @@
   documentation_link: https://docs.gitlab.com/user/gitlab_duo_chat/agentic_chat/#select-a-model
   image_url: https://about.gitlab.com/images/18_5/GPT5_Now_Available.png
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: Instance-wide compliance and security policy management
   description: |
@@ -112,7 +112,7 @@
   documentation_link: https://docs.gitlab.com/security/compliance_security_policy_management/
   image_url: https://img.youtube.com/vi/TrQCeWsdj1A/hqdefault.jpg
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"
 
 - name: DAST authentication scripts
   description: |
@@ -126,4 +126,4 @@
   documentation_link: https://docs.gitlab.com/user/application_security/dast/browser/configuration/authentication_scripts/
   image_url: https://img.youtube.com/vi/EIAPBbFJuuk/hqdefault.jpg
   published_at: 2025-10-16
-  release: 18.5
+  release: "18.5"

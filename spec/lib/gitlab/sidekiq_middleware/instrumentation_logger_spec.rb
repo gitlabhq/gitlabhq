@@ -44,7 +44,27 @@ RSpec.describe Gitlab::SidekiqMiddleware::InstrumentationLogger do
     it 'merges all instrumentation data in the job' do
       expect { |b| subject.call(worker, job, queue, &b) }.to yield_control
 
-      expect(job[:instrumentation]).to eq(instrumentation_values)
+      expect(job[:instrumentation]).to include(instrumentation_values)
+    end
+
+    it 'enables GVL timers' do
+      expect(GVLTools::LocalTimer).to receive(:enable)
+      expect(GVLTools::GlobalTimer).to receive(:enable)
+
+      subject.call(worker, job, queue) { nil }
+    end
+
+    context 'when enable_sidekiq_gvl_metrics FF is disabled' do
+      before do
+        stub_feature_flags(enable_sidekiq_gvl_metrics: false)
+      end
+
+      it 'disables GVL timers' do
+        expect(GVLTools::LocalTimer).to receive(:disable)
+        expect(GVLTools::GlobalTimer).to receive(:disable)
+
+        subject.call(worker, job, queue) { nil }
+      end
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Explore::AnalyticsDashboardsController, feature_category: :value_stream_management do
+RSpec.describe Explore::AnalyticsDashboardsController, feature_category: :custom_dashboards_foundation do
   let_it_be(:user) { create(:user) }
 
   before do

@@ -1,6 +1,7 @@
 package loadshedding
 
 import (
+	"sync"
 	"sync/atomic"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -72,7 +73,12 @@ type LoadShedder struct {
 	statusCode          int // HTTP status code to return when shedding load
 	lastBacklogSnapshot atomic.Int64
 	shouldShed          atomic.Bool
-	strategy            BacklogStrategy
+	readinessShedActive atomic.Bool
+	// metricsMu serializes gauge/counter updates across UpdateBacklog and
+	// SetReadinessShedActive so that the combined (backlog OR readiness) state
+	// transition is computed atomically with respect to both signals.
+	metricsMu sync.Mutex
+	strategy  BacklogStrategy
 
 	// Prometheus metrics
 	backlogGauge     prometheus.Gauge
@@ -142,7 +148,13 @@ func (ls *LoadShedder) UpdateBacklog(controlResp *puma.ControlResponse) {
 	// Calculate hysteresis threshold once with proper rounding to avoid precision loss
 	hysteresisThreshold := int(float64(ls.backlogThreshold)*ls.backlogHysteresis + 0.5)
 
-	// Apply hysteresis logic to prevent oscillation
+	// Hold metricsMu for the entire backlog-state decision so that the
+	// wasShedding read, the shouldShed computation, and the shouldShed store
+	// are all atomic with respect to concurrent SetReadinessShedActive calls.
+	// This prevents a race where SetReadinessShedActive reads shouldShed
+	// mid-transition and computes an incorrect combined state.
+	ls.metricsMu.Lock()
+	defer ls.metricsMu.Unlock()
 	wasShedding := ls.shouldShed.Load()
 	shouldShed := wasShedding
 
@@ -155,6 +167,7 @@ func (ls *LoadShedder) UpdateBacklog(controlResp *puma.ControlResponse) {
 	}
 
 	if shouldShed != wasShedding {
+		readinessShedActive := ls.readinessShedActive.Load()
 		ls.shouldShed.Store(shouldShed)
 		if shouldShed {
 			ls.logger.WithFields(map[string]interface{}{
@@ -163,17 +176,23 @@ func (ls *LoadShedder) UpdateBacklog(controlResp *puma.ControlResponse) {
 				"hysteresis_threshold": hysteresisThreshold,
 				"strategy":             ls.strategy.Name(),
 			}).Warn("Load shedding enabled: backlog threshold exceeded")
-			ls.shedLoadGauge.Set(1)
-			ls.shedLoadCounter.Inc()
+			// wasShedding was false, so oldCombined = readinessShedActive.
+			ls.updateCombinedMetrics(readinessShedActive, true)
 		} else {
-			ls.logger.WithFields(map[string]interface{}{
-				"effective_backlog":    effectiveBacklog,
-				"backlog_threshold":    ls.backlogThreshold,
-				"hysteresis_threshold": hysteresisThreshold,
-				"strategy":             ls.strategy.Name(),
-			}).Info("Load shedding disabled: backlog below hysteresis threshold")
-			ls.shedLoadGauge.Set(0)
-			ls.allowLoadCounter.Inc()
+			logFields := map[string]interface{}{
+				"effective_backlog":     effectiveBacklog,
+				"backlog_threshold":     ls.backlogThreshold,
+				"hysteresis_threshold":  hysteresisThreshold,
+				"strategy":              ls.strategy.Name(),
+				"readiness_shed_active": readinessShedActive,
+			}
+			if readinessShedActive {
+				ls.logger.WithFields(logFields).Info("Backlog-based load shedding disabled: backlog below hysteresis threshold (readiness-based shedding still active)")
+			} else {
+				ls.logger.WithFields(logFields).Info("Load shedding disabled: backlog below hysteresis threshold")
+			}
+			// wasShedding was true, so oldCombined = true.
+			ls.updateCombinedMetrics(true, readinessShedActive)
 		}
 	}
 }
@@ -207,6 +226,46 @@ func (ls *LoadShedder) GetStatusCode() int {
 func (ls *LoadShedder) InitializeMetrics() {
 	ls.thresholdGauge.Set(float64(ls.backlogThreshold))
 	ls.shedLoadGauge.Set(0)
+}
+
+// SetReadinessShedActive updates the load shedding active state based on readiness probe
+// results. The middleware calls this on every request so that workhorse_load_shedding_active
+// reflects both backlog and readiness signals. Gauge updates and counter increments only
+// happen on combined-state transitions to avoid redundant writes.
+func (ls *LoadShedder) SetReadinessShedActive(active bool) {
+	// Fast-path: avoid mutex acquisition on every request when the readiness
+	// state has not changed (the common case once steady state is reached).
+	if ls.readinessShedActive.Load() == active {
+		return
+	}
+
+	ls.metricsMu.Lock()
+	defer ls.metricsMu.Unlock()
+
+	// Re-check under the lock; a concurrent call may have already updated the state.
+	old := ls.readinessShedActive.Load()
+	if old == active {
+		return
+	}
+	ls.readinessShedActive.Store(active)
+	backlogShedActive := ls.shouldShed.Load()
+	ls.updateCombinedMetrics(old || backlogShedActive, active || backlogShedActive)
+}
+
+// updateCombinedMetrics updates workhorse_load_shedding_active and the associated
+// counters when the combined (backlog OR readiness) shedding state transitions.
+// It must be called with ls.metricsMu held.
+func (ls *LoadShedder) updateCombinedMetrics(oldCombined, newCombined bool) {
+	if oldCombined == newCombined {
+		return
+	}
+	if newCombined {
+		ls.shedLoadGauge.Set(1)
+		ls.shedLoadCounter.Inc()
+	} else {
+		ls.shedLoadGauge.Set(0)
+		ls.allowLoadCounter.Inc()
+	}
 }
 
 // NewBacklogStrategy creates a BacklogStrategy based on the strategy name

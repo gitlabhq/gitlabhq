@@ -1,0 +1,13 @@
+---
+table_name: p_ci_build_needs
+classes:
+- Ci::BuildNeed
+feature_categories:
+- pipeline_composition
+description: Dependencies for a specific CI/CD job.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/228571
+milestone: '18.11'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: over_limit

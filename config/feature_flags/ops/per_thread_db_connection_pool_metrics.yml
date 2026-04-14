@@ -1,0 +1,9 @@
+---
+name: per_thread_db_connection_pool_metrics
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/observability/team/-/work_items/4488
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228082
+rollout_issue_url:
+milestone: '18.11'
+group: "group::database frameworks"
+type: ops
+default_enabled: false

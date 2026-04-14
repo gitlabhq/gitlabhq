@@ -246,33 +246,6 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
         end
       end
 
-      describe 'filters by work_item_type_ids' do
-        let(:incident_type_id) { issue1.work_item_type.to_global_id.model_id }
-        let(:issue_type_id) { issue2.work_item_type.to_global_id.model_id }
-
-        it 'filters by a single type id' do
-          expect(resolve_issues(work_item_type_ids: [incident_type_id])).to contain_exactly(issue1)
-        end
-
-        it 'filters by multiple type ids' do
-          expect(resolve_issues(work_item_type_ids: [incident_type_id, issue_type_id]))
-            .to contain_exactly(issue1, issue2)
-        end
-
-        it 'ignores the filter if none given' do
-          expect(resolve_issues(work_item_type_ids: [])).to contain_exactly(issue1, issue2)
-        end
-
-        context 'when both types and work_item_type_ids are provided' do
-          it 'generates a mutually exclusive filter error' do
-            expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
-              'Only one of [issueTypes, workItemTypeIds] arguments is allowed at the same time.') do
-              resolve_issues(types: [:incident], work_item_type_ids: [incident_type_id])
-            end
-          end
-        end
-      end
-
       context 'when filtering by reaction emoji' do
         let_it_be(:downvoted_issue) { create(:issue, project: project) }
         let_it_be(:downvote_award) { create(:award_emoji, :downvote, user: current_user, awardable: downvoted_issue) }

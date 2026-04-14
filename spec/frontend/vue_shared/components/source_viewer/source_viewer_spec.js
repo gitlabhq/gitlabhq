@@ -210,6 +210,42 @@ describe('Source Viewer component', () => {
         );
       });
 
+      it('loads blame for all already-visible chunks when showBlame is enabled', async () => {
+        createComponent({ showBlame: false });
+        await triggerChunkAppear(0);
+        await triggerChunkAppear(1);
+        blameDataQueryHandlerSuccess.mockClear();
+
+        await wrapper.setProps({ showBlame: true });
+        await waitForPromises();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 1, toLine: 70 }),
+        );
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 71, toLine: 110 }),
+        );
+      });
+
+      it('preloads blame for all already-visible chunks when shouldPreloadBlame is enabled', async () => {
+        createComponent({ showBlame: false, shouldPreloadBlame: false });
+        await triggerChunkAppear(0);
+        await triggerChunkAppear(1);
+        blameDataQueryHandlerSuccess.mockClear();
+
+        await wrapper.setProps({ shouldPreloadBlame: true });
+        await waitForPromises();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 1, toLine: 70 }),
+        );
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 71, toLine: 110 }),
+        );
+      });
+
       it('calls the blame data query', async () => {
         await triggerChunkAppear();
 

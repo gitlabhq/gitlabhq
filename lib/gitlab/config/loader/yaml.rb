@@ -28,6 +28,8 @@ module Gitlab
           )
         rescue Psych::Exception => e
           raise Loader::FormatError, e.message
+        rescue ArgumentError
+          raise Loader::FormatError, 'Invalid YAML syntax'
         end
 
         def valid?

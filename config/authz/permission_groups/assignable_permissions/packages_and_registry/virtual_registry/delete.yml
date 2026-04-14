@@ -2,7 +2,6 @@ name: delete_virtual_registry
 description: Grants the ability to delete virtual registries
 boundaries:
   - group
-  - instance
 permissions:
   - delete_container_virtual_registry
   - delete_container_virtual_registry_upstream

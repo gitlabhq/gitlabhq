@@ -56,10 +56,13 @@ module ClickHouseHelpers
 
   def insert_ci_pipelines_to_click_house(pipelines)
     result = clickhouse_fixture(:ci_finished_pipelines, pipelines.map do |pipeline|
+      project = pipeline.project
+
       pipeline.slice(
         %i[id duration status source ref committed_at created_at started_at finished_at]).symbolize_keys
            .merge(
-             path: pipeline.project&.project_namespace&.traversal_path || '0/'
+             path: project&.project_namespace&.traversal_path || '0/',
+             is_default_branch: pipeline.default_branch?
            )
     end)
 

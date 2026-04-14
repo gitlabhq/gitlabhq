@@ -8,15 +8,18 @@ import {
   findMilestoneWidget,
   findStartAndDueDateWidget,
   findTimeTrackingWidget,
+  findHierarchyWidget,
 } from '~/work_items/utils';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
+import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 
 export default {
   name: 'IssueCardTimeInfo',
   components: {
     IssuableMilestone,
     WorkItemAttribute,
+    WorkItemParentMetadata,
     GlIcon,
     GlSkeletonLoader,
   },
@@ -82,12 +85,20 @@ export default {
         this.issue.timeStats?.humanTimeEstimate
       );
     },
+    parent() {
+      return findHierarchyWidget(this.issue)?.parent;
+    },
   },
 };
 </script>
 
 <template>
   <div class="gl-contents">
+    <work-item-parent-metadata
+      v-if="parent && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.PARENT)"
+      :parent="parent"
+      :icon-size="12"
+    />
     <slot name="weight"></slot>
     <issuable-milestone
       v-if="milestone && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.MILESTONE)"

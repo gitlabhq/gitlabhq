@@ -5,6 +5,7 @@ RSpec.describe DesignManagement::Action do
   describe 'relations' do
     it { is_expected.to belong_to(:design) }
     it { is_expected.to belong_to(:version) }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'scopes' do

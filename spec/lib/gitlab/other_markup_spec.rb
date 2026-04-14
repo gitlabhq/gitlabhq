@@ -79,7 +79,7 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
     }
     links.each do |name, data|
       it "does render into #{name} element" do
-        expect(render(data[:file], data[:input], context)).to eq(data[:output])
+        expect(render(data[:file], data[:input], context)).to eq_html(data[:output], trim_text_nodes: true)
       end
     end
   end

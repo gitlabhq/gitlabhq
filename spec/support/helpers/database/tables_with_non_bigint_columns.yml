@@ -1,0 +1,3 @@
+---
+enabled_foundational_flow_check_results:
+  - check_id # comes from a FixedModel, not a database table

@@ -1,5 +1,5 @@
 <script>
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 import { searchEmoji } from '~/emoji';
 import { EMOJIS_PER_ROW } from '../constants';
 import { getEmojiCategories, generateCategoryHeight } from './utils';

@@ -16,7 +16,7 @@ RSpec.describe 'Database schema',
 
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
-  # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
+  # See: https://docs.gitlab.com/development/migration_style_guide/#dropping-a-database-table
   let(:removed_fks_map) do
     {
       # example_table: %w[example_column]
@@ -133,7 +133,7 @@ RSpec.describe 'Database schema',
       merge_request_diff_commits: %w[project_id commit_author_id committer_id merge_request_commits_metadata_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
-      merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
+      merge_request_diff_commits_b5377a7a34: %w[merge_request_commits_metadata_id merge_request_diff_id project_id],
       namespaces: %w[owner_id],
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
@@ -144,6 +144,7 @@ RSpec.describe 'Database schema',
       oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],
+      p_ci_build_needs: %w[project_id],
       p_ci_builds: %w[erased_by_id execution_config_id scoped_user_id],
       p_ci_builds_metadata: %w[project_id],
       p_ci_build_trace_metadata: %w[project_id],
@@ -183,8 +184,8 @@ RSpec.describe 'Database schema',
       suggestions: %w[commit_id],
       timelogs: %w[user_id],
       todos: %w[target_id commit_id],
-      uploads: %w[model_id organization_id namespace_id project_id],
-      uploads_9ba88c4165: %w[model_id],
+      uploads: %w[model_id],
+      uploads_archived: %w[model_id organization_id namespace_id project_id],
       abuse_report_uploads: %w[model_id],
       achievement_uploads: %w[model_id],
       ai_vectorizable_file_uploads: %w[model_id],
@@ -287,7 +288,12 @@ RSpec.describe 'Database schema',
       work_item_type_custom_fields: %w[work_item_type_id], # Referential integrity will be handled by application code
       work_item_type_custom_lifecycles: %w[work_item_type_id], # Referential integrity will be handled by application code
       work_item_type_user_preferences: %w[work_item_type_id], # Referential integrity will be handled by application code
-      lfs_objects_projects: %w[lfs_object_id] # Referential integrity will be handled by application code
+      work_item_type_visibilities: %w[work_item_type_id], # work_item_type_id spans system-defined (in-memory) and custom (DB) types; integrity enforced by validate_work_item_type_id_is_valid trigger
+      work_item_type_visibility_defaults: %w[work_item_type_id], # work_item_type_id spans system-defined (in-memory) and custom (DB) types; integrity enforced by validate_work_item_type_id_is_valid trigger
+      lfs_objects_projects: %w[lfs_object_id], # Referential integrity will be handled by application code
+      project_repositories: %w[shard_id], # Referential integrity will be handled by application code
+      group_wiki_repositories: %w[shard_id], # Referential integrity will be handled by application code
+      enabled_foundational_flow_check_results: %w[check_id] # checks are not persisted in the DB and come from ActiveRecord::FixedItemsModel::Model
     }.with_indifferent_access.freeze
   end
 
@@ -312,7 +318,7 @@ RSpec.describe 'Database schema',
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
-      vulnerability_reads: 24 # Decrement by 1 after removing vulnerability_id from the table
+      vulnerability_reads: 25 # Increased by one for tmp index on BBM https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224292
     }.with_indifferent_access.freeze
   end
 

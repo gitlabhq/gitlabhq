@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';

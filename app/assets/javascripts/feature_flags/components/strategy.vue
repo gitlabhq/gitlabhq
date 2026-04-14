@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlLink, GlToken } from '@gitlab/ui';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {

@@ -11,11 +11,11 @@ module RuboCop
       #   ApplicationRecord.connection
       #
       class MultipleDatabases < RuboCop::Cop::Base
-        AR_BASE_MESSAGE = <<~EOF
+        AR_BASE_MESSAGE = <<~TEXT
           Do not use methods from ActiveRecord::Base, use the ApplicationRecord class instead
           For fixing offenses related to the ActiveRecord::Base.transaction method, see our guidelines:
           https://docs.gitlab.com/ee/development/database/transaction_guidelines.html
-        EOF
+        TEXT
 
         ALLOWED_METHODS = %i[
           no_touching

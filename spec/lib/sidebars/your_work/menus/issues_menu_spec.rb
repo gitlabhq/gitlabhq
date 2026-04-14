@@ -16,24 +16,8 @@ RSpec.describe Sidebars::YourWork::Menus::IssuesMenu, feature_category: :navigat
   end
 
   describe '#link' do
-    context 'when work_items_consolidated_list is disabled' do
-      before do
-        allow(user).to receive(:work_items_consolidated_list_enabled?).and_return(false)
-      end
-
-      it 'returns the issues dashboard path' do
-        expect(menu.link).to eq(issues_dashboard_path(assignee_username: user.username))
-      end
-    end
-
-    context 'when work_items_consolidated_list is enabled' do
-      before do
-        allow(user).to receive(:work_items_consolidated_list_enabled?).and_return(true)
-      end
-
-      it 'returns the work items dashboard path' do
-        expect(menu.link).to eq(work_items_dashboard_path(assignee_username: user.username))
-      end
+    it 'returns the work items dashboard path' do
+      expect(menu.link).to eq(work_items_dashboard_path(assignee_username: user.username))
     end
   end
 

@@ -53,4 +53,13 @@ RSpec.describe 'Revoke a personal access token', feature_category: :permissions 
       expect_graphql_errors_to_include("`granular_personal_access_tokens` feature flag is disabled.")
     end
   end
+
+  describe 'granular PAT authorization' do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :revoke_personal_access_token do
+      let(:user) { current_user }
+      let(:boundary_object) { :user }
+      let(:authz_mutation) { graphql_mutation(:personalAccessTokenRevoke, input, 'errors') }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
+  end
 end

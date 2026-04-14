@@ -1,4 +1,4 @@
-import { GlFormGroup, GlFormRadioGroup, GlFormRadio, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
 
@@ -10,14 +10,8 @@ describe('PersonalAccessTokenScopeSelector', () => {
       propsData: {
         ...props,
       },
-      stubs: {
-        GlSprintf,
-      },
       slots: {
         'namespace-selector': '<div class="namespace-selector-slot">Add group or project</div>',
-        'namespace-permissions':
-          '<div class="namespace-permissions-slot">Group and project permissions</div>',
-        'user-permissions': '<div class="user-permissions-slot">User Permissions</div>',
       },
     });
   };
@@ -25,49 +19,28 @@ describe('PersonalAccessTokenScopeSelector', () => {
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
-  const findTabs = () => wrapper.findComponent(GlTabs);
-  const findGroupTab = () => wrapper.findAllComponents(GlTab).at(0);
-  const findUserTab = () => wrapper.findAllComponents(GlTab).at(1);
+  const findErrorMessage = () => wrapper.find('.invalid-feedback');
 
   beforeEach(() => {
     createComponent();
   });
 
-  it('renders the scope selector with title', () => {
-    expect(wrapper.text()).toContain('Define scope');
-    expect(wrapper.text()).toContain(
-      'Add only the minimum resource and permissions  needed for your token. Permissions that exceed your assigned role have no effect.',
-    );
-  });
-
-  it('renders tabs', () => {
-    expect(findTabs().exists()).toBe(true);
-  });
-
-  it('renders group and project tab', () => {
-    expect(findGroupTab().exists()).toBe(true);
-    expect(findGroupTab().attributes('title')).toBe('Group and project');
-  });
-
-  it('renders user tab', () => {
-    expect(findUserTab().exists()).toBe(true);
-    expect(findUserTab().attributes('title')).toBe('User');
-  });
-
-  it('renders form group for group access options', () => {
-    expect(findFormGroup().exists()).toBe(true);
-    expect(findFormGroup().attributes('label')).toBe('Group and project access');
-    expect(findFormGroup().attributes('label-for')).toBe('group-access');
+  it('renders title and description', () => {
+    expect(wrapper.text()).toContain('Group and project access');
+    expect(wrapper.text()).toContain('Required only if you add group and project resources.');
   });
 
   it('renders radio buttons for group access options', () => {
+    expect(findFormGroup().exists()).toBe(true);
+    expect(findFormGroup().attributes('label-for')).toBe('group-access');
+
     expect(findRadioGroup().exists()).toBe(true);
     expect(findRadioGroup().attributes('id')).toBe('group-access');
 
     expect(findRadioButtons()).toHaveLength(3);
 
     expect(findRadioButtons().at(0).attributes('value')).toBe('PERSONAL_PROJECTS');
-    expect(findRadioButtons().at(0).text()).toContain('Only personal projects');
+    expect(findRadioButtons().at(0).text()).toContain('Only my personal projects');
 
     expect(findRadioButtons().at(1).attributes('value')).toBe('ALL_MEMBERSHIPS');
     expect(findRadioButtons().at(1).text()).toContain(
@@ -81,24 +54,27 @@ describe('PersonalAccessTokenScopeSelector', () => {
   });
 
   it('renders namespace selector slot in group tab', () => {
-    expect(findGroupTab().find('.namespace-selector-slot').exists()).toBe(true);
+    expect(wrapper.find('.namespace-selector-slot').exists()).toBe(true);
   });
 
-  it('renders group permissions slot in group tab', () => {
-    expect(findGroupTab().find('.namespace-permissions-slot').exists()).toBe(true);
+  it('displays the selected access option based on the value prop', () => {
+    createComponent({ value: 'ALL_MEMBERSHIPS' });
+
+    expect(findRadioGroup().attributes('checked')).toBe('ALL_MEMBERSHIPS');
   });
 
-  it('renders user permissions slot in user tab', () => {
-    expect(findUserTab().find('.user-permissions-slot').exists()).toBe(true);
+  it('emits the selected value when the user changes the access option', () => {
+    findRadioGroup().vm.$emit('input', 'PERSONAL_PROJECTS');
+
+    expect(wrapper.emitted('input')).toEqual([['PERSONAL_PROJECTS']]);
   });
 
   describe('error handling', () => {
-    it('passes error state to form group', () => {
-      createComponent({ error: 'At least one scope is required.' });
+    it('shows error message when error prop is provided', () => {
+      createComponent({ error: 'Set group and project access.' });
 
-      expect(findFormGroup().attributes('invalid-feedback')).toBe(
-        'At least one scope is required.',
-      );
+      expect(findErrorMessage().exists()).toBe(true);
+      expect(findErrorMessage().text()).toBe('Set group and project access.');
     });
   });
 });

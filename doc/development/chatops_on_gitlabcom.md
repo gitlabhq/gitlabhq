@@ -14,25 +14,21 @@ tasks such as:
 
 - Configuring feature flags.
 - Running `EXPLAIN` queries against the GitLab.com production replica.
-- Get deployment status of all of our environments or for a specific commit: `/chatops run auto_deploy status [commit_sha]`
+- Get deployment status of all of our environments or for a specific commit: `/chatops gitlab run auto_deploy status [commit_sha]`
 
 To request access to ChatOps on GitLab.com:
 
 1. Sign in to [Internal GitLab for Operations](https://ops.gitlab.net/users/sign_in)
-   with one of the following methods (Okta is not supported):
-
-   - The same username you use on GitLab.com.
-   - Selecting the **Sign in with Google** button to sign in with your GitLab.com email address.
-
+   with Okta.
 1. Confirm that your username in [Internal GitLab for Operations](https://ops.gitlab.net/)
    is the same as your username in [GitLab.com](https://gitlab.com). If the usernames
    don't match, update the username in [User Settings/Account for the Ops instance](https://ops.gitlab.net/-/profile/account). Matching usernames are required to reduce the administrative effort of running multiple platforms. Matching usernames also help with tasks like managing access requests and offboarding.
 1. Reach out to your onboarding buddy or manager and request they add you to the `ops` ChatOps project by running the following command in the `#chat-ops-test` Slack channel, replacing `<username>` with your GitLab.com username (if they don't have access, you can ask in the #infrastructure-lounge Slack channel ):
-   `/chatops run member add <username> gitlab-com/chatops --ops`
+   `/chatops gitlab run member add <username> gitlab-com/chatops --ops`
 
    ```plaintext
    Hi, could you please add me to the ChatOps project in Ops by running this command:
-   `/chatops run member add <username> gitlab-com/chatops --ops` in the
+   `/chatops gitlab run member add <username> gitlab-com/chatops --ops` in the
    `#chat-ops-test` Slack channel? Thanks in advance.
    ```
 
@@ -41,7 +37,7 @@ To request access to ChatOps on GitLab.com:
    status and ensure you can execute commands in the `#chat-ops-test` Slack channel:
 
    ```plaintext
-   /chatops run user find <username>
+   /chatops gitlab run user find <username>
    ```
 
    The bot guides you through the process of allowing your user to execute

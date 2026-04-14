@@ -42,10 +42,6 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
     stub_feature_flags(hide_incident_management_features: false)
 
     sign_in(developer)
@@ -137,6 +133,8 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
       let(:expected_dropdown_options) { escalation_status.class::STATUSES.keys.take(3).map { |key| key.to_s.titleize } }
 
       it 'has an interactable escalation status widget', :aggregate_failures do
+        expand_sidebar
+
         expect(current_status).to have_text(escalation_status.status_name.to_s.titleize)
 
         # list the available statuses
@@ -212,6 +210,16 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
     page.within(sticky_header) do
       expect(page).to have_text 'Confidential'
+    end
+  end
+
+  private
+
+  def expand_sidebar
+    return unless page.has_css?('.right-sidebar.right-sidebar-collapsed', wait: 0) # rubocop: disable RSpec/AvoidConditionalStatements -- We need this to support both FOSS and EE runs of this spec
+
+    within '.right-sidebar' do
+      click_button "Expand sidebar"
     end
   end
 

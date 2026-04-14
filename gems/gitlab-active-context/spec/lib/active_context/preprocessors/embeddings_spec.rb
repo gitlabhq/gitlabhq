@@ -5,7 +5,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     Class.new(Test::References::MockWithDatabaseRecord) do
       add_preprocessor :embeddings do |refs|
         apply_embeddings(
-          refs: refs, content_method: :embedding_content, unit_primitive: 'test_unit_primitive'
+          refs: refs, content_method: :embedding_content
         )
       end
 
@@ -85,7 +85,6 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     it 'generates and sets embeddings for each document' do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
-        unit_primitive: 'test_unit_primitive',
         user: nil,
         model: test_model_key
       ).and_call_original
@@ -99,7 +98,6 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     it 'generates and sets embeddings for each document and removes the content' do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
-        unit_primitive: 'test_unit_primitive',
         user: nil,
         model: test_model_key
       ).and_call_original
@@ -179,8 +177,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                 add_preprocessor :embeddings do |refs|
                   apply_embeddings(
                     refs: refs, content_method: :embedding_content,
-                    remove_content: true,
-                    unit_primitive: 'test_unit_primitive'
+                    remove_content: true
                   )
                 end
 
@@ -206,7 +203,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
               add_preprocessor :embeddings do |refs|
                 apply_embeddings(
                   refs: refs, content_field: :other_content,
-                  content_method: :embedding_content, unit_primitive: 'test_unit_primitive'
+                  content_method: :embedding_content
                 )
               end
 
@@ -253,8 +250,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   apply_embeddings(
                     refs: refs, content_field: :other_content,
                     content_method: :embedding_content,
-                    remove_content: true,
-                    unit_primitive: 'test_unit_primitive'
+                    remove_content: true
                   )
                 end
 
@@ -281,8 +277,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
         Class.new(Test::References::MockWithDatabaseRecord) do
           add_preprocessor :embeddings do |refs|
             apply_embeddings(
-              refs: refs, content_method: :embedding_content,
-              unit_primitive: 'test_unit_primitive'
+              refs: refs, content_method: :embedding_content
             )
           end
         end
@@ -297,7 +292,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       let(:mock_reference_class) do
         Class.new(Test::References::MockWithDatabaseRecord) do
           add_preprocessor :embeddings do |refs|
-            apply_embeddings(refs: refs, unit_primitive: 'test_unit_primitive')
+            apply_embeddings(refs: refs)
           end
         end
       end
@@ -336,8 +331,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             Class.new(Test::References::MockWithDatabaseRecord) do
               add_preprocessor :embeddings do |refs|
                 apply_embeddings(
-                  refs: refs, content_field: :other_content,
-                  unit_primitive: 'test_unit_primitive'
+                  refs: refs, content_field: :other_content
                 )
               end
             end

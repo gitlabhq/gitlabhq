@@ -4,6 +4,7 @@ import { difference, groupBy, xor } from 'lodash-es';
 import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -20,7 +21,7 @@ export default {
     GlTruncateText,
     WorkItemSidebarDropdownWidget,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
   inject: {
     viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
@@ -134,6 +135,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {
@@ -233,6 +235,7 @@ export default {
                 contactIds: newSelectedItemIds,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
 

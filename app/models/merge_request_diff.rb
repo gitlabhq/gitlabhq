@@ -263,6 +263,8 @@ class MergeRequestDiff < ApplicationRecord
 
     reversed_compare_commits_preloaded
     compare_diffs_preloaded
+
+    eager_load_diff_collection
   end
 
   # Collect information about commits and diff from repository
@@ -324,6 +326,8 @@ class MergeRequestDiff < ApplicationRecord
   def ensure_commit_shas
     self.start_commit_sha ||= merge_request.target_branch_sha
 
+    return if self[:head_commit_sha].present? && self[:base_commit_sha].present?
+
     if merge_head? && merge_request.merge_ref_head.present?
       diff_refs = merge_request.merge_ref_head.diff_refs
 
@@ -333,6 +337,8 @@ class MergeRequestDiff < ApplicationRecord
       self.head_commit_sha  ||= merge_request.source_branch_sha
       self.base_commit_sha  ||= find_base_sha
     end
+
+    nil
   end
 
   # Override head_commit_sha to keep compatibility with merge request diff
@@ -493,7 +499,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_diffs_slice(limit, diff_options = {})
-    paginated_diffs(1, limit, diff_options).diff_files(sorted: true)
+    paginated_diffs(1, limit, diff_options)
   end
 
   def diffs_for_streaming(diff_options = {})
@@ -827,8 +833,6 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def build_merge_request_diff_files(diffs)
-    dedup_new_path_enabled = Feature.enabled?(:deduplicate_new_path_value, project)
-
     sort_diffs(diffs).map.with_index do |diff, index|
       diff_hash = diff.to_hash.merge(
         binary: false,
@@ -837,9 +841,7 @@ class MergeRequestDiff < ApplicationRecord
         project_id: self.project_id
       )
 
-      if dedup_new_path_enabled
-        diff_hash[:new_path] = diff.new_path == diff.old_path ? nil : diff.new_path
-      end
+      diff_hash[:new_path] = diff.new_path == diff.old_path ? nil : diff.new_path
 
       # Compatibility with old diffs created with Psych.
       diff_hash.tap do |hash|
@@ -979,6 +981,11 @@ class MergeRequestDiff < ApplicationRecord
 
       compare.diffs(options)
     end
+  end
+
+  def eager_load_diff_collection
+    collection = compare_diffs_preloaded
+    collection.size if collection
   end
 
   def save_commits

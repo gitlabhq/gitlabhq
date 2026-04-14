@@ -80,13 +80,16 @@ module Gitlab
             proc do |example|
               feature_category = example.metadata[:feature_category]
 
-              owners = if feature_category
+              owners = if feature_category.blank?
+                         logger.warn("Example '#{example.description}' is missing feature category metadata!")
+                         {}
+                       elsif unowned?(feature_category)
+                         # currently will default to shared or tooling
+                         { group: feature_category, stage: feature_category, section: feature_category }
+                       else
                          owner_records.fetch(feature_category.to_s, {}).tap do |o|
                            logger.warn("Feature category '#{feature_category}' has no owner data") if o.empty?
                          end
-                       else
-                         logger.warn("Example '#{example.description}' missing feature category metadata.")
-                         {}
                        end
 
               { pipeline_type: pipeline_type, ci_pipeline_id: ci_pipeline_id, **owners }
@@ -113,6 +116,12 @@ module Gitlab
                                else
                                  "unknown"
                                end
+          end
+
+          def unowned?(feature_category)
+            GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable::KNOWN_UNOWNED.include?(
+              feature_category.to_s
+            )
           end
 
           def test_run_type

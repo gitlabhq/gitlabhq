@@ -9,6 +9,7 @@ module Sidebars
           add_item(activity_menu_item)
           add_item(labels_menu_item)
           add_item(members_menu_item)
+          add_item(achievements_menu_item)
 
           true
         end
@@ -75,6 +76,20 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'group_members#index' },
             item_id: :members
+          )
+        end
+
+        def achievements_menu_item
+          unless can?(context.current_user, :read_achievement, context.group)
+            return ::Sidebars::NilMenuItem.new(item_id: :achievements)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Achievements'),
+            link: group_achievements_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
+            active_routes: { controller: :achievements },
+            item_id: :achievements
           )
         end
       end

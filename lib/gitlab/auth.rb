@@ -169,14 +169,19 @@ module Gitlab
 
           break if user && !user.can_log_in_with_non_expired_password?
 
-          authenticators = password_authenticators_for_user(user)
+          authenticated_user, authenticator =
+            if Feature.enabled?(:cache_find_with_user_password, Feature.current_request)
+              # Avoid redundant bcrypt when Rack::Attack and the controller both
+              # authenticate the same request (e.g. throttle_authenticated_git_http).
+              cache_key = "find_with_user_password:#{login}:#{Digest::SHA256.hexdigest(password)}"
+              Gitlab::SafeRequestStore.fetch(cache_key) do
+                find_user_from_authenticators(user, login, password)
+              end
+            else
+              find_user_from_authenticators(user, login, password)
+            end
 
-          # return found user that was authenticated first for given login credentials
-          authenticated_user, authenticator = authenticators.find do |authenticator|
-            authenticated_user = authenticator.login(login, password)
-            break authenticated_user, authenticator if authenticated_user
-          end
-
+          # Side effects must run on every call, not just cache misses
           user_auth_attempt!(user, success: !!authenticated_user) if increment_failed_attempts
 
           # Increase our visibility of authentication methods
@@ -185,7 +190,8 @@ module Gitlab
             # only when request is present, and use a Feature Flag with
             # the request actor.
             if request.present? && Feature.enabled?(:log_find_with_user_password, Feature.current_request)
-              log_authentication('Gitlab::Auth find_with_user_password succeeded', authenticated_user, authenticator, request: request)
+              log_authentication('Gitlab::Auth find_with_user_password succeeded',
+                authenticated_user, authenticator, request: request)
             end
           end
 
@@ -580,6 +586,16 @@ module Gitlab
         end
 
         authenticators.compact
+      end
+
+      def find_user_from_authenticators(user, login, password)
+        authenticators = password_authenticators_for_user(user)
+
+        # return found user that was authenticated first for given login credentials
+        authenticators.find do |auth|
+          found_user = auth.login(login, password)
+          break [found_user, auth] if found_user
+        end
       end
 
       def user_auth_attempt!(user, success:)

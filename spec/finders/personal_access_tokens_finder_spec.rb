@@ -113,6 +113,18 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       end
     end
 
+    describe 'by id' do
+      it 'returns only the token with the matching id' do
+        params[:token_id] = tokens[:active].id
+
+        is_expected.to contain_exactly(tokens[:active])
+      end
+
+      it 'returns all tokens when id is not specified' do
+        is_expected.to include(tokens[:active], tokens[:expired])
+      end
+    end
+
     describe 'by user' do
       where(:by_user, :expected_tokens) do
         nil              | ref(:tokens_keys)

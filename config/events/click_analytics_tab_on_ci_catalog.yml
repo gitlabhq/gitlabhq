@@ -1,0 +1,16 @@
+---
+description: User clicks the Analytics tab on the CI/CD Catalog explore page
+internal_events: true
+status: active
+action: click_analytics_tab_on_ci_catalog
+identifiers:
+- user
+product_group: pipeline_authoring
+product_categories:
+- component_catalog
+milestone: '18.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230235
+tiers:
+- free
+- premium
+- ultimate

@@ -5,7 +5,7 @@ fragment SavedView on WorkItemSavedViewType {
   name
   description
   subscribed
-  isPrivate: private
+  isPrivate
   displaySettings
   filters
   sort

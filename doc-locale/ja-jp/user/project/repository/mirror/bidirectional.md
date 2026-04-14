@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 双方向ミラーを作成して、2つのGitリポジトリ間で変更をプッシュおよびプルします。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: 2つのGitリポジトリ間で変更をプッシュおよびプルするための双方向ミラーを作成します。
 title: 双方向ミラーリング
 ---
 
@@ -19,56 +19,51 @@ title: 双方向ミラーリング
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> 双方向ミラーリングは競合を引き起こす可能性があります。
 
-双方向ミラーリングは、競合を引き起こす可能性があります。
+双方向[ミラーリング](_index.md)は、2つのリポジトリが互いにプルする、およびプッシュするように設定します。いずれのリポジトリもエラーなしで更新できるという保証はありません。
 
-{{< /alert >}}
+## 双方向ミラーリングにおける競合を減らす {#reduce-conflicts-in-bidirectional-mirroring}
 
-双方向[ミラーリング](_index.md)は、2つのリポジトリが互いにプルとプッシュの両方を行うように設定します。どちらのリポジトリもエラーなしに更新できるという保証はありません。
+双方向ミラーリングを設定する場合、リポジトリを競合に備えて準備します。競合を減らすように設定し、発生した場合にそれらを解決する方法を設定します:
 
-## 双方向ミラーリングにおける競合を軽減します {#reduce-conflicts-in-bidirectional-mirroring}
+- [保護ブランチのみをミラーする](_index.md#mirror-only-protected-branches)。いずれかのリモートにあるミラーされたコミットを書き換えると、競合が発生し、ミラーリングが失敗します。
+- [両方のリモートでミラーしたいブランチを保護](../branches/protected.md)し、履歴の書き換えによって引き起こされる競合を防ぎます。
+- [プッシュイベントWebhook](../../integrations/webhook_events.md#push-events)を使用してミラーリングの遅延を減らします。双方向ミラーリングは、同じブランチにほぼ同時に行われたコミットが競合を引き起こす競合状態を作成します。プッシュイベントWebhookは、競合状態を軽減するのに役立ちます。GitLabからのプッシュミラーリングは、保護ブランチのみをプッシュミラーリングする場合、1分間に1回にレート制限されます。
+- [事前受信フックを使用して](#prevent-conflicts-by-using-a-pre-receive-hook)競合を防ぎます。
 
-双方向ミラーリングを設定する場合は、競合に備えてリポジトリを準備してください。競合を軽減するように設定し、発生した場合の解決方法を設定します:
+## すぐにGitLabにプルをトリガーするようにWebhookを設定します {#configure-a-webhook-to-trigger-an-immediate-pull-to-gitlab}
 
-- [保護されたブランチのみをミラーリングする](_index.md#mirror-only-protected-branches)。いずれかのリモートでミラーリングされたコミットを書き換えると、競合が発生し、ミラーリングが失敗します。
-- [両方のリモートでミラーするブランチを保護](../branches/protected.md)して、履歴の書き換えによって発生する競合を防ぎます。
-- [プッシュイベント](../../integrations/webhook_events.md#push-events)を使用して、ミラーリングの遅延を軽減します。双方向ミラーリングは、同じブランチに対して互いに近い場所で作成されたコミットが競合を引き起こす競合状態を作成します。プッシュイベントは、競合状態を軽減するのに役立ちます。GitLabからのプッシュミラーリングは、保護ブランチをプッシュミラーリングする場合のみ、1分間に1回にレート制限されます。
-- [事前受信フックの使用](#prevent-conflicts-by-using-a-pre-receive-hook)により、競合を防ぎます。
+ダウンストリームインスタンス内の[プッシュイベントWebhook](../../integrations/webhook_events.md#push-events)は、変更をより頻繁に同期することで競合状態を減らすのに役立ちます。
 
-## を設定して、GitLabへの即時プルをトリガーします {#configure-a-webhook-to-trigger-an-immediate-pull-to-gitlab}
+前提条件: 
 
-ダウンストリームインスタンスの[プッシュイベント](../../integrations/webhook_events.md#push-events)は、変更をより頻繁に同期することで、競合状態を軽減するのに役立ちます。
+- アップストリームのGitLabインスタンスで、[プッシュ](push.md#set-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated)および[プル](pull.md)ミラーを設定している必要があります。
 
-前提要件: 
+ダウンストリームインスタンスでWebhookを作成するには:
 
-- アップストリームのGitLabインスタンスで、[プッシュ](push.md#set-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated)と[プル](pull.md)ミラーを設定しました。
-
-ダウンストリームインスタンスでを作成するには:
-
-1. [API](../../../profile/personal_access_tokens.md) `API`スコープでパーソナルアクセストークンを作成します。
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. `API`スコープを持つ[パーソナルアクセストークン](../../../profile/personal_access_tokens.md)を作成します。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定** > **Webhooks**を選択します。
-1. **URL**を追加します。このユースケースでは、リポジトリの更新後に即時プルをトリガーする[プルミラーAPI](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)リクエストを使用します:
+1. Webhook **URL**を追加します。これは（この場合）、[プルミラーAPI](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)リクエストを使用して、リポジトリ更新後に即座にプルをトリガーするものです:
 
    ```plaintext
    https://gitlab.example.com/api/v4/projects/:id/mirror/pull?private_token=<your_access_token>
    ```
 
-1. **Push Events**（プッシュイベント） を選択します。
-1. **Add Webhook**（Webhookを追加）を選択します。
+1. お使いのトークンを[マスクする](../../integrations/webhooks.md#mask-sensitive-portions-of-webhook-urls)。
+1. **Push Events**を選択します。
+1. **Add Webhook**を選択します。
 
-インテグレーションをテストするには、**テスト**を選択し、GitLabがエラーメッセージを返さないことを確認します。
+インテグレーションをTestするには、**Test**を選択し、GitLabがエラーメッセージを返さないことを確認します。
 
-## 事前受信フックを使用した競合の防止 {#prevent-conflicts-by-using-a-pre-receive-hook}
+## 事前受信フックを使用して競合を防ぎます {#prevent-conflicts-by-using-a-pre-receive-hook}
 
-{{< alert type="warning" >}}
+> [!warning]
+> このソリューションは、Gitのプッシュ操作のパフォーマンスに悪影響を及ぼします。これは、操作がアップストリームのGitリポジトリにプロキシされるためです。
 
-このソリューションは、Gitプッシュ操作のパフォーマンスに悪影響を及ぼします。これらはアップストリームのGitリポジトリにプロキシされるためです。
-
-{{< /alert >}}
-
-この設定では、1つのGitリポジトリが信頼できるアップストリームとして機能し、もう1つがダウンストリームとして機能します。このサーバー側の`pre-receive`フックは、最初にコミットをアップストリームリポジトリにプッシュした後にのみ、プッシュを受け入れます。このフックをダウンストリームリポジトリにインストールします。
+この設定では、一方のGitリポジトリが信頼できるアップストリームとして機能し、もう一方はダウンストリームとして機能します。このサーバーサイドの`pre-receive`フックは、最初にアップストリームリポジトリにコミットをプッシュした後にのみ、プッシュを受け入れます。このフックをダウンストリームリポジトリにインストールします。
 
 例: 
 
@@ -131,43 +126,13 @@ fi
 
 このサンプルにはいくつかの制限があります:
 
-- 変更なしでは、ユースケースでは機能しない場合があります:
-  - ミラーのさまざまな種類の認証メカニズムを考慮していません。
-  - 強制アップデート(履歴の書き換え)では機能しません。
+- 変更なしでは、お使いのユースケースで機能しない場合があります:
+  - ミラーの異なる種類の認証メカニズムは考慮されていません。
+  - 強制更新（履歴の書き換え）では機能しません。
   - `allowlist`パターンに一致するブランチのみがプロキシプッシュされます。
-- スクリプトは、`$TARGET_REPO`の更新がrefsの更新と見なされ、Gitがそれに関する警告を表示するため、Gitフック検疫環境を回避します。
-
-## Git Fusionを使用したPerforce Helixとのミラー {#mirror-with-perforce-helix-with-git-fusion}
-
-{{< details >}}
-
-- プラン: Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- 13.9でGitLab Premiumに移行しました。
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-双方向ミラーリングは、永続的な設定として使用しないでください。代替移行アプローチについては、[Perforce Helixからの移行](../../import/perforce.md)を参照してください。
-
-{{< /alert >}}
-
-[Git Fusion](https://www.perforce.com/manuals/git-fusion/#Git-Fusion/section_avy_hyc_gl.html)は、[Perforce Helix](https://www.perforce.com/products)へのGitインターフェースを提供します。GitLabはPerforce Helixインターフェースを使用して、プロジェクトを双方向にミラーできます。オーバーラップするPerforce Helixワークスペースを同時に移行できない場合は、Perforce HelixからGitLabに移行する際に役立ちます。
-
-Perforce Helixでミラーする場合は、保護ブランチのみをミラーしてください。Perforce Helixは、履歴を書き換えるプッシュを拒否します。Git Fusionのパフォーマンス上の制限により、ミラーするブランチの数は最小限にする必要があります。
-
-Git Fusionを使用してPerforce Helixでミラーリングを構成する場合は、次のGit Fusion設定を使用する必要があります:
-
-- `change-pusher`を無効にします。そうしないと、すべてのコミットは、既存のPerforce Helixユーザーまたは`unknown_git`ユーザーにマッピングするのではなく、ミラーリングアカウントによってコミットされたものとして書き換えられます。
-- GitLabユーザーがPerforce Helixに存在しない場合は、`unknown_git`ユーザーをコミット作成者として使用します。
+- スクリプトは、`$TARGET_REPO`の更新が参照更新と見なされ、Gitがそれについて警告を表示するため、Gitフック検疫環境を回避します。
 
 ## 関連トピック {#related-topics}
 
 - リポジトリのミラーリングに関する[トラブルシューティング](troubleshooting.md)。
-- [サーバーフック](../../../../administration/server_hooks.md)
+- [サーバーフックを設定する](../../../../administration/server_hooks.md)

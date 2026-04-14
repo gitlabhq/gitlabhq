@@ -12,12 +12,14 @@ RSpec.shared_examples 'manage applications' do
 
     click_button 'Add new application' if page.has_css?('[data-testid="crud-action-toggle"]')
 
+    expect(find_by_testid('device-code-enabled-checkbox')).not_to be_checked
+
     fill_in :authn_oauth_application_name, with: application_name
     fill_in :authn_oauth_application_redirect_uri, with: application_redirect_uri
     check :authn_oauth_application_scopes_read_user
     click_on 'Save application'
 
-    validate_application(application_name, 'Yes')
+    validate_application(application_name, confidential: 'Yes', device_code_enabled: 'No')
     expect(page).to have_content _('This is the only time the secret is accessible. Copy the secret and store it securely')
     expect(page).to have_link('Continue', href: index_path)
 
@@ -29,9 +31,10 @@ RSpec.shared_examples 'manage applications' do
 
     fill_in :authn_oauth_application_name, with: application_name_changed
     uncheck :authn_oauth_application_confidential
+    check :authn_oauth_application_device_code_enabled
     click_on 'Save application'
 
-    validate_application(application_name_changed, 'No')
+    validate_application(application_name_changed, confidential: 'No', device_code_enabled: 'Yes')
     expect(page).not_to have_link('Continue')
     expect(page).to have_content _('The secret is only available when you create the application or renew the secret.')
 
@@ -61,12 +64,13 @@ RSpec.shared_examples 'manage applications' do
     visit defined?(applications_path) ? applications_path : new_application_path
   end
 
-  def validate_application(name, confidential)
+  def validate_application(name, confidential:, device_code_enabled:)
     aggregate_failures do
       expect(page).to have_content name
       expect(page).to have_content 'Application ID'
       expect(page).to have_content 'Secret'
       expect(page).to have_content "Confidential #{confidential}"
+      expect(page).to have_content "Device authorization grant #{device_code_enabled}"
     end
   end
 end

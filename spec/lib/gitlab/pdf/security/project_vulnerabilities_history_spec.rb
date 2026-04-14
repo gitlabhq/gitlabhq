@@ -16,6 +16,14 @@ RSpec.describe Gitlab::PDF::Security::ProjectVulnerabilitiesHistory, feature_cat
     SVG
   end
 
+  shared_examples 'renders nothing' do
+    it 'returns :noop without rendering anything' do
+      expect(render_chart).to eq(:noop)
+      expect(pdf).not_to have_received(:svg)
+      expect(pdf).not_to have_received(:text_box)
+    end
+  end
+
   describe '.render' do
     subject(:render) { described_class.render(pdf, data: svg_data) }
 
@@ -57,7 +65,7 @@ RSpec.describe Gitlab::PDF::Security::ProjectVulnerabilitiesHistory, feature_cat
     it 'renders the SVG chart' do
       render_chart
 
-      expect(pdf).to have_received(:svg).with(%r{<svg.*</svg>}, any_args)
+      expect(pdf).to have_received(:svg).with(%r{<svg.*</svg>}m, any_args)
     end
 
     it 'renders the chart legend' do
@@ -71,20 +79,40 @@ RSpec.describe Gitlab::PDF::Security::ProjectVulnerabilitiesHistory, feature_cat
     context 'when svg data is nil' do
       let(:svg_data) { nil }
 
-      it 'returns :noop without rendering anything' do
-        expect(render_chart).to eq(:noop)
-        expect(pdf).not_to have_received(:svg)
-        expect(pdf).not_to have_received(:text_box)
-      end
+      it_behaves_like 'renders nothing'
     end
 
     context 'when svg data is blank' do
       let(:svg_data) { '' }
 
-      it 'returns :noop without rendering anything' do
-        expect(render_chart).to eq(:noop)
-        expect(pdf).not_to have_received(:svg)
-        expect(pdf).not_to have_received(:text_box)
+      it_behaves_like 'renders nothing'
+    end
+
+    context 'when hash has blank svg value' do
+      let(:svg_data) { { svg: '' } }
+
+      it_behaves_like 'renders nothing'
+    end
+
+    context 'when hash does not have svg key' do
+      let(:svg_data) { {} }
+
+      it_behaves_like 'renders nothing'
+    end
+
+    context 'when hash has svg key with nil value' do
+      let(:svg_data) { { svg: nil } }
+
+      it_behaves_like 'renders nothing'
+    end
+
+    context 'when data is a hash with a valid svg key' do
+      subject(:render_chart) { described_class.render(pdf, data: { svg: svg_data }) }
+
+      it 'renders the SVG chart' do
+        render_chart
+
+        expect(pdf).to have_received(:svg).with(%r{<svg.*</svg>}m, any_args)
       end
     end
   end

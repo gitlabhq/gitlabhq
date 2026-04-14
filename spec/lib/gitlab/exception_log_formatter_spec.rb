@@ -68,6 +68,30 @@ RSpec.describe Gitlab::ExceptionLogFormatter do
       end
     end
 
+    context 'when feature flags were checked during the request' do
+      before do
+        allow(Feature).to receive(:logged_states_for_log).and_return(['my_flag:1', 'other_flag:0'])
+      end
+
+      it 'adds feature_flag_states to payload' do
+        described_class.format!(exception, payload)
+
+        expect(payload['exception.feature_flag_states']).to contain_exactly('my_flag:1', 'other_flag:0')
+      end
+    end
+
+    context 'when logged_states_for_log returns empty' do
+      before do
+        allow(Feature).to receive(:logged_states_for_log).and_return([])
+      end
+
+      it 'does not add feature_flag_states to payload' do
+        described_class.format!(exception, payload)
+
+        expect(payload).not_to have_key('exception.feature_flag_states')
+      end
+    end
+
     context 'when exception is a gRPC bad status' do
       let(:unavailable_error) do
         ::GRPC::Unavailable.new(

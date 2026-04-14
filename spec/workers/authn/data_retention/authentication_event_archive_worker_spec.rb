@@ -119,15 +119,5 @@ RSpec.describe Authn::DataRetention::AuthenticationEventArchiveWorker, feature_c
         expect { worker.perform }.not_to change { AuthenticationEvent.count }
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(archive_authentication_events: false)
-      end
-
-      it 'does not delete any records' do
-        expect { worker.perform }.not_to change { AuthenticationEvent.count }
-      end
-    end
   end
 end

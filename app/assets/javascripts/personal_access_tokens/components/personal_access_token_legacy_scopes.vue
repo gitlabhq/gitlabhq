@@ -24,14 +24,11 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-flex gl-items-center">
-      <div class="gl-mb-0 gl-mr-2 gl-font-bold">{{ $options.i18n.scope }}</div>
-      <gl-badge icon="error" variant="warning">{{ $options.i18n.reduceScope }}</gl-badge>
-    </div>
+  <div class="gl-p-5">
+    <gl-badge icon="error" variant="warning">{{ $options.i18n.reduceScope }}</gl-badge>
 
-    <div v-for="(scope, index) in scopes" :key="index" class="gl-mb-2">
-      <div class="gl-mt-2">
+    <div v-for="(scope, index) in scopes" :key="index" class="gl-my-2">
+      <div>
         <gl-icon name="check-sm" variant="success" class="gl-mr-2" />
         {{ formatScope(scope.value) }}
       </div>

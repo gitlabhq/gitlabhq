@@ -19,19 +19,13 @@ describe('PersonalAccessTokenLegacyScopes', () => {
     createComponent();
   });
 
-  describe('header and warning', () => {
-    it('shows scope header', () => {
-      expect(wrapper.text()).toContain('Token scope');
+  it('shows warning badge with correct props', () => {
+    expect(findBadge().exists()).toBe(true);
+    expect(findBadge().props()).toMatchObject({
+      icon: 'error',
+      variant: 'warning',
     });
-
-    it('shows warning badge with correct props', () => {
-      expect(findBadge().exists()).toBe(true);
-      expect(findBadge().props()).toMatchObject({
-        icon: 'error',
-        variant: 'warning',
-      });
-      expect(findBadge().text()).toBe('Consider reducing scope');
-    });
+    expect(findBadge().text()).toBe('Consider reducing scope');
   });
 
   describe('scope rendering', () => {

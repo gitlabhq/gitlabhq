@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
 import { s__, sprintf } from '~/locale';

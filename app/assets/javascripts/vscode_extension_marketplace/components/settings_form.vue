@@ -1,5 +1,5 @@
 <script>
-import { uniqueId, pick } from 'lodash';
+import { uniqueId, pick } from 'lodash-es';
 import { GlButton, GlForm, GlFormFields, GlIcon, GlLink, GlSprintf, GlToggle } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { isValidURL, isAbsolute } from '~/lib/utils/url_utility';

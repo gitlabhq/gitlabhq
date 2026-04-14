@@ -69,6 +69,13 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to eq(true)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
     end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :update_user_preference do
+      let(:user) { current_user }
+      let(:boundary_object) { :user }
+      let(:authz_mutation) { graphql_mutation(:userPreferencesUpdate, input, 'errors') }
+      let(:request) { post_graphql_mutation(authz_mutation, token: { personal_access_token: pat }) }
+    end
   end
 
   context 'when user has existing preference' do

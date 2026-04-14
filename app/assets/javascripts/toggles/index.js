@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import Vue from 'vue';
 import { GlToggle } from '@gitlab/ui';
 import { parseBoolean } from '~/lib/utils/common_utils';

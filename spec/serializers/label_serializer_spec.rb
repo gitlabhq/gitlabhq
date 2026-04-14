@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe LabelSerializer do
-  let(:user) { create(:user) }
+RSpec.describe LabelSerializer, feature_category: :team_planning do
+  let(:user) { build_stubbed(:user) }
 
   let(:serializer) do
     described_class.new(user: user)
@@ -13,7 +13,7 @@ RSpec.describe LabelSerializer do
 
   describe '#represent' do
     context 'when a single object is being serialized' do
-      let(:resource) { create(:label) }
+      let(:resource) { build_stubbed(:label) }
 
       it 'serializes the label object' do
         expect(subject[:id]).to eq resource.id
@@ -22,7 +22,7 @@ RSpec.describe LabelSerializer do
 
     context 'when multiple objects are being serialized' do
       let(:num_labels) { 2 }
-      let(:resource) { create_list(:label, num_labels) }
+      let(:resource) { build_stubbed_list(:label, num_labels) }
 
       it 'serializes the array of labels' do
         expect(subject.size).to eq(num_labels)
@@ -32,7 +32,7 @@ RSpec.describe LabelSerializer do
 
   describe '#represent_appearance' do
     context 'when represents only appearance' do
-      let(:resource) { create(:label) }
+      let(:resource) { build_stubbed(:label) }
 
       subject { serializer.represent_appearance(resource) }
 

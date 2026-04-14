@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { zip } from 'lodash';
+import { zip } from 'lodash-es';
 import { trimText } from 'helpers/text_helper';
 import Deployment from '~/vue_merge_request_widget/components/deployment/deployment.vue';
 import DeploymentList from '~/vue_merge_request_widget/components/deployment/deployment_list.vue';

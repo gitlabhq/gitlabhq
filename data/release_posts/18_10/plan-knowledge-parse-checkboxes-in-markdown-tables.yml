@@ -1,0 +1,23 @@
+---
+features:
+  secondary:
+    - name: "Task item support in Markdown tables"
+      available_in: [core, premium, ultimate]
+      gitlab_com: true
+      self_managed: true
+      gitlab_dedicated: true
+      gitlab_dedicated_for_government: true
+      documentation_link: 'https://docs.gitlab.com/user/markdown/#task-lists-in-tables'
+      reporter: mmacfarlane
+      stage: plan
+      categories:
+        - Markdown
+      issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/21506'
+      description: |
+        You can now use task item checkbox syntax directly in Markdown table cells.
+
+        Previously, achieving this required a combination of raw HTML and Markdown, which was
+        cumbersome and difficult to maintain.
+
+        This improvement makes it easier to track task completion directly within structured table
+        layouts in issues, epics, and other content.

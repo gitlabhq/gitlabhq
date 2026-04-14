@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.keys
 description: Number of keys.
 product_group: authentication
+product_categories:
+- system_access
 value_type: number
 status: active
 time_frame: all

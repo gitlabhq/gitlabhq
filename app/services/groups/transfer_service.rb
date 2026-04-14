@@ -19,6 +19,23 @@ module Groups
       log_transfer(group, new_parent_group, error_message)
     end
 
+    def schedule_async_transfer(new_parent_group)
+      group.state_metadata[:transfer_target_parent_id] = new_parent_group&.id
+
+      unless group.schedule_transfer(transition_user: current_user)
+        @error = s_('TransferGroup|Unable to initiate transfer. The group may already have a transfer in progress.')
+        return false
+      end
+
+      Namespaces::Groups::TransferWorker.perform_async(
+        group.id,
+        new_parent_group&.id,
+        current_user.id
+      )
+
+      true
+    end
+
     def execute(new_parent_group)
       @new_parent_group = new_parent_group
       ensure_allowed_transfer
@@ -58,6 +75,7 @@ module Groups
 
     def proceed_to_transfer
       old_root_ancestor_id = @group.root_ancestor.id
+      old_path = @group.full_path
       was_root_group = @group.root?
 
       Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
@@ -82,6 +100,7 @@ module Groups
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
       update_pending_builds
+      send_transfer_instructions(old_path)
 
       true
     end
@@ -96,6 +115,14 @@ module Groups
 
     # Overridden in EE
     def transfer_status_data(old_root_ancestor_id); end
+
+    def send_transfer_instructions(old_path)
+      group = @group
+
+      group.run_after_commit_or_now do
+        NotificationService.new.group_was_transferred(group, old_path)
+      end
+    end
 
     # Overridden in EE
     def post_update_hooks(updated_project_ids, old_root_ancestor_id)

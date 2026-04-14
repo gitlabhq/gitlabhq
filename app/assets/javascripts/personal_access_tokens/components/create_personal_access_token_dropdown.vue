@@ -46,6 +46,7 @@ export default {
   <gl-disclosure-dropdown
     :items="dropdownItems"
     :toggle-text="$options.i18n.buttonTitle"
+    size="small"
     placement="bottom-end"
     fluid-width
   >

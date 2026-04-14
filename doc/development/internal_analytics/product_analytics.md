@@ -305,7 +305,7 @@ Because Cube acts as an abstraction layer between the raw data and the API, the 
 
 ### Export raw data with Cube queries
 
-You can [query the raw data with the REST API](../../api/product_analytics.md#send-query-request-to-cube),
+You can [query the raw data with the REST API](../../api/product_analytics.md#create-a-cube-query-request),
 and convert the JSON output to any required format.
 
 To export the raw data for a specific dimension, pass a list of dimensions to the `dimensions` key.

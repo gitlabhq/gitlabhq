@@ -1,3 +1,4 @@
+# @feature_category: team_planning
 query projectWorkItems(
   $searchTerm: String
   $fullPath: ID!
@@ -6,11 +7,17 @@ query projectWorkItems(
   $iid: String = null
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
+  $workItemTypeIds: [WorkItemsTypeID!]
 ) {
   namespace: project(fullPath: $fullPath) {
     id
-    workItems(search: $searchTerm, types: $types, state: opened, in: $in)
-      @include(if: $searchByText) {
+    workItems(
+      search: $searchTerm
+      types: $types
+      state: opened
+      in: $in
+      workItemTypeIds: $workItemTypeIds
+    ) @include(if: $searchByText) {
       nodes {
         id
         iid
@@ -28,7 +35,8 @@ query projectWorkItems(
         }
       }
     }
-    workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $searchByIid) {
+    workItemsByIid: workItems(iid: $iid, types: $types, workItemTypeIds: $workItemTypeIds)
+      @include(if: $searchByIid) {
       nodes {
         id
         iid

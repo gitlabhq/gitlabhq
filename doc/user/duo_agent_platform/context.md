@@ -13,7 +13,7 @@ Information can be available:
 - Based on your location (the context changes when you navigate).
 - When referenced explicitly. For example, you mention the information by URL, ID, or file path.
 
-## GitLab Duo Chat (agentic)
+## GitLab Duo Agentic Chat
 
 {{< history >}}
 
@@ -21,7 +21,7 @@ Information can be available:
 
 {{< /history >}}
 
-The following context is available to GitLab Duo Chat (agentic).
+The following context is available to GitLab Duo Agentic Chat.
 
 ### Always available
 
@@ -41,7 +41,7 @@ SDLC data, [Knowledge Graph](../project/repository/knowledge_graph/_index.md), [
 
 ### When referenced explicitly
 
-GitLab Duo Chat (agentic) can autonomously retrieve and use:
+GitLab Duo Agentic Chat can autonomously retrieve and use:
 
 - Files (by searching your project or when you provide file paths)
 - Epics

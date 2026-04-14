@@ -178,9 +178,9 @@ RSpec.describe SearchService, feature_category: :global_search do
     context 'with no project_id, no snippets' do
       context 'and allowed scope' do
         it 'returns the specified scope' do
-          scope = described_class.new(user, scope: 'issues').scope
+          scope = described_class.new(user, scope: 'work_items').scope
 
-          expect(scope).to eq 'issues'
+          expect(scope).to eq 'work_items'
         end
       end
 
@@ -417,7 +417,7 @@ RSpec.describe SearchService, feature_category: :global_search do
   end
 
   describe '#abuse_messages' do
-    let(:scope) { 'issues' }
+    let(:scope) { 'work_items' }
     let(:search) { 'foobar' }
     let(:params) { instance_double(Gitlab::Search::Params) }
 
@@ -461,7 +461,7 @@ RSpec.describe SearchService, feature_category: :global_search do
     end
 
     context 'when a search is NOT abusive' do
-      let(:scope) { 'issues' }
+      let(:scope) { 'work_items' }
 
       it 'executes search service' do
         expect(search_service_double).to receive(:execute)
@@ -475,8 +475,10 @@ RSpec.describe SearchService, feature_category: :global_search do
     let(:search) { 'foobar' }
 
     where(:scope, :admin_setting, :setting_enabled, :expected) do
-      'issues'         | :global_search_issues_enabled         | false | false
-      'issues'         | :global_search_issues_enabled         | true  | true
+      'work_items'     | :global_search_work_items_enabled     | false | false
+      'work_items'     | :global_search_work_items_enabled     | true  | true
+      'issues'         | :global_search_work_items_enabled     | false | false
+      'issues'         | :global_search_work_items_enabled     | true  | true
       'merge_requests' | :global_search_merge_requests_enabled | false | false
       'merge_requests' | :global_search_merge_requests_enabled | true  | true
       'snippet_titles' | :global_search_snippet_titles_enabled | false | false
@@ -510,6 +512,20 @@ RSpec.describe SearchService, feature_category: :global_search do
         stub_application_setting(global_search_snippet_titles_enabled: true)
 
         expect(search_service.global_search_enabled_for_scope?).to be true
+      end
+    end
+
+    context 'with API backward compatibility (skip_legacy_scope_conversion)' do
+      let(:search) { 'foobar' }
+
+      it 'checks work_items setting when scope is "issues"' do
+        service = described_class.new(user, search: search, scope: 'issues', skip_legacy_scope_conversion: true)
+
+        stub_application_setting(global_search_work_items_enabled: false)
+        expect(service.global_search_enabled_for_scope?).to be false
+
+        stub_application_setting(global_search_work_items_enabled: true)
+        expect(service.global_search_enabled_for_scope?).to be true
       end
     end
   end

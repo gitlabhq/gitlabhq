@@ -22,6 +22,10 @@ module ActiveContext
     ActiveContext::Adapter.current
   end
 
+  def self.separator
+    adapter&.separator || ActiveContext::Databases::Concerns::Adapter::DEFAULT_SEPARATOR
+  end
+
   def self.queues
     ActiveContext::Queues.queues
   end

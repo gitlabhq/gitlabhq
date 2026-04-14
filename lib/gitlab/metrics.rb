@@ -1,8 +1,18 @@
 # frozen_string_literal: true
 
+# A lot of specs run with `fast_spec_helper` also include Slis & metrics
+# If those are run, load labkit, that way we can still use the fast_spec_helper and not
+# load the entire application & Rails dependencies.
+# In production this is a no-op
+require 'gitlab-labkit'
+
 module Gitlab
   module Metrics
     include ::Gitlab::Metrics::Labkit
+
+    # Use ApplicationSlis using the name from before they were moved to Labkit.
+    # This way we don't need to update all uses.
+    Sli = ::Labkit::ApplicationSli
 
     EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
 

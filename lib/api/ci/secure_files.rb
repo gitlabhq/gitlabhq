@@ -11,7 +11,7 @@ module API
         authorize! :read_secure_files, user_project
       end
 
-      feature_category :mobile_devops
+      feature_category :secrets_management
       urgency :low
 
       default_format :json

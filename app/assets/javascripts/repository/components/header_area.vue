@@ -14,6 +14,7 @@ import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -51,12 +52,14 @@ export default {
       import('ee_component/repository/components/lock_directory_button.vue'),
     HeaderLockIcon: () =>
       import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    SetupCiPipelineButton: () =>
+      import('ee_component/repository/components/header_area/setup_ci_pipeline_button.vue'),
     FileTreeBrowserToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin(), glAbilitiesMixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -217,9 +220,16 @@ export default {
     shortcutsEnabled() {
       return !shouldDisableShortcuts();
     },
+    showSetupCiPipelineButton() {
+      return (
+        this.isProjectOverview &&
+        this.glAbilities.accessDuoAgenticChat &&
+        this.glFeatures.updateVisualLanguage
+      );
+    },
   },
   mounted() {
-    if (this.glFeatures.repositoryFileTreeBrowser) {
+    if (this.glFeatures.repositoryFileTreeBrowser && !this.isReadmeView) {
       this.initializeFileTreeBrowser();
       this.bindShortcuts();
     }
@@ -289,6 +299,7 @@ export default {
       }"
     >
       <file-tree-browser-toggle
+        v-if="!isReadmeView"
         v-show="showFileTreeBrowserToggle"
         ref="toggle"
         :aria-keyshortcuts="toggleFileBrowserShortcutKey"
@@ -396,6 +407,7 @@ export default {
         >
           {{ $options.i18n.findFile }}
         </gl-button>
+        <setup-ci-pipeline-button v-if="showSetupCiPipelineButton" />
         <!-- web ide -->
         <web-ide-link
           :class="[

@@ -26,7 +26,7 @@ agent is already installed in the Kubernetes cluster.
 
 Prerequisites:
 
-- You must complete the setup steps in [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
+- You must complete the setup steps in the [set up the GitLab agent for Kubernetes tutorial](set_up_gitlab_agent_and_proxies.md).
 - The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set.
 
   > [!note]

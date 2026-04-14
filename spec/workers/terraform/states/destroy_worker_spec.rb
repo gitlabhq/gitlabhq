@@ -19,7 +19,7 @@ RSpec.describe Terraform::States::DestroyWorker, feature_category: :infrastructu
       subject
     end
 
-    context 'state no longer exists' do
+    context 'when state no longer exists' do
       let(:state_id) { -1 }
 
       it 'completes without error' do

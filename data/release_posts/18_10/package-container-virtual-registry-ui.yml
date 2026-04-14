@@ -1,0 +1,21 @@
+---
+features:
+  secondary:
+  - name: "Manage container virtual registries with a dedicated UI (Beta)"
+    available_in: [premium, ultimate]
+    gitlab_dedicated: true
+    gitlab_dedicated_for_government: true
+    gitlab_com: true
+    self_managed: true
+    documentation_link: 'https://docs.gitlab.com/user/packages/virtual_registry/container/'
+    reporter: trizzi
+    stage: package
+    categories:
+    - 'Virtual Registry'
+    epic_url: 'https://gitlab.com/groups/gitlab-org/-/work_items/19283'
+    description: |
+      When the container virtual registry launched in beta last milestone, platform engineers could aggregate multiple upstream container registries — Docker Hub, Harbor, Quay, and others — behind a single pull endpoint. However, all configuration required direct API calls, meaning teams had to maintain scripts or manual curl commands to create and manage their registries, configure upstreams, and handle changes over time. This added operational overhead and made the feature inaccessible to users who weren't comfortable working directly with the API.
+
+      Container virtual registries can now be created and managed directly from the GitLab UI. From the group-level container registry page, you can create new virtual registries, configure upstream sources with authentication credentials, edit existing configurations, and delete registries you no longer need — all without leaving GitLab or writing a single API call. The UI integrates seamlessly with the existing container registry experience, making virtual registries a first-class part of your group's artifact management workflow.
+
+      This feature is in beta. To share feedback, please comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/589630).

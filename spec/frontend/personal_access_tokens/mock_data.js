@@ -1,39 +1,116 @@
-import { groupBy } from 'lodash';
+export const mockGroupPermissions = [
+  {
+    name: 'read_project',
+    description: 'Grants the ability to read projects',
+    action: 'read',
+    category: 'groups_and_projects',
+    categoryName: 'Groups and projects',
+    resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
+    boundaries: ['GROUP', 'PROJECT'],
+  },
+  {
+    name: 'write_project',
+    description: 'Grants the ability to write to projects',
+    action: 'write',
+    category: 'groups_and_projects',
+    categoryName: 'Groups and projects',
+    resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
+    boundaries: ['GROUP', 'PROJECT'],
+  },
+  {
+    name: 'read_repository',
+    description: 'Grants the ability to read repository',
+    action: 'read',
+    category: 'merge_request',
+    categoryName: 'Merge request',
+    resource: 'repository',
+    resourceName: 'Repository',
+    resourceDescription: 'Repository resource description',
+    boundaries: ['PROJECT'],
+  },
+  {
+    name: 'read_contributed_project',
+    description: 'Grants the ability to read contributed project',
+    action: 'read',
+    category: 'groups_and_projects',
+    categoryName: 'Groups and projects',
+    resource: 'contributed_project',
+    resourceName: 'Contributed project',
+    resourceDescription: 'Contributed project resource description',
+    boundaries: ['GROUP', 'PROJECT'],
+  },
+];
+
+export const mockGroupResources = ['project', 'repository', 'contributed_project'];
+
+export const mockUserPermissions = [
+  {
+    name: 'read_user',
+    description: 'Grants the ability to read user data',
+    action: 'read',
+    category: 'user_access',
+    categoryName: 'User access',
+    resource: 'user',
+    resourceName: 'User',
+    resourceDescription: 'User resource description',
+    boundaries: ['USER'],
+  },
+  {
+    name: 'read_contributed_project',
+    description: 'Grants the ability to view projects user has contributed to',
+    action: 'read_contributed',
+    category: 'projects',
+    categoryName: 'Projects',
+    resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
+    boundaries: ['USER'],
+  },
+];
+
+export const mockUserResources = ['user', 'project'];
 
 export const mockGranularGroupScope = {
   access: 'SELECTED_MEMBERSHIPS',
   namespace: {
     id: 'gid://gitlab/Group/1',
+    name: 'My Group',
     fullName: 'My Group',
     fullPath: 'my-group',
     webUrl: 'https://gitlab.com/groups/my-group',
     avatarUrl: '/avatar.png',
+    __typename: 'Group',
   },
-  permissions: [
-    { resource: 'project', action: 'read' },
-    { resource: 'project', action: 'write' },
-    { resource: 'group', action: 'admin' },
-  ],
+  permissions: mockGroupPermissions,
+  __typename: 'AccessTokenGranularScope',
+};
+
+export const mockGranularProjectScope = {
+  access: 'SELECTED_MEMBERSHIPS',
+  namespace: {
+    id: 'gid://gitlab/Namespaces::ProjectNamespace/10',
+    name: 'My Project',
+    fullPath: 'my-group/my-project',
+    __typename: 'Namespace',
+  },
+  project: {
+    id: 'gid://gitlab/Project/10',
+    name: 'My Project',
+    fullPath: 'my-group/my-project',
+    __typename: 'Project',
+  },
+  permissions: [{ resource: 'project', action: 'read' }],
   __typename: 'AccessTokenGranularScope',
 };
 
 export const mockGranularUserScope = {
   access: 'USER',
   namespace: null,
-  permissions: [
-    { resource: 'profile', action: 'read' },
-    { resource: 'profile', action: 'create' },
-  ],
-  __typename: 'AccessTokenGranularScope',
-};
-
-export const mockGranularInstanceScope = {
-  access: 'INSTANCE',
-  namespace: null,
-  permissions: [
-    { resource: 'admin_member_role', action: 'read' },
-    { resource: 'admin_member_role', action: 'create' },
-  ],
+  permissions: mockUserPermissions,
   __typename: 'AccessTokenGranularScope',
 };
 
@@ -182,57 +259,6 @@ export const mockSearchGroupsAndProjectsQueryResponse = {
   },
 };
 
-export const mockGroupPermissions = [
-  {
-    name: 'read_project',
-    description: 'Grants the ability to read projects',
-    action: 'read',
-    category: 'groups_and_projects',
-    categoryName: 'Groups and projects',
-    resource: 'project',
-    resourceName: 'Project',
-    resourceDescription: 'Project resource description',
-    boundaries: ['GROUP', 'PROJECT'],
-  },
-  {
-    name: 'write_project',
-    description: 'Grants the ability to write to projects',
-    action: 'write',
-    category: 'groups_and_projects',
-    categoryName: 'Groups and projects',
-    resource: 'project',
-    resourceName: 'Project',
-    resourceDescription: 'Project resource description',
-    boundaries: ['GROUP', 'PROJECT'],
-  },
-  {
-    name: 'read_repository',
-    description: 'Grants the ability to read repository',
-    action: 'read',
-    category: 'merge_request',
-    categoryName: 'Merge request',
-    resource: 'repository',
-    resourceName: 'Repository',
-    resourceDescription: 'Repository resource description',
-    boundaries: ['PROJECT'],
-  },
-  {
-    name: 'read_contributed_project',
-    description: 'Grants the ability to read contributed project',
-    action: 'read',
-    category: 'groups_and_projects',
-    categoryName: 'Groups and projects',
-    resource: 'contributed_project',
-    resourceName: 'Contributed project',
-    resourceDescription: 'Contributed project resource description',
-    boundaries: ['GROUP', 'PROJECT'],
-  },
-];
-
-export const mockGroupResources = ['project', 'repository', 'contributed_project'];
-
-export const mockGroupPermissionsByResource = groupBy(mockGroupPermissions, 'resource');
-
 export const mockInstancePermissions = [
   {
     name: 'read_compliance_policy_setting',
@@ -247,35 +273,6 @@ export const mockInstancePermissions = [
   },
 ];
 
-export const mockUserPermissions = [
-  {
-    name: 'read_user',
-    description: 'Grants the ability to read user data',
-    action: 'read',
-    category: 'user_access',
-    categoryName: 'User access',
-    resource: 'user',
-    resourceName: 'User',
-    resourceDescription: 'User resource description',
-    boundaries: ['USER'],
-  },
-  {
-    name: 'read_contributed_project',
-    description: 'Grants the ability to view projects user has contributed to',
-    action: 'read_contributed',
-    category: 'projects',
-    categoryName: 'Projects',
-    resource: 'project',
-    resourceName: 'Project',
-    resourceDescription: 'Project resource description',
-    boundaries: ['USER'],
-  },
-];
-
-export const mockUserResources = ['user', 'project'];
-
-export const mockUserPermissionsByResource = groupBy(mockUserPermissions, 'resource');
-
 export const mockAccessTokenPermissionsQueryResponse = {
   data: {
     accessTokenPermissions: [
@@ -285,6 +282,27 @@ export const mockAccessTokenPermissionsQueryResponse = {
     ],
   },
 };
+export const mockSourceTokenQueryResponse = {
+  data: {
+    user: {
+      id: 'gid://gitlab/User/42',
+      __typename: 'UserCore',
+      personalAccessTokens: {
+        __typename: 'PersonalAccessTokenConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/PersonalAccessToken/1',
+            __typename: 'PersonalAccessToken',
+            name: mockTokens[0].name,
+            description: mockTokens[0].description,
+            scopes: [{ ...mockGranularGroupScope, project: null }],
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const mockStatisticsResponse = {
   data: {
     user: {

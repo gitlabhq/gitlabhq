@@ -61,6 +61,23 @@ a users' permissions, they may not be able to see those references. `PostProcess
 confidential information based on user permissions. These changes are never cached, as they need to get recomputed each time
 they are displayed.
 
+### `SingleLinePipeline`
+
+The `SingleLinePipeline` is used for single-line text fields like issuable titles. It is configured in the `Issuable` concern with
+`cache_markdown_field :title, pipeline: :single_line`.
+
+Unlike the `FullPipeline`, this pipeline does not run the Markdown parser (`MarkdownFilter`). It processes plain text through a minimal set of filters:
+
+- `HtmlEntityFilter` - escapes HTML entities, treating the input as plain text.
+- `EmojiFilter` - converts `:emoji:` shortcodes.
+- `CustomEmojiFilter` - converts custom emoji shortcodes.
+- `AutolinkFilter` - auto-links URLs.
+- `ExternalLinkFilter` - processes external links.
+- reference filters - resolve GitLab references like `#123`, `@user`, and `!456`.
+
+This means titles do not support bold, italic, code spans, Markdown links, or any other standard Markdown formatting. For more information about what
+formatting is available in titles, see [work item and merge request titles](../../user/markdown.md#work-item-and-merge-request-titles).
+
 ### Performance
 
 It's important to not only have the filters run as fast as possible, but to ensure that they don't take too long in general.

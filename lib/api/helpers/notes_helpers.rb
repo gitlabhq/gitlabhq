@@ -39,7 +39,7 @@ module API
         ]
       end
 
-      def update_note(noteable, note_id)
+      def update_note(noteable, note_id, noteable_class = nil)
         note = noteable.notes.find(note_id)
 
         authorize! :admin_note, note
@@ -54,11 +54,11 @@ module API
         note = ::Notes::UpdateService.new(project, current_user, opts).execute(note)
 
         process_note_creation_result(note) do
-          present note, with: Entities::Note
+          present_single_note(note, noteable, noteable_class)
         end
       end
 
-      def resolve_note(noteable, note_id, resolved)
+      def resolve_note(noteable, note_id, resolved, noteable_class = nil)
         note = noteable.notes.find(note_id)
 
         authorize! :resolve_note, note
@@ -72,7 +72,7 @@ module API
           note.unresolve!
         end
 
-        present note, with: Entities::Note
+        present_single_note(note, noteable, noteable_class)
       end
 
       def delete_note(noteable, note_id)
@@ -87,12 +87,12 @@ module API
         end
       end
 
-      def get_note(noteable, note_id)
+      def get_note(noteable, note_id, noteable_class = nil)
         note = noteable.notes.with_metadata.find(note_id)
         can_read_note = note.readable_by?(current_user)
 
         if can_read_note
-          present note, with: Entities::Note
+          present_single_note(note, noteable, noteable_class)
         else
           not_found!("Note")
         end
@@ -136,7 +136,8 @@ module API
         end
       end
 
-      def add_parent_to_finder_params(finder_params, noteable_type, parent_type)
+      def add_parent_to_finder_params(finder_params, _noteable_type, parent_type)
+        finder_params[:organization_id] = Current.organization.id
         finder_params[:project] = user_project if parent_type != 'group'
       end
 
@@ -174,6 +175,14 @@ module API
         elsif quick_action_status&.error?
           bad_request!(quick_action_status.error_messages.join(', '))
         end
+      end
+
+      def present_note_collection(notes, _noteable, _noteable_class)
+        present notes, with: Entities::Note, current_user: current_user
+      end
+
+      def present_single_note(note, _noteable, _noteable_class)
+        present note, with: Entities::Note, current_user: current_user
       end
 
       def resolve_discussion(noteable, discussion_id, resolved)

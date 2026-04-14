@@ -75,7 +75,7 @@ module BulkImports
         ).execute
       elsif config.user_contributions_relation?(relation) && export_user_contributions?
         log_extra_metadata_on_done(:batched, false)
-        UserContributionsExportWorker.perform_async(portable_id, portable_class, user_id)
+        UserContributionsExportWorker.perform_async(portable_id, portable_class, user_id, params['offline_export_id'])
       else
         log_extra_metadata_on_done(:batched, false)
         RelationExportService.new(user, portable, relation, jid, offline_export_id: params['offline_export_id']).execute

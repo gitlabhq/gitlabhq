@@ -1,14 +1,11 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { humanize } from '~/lib/utils/text_utility';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
   name: 'PersonalAccessTokenGranularPermissionsList',
   components: {
-    CrudComponent,
     GlCollapsibleListbox,
     GlButton,
   },
@@ -18,10 +15,10 @@ export default {
       required: false,
       default: () => [],
     },
-    permissionsByResource: {
-      type: Object,
+    permissions: {
+      type: Array,
       required: false,
-      default: () => ({}),
+      default: () => [],
     },
     selectedResources: {
       type: Array,
@@ -45,78 +42,54 @@ export default {
       },
     },
     selectedResourcesGroupedByCategory() {
+      // permissions is a flat list of permissions filtered by boundary
+      // filter them by selectedResources & then group by category for rendering
       if (!this.selectedResources.length) {
         return [];
       }
 
-      const permissions = this.selectedResources.map(
-        (resource) => this.permissionsByResource[resource]?.[0],
+      // map over selectedResources to preserve their order, rather than filtering permissions
+      // which would return results in permissions array order instead.
+      const permissionsForSelectedResources = this.selectedResources.flatMap((resource) =>
+        this.permissions.filter((p) => p.resource === resource),
       );
 
-      return groupPermissionsByResourceAndCategory(permissions);
+      return groupPermissionsByResourceAndCategory(permissionsForSelectedResources);
     },
     permissionsTitle() {
       return this.$options.i18n[this.scope].permissionsTitle;
     },
-    permissionsDescription() {
-      return this.$options.i18n[this.scope].permissionsDescription;
-    },
   },
   methods: {
-    listboxItems(resourceKey) {
-      const items = this.permissionsByResource[resourceKey];
-
-      if (!items) {
-        return [];
-      }
-
-      return items?.map((item) => ({
-        value: item.name,
-        text: humanize(item.action),
-      }));
+    listboxItems(actions) {
+      return actions.map(({ key, name }) => ({ value: key, text: name }));
     },
-    dropdownText(resourceKey) {
-      const items = this.listboxItems(resourceKey);
+    dropdownText(actions) {
+      const selectedNames = actions
+        .filter((action) => this.selected.includes(action.key))
+        .map((action) => action.name)
+        .join(', ');
 
-      // Filter items where value is in selected array and map to text
-      const selectedTexts = items
-        .filter((item) => this.selected.includes(item.value))
-        .map((item) => item.text);
-
-      return selectedTexts.length > 0
-        ? selectedTexts.join(', ')
-        : this.$options.i18n.selectPermissions;
+      return selectedNames || this.$options.i18n.selectPermissions;
     },
   },
   i18n: {
     namespace: {
-      permissionsTitle: s__('AccessTokens|Group and project permissions'),
-      permissionsDescription: s__(
-        'AccessTokens|Grant permissions only to specific resources in your groups or projects.',
-      ),
+      permissionsTitle: s__('AccessTokens|Group and project'),
     },
     user: {
-      permissionsTitle: s__('AccessTokens|User permissions'),
-      permissionsDescription: s__(
-        'AccessTokens|Grant permissions to resources in your GitLab user account.',
-      ),
+      permissionsTitle: s__('AccessTokens|User'),
     },
-    noResourcesSelected: s__('AccessTokens|No resources selected'),
+    noResourcesSelected: s__('AccessTokens|No resources added'),
     selectPermissions: s__('AccessTokens|Select permissions'),
   },
 };
 </script>
 <template>
-  <crud-component class="gl-flex gl-w-2/3 gl-flex-col">
-    <template #title>
-      {{ permissionsTitle }}
-    </template>
+  <div class="gl-border gl-w-full gl-border-t-0 gl-p-5 lg:gl-border-l-0">
+    <div class="gl-mb-2 gl-text-lg">{{ permissionsTitle }}</div>
 
-    <template #description>
-      {{ permissionsDescription }}
-    </template>
-
-    <template v-if="!selectedResources.length" #empty>
+    <template v-if="!selectedResources.length">
       <div class="gl-my-8 gl-text-center">
         {{ $options.i18n.noResourcesSelected }}
       </div>
@@ -126,7 +99,6 @@ export default {
       v-for="category in selectedResourcesGroupedByCategory"
       :key="category.key"
       :data-testid="`category-${category.key}`"
-      class="gl-pl-3"
     >
       <div class="gl-heading-5 gl-mt-4 gl-font-bold" data-testid="category-heading">
         {{ category.name }}
@@ -150,8 +122,9 @@ export default {
         <div class="gl-flex gl-shrink-0 gl-items-center gl-gap-2">
           <gl-collapsible-listbox
             v-model="selected"
-            :items="listboxItems(resource.key)"
-            :toggle-text="dropdownText(resource.key)"
+            :items="listboxItems(resource.actions)"
+            :toggle-text="dropdownText(resource.actions)"
+            placement="bottom-end"
             multiple
           />
           <gl-button
@@ -163,5 +136,5 @@ export default {
       </div>
       <hr />
     </div>
-  </crud-component>
+  </div>
 </template>

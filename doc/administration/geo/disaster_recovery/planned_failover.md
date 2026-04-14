@@ -368,6 +368,34 @@ and the configuration options `unhealthy_requests_limit` and `unhealthy_interval
   [how to handle secondary runners](../secondary_proxy/runners.md#handling-a-planned-failover-with-secondary-runners)
   during the failover.
 
+### OpenBao prerequisites
+
+If you have [OpenBao](https://docs.gitlab.com/charts/charts/openbao/) installed with the GitLab Helm chart,
+complete these checks while the **primary** cluster is still accessible.
+
+#### Verify the unseal secret is present on the secondary
+
+The `gitlab-openbao-unseal` Kubernetes secret must exist on the secondary cluster.
+Verify it is present:
+
+```shell
+kubectl --namespace gitlab get secret gitlab-openbao-unseal
+```
+
+If the secret is missing, copy it from the primary before proceeding.
+For more information, see
+[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets).
+
+#### Validate OpenBao database replication
+
+The secondary OpenBao database is a read replica of the primary PostgreSQL,
+including the `openbao` schema. Before a planned failover, verify that
+replication is current and the secondary data is consistent with the primary.
+
+If the primary database is already unavailable, the secondary contains data
+up to the last replicated transaction. Any secrets written to the primary after
+the last replication are lost.
+
 ## Prevent updates to the primary site
 
 To ensure that all data replicates to a secondary site, disable updates (write requests)

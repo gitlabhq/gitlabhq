@@ -46,6 +46,7 @@ module Security
 
     def copy_scanners_to_target(source_report)
       target_report.scanner = source_report.scanner
+      source_report.scanners.each_value { |scanner| target_report.add_scanner(scanner) }
     end
 
     def copy_identifiers_to_target(source_report)

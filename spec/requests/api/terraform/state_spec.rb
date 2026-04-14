@@ -9,6 +9,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:admin) { create(:admin) }
 
   let(:current_user) { maintainer }
   let(:auth_header) { user_basic_auth_header(current_user) }
@@ -89,6 +90,61 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       request
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+
+  shared_examples 'enforcing terraform state protection rules' do
+    context 'when a protection rule exists for the state' do
+      let!(:protection_rule) do
+        create(:terraform_state_protection_rule,
+          project: project,
+          state_name: URI.decode_www_form_component(state_name),
+          minimum_access_level_for_write: :owner,
+          allowed_from: :anywhere)
+      end
+
+      context 'when user has insufficient access level' do
+        it 'returns 403' do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when user is an admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        it 'allows access (admin bypass)' do
+          request
+
+          expect(response).not_to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when no protection rule exists for the state' do
+      it 'allows access' do
+        request
+
+        expect(response).not_to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when terraform state protection rules feature flag is disabled' do
+      before do
+        stub_feature_flags(protected_terraform_states: false)
+        create(:terraform_state_protection_rule,
+          project: project,
+          state_name: URI.decode_www_form_component(state_name),
+          minimum_access_level_for_write: :owner,
+          allowed_from: :anywhere)
+      end
+
+      it 'does not enforce protection rules' do
+        request
+
+        expect(response).not_to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 
@@ -309,6 +365,8 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         headers: auth_header,
         send_rewritten_field: true)
     end
+
+    it_behaves_like 'enforcing terraform state protection rules'
 
     it_behaves_like 'authorizing granular token permissions', :create_terraform_state do
       let(:boundary_object) { project }
@@ -536,6 +594,8 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   describe 'DELETE /projects/:id/terraform/state/:name' do
     subject(:request) { delete api(state_path), headers: auth_header }
 
+    it_behaves_like 'enforcing terraform state protection rules'
+
     it_behaves_like 'authorizing granular token permissions', :delete_terraform_state do
       let(:boundary_object) { project }
       let(:user) { maintainer }
@@ -613,6 +673,8 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
 
     subject(:request) { post api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'enforcing terraform state protection rules'
 
     it_behaves_like 'authorizing granular token permissions', :lock_terraform_state do
       let(:boundary_object) { project }
@@ -720,6 +782,10 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
 
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
+
+    it_behaves_like 'enforcing terraform state protection rules' do
+      let(:lock_id) { '123.456' }
+    end
 
     it_behaves_like 'authorizing granular token permissions', :unlock_terraform_state do
       let(:boundary_object) { project }

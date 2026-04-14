@@ -2893,12 +2893,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             approvals_before_merge
             compliance_frameworks
             mirror
+            pre_receive_secret_detection_enabled
             requirements_access_level
             requirements_enabled
             security_and_compliance_enabled
             issues_template
             merge_requests_template
             secret_push_protection_enabled
+            pre_receive_secret_detection_enabled
           ]
         end
 

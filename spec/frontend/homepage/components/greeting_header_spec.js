@@ -9,6 +9,11 @@ import GreetingHeader from '~/homepage/components/greeting_header.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { GREETING_MESSAGES } from '~/homepage/constants';
+import { buildTimeAwareGreetings } from '~/homepage/utils/build_time_aware_greetings';
+import { useFakeDate } from 'helpers/fake_date';
+
+const FIXED_DATE = new Date(2025, 2, 19, 10, 0); // Wednesday 10am
 
 Vue.use(VueApollo);
 
@@ -104,7 +109,8 @@ describe('GreetingHeader', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findGreeting = () => wrapper.find('h1');
+  const findName = () => wrapper.find('[data-testid="greeting-name"]');
+  const findGreeting = () => wrapper.find('[data-testid="greeting-message"]');
   const findStatusBadge = () => wrapper.find('[data-testid="status-emoji-badge"]');
   const findStatusEmoji = () => {
     const stub = wrapper.find('gl-emoji-stub');
@@ -113,56 +119,69 @@ describe('GreetingHeader', () => {
   const findAvatarButton = () => wrapper.find('[data-testid="status-modal-trigger"]');
   const findStatusModal = () => wrapper.findComponent(SetStatusModal);
 
-  describe('Greeting', () => {
-    it('renders greeting with full name', () => {
+  describe('Name display', () => {
+    it('renders full name above the greeting', () => {
       createComponent();
-      expect(findGreeting().text()).toBe('Hi, John Doe');
+      expect(findName().text()).toBe('John Doe');
     });
 
-    it('renders greeting with username when full name not available', () => {
+    it('falls back to username when full name is not available', () => {
       createComponent({ gonData: { current_user_fullname: null } });
-      expect(findGreeting().text()).toBe('Hi, johndoe');
+      expect(findName().text()).toBe('johndoe');
     });
 
-    it('does not render greeting when user has no available name', () => {
+    it('falls back to username when full name is empty', () => {
+      createComponent({ gonData: { current_user_fullname: '' } });
+      expect(findName().text()).toBe('johndoe');
+    });
+
+    it('does not render name line when no name or username is available', () => {
       createComponent({ gonData: { current_user_fullname: null, current_username: null } });
-      expect(findGreeting().exists()).toBe(false);
+      expect(findName().exists()).toBe(false);
     });
 
     it('handles single name correctly', () => {
       createComponent({ gonData: { current_user_fullname: 'Madonna' } });
-      expect(findGreeting().text()).toBe('Hi, Madonna');
+      expect(findName().text()).toBe('Madonna');
     });
 
     it('uses full name for multi-word names', () => {
       createComponent({ gonData: { current_user_fullname: 'John Doe Smith Jr' } });
-      expect(findGreeting().text()).toBe('Hi, John Doe Smith Jr');
-    });
-
-    it('handles empty string name', () => {
-      createComponent({ gonData: { current_user_fullname: '' } });
-      expect(findGreeting().text()).toBe('Hi, johndoe');
-    });
-
-    it('handles whitespace-only name', () => {
-      createComponent({ gonData: { current_user_fullname: '   ' } });
-      expect(findGreeting().text()).toBe('Hi, johndoe');
-    });
-
-    it('handles name with extra whitespace', () => {
-      createComponent({ gonData: { current_user_fullname: '  John  Doe  ' } });
-      expect(findGreeting().text()).toBe('Hi, John  Doe');
+      expect(findName().text()).toBe('John Doe Smith Jr');
     });
 
     it('handles name with special characters', () => {
       createComponent({ gonData: { current_user_fullname: "O'Brien" } });
-      expect(findGreeting().text()).toBe("Hi, O'Brien");
+      expect(findName().text()).toBe("O'Brien");
+    });
+
+    it('trims whitespace from full name', () => {
+      createComponent({ gonData: { current_user_fullname: '  John  Doe  ' } });
+      expect(findName().text()).toBe('John  Doe');
     });
 
     it('truncates very long names gracefully', () => {
       const longName = 'A'.repeat(100);
       createComponent({ gonData: { current_user_fullname: longName } });
-      expect(findGreeting().classes()).toContain('gl-truncate');
+      expect(findName().classes()).toContain('gl-truncate');
+    });
+  });
+
+  describe('Greeting', () => {
+    useFakeDate(FIXED_DATE);
+
+    it('renders a greeting in the h1 element', () => {
+      createComponent();
+      const greeting = findGreeting();
+      expect(greeting.exists()).toBe(true);
+      expect(greeting.element.tagName).toBe('H1');
+      expect(greeting.text().length).toBeGreaterThan(0);
+    });
+
+    it('renders a greeting from the combined greeting pool', () => {
+      createComponent();
+      const allGreetings = [...GREETING_MESSAGES, ...buildTimeAwareGreetings(FIXED_DATE)];
+      expect(allGreetings).toContain(findGreeting().text());
     });
   });
 

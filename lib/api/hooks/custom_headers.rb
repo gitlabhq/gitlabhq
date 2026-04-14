@@ -7,8 +7,7 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the hook'
         requires :key, type: String, desc: 'The name of the custom header',
-          values: { value: ->(v) { v.length <= WebHook::MAX_CUSTOM_HEADER_NAME_LENGTH },
-                    message: 'must be 255 characters or less' }
+          limit: WebHook::MAX_CUSTOM_HEADER_NAME_LENGTH
       end
       namespace ':hook_id/custom_headers' do
         desc 'Set a custom header' do

@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Debugging tips for fixing problems in Git.
 title: Troubleshooting Git
-description: Tips to resolve Git issues.
+description: Troubleshoot and resolve common Git errors and connection issues.
 ---
 
 {{< details >}}
@@ -468,7 +467,7 @@ fatal: unable to access 'https://gitlab.com/group/project.git/': The requested U
 
 The failed authentication ban limits differ depending if you are using a
 [GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab SaaS](../../user/gitlab_com/_index.md#ip-blocks).
+or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).
 
 ### Check logs for failed authentications
 

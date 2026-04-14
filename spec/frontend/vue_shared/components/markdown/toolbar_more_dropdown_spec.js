@@ -90,12 +90,18 @@ describe('ToolbarMoreDropdown', () => {
 
       await btn.trigger('click');
 
-      expect(updateText).toHaveBeenCalledWith({
+      const expectedParams = {
         textArea: mockTextArea,
         tag: expectedMarkdown,
         cursorOffset: 0,
         wrap: false,
-      });
+      };
+
+      if (name === 'Collapsible section') {
+        expectedParams.select = 'Click to expand';
+      }
+
+      expect(updateText).toHaveBeenCalledWith(expectedParams);
 
       expect(Tracking.event).toHaveBeenCalledWith(undefined, 'execute_toolbar_control', {
         label: 'markdown_editor',

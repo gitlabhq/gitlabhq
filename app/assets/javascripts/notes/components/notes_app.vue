@@ -2,6 +2,8 @@
 import { mapState, mapActions } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
@@ -222,7 +224,13 @@ export default {
     },
     shouldShow() {
       if (!this.isNotesFetched) {
-        this.fetchNotes();
+        this.fetchNotes().catch((error) => {
+          createAlert({
+            message: __('Something went wrong while fetching comments. Please try again.'),
+            captureError: true,
+            error,
+          });
+        });
       }
 
       setTimeout(() => {

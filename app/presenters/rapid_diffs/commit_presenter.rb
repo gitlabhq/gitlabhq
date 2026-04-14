@@ -67,5 +67,11 @@ module RapidDiffs
     def report_abuse_path
       add_category_abuse_reports_path
     end
+
+    protected
+
+    def offset
+      5
+    end
   end
 end

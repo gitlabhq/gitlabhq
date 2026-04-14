@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+---
+name: ci_config_http_timeout
+description: Adds per-request timeout for HTTP calls when fetching remote CI configuration files
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588313
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224248
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590948
+milestone: '18.11'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

@@ -103,7 +103,7 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
           it 'enqueues the UserContributionsExportWorker' do
             expect(BulkImports::UserContributionsExportWorker).to receive(:perform_async).with(
-              group.id, group.class.name, user.id
+              group.id, group.class.name, user.id, offline_export_id
             ).twice
 
             perform_multiple(job_args)

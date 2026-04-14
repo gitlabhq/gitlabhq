@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariablePresenter do
+RSpec.describe Ci::GroupVariablePresenter, feature_category: :continuous_integration do
   include Gitlab::Routing.url_helpers
 
-  let(:group) { create(:group) }
-  let(:variable) { create(:ci_group_variable, group: group) }
+  let(:group) { build_stubbed(:group) }
+  let(:variable) { build_stubbed(:ci_group_variable, group: group) }
 
   subject(:presenter) do
     described_class.new(variable)

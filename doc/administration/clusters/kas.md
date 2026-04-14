@@ -2,8 +2,8 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Install the GitLab agent server for Kubernetes (KAS)
-description: Manage the GitLab agent for Kubernetes.
+title: Install GitLab Relay (KAS)
+description: Manage GitLab Relay (KAS).
 ---
 
 {{< details >}}
@@ -13,29 +13,33 @@ description: Manage the GitLab agent for Kubernetes.
 
 {{< /details >}}
 
-The agent server is a component installed together with GitLab. It is required to
-manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
+GitLab Relay (KAS) is a component installed with GitLab. It serves as a central
+communication relay for bidirectional gRPC communication between GitLab and external
+systems, including:
 
-The KAS acronym refers to the former name, `Kubernetes agent server`.
+- Runners: Required to use the [Job Router](../../ci/runners/job_router/_index.md) and [Runner Controllers](../../ci/runners/job_router/runner_controllers.md).
+- Kubernetes clusters: Required to use the [Agent for Kubernetes](../../user/clusters/agent/_index.md).
 
-The agent server for Kubernetes is installed and available on GitLab.com at `wss://kas.gitlab.com`.
-If you use GitLab Self-Managed, by default the agent server is installed and available.
+KAS was formerly known as the Kubernetes Agent Server. The name was changed to reflect its evolved role beyond Kubernetes.
+
+GitLab Relay (KAS) is installed and available on GitLab.com at `wss://kas.gitlab.com`.
+If you use GitLab Self-Managed, by default GitLab Relay (KAS) is installed and available.
 
 ## Installation options
 
-As a GitLab administrator, you can control the agent server installation:
+As a GitLab administrator, you can control the GitLab Relay (KAS) installation:
 
 - For [Linux package installations](#for-linux-package-installations).
 - For [GitLab Helm chart installations](#for-gitlab-helm-chart).
 
 ### For Linux package installations
 
-The agent server for Linux package installations can be enabled on a single node, or on multiple nodes at once.
-By default, the agent server is enabled and available at `ws://gitlab.example.com/-/kubernetes-agent/`.
+GitLab Relay (KAS) for Linux package installations can be enabled on a single node, or on multiple nodes at once.
+By default, GitLab Relay (KAS) is enabled and available at `ws://gitlab.example.com/-/kubernetes-agent/`.
 
 #### Disable on a single node
 
-To disable the agent server on a single node:
+To disable GitLab Relay (KAS) on a single node:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -266,7 +270,7 @@ Key configuration points:
 - Use separate domains, ports, or IP restrictions for internal traffic.
 - For cloud load balancers, configure separate target groups for ports 8150 and 8153.
 
-##### Agent server node settings
+##### GitLab Relay (KAS) node settings
 
 | Setting                                             | Description |
 |-----------------------------------------------------|-------------|
@@ -340,7 +344,7 @@ gitlab_kas['redis_password'] = '<redis_password>'
 # gitlab_kas['redis_sentinels_master_name'] = 'gitlab-redis'
 # gitlab_kas['redis_sentinels_password'] = '<redis_sentinels_password>'
 
-### Kubernetes Agent Service ###
+### GitLab Relay (KAS) ###
 gitlab_kas['enable'] = true
 gitlab_kas_external_url 'wss://kas.example.com/-/kubernetes-agent/'
 gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
@@ -368,7 +372,7 @@ See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitl
 
 {{< /history >}}
 
-KAS proxies Kubernetes API requests to the GitLab agent for Kubernetes with either:
+GitLab Relay (KAS) proxies Kubernetes API requests to the GitLab agent for Kubernetes with either:
 
 - A [CI/CD job](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md).
 - [GitLab user credentials](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md).
@@ -441,7 +445,7 @@ Support for the addition of more response headers is tracked in
 
 ## Troubleshooting
 
-If you have issues while using the agent server for Kubernetes, view the
+If you have issues while using GitLab Relay (KAS), view the
 service logs by running the following command:
 
 ```shell
@@ -475,7 +479,7 @@ If you are running GitLab Self-Managed and:
 - The instance doesn't have HTTPS configured on the GitLab instance itself.
 - The instance's hostname resolves locally to its internal IP address.
 
-When the agent server tries to connect to the GitLab API, the following error might occur:
+When GitLab Relay (KAS) tries to connect to the GitLab API, the following error might occur:
 
 ```json
 {"level":"error","time":"2021-08-16T14:56:47.289Z","msg":"GetAgentInfo()","correlation_id":"01FD7QE35RXXXX8R47WZFBAXTN","grpc_service":"gitlab.agent.reverse_tunnel.rpc.ReverseTunnel","grpc_method":"Connect","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": dial tcp 172.17.0.4:443: connect: connection refused"}
@@ -516,7 +520,7 @@ To apply the changes:
 sudo gitlab-ctl reconfigure
 ```
 
-1. Restart agent server:
+1. Restart GitLab Relay (KAS):
 
 ```shell
 gitlab-ctl restart gitlab-kas

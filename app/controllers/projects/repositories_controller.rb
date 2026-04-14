@@ -22,9 +22,15 @@ class Projects::RepositoriesController < Projects::ApplicationController
   feature_category :source_code_management
 
   def create
-    @project.create_repository unless @project.repository_exists?
+    return redirect_to project_path(@project) if @project.repository_exists?
 
-    redirect_to project_path(@project)
+    if @project.create_repository
+      @project.track_project_repository
+
+      redirect_to project_path(@project)
+    else
+      redirect_to(project_path(@project), alert: _('Failed to create repository'))
+    end
   end
 
   def archive

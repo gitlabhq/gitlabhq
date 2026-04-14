@@ -996,6 +996,112 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    describe '#validate_branch_existence' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      context 'when validate_merge_request_branch_existence feature flag is enabled' do
+        before do
+          stub_feature_flags(validate_merge_request_branch_existence: project)
+        end
+
+        context 'when source branch does not exist' do
+          it 'is invalid on create' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'nonexistent-source', target_branch: 'master',
+              skip_branch_existence_check: false)
+
+            expect(mr).not_to be_valid
+            expect(mr.errors[:source_branch]).to include('does not exist')
+          end
+        end
+
+        context 'when target branch does not exist' do
+          it 'is invalid on create' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'master', target_branch: 'nonexistent-target',
+              skip_branch_existence_check: false)
+
+            expect(mr).not_to be_valid
+            expect(mr.errors[:target_branch]).to include('does not exist')
+          end
+        end
+
+        context 'when both branches exist' do
+          it 'is valid' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'master', target_branch: 'feature',
+              skip_branch_existence_check: false)
+
+            expect(mr).to be_valid
+          end
+        end
+
+        context 'when both branches do not exist' do
+          it 'reports errors for both branches' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'nonexistent-source', target_branch: 'nonexistent-target',
+              skip_branch_existence_check: false)
+
+            expect(mr).not_to be_valid
+            expect(mr.errors[:source_branch]).to include('does not exist')
+            expect(mr.errors[:target_branch]).to include('does not exist')
+          end
+        end
+
+        context 'when allow_broken is true' do
+          it 'skips the validation' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'nonexistent-source', target_branch: 'nonexistent-target',
+              allow_broken: true, skip_branch_existence_check: false)
+
+            mr.valid?
+            expect(mr.errors[:source_branch]).not_to include('does not exist')
+            expect(mr.errors[:target_branch]).not_to include('does not exist')
+          end
+        end
+
+        context 'when skip_branch_existence_check is true' do
+          it 'skips the validation' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'nonexistent-source', target_branch: 'nonexistent-target',
+              skip_branch_existence_check: true)
+
+            mr.valid?
+            expect(mr.errors[:source_branch]).not_to include('does not exist')
+            expect(mr.errors[:target_branch]).not_to include('does not exist')
+          end
+        end
+
+        context 'when importing' do
+          it 'skips the validation' do
+            mr = build(:merge_request, source_project: project, target_project: project,
+              source_branch: 'nonexistent-source', target_branch: 'nonexistent-target',
+              skip_branch_existence_check: false, importing: true)
+
+            mr.valid?
+            expect(mr.errors[:source_branch]).not_to include('does not exist')
+            expect(mr.errors[:target_branch]).not_to include('does not exist')
+          end
+        end
+      end
+
+      context 'when validate_merge_request_branch_existence feature flag is disabled' do
+        before do
+          stub_feature_flags(validate_merge_request_branch_existence: false)
+        end
+
+        it 'skips the validation' do
+          mr = build(:merge_request, source_project: project, target_project: project,
+            source_branch: 'nonexistent-source', target_branch: 'nonexistent-target',
+            skip_branch_existence_check: false)
+
+          mr.valid?
+          expect(mr.errors[:source_branch]).not_to include('does not exist')
+          expect(mr.errors[:target_branch]).not_to include('does not exist')
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -2530,17 +2636,17 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#changed_paths' do
-    let(:commits) { [double(:commit)] }
+    let(:shas) { ['ade1c0b4b116209ed2a9958436b26f89085ec383'] }
     let(:changed_paths) { [double(:changed_path, path: 'path.rb')] }
     let(:merge_request) { build(:merge_request, id: 1, project: project) }
 
     before do
-      allow(merge_request).to receive(:commits).and_return(commits)
+      allow(merge_request).to receive(:commit_shas).and_return(shas)
     end
 
-    it 'fetches the changed paths from gitaly' do
+    it 'fetches the changed paths from gitaly using commit SHAs' do
       expect(project.repository)
-        .to receive(:find_changed_paths).with(commits, merge_commit_diff_mode: :all_parents)
+        .to receive(:find_changed_paths).with(shas, merge_commit_diff_mode: :all_parents)
         .once.and_return(changed_paths)
       expect(merge_request.changed_paths).to eq(changed_paths)
     end
@@ -2566,6 +2672,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       allow(merge_request).to receive(:diff_head_sha).and_return('new_sha')
 
       2.times { merge_request.changed_paths }
+    end
+
+    context 'when FF optimised_commits_for_mr_changed_paths is disabled' do
+      let(:commits) { [double(:commit)] }
+
+      before do
+        stub_feature_flags(optimised_commits_for_mr_changed_paths: false)
+        allow(merge_request).to receive(:commits).and_return(commits)
+      end
+
+      it 'fetches the changed paths from gitaly' do
+        expect(project.repository)
+          .to receive(:find_changed_paths).with(commits, merge_commit_diff_mode: :all_parents)
+                                          .once.and_return(changed_paths)
+        expect(merge_request.changed_paths).to eq(changed_paths)
+      end
     end
   end
 
@@ -4546,8 +4668,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
             end
           end
 
-          it 'raises an InvalidateReactiveCache error' do
-            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          it 'returns parsing status instead of raising an error' do
+            expect(subject[:status]).to eq(:parsing)
           end
         end
       end
@@ -5171,6 +5293,74 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#auto_merge_eligible?' do
+    let(:mr) { build_stubbed(:merge_request) }
+
+    let(:strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
+    let(:expected_skips) { mr.skipped_auto_merge_checks(auto_merge_strategy: strategy) }
+
+    it 'delegates to mergeable? with skipped_auto_merge_checks' do
+      expect(mr).to receive(:skipped_auto_merge_checks)
+        .with(auto_merge_strategy: strategy)
+        .at_least(:once)
+        .and_call_original
+
+      expect(mr).to receive(:mergeable?).with(
+        check_mergeability_retry_lease: false,
+        use_cache: true,
+        **expected_skips
+      )
+
+      mr.auto_merge_eligible?(strategy: strategy)
+    end
+
+    it 'passes through check_mergeability_retry_lease' do
+      expect(mr).to receive(:mergeable?).with(
+        check_mergeability_retry_lease: true,
+        use_cache: true,
+        **expected_skips
+      )
+
+      mr.auto_merge_eligible?(strategy: strategy, check_mergeability_retry_lease: true)
+    end
+
+    it 'passes through use_cache' do
+      expect(mr).to receive(:mergeable?).with(
+        check_mergeability_retry_lease: false,
+        use_cache: false,
+        **expected_skips
+      )
+
+      mr.auto_merge_eligible?(strategy: strategy, use_cache: false)
+    end
+
+    it 'skips CI and other checks for merge_when_checks_pass strategy' do
+      expect(mr).to receive(:mergeable?).with(
+        hash_including(
+          skip_ci_check: true,
+          skip_approved_check: true,
+          skip_draft_check: true,
+          skip_discussions_check: true
+        )
+      )
+
+      mr.auto_merge_eligible?(strategy: strategy)
+    end
+
+    it 'does not skip checks for an unknown strategy' do
+      expect(mr).to receive(:mergeable?).with(
+        hash_including(
+          skip_ci_check: false,
+          skip_approved_check: false,
+          skip_draft_check: false,
+          skip_discussions_check: false
+        )
+      )
+
+      mr.auto_merge_eligible?(strategy: 'unknown_strategy')
+    end
+  end
+
   describe '#skipped_auto_merge_checks' do
     subject { merge_request.skipped_auto_merge_checks(options) }
 
@@ -5693,6 +5883,45 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.reload_diff(user)
 
       expect(service).to have_received(:execute)
+    end
+
+    context 'when the primary state matches the replica state' do
+      it 'proceeds with reload_diff' do
+        expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+        subject.reload_diff
+      end
+    end
+
+    context 'when the primary state differs from the replica state' do
+      before do
+        allow(subject.class).to receive(:where).with(id: subject.id) do
+          relation = instance_double(ActiveRecord::Relation)
+          allow(relation).to receive(:pick).with(:state_id).and_return(MergeRequest.available_states[:merged])
+          relation
+        end
+      end
+
+      it 'skips reload_diff and logs a warning' do
+        expect(MergeRequests::ReloadDiffsService).not_to receive(:new)
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(message: 'reload_diff skipped: stale replica state detected, MR state on primary differs from replica')
+        )
+
+        subject.reload_diff
+      end
+    end
+
+    context 'when mr_refresh_use_primary feature flag is disabled' do
+      before do
+        stub_feature_flags(mr_refresh_use_primary: false)
+      end
+
+      it 'does not check for stale replica state and proceeds with reload_diff' do
+        expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+        subject.reload_diff
+      end
     end
 
     context 'when using the after_update hook to update' do
@@ -7688,14 +7917,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           let!(:child_build) { create(:ci_build, artifact_report, pipeline: child_pipeline) }
 
           it { is_expected.to be_truthy }
-
-          context 'with FF show_child_security_reports_in_mr_widget disabled' do
-            before do
-              stub_feature_flags(show_child_security_reports_in_mr_widget: false)
-            end
-
-            it { is_expected.to be_falsy }
-          end
         end
       end
     end
@@ -8318,7 +8539,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:merge_request) { build_stubbed(:merge_request) }
 
     before do
-      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request, {}) do |version|
+      allow_next_instance_of(Gitlab::MergeRequests::DiffResolver, merge_request, {}) do |version|
         allow(version).to receive(:resolve).and_return(diff)
       end
     end
@@ -8335,20 +8556,33 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    context 'when compare is present' do
-      let(:compare) do
-        instance_double(
-          Compare,
-          diffs_for_streaming: ['compare diff']
-        )
-      end
+    context 'when only_context_commits is true' do
+      let(:context_commits_diff) { instance_double(ContextCommitsDiff) }
+      let(:context_diffs) { ['context diff'] }
 
       before do
-        merge_request.compare = compare
+        allow(merge_request).to receive(:context_commits_diff).and_return(context_commits_diff)
       end
 
-      it 'returns diffs from compare' do
-        expect(merge_request.diffs_for_streaming).to eq(['compare diff'])
+      context 'when context_commits_diff is not empty' do
+        before do
+          allow(context_commits_diff).to receive(:empty?).and_return(false)
+          allow(context_commits_diff).to receive(:diffs).and_return(context_diffs)
+        end
+
+        it 'returns diffs from context_commits_diff' do
+          expect(merge_request.diffs_for_streaming(only_context_commits: true)).to eq(context_diffs)
+        end
+      end
+
+      context 'when context_commits_diff is empty' do
+        before do
+          allow(context_commits_diff).to receive(:empty?).and_return(true)
+        end
+
+        it 'returns diffs from base diff' do
+          expect(merge_request.diffs_for_streaming(only_context_commits: true)).to eq(['base diff'])
+        end
       end
     end
   end
@@ -8359,7 +8593,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:expected_block) { proc {} }
 
     before do
-      allow_next_instance_of(Gitlab::MergeRequests::DiffVersion, merge_request, {}) do |version|
+      allow_next_instance_of(Gitlab::MergeRequests::DiffResolver, merge_request, {}) do |version|
         allow(version).to receive(:resolve).and_return(diff)
       end
     end
@@ -8368,25 +8602,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(diff).to receive(:diffs_for_streaming_by_changed_paths).with({}, &expected_block)
 
       merge_request.diffs_for_streaming_by_changed_paths({}, &expected_block)
-    end
-
-    context 'when compare is present' do
-      let(:compare) do
-        instance_double(
-          Compare,
-          diffs_for_streaming_by_changed_paths: ['compare result']
-        )
-      end
-
-      before do
-        merge_request.compare = compare
-      end
-
-      it 'delegates to compare' do
-        expect(compare).to receive(:diffs_for_streaming_by_changed_paths).with({}, &expected_block)
-
-        merge_request.diffs_for_streaming_by_changed_paths({}, &expected_block)
-      end
     end
   end
 
@@ -8468,18 +8683,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       subject.add_to_locked_set
     end
-
-    context 'when unstick_locked_merge_requests_redis is disabled' do
-      before do
-        stub_feature_flags(unstick_locked_merge_requests_redis: false)
-      end
-
-      it 'does not call Gitlab::MergeRequests::LockedSet.add' do
-        expect(Gitlab::MergeRequests::LockedSet).not_to receive(:add)
-
-        subject.add_to_locked_set
-      end
-    end
   end
 
   describe '#remove_from_locked_set' do
@@ -8489,18 +8692,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         .with(subject.id)
 
       subject.remove_from_locked_set
-    end
-
-    context 'when unstick_locked_merge_requests_redis is disabled' do
-      before do
-        stub_feature_flags(unstick_locked_merge_requests_redis: false)
-      end
-
-      it 'does not call Gitlab::MergeRequests::LockedSet.remove' do
-        expect(Gitlab::MergeRequests::LockedSet).not_to receive(:remove)
-
-        subject.remove_from_locked_set
-      end
     end
   end
 
@@ -8529,6 +8720,41 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .and_return(['compare diff'])
 
         expect(merge_request.first_diffs_slice(limit)).to eq(['compare diff'])
+      end
+    end
+
+    context 'when only_context_commits is true' do
+      let(:context_commits_diff) { instance_double(ContextCommitsDiff) }
+      let(:diff_files) { [instance_double(Gitlab::Diff::File), instance_double(Gitlab::Diff::File)] }
+      let(:diffs) { instance_double(Gitlab::Diff::FileCollection::Compare, diff_files: diff_files) }
+
+      before do
+        allow(merge_request).to receive(:context_commits_diff).and_return(context_commits_diff)
+      end
+
+      context 'when context_commits_diff is not empty' do
+        before do
+          allow(context_commits_diff).to receive(:empty?).and_return(false)
+          allow(context_commits_diff).to receive(:diffs).and_return(diffs)
+        end
+
+        it 'returns diff files from context_commits_diff' do
+          result = merge_request.first_diffs_slice(limit, only_context_commits: true)
+
+          expect(result).to eq(diff_files)
+        end
+      end
+
+      context 'when context_commits_diff is empty' do
+        before do
+          allow(context_commits_diff).to receive(:empty?).and_return(true)
+        end
+
+        it 'returns diff files from base diff' do
+          result = merge_request.first_diffs_slice(limit, only_context_commits: true)
+
+          expect(result.count).to eq(limit)
+        end
       end
     end
   end

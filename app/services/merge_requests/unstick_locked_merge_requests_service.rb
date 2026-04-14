@@ -25,11 +25,6 @@ module MergeRequests
       MergeRequest.id_in(ids)
     end
 
-    # The logic in this method is the same as in `StuckMergeJobsWorker`. This service
-    # is intended to replace the logic in that worker once feature flag is fully rolled out.
-    #
-    # Any changes that needs to be applied here should be applied to the worker as well.
-    #
     # rubocop: disable CodeReuse/ActiveRecord -- TODO: Introduce new AR scopes for queries used in this method
     def attempt_to_unstick_mrs_with_merge_jid(merge_requests)
       return if merge_requests.empty?
@@ -61,7 +56,6 @@ module MergeRequests
       merge_request_ids_to_mark_as_merged = []
 
       merge_requests.each do |merge_request|
-        next unless Feature.enabled?(:unstick_locked_mrs_without_merge_jid, merge_request.project)
         next unless should_unstick?(merge_request)
 
         # Reset merge request record to ensure we get updated record state before
@@ -71,7 +65,7 @@ module MergeRequests
 
         # Set MR to be marked as merged if one of the following is true:
         # - it already has merged_commit_sha in the DB
-        # - it alreeady has merge_commit_sha in the DB
+        # - it already has merge_commit_sha in the DB
         # - it has no diffs where source and target branches are compared
         #
         # This means the MR changes were already merged.
@@ -121,19 +115,19 @@ module MergeRequests
     def unlock_merge_requests(merge_requests)
       errors = Hash.new { |h, k| h[k] = [] }
 
-      merge_requests.each do |mr|
-        mjid = mr.merge_jid
+      merge_requests.each do |merge_request|
+        mjid = merge_request.merge_jid
 
-        if mr.unlock_mr
-          mr.remove_from_locked_set
+        if merge_request.unlock_mr
+          merge_request.remove_from_locked_set
           next
         end
 
-        mr.errors.full_messages.each do |msg|
+        merge_request.errors.full_messages.each do |msg|
           errors[msg] << if mjid.present?
-                           ["#{mjid}|#{mr.id}"]
+                           ["#{mjid}|#{merge_request.id}"]
                          else
-                           [mr.id]
+                           [merge_request.id]
                          end
         end
       end

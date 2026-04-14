@@ -15,9 +15,9 @@ title: LDAP group links
 
 Use this API to manage LDAP group links. For more information, see [manage group memberships with LDAP](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
-## List LDAP group links
+## List all LDAP group links
 
-Lists LDAP group links.
+Lists all LDAP group links.
 
 ```plaintext
 GET /groups/:id/ldap_group_links
@@ -69,7 +69,7 @@ Supported attributes:
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `group_access` | integer   | yes      | The default access level for members of the LDAP group. Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner). |
+| `group_access` | integer   | yes      | The default access level for members of the LDAP group. Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), `50` (Owner). |
 | `provider` | string        | yes      | LDAP provider ID for the LDAP group link. |
 | `cn`      | string         | yes/no   | The CN of an LDAP group. Provide either a `cn` or a `filter`, but not both. |
 | `filter`  | string         | yes/no   | The LDAP filter for the group. Provide either a `cn` or a `filter`, but not both. |

@@ -2,6 +2,7 @@ package healthcheck
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -245,4 +246,66 @@ func TestServer_GracefulShutdownIntegration(t *testing.T) {
 
 	elapsed := time.Since(start)
 	assert.GreaterOrEqual(t, elapsed, gracefulDelay)
+}
+
+// mockNetTimeoutError is a net.Error that reports Timeout() == true.
+type mockNetTimeoutError struct{}
+
+func (e *mockNetTimeoutError) Error() string   { return "mock net timeout" }
+func (e *mockNetTimeoutError) Timeout() bool   { return true }
+func (e *mockNetTimeoutError) Temporary() bool { return true }
+
+// stubChecker is a minimal HealthChecker for unit tests.
+type stubChecker struct {
+	name    string
+	healthy bool
+	err     error
+}
+
+func (s *stubChecker) Name() string { return s.name }
+func (s *stubChecker) Check(_ context.Context) CheckResult {
+	return CheckResult{Name: s.name, Healthy: s.healthy, Error: s.err}
+}
+
+func TestIsTimeoutError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      error
+		expected bool
+	}{
+		{"nil error", nil, false},
+		{"deadline exceeded", context.DeadlineExceeded, true},
+		{"net timeout", &mockNetTimeoutError{}, true},
+		// context.Canceled must NOT be treated as a timeout: it signals
+		// cancellation (e.g. server shutdown), not an overloaded upstream.
+		{"context canceled", context.Canceled, false},
+		{"plain error", errors.New("some other error"), false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, isTimeoutError(tc.err))
+		})
+	}
+}
+
+func TestLastFailureWasTimeout_CanceledIsNotTimeout(t *testing.T) {
+	cfg := createTestHealthCheckConfig()
+	cfg.MaxConsecutiveFailures = 1
+	logger := createTestLogger()
+
+	server := NewServer(cfg, logger, prometheus.NewRegistry())
+
+	// Simulate a checker that returns context.Canceled (e.g. parent context
+	// was canceled during shutdown) — this must NOT be flagged as a timeout.
+	server.AddReadinessChecker(&stubChecker{
+		name:    "test",
+		healthy: false,
+		err:     context.Canceled,
+	})
+
+	server.performReadinessChecks(context.Background())
+
+	assert.False(t, server.LastFailureWasTimeout(),
+		"context.Canceled should not be treated as a timeout")
 }

@@ -9,11 +9,14 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
   let_it_be(:subproject) { create(:project, group: subgroup) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:organization) { create(:organization) }
 
   let(:subject) { helper.masked_page_url(group: group, project: project) }
 
   before do
     stub_feature_flags(mask_page_urls: true)
+    allow(::Current).to receive(:organization_assigned).and_return(true)
+    stub_current_organization(organization)
   end
 
   shared_examples 'masked url' do
@@ -259,6 +262,87 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
 
       it_behaves_like 'masked url'
     end
+
+    context 'when organization path is present' do
+      let(:masked_url) { "http://localhost/o/organization#{organization.id}/-/organizations/organization#{organization.id}" }
+      let(:request) do
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'organizations/organizations',
+            action: 'show',
+            organization_path: 'my-cool-org'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
+
+    context 'when organization is nil and organization_path is in path' do
+      let(:masked_url) { "http://localhost/o/organization/-/organizations/organization" }
+      let(:request) do
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'organizations/organizations',
+            action: 'show',
+            organization_path: 'my-cool-org'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
+      end
+
+      before do
+        stub_current_organization(nil)
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
+
+    context 'with organizations controller and organization_path' do
+      let(:request) do
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'organizations/organizations',
+            action: 'show',
+            organization_path: organization.path
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it 'masks organization id in path' do
+        expect(subject).to eq("http://localhost/o/organization#{organization.id}/-/organizations/organization#{organization.id}")
+      end
+
+      context 'when organization is nil' do
+        before do
+          stub_current_organization(nil)
+        end
+
+        it 'masks without id' do
+          expect(subject).to eq('http://localhost/o/organization/-/organizations/organization')
+        end
+      end
+    end
   end
 
   describe 'when url has no params to mask' do
@@ -426,6 +510,20 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
         expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
       end
     end
+
+    context 'with controller for organizations' do
+      let(:original_url) { "http://localhost/-/organizations/#{organization.path}" }
+      let(:masked_url) { 'http://localhost/o/organization/-/organizations/organization' }
+
+      it 'masks organization path in the URL for organizations controller' do
+        allow(Rails.application.routes).to receive(:recognize_path)
+          .with(original_url)
+          .and_return({ controller: 'organizations/organizations', action: 'show',
+organization_path: organization.path })
+
+        expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+      end
+    end
   end
 
   describe 'masked_query_params' do
@@ -459,6 +557,41 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
         uri = URI.parse('http://localhost?scope=all&state=opened&user_id=123')
         result = helper.masked_query_params(uri)
         expect(result).to eq({ 'scope' => ['all'], 'state' => ['opened'], 'user_id' => ['masked_user_id'] })
+      end
+    end
+  end
+
+  describe 'mask_additional_params' do
+    let(:helper) { Class.new { include Routing::PseudonymizationHelper }.new }
+
+    context 'when there are additional params to mask' do
+      it 'masks the additional params' do
+        params = { project_id: '123', group_id: '456', organization_path: 'my-cool-org' }
+        helper.mask_additional_params(params)
+        expect(params).to eq({ project_id: 'project', group_id: 'group', organization_path: 'organization' })
+      end
+    end
+
+    context 'when there are no additional params to mask' do
+      it 'does not mask any params' do
+        params = { id: '123', action: 'show' }
+        helper.mask_additional_params(params)
+        expect(params).to eq({ id: '123', action: 'show' })
+      end
+    end
+  end
+
+  describe 'organization' do
+    let(:helper) { Class.new { include Routing::PseudonymizationHelper }.new }
+
+    context 'when organization has not been assigned' do
+      before do
+        allow(::Current).to receive(:organization_assigned).and_return(false)
+      end
+
+      it 'returns nil without raising errors' do
+        expect(helper.get_organization).to be_nil
+        expect(::Gitlab::Organizations::FallbackOrganizationTracker).not_to receive(:trigger)
       end
     end
   end

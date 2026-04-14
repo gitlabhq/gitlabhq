@@ -2,45 +2,54 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Group member cannot request access to their group project',
+RSpec.describe 'Projects > Members > Group member cannot request access to their group project', :js,
   feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:project, :repository, namespace: group) }
+
+  let(:more_actions_dropdown) do
+    find_by_testid('projects-list-item-actions')
+  end
 
   it 'owner does not see the request access button' do
     group.add_owner(user)
     login_and_visit_project_page(user)
 
-    expect(page).not_to have_content 'Request Access'
+    more_actions_dropdown.click
+    expect(page).not_to have_content 'Request access'
   end
 
   it 'maintainer does not see the request access button' do
     group.add_maintainer(user)
     login_and_visit_project_page(user)
 
-    expect(page).not_to have_content 'Request Access'
+    more_actions_dropdown.click
+    expect(page).not_to have_content 'Request access'
   end
 
   it 'developer does not see the request access button' do
     group.add_developer(user)
     login_and_visit_project_page(user)
 
-    expect(page).not_to have_content 'Request Access'
+    more_actions_dropdown.click
+    expect(page).not_to have_content 'Request access'
   end
 
   it 'reporter does not see the request access button' do
     group.add_reporter(user)
     login_and_visit_project_page(user)
 
-    expect(page).not_to have_content 'Request Access'
+    more_actions_dropdown.click
+    expect(page).not_to have_content 'Request access'
   end
 
   it 'guest does not see the request access button' do
     group.add_guest(user)
     login_and_visit_project_page(user)
 
-    expect(page).not_to have_content 'Request Access'
+    more_actions_dropdown.click
+    expect(page).not_to have_content 'Request access'
   end
 
   def login_and_visit_project_page(user)

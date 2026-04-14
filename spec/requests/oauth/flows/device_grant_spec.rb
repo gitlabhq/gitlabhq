@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :system_access do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:application) do
-    create(:oauth_application, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', confidential: false, scopes: 'read_user')
+    create(:oauth_application, :with_device_code_enabled, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+      confidential: false, scopes: 'read_user')
   end
 
   let_it_be(:user) { create(:user, :with_namespace, organizations: [organization]) }
@@ -105,6 +106,18 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', feature_category: :sy
   describe 'Token Request with Device Code' do
     let(:device_code_response) { fetch_device_code }
     let(:device_code) { device_code_response['device_code'] }
+
+    context 'when device_code_enabled is false' do
+      before do
+        application.reload.update!(device_code_enabled: false)
+      end
+
+      it 'returns an error' do
+        response_body = fetch_device_code
+
+        expect(response_body['error']).to eq('access_denied')
+      end
+    end
 
     context 'with valid device code' do
       it 'returns access token' do

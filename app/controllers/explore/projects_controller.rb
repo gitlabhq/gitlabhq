@@ -14,27 +14,20 @@ class Explore::ProjectsController < Explore::ApplicationController
   before_action :set_sorting
   before_action :show_alert_if_search_is_disabled, only: [:index]
 
-  before_action only: [:index, :trending, :starred] do
+  before_action only: [:index, :trending] do
     push_frontend_feature_flag(:retire_trending_projects, current_user)
   end
 
   feature_category :groups_and_projects
   # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
   # and https://gitlab.com/gitlab-org/gitlab/-/issues/358945
-  urgency :low, [:index, :topics, :trending, :starred, :topic]
+  urgency :low, [:index, :topics, :trending, :topic]
 
   def index; end
 
   def trending
     return render :index unless Feature.enabled?(:retire_trending_projects, current_user)
 
-    respond_to do |format|
-      format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
-      format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
-    end
-  end
-
-  def starred
     respond_to do |format|
       format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
       format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }

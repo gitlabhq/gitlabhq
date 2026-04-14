@@ -10,9 +10,11 @@ import DesignDescription from '~/work_items/components/design_management/design_
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { mockTracking } from 'helpers/tracking_helper';
 import { UPDATE_DESCRIPTION_ERROR } from '~/work_items/components/design_management/constants';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { mockUpdateDesignDescriptionResponse, designDescriptionFactory } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 Vue.use(VueApollo);
 
@@ -159,6 +161,19 @@ describe('DesignDescription', () => {
       await findCancelDescriptionButton().vm.$emit('click');
 
       expect(findDesignContent().text()).toEqual('Description test');
+    });
+
+    it('does not open a second confirmation dialog when cancel is triggered multiple times rapidly', async () => {
+      createComponent({ descriptionText: 'updated description' });
+
+      await findEditDescriptionButton().vm.$emit('click');
+
+      findCancelDescriptionButton().vm.$emit('click');
+      findCancelDescriptionButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(confirmAction).toHaveBeenCalledTimes(1);
     });
 
     it('triggers mutation when form is submitted and hides the form', async () => {

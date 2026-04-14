@@ -558,3 +558,32 @@ This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config
 While the `script`, `rules`, and `stages` keywords support using multiple reference tags, other keywords expecting an array do not.
 You can [use nesting to work around this limitation](https://gitlab.com/gitlab-org/gitlab/-/issues/439828#note_1918858137),
 or use [YAML anchors](yaml/yaml_optimization.md#anchors) instead.
+
+### Error: `jobs:<job-name> config should contain either a trigger or a needs:pipeline.`
+
+This error can happen when a job in your `.gitlab-ci.yml` uses the `needs` keyword,
+but does not use the `script:` or `trigger:` keywords.
+
+Every job must use either the `script` or the `trigger` keywords, so add the appropriate
+keyword to any jobs not using either.
+
+### Error: `config contains unknown keys: <key-name>`
+
+You might get an error similar to `<keyword> config contains unknown keys: <key-name>`.
+
+This error message can be caused by several issues:
+
+- A typo in a keyword, for example `imag` (invalid) instead of `image` (valid).
+- Incorrect spacing or indentation for a keyword or job.
+
+For example:
+
+```yaml
+test-job:
+  artifacts:
+    path:        # This is a typo, it should be `paths`
+      - test
+    image: test  # This indentation is incorrect, it should be at the same level as `script`.
+  script:
+    - echo
+```

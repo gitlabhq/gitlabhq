@@ -47,7 +47,7 @@ on where to fetch (or push) the large file.
 Your Git repository remains smaller, which helps you adhere to repository size limits.
 For more information, see repository size limits
 [for GitLab Self-Managed](../../../administration/settings/account_and_limit_settings.md#repository-size-limit) and
-[for GitLab SaaS](../../../user/gitlab_com/_index.md#account-and-limit-settings).
+[for GitLab.com](../../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Understand how Git LFS works with forks
 
@@ -69,7 +69,7 @@ with the upstream project after merge.
 
 {{< /details >}}
 
-GitLab enables Git LFS by default for both GitLab Self-Managed and GitLab SaaS.
+GitLab enables Git LFS by default for both GitLab Self-Managed and GitLab.com.
 It offers both server settings and project-specific settings.
 
 - To configure Git LFS on your instance, such as setting up remote object storage, see
@@ -85,7 +85,7 @@ It offers both server settings and project-specific settings.
 
 ## Enable or disable Git LFS for a project
 
-Git LFS is enabled by default for both GitLab Self-Managed and GitLab SaaS.
+Git LFS is enabled by default for both GitLab Self-Managed and GitLab.com.
 
 Prerequisites:
 

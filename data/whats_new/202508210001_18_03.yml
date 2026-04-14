@@ -17,7 +17,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
   image_url: https://img.youtube.com/vi/Pdjf5HxQUBQ/hqdefault.jpg
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Embedded views (powered by GLQL)
   description: |
@@ -35,27 +35,27 @@
   documentation_link: https://docs.gitlab.com/user/glql/#embedded-views
   image_url: https://img.youtube.com/vi/DG_DL5r2GCM/hqdefault.jpg
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Migration by direct transfer
   description: |
-    Migration by direct transfer is now generally available. To migrate GitLab groups and projects between GitLab instances by direct transfer, you can use the GitLab UI or the [REST API](https://docs.gitlab.com/ee/api/bulk_imports.html).
+    Migration by direct transfer is now generally available. To migrate GitLab groups and projects between GitLab instances by direct transfer, you can use the GitLab UI or the [REST API](https://docs.gitlab.com/api/bulk_imports/).
 
-    Compared to [migration by uploading an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html#migrate-projects-by-uploading-an-export-file), direct transfer:
+    Compared to [migration by uploading an export file](https://docs.gitlab.com/user/project/settings/import_export/#migrate-projects-by-uploading-an-export-file), direct transfer:
 
     - Works more reliably with large projects.
     - Supports migrations with a larger version gap between the source and destination instances.
     - Offers better insights into the migration process and results.
 
-    On GitLab.com, migration by direct transfer is enabled by default. On GitLab Self-Managed and GitLab Dedicated, an administrator must [enable the feature](https://docs.gitlab.com/ee/administration/settings/import_and_export_settings.html#enable-migration-of-groups-and-projects-by-direct-transfer).
+    On GitLab.com, migration by direct transfer is enabled by default. On GitLab Self-Managed and GitLab Dedicated, an administrator must [enable the feature](https://docs.gitlab.com/administration/settings/import_and_export_settings/#enable-migration-of-groups-and-projects-by-direct-transfer).
   stage: create
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/import/index.html
+  documentation_link: https://docs.gitlab.com/user/group/import/
   image_url: https://about.gitlab.com/images/18_3/migration_history.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Fine-grained permissions for CI/CD job tokens
   description: |
@@ -71,7 +71,7 @@
   documentation_link: https://docs.gitlab.com/ci/jobs/fine_grained_permissions/
   image_url: https://about.gitlab.com/images/18_3/sscs_authz_fine_grained_job_tokens.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Code Review available on GitLab Duo Self-Hosted (Beta)
   description: |
@@ -87,7 +87,7 @@
   documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#gitlab-duo-in-merge-requests
   image_url: https://about.gitlab.com/images/18_3/Self_Hosted_Code_Review-min.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Customize instructions for GitLab Duo Code Review
   description: |
@@ -109,7 +109,7 @@
   documentation_link: https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#customize-instructions-for-gitlab-duo-code-review
   image_url: https://about.gitlab.com/images/18_3/DCR-Instructions.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Bring your own models to GitLab Duo Self-Hosted (Beta)
   description: |
@@ -123,7 +123,7 @@
   documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/#bring-your-own-compatible-model
   image_url: https://about.gitlab.com/images/18_3/SH_compatible_models.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Hybrid model selection on GitLab Duo Self-Hosted (Beta)
   description: |
@@ -137,7 +137,7 @@
   documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#decide-on-your-configuration-type
   image_url: https://about.gitlab.com/images/18_3/SH_Hybrid.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Surfacing violations of compliance framework controls (Beta)
   description: |
@@ -158,7 +158,7 @@
   documentation_link: https://docs.gitlab.com/user/compliance/compliance_center/compliance_violations_report/
   image_url: https://about.gitlab.com/images/18_3/compliance_link_violations_to_framework_controls.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: New Web IDE source control operations
   description: |
@@ -177,7 +177,7 @@
   documentation_link: https://docs.gitlab.com/user/project/web_ide/#use-source-control
   image_url: https://about.gitlab.com/images/18_3/webide-source-control.gif
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: AWS Secrets Manager support for GitLab CI/CD
   description: |
@@ -191,7 +191,7 @@
   documentation_link: https://docs.gitlab.com/ci/secrets/aws_secrets_manager/
   image_url: https://about.gitlab.com/images/18_3/AWS_image.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"
 
 - name: Custom admin role now in GA
   description: |
@@ -205,4 +205,4 @@
   documentation_link: https://docs.gitlab.com/user/custom_roles/
   image_url: https://about.gitlab.com/images/18_3/sscs_authz_custom_admin_role.png
   published_at: 2025-08-21
-  release: 18.3
+  release: "18.3"

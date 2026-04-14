@@ -12,6 +12,9 @@ module Clusters
       DEFAULT_REGION = 'us-east-1'
 
       belongs_to :cluster, inverse_of: :provider_aws, class_name: 'Clusters::Cluster'
+      belongs_to :organization, class_name: 'Organizations::Organization', optional: true
+      belongs_to :group, optional: true
+      belongs_to :project, optional: true
 
       attribute :region, default: DEFAULT_REGION
       attribute :num_nodes, default: 3

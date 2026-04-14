@@ -3,4 +3,6 @@
 - add_page_specific_style 'page_bundles/observability'
 
 .observability-container
-  #js-observability{ data: @data.to_h.merge(polling_endpoint: url_for(format: :json, only_path: true)) }
+  - data = @data.to_h.merge(polling_endpoint: url_for(format: :json, only_path: true))
+  - data[:query_params] = data[:query_params].to_json
+  #js-observability{ data: data }

@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "GitLab Duo Agent Platform configuration schema",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "description": "Default Docker image for the agent"
+    },
+    "setup_script": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      ],
+      "description": "Script commands to run during setup"
+    },
+    "network_policy": {
+      "type": "object",
+      "properties": {
+        "allowed_domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of allowed domains for network access"
+        },
+        "denied_domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of denied domains for network access"
+        },
+        "include_recommended_allowed": {
+          "type": "boolean",
+          "description": "Include recommended allowed domains"
+        },
+        "allow_all_unix_sockets": {
+          "type": "boolean",
+          "description": "Allow all Unix sockets"
+        }
+      },
+      "additionalProperties": false
+    },
+    "cache": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            }
+          ],
+          "description": "Paths to cache"
+        },
+        "key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "object",
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "prefix": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "description": "Cache key configuration"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

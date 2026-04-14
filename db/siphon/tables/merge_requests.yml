@@ -1,0 +1,16 @@
+---
+table: merge_requests
+database: main
+ignored_columns:
+  - title_html
+  - description_html
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_requests
+    dedup_by_table: merge_requests
+    dedup_by:
+      - id
+    reconcile:
+      column: traversal_path
+      expression_key_columns:
+        - target_project_id

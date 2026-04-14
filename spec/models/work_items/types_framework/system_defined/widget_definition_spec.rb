@@ -66,7 +66,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
     let(:incident_type) { build(:work_item_system_defined_type, :incident) }
 
     it 'generates widget definitions for all work item types' do
-      work_item_type_ids = WorkItems::TypesFramework::SystemDefined::Type.all.map(&:id)
+      work_item_type_ids = ::WorkItems::TypesFramework::Provider.new.all.map(&:id)
       definition_type_ids = fixed_items.pluck(:work_item_type_id).uniq
 
       expect(definition_type_ids).to match_array(work_item_type_ids)
@@ -91,15 +91,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
       expect(task_widgets).to all(include(work_item_type_id: task_type.id))
     end
 
-    it 'sets widget_options from configuration class .widget_options method' do
-      definition = fixed_items.find do |item|
-        item[:work_item_type_id] == issue_type.id && item[:widget_type] == 'weight'
-      end
-
-      expect(definition[:widget_options])
-        .to eq(WorkItems::TypesFramework::SystemDefined::Definitions::Issue.widget_options[:weight])
-    end
-
     it 'sets name as humanized version of widget_type' do
       sample_definition = fixed_items.first
 
@@ -108,15 +99,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::WidgetDefinition, featu
     end
 
     context 'with widget_options handling' do
-      it 'includes widget_options when defined in configuration' do
-        # weight widget, have a widget options
-        definition = fixed_items.find do |item|
-          item[:work_item_type_id] == issue_type.id && item[:widget_type] == 'weight'
-        end
-
-        expect(definition[:widget_options]).to be_a(Hash)
-      end
-
       it 'excludes widget_options key when not defined (due to compact)' do
         # description widget, does not have a widget options
         definition = fixed_items.find do |item|

@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { checkRepositoryConnection } from '~/projects/new_v2/components/utils';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('checkRepositoryConnection', () => {
   let mockAxios;
@@ -29,13 +29,13 @@ describe('checkRepositoryConnection', () => {
         url: 'not a valid url',
       });
 
-      expect(result).toEqual({ isValid: false, error: null });
+      expect(result).toEqual({ isValid: false, success: false, message: null });
       expect(mockAxios.history.post).toHaveLength(0);
     });
   });
 
   describe('when URL is reasonably valid', () => {
-    describe('when POST is successful', () => {
+    describe('when connection is successful', () => {
       beforeEach(() => {
         mockPost(HTTP_STATUS_OK, { success: true, message: 'Connection successful' });
       });
@@ -53,23 +53,23 @@ describe('checkRepositoryConnection', () => {
       });
     });
 
-    describe('when POST fails', () => {
+    describe('when connection fails', () => {
       it('returns isValid: true, success: false, and the response error message', async () => {
-        mockPost(HTTP_STATUS_INTERNAL_SERVER_ERROR, { message: 'Invalid credentials' });
+        mockPost(HTTP_STATUS_OK, { success: false, message: 'Invalid credentials' });
 
         const result = await checkRepositoryConnection(mockValidatePath, mockCredentials);
 
         expect(result).toEqual({ isValid: true, success: false, message: 'Invalid credentials' });
       });
+    });
 
-      it('when response body has no message, falls back to axios error message', async () => {
-        mockPost(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+    describe('when connection throws network error', () => {
+      it('returns network error message', async () => {
+        mockAxios.onPost(mockValidatePath).networkError();
 
         const result = await checkRepositoryConnection(mockValidatePath, mockCredentials);
 
-        expect(result.isValid).toBe(true);
-        expect(result.success).toBe(false);
-        expect(result.message).toBeDefined();
+        expect(result).toEqual({ isValid: true, success: false, message: 'Network Error' });
       });
     });
   });

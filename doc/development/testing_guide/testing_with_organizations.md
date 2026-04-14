@@ -12,18 +12,7 @@ That means that tests should also be contained in one organization.
 And created data should share the same organization.
 But we want to avoid developers having to manually ensure data to be part of the same organization.
 
-The factories for `User` and `Project` will create a `common_organization` behind the scenes, that will be used for both object instances:
-
-```ruby
-let(:user) { create(:user) }
-let(:project) { create(:project) }
-
-# this is true:
-user.organization == project.organization
-```
-
-If an ActiveRecord model needs an organization, it is best to use the common organization in the factory as
-a default value for `organization`:
+For this purpose, we introduced the `common_organization`. You can use it as a default value for the `organization` attribute:
 
 ```ruby
 FactoryBot.define do
@@ -32,6 +21,24 @@ FactoryBot.define do
   end
 end
 ```
+
+Factories that use it share the same organization:
+
+```ruby
+context 'when factories use common_organization as default' do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:sbom_component) { create(:sbom_component) }
+
+  it 'is the same organization' do
+    expect(sbom_component.organization).to eq(project.organization)
+    expect(user.organization).to eq(project.organization)
+  end
+end
+```
+
+Most factories that have a relation to `organizations` table are already using this. It should be added to
+factories that miss it.
 
 ## Creating users
 
@@ -61,16 +68,16 @@ let(:user3) { create(:user, organizations: [org1, org2])}
 If you need a `Current.organization` for tests, you can use the [`with_current_organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_contexts/current_organization_context.rb) shared context.
 This will create a `current_organization` method that will be returned by `Gitlab::Current::Organization` class
 
+This shared context is always included for specs that have type `graphql` or `controller`.
+
 ```ruby
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ProjectsController, :with_current_organization do
+RSpec.describe MyClass, :with_current_organization do
   let(:project) { create(:project) }
 
   it 'sets Current.organization' do
-    get :index
-
     expect(Current.organization).to eq(project.organization)
   end
 end

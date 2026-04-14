@@ -19,7 +19,7 @@ title: Epic Links API (deprecated)
 > Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
 > This change is a breaking change.
 
-Manages parent-child [epic relationships](../user/group/epics/manage_epics.md#multi-level-child-epics).
+Manages parent-child [epic relationships](../user/work_items/child_items.md#work-with-multi-level-hierarchies).
 
 Every API call to `epic_links` must be authenticated.
 

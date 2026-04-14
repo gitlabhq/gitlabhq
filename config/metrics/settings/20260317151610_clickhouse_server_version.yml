@@ -1,0 +1,19 @@
+---
+key_path: settings.clickhouse_server_version
+description: ClickHouse server version
+product_group: database_frameworks
+product_categories:
+- database
+value_type: string
+status: active
+milestone: "18.11"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227830'
+time_frame: none
+data_source: system
+instrumentation_class: ClickHouseServerVersionMetric
+data_category: optional
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

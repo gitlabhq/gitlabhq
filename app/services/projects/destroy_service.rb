@@ -83,10 +83,6 @@ module Projects
       end
     end
 
-    def reschedule_deletion
-      project.reschedule_deletion!(transition_user: current_user)
-    end
-
     def all_pipelines
       # We don't use `Project#all_pipelines` to skip the `build_enabled?` setting in order to get all pipelines.
       ::Ci::Pipeline.for_project(project.id)
@@ -172,12 +168,7 @@ module Projects
 
         Project.transaction do
           project.update!(pending_delete: false, visibility_level: visibility_level)
-          reschedule_deletion
-
-          # Set the error message after reschedule_deletion, because the state machine
-          # callback update_state_metadata sets deletion_error to nil on transitions.
-          project.deletion_error = message
-          project.project_namespace.namespace_details.save!
+          project.reschedule_deletion!(transition_user: current_user, deletion_error: message)
         end
       end
 

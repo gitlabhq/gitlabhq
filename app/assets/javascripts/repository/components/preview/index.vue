@@ -59,7 +59,7 @@ export default {
 
 <template>
   <article class="file-holder limited-width-container readme-holder">
-    <div class="js-file-title file-title-flex-parent">
+    <div class="js-file-title file-title-flex-parent gl-px-4 gl-py-3">
       <div class="file-header-content">
         <gl-icon name="doc-text" />
         <gl-link :href="blob.webPath">

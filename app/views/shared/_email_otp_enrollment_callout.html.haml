@@ -10,5 +10,8 @@
   = c.with_body do
     = safe_format(s_("EmailOTP|On %{date}, GitLab will begin requiring email one-time passcodes for your account. To avoid being locked out, make sure you can access your primary email address (%{strong_open}%{email}%{strong_close}) and have verified any secondary email addresses before this date."), date: l(current_user.email_otp_required_after.to_date, format: :long), email: current_user.email, **tag_pair(tag.strong, :strong_open, :strong_close))
   = c.with_actions do
-    = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_emails_path, button_options: { class: 'deferred-link' }) do
-      = s_('EmailOTP|Review email addresses')
+    .gl-flex.gl-gap-3
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_emails_path, button_options: { class: 'deferred-link' }) do
+        = s_('EmailOTP|Review email addresses')
+      = render Pajamas::ButtonComponent.new(variant: :secondary, href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md', anchor: 'email-otp-troubleshooting')) do
+        = _('Learn more')

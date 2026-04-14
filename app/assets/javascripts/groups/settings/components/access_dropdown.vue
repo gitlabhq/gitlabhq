@@ -6,7 +6,7 @@ import {
   GlDropdownDivider,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash';
+import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { __, s__, n__ } from '~/locale';
 import { getSubGroups, getUsers } from '../api/access_dropdown_api';

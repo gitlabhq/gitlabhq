@@ -32,7 +32,7 @@ Try asking Chat a question about a specific issue or merge request, or about Git
 
 For more information, see:
 
-- [GitLab Duo Chat (non-agentic)](../gitlab_duo_chat/_index.md).
+- [GitLab Duo Non-Agentic Chat](../gitlab_duo_chat/_index.md).
 
 ## Step 3: Try other GitLab Duo features
 
@@ -77,7 +77,7 @@ For more information, see:
 
 - [Supported extensions and languages](../project/repository/code_suggestions/supported_extensions.md).
 - [Turn on Code Suggestions](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
-- [Troubleshoot GitLab for VS Code extension](../../editor_extensions/visual_studio_code/troubleshooting.md).
-- [Troubleshoot GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
+- [Troubleshoot GitLab for VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
+- [Troubleshoot the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
 - [Troubleshoot GitLab for Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
-- [Troubleshoot GitLab plugin for Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).
+- [Troubleshoot the GitLab plugin for Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).

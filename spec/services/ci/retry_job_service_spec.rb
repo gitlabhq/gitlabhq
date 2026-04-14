@@ -218,7 +218,8 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       context 'when the strategy is strategy:depend' do
         it 'marks the source bridge as pending' do
-          bridge = create(:ci_bridge, :strategy_depend, pipeline: parent_pipeline, status: 'success')
+          bridge = create(:ci_bridge, :strategy_depend, pipeline: parent_pipeline, status: 'success',
+            downstream: project)
           create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
 
           service.execute(job)
@@ -229,7 +230,8 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       context 'when the strategy is strategy:mirror' do
         it 'marks the source bridge as pending' do
-          bridge = create(:ci_bridge, :strategy_mirror, pipeline: parent_pipeline, status: 'success')
+          bridge = create(:ci_bridge, :strategy_mirror, pipeline: parent_pipeline, status: 'success',
+            downstream: project)
           create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
 
           service.execute(job)

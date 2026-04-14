@@ -2,9 +2,8 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Use comments to discuss work, mention users, and suggest changes.
 title: Comments and threads
-description: Mentions, locked discussions, internal notes, and thread resolution.
+description: Use comments and threads to discuss and manage work item conversations.
 ---
 
 {{< details >}}
@@ -84,8 +83,7 @@ results in plain text instead of mentioning all users.
 When you disable this feature, existing `@all` mentions in the Markdown texts are unchanged,
 and remain as links. Only future `@all` mentions appear as plain text.
 
-Notifications and mentions can be disabled in
-[a group's settings](../group/manage.md#disable-email-notifications).
+You can disable notifications and mentions in [group settings](../group/manage.md#disable-email-notifications).
 
 ### Mention a group in an issue or merge request
 
@@ -102,7 +100,7 @@ added to their to-do list.
 
 GitLab creates a to-do item for all the group and subgroup members.
 
-For more information on mentioning subgroups, see [Mention subgroups](../group/subgroups/_index.md#mention-subgroups).
+For more information, see [mention subgroups](../group/subgroups/_index.md#mention-subgroups).
 
 ## Add a comment to a merge request diff
 
@@ -174,12 +172,9 @@ To edit a comment:
 {{< history >}}
 
 - Sending notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224837) in GitLab 18.10 [with a flag](../../administration/feature_flags/_index.md) named `email_on_added_mentions`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/591869) in GitLab 18.11. Feature flag `email_on_added_mentions` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 By default, when you mention a user, GitLab [creates a to-do item](../todos.md#actions-that-create-to-do-items)
 for them, and sends them a [notification email](../profile/notifications.md).
@@ -187,7 +182,7 @@ for them, and sends them a [notification email](../profile/notifications.md).
 If you edit an existing comment to add a user mention that wasn't there before, GitLab:
 
 - Creates a to-do item for the mentioned user.
-- When the `email_on_added_mentions` feature flag is enabled, sends a notification email to the mentioned user.
+- Sends a notification email to the mentioned user.
 
 ## Prevent comments by locking the discussion
 

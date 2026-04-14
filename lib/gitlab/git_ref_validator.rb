@@ -28,48 +28,10 @@ module Gitlab
     def validate_merge_request_branch(ref_name)
       return false if ref_name.to_s.empty?
 
-      if Feature.enabled?(:git_ref_validator_custom_validation, Feature.current_request)
-        custom_valid_ref_name?(ref_name)
-      else
-        legacy_validate_merge_request_branch(ref_name)
-      end
+      valid_ref_name?(ref_name)
     end
 
     private
-
-    def valid_ref_name?(ref_name)
-      if Feature.enabled?(:git_ref_validator_custom_validation, Feature.current_request)
-        custom_valid_ref_name?(ref_name)
-      else
-        legacy_valid_ref_name?(ref_name)
-      end
-    end
-
-    # Legacy validation using Rugged for `validate` method
-    # Has known bugs: allows DEL char (0x7F) and single '@'
-    def legacy_valid_ref_name?(ref_name)
-      return false if ref_name.start_with?('-')
-
-      Rugged::Reference.valid_name?("refs/heads/#{ref_name}")
-    rescue ArgumentError
-      false
-    end
-
-    # Legacy validation using Rugged for `validate_merge_request_branch` method
-    # Preserves original behavior: refs starting with refs/heads/ or refs/remotes/ are used as-is
-    def legacy_validate_merge_request_branch(ref_name)
-      return false if ref_name.start_with?('-')
-
-      expanded_name = if ref_name.start_with?(*EXPANDED_PREFIXES)
-                        ref_name
-                      else
-                        "refs/heads/#{ref_name}"
-                      end
-
-      Rugged::Reference.valid_name?(expanded_name)
-    rescue ArgumentError
-      false
-    end
 
     # Custom validation according to git-check-ref-format rules
     # See: https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
@@ -81,7 +43,7 @@ module Gitlab
     # Therefore:
     # - Rule 2 (must contain '/') doesn't apply - enforced at qualified ref level
     # - Rule 9 (cannot be single '@') doesn't apply - "refs/heads/@" is not a single '@'
-    def custom_valid_ref_name?(ref_name)
+    def valid_ref_name?(ref_name)
       # Convert to binary encoding to work with raw bytes
       bytes = ref_name.dup.force_encoding(Encoding::ASCII_8BIT)
 

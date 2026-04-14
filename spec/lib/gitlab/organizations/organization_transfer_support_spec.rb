@@ -31,8 +31,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       bulk_import_entities
       bulk_import_failures
       bulk_import_trackers
-      ci_runner_taggings_group_type
-      ci_runner_taggings_project_type
       clusters
       custom_dashboard_search_data
       custom_dashboards
@@ -40,9 +38,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       dependency_list_export_parts
       dependency_list_export_uploads
       fork_networks
-      granular_scopes
-      group_type_ci_runner_machines
-      group_type_ci_runners
+      group_upload_states
       import_failures
       import_offline_configurations
       integrations
@@ -64,12 +60,10 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       organization_settings
       organization_user_details
       organization_users
-      personal_access_token_granular_scopes
       personal_access_token_last_used_ips
+      pool_repositories
       project_secrets_manager_maintenance_tasks
       project_topic_uploads
-      project_type_ci_runner_machines
-      project_type_ci_runners
       project_upload_states
       project_uploads
       queries_service_pings
@@ -94,18 +88,21 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       upcoming_reconciliations
       user_agent_details
       user_uploads
+      user_upload_states
       vulnerability_export_part_uploads
       vulnerability_export_parts
       vulnerability_export_uploads
       web_hooks
       web_hook_logs_daily
       work_item_custom_types
+      work_item_settings
       zentao_tracker_data
     ]
   end
 
   let(:allowed_no_work_needed_tables) do
     %w[
+      enabled_foundational_flow_check_results
       labels
     ]
   end

@@ -4,7 +4,7 @@ classes:
 - Organizations::OrganizationDetail
 - Upload
 feature_categories:
-- cell
+- organization
 description: Stores uploads for Organizations::OrganizationDetail model
 introduced_by_url:
 milestone: '17.11'

@@ -1,10 +1,10 @@
 import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import NamespaceStorageApp from '~/usage_quotas/storage/namespace/components/namespace_storage_app.vue';
 import ProjectList from '~/usage_quotas/storage/namespace/components/project_list.vue';
 import getNamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/namespace_storage.query.graphql';
@@ -21,7 +21,7 @@ import {
   mockGetProjectListStorageGraphQLResponse,
 } from '../../mock_data';
 
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueApollo);
 

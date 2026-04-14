@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: GitLab MCPサーバーに関する一般的な問題のトラブルシューティングを行う。
+description: GitLab MCPサーバーで発生する一般的な問題をトラブルシューティングを行う。
 title: GitLab Model Context Protocolサーバーのトラブルシューティング
 ---
 
@@ -14,13 +14,13 @@ title: GitLab Model Context Protocolサーバーのトラブルシューティ�
 
 {{< /details >}}
 
-GitLab MCPサーバーを使用している際に、次の問題に遭遇する可能性があります。
+GitLab MCPサーバーを使用している際に、次の問題が発生する可能性があります。
 
-## GitLab MCPサーバー起動時の`404 Not Found`エラー {#404-not-found-when-starting-the-gitlab-mcp-server}
+## `404 Not Found`GitLab MCPサーバーの起動時 {#404-not-found-when-starting-the-gitlab-mcp-server}
 
-GitLab MCPサーバーを起動しようとすると、`404 Not Found`エラーが発生する可能性があります。このエラーは、GitLab Duo Coreまたはベータ版および実験的機能が無効になっている場合に発生します。
+GitLab MCPサーバーを起動しようとすると、`404 Not Found`エラーが発生する可能性があります。このエラーは、GitLab Duo Coreまたはベータ版および実験的機能がオフになっている場合に発生します。
 
-この問題を解決するには、GitLab MCPサーバーのすべての[前提条件](mcp_server.md#prerequisites)を満たしていることを確認してください。
+この問題を解決するには、GitLab MCPサーバーの[prerequisites for the GitLab MCP server](mcp_server.md#prerequisites)をすべて満たしていることを確認してください。
 
 ## エラー: `Server's protocol version is not supported: 2025-06-18` {#error-servers-protocol-version-is-not-supported-2025-06-18}
 
@@ -40,7 +40,6 @@ GitLab 18.6以前では、MCPクライアントライブラリがGitLab MCPサ�
 ## CLIでmcp-remoteを使用してGitLab MCPサーバーをトラブルシューティングする {#troubleshoot-the-gitlab-mcp-server-on-the-cli-with-mcp-remote}
 
 1. [Node.js](https://nodejs.org/en/download)バージョン20以降をインストールします。
-
 1. IDEおよびデスクトップクライアントとまったく同じコマンドをテストするには:
    1. MCP設定を抽出します。
    1. `npx`コマンドライン文字列を1行に組み立てます。
@@ -71,7 +70,7 @@ GitLab 18.6以前では、MCPクライアントライブラリがGitLab MCPサ�
 1. オプション。バージョン固有のバグが発生した場合は、`mcp-remote`モジュールのバージョンを特定のバージョンに固定します。たとえば、`mcp-remote@0.1.26`を使用して、バージョンを`0.1.26`に固定します。
 
    > [!note]
-   > セキュリティ上の理由から、可能な限りバージョンを固定すべきではありません。
+   > セキュリティ上の理由から、可能な場合はバージョンを固定すべきではありません。
 
 ## Claude DesktopでGitLab MCPサーバーをトラブルシューティングする {#troubleshoot-gitlab-mcp-server-with-claude-desktop}
 

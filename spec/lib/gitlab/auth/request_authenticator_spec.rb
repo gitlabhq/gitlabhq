@@ -148,6 +148,40 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     end
   end
 
+  describe '#find_user_for_git_or_lfs_request memoization' do
+    let_it_be(:user) { create(:user) }
+
+    before do
+      env['SCRIPT_NAME'] = '/group/project.git/info/refs'
+    end
+
+    it 'calls find_user_from_basic_auth_password only once across multiple find_authenticated_requester calls' do
+      expect_any_instance_of(described_class)
+        .to receive(:find_user_from_basic_auth_password)
+        .once
+        .and_return(user)
+
+      result1 = subject.find_authenticated_requester([:api, :rss, :ics])
+      result2 = subject.find_authenticated_requester([:api])
+
+      expect(result1).to eq(user)
+      expect(result2).to eq(user)
+    end
+
+    it 'memoizes nil result for failed authentication' do
+      expect_any_instance_of(described_class)
+        .to receive(:find_user_from_basic_auth_password)
+        .once
+        .and_return(nil)
+
+      result1 = subject.find_authenticated_requester([:api])
+      result2 = subject.find_authenticated_requester([:api])
+
+      expect(result1).to be_nil
+      expect(result2).to be_nil
+    end
+  end
+
   describe '#find_sessionless_user' do
     let_it_be(:dependency_proxy_user) { build(:user) }
     let_it_be(:access_token_user) { build(:user) }

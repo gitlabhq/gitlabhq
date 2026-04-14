@@ -57,6 +57,26 @@ To change the favicon:
 1. Under **Favicon**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
+## Customize the site name
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228333) in GitLab 18.11.
+
+{{< /history >}}
+
+You can append your own custom site name to the page title in the browser tab.
+For example, if your site name is `MyCompany`, on the homepage, the page title on the browser tab displays `Home · GitLab · MyCompany`.
+
+The maximum length of a site name is 255 characters.
+
+To change the site name:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Appearance**.
+1. Under **Site name**, enter the new site name.
+1. At the bottom of the page, select **Update appearance settings**.
+
 ## Add system header and footer messages
 
 {{< history >}}

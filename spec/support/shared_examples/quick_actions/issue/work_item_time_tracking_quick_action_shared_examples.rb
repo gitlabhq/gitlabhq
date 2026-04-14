@@ -120,6 +120,6 @@ RSpec.shared_examples 'work item time tracker' do
 end
 
 def add_comment(quick_action)
-  fill_in 'Add a reply', with: quick_action
+  fill_in 'Add a reply', with: "#{quick_action} "
   click_button 'Comment'
 end

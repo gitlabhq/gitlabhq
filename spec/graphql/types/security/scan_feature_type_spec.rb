@@ -14,7 +14,8 @@ RSpec.describe Types::Security::ScanFeatureType, feature_category: :security_ass
       :meta_info_path,
       :on_demand_available,
       :security_features,
-      :type
+      :type,
+      :can_user_configure
     )
   end
 

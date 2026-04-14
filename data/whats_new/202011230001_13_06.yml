@@ -10,10 +10,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/cloud_deployment/#custom-build-job-for-auto-devops
+  documentation_link: https://docs.gitlab.com/ci/cloud_deployment/#custom-build-job-for-auto-devops
   image_url: https://img.youtube.com/vi/4B-qSwKnacA/hqdefault.jpg
   published_at: 2020-11-22
-  release: 13.6
+  release: "13.6"
 - name: Display Code Quality severity ratings
   description: |
     The Code Quality feature in GitLab is great at showing what quality violations exist in a project or are changing in the merge request. However, understanding which of those violations is the most important is not clear in the GitLab interface today.
@@ -23,10 +23,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/testing/code_quality.html#code-quality-widget
+  documentation_link: https://docs.gitlab.com/ci/testing/code_quality/#code-quality-widget
   image_url: https://about.gitlab.com/images/13_6/code_quality_severity.png
   published_at: 2020-11-22
-  release: 13.6
+  release: "13.6"
 - name: Display code coverage data for selected projects
   description: |
     In 13.4, we released the first iteration of [Code Coverage data for Groups](https://about.gitlab.com/releases/2020/09/22/gitlab-13-4-released/#code-coverage-data-for-all-projects-in-a-group) that enables you to compare the coverage of multiple projects and download the data in a single file from a single screen.
@@ -40,17 +40,17 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/repositories_analytics/#latest-project-test-coverage-list
+  documentation_link: https://docs.gitlab.com/user/group/repositories_analytics/#latest-project-test-coverage-list
   image_url: https://about.gitlab.com/images/13_6/display_selected_coverage_projects_example.png
   published_at: 2020-11-22
-  release: 13.6
+  release: "13.6"
 - name: Group-level management of project integrations
   description: |
     In GitLab 13.3, we added the ability to [enable an integration across an entire instance](https://about.gitlab.com/releases/2020/08/22/gitlab-13-3-released/#instance-level-project-integration-management-for-external-services). With GitLab 13.6, that feature is being expanded to allow integrations to be managed at the group level as well! Group owners can now add an integration to a group, and that integration will be inherited by all projects under that group.
 
     This has the potential for saving massive amounts of time, as many organizations have specific integrations that they want rolled out to every project they create.
 
-    A great example of this is using our [Jira integration](https://docs.gitlab.com/ee/user/project/integrations/jira.html). If you're using Jira, it's almost always across the whole company. Some of these companies have _thousands of projects_ and therefore had to configure each and every one of those integrations individually.
+    A great example of this is using our [Jira integration](https://docs.gitlab.com/user/project/integrations/jira/). If you're using Jira, it's almost always across the whole company. Some of these companies have _thousands of projects_ and therefore had to configure each and every one of those integrations individually.
 
     With group-level management of project integrations, you can add the integration at each parent group, reducing the amount of configuration required by orders of magnitude!
 
@@ -59,24 +59,24 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/administration/settings/project_integration_management.html
+  documentation_link: https://docs.gitlab.com/administration/settings/project_integration_management/
   image_url: https://about.gitlab.com/images/13_6/project-integration-inheriting-settings.png
   published_at: 2020-11-22
-  release: 13.6
+  release: "13.6"
 - name: Milestone Burnup Charts and historically accurate reporting
   description: |
     A milestone or iteration burndown chart helps track completion progress of total scope, but it doesn't provide insight into how the scope changed during the course of the timebox. Neither has it previously retained historical accuracy regarding how much of the initial committed scope of the milestone or iteration was actually completed.
 
     To solve these problems and help teams have better insights into scope creep, milestones and iterations now show a burnup chart that tracks the daily total count and weight of issues added to and completed within a given timebox.
 
-    We also refactored burndown charts to use immutable [resource state events](https://docs.gitlab.com/ee/api/resource_state_events.html#issues) that ensure that milestone and iteration charts remain historically accurate even after you’ve moved issues to another timebox.
+    We also refactored burndown charts to use immutable [resource state events](https://docs.gitlab.com/api/resource_state_events/#issues) that ensure that milestone and iteration charts remain historically accurate even after you’ve moved issues to another timebox.
 
-    This change only applies to milestones and iterations created in GitLab 13.6 or later. Milestones created prior to 13.6 will still have access to [legacy burndown charts](https://docs.gitlab.com/ee/user/project/milestones/burndown_and_burnup_charts.html#fixed-burndown-charts).
+    This change only applies to milestones and iterations created in GitLab 13.6 or later. Milestones created prior to 13.6 will still have access to [legacy burndown charts](https://docs.gitlab.com/user/project/milestones/burndown_and_burnup_charts/#fixed-burndown-charts).
   stage: Plan
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/milestones/burndown_and_burnup_charts.html#burnup-charts
+  documentation_link: https://docs.gitlab.com/user/project/milestones/burndown_and_burnup_charts/#burnup-charts
   image_url: https://about.gitlab.com/images/13_6/burnup-chart.png
   published_at: 2020-11-22
-  release: 13.6
+  release: "13.6"

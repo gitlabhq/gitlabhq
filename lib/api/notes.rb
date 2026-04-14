@@ -7,7 +7,10 @@ module API
 
     helpers ::API::Helpers::NotesHelpers
 
-    before { authenticate! }
+    before do
+      authenticate!
+      set_current_organization
+    end
 
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? || request.post?
@@ -83,7 +86,7 @@ module API
           notes = paginate(raw_notes)
           notes = prepare_notes_for_rendering(notes)
           notes = notes.select { |note| note.readable_by?(current_user) }
-          present notes, with: Entities::Note, current_user: current_user
+          present_note_collection(notes, noteable, noteable_class)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -114,7 +117,7 @@ module API
 
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
-          get_note(noteable, params[:note_id])
+          get_note(noteable, params[:note_id], noteable_class)
         end
 
         desc "Create a new #{noteable_type.human_name} note" do
@@ -154,7 +157,7 @@ module API
             note = create_note(noteable, opts)
 
             process_note_creation_result(note) do
-              present note, with: Entities.const_get(note.class.name, false)
+              present_single_note(note, noteable, noteable_class)
             end
           rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
             forbidden!(error.message)
@@ -169,7 +172,8 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :note_id, type: Integer, desc: 'The ID of a note'
           optional :body, type: String, allow_blank: false, desc: 'The content of a note'
-          optional :confidential, type: Boolean, desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
+          optional :confidential, type: Boolean,
+            desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
 
         route_setting :authorization,
@@ -179,7 +183,7 @@ module API
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
-          update_note(noteable, params[:note_id])
+          update_note(noteable, params[:note_id], noteable_class)
         end
 
         desc "Delete a #{noteable_type.human_name} note" do

@@ -105,7 +105,9 @@ hardcoded 10-second timeout in GitLab VS Code Extension 6.8.0 and later.
 
 To resolve this issue:
 
-1. In VS Code, select **Code** > **Preferences** > **Settings**.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. Select **Open Settings (JSON)** to edit your `settings.json` file.
    Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**,
    and select it.

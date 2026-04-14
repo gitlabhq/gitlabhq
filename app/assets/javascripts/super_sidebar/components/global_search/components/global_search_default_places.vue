@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { PLACES } from '~/vue_shared/global_search/constants';

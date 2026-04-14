@@ -175,7 +175,7 @@ a hybrid deployment using elements from both Omnibus and our Cloud Native GitLab
 
 - Amazon Web Services account. Our first target environment is running on AWS, and uses other FIPS Compliant AWS resources. For many AWS resources, you must use a [FIPS specific endpoint](https://aws.amazon.com/compliance/fips/).
 - Ability to run Ubuntu 20.04 machines for GitLab. Our first target environment uses the hybrid architecture.
-- Advanced Search: GitLab does not provide a packaged Elastic or OpenSearch deployment. You must use a FIPS-compliant service or disable Advanced Search.
+- Advanced search: GitLab does not provide a packaged Elastic or OpenSearch deployment. You must use a FIPS-compliant service or disable advanced search.
 
 ### Set up a FIPS-enabled cluster
 

@@ -7,6 +7,9 @@ module Ci
 
     MAX_JOB_NAME_LENGTH = 255
 
+    self.primary_key = :id
+    self.sequence_name = 'ci_build_needs_id_seq'
+
     before_validation :set_project_id, on: :create
 
     belongs_to :build,

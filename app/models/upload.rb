@@ -5,6 +5,8 @@ class Upload < ApplicationRecord
   include EachBatch
   include ObjectStorable
 
+  self.primary_key = :id
+
   STORE_COLUMN = :store
 
   # Upper limit for foreground checksum processing

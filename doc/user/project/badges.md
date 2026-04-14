@@ -153,9 +153,9 @@ To add this badge to a project:
 1. Expand **Badges**.
 1. Under **Name**, enter _Pipeline Status_.
 1. Under **Link**, enter the following URL:
-   `https://gitlab.com/%{project_path}/-/commits/%{default_branch}`
+   `https://gitlab.example.com/%{project_path}/-/commits/%{default_branch}`
 1. Under **Badge image URL**, enter the following URL:
-   `https://gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg`
+   `https://gitlab.example.com/%{project_path}/badges/%{default_branch}/pipeline.svg`
 1. Select **Add badge**.
 
 ## Group badges
@@ -264,7 +264,7 @@ The text for the left side on the badge can be customize. For example, to differ
 Customize the badge key text by adding the `key_text=custom_text` parameter to the URL:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
+https://gitlab.example.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
 ![Badge with custom text and width](img/badge_custom_text.svg)
@@ -274,7 +274,7 @@ https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text
 Customize the badge key width by adding the `key_width=width` parameter to the URL:
 
 ```plaintext
-https://gitlab.com/%{project_path}/-/badges/coverage.svg?key_width=130
+https://gitlab.example.com/%{project_path}/-/badges/coverage.svg?key_width=130
 ```
 
 #### Value width
@@ -282,7 +282,7 @@ https://gitlab.com/%{project_path}/-/badges/coverage.svg?key_width=130
 Customize the badge value width by adding the `value_width=width` parameter to the URL:
 
 ```plaintext
-https://gitlab.com/%{project_path}/-/badges/coverage.svg?value_width=130
+https://gitlab.example.com/%{project_path}/-/badges/coverage.svg?value_width=130
 ```
 
 ### Custom badges
@@ -303,13 +303,13 @@ In addition to the [basic customization options](#basic-customization), custom b
 You can add a custom badge by using the following link:
 
 ```plaintext
-https://gitlab.com/%{project_path}/badges/%{default_branch}/custom.svg
+https://gitlab.example.com/%{project_path}/-/badges/custom.svg
 ```
 
 For example, you can use [placeholders](#placeholders) to create a badge for the latest tag:
 
 ```plaintext
-https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
+https://gitlab.example.com/%{project_path}/-/badges/custom.svg?key_text=Latest_tag&value_text=%{latest_tag}&key_color=white&value_color=7bc043
 ```
 
 > [!warning]
@@ -320,7 +320,7 @@ https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&k
 Customize the text displayed on the right side by adding the `value_text=text` parameter to the URL:
 
 ```plaintext
-https://gitlab.com/%{project_path}/-/badges/custom.svg?value_text=badge
+https://gitlab.example.com/%{project_path}/-/badges/custom.svg?value_text=badge
 ```
 
 #### Value color
@@ -333,7 +333,7 @@ Colors can be passed as:
 - Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
 
 ```plaintext
-https://gitlab.com/%{project_path}/-/badges/custom.svg?value_color=red
+https://gitlab.example.com/%{project_path}/-/badges/custom.svg?value_color=red
 ```
 
 #### Key color
@@ -346,7 +346,7 @@ Colors can be passed as:
 - Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
 
 ```plaintext
-https://gitlab.com/%{project_path}/-/badges/custom.svg?key_color=green
+https://gitlab.example.com/%{project_path}/-/badges/custom.svg?key_color=green
 ```
 
 ### Add a custom badge image
@@ -421,3 +421,10 @@ The following placeholders are available:
 > default branch or commit SHA when the project is configured to have a private
 > repository. This behavior is intentional, as badges are intended to be used publicly. Avoid
 > using these placeholders if the information is sensitive.
+
+<!-- -->
+
+> [!warning]
+> Due to [issue 481729](https://gitlab.com/gitlab-org/gitlab/-/work_items/481729)
+> `%{gitlab_server}` and `%{gitlab_pages_domain}` cannot be used to specify the
+> hostname in the URL, but only for other parameters.

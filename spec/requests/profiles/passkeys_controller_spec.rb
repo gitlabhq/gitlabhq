@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
+  include SessionHelpers
+
   let_it_be_with_reload(:user) { create(:user, :with_namespace) }
   let(:error_message) { { message: _('You must provide a valid current password.') } }
 
@@ -209,7 +211,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
       it_behaves_like 'when passkey authentication is not allowed'
     end
 
-    describe 'POST create' do
+    describe 'POST create', :clean_gitlab_redis_sessions do
       let(:client) { WebAuthn::FakeClient.new('http://localhost', encoding: :base64) } # Matches config.encoding
       let(:credential) { create_credential(client: client, rp_id: request.host) }
 
@@ -221,12 +223,33 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
         { device_registration: { name: 'LastPass', device_response: device_response }, current_password: user.password }
       end
 
+      let(:challenge) do
+        WebAuthn::Credential.options_for_create(
+          user: {
+            id: user.webauthn_xid,
+            name: user.username,
+            display_name: user.name
+          },
+          exclude: user.get_all_webauthn_credential_ids,
+          authenticator_selection: {
+            user_verification: 'required',
+            resident_key: 'required'
+          },
+          rp: { name: 'GitLab' },
+          extensions: { credProps: true }
+        ).challenge
+      end
+
+      let(:device_response) do
+        client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
+          challenge: challenge,
+          extensions: { "credProps" => { "rk" => true } },
+          user_verified: true
+        ).to_json
+      end
+
       before do
-        allow_next_instance_of(Profiles::PasskeysController) do |instance|
-          allow(instance).to receive(:session).and_return({
-            challenge: challenge
-          })
-        end
+        stub_session(session_data: { challenge: challenge })
       end
 
       def bad
@@ -235,30 +258,6 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
       def go
         post profile_passkeys_path, params: params_with_password
-      end
-
-      def challenge
-        @_challenge ||= begin
-          options_for_create = WebAuthn::Credential.options_for_create(
-            user: {
-              id: user.webauthn_xid,
-              name: user.username,
-              display_name: user.name
-            },
-            exclude: user.get_all_webauthn_credential_ids,
-            authenticator_selection: {
-              user_verification: 'required',
-              resident_key: 'required'
-            },
-            rp: { name: 'GitLab' },
-            extensions: { credProps: true }
-          )
-          options_for_create.challenge
-        end
-      end
-
-      def device_response
-        client.create(challenge: challenge).to_json # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
       end
 
       it_behaves_like 'user must enter a valid current password'
@@ -321,9 +320,7 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
         context 'when registration fails' do
           context "with a service error" do
-            def challenge
-              Base64.strict_encode64(SecureRandom.random_bytes(16)) # Throws a challenge error
-            end
+            let(:device_response) { 'bad response' }
 
             it "renders an alert" do
               go

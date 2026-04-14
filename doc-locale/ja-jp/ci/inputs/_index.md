@@ -40,9 +40,9 @@ CI/CD変数:
 - **スコープ**: グローバルに（すべてのジョブに影響）、ジョブレベルで（特定のジョブにのみ影響を）、またはGitLab UIからプロジェクトまたはグループ全体に対して定義できます。
 - **検証**: 最小限の組み込み検証を備えたシンプルなキー/バリューペアですが、GitLab UIからプロジェクト変数にいくつかの制御を追加できます。
 
-## `spec:inputs`で入力パラメータを定義する {#define-input-parameters-with-specinputs}
+## `spec:inputs`でインプットパラメータを定義する {#define-input-parameters-with-specinputs}
 
-CI/CD設定の[ヘッダー](../yaml/_index.md#header-keywords)で`spec:inputs`を使用して、設定ファイルに渡すことができる入力パラメータを定義します。
+CI/CD設定の[ヘッダー](../yaml/_index.md#header-keywords)で`spec:inputs`を使用して、設定ファイルに渡すことができるインプットパラメータを定義します。
 
 ヘッダーセクション外で`$[[ inputs.input-id ]]`補間形式を使用して、インプットを使用する場所を宣言します。
 
@@ -89,7 +89,7 @@ scan-website:
 - [`spec:inputs:options`](../yaml/_index.md#specinputsoptions)は、インプットに許可される値のリストを指定します。
 - [`spec:inputs:regex`](../yaml/_index.md#specinputsregex)は、インプットが一致する必要がある正規表現を指定します。
 - [`spec:inputs:type`](../yaml/_index.md#specinputstype)は、特定のインプットの型を強制します。型は`string`（指定しない場合のデフォルト）、`array`、`number`、または`boolean`を指定できます。
-- 他の入力の値に基づいて条件付きの`options`値と`default`値を定義するには、[`spec:inputs:rules`](../yaml/_index.md#specinputsrules)を使用します。
+- 他のインプットの値に基づいて条件付きの`options`値と`default`値を定義するには、[`spec:inputs:rules`](../yaml/_index.md#specinputsrules)を使用します。
 
 CI/CD設定ファイルごとに複数のインプットを定義できます。また、各インプットには複数の設定パラメータを指定できます。
 
@@ -211,6 +211,75 @@ test_job:
 - Gitの[プッシュオプション](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [パイプラインスケジュール](../pipelines/schedules.md#create-a-pipeline-schedule)
 
+##### 個々の配列要素にアクセス {#access-individual-array-elements}
+
+{{< history >}}
+
+- [GitLab 18.10で導入され](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) 、[フラグ](../../administration/feature_flags/_index.md) `ci_inputs_array_index_operator`という名前で提供されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+> [!flag]
+> この機能の利用は機能フラグによって制御されています。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+
+ブラケット表記とインデックス番号を使用して、配列入力の個々の要素にアクセスします。配列項目は、YAML配列で定義された順序でプラスの数値でインデックス付けされ、`[0]`のインデックス項目が配列の最初の項目になります。
+
+例: 
+
+```yaml
+spec:
+  inputs:
+    supported_versions:
+      type: array
+      default:
+        - '2.0'
+        - '1.0'
+        - '0.1'
+---
+
+job:
+  script:
+    # Outputs: 'Latest version is 2.0'
+    - echo 'Latest version is $[[ inputs.supported_versions[0] ]]'
+```
+
+ドット表記で配列のインデックス作成を連結して、ネストされた値にアクセスできます:
+
+```yaml
+spec:
+  inputs:
+    servers:
+      type: array
+      default:
+        - host: server1.example.com
+          port: 8080
+---
+
+job:
+  script:
+    - curl "https://$[[ inputs.servers[0].host ]]:$[[ inputs.servers[0].port ]]"
+```
+
+多次元の配列には、複数のインデックスを連続して使用します。たとえば、2次元の配列には`[0][1]`を使用できます:
+
+```yaml
+spec:
+  inputs:
+    matrix:
+      type: array
+      default:
+        - ['a', 'b']
+        - ['c', 'd']
+---
+
+job:
+  script:
+    # Outputs: 'b'
+    - echo $[[ inputs.matrix[0][1] ]]
+```
+
+1つのセグメントにつき最大5つのインデックスを連結できます（例: `arr[0][1][2][3][4]`）。
+
 #### 複数行のインプット文字列の値 {#multi-line-input-string-values}
 
 インプットは、さまざまな値の型をサポートします。次の形式を使用して、複数行文字列の値を渡すことができます:
@@ -228,7 +297,7 @@ spec:
 ---
 ```
 
-### `spec:inputs:rules`を使用して、条件付きの入力オプションを定義します {#define-conditional-input-options-with-specinputsrules}
+### `spec:inputs:rules`を使用して、条件付きのインプットオプションを定義する {#define-conditional-input-options-with-specinputsrules}
 
 {{< history >}}
 
@@ -236,12 +305,12 @@ spec:
 
 {{< /history >}}
 
-他の入力の値に基づいて入力に対して異なる`options`値と`default`値を定義するには、[`spec:inputs:rules`](../yaml/_index.md#specinputsrules)を使用します。この設定は、ある入力が他の入力によって提供されるコンテキストに応じて異なる許可された値を持つ必要がある場合に使用できます。
+他のインプットの値に基づいて、インプットに対して異なる`options`値と`default`値を定義するには、[`spec:inputs:rules`](../yaml/_index.md#specinputsrules)を使用します。この設定は、あるインプットが、他のインプットによって提供されるコンテキストに応じて異なる許可された値を持つ必要がある場合に使用できます。
 
-`rules`リストの各ルールは、次のものを持つことができます:
+`rules`リストの各ルールには、次のものを含めることができます:
 
-- `if`: 1つ以上の入力の値をチェックして、このルールをいつ適用するかを判断する式。[`$[[ inputs.input-id ]]`補間](#define-input-parameters-with-specinputs)と同じ構文を使用します。
-- `options`: このルールが一致した場合の入力に対して許可される値のリスト。
+- `if`: 1つ以上のインプットの値をチェックして、このルールをいつ適用するかを判断する式。[`$[[ inputs.input-id ]]`補間](#define-input-parameters-with-specinputs)と同じ構文を使用します。
+- `options`: このルールが一致した場合のインプットに対して許可される値のリスト。
 - `default`: このルールが一致した場合に使用するデフォルト値。
 
 ルールは順番に評価されます。一致する`if`条件を持つ最初のルールが使用されます。`if`条件のない最後のルールは、他のルールが一致しない場合のフォールバックとして機能します。
@@ -317,9 +386,9 @@ deploy:
   script: echo "Deploying with $[[ inputs.deployment_type ]] strategy"
 ```
 
-この例では、`deployment_type`が`canary`または`blue-green`のいずれかの場合、`requires_approval`入力は`true`に設定されます。他のすべての場合、デフォルトは`false`であり、`true`または`false`の両方が許可されるオプションです。
+この例では、`deployment_type`が`canary`または`blue-green`のいずれかの場合、`requires_approval`インプットは`true`に設定されます。他のすべての場合、デフォルトは`false`であり、`true`または`false`の両方が許可されるオプションです。
 
-### `default: null`でユーザーが入力した値を許可します {#allow-user-entered-values-with-default-null}
+### `default: null`でユーザーが入力した値を許可する {#allow-user-entered-values-with-default-null}
 
 {{< history >}}
 
@@ -327,7 +396,7 @@ deploy:
 
 {{< /history >}}
 
-`default: null`を使用した`spec:inputs:rules`を`options`なしで使用すると、ユーザーは入力に独自の値入力できるようになります。これは、環境名やテスト設定など、ワークフロー固有の値に役立ちます。
+`default: null`を使用した`spec:inputs:rules`を`options`なしで使用すると、ユーザーはインプットに独自の値を入力できるようになります。これは、環境名やテスト設定など、ワークフロー固有の値に役立ちます。
 
 例: 
 
@@ -349,11 +418,11 @@ deploy:
   script: echo "Config: $[[ inputs.custom_config ]]"
 ```
 
-この例では、`deployment_type`が`custom`の場合、`custom_config`入力はパイプラインの実行ページにリストされ、ユーザーはその入力の値を入力する必要があります。
+この例では、`deployment_type`が`custom`の場合、`custom_config`インプットはパイプラインの実行ページにリストされ、ユーザーはそのインプットの値を入力する必要があります。
 
-### `spec:inputs:rules`でブール値入力を使用します {#use-boolean-inputs-with-specinputsrules}
+### `spec:inputs:rules`でブール値入力を使用する {#use-boolean-inputs-with-specinputsrules}
 
-ルール条件でブール値入力を使用できます。ブール値は、ブールリテラル（`true`/`false`）を使用して比較できます:
+ルール条件でブール値インプットを使用できます。ブール値は、ブールリテラル（`true`/`false`）を使用して比較できます:
 
 ```yaml
 spec:
@@ -441,7 +510,8 @@ include:
 
 インプットは、型チェック、検証、明確なコントラクトなど、変数よりも利点があります。予期しないインプットは拒否されます。パイプライン用のインプットは、メイン設定ファイルである`.gitlab-ci.yml`の[`spec:inputs`ヘッダー](#define-input-parameters-with-specinputs)で定義する必要があります。パイプラインレベルの設定にはインクルードされたファイルで定義されたインプットを使用することはできません。
 
-> [!note] [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)以降では、[パイプライン変数](../variables/_index.md#use-pipeline-variables)を渡すよりもパイプライン入力が推奨されます。セキュリティを強化するには、インプットを使用する際に[パイプライン変数を無効にする](../variables/_index.md#restrict-pipeline-variables)必要があります。
+> [!note]
+> [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)以降では、[パイプライン変数](../variables/_index.md#use-pipeline-variables)を渡すのではなくパイプラインインプットを使用することが推奨されます。セキュリティを強化するには、インプットを使用する際に[パイプライン変数を無効にする](../variables/_index.md#restrict-pipeline-variables)必要があります。
 
 パイプライン用のインプットを定義する際は、常にデフォルト値を設定する必要があります。そうしないと、新しいパイプラインが自動的にトリガーされる場合、パイプラインが起動に失敗する可能性があります。たとえば、マージリクエストパイプラインは、マージリクエストのソースブランチへの変更に対してトリガーされる可能性があります。マージリクエストパイプラインに対して手動でインプットを設定することはできないため、デフォルトが欠けているインプットがあると、パイプラインの作成に失敗します。これは、ブランチパイプライン、タグパイプライン、およびその他の自動的にトリガーされるパイプラインでも発生する可能性があります。
 
@@ -498,7 +568,7 @@ trigger-job:
 
 {{< /tabs >}}
 
-#### 外部ファイルでパイプライン入力を定義します {#define-pipeline-inputs-in-external-files}
+#### 外部ファイルでパイプライン入力を定義する {#define-pipeline-inputs-in-external-files}
 
 {{< history >}}
 
@@ -507,7 +577,7 @@ trigger-job:
 
 {{< /history >}}
 
-外部ファイルでパイプライン入力定義を定義し、[`spec:include`](../yaml/_index.md#specinclude)を使用してプロジェクトのパイプライン設定に含めることで、複数のCI/CD設定間で再利用できます。
+外部ファイルでパイプライン入力を定義し、[`spec:include`](../yaml/_index.md#specinclude)を使用してプロジェクトのパイプライン設定に含めることで、複数のCI/CD設定間で再利用できます。
 
 入力定義を含むファイルを作成します（たとえば、`shared-inputs.yml`という名前のファイル）:
 
@@ -537,7 +607,7 @@ deploy:
 - 別のGitLabプロジェクト内のファイルの場合は`project`。完全なプロジェクトパスを使用し、`file`でファイル名を定義します。オプションで、`ref`を定義して、ファイルのフェッチ元を指定することもできます。
 - 別のサーバー上のファイルの場合は`remote`。ファイルへの完全なURLを使用します。
 
-たとえば、複数の入力ファイルを同時に含めることもできます:
+たとえば、複数のインプットファイルを同時に含めることもできます:
 
 ```yaml
 spec:
@@ -550,7 +620,8 @@ spec:
 ---
 ```
 
-> [!note] `spec:include`は、[CI/CDコンポーネント](../components/_index.md#component-spec-section)入力には使用できません。
+> [!note]
+> `spec:include`は、[CI/CDコンポーネント](../components/_index.md#component-spec-section)入力には使用できません。
 
 #### 外部ファイルからのオーバーライド入力 {#override-inputs-from-an-external-file}
 
@@ -560,13 +631,13 @@ spec:
 
 {{< /history >}}
 
-入力キーは、インライン仕様と、含まれるすべてのファイルで一意である必要があります。複数のインクルードファイル、またはインクルードファイルと`.gitlab-ci.yml`設定の`inputs:`セクションの両方で同じキーを持つ入力を定義すると、次のエラーが返されます:
+インプットキーは、インライン仕様と、含まれるすべてのファイルで一意である必要があります。複数のインクルードファイル、またはインクルードファイルと`.gitlab-ci.yml`設定の`inputs:`セクションの両方で同じキーを持つインプットを定義すると、次のエラーが返されます:
 
 ```plaintext
 Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
 ```
 
-このエラーを修正するには、各入力キーが、インクルードファイルまたはインラインの`inputs:`セクションのいずれか一方で1回のみ定義されていることを確認します。
+このエラーを修正するには、各インプットキーが、インクルードファイルまたはインラインの`inputs:`セクションのいずれか一方で1回のみ定義されていることを確認します。
 
 ## インプットの値を操作するための関数を指定する {#specify-functions-to-manipulate-input-values}
 
@@ -667,7 +738,7 @@ $[[ inputs.test | truncate(3,5) ]]
 
 {{< /history >}}
 
-入力値のPOSIX _Bourne Shell_の制御文字またはメタ文字をエスケープするには、`posix_escape`を使用します。`posix_escape`は、入力内の関連文字の前に` \ `を挿入することで文字をエスケープします。
+インプット値のPOSIX _Bourne Shell_の制御文字またはメタ文字をエスケープするには、`posix_escape`を使用します。`posix_escape`は、インプット内の関連文字の前に` \ `を挿入することで文字をエスケープします。
 
 例: 
 
@@ -690,11 +761,12 @@ $ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ b
 A string with single ' and double " quotes and   blanks
 ```
 
-エスケープされた入力は、指定されたとおりに特殊文字とスペースを保持します。
+エスケープされたインプットは、指定されたとおりに特殊文字とスペースを保持します。
 
-> [!warning]信頼できない入力値を使用するセキュリティ目的で`posix_escape`に依存しないでください。
+> [!warning]
+> 信頼できないインプット値を扱う際のセキュリティ対策として`posix_escape`に依存するのは避けてください。
 
-`posix_escape`は、入力値を正確に保持するために最善を尽くしますが、一部の文字の組み合わせは、予期しない結果を引き起こす可能性があります。`posix_escape`を使用している場合でも、次のことが可能です:
+`posix_escape`は、インプット値を正確に保持するために最善を尽くしますが、一部の文字の組み合わせは、予期しない結果を引き起こす可能性があります。`posix_escape`を使用している場合でも、次のことが可能です:
 
 - 文字列に含まれるShellコードが実行される可能性があります。
 - 単一引用符または二重引用符を使用して、周囲の引用符をエスケープする可能性があります。
@@ -702,13 +774,13 @@ A string with single ' and double " quotes and   blanks
 - 入力または出力のリダイレクトを使用して、ローカルファイルを読み書きする可能性があります。
 - エスケープされていないスペースは、文字列を複数の引数に分割するためにShellによって使用されます。
 
-セキュリティのために、入力が信頼できることを確認する必要があります。使用できるモデルは次のとおりです:
+セキュリティを確保するため、インプットが信頼できるものであることを確認する必要があります。使用できるモデルは次のとおりです:
 
 - 問題のある文字を含めることができない[`spec:input:type`](../yaml/_index.md#specinputstype) `number`または`boolean`。
-- 問題のある入力を防止する[`spec:input:regex`](../yaml/_index.md#specinputsregex)キーワード。
-- 入力オプションの定義済みリストを定義する[`spec:input:options`](../yaml/_index.md#specinputsoptions)キーワード。
+- 問題のあるインプットを防止する[`spec:input:regex`](../yaml/_index.md#specinputsregex)キーワード。
+- インプットオプションの定義済みリストを定義する[`spec:input:options`](../yaml/_index.md#specinputsoptions)キーワード。
 
-`posix_escape`を`expand_vars`と組み合わせる場合は、最初に`expand_vars`を設定する必要があります。そうしないと、`posix_escape`は変数の`$`をエスケープし、展開を防ぎます。例: 
+`posix_escape`を`expand_vars`と組み合わせる場合は、最初に`expand_vars`を設定する必要があります。そうしないと、`posix_escape`は変数の`$`をエスケープし、展開されなくなります。例: 
 
 ```yaml
 test-job:
@@ -717,32 +789,51 @@ test-job:
 
 ## トラブルシューティング {#troubleshooting}
 
-### `inputs`使用時のYAML構文エラー {#yaml-syntax-errors-when-using-inputs}
+### `inputs`を`rules`で使用する際のYAML構文エラー {#yaml-syntax-errors-when-using-inputs-in-rules}
 
-`rules:if`の[CI/CD変数式](../jobs/job_rules.md#cicd-variable-expressions)は、CI/CD変数と文字列の比較を想定しています。これに該当しない場合、[さまざまな構文エラーが返される可能性があります](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions)。
+入力を使用して`rules:if`式を変更すると、[さまざまな構文エラー](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions)のいずれかが発生する可能性があります。
 
-インプットの値を設定に挿入した後も、式が適切な形式を維持していることを確認する必要があります。これには、追加の引用符文字の使用が必要になる場合があります。
+これらのエラーは、[CI/CD変数の式](../jobs/job_rules.md#cicd-variable-expressions)で文字列がどのように処理されるかに関連していることがよくあります。`rules:if`の式は、引用符で囲まれた文字列（`'`または`"`）または別の変数と比較されるCI/CD変数を期待します。入力値が`rules`のパイプラインランタイム時に設定に挿入されると、結果の値が引用符で囲まれた文字列または変数ではない可能性があり、これがエラーの原因となります。
 
-例: 
+たとえば、含める設定では次のようになります:
 
 ```yaml
 spec:
   inputs:
     branch:
       default: $CI_DEFAULT_BRANCH
+    branch2:
+      default: $CI_DEFAULT_BRANCH
 ---
 
 job-name:
   rules:
     - if: $CI_COMMIT_REF_NAME == $[[ inputs.branch ]]
+    - if: $CI_COMMIT_REF_NAME == $[[ inputs.branch2 ]]
+```
+
+次に、メインの設定ファイルで:
+
+```yaml
+include:
+  inputs:
+    branch: $CI_DEFAULT_BRANCH  # Valid
+    branch2: main               # Invalid
 ```
 
 この例では: 
 
-- `include: inputs: branch: $CI_DEFAULT_BRANCH`の使用は有効です。`if:`句は`if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`に評価されます。これは有効な変数式です。
-- `include: inputs: branch: main`の使用は**無効**です。`if:`句は`if: $CI_COMMIT_REF_NAME == main`に評価されます。これは、`main`が文字列であるにもかかわらず引用符で囲まれていないため無効になります。
+- `branch: $CI_DEFAULT_BRANCH`の使用は有効です。`if:`句は`if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`に評価されます。これは有効な変数式です。その変数は引用符で囲む必要はありません。
+- `branch2: main`を使用すると無効になります。`if:`句は`if: $CI_COMMIT_REF_NAME == main`に評価されます。これは、`main`が文字列であるにもかかわらず引用符で囲まれていないため無効になります。
 
-代替策として、引用符を追加することで変数式の問題を解決できます。例: 
+この問題を解決するには、入力値が設定に挿入された後も式が適切にフォーマットされていることを確認してください。これには追加の引用符文字が必要になる場合があります。たとえば、文字列値を使用するルールに引用符を追加します:
+
+```yaml
+rules:
+  if: $CI_COMMIT_REF_NAME == "$[[ inputs.branch2 ]]"
+```
+
+[`expand_vars`](#expand_vars)のような補間関数では、`if:`式全体を引用符で囲む必要がある場合があります。例: 
 
 ```yaml
 spec:
@@ -757,4 +848,6 @@ $[[ inputs.environment | expand_vars ]] job:
     - if: '"$[[ inputs.environment | expand_vars ]]" == "production"'
 ```
 
-この例では、インプットブロックと変数式全体を引用符で囲むことで、インプットの評価後も`if:`構文が正しく機能します。式内の内側の引用符と外側の引用符を同じ文字にすることはできません。内側の引用部には`"`を、外側の引用部には`'`を使用します。内側と外側を入れ替えることもできます。一方、ジョブ名には引用符は必要ありません。
+この例では、入力と`if:`式の両方を引用符で囲むことで、入力が評価された後も有効な構文が保証されます。引用符がネストされた場合は、内部の引用符には`"`を、外部の引用符には`'`を使用するか、またはその逆を使用します。
+
+ジョブ名に引用符を付ける必要はありません。

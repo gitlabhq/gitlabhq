@@ -49,7 +49,7 @@ RSpec.describe ClickHouse::TableSettingsNormalizer, feature_category: :database 
       end
 
       context 'when it is the only setting' do
-        let(:statement) { "CREATE TABLE test (...) SETTING deduplicate_merge_projection_mode = 'rebuild'" }
+        let(:statement) { "CREATE TABLE test (...) SETTINGS deduplicate_merge_projection_mode = 'rebuild'" }
 
         it 'removes the setting when it is the only setting' do
           expect(processed_statement).to eq('CREATE TABLE test (...) ')

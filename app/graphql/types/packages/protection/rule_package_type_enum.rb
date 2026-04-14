@@ -34,6 +34,10 @@ module Types
         value 'PYPI',
           value: 'pypi',
           description: 'Packages of the PyPI format.'
+
+        value 'TERRAFORM_MODULE',
+          value: 'terraform_module',
+          description: 'Packages of the Terraform module format.'
       end
     end
   end

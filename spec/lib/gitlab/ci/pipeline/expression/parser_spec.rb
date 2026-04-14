@@ -17,6 +17,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
         '$VAR1 && $VAR2 || $VAR3' | 'or(and($VAR1, $VAR2), $VAR3)'
         '$VAR1 && $VAR2 || $VAR3 && $VAR4' | 'or(and($VAR1, $VAR2), and($VAR3, $VAR4))'
         '$VAR1 && ($VAR2 || $VAR3) && $VAR4' | 'and(and($VAR1, or($VAR2, $VAR3)), $VAR4)'
+        '$VAR1 && !$VAR2' | 'and($VAR1, not($VAR2))'
+        '!($VAR1 || $VAR2) && $VAR3' | 'and(not(or($VAR1, $VAR2)), $VAR3)'
       end
 
       with_them do
@@ -66,6 +68,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
     context 'when an operator has no right side' do
       it 'raises an OperatorError' do
         expect { described_class.seed('$VAR ==').tree }
+            .to raise_error Gitlab::Ci::Pipeline::Expression::Lexeme::Operator::OperatorError
+      end
+    end
+
+    context 'when an unary operator has no right side' do
+      it 'raises an OperatorError' do
+        expect { described_class.seed('!').tree }
             .to raise_error Gitlab::Ci::Pipeline::Expression::Lexeme::Operator::OperatorError
       end
     end

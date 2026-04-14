@@ -1,7 +1,7 @@
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
-import { sidebarState } from './constants';
+import { sidebarState } from './state';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
 export const SIDEBAR_BLOCKED_CSS_TRANSITIONS_CLASS = 'super-sidebar-has-css-transitions-blocked';

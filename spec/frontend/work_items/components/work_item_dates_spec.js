@@ -285,7 +285,7 @@ describe('WorkItemDueDate component', () => {
 
         it('emits an error', () => {
           expect(wrapper.emitted('error')).toEqual([
-            ['Something went wrong while updating the task. Please try again.'],
+            ['Something went wrong while updating the Task. Please try again.'],
           ]);
         });
       });

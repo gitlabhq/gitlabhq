@@ -1,0 +1,8 @@
+---
+name: create_label
+description: Grants the ability to create labels
+permissions:
+  - create_label
+boundaries:
+  - group
+  - project

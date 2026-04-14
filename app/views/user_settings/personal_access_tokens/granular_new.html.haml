@@ -1,3 +1,6 @@
+- add_to_breadcrumbs s_('AccessTokens|Personal access tokens'), user_settings_personal_access_tokens_path
 - page_title s_('AccessTokens|Generate fine-grained token')
+
+= render_if_exists 'shared/dashboard/saml_reauth_notice', groups_requiring_saml_reauth: user_groups_requiring_reauth
 
 #js-create-granular-token-app{ data: personal_access_token_data({}) }

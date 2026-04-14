@@ -235,37 +235,18 @@ To revoke a group access token:
 
 ## Access token expiration
 
-Whether your existing group access tokens have expiry dates automatically applied
-depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
+Personal, group, and project access tokens expire at midnight UTC on the expiry date.
+After they expire, they can no longer be used to authenticate requests.
 
-- On GitLab.com, during the 16.0 milestone, existing group access tokens without
-  an expiry date were automatically given an expiry date of 365 days later than the current date.
-- On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
-  - On or before July 23, 2024, existing group access tokens without an expiry
-    date were automatically given an expiry date of 365 days later than the current date.
-    This change is a breaking change.
-  - On or after July 24, 2024, existing group access tokens without an expiry
-    date did not have an expiry date set.
+In GitLab 16.0 and later, new access tokens must have an expiry date. If an expiry date isn't
+explicitly set during token creation, an expiry date of 365 days from the current date is applied.
+In GitLab Ultimate, administrators can configure a
+[maximum allowable lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
+for access tokens.
 
-On GitLab Self-Managed, if you do a new install of one of the following GitLab
-versions, your existing group access tokens do not have expiry dates
-automatically applied:
-
-- 16.0.9
-- 16.1.7
-- 16.2.10
-- 16.3.8
-- 16.4.6
-- 16.5.9
-- 16.6.9
-- 16.7.9
-- 16.8.9
-- 16.9.10
-- 16.10.9
-- 16.11.7
-- 17.0.5
-- 17.1.3
-- 17.2.1
+Depending on your GitLab version and offering, your existing access tokens might have an expiry date
+automatically applied when upgrading GitLab versions. For more information,
+see [non-expiring access tokens](../../../update/deprecations.md#non-expiring-access-tokens).
 
 ### Group access token expiry emails
 
@@ -301,7 +282,7 @@ Bot users have the following properties:
 - They are granted permissions that correspond with the role and scope of the associated access token.
 - They are members of the group and inherit membership in subgroups and projects, but cannot be
   added directly to any other groups or projects.
-- They are [non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)
+- They are [non-billable users](../../../subscriptions/manage_seats.md#criteria-for-non-billable-users)
   and do not count towards your license limit.
 - Their contributions are associated with the bot user account.
 - When removed, their contributions are moved to a

@@ -326,7 +326,7 @@ module Types
     field :hidden, GraphQL::Types::Boolean, null: true,
       description: 'Indicates the merge request is hidden because the author has been banned.', method: :hidden?
 
-    markdown_field :title_html, null: true
+    markdown_field :title_html, null: true, description: "HTML rendering of `title`"
     markdown_field :description_html, null: true
 
     def diff_stats(path: nil)

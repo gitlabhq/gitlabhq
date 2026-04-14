@@ -11,7 +11,6 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
   let(:project) { create(:project, group: group) }
 
   before do
-    stub_feature_flags(new_project_creation_form: false)
     stub_feature_flags(edit_user_profile_vue: false)
   end
 
@@ -28,6 +27,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
     fill_in 'appearance_new_project_guidelines', with: 'Custom project guidelines'
     fill_in 'appearance_member_guidelines', with: 'Custom member guidelines'
     fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines'
+    fill_in 'appearance_site_name', with: 'MyCompany'
     click_button 'Update appearance settings'
 
     expect(page).to have_current_path admin_application_settings_appearances_path, ignore_query: true
@@ -41,6 +41,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
     expect(page).to have_field('appearance_new_project_guidelines', with: 'Custom project guidelines')
     expect(page).to have_field('appearance_member_guidelines', with: 'Custom member guidelines')
     expect(page).to have_field('appearance_profile_image_guidelines', with: 'Custom profile image guidelines')
+    expect(page).to have_field('appearance_site_name', with: 'MyCompany')
     expect(page).to have_content 'Last edit'
   end
 

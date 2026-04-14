@@ -17,5 +17,6 @@ desired_sharding_key:
         table: packages_nuget_symbols
         sharding_key: project_id
         belongs_to: packages_nuget_symbol
+desired_sharding_key_migration_job_name: BackfillPackagesNugetSymbolStatesProjectId
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
 table_size: small

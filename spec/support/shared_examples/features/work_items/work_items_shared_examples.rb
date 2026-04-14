@@ -415,7 +415,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
     within_testid 'work-item-actions-dropdown' do
       click_button _('More actions')
 
-      expect(page).to have_button 'Close key result'
+      expect(page).to have_button 'Close Key Result'
       expect(page).to have_button 'New related item'
       expect(page).not_to have_button 'Promote to objective'
       expect(page).not_to have_button 'Change type'
@@ -423,7 +423,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       expect(page).not_to have_button 'Turn on confidentiality'
       expect(page).to have_button 'Copy reference'
       expect(page).not_to have_button 'Report abuse'
-      expect(page).to have_button 'Delete key result'
+      expect(page).to have_button 'Delete Key Result'
     end
 
     page.within('.main-notes-list') do
@@ -540,6 +540,22 @@ end
 RSpec.shared_examples 'work items award emoji' do
   before do
     emoji_upvote
+  end
+
+  it 'renders all award emojis across multiple pages', :aggregate_failures do
+    # Add more than 100 (i.e > page_size) reactions to work item to
+    # ensure that page shows all emojis correctly
+    total_emojis = 120
+    emoji_names = TanukiEmoji.index.all.map(&:name).excluding('thumbsup').first(total_emojis)
+    emoji_names.each do |emoji_name|
+      create(:award_emoji, name: emoji_name, awardable: work_item, user: user2)
+    end
+
+    page.refresh
+    wait_for_requests
+
+    award_buttons = all('[data-testid="award-button"]')
+    expect(award_buttons.count).to be >= total_emojis
   end
 
   it 'adds and removes award and custom award', :aggregate_failures do
@@ -1122,11 +1138,11 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   it 'adds an existing child item', :aggregate_failures do
     within_testid testid do
       find_by_testid('add-tree-child-button').click
-      click_button "Existing #{type}"
+      click_button "Existing #{type.to_s.capitalize}"
       fill_in 'Search existing items', with: child_item.title
       click_button child_item.title
       send_keys :escape
-      click_button "Add #{type}"
+      click_button "Add #{type.to_s.capitalize}"
 
       expect(page).to have_link child_item.title
     end
@@ -1158,9 +1174,9 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 
   def create_child(type, title)
     find_by_testid('add-tree-child-button').click
-    click_button "New #{type}"
+    click_button "New #{type.to_s.capitalize}"
     fill_in 'Add a title', with: title
-    click_button "Create #{type}"
+    click_button "Create #{type.to_s.capitalize}"
   end
 end
 
@@ -1288,13 +1304,12 @@ RSpec.shared_examples 'work items change type' do |selected_type, expected_selec
     click_button _('More actions'), match: :first
     click_button s_('WorkItem|Change type')
 
-    expect(find('#work-item-change-type')).to have_content(s_('WorkItem|Change type'))
+    within('[role="dialog"]') do
+      expect(page).to have_css('h2', text: s_('WorkItem|Change type'))
+    end
 
-    find_by_testid('work-item-change-type-select').select(selected_type)
-
+    select selected_type, from: s_('WorkItem|Type')
     click_button s_('WorkItem|Change type')
-
-    wait_for_requests
 
     expect(page).to have_selector(expected_selector)
   end

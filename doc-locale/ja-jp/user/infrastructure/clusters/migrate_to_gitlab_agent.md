@@ -1,8 +1,8 @@
 ---
-stage: Deploy
-group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Kubernetes用GitLabエージェントに移行する
+stage: Verify
+group: Runner Core
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Kubernetes向けGitLabエージェントへの移行
 ---
 
 {{< details >}}
@@ -12,55 +12,49 @@ title: Kubernetes用GitLabエージェントに移行する
 
 {{< /details >}}
 
-KubernetesクラスターをGitLabに接続するには、次の方法があります:
+GitLabとKubernetesクラスターを接続するには、以下を使用できます:
 
-- [GitOps](../../clusters/agent/gitops.md)ワークフロー
-- [GitLab CI/CD](../../clusters/agent/ci_cd_workflow.md)ワークフロー
+- [GitOpsワークフロー](../../clusters/agent/gitops.md)。
+- [GitLab CI/CDワークフロー](../../clusters/agent/ci_cd_workflow.md)。
 - [証明書ベースのインテグレーション](_index.md)。
 
-証明書ベースのインテグレーションは、GitLabバージョン14.5で[**非推奨**](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/)になりました。段階的廃止の計画は次のとおりです:
+証明書ベースのインテグレーションはGitLab 14.5で[**非推奨**](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/)です。サービス終了計画は以下に記載されています:
 
-- [GitLab.comをご利用のお客様](../../../update/deprecations.md#gitlabcom-certificate-based-integration-with-kubernetes)向け。
-- [GitLabセルフマネージドをご利用のお客様](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes)向け。
+- [GitLab.comユーザー](../../../update/deprecations.md#gitlabcom-certificate-based-integration-with-kubernetes)向け。
+- [GitLab Self-Managedユーザー](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes)向け。
 
-証明書ベースのインテグレーションを使用している場合は、できるだけ早く別のワークフローに移行してください。
+証明書ベースのインテグレーションを使用している場合は、できるだけ早く別のワークフローに移行する必要があります。
 
-一般的なルールとして、GitLab CI/CDに依存するクラスターを移行するには、[CI/CDワークフロー](../../clusters/agent/ci_cd_workflow.md)を使用できます。このワークフローでは、クラスターへの接続にエージェントを使用します。エージェント:
+一般的なルールとして、GitLab CI/CDに依存するクラスターを移行する移行するには、[CI/CDワークフロー](../../clusters/agent/ci_cd_workflow.md)を使用できます。このワークフローは、エージェントを使用してクラスターに接続します。エージェント:
 
-- インターネットに公開されていません。
+- インターネットに公開されません。
 - GitLabへの完全な[`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)アクセスを必要としません。
 
-{{< alert type="note" >}}
-
-証明書ベースのインテグレーションは、GitLab管理アプリケーション、GitLab管理クラスター、Auto DevOpsなどの一般的なGitLab機能に使用されていました。
-
-{{< /alert >}}
+> [!note]
+> 証明書ベースのインテグレーションは、GitLabマネージドApp、GitLabマネージドクラスター、Auto DevOpsなどの一般的なGitLab機能に使用されていました。
 
 ## 証明書ベースのクラスターを検索 {#find-certificate-based-clusters}
 
-サブグループやプロジェクトを含む、GitLabインスタンスまたはグループ内のすべての証明書ベースのクラスターを検索するには、[専用のAPI](../../../api/cluster_discovery.md#discover-certificate-based-clusters)を使用します。グループIDを使用してAPIをクエリすると、指定されたグループ以下で定義されているすべての証明書ベースのクラスターが返されます。
+GitLabインスタンスまたはグループ内にあるすべての証明書ベースのクラスター（サブグループやプロジェクトを含む）は、[専用のAPI](../../../api/cluster_discovery.md#retrieve-certificate-based-clusters)を使用して検索できます。グループIDでAPIをクエリすると、指定されたグループまたはその下に定義されているすべての証明書ベースのクラスターが返されます。
 
-この場合、親グループで定義されたクラスターは返されません。この動作は、グループのオーナーが移行に必要なすべてのクラスターを見つけるのに役立ちます。
+この場合、親グループに定義されているクラスターは返されません。この動作により、グループオーナーは移行する必要のあるすべてのクラスターを見つけることができます。
 
-無効になっているクラスターも、誤ってクラスターを置き去りにしないように、同様に返されます。
+誤ってクラスターが残されることを避けるため、無効化されたクラスターも返されます。
 
-{{< alert type="note" >}}
-
-クラスター検出APIは、個人のネームスペースでは機能しません。
-
-{{< /alert >}}
+> [!note]
+> クラスター検出APIは個人ネームスペースでは動作しません。
 
 ## 一般的なデプロイを移行する {#migrate-generic-deployments}
 
 一般的なデプロイを移行するには:
 
 1. [Kubernetes向けGitLabエージェント](../../clusters/agent/install/_index.md)をインストールします。
-1. CI/CDワークフローに従って、[エージェントがアクセスを承認](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)するようにグループとプロジェクトを設定するか、[代理でアクセスを保護](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation)します。
-1. 左側のサイドバーで、**操作** > **Kubernetesクラスター**を選択します。
+1. CI/CDワークフローに従って、[エージェントにグループとプロジェクトへのアクセスを許可する](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)か、[代理でアクセスを保護](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation)します。
+1. 左サイドバーで、**操作** > **Kubernetesクラスター**を選択します。
 1. 証明書ベースのクラスターセクションから、同じ環境スコープを提供するクラスターを開きます。
 1. **詳細**タブを選択し、クラスターをオフにします。
 
-## GitLab管理クラスターからKubernetesリソースへの移行 {#migrate-from-gitlab-managed-clusters-to-kubernetes-resources}
+## GitLabマネージドクラスターからKubernetesリソースへの移行する {#migrate-from-gitlab-managed-clusters-to-kubernetes-resources}
 
 {{< details >}}
 
@@ -68,27 +62,27 @@ KubernetesクラスターをGitLabに接続するには、次の方法があり�
 
 {{< /details >}}
 
-GitLab管理クラスターを使用すると、GitLabはすべてのブランチとデプロイに対して個別のサービスアカウントとネームスペースを作成し、これらのリソースを使用してデプロイします。
+GitLabマネージドクラスターを使用すると、GitLabはブランチごとに個別のサービスアカウントとネームスペースを作成し、これらのリソースを使用してデプロイします。
 
-[GitLab管理のKubernetesリソース](../../clusters/agent/managed_kubernetes_resources.md)を使用すると、強化されたセキュリティ制御でリソースをセルフサービスできます。
+これで、[GitLabマネージドKubernetesリソース](../../clusters/agent/managed_kubernetes_resources.md)を使用して、強化されたセキュリティ制御でリソースをセルフサービスで利用できます。
 
-GitLab管理のKubernetesリソースを使用すると、次のことができます:
+GitLabマネージドKubernetesリソースを使用すると、以下のことが可能です:
 
-- 手動で介入することなく、環境を安全にセットアップします。
-- デベロッパーに管理クラスターの権限を付与せずに、リソースの作成とアクセスを制御します。
-- デベロッパーが新しいプロジェクトまたは環境を作成するときに、セルフサービス機能を提供します。
-- デベロッパーが専用または共有ネームスペースでテストバージョンと開発バージョンをデプロイできるようにします。
+- 手動での介入なしに、安全に環境を設定できます。
+- デベロッパーに管理クラスター権限を与えることなく、リソースの作成とアクセスを制御できます。
+- 新しいプロジェクトや環境を作成する際に、デベロッパーにセルフサービス機能を提供します。
+- デベロッパーが専用または共有のネームスペースにテストおよび開発バージョンをデプロイできるようにします。
 
-前提要件:
+前提条件: 
 
 - [Kubernetes向けGitLabエージェント](../../clusters/agent/install/_index.md)をインストールします。
-- 関連するプロジェクトまたはグループへのアクセスを[エージェントに承認](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)します。
-- 証明書ベースのクラスターインテグレーションページの**環境ごとのネームスペース**チェックボックスの状態を確認します。
+- [エージェントのアクセスを承認](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)し、関連するプロジェクトまたはグループにアクセスさせます。
+- 証明書ベースのクラスターインテグレーションページで、**環境ごとのネームスペース**チェックボックスのステータスを確認します。
 
-GitLab管理クラスターからGitLab管理のKubernetesリソースに移行するには:
+GitLabマネージドクラスターからGitLabマネージドKubernetesリソースへ移行するには:
 
-1. 既存の環境を移行する場合は、[Kubernetesのダッシュボード](../../../ci/environments/kubernetes_dashboard.md#configure-a-dashboard)または[環境API](../../../api/environments.md)のいずれかを介して、環境のエージェントを設定します。
-1. エージェントの設定ファイルでリソース管理をオンにするようにエージェントを設定します:
+1. 既存の環境を移行する場合は、[Kubernetes用ダッシュボード](../../../ci/environments/kubernetes_dashboard.md#configure-a-dashboard)または[環境API](../../../api/environments.md)のいずれかを使用して、環境用のエージェントを設定します。
+1. エージェント設定ファイルでリソース管理を有効にするようにエージェントを設定します:
 
    ```yaml
    ci_access:
@@ -106,9 +100,9 @@ GitLab管理クラスターからGitLab管理のKubernetesリソースに移行�
             enabled: true
    ```
 
-1. `.gitlab/agents/<agent-name>/environment_templates/default.yaml`の下に環境テンプレートを作成します。証明書ベースのクラスターインテグレーションページの**環境ごとのネームスペース**チェックボックスの状態を確認します。
+1. `.gitlab/agents/<agent-name>/environment_templates/default.yaml`の下に環境テンプレートを作成します。証明書ベースのクラスターインテグレーションページで、**環境ごとのネームスペース**チェックボックスのステータスを確認します。
 
-   **環境ごとのネームスペース**がオンになっている場合は、次のテンプレートを使用します:
+   **環境ごとのネームスペース**がチェックされていた場合は、以下のテンプレートを使用します:
 
    ```yaml
    objects:
@@ -135,7 +129,7 @@ GitLab管理クラスターからGitLab管理のKubernetesリソースに移行�
          name: admin
    ```
 
-   **環境ごとのネームスペース**がオフになっている場合は、次のテンプレートを使用します:
+   **環境ごとのネームスペース**がチェックされていなかった場合は、以下のテンプレートを使用します:
 
    ```yaml
    objects:
@@ -158,26 +152,26 @@ GitLab管理クラスターからGitLab管理のKubernetesリソースに移行�
          name: admin
    ```
 
-1. CI/CD設定では、`environment.kubernetes.agent: <path/to/agent/project:agent-name>`構文でエージェントを使用します。
-1. 左側のサイドバーで、**操作** > **Kubernetesクラスター**を選択します。
+1. CI/CDの設定で、`environment.kubernetes.agent: <path/to/agent/project:agent-name>`構文を使用してエージェントを使用します。
+1. 左サイドバーで、**操作** > **Kubernetesクラスター**を選択します。
 1. 証明書ベースのクラスターセクションから、同じ環境スコープを提供するクラスターを開きます。
 1. **詳細**タブを選択し、クラスターをオフにします。
 
-## Auto DevOpsから移行 {#migrate-from-auto-devops}
+## Auto DevOpsからの移行する {#migrate-from-auto-devops}
 
-Auto DevOpsプロジェクトでは、Kubernetes向けGitLabエージェントを使用してKubernetesクラスターに接続できます。
+Auto DevOpsプロジェクトで、Kubernetes向けGitLabエージェントを使用してKubernetesクラスターに接続できます。
 
-前提要件
+前提条件
 
 - [Kubernetes向けGitLabエージェント](../../clusters/agent/install/_index.md)をインストールします。
-- 関連するプロジェクトまたはグループへのアクセスを[エージェントに承認](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)します。
+- [エージェントのアクセスを承認](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access)し、関連するプロジェクトまたはグループにアクセスさせます。
 
 Auto DevOpsから移行するには:
 
-1. GitLabで、Auto DevOpsを使用するプロジェクトに移動します。
-1. 3つの変数を追加します。左側のサイドバーで、**設定** > **CI/CD**を選択し、**変数**を展開します。
+1. GitLabで、Auto DevOpsを使用しているプロジェクトに移動します。
+1. 3つの変数を追加します。左サイドバーで、**設定** > **CI/CD**を選択し、**変数**を展開するします。
    - アプリケーションデプロイドメインを値として、`KUBE_INGRESS_BASE_DOMAIN`というキーを追加します。
-   - `path/to/agent/project:agent-name`のような値を持つ`KUBE_CONTEXT`というキーを追加します。任意の環境スコープを選択します。エージェントのコンテキストが不明な場合は、`.gitlab-ci.yml`ファイルを編集し、ジョブを追加して、使用可能なコンテキストを確認します:
+   - `path/to/agent/project:agent-name`のような値を持つ`KUBE_CONTEXT`というキーを追加します。任意の環境スコープを選択します。エージェントのコンテキストがわからない場合は、`.gitlab-ci.yml`ファイルを編集し、利用可能なコンテキストを確認するためのジョブを追加します:
 
      ```yaml
      deploy:
@@ -198,12 +192,12 @@ Auto DevOpsから移行するには:
          - kubectl config get-contexts
       ```
 
-   - デプロイのターゲットとするKubernetesネームスペースの値を指定して、`KUBE_NAMESPACE`というキーを追加します。同じ環境スコープを設定します。
-1. **変数を追加する**を選択します。
-1. 左側のサイドバーで、**操作** > **Kubernetesクラスター**を選択します。
+   - ターゲットとするデプロイ用のKubernetesネームスペースの値を、`KUBE_NAMESPACE`というキーに追加します。同じ環境スコープを設定します。
+1. **変数を追加**を選択します。
+1. 左サイドバーで、**操作** > **Kubernetesクラスター**を選択します。
 1. 証明書ベースのクラスターセクションから、同じ環境スコープを提供するクラスターを開きます。
 1. **詳細**タブを選択し、クラスターを無効にします。
-1. `.gitlab-ci.yml`ファイルを編集し、Auto DevOpsテンプレートを使用していることを確認します。次に例を示します: 
+1. `.gitlab-ci.yml`ファイルを編集し、Auto DevOpsテンプレートを使用していることを確認します。例: 
 
    ```yaml
    include:
@@ -215,21 +209,21 @@ Auto DevOpsから移行するには:
      KUBE_NAMESPACE: "demo-agent"
    ```
 
-1. パイプラインをテストするには、左側のサイドバーで**ビルド** > **パイプライン**、**パイプラインを新規作成**の順に選択します。
+1. パイプラインをテストするには、左サイドバーで**ビルド** > **パイプライン**、そして**新しいパイプライン**を選択します。
 
-例については、[このプロジェクトを表示](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service)してください。
+例として、[このプロジェクト](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service)をご覧ください。
 
-## GitLab管理アプリケーションから移行 {#migrate-from-gitlab-managed-applications}
+## GitLabマネージドアプリケーションからの移行する {#migrate-from-gitlab-managed-applications}
 
-GitLab管理アプリケーション（GMA）はGitLab 14.0で非推奨となり、GitLab 15.0で削除されました。Kubernetes向けエージェントはそれらをサポートしていません。GMAからエージェントに移行するには、次の手順を実行します:
+GitLabマネージドApp (GMA) はGitLab 14.0で非推奨となり、GitLab 15.0で削除されました。Kubernetes用エージェントはそれらをサポートしていません。GMAからエージェントへ移行するには、以下の手順を実行します:
 
-1. [GitLab管理アプリケーションからクラスター管理プロジェクトに移行します](../../clusters/migrating_from_gma_to_project_template.md)。
-1. [クラスター管理プロジェクトを移行してエージェントを使用します](../../clusters/management_project_template.md)。
+1. [GitLabマネージドAppからクラスター管理プロジェクトへ移行する](../../clusters/migrating_from_gma_to_project_template.md)。
+1. [クラスター管理プロジェクトをエージェントを使用するように移行する](../../clusters/management_project_template.md)。
 
 ## クラスター管理プロジェクトを移行する {#migrate-a-cluster-management-project}
 
-[Kubernetes向けGitLabエージェントでクラスター管理プロジェクトを使用する方法](../../clusters/management_project_template.md)を参照してください。
+[Kubernetes向けGitLabエージェントでクラスター管理プロジェクトを使用する方法](../../clusters/management_project_template.md)をご覧ください。
 
-## クラスターモニタリング機能を移行する {#migrate-cluster-monitoring-features}
+## クラスターモニタリング機能の移行する {#migrate-cluster-monitoring-features}
 
-KubernetesクラスターをKubernetes向けGitLabエージェントを使用してGitLabに接続すると、[Kubernetesのダッシュボード](../../../ci/environments/kubernetes_dashboard.md)を有効にした後、[ユーザーアクセス](../../clusters/agent/user_access.md)を使用できます。
+KubernetesクラスターをKubernetes用エージェントを使用してGitLabに接続すると、[ユーザーアクセス](../../clusters/agent/user_access.md)を有効にした後、[Kubernetes用ダッシュボード](../../../ci/environments/kubernetes_dashboard.md)を使用できます。

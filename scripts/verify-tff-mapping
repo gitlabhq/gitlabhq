@@ -30,12 +30,6 @@ tests = [
   },
 
   {
-    explanation: 'FOSS code should map to respective spec',
-    changed_file: 'app/finders/admin/projects_finder.rb',
-    expected: ['spec/finders/admin/projects_finder_spec.rb']
-  },
-
-  {
     explanation: 'Map spec support to corresponding support specs',
     changed_file: 'spec/support/database/prevent_cross_joins.rb',
     expected: 'spec/support_specs/database/prevent_cross_joins_spec.rb'
@@ -83,15 +77,6 @@ tests = [
     expected: %w[
       spec/lib/gitlab/ci/yaml_processor_spec.rb
       ee/spec/lib/gitlab/ci/yaml_processor_spec.rb
-    ]
-  },
-
-  {
-    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987902951',
-    changed_file: 'ee/lib/audit_events/strategies/instance/amazon_s3_destination_strategy.rb',
-    expected: %w[
-      ee/spec/lib/audit_events/strategies/instance/amazon_s3_destination_strategy_spec.rb
-      ee/spec/lib/audit_events/external_destination_streamer_spec.rb
     ]
   },
 
@@ -287,7 +272,6 @@ tests = [
       spec/config/metrics/every_metric_definition_spec.rb
       ee/spec/config/metrics/every_metric_definition_spec.rb
       spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb
-      spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb
     ]
   },
@@ -307,7 +291,6 @@ tests = [
     changed_file: 'config/events/schema.json',
     expected: %w[
       spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb
-      spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb
     ]
   },
@@ -317,23 +300,6 @@ tests = [
     changed_file: 'lib/gitlab/internal_events.rb',
     expected: %w[
       spec/lib/gitlab/internal_events_spec.rb
-      spec/scripts/internal_events/cli_spec.rb
-      spec/support_specs/matchers/internal_events_matchers_spec.rb
-    ]
-  },
-  {
-    explanation: 'Internal Events CLI entrypoint maps to internal events tooling',
-    changed_file: 'scripts/internal_events/cli.rb',
-    expected: %w[
-      spec/scripts/internal_events/cli_spec.rb
-      spec/support_specs/matchers/internal_events_matchers_spec.rb
-    ]
-  },
-  {
-    explanation: 'Internal Events CLI logic maps to internal events tooling',
-    changed_file: 'scripts/internal_events/cli/global_state.rb',
-    expected: %w[
-      spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb
     ]
   },
@@ -341,7 +307,6 @@ tests = [
     explanation: 'Internal Events default test setup maps to internal events tooling',
     changed_file: 'spec/support/shared_examples/controllers/internal_event_tracking_examples.rb',
     expected: %w[
-      spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb
     ]
   },
@@ -349,15 +314,6 @@ tests = [
     explanation: 'Internal Events custom test setup maps to internal events tooling',
     changed_file: 'spec/support/matchers/internal_events_matchers.rb',
     expected: %w[
-      spec/scripts/internal_events/cli_spec.rb
-      spec/support_specs/matchers/internal_events_matchers_spec.rb
-    ]
-  },
-  {
-    explanation: 'Internal Events test cases map to internal events tooling',
-    changed_file: 'spec/fixtures/scripts/internal_events/event_definer_examples.yml',
-    expected: %w[
-      spec/scripts/internal_events/cli_spec.rb
       spec/support_specs/matchers/internal_events_matchers_spec.rb
     ]
   },
@@ -695,11 +651,10 @@ tests = [
       ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_company_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_just_me_paid_plan_spec.rb
-      ee/spec/features/registrations/saas/trial_flow_company_creating_project_spec.rb
-      ee/spec/features/registrations/saas/trial_flow_company_importing_project_spec.rb
-      ee/spec/features/registrations/saas/trial_flow_just_me_creating_project_spec.rb
-      ee/spec/features/registrations/saas/trial_flow_just_me_importing_project_spec.rb
+      ee/spec/features/registrations/saas/trial_flow_spec.rb
       ee/spec/controllers/registrations/company_controller_spec.rb
+      ee/spec/requests/ee/registrations_controller_spec.rb
+      ee/spec/requests/trial_registrations_controller_spec.rb
       ee/spec/features/registrations/email_opt_in_registration_spec.rb
       ee/spec/features/registrations/one_trust_spec.rb
     ]

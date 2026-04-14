@@ -47,7 +47,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd>+<kbd>t</kbd>      | Go to your **To-Do List** page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>    | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
-| <kbd>g</kbd>, then <kbd>x</kbd>    | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
+| <kbd>g</kbd>, then <kbd>x</kbd>    | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab.com only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/_index.md). |
 | <kbd>d</kbd>                       | Open GitLab Duo Chat |
 
@@ -231,6 +231,56 @@ These shortcuts are available when editing a file with the
 | <kbd>Shift</kbd>+<kbd>↓</kbd>     | <kbd>Shift</kbd>+<kbd>↓</kbd>     | Extend selection one line down |
 | <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd> | Extend selection to the beginning of the document |
 | <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>↓</kbd> | <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>↓</kbd> | Extend selection to the end of the document |
+
+### GitLab Duo Chat
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/197) in GitLab 18.7.
+
+{{< /history >}}
+
+The following shortcuts are available when using [GitLab Duo Non-Agentic Chat](gitlab_duo_chat/_index.md) with a supported IDE.
+
+| macOS shortcut                    | Windows shortcut                  | Description | VS Code | JetBrains IDEs | Visual Studio |
+|-----------------------------------|-----------------------------------|-------------|---|---|---|
+| <kbd>Option</kbd>+<kbd>d</kbd>    | <kbd>Alt</kbd>+<kbd>d</kbd> | Open or close Chat, or switch focus to Chat if already open| {{< yes >}} | {{< yes >}} | {{< no >}} |
+| <kbd>Option</kbd>+<kbd>n</kbd>    | <kbd>Alt</kbd>+<kbd>n</kbd> | In Chat, start a new conversation. | {{< yes >}} | {{< no >}} | {{< no >}} |
+| <kbd>Option</kbd>+<kbd>r</kbd>    | <kbd>Alt</kbd>+<kbd>r</kbd> | [Refactor code](gitlab_duo_chat/examples.md#refactor-code-in-the-ide)| {{< yes >}} | {{< no >}} | {{< no >}} |
+| <kbd>Option</kbd>+<kbd>t</kbd>    | <kbd>Alt</kbd>+<kbd>t</kbd> | [Write tests](gitlab_duo_chat/examples.md#write-tests-in-the-ide)| {{< yes >}} | {{< no >}} | {{< no >}} |
+
+You can customize these shortcuts in your IDE.
+
+#### Customize in VS Code
+
+1. In VS Code, go to **Settings** > **Keyboard Shortcuts**.
+1. In the search text box, enter <kbd>GitLab</kbd> to find all GitLab shortcuts.
+1. For the shortcut you want to customize, select **Change Keybinding (Enter)** {{< icon name="pencil" >}}.
+1. Press the new shortcut key combination, and press <kbd>Enter</kbd>.
+
+#### Customize in JetBrains IDEs
+
+1. In your JetBrains IDE, go to **Settings** > **Keymap**, or the equivalent keyboard
+   mapping settings for your IDE.
+1. Find all GitLab shortcuts.
+1. Customize the appropriate shortcut and save.
+
+#### Customize in Visual Studio
+
+1. In Visual Studio, go to **Tools** > **Options**.
+1. Go to **Environment** > **Keyboard**.
+1. In the **Show commands containing:** text box, enter <kbd>GitLab</kbd> to find all GitLab shortcuts.
+1. Under **Press shortcut keys**, select the current shortcut key combination.
+1. Press the new shortcut key combination, and select **Assign**.
+1. Select **OK**.
 
 ## Epics
 

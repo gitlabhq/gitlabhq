@@ -3,6 +3,6 @@ migration_job_name: BackfillPartitionedUploads
 description: Back-fill partitoned uploads_9ba88c4165 table and populate sharding keys
 feature_category: database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181349
-milestone: '18.2'
+milestone: '18.8' # This background migration was re-queued in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214675
 queued_migration_version: 20251201121648
 finalized_by: '20260120231710'

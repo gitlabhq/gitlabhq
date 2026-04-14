@@ -122,6 +122,7 @@ export default {
         { value: 'GENERIC', text: s__('PackageRegistry|Generic') },
         { value: 'NUGET', text: s__('PackageRegistry|NuGet') },
         { value: 'HELM', text: s__('PackageRegistry|Helm') },
+        { value: 'TERRAFORM_MODULE', text: s__('PackageRegistry|Terraform module') },
       ];
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));

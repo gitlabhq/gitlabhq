@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { sanitize } from '~/lib/dompurify';
 
 const TEXT_NODE = 3;

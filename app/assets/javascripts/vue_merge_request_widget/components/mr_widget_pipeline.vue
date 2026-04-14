@@ -10,6 +10,7 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import MrWidgetPipelineDuoAction from 'ee_component/vue_merge_request_widget/components/mr_duo_fix_pipeline.vue';
+import { reportToSentry } from '~/ci/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -44,6 +45,9 @@ export default {
         return !this.retargeted;
       },
       update: (d) => d.project?.mergeRequest?.pipelines?.nodes?.[0]?.mergeRequestEventType,
+      error(err) {
+        reportToSentry(this.$options.name, err);
+      },
     },
   },
   components: {

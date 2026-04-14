@@ -24,12 +24,20 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     let_it_be(:active_worker) { create(worker_factory, :active) }
     let_it_be(:paused_worker) { create(worker_factory, :paused) }
     let_it_be(:finished_worker) { create(worker_factory, :finished) }
+    let_it_be(:failed_worker) { create(worker_factory, :failed) }
 
     let(:unfinished_workers) { [queued_worker, active_worker, paused_worker] }
+    let(:completed_workers) { [finished_worker, failed_worker] }
 
     describe '.unfinished' do
       it 'returns workers with queued, active or paused status' do
         expect(described_class.unfinished).to match_array(unfinished_workers)
+      end
+    end
+
+    describe '.completed' do
+      it 'returns workers with finished or failed status' do
+        expect(described_class.completed).to match_array(completed_workers)
       end
     end
 
@@ -59,6 +67,58 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
       end
     end
 
+    describe '.completed_with_config' do
+      let(:config) do
+        {
+          job_class_name: 'CustomJobClass',
+          table_name: 'users',
+          column_name: 'id',
+          job_arguments: finished_worker.job_arguments
+        }
+      end
+
+      before do
+        finished_worker.update!(**config)
+      end
+
+      it 'returns finished workers with the given configurations' do
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: finished_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        expect(described_class.completed_with_config(*config.values, **extra_param))
+          .to match_array([finished_worker])
+      end
+
+      it 'includes failed workers' do
+        failed_worker = create(worker_factory, :failed, **config)
+
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: failed_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        expect(described_class.completed_with_config(*config.values, **extra_param))
+          .to include(failed_worker)
+      end
+
+      it 'excludes unfinished workers' do
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: queued_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        queued_worker.update!(**config)
+
+        expect(described_class.completed_with_config(*config.values, **extra_param))
+          .not_to include(queued_worker)
+      end
+    end
+
     describe '.executable' do
       let_it_be(:paused_without_hold) { create(worker_factory, :paused, on_hold_until: 2.days.ago) }
 
@@ -68,7 +128,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     describe '.for_gitlab_schema' do
-      let(:main_workers) { [queued_worker, active_worker, paused_worker, finished_worker] }
+      let(:main_workers) { [queued_worker, active_worker, paused_worker, finished_worker, failed_worker] }
       let_it_be(:ci_worker) { create(worker_factory, :queued, gitlab_schema: :gitlab_ci_org) }
 
       it 'returns workers with the specified gitlab_schema' do
@@ -262,6 +322,54 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
           # and we only have the newly created partition left.
           expect(described_class.count).to eq(1)
         end
+      end
+    end
+  end
+
+  describe '.previous_max_cursor' do
+    let(:config) do
+      {
+        job_class_name: 'CustomJobClass',
+        table_name: 'users',
+        column_name: 'id',
+        job_arguments: ['arg1']
+      }
+    end
+
+    context 'when a previous finished worker exists with jobs' do
+      it 'returns the max_cursor from the last job of the most recent finished worker' do
+        previous_worker = create(worker_factory, :finished, **config)
+        create(job_factory, :succeeded, worker: previous_worker, min_cursor: [1], max_cursor: [500])
+        create(job_factory, :succeeded, worker: previous_worker, min_cursor: [500], max_cursor: [1000])
+
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: previous_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        expect(described_class.previous_max_cursor(*config.values, **extra_param)).to eq([1000])
+      end
+    end
+
+    context 'when a previous failed worker exists with jobs' do
+      it 'returns the max_cursor from the last job' do
+        previous_worker = create(worker_factory, :failed, **config)
+        create(job_factory, :succeeded, worker: previous_worker, min_cursor: [1], max_cursor: [500])
+
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: previous_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        expect(described_class.previous_max_cursor(*config.values, **extra_param)).to eq([500])
+      end
+    end
+
+    context 'when no previous worker exists' do
+      it 'returns nil' do
+        expect(described_class.previous_max_cursor(*config.values)).to be_nil
       end
     end
   end

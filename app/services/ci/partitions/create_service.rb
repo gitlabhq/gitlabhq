@@ -3,7 +3,7 @@
 module Ci
   module Partitions
     class CreateService
-      HEADROOM_PARTITIONS = 2
+      HEADROOM_PARTITIONS = 0
 
       def initialize(partition)
         @partition = partition

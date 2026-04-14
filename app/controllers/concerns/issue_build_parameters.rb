@@ -64,7 +64,7 @@ module IssueBuildParameters
   end
 
   def allowed_issue_type?(issue_type)
-    ::WorkItems::TypesFilter.allowed_types_for_issues.include?(issue_type.to_s)
+    ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.include?(issue_type.to_s)
   end
 
   def vulnerability

@@ -57,6 +57,8 @@ const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
+const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
+const { CONTEXT_ALIASES } = require('./helpers/context_aliases_shared');
 
 const SUPPORTED_BROWSERS = fs.readFileSync(path.join(ROOT_PATH, '.browserslistrc'), 'utf-8');
 const SUPPORTED_BROWSERS_HASH = crypto
@@ -117,6 +119,27 @@ const alias = {
   lodash: 'lodash-es',
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
+  // Mermaid v11's transitive deps use package.json "exports" without "main"
+  // fallbacks. Webpack 4 doesn't support the exports field, so we alias them
+  // to their actual entry files.
+  '@mermaid-js/parser': path.join(
+    ROOT_PATH,
+    'node_modules/@mermaid-js/parser/dist/mermaid-parser.core.mjs',
+  ),
+  '@chevrotain/cst-dts-gen': path.join(
+    ROOT_PATH,
+    'node_modules/@chevrotain/cst-dts-gen/lib/src/api.js',
+  ),
+  '@chevrotain/gast': path.join(ROOT_PATH, 'node_modules/@chevrotain/gast/lib/src/api.js'),
+  '@chevrotain/regexp-to-ast': path.join(
+    ROOT_PATH,
+    'node_modules/@chevrotain/regexp-to-ast/lib/src/api.js',
+  ),
+  '@chevrotain/utils': path.join(ROOT_PATH, 'node_modules/@chevrotain/utils/lib/src/api.js'),
+  chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
+  'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
+  langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
+
   // the following resolves files which are different between CE and EE
   ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
@@ -147,12 +170,6 @@ const alias = {
 
   // load mjs version instead of cjs
   'markdown-it': path.join(ROOT_PATH, 'node_modules/markdown-it/index.mjs'),
-
-  // Alias portal-vue to resolve dynamically to pick proper vue version
-  'portal-vue$': path.join(
-    ROOT_PATH,
-    'app/assets/javascripts/lib/utils/vue3compat/portal_vue_compat.js',
-  ),
 
   // test-environment-only aliases duplicated from Jest config
   'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),
@@ -270,33 +287,7 @@ const shouldExcludeFromCompiling = (modulePath) => {
 };
 
 if (USE_VUE3) {
-  Object.assign(alias, {
-    // ensure we always use the same type of module for Vue
-    '@vue/compat': '@vue/compat/dist/vue.runtime.esm-bundler.js',
-    vue: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue.js'),
-    vuedraggable: path.join(
-      ROOT_PATH,
-      'node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js',
-    ),
-    vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
-    'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
-    'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
-    // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
-    // use an alias to ensure vue-demi finds the right version
-    'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),
-    'vendor/vue-virtual-scroller': path.join(
-      ROOT_PATH,
-      'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
-    ),
-    'vue-virtual-scroll-list': path.join(
-      ROOT_PATH,
-      'app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
-    ),
-    'portal-vue-vue3-impl$': path.join(
-      ROOT_PATH,
-      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
-    ),
-  });
+  Object.assign(alias, CONTEXT_ALIASES);
 
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
@@ -317,13 +308,6 @@ if (USE_VUE3) {
   } else {
     vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
   }
-} else {
-  Object.assign(alias, {
-    'portal-vue-vue3-impl$': path.join(
-      ROOT_PATH,
-      'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3_stub.js',
-    ),
-  });
 }
 
 const entriesState = {
@@ -358,7 +342,8 @@ module.exports = {
       coverage_persistence: './entrypoints/coverage_persistence.js',
       performance_bar: './entrypoints/performance_bar.js',
       jira_connect_app: './jira_connect/subscriptions/index.js',
-      sandboxed_mermaid: './lib/mermaid.js',
+      sandboxed_mermaid_v10: './lib/mermaid_v10.js',
+      sandboxed_mermaid_v11: './lib/mermaid_v11.js',
       redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
       sandboxed_swagger: './lib/swagger.js',
       super_sidebar: './entrypoints/super_sidebar.js',
@@ -444,7 +429,10 @@ module.exports = {
         ],
       },
       {
-        test: /mermaid\/.*\.js?$/,
+        // mermaid v11 and its transitive deps (@mermaid-js/parser, @iconify/utils,
+        // langium, etc.) use modern syntax (optional chaining, static blocks) that
+        // webpack 4 can't parse. Transpile them along with both mermaid versions.
+        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|langium|vscode-\w+|chevrotain(-allstar)?|@chevrotain)\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -659,6 +647,7 @@ module.exports = {
   },
 
   plugins: [
+    !USE_VUE3 && new WebpackVue3InfectionPlugin(),
     // A custom function is needed because chunkIds: "named" alone only
     // affects chunks that already have names (entry points, chunks with
     // magic comments such as:

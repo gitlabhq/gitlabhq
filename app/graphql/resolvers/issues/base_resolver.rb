@@ -92,6 +92,7 @@ module Resolvers
       argument :work_item_type_ids,
         [::Types::GlobalIDType[::WorkItems::Type]],
         required: false,
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
         description: 'Filter issues by work item type global IDs.',
         prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 

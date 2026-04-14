@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
@@ -119,6 +119,23 @@ describe('TablePresenter', () => {
       it('sorts the table by the field in ascending order', () => {
         expect(actualOrder).toEqual(orderAsc);
       });
+
+      it('shows an arrow-up icon on the sorted column', () => {
+        const icon = wrapper.findByTestId(`column-${cellIndex}`).findComponent(GlIcon);
+
+        expect(icon.props('name')).toBe('arrow-up');
+      });
+
+      it('does not show a sort icon on other columns', () => {
+        const otherColumns = MOCK_FIELDS.filter((_, i) => i !== cellIndex);
+
+        otherColumns.forEach((_, i) => {
+          const colIndex = i >= cellIndex ? i + 1 : i;
+          const icon = wrapper.findByTestId(`column-${colIndex}`).findComponent(GlIcon);
+
+          expect(icon.exists()).toBe(false);
+        });
+      });
     });
 
     describe('twice', () => {
@@ -128,6 +145,12 @@ describe('TablePresenter', () => {
 
       it('sorts the table by the field in descending order', () => {
         expect(actualOrder).toEqual(orderDesc);
+      });
+
+      it('shows an arrow-down icon on the sorted column', () => {
+        const icon = wrapper.findByTestId(`column-${cellIndex}`).findComponent(GlIcon);
+
+        expect(icon.props('name')).toBe('arrow-down');
       });
     });
   });

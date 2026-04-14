@@ -24,7 +24,7 @@ Lists all security settings for the project.
 
 Prerequisites:
 
-- You must have the Developer, Maintainer, or Owner role for the project.
+- You must have the Security Manager, Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/security_settings

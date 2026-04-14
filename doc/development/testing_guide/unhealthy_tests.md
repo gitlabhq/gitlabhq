@@ -290,6 +290,37 @@ For tests that are slow for a legitimate reason and to skip issue creation, add 
 | 2023-02-15 | 67.42 seconds |         44.66 seconds          |   -   | 76.86 seconds | Top slow test eliminating the maximum |
 | 2023-06-15 | 50.13 seconds |         19.20 seconds          | 27.12 | 45.40 seconds | Avg for top 100 slow tests |
 
+### Common patterns that cause slow tests
+
+The following patterns are the most common causes of test slowness identified
+during systematic improvement efforts. Each links to detailed guidance in the
+[testing best practices guide](best_practices.md).
+
+- **Waiting full timeout for expected-absent elements** — Capybara waits the full
+  default timeout before concluding an element is absent. Use `have_no_testid`
+  instead of `not_to have_testid`, and `wait: 0` for generic matchers inside
+  already-loaded containers. See [Avoid waiting for elements you expect to be absent](best_practices.md#avoid-waiting-for-elements-you-expect-to-be-absent).
+
+- **Using `all()` instead of `find()`** — `all()` does not raise on missing
+  elements and does not benefit from Capybara's smart waiting. Block iteration
+  over `all()` results is particularly slow. See
+  [Avoid `all()` with `.first` or block iteration](best_practices.md#avoid-all-with-first-or-block-iteration).
+
+- **Slow shared examples with wide inclusion** — A shared example that is slow
+  multiplies its cost across every file that includes it. See
+  [Performance impact of slow shared examples](best_practices.md#performance-impact-of-slow-shared-examples).
+
+- **Triggering real external operations** — Specs that shell out to compile
+  binaries or run Git commands inherit that wall-clock cost even when the logic
+  is already unit-tested. See [Mock expensive external operations](best_practices.md#mock-expensive-external-operations).
+
+- **Factory cascades** — Unnecessarily deep factory associations silently multiply
+  database writes. See [Optimize factory usage](best_practices.md#optimize-factory-usage).
+
+- **Unnecessary `:js` tag** — Running specs with a full JavaScript browser when
+  an HTML response would suffice. See
+  [Don't request capabilities you don't need](best_practices.md#dont-request-capabilities-you-dont-need).
+
 ---
 
 [Return to Testing documentation](_index.md)

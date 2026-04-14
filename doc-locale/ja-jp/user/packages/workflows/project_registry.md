@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 専用のタイプ固有レジストリでパッケージを管理します
 ---
 
@@ -12,23 +12,23 @@ title: 専用のタイプ固有レジストリでパッケージを管理しま�
 
 {{< /details >}}
 
-トップレベルのアーティファクト管理グループ内の専用プロジェクトで、タイプごとにパッケージを整理します。このアプローチにより、明確な所有権とタイプ固有のポリシーが実現します。
+トップレベルのアーティファクト管理グループの配下に、パッケージの種類ごとに専用のプロジェクトを作成して整理します。この方法により、所有権が明確になり、種類ごとのポリシーも適用しやすくなります。
 
 このアプローチは、次のような場合に使用します:
 
 - 専用のポリシーと設定を使用して、タイプごとにパッケージを整理する。
 - 組織のすべてのパッケージに対して、単一の消費エンドポイントを提供する。
 - サードパーティのレジストリから構造化されたGitLabの設定にパッケージを移行する。
-- パッケージ管理の懸念をアプリケーションのソースコードから分離する。
+- パッケージ管理の問題をアプリケーションのソースコードから切り離す。
 - 異なるパッケージタイプに異なるガバナンスポリシーを適用する。
 - 組織全体のアクセスを有効にしながら、明確な所有権を維持する。
 
-## 例：チュートリアル {#example-walkthrough}
+## 例を用いた説明 {#example-walkthrough}
 
 このアプローチでパッケージを効果的に整理および管理するには、次の手順を実行する必要があります:
 
 - パッケージタイプ別に編成されたプロジェクトを含む、アーティファクト管理専用のトップレベルグループを作成します。
-- パッケージの消費時にパフォーマンスを向上させるために、トップレベルグループをアーティファクトを含むプロジェクトのみに制限します。
+- パッケージ利用時のパフォーマンスを向上させるため、トップレベルグループには、アーティファクトを持つプロジェクトのみを含めるようにします。
 
 ### 推奨される構造 {#recommended-structure}
 
@@ -45,13 +45,14 @@ company_namespace/artifact_management/ # top-level group
 └── generic-packages/        # Generic file packages
 ```
 
-> [!note]一部の組織では、パッケージのライフサイクルまたは安定性に基づいて、さらに分離することを推奨しています。たとえば、`java-releases/`と`java-snapshots/`に対して別個のプロジェクトを作成できます。このようにして、安定したパッケージと開発パッケージに異なるクリーンアップポリシー、アクセス制御、または承認ワークフローを適用できます。
+> [!note]
+> パッケージのライフサイクルや安定性に基づいて、さらに分離したい組織もあると思います。たとえば、`java-releases/`用と`java-snapshots/`用でプロジェクトを分けて作成することが考えられます。こうすることで、安定版パッケージと開発用パッケージに対して、それぞれ異なるクリーンアップポリシー、アクセス制御、承認ワークフローを適用できます。
 
 ### グループとプロジェクトを作成する {#create-the-group-and-projects}
 
 アーティファクト管理用の新しいトップレベルグループを作成します:
 
-1. 上部のバーで、**新規作成**（{{< icon name="plus" >}}）と**新規グループ**を選択します。
+1. 上部のバーで、**新規作成**（{{< icon name="plus" >}}）と**新しいグループ**を選択します。
 1. **グループを作成**を選択します。
 1. **グループ名**テキストボックスに、`Artifact Management`などを入力します。
 1. **グループURL**では、生成されたパスをそのまま使用します。
@@ -67,7 +68,7 @@ company_namespace/artifact_management/ # top-level group
 1. 適切な表示レベルを設定します。
 1. **プロジェクトを作成**を選択します。
 
-組織が最も使用するパッケージタイプから開始し、追加のパッケージ形式を採用するにつれて構造を展開します。このアプローチは、セキュリティと使いやすさを維持しながら、自然にスケールします。
+まずは、組織で最も利用頻度の高いパッケージタイプから始め、新たなパッケージ形式を採用するに従って、構成を段階的に拡張していきます。この方法により、セキュリティと使いやすさを保ちながら、無理なくスケールさせることができます。
 
 グループの設定を構成します:
 
@@ -77,7 +78,7 @@ company_namespace/artifact_management/ # top-level group
 
 ## 認証とアクセスを設定する {#configure-authentication-and-access}
 
-認証は、ユースケースによって異なります。以下の提案を参照してください。認証の詳細については、[レジストリで認証する](../../packages/package_registry/supported_functionality.md#authenticate-with-the-registry)を参照してください
+認証は、ユースケースによって異なります。以下の提案を参照してください。認証の詳細については、[レジストリで認証する](../package_registry/supported_functionality.md#authenticate-with-the-registry)を参照してください
 
 ローカル開発の場合（デベロッパー）:
 
@@ -96,7 +97,7 @@ CI/CDパイプラインの場合:
 
 ### トップレベルグループアクセスのセットアップ {#set-up-top-level-group-access}
 
-組織全体のパッケージ消費のためにグループデプロイトークンを作成します:
+組織全体でのパッケージ利用のために、グループデプロイトークンを作成します:
 
 1. アーティファクト管理グループで、左側のサイドバーで、**設定** > **リポジトリ**を選択します。
 1. **デプロイトークン**を展開します。
@@ -107,30 +108,30 @@ CI/CDパイプラインの場合:
 
 トークンを安全に保存します。
 
-パブリッシュにCI/CDジョブトークンを使用する場合は、ジョブトークンの許可リストを構成します:
+CI/CDジョブトークンを公開に使用する場合は、ジョブトークンの許可リストを設定します:
 
 1. パッケージ固有の各プロジェクトで、左側のサイドバーで**設定** > **CI/CD**を選択します。
-1. **Token Access**を展開します。
-1. このパッケージレジストリへのパッケージのパブリッシュを許可するプロジェクトを追加します。
+1. **トークンアクセス**を展開します。
+1. このパッケージレジストリへのパッケージの公開を許可するプロジェクトを追加します。
 
 ### プロジェクトの設定を構成する {#configure-project-settings}
 
 パッケージタイププロジェクトごとに、以下を構成します:
 
-- そのパッケージタイプに適した**Lifecycle policies**
-- 必要に応じて、**保護されたパッケージ**ルール
-- 必要に応じて、**Protected container tag**ルール
-- 特定のユースケースの**プロジェクトのアクセストークン**
+- そのパッケージタイプに適した**ライフサイクルポリシー**
+- 必要に応じて、**保護パッケージ**のルール
+- 必要に応じて、**保護コンテナタグ**のルール
+- 特定のユースケース向けの**プロジェクトアクセストークン**
 
-## パッケージのパブリッシュ {#publish-packages}
+## パッケージを公開 {#publish-packages}
 
-チームは、適切なタイプ固有のプロジェクトレジストリにパッケージをパブリッシュする必要があります。サポートされているパッケージ形式ごとに、次の例を参照してください。
+チームは、適切なタイプ固有のプロジェクトレジストリにパッケージを公開する必要があります。サポートされているパッケージ形式ごとに、次の例を参照します。
 
 {{< tabs >}}
 
 {{< tab title="Maven" >}}
 
-`pom.xml`を構成して、`java-packages`プロジェクトにパブリッシュします:
+`pom.xml`を構成して、`java-packages`プロジェクトに公開します:
 
 ```xml
 <distributionManagement>
@@ -163,16 +164,17 @@ CI/CDパイプラインの場合:
 </servers>
 ```
 
-以下を使用してパブリッシュします:
+以下を使用して公開します:
 
 ```shell
 mvn deploy
+```
 
 {{< /tab >}}
 
-{{< tab title="npm" >}}
+{{< tab title="NPM" >}}
 
-Configure your project's `package.json`:
+プロジェクトの`package.json`を設定します:
 
 ```json
 {
@@ -183,7 +185,7 @@ Configure your project's `package.json`:
 }
 ```
 
-CI/CDパブリッシュの場合、ジョブトークンが自動的に使用されます:
+CI/CDでの公開の場合、ジョブトークンが自動的に使用されます:
 
 ```yaml
 publish:
@@ -191,17 +193,18 @@ publish:
     - npm publish
 ```
 
-ローカルでのパブリッシュの場合は、認証を構成します:
+ローカルでの公開の場合は、認証を構成します:
 
 ```shell
 npm config set @company:registry https://gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/
 npm config set //gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/:_authToken ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
-{{< tab title="PyPI" >}}
+{{< tab title="PyPi" >}}
 
-Configure publishing in your CI/CD pipeline:
+CI/CDパイプラインで公開を設定します:
 
 ```yaml
 publish:
@@ -211,16 +214,17 @@ publish:
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token twine upload --repository-url ${CI_API_V4_URL}/projects/PYTHON_PACKAGES_PROJECT_ID/packages/pypi dist/*
 ```
 
-ローカルでパブリッシュする場合:
+ローカルで公開する場合:
 
 ```shell
 twine upload --repository-url https://gitlab.example.com/api/v4/projects/PYTHON_PACKAGES_PROJECT_ID/packages/pypi --username __token__ --password ${PERSONAL_ACCESS_TOKEN} dist/*
+```
 
 {{< /tab >}}
 
-{{< tab title="Container registry" >}}
+{{< tab title="コンテナレジストリ" >}}
 
-Build and push Docker images:
+ビルドしてプッシュするDockerイメージ:
 
 ```yaml
 build-image:
@@ -234,12 +238,13 @@ build-image:
 ```shell
 docker login gitlab.example.com -u ${USERNAME} -p ${PERSONAL_ACCESS_TOKEN}
 docker push gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
 {{< tab title="Terraform" >}}
 
-Publish Terraform modules:
+Terraformモジュールを公開します:
 
 ```yaml
 publish-module:
@@ -252,7 +257,7 @@ publish-module:
 
 {{< tab title="NuGet" >}}
 
-プロジェクトファイルまたはCI/CDパイプラインでパブリッシュを構成します:
+プロジェクトファイルまたはCI/CDパイプラインで公開を構成します:
 
 ```yaml
 publish:
@@ -261,16 +266,17 @@ publish:
     - dotnet nuget push "bin/Release/*.nupkg" --source ${CI_API_V4_URL}/projects/NUGET_PACKAGES_PROJECT_ID/packages/nuget/index.json --api-key ${CI_JOB_TOKEN}
 ```
 
-ローカルでパブリッシュする場合:
+ローカルで公開する場合:
 
 ```shell
 dotnet nuget push package.nupkg --source https://gitlab.example.com/api/v4/projects/NUGET_PACKAGES_PROJECT_ID/packages/nuget/index.json --api-key ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
-{{< tab title="Generic" >}}
+{{< tab title="汎用" >}}
 
-Upload generic packages:
+汎用パッケージをアップロードします:
 
 ```yaml
 upload-package:
@@ -293,20 +299,20 @@ upload-package:
 
 Maven仮想レジストリは、複数のソースからパッケージを集約することにより、アーティファクト管理設定を強化できます。次のことができます: 
 
-- Mavenのトップレベルグループエンドポイントをアップストリームとして使用して、内部パッケージを追加します（例：`https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/maven`）。
+- Mavenのトップレベルグループエンドポイントをアップストリームとして使用して、内部パッケージを追加します（例: `https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/maven`）。
 - Maven Centralやプライベートレジストリなど、外部のアップストリームレジストリを追加します。
 - 他のGitLabプロジェクトまたはグループを追加します。
 
-このアプローチは、インテリジェントなキャッシュとアップストリームの優先順位を使用して、内部および外部の依存関係を組み合わせる単一のエンドポイントを提供します。
+この方法では、内部依存関係と外部依存関係を統合した単一のエンドポイントを提供し、インテリジェントなキャッシュとアップストリームの優先制御によって効率的に管理できます。
 
 Maven仮想レジストリは、次の場合に使用します:
 
 - 外部アップストリームレジストリを使用して内部GitLabパッケージを集約する必要がある
 - 信頼性を向上させるために外部の依存関係をキャッシュしたい
 - パブリックのものよりもプライベートレジストリを優先する必要がある
-- 内部および外部の依存関係を処理する単一のエンドポイントが必要
+- 内部および外部の依存関係を処理する単一のエンドポイントが必要である
 
-パブリッシュは、Maven仮想レジストリではサポートされていません。
+公開は、Maven仮想レジストリではサポートされていません。
 
 詳細については、[Maven仮想レジストリ](../virtual_registry/maven/_index.md)を参照してください。
 
@@ -318,7 +324,7 @@ Maven仮想レジストリは、次の場合に使用します:
 1. アップストリームレジストリを構成します:
    - 内部`java-packages`プロジェクトをアップストリームとして追加します。
    - Maven Centralやプライベートリポジトリなどの外部レジストリを追加します。
-   - プライベートレジストリを最初に、パブリックレジストリを最後に、アップストリームを注文します。
+   - アップストリームを、プライベートレジストリを先に、パブリックレジストリを最後に来るように並べます。
 1. バーチャルレジストリを使用するようにMavenクライアントを構成します:
 
 ```xml
@@ -354,7 +360,7 @@ Maven仮想レジストリは、次の場合に使用します:
 
 ### トップレベルグループエンドポイントを構成する {#configure-a-top-level-group-endpoint}
 
-トップレベルグループエンドポイントからパッケージを消費するようにプロジェクトを構成します。このアプローチは、単一の構成を介してすべてのパッケージタイプへのアクセスを提供します:
+トップレベルグループエンドポイントからパッケージを利用するように、各プロジェクトを設定します。この方法により、単一の設定で、すべてのパッケージタイプにアクセスできます:
 
 {{< tabs >}}
 
@@ -412,27 +418,30 @@ extra-index-url = https://deploy-token-username:deploy-token-password@gitlab.exa
 
 ```shell
 pip install --index-url https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/ --no-index my-package
+```
 
 {{< /tab >}}
 
-{{< tab title="Container Registry" >}}
+{{< tab title="コンテナレジストリ" >}}
 
-Pull images from the group registry:
+グループレジストリからイメージをプルします:
 
 ```shell
 docker login gitlab.example.com -u deploy-token-username -p deploy-token-password
 docker pull gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
 {{< tab title="Terraform" >}}
 
-Configure Terraform to use GitLab credentials with environment variables:
+TerraformでGitLabの認証情報を環境変数とともに使用するように設定します:
 
 ```shell
 export TF_TOKEN_gitlab_example_com="deploy-token-password"
+```
 
-Then reference modules in your Terraform configuration:
+次に、Terraformの設定でモジュールを参照します:
 
 ```hcl
 module "example" {
@@ -468,24 +477,25 @@ module "example" {
     </GitLab>
   </packageSourceCredentials>
 </configuration>
+```
 
 {{< /tab >}}
 
-{{< tab title="Generic" >}}
+{{< tab title="汎用" >}}
 
-Download generic packages:
+汎用パッケージをダウンロードします:
 
 ```shell
 curl --header "DEPLOY-TOKEN: ${DEPLOY_TOKEN}" "https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/generic/my-package/1.0.0/my-package.zip" --output my-package.zip
+```
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-## Example CI/CD configuration
+## CI/CD設定の例 {#example-cicd-configuration}
 
-The following example shows you how a project
-might consume packages from multiple package types:
+次の例は、プロジェクトが複数のパッケージタイプからパッケージを使用する方法を示しています:
 
 ```yaml
 stages:
@@ -518,14 +528,14 @@ build:
 一部の組織では、[エンタープライズスケールチュートリアル](../package_registry/enterprise_structure_tutorial.md)で説明されているように、アプリケーションソースコードと一緒にパッケージを公開することを推奨しています。このアプローチは、次の場合にうまく機能します:
 
 - パッケージが特定のアプリケーションに密接に結合されている。
-- パッケージの所有権をソースコードの所有権と一致させたい。
+- パッケージの所有権をソースコードオーナーと一致させたい。
 - チームが、コードとパッケージの両方をまとめて管理する。
 
 アーティファクト管理アプローチは、次の場合にうまく機能します:
 
-- パッケージのガバナンスを合理化したい。
+- パッケージのガバナンスを簡素化したい。
 - パッケージが複数のプロジェクト間で共有されている。
 - タイプ固有のポリシーと制御が必要である。
 - 従来のアーティファクトリポジトリから移行している。
 
-組織が最も使用するパッケージタイプから開始し、追加のパッケージ形式を採用するにつれて構造を展開します。このアプローチは、セキュリティと使いやすさを維持しながら、自然にスケールします。
+まずは、組織で最も利用頻度の高いパッケージタイプから始め、新たなパッケージ形式を採用するに従って、構成を段階的に拡張していきます。この方法により、セキュリティと使いやすさを保ちながら、無理なくスケールさせることができます。

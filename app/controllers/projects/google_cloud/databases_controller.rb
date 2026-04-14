@@ -139,11 +139,11 @@ module Projects
             'Google handles replication, patch management, and database management ' \
             'to ensure availability and performance.')
         when :mysql
-          s_('Cloud SQL instances are fully managed, relational MySQL databases. ' \
+          _('Cloud SQL instances are fully managed, relational MySQL databases. ' \
             'Google handles replication, patch management, and database management ' \
             'to ensure availability and performance.')
         else
-          s_('Cloud SQL instances are fully managed, relational SQL Server databases. ' \
+          _('Cloud SQL instances are fully managed, relational SQL Server databases. ' \
             'Google handles replication, patch management, and database management ' \
             'to ensure availability and performance.')
         end

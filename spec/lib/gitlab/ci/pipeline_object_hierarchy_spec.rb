@@ -121,6 +121,36 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
     end
   end
 
+  describe '#base_and_descendant_ids' do
+    it 'includes the base and its descendants' do
+      relation = described_class.new(
+        ::Ci::Pipeline.where(id: parent.id),
+        options: { project_condition: :same }
+      ).base_and_descendant_ids
+
+      expect(relation).to contain_exactly(parent, child)
+    end
+
+    context 'when project_condition: :different' do
+      it "includes the base and other project pipelines" do
+        relation = described_class.new(
+          ::Ci::Pipeline.where(id: child.id),
+          options: { project_condition: :different }
+        ).base_and_descendant_ids
+
+        expect(relation).to contain_exactly(child, triggered_pipeline, triggered_child_pipeline)
+      end
+    end
+
+    context 'when project_condition: nil' do
+      it "includes the base and its descendants with other project pipeline" do
+        relation = described_class.new(::Ci::Pipeline.where(id: parent.id)).base_and_descendant_ids
+
+        expect(relation).to contain_exactly(parent, child, triggered_pipeline, triggered_child_pipeline)
+      end
+    end
+  end
+
   describe '#all_objects' do
     context 'when passing ancestors_base' do
       let(:options) { { project_condition: project_condition } }

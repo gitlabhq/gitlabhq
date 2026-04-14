@@ -146,7 +146,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       it { is_expected.to be true }
     end
 
-    context 'when no commits exist on branch' do
+    context 'when no commits exist on branch (empty rev-list)' do
       before do
         allow(described_class).to receive(:run_command)
           .with(merge_base_cmd)
@@ -159,7 +159,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       it { is_expected.to be true }
     end
 
-    context 'when commits already exist on branch' do
+    context 'when exactly one commit exists on branch (first commit, post-commit context)' do
       before do
         allow(described_class).to receive(:run_command)
           .with(merge_base_cmd)
@@ -167,6 +167,19 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
         allow(described_class).to receive(:run_command)
           .with("git rev-list #{merge_base_sha}..HEAD")
           .and_return(["#{'b' * 40}\n", true])
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when multiple commits exist on branch' do
+      before do
+        allow(described_class).to receive(:run_command)
+          .with(merge_base_cmd)
+          .and_return(["#{merge_base_sha}\n", true])
+        allow(described_class).to receive(:run_command)
+          .with("git rev-list #{merge_base_sha}..HEAD")
+          .and_return(["#{'c' * 40}\n#{'b' * 40}\n", true])
       end
 
       it { is_expected.to be false }
@@ -183,7 +196,6 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       before do
         tmpfile.write("Add a valid commit message\n\n# This is a comment\nBody of the commit\n")
         tmpfile.close
-        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
       end
 
       after do
@@ -223,7 +235,6 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
             "#{long_diff_line}\n"
         )
         tmpfile.close
-        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
       end
 
       after do
@@ -237,41 +248,72 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       end
     end
 
-    context 'when not the first commit on the branch' do
-      let(:tmpfile) { Tempfile.new('commit_msg') }
-      let(:file_path) { tmpfile.path }
-
-      before do
-        tmpfile.write("Add a valid commit message\n")
-        tmpfile.close
-        allow(described_class).to receive(:first_commit_on_branch?).and_return(false)
-      end
-
-      after do
-        tmpfile.unlink
-      end
-
-      it 'returns an empty array' do
-        expect(result).to eq([])
-      end
-    end
-
     context 'when file does not exist' do
       let(:file_path) { '/nonexistent/path/commit_msg' }
 
-      it 'exits with status 1' do
-        expect { result }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
-          .and output(/ERROR: Commit message file not found/).to_stderr
+      it 'returns an empty array and prints warning to stderr' do
+        expect { expect(result).to eq([]) }
+          .to output(/WARNING: Commit message file not found/).to_stderr
       end
     end
 
     context 'when file_path is nil' do
       let(:file_path) { nil }
 
-      it 'exits with status 1' do
-        expect { result }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
-          .and output(/ERROR: Commit message file not found/).to_stderr
+      it 'returns an empty array and prints warning to stderr' do
+        expect { expect(result).to eq([]) }
+          .to output(/WARNING: Commit message file not found/).to_stderr
       end
+    end
+  end
+
+  describe '.commit_from_head' do
+    subject(:result) { described_class.commit_from_head }
+
+    context 'when it is the first commit on the branch' do
+      before do
+        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
+        allow(described_class).to receive(:run_command)
+          .with("git log -1 --format='%h%n%B' HEAD")
+          .and_return(["abc1234\nAdd a valid commit message", true])
+      end
+
+      it 'returns an array with one CommitData for HEAD' do
+        expect(result).to be_an(Array)
+        expect(result.length).to eq(1)
+        expect(result.first.sha).to eq('abc1234')
+        expect(result.first.message).to eq('Add a valid commit message')
+      end
+    end
+
+    context 'when it is not the first commit on the branch' do
+      before do
+        allow(described_class).to receive(:first_commit_on_branch?).and_return(false)
+      end
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'when git log fails' do
+      before do
+        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
+        allow(described_class).to receive(:run_command)
+          .with("git log -1 --format='%h%n%B' HEAD")
+          .and_return(['', false])
+      end
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'when git log returns empty output' do
+      before do
+        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
+        allow(described_class).to receive(:run_command)
+          .with("git log -1 --format='%h%n%B' HEAD")
+          .and_return(['', true])
+      end
+
+      it { is_expected.to eq([]) }
     end
   end
 
@@ -369,9 +411,7 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
         )
       end
 
-      it 'returns an empty array' do
-        expect(result).to eq([])
-      end
+      it { is_expected.to eq([]) }
     end
 
     context 'when no commits exist' do
@@ -382,22 +422,51 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
         )
       end
 
-      it 'returns an empty array' do
-        expect(result).to eq([])
-      end
+      it { is_expected.to eq([]) }
     end
   end
 
   describe '.run' do
     subject(:run) { described_class.run(argv) }
 
-    context 'in commit-msg mode' do
-      let(:tmpfile) { Tempfile.new('commit_msg') }
-      let(:argv) { [tmpfile.path] }
+    context 'in post-commit mode' do
+      let(:argv) { ['--post-commit'] }
 
       before do
-        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
+        allow(described_class).to receive(:commit_from_head).and_return(commits)
       end
+
+      context 'with a valid commit message' do
+        let(:commits) { [described_class::CommitData.new("Add a valid commit message here", 'abc1234')] }
+
+        it { is_expected.to eq(0) }
+      end
+
+      context 'with an invalid commit message' do
+        let(:commits) { [described_class::CommitData.new("bad", 'abc1234')] }
+
+        it 'returns 0 and prints warning with amend instructions to stderr' do
+          expect { expect(run).to eq(0) }
+            .to output(/Commit message linting failed.*git commit --amend/mi).to_stderr
+        end
+      end
+
+      context 'with a fixup commit' do
+        let(:commits) { [described_class::CommitData.new("fixup! Add a valid commit message here", 'abc1234')] }
+
+        it { is_expected.to eq(0) }
+      end
+
+      context 'when there are no commits' do
+        let(:commits) { [] }
+
+        it { is_expected.to eq(0) }
+      end
+    end
+
+    context 'in file mode' do
+      let(:tmpfile) { Tempfile.new('commit_msg') }
+      let(:argv) { [tmpfile.path] }
 
       after do
         tmpfile.unlink
@@ -440,18 +509,6 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
         end
 
         it 'returns 0 since empty messages are skipped' do
-          is_expected.to eq(0)
-        end
-      end
-
-      context 'when not the first commit on the branch' do
-        before do
-          allow(described_class).to receive(:first_commit_on_branch?).and_return(false)
-          tmpfile.write("bad\n")
-          tmpfile.close
-        end
-
-        it 'returns 0 and skips linting' do
           is_expected.to eq(0)
         end
       end
@@ -502,12 +559,11 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
       end
     end
 
-    context 'when commit-msg mode has no sha' do
+    context 'when file mode has no sha' do
       let(:tmpfile) { Tempfile.new('commit_msg') }
       let(:argv) { [tmpfile.path] }
 
       before do
-        allow(described_class).to receive(:first_commit_on_branch?).and_return(true)
         tmpfile.write("bad\n")
         tmpfile.close
       end

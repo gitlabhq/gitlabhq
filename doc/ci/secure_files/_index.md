@@ -131,9 +131,9 @@ A [unique encryption key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app
 is generated for each file when it is created and persisted in the database. The encrypted uploaded files
 are stored in either local storage or object storage depending on the [GitLab instance configuration](../../administration/cicd/secure_files.md).
 
-Individual files can be retrieved with the [secure files download API](../../api/secure_files.md#download-secure-file).
-Metadata can be retrieved with the [list](../../api/secure_files.md#list-project-secure-files)
-or [show](../../api/secure_files.md#show-secure-file-details) API endpoints. Files can also be retrieved
+Individual files can be retrieved with the [secure files download API](../../api/secure_files.md#download-a-secure-file).
+Metadata can be retrieved with the [list](../../api/secure_files.md#list-all-secure-files-for-a-project)
+or [show](../../api/secure_files.md#retrieve-details-of-a-secure-file) API endpoints. Files can also be retrieved
 with the [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/securefile)
 command. This command automatically verifies the checksum of each file as it is downloaded.
 

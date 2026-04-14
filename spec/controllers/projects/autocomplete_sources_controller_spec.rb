@@ -82,6 +82,27 @@ RSpec.describe Projects::AutocompleteSourcesController do
     end
   end
 
+  describe 'GET issues' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns the correct response', :aggregate_failures do
+      get :issues, format: :json, params: { namespace_id: group.path, project_id: public_project.path }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an(Array)
+      expect(json_response).to include(
+        a_hash_including(
+          'iid' => issue.iid,
+          'title' => issue.title,
+          'icon_name' => issue.icon_name,
+          'reference' => issue.to_reference
+        )
+      )
+    end
+  end
+
   describe 'GET labels' do
     before do
       group.add_owner(user)

@@ -33,12 +33,30 @@ RSpec.describe API::Helpers::WorkItemsFilterParams, feature_category: :team_plan
           subscribed: :explicitly_subscribed,
           crm_contact_id: '123',
           crm_organization_id: '456',
-          include_descendant_work_items: true
+          include_descendant_work_items: true,
+          include_ancestors: true,
+          include_descendants: true
         }
       end
 
       it 'passes through all direct params, and filters' do
         expect(transform).to eq(params)
+      end
+    end
+
+    context 'with include_archived param' do
+      let(:params) { { include_archived: true } }
+
+      it 'transforms include_archived to non_archived with inverted value' do
+        expect(transform).to eq(non_archived: false)
+      end
+    end
+
+    context 'with include_archived set to false' do
+      let(:params) { { include_archived: false } }
+
+      it 'transforms include_archived to non_archived with inverted value' do
+        expect(transform).to eq(non_archived: true)
       end
     end
 

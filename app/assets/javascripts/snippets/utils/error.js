@@ -1,4 +1,4 @@
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import { __ } from '~/locale';
 
 export const UNEXPECTED_ERROR = __('Unexpected error');

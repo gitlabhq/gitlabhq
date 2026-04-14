@@ -145,9 +145,6 @@ export const initSuperSidebar = ({
       issuesListPath: sidebarData.work_items?.issues_list_path,
       canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
       labelsManagePath: sidebarData.work_items?.labels_manage_path,
-      workItemPlanningViewEnabled: parseBoolean(
-        sidebarData.work_items?.work_item_planning_view_enabled,
-      ),
       isGroup,
       isSaas: parseBoolean(isSaas),
     },
@@ -217,9 +214,6 @@ export const initSuperTopbar = ({
       groupPath: groupsPath,
       fullPath: sidebarData.work_items?.full_path,
       canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
-      workItemPlanningViewEnabled: parseBoolean(
-        sidebarData.work_items?.work_item_planning_view_enabled,
-      ),
       isGroup,
       isSaas: parseBoolean(isSaas),
     },

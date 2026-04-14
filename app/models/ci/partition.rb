@@ -84,16 +84,6 @@ module Ci
 
     private
 
-    def above_threshold?(threshold = ::Gitlab::CurrentSettings.ci_partitions_size_limit)
-      with_ci_connection do
-        Gitlab::Database::PostgresPartition
-          .with_parent_tables(parent_table_names)
-          .with_list_constraint(id)
-          .above_threshold(threshold)
-          .exists?
-      end
-    end
-
     def with_ci_connection(&block)
       Gitlab::Database::SharedModel.using_connection(connection, &block)
     end

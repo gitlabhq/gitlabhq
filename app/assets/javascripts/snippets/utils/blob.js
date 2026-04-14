@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { SNIPPET_MARK_BLOBS_CONTENT, SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { VISIBILITY_LEVELS_INTEGER_TO_STRING } from '~/visibility_level/constants';

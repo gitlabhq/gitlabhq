@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { SCOPE, MIN_ACCESS_LEVEL, TAB_NAME } from '~/ci/catalog/constants';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     GlTabs,
     GlLoadingIcon,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     isLoading: {
       type: Boolean,
@@ -55,6 +57,10 @@ export default {
   },
   methods: {
     onTabChange(tab) {
+      if (tab.name === TAB_NAME.analytics) {
+        this.trackEvent('click_analytics_tab_on_ci_catalog');
+      }
+
       this.$emit('tab-change', {
         name: tab.name,
         scope: tab.scope,

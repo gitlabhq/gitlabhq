@@ -6,10 +6,6 @@ include:
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
 
-workflow:
-  rules:
-    - when: always
-
 .default-branch: &default-branch
   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
@@ -26,6 +22,7 @@ workflow:
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
         --resource-preset high \
+        --kind-image "${KIND_NODE_IMAGE}" \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
@@ -79,6 +76,7 @@ workflow:
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --resource-preset high \
+        --kind-image ${KIND_NODE_IMAGE} \
         --ci \
         --print-deploy-args \
         $(cat $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES)

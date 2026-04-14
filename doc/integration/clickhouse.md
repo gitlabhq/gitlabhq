@@ -10,9 +10,15 @@ title: ClickHouse
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta on GitLab Self-Managed and GitLab Dedicated
+- Status: Beta on GitLab Dedicated
 
 {{< /details >}}
+
+{{< history >}}
+
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/20337) for GitLab Self-Managed in GitLab 18.11.
+
+{{< /history >}}
 
 [ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
 
@@ -392,10 +398,10 @@ To disable:
 
 ClickHouse Cloud automatically handles version upgrades and security patches. No manual intervention is required.
 
-For information about upgrade scheduling and maintenance windows, see the [ClickHouse Cloud documentation](https://clickhouse.com/docs/cloud/manage/updates).
+For information about upgrade scheduling and maintenance windows, see [ClickHouse Cloud upgrades](https://clickhouse.com/docs/manage/updates).
 
 > [!note]
-> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
+> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/whats-new/cloud) to stay informed about new features and changes.
 
 ### ClickHouse for GitLab Self-Managed (BYOC)
 
@@ -408,7 +414,7 @@ Prerequisites:
 
 Before upgrading:
 
-1. Review the [ClickHouse release notes](https://clickhouse.com/docs/category/release-notes) for breaking changes.
+1. Review the [ClickHouse release notes](https://clickhouse.com/docs/category/changelog) for breaking changes.
 1. Check [compatibility](#supported-clickhouse-versions) with your GitLab version.
 1. Test the upgrade in a non-production environment.
 1. Plan for potential downtime, or use a rolling upgrade strategy for HA clusters.

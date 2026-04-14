@@ -163,15 +163,22 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
 
     describe 'footnotes' do
       it 'allows the footnote attributes' do
-        exp = <<~HTML
+        html = <<~HTML
           <section data-footnotes>
           <a href="#fn-first" id="fnref-first" data-footnote-ref data-footnote-backref data-footnote-backref-idx>foo/bar.md</a>
           </section>
         HTML
 
-        act = filter(exp)
+        act = filter(html)
+        section = act.at_css('section')
+        link = act.at_css('a')
 
-        expect(act.to_html).to eq exp
+        expect(section.has_attribute?('data-footnotes')).to be true
+        expect(link['href']).to eq('#fn-first')
+        expect(link['id']).to eq('fnref-first')
+        expect(link.has_attribute?('data-footnote-ref')).to be true
+        expect(link.has_attribute?('data-footnote-backref')).to be true
+        expect(link.has_attribute?('data-footnote-backref-idx')).to be true
       end
 
       it 'allows correct footnote id property on links' do
@@ -262,8 +269,8 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
         %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>) | %q(<ul><li><input type="checkbox" class="task-list-item-checkbox"></li></ul>)
         %q(<ul><li><input type="checkbox" class="other-checkbox"></li></ul>) | %q(<ul><li></li></ul>)
 
-        %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>) | %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>)
-        %(<table><tr><th class="other-class"><input type="checkbox" class="other-checkbox"></th></tr></table>) | %(<table><tr><th></th></tr></table>)
+        %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>) | %(<table><tbody><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></tbody></table>)
+        %(<table><tr><th class="other-class"><input type="checkbox" class="other-checkbox"></th></tr></table>) | %(<table><tbody><tr><th></th></tr></tbody></table>)
       end
       # rubocop:enable Layout/LineLength
 

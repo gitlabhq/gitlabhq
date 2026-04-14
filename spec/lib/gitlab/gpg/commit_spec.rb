@@ -48,13 +48,11 @@ RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
           it 'returns the cached signature on second call' do
             gpg_commit = described_class.new(commit)
 
-            expect_next_instance_of(Gitlab::Gpg::Signature) do |signature|
-              expect(signature).to receive(:using_keychain).once.and_call_original
-            end
+            gpg_commit.signature
 
-            2.times do
-              gpg_commit.signature
-            end
+            expect(Gitlab::Gpg).not_to receive(:using_tmp_keychain)
+
+            gpg_commit.signature
           end
         else
           context 'when the gpg_commit_delegate_to_signature feature flag is not enabled' do

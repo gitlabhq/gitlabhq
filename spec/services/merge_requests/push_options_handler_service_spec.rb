@@ -1101,7 +1101,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     let(:changes) { new_branch_changes }
 
     it 'records an error', :sidekiq_inline do
-      Members::DestroyService.new(user1).execute(ProjectMember.find_by!(user_id: user1.id))
+      Members::DestroyService.new(ProjectMember.find_by!(user_id: user1.id), current_user: user1).execute
 
       service.execute
 

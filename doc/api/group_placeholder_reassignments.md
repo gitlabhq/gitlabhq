@@ -25,7 +25,7 @@ description: "Reassign placeholder users in bulk with the REST API."
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use this API to [reassign placeholder users in bulk](../user/import/mapping/_index.md#request-reassignment-by-using-a-csv-file).
+Use this API to [reassign placeholder users in bulk](../user/import/mapping/reassignment.md#request-reassignment-by-using-a-csv-file).
 
 Prerequisites:
 
@@ -35,9 +35,9 @@ Prerequisites:
 > User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
 > When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
 
-## Download the CSV file
+## Retrieve pending reassignments
 
-Download a CSV file of pending reassignments.
+Retrieves a CSV file with a list of pending reassignments.
 
 ```plaintext
 GET /groups/:id/placeholder_reassignments
@@ -67,7 +67,7 @@ http://gitlab.example,gitlab_migration,9,Alice,alice,"",""
 
 ## Reassign placeholders
 
-Complete the [CSV file](#download-the-csv-file) and upload it to reassign placeholder users.
+Reassigns placeholder users with an uploaded CSV file.
 
 ```plaintext
 POST /groups/:id/placeholder_reassignments

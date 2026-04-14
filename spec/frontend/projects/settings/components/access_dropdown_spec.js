@@ -5,7 +5,7 @@ import {
   GlDropdownSectionHeader,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';

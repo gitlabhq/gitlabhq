@@ -17,4 +17,13 @@
   nav.gl-breadcrumbs:only-of-type {
     flex-grow: 1;
   }
+
+  /* If a Vue app portals its breadcrumbs here (like `NewNamespacePage` does), hide the others! */
+  > :has(~ .vue-portal-target) {
+    display: none;
+  }
+  /* ... and give portaled element room to grow */
+  > .vue-portal-target {
+    flex-grow: 1;
+  }
 }

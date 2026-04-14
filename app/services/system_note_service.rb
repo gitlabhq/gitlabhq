@@ -416,6 +416,10 @@ module SystemNoteService
     incidents_service(noteable).delete_timeline_event(author)
   end
 
+  def move_child_to_new_parent(prev_parent:, child:, new_parent:, author:)
+    ::SystemNotes::IssuablesService.new(noteable: prev_parent, container: prev_parent.project, author: author).move_child_to_new_parent(child, new_parent)
+  end
+
   private
 
   def merge_requests_service(noteable, project, author)

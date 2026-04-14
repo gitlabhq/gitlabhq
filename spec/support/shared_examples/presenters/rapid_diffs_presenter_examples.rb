@@ -46,9 +46,9 @@ RSpec.shared_examples 'rapid diffs presenter syntax highlighting' do
         allow(Gitlab::ColorSchemes).to receive(:for_user).with(current_user).and_return(
           Gitlab::ColorSchemes::Scheme.new(6, 'None', 'none')
         )
-        allow(resource).to receive(:diffs_for_streaming).and_return(
-          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files_collection)
-        )
+        streaming_diffs_double = instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files_collection)
+        allow(streaming_diffs_double).to receive(:write_cache)
+        allow(resource).to receive(:diffs_for_streaming).and_return(streaming_diffs_double)
       end
 
       let(:diff_files_collection) do
@@ -84,6 +84,7 @@ RSpec.shared_examples 'rapid diffs presenter diffs methods' do |sorted:|
     before do
       allow(presenter).to receive(:diffs_resource).and_return(diffs)
       allow(diffs).to receive(:diff_files).and_return(diff_files)
+      allow(diffs).to receive(:write_cache)
       allow(diff_files).to receive(:decorate!).and_return(diff_files)
     end
 
@@ -111,6 +112,7 @@ RSpec.shared_examples 'rapid diffs presenter diffs methods' do |sorted:|
     before do
       allow(resource).to receive(:diffs_for_streaming).and_return(streaming_diffs)
       allow(streaming_diffs).to receive(:diff_files).and_return(diff_files)
+      allow(streaming_diffs).to receive(:write_cache)
       allow(diff_files).to receive(:decorate!).and_return(diff_files)
     end
 
@@ -127,6 +129,47 @@ RSpec.shared_examples 'rapid diffs presenter diffs methods' do |sorted:|
         expect(resource).to receive(:diffs_for_streaming).with(options).and_return(streaming_diffs)
 
         presenter.diff_files_for_streaming(options)
+      end
+    end
+
+    context 'when linked file params are present' do
+      let(:linked) { instance_double(Gitlab::Diff::File, old_path: 'linked.rb', new_path: 'linked.rb', linked: nil) }
+      let(:other) { instance_double(Gitlab::Diff::File, old_path: 'other.rb', new_path: 'other.rb') }
+      let(:request_params) { { file_path: 'linked.rb' } }
+
+      before do
+        allow(linked).to receive(:linked=)
+        allow(diff_files).to receive(:each).and_yield(other).and_yield(linked)
+      end
+
+      it 'returns the linked file first' do
+        result = presenter.diff_files_for_streaming
+        expect(result.map(&:old_path)).to eq(%w[linked.rb other.rb])
+      end
+
+      it 'marks the linked file' do
+        presenter.diff_files_for_streaming
+        expect(linked).to have_received(:linked=).with(true)
+      end
+    end
+
+    context 'when linked file params do not match any file' do
+      let(:files) do
+        [
+          instance_double(Gitlab::Diff::File, old_path: 'a.rb', new_path: 'a.rb'),
+          instance_double(Gitlab::Diff::File, old_path: 'b.rb', new_path: 'b.rb')
+        ]
+      end
+
+      let(:request_params) { { file_path: 'nonexistent.rb' } }
+
+      before do
+        allow(diff_files).to receive(:each).and_yield(files[0]).and_yield(files[1])
+      end
+
+      it 'returns files in original order' do
+        result = presenter.diff_files_for_streaming
+        expect(result).to eq(files)
       end
     end
   end

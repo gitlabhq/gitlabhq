@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+import { isArray } from 'lodash-es';
 import Visibility from 'visibilityjs';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { QUERY_PARAM_START_CURSOR, QUERY_PARAM_END_CURSOR } from './constants';
@@ -158,7 +158,8 @@ export const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
   };
 
   stopStartQuery(queryRef);
-  Visibility.change(stopStartQuery.bind(null, queryRef));
+  const id = Visibility.change(stopStartQuery.bind(null, queryRef));
+  return () => Visibility.unbind(id);
 };
 
 export const etagQueryHeaders = (featureCorrelation, etagResource = '') => {

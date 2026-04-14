@@ -20,7 +20,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def issues
-    render json: autocomplete_service.issues
+    render json: issuable_serializer.represent(autocomplete_service.issues, parent: project)
   end
 
   def merge_requests
@@ -52,6 +52,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   private
+
+  def issuable_serializer
+    ::Autocomplete::IssuableSerializer.new
+  end
 
   def autocomplete_service
     @autocomplete_service ||= ::Projects::AutocompleteService.new(

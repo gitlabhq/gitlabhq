@@ -78,8 +78,6 @@ Prerequisites:
   details on how to use these variables, see
   [authenticate to a private external registry](#authenticate-to-private-external-registry).
 
-Please see details below for [user and project-specific requirements](#prerequisites).
-
 To enable the analyzer, either:
 
 - Enable Auto DevOps, which includes dependency scanning.
@@ -98,6 +96,17 @@ in the `.gitlab-ci.yml` file. You then merge the merge request to enable contain
 > If you have a complex GitLab configuration file it might not be parsed successfully, and an error
 > might occur. In that case, use the manual method instead.
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+- The `test` stage exists in the `.gitlab-ci.yml` file.
+- If you're using self-managed runners, a runner with the `docker` or `kubernetes` executor on Linux/amd64. If you're using the instance runners on GitLab.com, this is enabled by default.
+- An image matching the [supported distributions](#supported-distributions).
+- The Docker image is [built and pushed](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd) to your project's container registry.
+- If you're using a third-party container registry, you might need to provide authentication
+  credentials by using the CI/CD variables `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD`. For more
+  details, see [authenticate to a private external registry](#authenticate-to-private-external-registry).
+
 To enable container scanning:
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -112,6 +121,17 @@ Pipelines now include a container scanning job.
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 you have a complex GitLab configuration file or you need to use non-default options.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+- The `test` stage exists in the `.gitlab-ci.yml` file.
+- If you're using self-managed runners, a runner with the `docker` or `kubernetes` executor on Linux/amd64. If you're using the instance runners on GitLab.com, this is enabled by default.
+- An image matching the [supported distributions](#supported-distributions).
+- The Docker image is [built and pushed](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd) to your project's container registry.
+- If you're using a third-party container registry, you might need to provide authentication
+  credentials by using the CI/CD variables `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD`. For more
+  details, see [authenticate to a private external registry](#authenticate-to-private-external-registry).
 
 To enable container scanning:
 
@@ -140,7 +160,11 @@ To enable container scanning:
 
 Pipelines now include a container scanning job.
 
-## Understanding the results
+## Understand the results
+
+Prerequisites:
+
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 You can review vulnerabilities in a pipeline:
 
@@ -570,6 +594,10 @@ container_scanning:
 
 {{< /details >}}
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 To allowlist specific vulnerabilities, follow these steps:
 
 1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions in
@@ -983,17 +1011,17 @@ Support for populating the vulnerability report with all present advisory data, 
 > indefinitely because this feature only generates SBOMs, not the security reports required for
 > vulnerability resolution.
 
-### Prerequisites
+### Turn on container scanning for registry
 
-- You must have the Maintainer or Owner role in a project to enable container scanning for registry.
-- The project being used must not be empty. If you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
+Prerequisites:
+
+- The Security Manager, Maintainer or Owner role for the project.
+- The project must not be empty. If you are using an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
 - By default there is a limit of `50` scans per project per day.
 - You must [configure container registry notifications](../../../administration/packages/container_registry.md#configure-container-registry-notifications).
-- You must [configure the Package Metadata Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). This is configured by default on GitLab.com.
+- You must [configure the package metadata database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). In GitLab.com, this is configured by default.
 
-### Enable container scanning for registry
-
-To enable Container Scanning for the GitLab Container Registry:
+To turn on container scanning for the GitLab container registry:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
@@ -1006,6 +1034,10 @@ To use container scanning for registry in an offline or air-gapped environment, 
 Instead, you must override the default scanner image by setting the `CS_ANALYZER_IMAGE` CI/CD
 variable in the GitLab UI. The dynamically-created scanning job inherits variables defined in the
 UI. You can use a project, group, or instance CI/CD variable.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project or group.
 
 To configure a custom scanner image:
 

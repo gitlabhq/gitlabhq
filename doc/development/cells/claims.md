@@ -160,6 +160,85 @@ When adding claims to a new model:
 1. **Add types in Topology Service** (see [Topology Service](#topology-service) section)
 1. **Add tests** (see [Tests](#tests) section)
 
+#### Skip claiming for specific values
+
+Some models should not claim every attribute value. For example:
+
+- `Route` should only claim top-level paths (`gitlab`), not sub-paths (`gitlab/project`).
+- `ServiceDeskSetting` should not claim `nil` values in the `custom_email` column.
+
+Use the `if:` option on `cells_claims_attribute` to control which values are claimed.
+The `if:` option accepts a lambda that receives the record and returns a boolean.
+When `if:` returns `false`, the value is not sent to Topology Service on create.
+
+```ruby
+class Route < ApplicationRecord
+  include Cells::Claimable
+
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+    feature_flag: :cells_claims_routes,
+    if: ->(record) { record.path.exclude?('/') }
+end
+```
+
+In this example, only routes without a `/` in the path are claimed.
+
+##### Behavior with `if:`
+
+- **Save (create):** A new claim is created only when `if:` returns `true`.
+- **Save (update):** The old value is always destroyed, even if `if:` returned
+  `false` when the old value was saved. The new value is created only when
+  `if:` returns `true`.
+- **Record destroy:** Destroy requests are always sent, regardless of `if:`.
+  Topology Service treats missing claims as a no-op, so this is safe and
+  prevents stale claims.
+- **Verification:** `cells_claims_metadata` excludes entries where `if:`
+  returns `false`, so the verification service does not create claims for
+  non-claimable values.
+
+##### Scope filtering with `cells_claims_scope`
+
+When the verification service reconciles local records with Topology Service,
+it queries all records in the model by default. To exclude rows at the
+query level, use the `cells_claims_scope` DSL with a block.
+
+```ruby
+class Route < ApplicationRecord
+  include Cells::Claimable
+
+  cells_claims_scope do
+    where("strpos(path, '/') = 0")
+  end
+
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+    feature_flag: :cells_claims_routes,
+    if: ->(record) { record.path.exclude?('/') }
+end
+```
+
+The block must return an `ActiveRecord::Relation`. When no block is
+provided, the default scope is `all`. Define a block only when you need
+to exclude rows from verification at the database level.
+
+Use `if:` and `cells_claims_scope` together when:
+
+- `if:` controls per-record claiming during save callbacks.
+- `cells_claims_scope` controls which records the verification service scans.
+
+If filtering is only needed at the instance level (for example, skipping
+`nil` values), use `if:` alone without defining `cells_claims_scope`:
+
+```ruby
+class ServiceDeskSetting < ApplicationRecord
+  include Cells::Claimable
+
+  cells_claims_attribute :custom_email,
+    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
+    feature_flag: :cells_claims_service_desk_settings,
+    if: ->(record) { record.custom_email.present? }
+end
+```
+
 #### Tests
 
 When we claim something new, we should add tests. We want to add two tests,

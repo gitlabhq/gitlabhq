@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormGroup } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { s__, sprintf } from '~/locale';
 import { SNIPPET_MAX_BLOBS, SNIPPET_LIMITATIONS } from '../constants';
 import { createBlob, decorateBlob, diffAll } from '../utils/blob';

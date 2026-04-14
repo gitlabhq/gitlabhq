@@ -6,6 +6,9 @@ RSpec.describe Clusters::Agents::ActivityEvent do
   it { is_expected.to belong_to(:agent).class_name('Clusters::Agent').required }
   it { is_expected.to belong_to(:user).optional }
   it { is_expected.to belong_to(:agent_token).class_name('Clusters::AgentToken').optional }
+  it { is_expected.to belong_to(:project).optional }
+  it { is_expected.to belong_to(:merge_request).optional }
+  it { is_expected.to belong_to(:agent_project).optional }
 
   it { is_expected.to validate_presence_of(:kind) }
   it { is_expected.to validate_presence_of(:level) }

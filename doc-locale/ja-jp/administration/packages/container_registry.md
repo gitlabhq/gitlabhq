@@ -409,7 +409,8 @@ helm upgrade gitlab gitlab/gitlab -f values.yaml
 
 {{< tab title="Docker" >}}
 
-> [!note] Docker Composeで環境変数を直接設定しても機能しません。`gitlab.rb`を介して設定する必要があります。
+> [!note]
+> Docker Composeで環境変数を直接設定しても機能しません。`gitlab.rb`を介して設定する必要があります。
 
 DockerまたはDocker Composeの場合、`gitlab.rb`を作成または編集します:
 
@@ -723,7 +724,8 @@ storage:
    sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 sync registry s3://mybucket
    ```
 
-   > [!note]大量のデータがある場合は、[並列同期操作を実行](https://repost.aws/knowledge-center/s3-improve-transfer-sync-command)することでパフォーマンスを向上させられる場合があります。
+   > [!note]
+   > 大量のデータがある場合は、[並列同期操作を実行](https://repost.aws/knowledge-center/s3-improve-transfer-sync-command)することでパフォーマンスを向上させられる場合があります。
 
 1. 最終的なデータ同期を行うには、[コンテナレジストリを`read-only`モードにして](#performing-garbage-collection-without-downtime)、[GitLabを再設定します](../restart_gitlab.md#reconfigure-a-linux-package-installation)。
 1. 最初のデータ読み込み以降に行われた変更をS3バケットに同期し、移行先のバケットには存在するが移行元には存在しないファイルを削除します。

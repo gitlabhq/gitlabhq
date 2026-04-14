@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def parallel_lines
-        ::Gitlab::Diff::ParallelDiff.parallelize(lines)
+        @parallel_lines ||= ::Gitlab::Diff::ParallelDiff.parallelize(lines) if lines
       end
     end
 

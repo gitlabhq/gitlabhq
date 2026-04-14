@@ -24,6 +24,37 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
         expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
       end
 
+      context 'when the group is stuck in transfer_in_progress state' do
+        before do
+          group.schedule_transfer!(transition_user: user)
+          group.start_transfer!(transition_user: user)
+        end
+
+        it 'cancels the stale state, logs a warning, and proceeds with the transfer' do
+          allow(Gitlab::AppLogger).to receive(:warn)
+
+          perform
+
+          expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
+          expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
+            message: 'Cancelling stale transfer_in_progress state',
+            group_id: group.id
+          ))
+        end
+      end
+
+      context 'when the group is already in transfer_scheduled state' do
+        it 'skips schedule_transfer! and proceeds with the transfer' do
+          group.schedule_transfer!(transition_user: user)
+
+          expect(group).not_to receive(:schedule_transfer!)
+
+          perform
+
+          expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
+        end
+      end
+
       context 'when TransferService returns false' do
         it 'cancels the transfer' do
           expect_next_instance_of(::Groups::TransferService, group, user) do |service|
@@ -63,7 +94,6 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           end
 
           allow_next_found_instance_of(Group) do |g|
-            allow(g).to receive(:transfer_in_progress?).and_return(true)
             allow(g).to receive(:cancel_transfer!).and_raise(StandardError, 'cancel failed')
           end
 
@@ -106,6 +136,7 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
         let(:uuid) { 'other_worker_jid' }
 
         it 'does not call the transfer service and leaves state unchanged when another worker holds the lease' do
+          group.schedule_transfer!(transition_user: user)
           group.start_transfer!(transition_user: user)
 
           expect(exclusive_lease.try_obtain).to eq(uuid)

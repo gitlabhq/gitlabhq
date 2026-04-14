@@ -19,11 +19,11 @@ Find out more about [administering](../administration/pages/_index.md) and [usin
 
 ## List all Pages domains
 
+Lists all Pages domains on the instance.
+
 Prerequisites:
 
 - You must have administrator access to the instance.
-
-Get a list of all Pages domains.
 
 ```plaintext
 GET /pages/domains
@@ -77,9 +77,9 @@ Example response:
 ]
 ```
 
-## List Pages domains
+## List all Pages domains in a project
 
-Get a list of project Pages domains. The user must have permissions to view Pages domains.
+Lists all Pages domains in the specified project. The user must have permissions to view Pages domains.
 
 ```plaintext
 GET /projects/:id/pages/domains
@@ -145,9 +145,10 @@ Example response:
 ]
 ```
 
-## Single Pages domain
+## Retrieve a Pages domain
 
-Get a single project Pages domain. The user must have permissions to view Pages domains.
+Retrieves a Pages domain from the specified project. The user must have permissions to view
+Pages domains.
 
 ```plaintext
 GET /projects/:id/pages/domains/:domain
@@ -206,7 +207,8 @@ Example response:
 
 ## Create new Pages domain
 
-Creates a new Pages domain. The user must have permissions to create new Pages domains.
+Creates a Pages domain in the specified project. The user must have permissions to create new
+Pages domains.
 
 ```plaintext
 POST /projects/:id/pages/domains
@@ -288,7 +290,8 @@ Example response:
 
 ## Update Pages domain
 
-Updates an existing project Pages domain. The user must have permissions to change an existing Pages domains.
+Updates the specified Pages domain in a project. The user must have permissions to change an
+existing Pages domain.
 
 ```plaintext
 PUT /projects/:id/pages/domains/:domain
@@ -408,7 +411,7 @@ Example response:
 
 {{< /history >}}
 
-Verifies an existing project Pages domain.
+Verifies the specified Pages domain in a project.
 The user must have permissions to update Pages domains.
 
 ```plaintext
@@ -462,7 +465,7 @@ Example response:
 
 ## Delete Pages domain
 
-Deletes an existing project Pages domain.
+Deletes the specified Pages domain in a project.
 
 ```plaintext
 DELETE /projects/:id/pages/domains/:domain

@@ -14,6 +14,10 @@ module Resolvers
         apply_lookahead(pipeline.stages)
       end
 
+      def unconditional_includes
+        super + [:pipeline]
+      end
+
       def preloads
         {
           jobs: { latest_statuses: [:needs] }

@@ -10,6 +10,9 @@ module API
       expose :name, as: :application_name, documentation: { type: 'String', example: 'MyApplication' }
       expose :redirect_uri, as: :callback_url, documentation: { type: 'String', example: 'https://redirect.uri' }
       expose :confidential, documentation: { type: 'Boolean', example: true }
+      expose :scopes, documentation: { type: 'Array', example: %w[api read_user] } do |application|
+        application.scopes.to_a
+      end
     end
   end
 end

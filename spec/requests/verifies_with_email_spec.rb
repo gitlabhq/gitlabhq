@@ -258,6 +258,11 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           expect(json_response).to eq('status' => 'success', 'redirect_path' => users_successful_verification_path)
         end
 
+        it 'clears the verifies_with_email_user_id session variable' do
+          submit_token
+          expect(request.session[:verifies_with_email_user_id]).to be_nil
+        end
+
         context 'when email reset functionality is disabled' do
           shared_examples 'does not perform email reset actions' do
             before do
@@ -306,9 +311,14 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             .and change { user.last_activity_on }.to(Date.today)
         end
 
-        it 'returns the success status and a redirect path' do
+        it 'returns the success status and redirects directly without successful verification splash screen' do
           submit_token
-          expect(json_response).to eq('status' => 'success', 'redirect_path' => users_successful_verification_path)
+          expect(json_response).to eq('status' => 'success', 'redirect_path' => root_path)
+        end
+
+        it 'clears the verifies_with_email_user_id session variable' do
+          submit_token
+          expect(request.session[:verifies_with_email_user_id]).to be_nil
         end
 
         # Email-based OTP codes are valid for one hour. It is possible
@@ -855,12 +865,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       sign_in(user)
     end
 
-    it 'renders the template and removes the verifies_with_email_user_id session variable' do
-      stub_session(session_data: { verifies_with_email_user_id: user.id })
-
+    it 'renders the template' do
       get(users_successful_verification_path)
-
-      expect(request.session.has_key?(:verifies_with_email_user_id)).to eq(false)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('successful_verification', layout: 'minimal')
       expect(response.body).to include(root_path)

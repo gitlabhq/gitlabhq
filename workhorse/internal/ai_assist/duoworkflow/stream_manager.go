@@ -32,8 +32,9 @@ type streamManager struct {
 
 func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, error) {
 	userAgent := r.Header.Get("User-Agent")
+	clientName := r.Header.Get("X-Gitlab-Client-Name")
 
-	client, err := NewClient(cfg.Service, userAgent)
+	client, err := NewClient(cfg.Service, userAgent, clientName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
 	}
@@ -43,12 +44,13 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 		closeErr := client.Close()
 		return nil, fmt.Errorf("failed to initialize stream: %v", errors.Join(err, closeErr))
 	}
+	sessionsTotal.Inc()
 
 	var cloudServiceClient *Client
 	var cloudServiceStream selfHostedWorkflowStream
 
 	if cfg.CloudServiceForSelfHosted != nil && cfg.CloudServiceForSelfHosted.URI != "" {
-		cloudServiceClient, err = NewClient(cfg.CloudServiceForSelfHosted, userAgent)
+		cloudServiceClient, err = NewClient(cfg.CloudServiceForSelfHosted, userAgent, clientName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to initialize cloud service client: %v", err)
 		}
@@ -172,6 +174,9 @@ func (sm *streamManager) Recv() (*pb.Action, error) {
 		if err == io.EOF {
 			return nil, err // Expected error when a workflow ends
 		}
+
+		grpcCode := status.Code(err).String()
+		sessionErrorsTotal.WithLabelValues(grpcCode).Inc()
 
 		// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
 		if sm.isUsageQuotaExceededError(err) {

@@ -80,8 +80,6 @@
 
     @include gl-container-width-down(lg, panel) {
       .task-status,
-      .issuable-due-date,
-      .issuable-weight,
       .project-ref-path {
         display: none;
       }
@@ -109,7 +107,8 @@
   }
 }
 
-.issuable-list-container {
+.issuable-list-container,
+.planning-view {
   .sticky-filter {
     position: fixed;
     top: $calc-application-header-height;

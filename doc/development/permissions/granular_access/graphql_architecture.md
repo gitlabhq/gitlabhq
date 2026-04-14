@@ -130,7 +130,8 @@ boundary = BoundaryExtractor.new(object:, arguments:, context:, directive:).extr
 permissions = directive.arguments[:permissions]
 ```
 
-**Note**: When no directive is found, `boundary` and `permissions` are both `nil`. The authorization service will return the error message: "Unable to determine boundaries and permissions for authorization".
+> [!note]
+> When no directive is found, `boundary` and `permissions` are both `nil`. The authorization service will return the error message: "Unable to determine boundaries and permissions for authorization".
 
 The boundary extractor behavior:
 

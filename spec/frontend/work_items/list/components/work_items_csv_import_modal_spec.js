@@ -46,9 +46,6 @@ describe('WorkItemsCsvImportModal', () => {
       },
       provide: {
         maxAttachmentSize: '10MB',
-        glFeatures: {
-          workItemPlanningView: true,
-        },
         ...injectedProperties,
       },
       stubs: {
@@ -93,26 +90,6 @@ describe('WorkItemsCsvImportModal', () => {
       wrapper = createComponent();
       expect(findFileInput().exists()).toBe(true);
       expect(findFileInput().attributes('accept')).toBe('.csv,text/csv');
-    });
-
-    describe('when workItemPlanningView is disabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent({
-          injectedProperties: {
-            glFeatures: {
-              workItemPlanningView: false,
-            },
-          },
-        });
-      });
-
-      it('displays issues text in modal title', () => {
-        expect(findModal().props('title')).toBe('Import issues');
-      });
-
-      it('displays issues text in primary button', () => {
-        expect(findModal().props('actionPrimary').text).toBe('Import issues');
-      });
     });
   });
 

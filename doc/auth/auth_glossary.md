@@ -138,7 +138,7 @@ For more information, see [roles and permissions](../user/permissions.md).
 
 ## Default roles
 
-The predefined roles available in GitLab: Minimal Access, Guest, Planner, Reporter, Developer,
+The predefined roles available in GitLab: Minimal Access, Guest, Planner, Reporter, Security Manager, Developer,
 Maintainer, and Owner. Each role includes a specific set of permissions.
 
 For more information, see [roles and permissions](../user/permissions.md).

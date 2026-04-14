@@ -25,8 +25,30 @@ RSpec.describe QA::Support::GitlabAddress do
     context "with attribute already initialized" do
       let(:initialized) { true }
 
-      it "skips setting gitlab address attribute" do
-        expect(QA::Runtime::Scenario).not_to have_received(:define)
+      context "with explicit address provided" do
+        it "overrides gitlab address when explicit address provided", :aggregate_failures do
+          gitlab_address.define_gitlab_address_attribute!("http://gitlab.com")
+
+          expect(QA::Runtime::Scenario).to have_received(:define).with(:gitlab_address, address).once
+          expect(QA::Runtime::Scenario).to have_received(:define).with(:about_address, "http://about.example.com").once
+          expect(QA::Runtime::Scenario).to have_received(:define).with(:gitlab_address, "http://gitlab.com").once
+          expect(QA::Runtime::Scenario).to have_received(:define).with(:about_address, "http://about.gitlab.com").once
+        end
+      end
+
+      context "with no explicit address provided" do
+        where(:input) { [nil, "", "   "] }
+
+        with_them do
+          it "skips setting gitlab address attribute", :aggregate_failures do
+            gitlab_address.define_gitlab_address_attribute!(input)
+
+            expect(QA::Runtime::Scenario).to have_received(:define).with(:gitlab_address, address).once
+            expect(QA::Runtime::Scenario).to have_received(:define).with(:about_address, "http://about.example.com").once
+            expect(QA::Runtime::Scenario).not_to have_received(:define).with(:gitlab_address, "http://gitlab.com")
+            expect(QA::Runtime::Scenario).not_to have_received(:define).with(:about_address, "http://about.gitlab.com")
+          end
+        end
       end
     end
   end

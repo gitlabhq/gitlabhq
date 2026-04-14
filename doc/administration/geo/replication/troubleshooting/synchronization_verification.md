@@ -105,7 +105,8 @@ This procedure provides detailed status information for all Geo registry types a
        Geo::MergeRequestDiffRegistry,
        Geo::LfsObjectRegistry,
        Geo::PipelineArtifactRegistry,
-       Geo::CiSecureFileRegistry
+       Geo::CiSecureFileRegistry,
+       Geo::ContainerRepositoryRegistry
      ]
 
      registry_classes.each do |klass|
@@ -824,6 +825,52 @@ Exit code 128 during repository creation means Git encountered a fatal error whi
 
 When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../repository_checks.md#run-a-check-using-the-command-line).
 
+#### Exit status 128 caused by HTTP 504 from a load balancer
+
+For large repositories, the Gitaly logs on the secondary site might show:
+
+```plaintext
+error: RPC failed; HTTP 504 curl 22 The requested URL returned error: 504
+fatal: expected 'packfile'
+```
+
+This error occurs when a load balancer or proxy in front of the primary site terminates the
+connection during the Git clone packfile transfer. This commonly occurs with AWS Application Load
+Balancers (ALB), which have a default idle timeout of 60 seconds. For large repositories where
+Gitaly takes time to prepare the packfile before data transfer begins, the ALB might drop the
+connection before any data is sent and trigger the error.
+
+To resolve this issue:
+
+1. Increase the idle timeout on the load balancer in front of the primary site to accommodate
+   large repository clones. For AWS ALB, update the idle timeout setting in the load balancer
+   attributes in the AWS Management Console.
+1. Reset the failed registries:
+   1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+      on the **secondary** site.
+   1. Identify and reset the affected repositories:
+
+      ```ruby
+      project_ids = Geo::ProjectRepositoryRegistry.failed
+                      .where("last_sync_failure LIKE '%exit status 128%'")
+                      .pluck(:project_id)
+
+      puts "Found #{project_ids.count} repositories failing with exit status 128"
+
+      # state: 0 sets the registry back to pending so Geo retries the sync
+      Geo::ProjectRepositoryRegistry.where(project_id: project_ids).update_all(
+        state: 0,
+        retry_count: 0,
+        retry_at: nil,
+        last_sync_failure: nil
+      )
+
+      puts "Reset #{project_ids.count} registries to pending"
+      ```
+
+1. Wait for Geo to retry the sync automatically, or
+   [manually retry replication](#manually-retry-replication-or-verification).
+
 ### Error: `gitmodulesUrl: disallowed submodule url`
 
 Some project repositories consistently fail to sync with the error
@@ -1112,7 +1159,7 @@ Different Geo data types have unique characteristics and common failure patterns
 **Diagnosis:**
 
 1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
-1. Identify uploads with missing files:
+1. Identify uploads with missing files. Update `limit(5)` as needed to see more results:
 
    ```ruby
    checksummable_failures = Upload.verification_failed
@@ -1120,7 +1167,6 @@ Different Geo data types have unique characteristics and common failure patterns
 
    puts "Found #{checksummable_failures.count} uploads with missing files"
 
-   # Adjust 'limit' to count
    checksummable_failures.limit(5).each_with_index do |record, index|
      puts "Record #{index + 1}:"
      puts "  ID: #{record.id}"
@@ -1133,19 +1179,7 @@ Different Geo data types have unique characteristics and common failure patterns
 
 **Resolution:**
 
-> [!warning]
-> Ensure you have a recent and working backup before deleting any upload records. Coordinate with your team to confirm these uploads are safe to remove.
-
-1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
-1. Remove problematic uploads after confirmation:
-
-   ```ruby
-   # Remove individual upload
-   Upload.find(55).destroy
-
-   # Or remove all uploads with missing files (use with extreme caution)
-   Upload.verification_failed.where("verification_failure LIKE '%File is not checksummable%'").destroy_all
-   ```
+To resolve these failures, follow the steps in [failed verification of uploads on the primary Geo site](#failed-verification-of-uploads-on-the-primary-geo-site).
 
 #### Pages deployments
 
@@ -1177,9 +1211,30 @@ Different Geo data types have unique characteristics and common failure patterns
 1. After confirming with your team that the deployments are safe to remove:
 
    ```ruby
-   failed_ids = [21875, 21907, 21992] # Replace with actual IDs
-   PagesDeployment.where(id: failed_ids).destroy_all
-   puts "Removed #{failed_ids.size} problematic pages deployments"
+   def destroy_pages_deployments_not_checksummable(dry_run: true)
+     deployments = PagesDeployment.verification_failed.where("verification_failure LIKE '%File is not checksummable%'")
+     puts "Found #{deployments.count} pages deployments that failed verification with 'File is not checksummable'."
+
+     if dry_run
+       puts "DRY RUN - No changes made"
+       deployments.each { |d| puts "Would remove: ID #{d.id}, Project: #{d.project.full_path}" }
+       return
+     end
+
+     puts "Enter 'y' to continue: "
+     prompt = STDIN.gets.chomp
+     if prompt != 'y'
+       puts "Exiting without action..."
+       return
+     end
+
+     puts "Destroying all..."
+     deployments.destroy_all
+     puts "Done!"
+   end
+
+   # Run in dry run mode first
+   destroy_pages_deployments_not_checksummable(dry_run: true)
    ```
 
 #### LFS objects
@@ -1309,6 +1364,70 @@ Different Geo data types have unique characteristics and common failure patterns
    cleanup_missing_artifacts(dry_run: true)
    ```
 
+#### Package files
+
+This error occurs when package files are missing from storage on the primary site.
+
+To identify the affected package files:
+
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+   on the **primary** site.
+1. Query the affected records. Update `limit(5)` as needed to see more results:
+
+   ```ruby
+   checksummable_failures = Packages::PackageFile.verification_failed
+                                                  .where("verification_failure LIKE '%File is not checksummable%'")
+
+   puts "Found #{checksummable_failures.count} package files with missing files"
+
+   checksummable_failures.limit(5).each_with_index do |record, index|
+     puts "Record #{index + 1}:"
+     puts "  ID: #{record.id}"
+     puts "  File Name: #{record.file_name}"
+     puts "  Package ID: #{record.package_id}"
+     puts "  Created: #{record.created_at}"
+     puts "---"
+   end
+   ```
+
+> [!warning]
+> Ensure you have a recent and working backup before deleting any package file records.
+> Coordinate with your team to confirm these package files are safe to remove.
+
+To remove the affected package files:
+
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
+   on the **primary** site.
+1. Delete the affected records:
+
+   ```ruby
+   def destroy_packages_not_checksummable(dry_run: true)
+     packages = Packages::PackageFile.verification_failed
+                  .where("packages_package_file_states.verification_failure LIKE '%File is not checksummable%'")
+     puts "Found #{packages.count} packages that failed verification with 'File is not checksummable'."
+
+     if dry_run
+       puts "DRY RUN - No changes made"
+       packages.each { |p| puts "Would remove: ID #{p.id}, File: #{p.file_name}" }
+       return
+     end
+
+     puts "Enter 'y' to continue: "
+     prompt = STDIN.gets.chomp
+     if prompt != 'y'
+       puts "Exiting without action..."
+       return
+     end
+
+     puts "Destroying all..."
+     packages.destroy_all
+     puts "Done!"
+   end
+
+   # Run in dry run mode first
+   destroy_packages_not_checksummable(dry_run: true)
+   ```
+
 #### Pipeline artifacts
 
 **Diagnosis:**
@@ -1361,6 +1480,103 @@ Different Geo data types have unique characteristics and common failure patterns
    destroy_pipeline_artifacts_not_checksummable
    ```
 
+### LFS objects out of sync due to timeout
+
+LFS objects might fail to sync with `Sync timed out after 28800` when large files exceed the
+default 8-hour blob download timeout.
+
+#### Increase the blob download timeout
+
+In GitLab 18.10 and later, the blob download timeout is configurable per Geo site.
+
+To increase the blob download timeout, replace `<secondary_id>` with your secondary site ID
+and `<token>` with an admin API token:
+
+```shell
+curl --header "PRIVATE-TOKEN: <token>" \
+  --request PUT \
+  --data '{"blob_download_timeout": 43200}' \
+  "https://gitlab.example.com/api/v4/geo_nodes/<secondary_id>"
+```
+
+After you increase the timeout, wait for Geo to retry automatically, or
+[manually retry replication](#manually-retry-replication-or-verification).
+
+#### Identify and validate timed-out LFS objects
+
+If LFS objects continue to fail after you increase the timeout, identify the affected objects
+and confirm the files exist on the primary site.
+
+1. Identify the affected objects on the **secondary** site:
+
+   ```ruby
+   registries = Geo::LfsObjectRegistry.failed.where("last_sync_failure LIKE '%timed out%'")
+
+   puts "Found #{registries.count} LFS objects that failed with a timeout"
+   registries.each do |registry|
+     lfs_object = LfsObject.find_by(id: registry.lfs_object_id)
+     size_gb = lfs_object ? (lfs_object.size / 1024.0 / 1024.0 / 1024.0).round(2) : 'unknown'
+     puts "  Registry ID: #{registry.id}, LFS Object ID: #{registry.lfs_object_id}, Size: #{size_gb} GB, Failure: #{registry.last_sync_failure}, Retries: #{registry.retry_count}"
+   end
+   ```
+
+1. Using the `lfs_object_id` values from the previous step, confirm the files exist on the
+   **primary** site:
+
+   ```ruby
+   [lfs_object_id1, lfs_object_id2, lfs_object_id3].each do |id|
+     lfs_object = LfsObject.find_by(id: id)
+
+     if lfs_object.nil?
+       puts "LFS Object ID: #{id} not found"
+       next
+     end
+
+     puts "LFS Object ID: #{id}, Size: #{(lfs_object.size / 1024.0 / 1024.0 / 1024.0).round(2)} GB, File exists?: #{lfs_object.file.exists?}, Path: #{lfs_object.file.path}"
+   end
+   ```
+
+#### Copy files from primary to secondary
+
+If the files exist on the primary but are missing on the secondary, use the path from the
+previous step to locate the file:
+
+- For object storage: the path is the object key within the configured LFS bucket. Locate and
+  download the file from the primary bucket, then upload it to the same key in the secondary bucket.
+- For local storage: the path is relative to `/var/opt/gitlab/gitlab-rails/shared/lfs-objects/`
+  on the primary site. Copy the file to the same relative path on the secondary site.
+
+#### Mark LFS objects as synced
+
+After the files are present on the secondary site, mark them as synced and trigger verification:
+
+```ruby
+[lfs_object_id1, lfs_object_id2, lfs_object_id3].each do |lfs_object_id|
+  begin
+    registry = Geo::LfsObjectRegistry.find_by(lfs_object_id: lfs_object_id)
+
+    if registry.nil?
+      puts "Registry not found for LFS Object #{lfs_object_id}"
+      next
+    end
+
+    registry.update!(
+      state: 2,
+      success: true,
+      last_synced_at: Time.current,
+      last_sync_failure: nil,
+      retry_count: 0,
+      retry_at: nil
+    )
+    registry.replicator.verify
+
+    puts "LFS Object #{lfs_object_id}: marked as synced and verification triggered"
+  rescue => e
+    puts "Error processing LFS Object #{lfs_object_id}: #{e.message}"
+  end
+end
+```
+
 ### Error: `Projects - Error during verification: Repository does not exist`
 
 **Root Cause:** Projects without Git repositories causing verification failures.
@@ -1376,8 +1592,9 @@ Different Geo data types have unique characteristics and common failure patterns
 Create project repositories on the primary when they don't exist:
 
 ```ruby
-puts "Found #{Project.verification_failed.count} project repos failed to checksum"
-Project.verification_failed.find_each do |p|
+failed_projects = Project.verification_failed.where("verification_failure LIKE '%Repository does not exist%'")
+puts "Found #{failed_projects.count} project repos with 'Repository does not exist' verification failure"
+failed_projects.find_each do |p|
   puts "#{p.full_path} #{p.ensure_repository.inspect}"
 end
 ```

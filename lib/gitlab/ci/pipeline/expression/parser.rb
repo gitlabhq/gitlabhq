@@ -21,6 +21,11 @@ module Gitlab
               case token.type
               when :value
                 results.push(token.build)
+              when :unary_operator
+                operand = results.pop
+                token.build(operand).tap do |res|
+                  results.push(res)
+                end
               when :logical_operator
                 right_operand = results.pop
                 left_operand  = results.pop
@@ -60,7 +65,7 @@ module Gitlab
                 output.push(operators.pop) while token.lexeme.consume?(operators.last&.lexeme)
 
                 operators.push(token)
-              when :parenthesis_open
+              when :parenthesis_open, :unary_operator
                 operators.push(token)
               when :parenthesis_close
                 output.push(operators.pop) while token.lexeme.consume?(operators.last&.lexeme)

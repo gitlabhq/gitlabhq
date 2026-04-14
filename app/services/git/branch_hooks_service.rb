@@ -99,6 +99,7 @@ module Git
       enqueue_process_commit_messages
       enqueue_jira_connect_sync_messages
       track_ci_config_change_event
+      track_ci_config_creation_event
     end
 
     def branch_remove_hooks
@@ -111,6 +112,16 @@ module Git
 
       commits_changing_ci_config.each do |commit|
         track_internal_event('commit_change_to_ciconfigfile', user: commit.author, project: commit.project)
+      end
+    end
+
+    def track_ci_config_creation_event
+      commits_creating_ci_config.each do |commit|
+        author = commit.author
+        next unless author
+
+        track_internal_event('create_ci_config_file', user: author, project: commit.project,
+          namespace: commit.project.namespace)
       end
     end
 
@@ -261,6 +272,16 @@ module Git
 
         paths.include?(project.ci_config_path_or_default)
       end.keys
+    end
+
+    def commits_creating_ci_config
+      ci_config_path = project.ci_config_path_or_default
+
+      limited_commits.select do |commit|
+        next if commit.merge_commit?
+
+        commit.raw_deltas.any? { |delta| delta.new_path == ci_config_path && delta.new_file? }
+      end
     end
 
     def commit_paths

@@ -7,6 +7,8 @@ module Types
       graphql_name 'OrganizationUserBadge'
       description 'An organization user badge.'
 
+      authorize_granular_token permissions: :read_badge, boundary: :instance, boundary_type: :instance
+
       field :text,
         GraphQL::Types::String,
         null: false,

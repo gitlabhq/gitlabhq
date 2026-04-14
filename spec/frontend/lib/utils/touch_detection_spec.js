@@ -5,8 +5,10 @@ describe('Touch Detection Utility', () => {
   let originalMaxTouchPoints;
   let originalMsMaxTouchPoints;
   let originalDocumentTouch;
+  let originalDocumentProto;
 
   beforeEach(() => {
+    originalDocumentProto = Object.getPrototypeOf(document);
     originalOntouchstart = window.ontouchstart;
     originalMaxTouchPoints = Object.getOwnPropertyDescriptor(navigator, 'maxTouchPoints');
     originalMsMaxTouchPoints = Object.getOwnPropertyDescriptor(navigator, 'msMaxTouchPoints');
@@ -38,6 +40,8 @@ describe('Touch Detection Utility', () => {
     if (originalDocumentTouch) {
       window.DocumentTouch = originalDocumentTouch;
     }
+
+    Object.setPrototypeOf(document, originalDocumentProto);
   });
 
   describe('hasTouchCapability', () => {

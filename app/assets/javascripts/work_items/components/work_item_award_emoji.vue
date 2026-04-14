@@ -9,6 +9,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectWorkItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
 import { DEFAULT_PAGE_SIZE_EMOJIS } from '../constants';
@@ -19,6 +20,7 @@ export default {
   components: {
     AwardsList,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     workItemArchived: {
       type: Boolean,
@@ -96,10 +98,11 @@ export default {
           fullPath: this.workItemFullpath,
           after: this.after,
           pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update(data) {
-        return findAwardEmojiWidget(data.namespace?.workItem).awardEmoji || {};
+        return findAwardEmojiWidget(data.namespace?.workItem)?.awardEmoji || {};
       },
       skip() {
         return !this.workItemIid;
@@ -192,6 +195,7 @@ export default {
           fullPath: this.workItemFullpath,
           iid: this.workItemIid,
           pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         },
       };
 

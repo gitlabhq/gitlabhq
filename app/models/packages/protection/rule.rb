@@ -13,8 +13,16 @@ module Packages
         with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_pypi_package_name_pattern_regex,
         message: ->(_object, _data) { _('should be a valid PyPI package name with optional wildcard characters.') }
       }.freeze
+      TERRAFORM_MODULE_PACKAGE_NAME_FORMAT = {
+        with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_terraform_module_package_name_pattern_regex,
+        message: ->(_object, _data) {
+          _('should be a valid Terraform module package name with optional wildcard characters.')
+        }
+      }.freeze
 
-      enum :package_type, Packages::Package.package_types.slice(:conan, :generic, :helm, :maven, :npm, :nuget, :pypi)
+      enum :package_type, Packages::Package.package_types.slice(
+        :cargo, :conan, :generic, :helm, :maven, :npm, :nuget, :pypi, :terraform_module
+      )
       enum :minimum_access_level_for_delete, Gitlab::Access.sym_options_with_admin.slice(:owner, :admin),
         prefix: :minimum_access_level_for_delete
       enum :minimum_access_level_for_push, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
@@ -41,6 +49,12 @@ module Packages
       validates :package_name_pattern, format: PYPI_PACKAGE_NAME_FORMAT, if: :pypi?
       validates :pattern, format: PYPI_PACKAGE_NAME_FORMAT, allow_blank: true, if: -> {
         pypi? && target_field_package_name? && pattern_type_wildcard?
+      }
+
+      # terraform_module specific validations
+      validates :package_name_pattern, format: TERRAFORM_MODULE_PACKAGE_NAME_FORMAT, if: :terraform_module?
+      validates :pattern, format: TERRAFORM_MODULE_PACKAGE_NAME_FORMAT, allow_blank: true, if: -> {
+        terraform_module? && target_field_package_name? && pattern_type_wildcard?
       }
 
       validate :at_least_one_minimum_access_level_must_be_present

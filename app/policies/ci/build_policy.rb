@@ -7,12 +7,25 @@ module Ci
 
     delegate(:project) { @subject.project }
 
+    # Overrides added when prevent_all except logic was introduced in the project policy
+    # These abilities were not defined in that policy and may have been prevented when
+    # They would have previously been enabled
+    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229560
+    overrides(
+      :create_build_service_proxy,
+      :create_build_terminal,
+      :read_build_metadata,
+      :read_build_trace,
+      :read_ci_minutes_limited_summary,
+      :read_job_artifacts,
+      :read_manual_variables,
+      :read_web_ide_terminal,
+      :troubleshoot_job_with_ai,
+      :update_web_ide_terminal
+    )
+
     condition(:public_project, scope: :subject) do
       @subject.project.public?
-    end
-
-    condition(:guest) do
-      can?(:guest_access, @subject.project)
     end
 
     condition(:protected_ref) do
@@ -95,7 +108,7 @@ module Ci
 
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 
-    rule { ~reporter_has_access_to_protected_environment & protected_ref }.policy do
+    rule { ~has_access_to_protected_environment & protected_ref }.policy do
       prevent(*all_job_write_abilities)
     end
 

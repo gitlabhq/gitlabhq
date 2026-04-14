@@ -156,14 +156,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
       expect(resource).to eq variable
     end
 
-    it 'supports using a hash with stringified values' do
-      variable = { 'key' => 'VARIABLE', 'value' => 'my value' }
-
-      resource = described_class.fabricate(variable)
-
-      expect(resource).to eq(key: 'VARIABLE', value: 'my value')
-    end
-
     it 'supports using an active record resource' do
       variable = build(:ci_variable, key: 'CI_VAR', value: '123')
       resource = described_class.fabricate(variable)
@@ -181,54 +173,20 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
       expect(resource).to eq(key: 'CI_VAR', value: '123', public: false, masked: false)
     end
 
-    it 'supports using another collection item' do
+    it 'supports using another collection item and returns the same object' do
       item = described_class.new(**variable)
 
       resource = described_class.fabricate(item)
 
       expect(resource).to be_a(described_class)
       expect(resource).to eq variable
-      expect(resource.object_id).not_to eq item.object_id
+      expect(resource.object_id).to eq item.object_id
     end
 
-    it 'skips symbolize_keys when hash keys are already symbols' do
-      hash = { key: 'VAR', value: 'test' }
+    it 'freezes the internal variable hash' do
+      item = described_class.new(**variable)
 
-      expect(hash).not_to receive(:symbolize_keys)
-
-      described_class.fabricate(hash)
-    end
-
-    it 'calls symbolize_keys when hash keys are strings' do
-      hash = { 'key' => 'VAR', 'value' => 'test' }
-
-      expect(hash).to receive(:symbolize_keys).and_call_original
-
-      described_class.fabricate(hash)
-    end
-
-    it 'logs when string keys are detected' do
-      hash = { 'key' => 'VAR', 'value' => 'test' }
-
-      expect(Gitlab::AppJsonLogger).to receive(:info).with(
-        hash_including(message: "CI variables Item: string keys detected in hash")
-      )
-
-      described_class.fabricate(hash)
-    end
-
-    context 'when ci_optimize_variables_collection_and_item is disabled' do
-      before do
-        stub_feature_flags(ci_optimize_variables_collection_and_item: false)
-      end
-
-      it 'always calls symbolize_keys for hash input' do
-        hash = { key: 'VAR', value: 'test' }
-
-        expect(hash).to receive(:symbolize_keys).and_call_original
-
-        described_class.fabricate(hash)
-      end
+      expect { item.to_hash_variable[:key] = 'MUTATED' }.to raise_error(FrozenError)
     end
   end
 

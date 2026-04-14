@@ -69,6 +69,7 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
 }
 
 export default {
+  name: 'TableBubbleMenu',
   components: {
     BubbleMenu,
     EditorStateObserver,

@@ -30,10 +30,10 @@ module QA
         'push fails when the file size is above the limit',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347759'
       ) do
-        set_file_size_limit(2)
+        set_file_size_limit(1)
 
         retry_on_fail do
-          expect { push_new_file('oversize_file_2.bin', wait_for_push: false) }
+          expect { push_new_file('oversize_file_2.bin', file_size: 1_200_000, wait_for_push: false) }
             .to raise_error(QA::Support::Run::CommandError, /remote: fatal: pack exceeds maximum allowed size/)
         end
       end
@@ -46,12 +46,12 @@ module QA
         expect(parse_body(response)[:receive_max_input_size]).to eq(limit)
       end
 
-      def push_new_file(file_name, wait_for_push: true)
+      def push_new_file(file_name, file_size: 3_000_000, wait_for_push: true)
         commit_message = 'Adding a new file'
         output = Resource::Repository::Push.fabricate! do |p|
           p.repository_http_uri = project.repository_http_location.uri
           p.file_name = file_name
-          p.file_content = SecureRandom.random_bytes(3000000)
+          p.file_content = SecureRandom.random_bytes(file_size)
           p.commit_message = commit_message
           p.new_branch = false
         end

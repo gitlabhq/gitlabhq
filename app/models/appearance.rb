@@ -20,6 +20,7 @@ class Appearance < ApplicationRecord
   attribute :message_background_color, default: '#E75E40'
   attribute :message_font_color, default: '#FFFFFF'
   attribute :email_header_and_footer_enabled, default: false
+  attribute :site_name, default: ''
 
   cache_markdown_field :description
   cache_markdown_field :member_guidelines
@@ -31,21 +32,28 @@ class Appearance < ApplicationRecord
   validates :pwa_name,
     length: {
       maximum: 255,
-      too_long: ->(object, data) { N_("is too long (maximum is %{count} characters)") }
+      too_long: ->(object, data) { _("is too long (maximum is %{count} characters)") }
     },
     allow_blank: true
 
   validates :pwa_short_name,
     length: {
       maximum: 255,
-      too_long: ->(object, data) { N_("is too long (maximum is %{count} characters)") }
+      too_long: ->(object, data) { _("is too long (maximum is %{count} characters)") }
     },
     allow_blank: true
 
   validates :pwa_description,
     length: {
       maximum: 2048,
-      too_long: ->(object, data) { N_("is too long (maximum is %{count} characters)") }
+      too_long: ->(object, data) { _("is too long (maximum is %{count} characters)") }
+    },
+    allow_blank: true
+
+  validates :site_name,
+    length: {
+      maximum: 255,
+      too_long: ->(object, data) { _("is too long (maximum is %{count} characters)") }
     },
     allow_blank: true
 

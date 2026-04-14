@@ -1,12 +1,13 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlForm } from '@gitlab/ui';
+import { GlForm, GlSprintf } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import mockPipelineCreateMutationResponse from 'test_fixtures/graphql/pipelines/create_pipeline.mutation.graphql.json';
 import mockPipelineCreateMutationErrorResponse from 'test_fixtures/graphql/pipelines/create_pipeline_error.mutation.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -14,8 +15,12 @@ import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form
 import PipelineNewForm from '~/ci/pipeline_new/components/pipeline_new_form.vue';
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import pipelineCreateMutation from '~/ci/pipeline_new/graphql/mutations/create_pipeline.mutation.graphql';
+import getRelatedMergeRequest from '~/ci/pipeline_new/graphql/queries/related_merge_request.query.graphql';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
+import { createAlert } from '~/alert';
 import { mockProjectId, mockPipelineConfigButtonText } from '../mock_data';
+
+jest.mock('~/alert');
 
 Vue.directive('safe-html', {
   bind(el, binding) {
@@ -26,9 +31,8 @@ Vue.directive('safe-html', {
 Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
-  joinPaths: jest.fn(),
-  setUrlFragment: jest.fn(),
 }));
 
 const defaultProps = {
@@ -50,6 +54,8 @@ const defaultProvide = {
   canSetPipelineVariables: true,
 };
 
+const mockProjectPath = 'test/project';
+
 describe('Pipeline New Form', () => {
   let wrapper;
   let mock;
@@ -57,6 +63,7 @@ describe('Pipeline New Form', () => {
   let dummySubmitEvent;
 
   const pipelineCreateMutationHandler = jest.fn();
+  const mockRelatedMergeRequestQuery = jest.fn();
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
@@ -66,6 +73,9 @@ describe('Pipeline New Form', () => {
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
+  const findMrPipelineInfoAlert = () => wrapper.findByTestId('mr-pipeline-info-alert');
+  const findMrLink = () => wrapper.findByTestId('mr-link');
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
 
   const submitForm = async () => {
     findForm().vm.$emit('submit', dummySubmitEvent);
@@ -85,9 +95,14 @@ describe('Pipeline New Form', () => {
     provide = {},
     mountFn = shallowMountExtended,
     stubs = {},
+    handlers = [],
   } = {}) => {
-    const handlers = [[pipelineCreateMutation, pipelineCreateMutationHandler]];
-    mockApollo = createMockApollo(handlers);
+    const defaultHandlers = [
+      [pipelineCreateMutation, pipelineCreateMutationHandler],
+      [getRelatedMergeRequest, mockRelatedMergeRequestQuery],
+      ...handlers,
+    ];
+    mockApollo = createMockApollo(defaultHandlers);
     wrapper = mountFn(PipelineNewForm, {
       apolloProvider: mockApollo,
       provide: {
@@ -370,6 +385,143 @@ describe('Pipeline New Form', () => {
       await nextTick();
 
       expect(findSubmitButton().props('disabled')).toBe(!state);
+    });
+  });
+
+  describe('when merge_request_iid is in URL params', () => {
+    const mergeRequestIid = '123';
+
+    beforeEach(() => {
+      setWindowLocation(`?merge_request_iid=${mergeRequestIid}`);
+    });
+
+    describe('with successful query', () => {
+      beforeEach(async () => {
+        mockRelatedMergeRequestQuery.mockResolvedValue({
+          data: {
+            project: {
+              id: 'gid://gitlab/Project/1',
+              mergeRequest: {
+                id: 'gid://gitlab/MergeRequest/123',
+                sourceBranch: 'feature-branch',
+                webPath: '/test/project/-/merge_requests/123',
+              },
+            },
+          },
+        });
+
+        await createComponentWithApollo({
+          provide: {
+            projectPath: mockProjectPath,
+          },
+          stubs: { GlSprintf },
+        });
+      });
+
+      it('queries for related merge request', () => {
+        expect(mockRelatedMergeRequestQuery).toHaveBeenCalledWith({
+          fullPath: mockProjectPath,
+          iid: mergeRequestIid,
+        });
+      });
+
+      it('displays merge request info alert with link', () => {
+        expect(findMrPipelineInfoAlert().text()).toMatchInterpolatedText(
+          `You are creating a pipeline for merge request !${mergeRequestIid}. The pipeline will run on the merge request source branch.`,
+        );
+        expect(findMrLink().attributes('href')).toBe('/test/project/-/merge_requests/123');
+      });
+
+      it('sets ref to merge request source branch', () => {
+        expect(findRefsDropdown().props('value')).toEqual({ shortName: 'feature-branch' });
+      });
+
+      it('includes merge request IID in the create pipeline mutation', async () => {
+        pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+
+        await submitForm();
+
+        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+          input: {
+            ref: 'feature-branch',
+            projectPath: mockProjectPath,
+            inputs: [],
+            variables: [],
+            mergeRequestIid,
+          },
+        });
+      });
+
+      it('sets cancel button to merge request pipelines path', () => {
+        expect(findCancelButton().attributes('href')).toBe(
+          '/test/project/-/merge_requests/123/pipelines',
+        );
+      });
+
+      it('navigates to the created pipeline', async () => {
+        await submitForm();
+
+        expect(visitUrl).toHaveBeenCalledWith('/test/project/-/merge_requests/123/pipelines');
+      });
+    });
+
+    describe('when merge request query fails', () => {
+      beforeEach(async () => {
+        mockRelatedMergeRequestQuery.mockRejectedValue(new Error('GraphQL error'));
+
+        await createComponentWithApollo({
+          provide: {
+            projectPath: mockProjectPath,
+          },
+        });
+      });
+
+      it('shows error alert', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred while fetching the merge request details.',
+        });
+      });
+    });
+  });
+
+  describe('without merge_request_iid in URL params', () => {
+    beforeEach(async () => {
+      setWindowLocation('');
+
+      await createComponentWithApollo();
+    });
+
+    it('does not display merge request info alert', () => {
+      expect(findMrPipelineInfoAlert().exists()).toBe(false);
+    });
+
+    it('shows pipeline variables form when user can set variables', () => {
+      expect(findPipelineVariablesForm().exists()).toBe(true);
+    });
+
+    it('sets cancel button to pipelines path', () => {
+      expect(findCancelButton().attributes('href')).toBe(defaultProvide.pipelinesPath);
+    });
+  });
+
+  describe('when merge_request_iid has invalid value in URL params', () => {
+    beforeEach(async () => {
+      setWindowLocation('?merge_request_iid=invalid');
+      mockRelatedMergeRequestQuery.mockClear();
+
+      await createComponentWithApollo({
+        provide: {
+          projectPath: mockProjectPath,
+        },
+      });
+    });
+
+    it('does not query for related merge request', () => {
+      expect(mockRelatedMergeRequestQuery).not.toHaveBeenCalled();
+    });
+
+    it('does not display merge request info alert', () => {
+      expect(findMrPipelineInfoAlert().exists()).toBe(false);
     });
   });
 });

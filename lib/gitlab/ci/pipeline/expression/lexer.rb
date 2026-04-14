@@ -23,7 +23,8 @@ module Gitlab
             Expression::Lexeme::NotEquals,
             Expression::Lexeme::NotMatches,
             Expression::Lexeme::And,
-            Expression::Lexeme::Or
+            Expression::Lexeme::Or,
+            Expression::Lexeme::Not
           ].freeze
 
           def self.lexemes

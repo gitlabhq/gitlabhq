@@ -10,6 +10,11 @@ RSpec.describe 'Claim for Group', feature_category: :cell do
       claims_records_for(subject, only: only) +
         claims_records_for(subject.route, only: only)
     end
+
+    def destroy_claims_records(only: {})
+      destroy_claims_records_for(subject, only: only) +
+        destroy_claims_records_for(subject.route, only: only)
+    end
   end
 
   it_behaves_like 'creating new claims' do

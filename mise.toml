@@ -1,0 +1,5 @@
+[plugins]
+ruby = "https://gitlab.com/gitlab-org/quality/tooling/asdf-gitlab-ruby.git"
+
+[env]
+USE_PRECOMPILED_RUBY = "true"

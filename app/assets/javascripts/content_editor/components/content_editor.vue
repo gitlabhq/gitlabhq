@@ -23,6 +23,7 @@ import TableBubbleMenu from './bubble_menus/table_bubble_menu.vue';
 import FormattingToolbar from './formatting_toolbar.vue';
 
 export default {
+  name: 'ContentEditor',
   components: {
     GlButton,
     GlLoadingIcon,

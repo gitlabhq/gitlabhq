@@ -4,8 +4,8 @@
 - content_for :reload_on_member_invite_success, true
 - content_for :hide_invite_members_button, true
 
-- if show_the_header
-  = render ::Layouts::PageHeadingComponent.new(_("Project members")) do |c|
+= render ::Layouts::IndexLayout.new(heading: _("Project members"), page_heading_sr_only: !show_the_header) do |c|
+  - if show_the_header
     - c.with_description do
       - if can_invite_members_for_project?(@project)
         = project_member_header_subtext(@project)
@@ -18,8 +18,8 @@
         - else
           = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
-    - c.with_actions do
-      - if can_invite_members_for_project?(@project)
+    - if can_invite_members_for_project?(@project)
+      - c.with_actions do
         - if can?(current_user, :invite_member, @project)
           .js-import-project-members-trigger{ data: { classes: '@md/panel:gl-w-auto gl-w-full' } }
           .js-import-project-members-modal{ data: { project_id: @project.id,
@@ -36,10 +36,10 @@
             trigger_source: 'project_members_page',
             display_text: _('Invite members') } }
 
-.js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
-                                                                                  members: @project_members,
-                                                                                  invited: @invited_members,
-                                                                                  links: @group_member_links,
-                                                                                  access_requests: @requesters,
-                                                                                  pending_members_count: @pending_promotion_members_count) } }
-  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')
+  .js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
+                                                                                    members: @project_members,
+                                                                                    invited: @invited_members,
+                                                                                    links: @group_member_links,
+                                                                                    access_requests: @requesters,
+                                                                                    pending_members_count: @pending_promotion_members_count) } }
+    = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

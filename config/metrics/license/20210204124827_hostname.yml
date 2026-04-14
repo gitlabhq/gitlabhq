@@ -2,6 +2,8 @@
 key_path: hostname
 description: Host name of GitLab instance
 product_group: analytics_instrumentation
+product_categories:
+- service_ping
 value_type: string
 status: active
 milestone: "<13.9"

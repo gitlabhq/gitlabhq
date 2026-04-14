@@ -33,6 +33,10 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
       expect(subject.portable_relations).to include('issues', 'labels', 'milestones', 'merge_requests')
     end
 
+    it 'includes max_iids relation' do
+      expect(subject.portable_relations).to include('max_iids')
+    end
+
     it 'does not include skipped relations' do
       expect(subject.portable_relations).not_to include('project_members', 'group_members')
     end
@@ -139,6 +143,24 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
   describe '#file_relations' do
     it 'returns project file relations' do
       expect(subject.file_relations).to contain_exactly('uploads', 'lfs_objects', 'repository', 'design')
+    end
+  end
+
+  describe '#export_service_for' do
+    context 'when relation is max_iids' do
+      it 'returns MaxIidsExportService' do
+        expect(subject.export_service_for('max_iids')).to eq(Import::BulkImports::MaxIidsExportService)
+      end
+    end
+  end
+
+  describe '#max_iids_relation?' do
+    it 'returns true for max_iids' do
+      expect(subject.max_iids_relation?('max_iids')).to eq(true)
+    end
+
+    it 'returns false for other relations' do
+      expect(subject.max_iids_relation?('issues')).to eq(false)
     end
   end
 

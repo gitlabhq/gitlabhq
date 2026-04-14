@@ -44,6 +44,7 @@ export default async function initPipelineDetailsBundle() {
       validityChecksEnabled = 'false';
     }
 
+    // eslint-disable-next-line @gitlab/no-hardcoded-urls -- '/security' is a Vue Router route path, not a Rails URL
     const securityRoute = routes.find((route) => route.path === '/security');
     if (securityRoute) {
       securityRoute.props = { dismissalDescriptions, validityChecksEnabled };

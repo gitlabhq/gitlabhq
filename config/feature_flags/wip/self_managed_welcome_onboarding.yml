@@ -1,0 +1,10 @@
+---
+name: self_managed_welcome_onboarding
+description: self-managed welcome onboarding work
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/19488
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228898
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594810
+milestone: '18.11'
+type: wip
+group: group::acquisition
+default_enabled: false

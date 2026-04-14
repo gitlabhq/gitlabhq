@@ -6,8 +6,9 @@ import {
   convertFiltersToQueryParams,
   convertSortToQueryParams,
   groupPermissionsByResourceAndCategory,
+  buildDuplicateUrl,
 } from '~/personal_access_tokens/utils';
-import { mockGroupPermissions } from './mock_data';
+import { mockGroupPermissions, mockTokens } from './mock_data';
 
 describe('personal_access_tokens/utils', () => {
   describe('timeFormattedAsDate', () => {
@@ -235,11 +236,27 @@ describe('personal_access_tokens/utils', () => {
               description: 'Project resource description',
               key: 'project',
               name: 'Project',
+              actions: [
+                {
+                  key: 'read_project',
+                  name: 'Read',
+                },
+                {
+                  key: 'write_project',
+                  name: 'Write',
+                },
+              ],
             },
             {
               description: 'Contributed project resource description',
               key: 'contributed_project',
               name: 'Contributed project',
+              actions: [
+                {
+                  key: 'read_contributed_project',
+                  name: 'Read',
+                },
+              ],
             },
           ],
         },
@@ -251,10 +268,33 @@ describe('personal_access_tokens/utils', () => {
               description: 'Repository resource description',
               key: 'repository',
               name: 'Repository',
+              actions: [
+                {
+                  key: 'read_repository',
+                  name: 'Read',
+                },
+              ],
             },
           ],
         },
       ]);
+    });
+  });
+
+  describe('buildDuplicateUrl', () => {
+    const granularNewUrl = '/user_settings/personal_access_tokens/granular/new';
+    const granularToken = mockTokens[0];
+
+    it('builds a URL containing the integer source token ID', () => {
+      const url = buildDuplicateUrl(granularToken, granularNewUrl);
+
+      expect(url).toBe(`${granularNewUrl}?source_token_id=1`);
+    });
+
+    it('uses the integer ID, not the GID', () => {
+      const url = buildDuplicateUrl(granularToken, granularNewUrl);
+
+      expect(url).not.toContain('gid');
     });
   });
 });

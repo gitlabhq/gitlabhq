@@ -13,8 +13,8 @@ RSpec.describe FeatureFlagsHelper do
     allow(helper).to receive(:can?).and_return(true)
     allow(helper).to receive(:current_user).and_return(user)
 
-    self.instance_variable_set(:@project, project)
-    self.instance_variable_set(:@feature_flag, feature_flag)
+    instance_variable_set(:@project, project)
+    instance_variable_set(:@feature_flag, feature_flag)
   end
 
   describe '#unleash_api_url' do

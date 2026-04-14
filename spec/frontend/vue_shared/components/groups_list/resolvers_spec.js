@@ -7,26 +7,30 @@ import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
-describe('your work groups resolver', () => {
+describe('group list resolver', () => {
   let mockApollo;
   let mockAxios;
 
   const endpoint = '/dashboard/groups.json';
 
-  const makeQuery = (apiResponse = dashboardGroupsWithChildrenResponse) => {
+  const makeQuery = (
+    apiResponse = dashboardGroupsWithChildrenResponse,
+    { responseHeaders, variables } = {},
+  ) => {
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).reply(200, apiResponse, {
-      'x-per-page': 10,
-      'x-page': 2,
-      'x-total': 21,
-      'x-total-pages': 3,
-      'x-next-page': 3,
-      'x-prev-page': 1,
-    });
+    mockAxios.onGet(endpoint).reply(
+      200,
+      apiResponse,
+      responseHeaders || {
+        'x-per-page': 10,
+        'x-next-page': 'next',
+        'x-prev-page': 'prev',
+      },
+    );
 
     return mockApollo.clients.defaultClient.query({
       query: groupsQuery,
-      variables: { search: 'foo', sort: 'created_desc', page: 2 },
+      variables,
     });
   };
 
@@ -39,19 +43,22 @@ describe('your work groups resolver', () => {
   });
 
   it(`makes API call to ${endpoint} with correct params`, async () => {
-    await makeQuery();
+    await makeQuery(dashboardGroupsWithChildrenResponse, {
+      variables: { search: 'foo', sort: 'created_desc', after: 'current' },
+    });
 
     expect(mockAxios.history.get[0].params).toEqual({
       filter: 'foo',
       sort: 'created_desc',
-      page: 2,
+      pagination: 'keyset',
+      cursor: 'current',
     });
   });
 
   it('returns API call response correctly formatted for GraphQL', async () => {
     const {
       data: {
-        groups: { nodes, pageInfo },
+        groups: { nodes },
       },
     } = await makeQuery();
 
@@ -103,14 +110,6 @@ describe('your work groups resolver', () => {
       ],
       childrenCount: 1,
       hasChildren: true,
-    });
-
-    expect(pageInfo).toEqual({
-      __typename: 'LocalPageInfo',
-      total: 21,
-      perPage: 10,
-      nextPage: 3,
-      previousPage: 1,
     });
   });
 
@@ -170,6 +169,26 @@ describe('your work groups resolver', () => {
       );
 
       expect(nodes[0].childrenCount).toBe(0);
+    });
+  });
+
+  it('returns pageInfo with cursor-based pagination data', async () => {
+    const response = await makeQuery(dashboardGroupsWithChildrenResponse, {
+      variables: { pagination: 'keyset' },
+      responseHeaders: {
+        'x-per-page': 10,
+        'x-next-page': 'next',
+        'x-prev-page': 'prev',
+      },
+    });
+
+    expect(response.data.groups.pageInfo).toMatchObject({
+      __typename: 'LocalPageInfo',
+      perPage: 10,
+      startCursor: 'prev',
+      endCursor: 'next',
+      hasNextPage: true,
+      hasPreviousPage: true,
     });
   });
 });

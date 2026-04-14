@@ -1,18 +1,12 @@
-import { GlFormGroup, GlDatepicker } from '@gitlab/ui';
+import { GlFormGroup, GlDatepicker, GlLink } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/components/create_granular_token/personal_access_token_expiration_date.vue';
-import { defaultDate } from '~/vue_shared/access_tokens/utils';
-
-jest.mock('~/vue_shared/access_tokens/utils', () => ({
-  defaultDate: jest.fn(),
-}));
 
 describe('PersonalAccessTokenExpirationDate', () => {
   let wrapper;
 
   const mockMinDate = '2025-12-11';
   const mockMaxDate = '2026-12-11';
-  const mockDefaultDate = new Date('2026-01-09');
 
   const createComponent = ({ provide = {}, props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(PersonalAccessTokenExpirationDate, {
@@ -29,10 +23,9 @@ describe('PersonalAccessTokenExpirationDate', () => {
 
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   beforeEach(() => {
-    defaultDate.mockReturnValue(mockDefaultDate);
-
     createComponent();
   });
 
@@ -50,12 +43,14 @@ describe('PersonalAccessTokenExpirationDate', () => {
   });
 
   describe('when `accessTokenMaxDate` is provided', () => {
-    it('sets the default date', () => {
-      expect(findDatepicker().attributes('defaultdate')).toBe(mockDefaultDate.toString());
-    });
-
     it('does not show the clear button', () => {
       expect(findDatepicker().props('showClearButton')).toBe(false);
+    });
+
+    it('opens the help link in a new tab', () => {
+      createComponent({ mountFn: mountExtended });
+
+      expect(findLink().attributes('target')).toBe('_blank');
     });
 
     it('renders max token lifetime message', () => {
@@ -103,17 +98,12 @@ describe('PersonalAccessTokenExpirationDate', () => {
   });
 
   describe('events', () => {
-    it('emits input event on mount with `defaultDate`', () => {
-      expect(wrapper.emitted('input')).toHaveLength(1);
-      expect(wrapper.emitted('input')[0]).toEqual([new Date(mockDefaultDate)]);
-    });
-
     it('emits input event when datepicker value changes', async () => {
       const date = new Date('2025-12-15');
       await findDatepicker().vm.$emit('input', date);
 
-      expect(wrapper.emitted('input')).toHaveLength(2);
-      expect(wrapper.emitted('input')[1]).toEqual([date]);
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0]).toEqual([date]);
     });
   });
 });

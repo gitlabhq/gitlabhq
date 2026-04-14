@@ -6,6 +6,10 @@ module API
     urgency :low
     helpers Helpers::BulkImports::AuditHelpers
 
+    # shared: is only used for error reporting in tree_by_key;
+    # project_relation_names does not need it.
+    VALID_EXPORT_RELATIONS = Gitlab::ImportExport::Reader.new(shared: nil).project_relation_names.map(&:to_s).freeze
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
@@ -80,10 +84,18 @@ module API
             optional :http_method, type: String, default: 'PUT', values: %w[PUT POST],
               desc: 'HTTP method to upload the exported project'
           end
+          optional :excluded_relations, type: Array[String],
+            desc: 'List of project relation names to exclude from the export (e.g. ["merge_requests", "issues"])'
         end
         route_setting :authorization, permissions: :create_project_export, boundary_type: :project
         post ':id/export' do
           check_rate_limit! :project_export, scope: current_user
+
+          if params[:excluded_relations].present?
+            invalid = params[:excluded_relations] - VALID_EXPORT_RELATIONS
+
+            render_api_error!("Invalid excluded_relations: #{invalid.join(', ')}", 400) if invalid.any?
+          end
 
           user_project.remove_export_for_user(current_user)
 

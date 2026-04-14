@@ -197,14 +197,13 @@ describe('WorkItemChildrenWrapper', () => {
       autoExpandTreeOnMove | workItemType   | expected | description
       ${true}              | ${'Task'}      | ${true}  | ${'returns true when autoExpandTreeOnMove flag is true'}
       ${false}             | ${'Task'}      | ${false} | ${'returns false when autoExpandTreeOnMove flag is false'}
-      ${null}              | ${'Epic'}      | ${true}  | ${'returns true for Epic when autoExpandTreeOnMove is null (fallback logic)'}
-      ${null}              | ${'Objective'} | ${true}  | ${'returns true for Objective when autoExpandTreeOnMove is null (fallback logic)'}
-      ${null}              | ${'Task'}      | ${false} | ${'returns false for other types when autoExpandTreeOnMove is null (fallback logic)'}
-      ${undefined}         | ${'Epic'}      | ${true}  | ${'returns true for Epic when widget definition is empty (fallback logic)'}
+      ${true}              | ${'Epic'}      | ${true}  | ${'returns true for Epic when autoExpandTreeOnMove is true'}
+      ${true}              | ${'Objective'} | ${true}  | ${'returns true for Objective when autoExpandTreeOnMove is true'}
+      ${null}              | ${'Epic'}      | ${null}  | ${'returns null for Epic when autoExpandTreeOnMove is null'}
+      ${null}              | ${'Task'}      | ${null}  | ${'returns null for other types when autoExpandTreeOnMove is null'}
     `('$description', ({ autoExpandTreeOnMove, workItemType, expected }) => {
       const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue({
-        widgetDefinitions:
-          autoExpandTreeOnMove === undefined ? [] : [{ type: 'HIERARCHY', autoExpandTreeOnMove }],
+        widgetDefinitions: [{ type: 'HIERARCHY', autoExpandTreeOnMove }],
       });
       createComponent({ getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration });
 
@@ -213,13 +212,13 @@ describe('WorkItemChildrenWrapper', () => {
 
     it.each`
       configValue  | description
-      ${null}      | ${'returns false when getWorkItemTypeConfiguration returns null'}
-      ${undefined} | ${'returns false when getWorkItemTypeConfiguration returns undefined'}
+      ${null}      | ${'returns undefined when getWorkItemTypeConfiguration returns null'}
+      ${undefined} | ${'returns undefined when getWorkItemTypeConfiguration returns undefined'}
     `('$description', ({ configValue }) => {
       const mockGetWorkItemTypeConfiguration = jest.fn().mockReturnValue(configValue);
       createComponent({ getWorkItemTypeConfigurationMock: mockGetWorkItemTypeConfiguration });
 
-      expect(wrapper.vm.shouldAutoExpandOnDrag('Task')).toBe(false);
+      expect(wrapper.vm.shouldAutoExpandOnDrag('Task')).toBeUndefined();
     });
   });
 

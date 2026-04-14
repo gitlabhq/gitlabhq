@@ -12,19 +12,19 @@ class FakeWebauthnDevice
   end
 
   def respond_to_webauthn_registration
-    app_id = WebAuthn.configuration.origin
+    app_id = @page.evaluate_script('window.location.origin')
     challenge = @page.evaluate_script('gon.webauthn.options.challenge')
 
     options = {
       challenge: challenge,
-      user_verified: true,
-      extensions: { "credProps" => { "rk" => true } }
+      extensions: { "credProps" => { "rk" => true } },
+      user_verified: true
     }
 
     json_response = webauthn_device(app_id).create(**options).to_json # rubocop:disable Rails/SaveBang
     @page.execute_script <<~JS
       var result = #{json_response};
-      result.getClientExtensionResults = () => ({});
+      result.getClientExtensionResults = () => (result['clientExtensionResults']);
       navigator.credentials.create = function(_) {
         return Promise.resolve(result);
       };
@@ -32,11 +32,17 @@ class FakeWebauthnDevice
   end
 
   def respond_to_webauthn_authentication(passkey: nil)
-    app_id = @page.evaluate_script('JSON.parse(gon.webauthn.options).extensions.appid')
+    app_id = @page.evaluate_script('window.location.origin')
     challenge = @page.evaluate_script('JSON.parse(gon.webauthn.options).challenge')
 
+    options = {
+      challenge: challenge,
+      extensions: { "credProps" => { "rk" => true } },
+      user_verified: true
+    }
+
     begin
-      json_response = webauthn_device(app_id).get(challenge: challenge).to_json
+      json_response = webauthn_device(app_id).get(**options).to_json
 
     rescue RuntimeError
       # A runtime error is raised from fake webauthn if no credentials have been registered yet.
@@ -47,12 +53,17 @@ class FakeWebauthnDevice
 
     @page.execute_script <<~JS
       var result = #{json_response};
-      result.getClientExtensionResults = () => ({});
+      result.getClientExtensionResults = () => (result['clientExtensionResults']);
       navigator.credentials.get = function(_) {
         return Promise.resolve(result);
       };
     JS
-    @page.click_button(_('Try again?')) unless passkey
+
+    if passkey
+      @page.click_button(_('Try again'))
+    else
+      @page.click_button(_('Try again?'))
+    end
   end
 
   def fake_webauthn_authentication

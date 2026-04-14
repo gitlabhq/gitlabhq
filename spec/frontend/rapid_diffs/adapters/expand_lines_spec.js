@@ -99,7 +99,6 @@ describe('expandLinesAdapter', () => {
       expect(getFirstInsertedRow()).not.toBe(null);
       expect(getLastInsertedRow()).not.toBe(null);
       expect(getExpandButton(direction)).toBe(null);
-      expect(getDiffElement().style.getPropertyValue('--virtual-total-rows')).toBe('6');
       expect(trigger).toHaveBeenCalledWith(EXPANDED_LINES);
     });
   });

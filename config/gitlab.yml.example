@@ -548,6 +548,22 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## AI Catalog
+  ai_catalog:
+    # storage_path: shared/ai_catalog
+    object_store:
+      enabled: false
+      remote_directory: ai-catalog # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -821,24 +837,24 @@ production: &base
   # 3. Auth settings
   # ==========================
 
-  ## Authentication settings
-  authn:
-    ## IAM Service settings
-    # The IAM Service handles OAuth flows with external providers and forwards
-    # authenticated user data to GitLab Rails.
-    iam_service:
-      # Enable OAuth access token authentication from IAM Service
-      # enabled: false
+  iam_auth_service:
+    # enabled: false
 
-      # IAM Service URL
-      # url: http://localhost:8084
+    # File that contains the secret token for authenticating with the IAM auth service.
+    # secret_file: /etc/gitlab/iam-auth/.gitlab_iam_auth_secret
 
-      # Expected JWT audience (must match 'aud' claim in tokens)
-      # Set to 'gitlab-rails' or your GitLab instance identifier
-      # audience: gitlab-rails
+    # IAM auth service HTTP endpoint (used for JWKS and JWT authentication)
+    # http:
+    #   host: localhost
+    #   port: 8084
 
-      # JWKS cache TTL in seconds (how long to cache the signing keys)
-      # jwks_cache_ttl: 3600
+    # IAM auth service gRPC endpoint (reserved for future use)
+    # grpc:
+    #   host: localhost
+    #   port: 8085
+
+    # Expected JWT audience claim
+    # jwt_audience: gitlab-rails
 
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
@@ -1647,6 +1663,17 @@ test:
     object_store:
       enabled: false
       remote_directory: ci-secure-files
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  ai_catalog:
+    storage_path: tmp/tests/ai_catalog
+    object_store:
+      enabled: false
+      remote_directory: ai-catalog
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

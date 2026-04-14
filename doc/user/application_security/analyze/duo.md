@@ -44,6 +44,7 @@ identify potential false positives. For more information, see
 
 Prerequisites:
 
+- The Developer, Maintainer, or Owner role for the project.
 - [GitLab Duo](../../gitlab_duo/turn_on_off.md) must be enabled for the group or instance.
 - You must be a member of the project.
 - The vulnerability must be from a SAST scanner.

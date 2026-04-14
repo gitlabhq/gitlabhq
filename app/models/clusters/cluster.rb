@@ -17,8 +17,9 @@ module Clusters
 
     self.reactive_cache_work_type = :external_dependency
 
-    belongs_to :user
+    belongs_to :user, optional: true
     belongs_to :management_project, class_name: '::Project', optional: true
+    belongs_to :organization, class_name: 'Organizations::Organization', optional: true
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'

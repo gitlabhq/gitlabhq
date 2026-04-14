@@ -737,6 +737,9 @@ func handleMcpRequest(t *testing.T, w http.ResponseWriter, r *http.Request, name
 	if name == "gitlab" {
 		assert.Contains(t, r.URL.Path, "/api/v4/mcp")
 	}
+	if name == "orbit" {
+		assert.Contains(t, r.URL.Path, "/api/v4/orbit/mcp")
+	}
 
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -956,5 +959,275 @@ func TestManager_buildTools(t *testing.T) {
 		require.Error(t, err)
 		require.NotNil(t, mgr)
 		assert.Contains(t, err.Error(), "failed to list tools")
+	})
+}
+
+func TestBuildSession_orbitRouting(t *testing.T) {
+	t.Run("routes orbit server to /api/v4/orbit/mcp", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "orbit", []mcpTool{
+			{Name: "query_graph", Description: "Query the knowledge graph"},
+		})
+
+		apiURL, err := url.Parse(mcpServer.URL)
+		require.NoError(t, err)
+
+		rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		tools := []string{"query_graph"}
+		serverCfg := api.McpServerConfig{
+			Headers:          map[string]string{"Authorization": "Bearer test-token"},
+			Tools:            &tools,
+			PreApprovedTools: &tools,
+		}
+
+		session, err := buildSession(rails, req, "orbit", serverCfg)
+
+		require.NoError(t, err)
+		require.NotNil(t, session)
+		assert.Equal(t, "orbit", session.name)
+	})
+
+	t.Run("routes gitlab server to /api/v4/mcp", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "gitlab", []mcpTool{
+			{Name: "search", Description: "Search"},
+		})
+
+		apiURL, err := url.Parse(mcpServer.URL)
+		require.NoError(t, err)
+
+		rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		serverCfg := api.McpServerConfig{
+			Headers: map[string]string{"Authorization": "Bearer test-token"},
+		}
+
+		session, err := buildSession(rails, req, "gitlab", serverCfg)
+
+		require.NoError(t, err)
+		require.NotNil(t, session)
+		assert.Equal(t, "gitlab", session.name)
+	})
+}
+
+func TestNewMcpManager_orbitAndGitlabServers(t *testing.T) {
+	t.Run("initializes both gitlab and orbit servers with correct routing", func(t *testing.T) {
+		gitlabServer := setupMockMcpServer(t, "gitlab", []mcpTool{
+			{Name: "search", Description: "Search code"},
+		})
+		orbitServer := setupMockMcpServer(t, "orbit", []mcpTool{
+			{Name: "query_graph", Description: "Query the knowledge graph"},
+			{Name: "get_graph_schema", Description: "Get the graph schema"},
+		})
+
+		// Use a mux to route both gitlab and orbit paths on the same server
+		mux := http.NewServeMux()
+		mux.HandleFunc("/api/v4/mcp", func(w http.ResponseWriter, r *http.Request) {
+			handleMcpRequest(t, w, r, "gitlab", []mcpTool{
+				{Name: "search", Description: "Search code"},
+			}, nil)
+		})
+		mux.HandleFunc("/api/v4/orbit/mcp", func(w http.ResponseWriter, r *http.Request) {
+			handleMcpRequest(t, w, r, "orbit", []mcpTool{
+				{Name: "query_graph", Description: "Query the knowledge graph"},
+				{Name: "get_graph_schema", Description: "Get the graph schema"},
+			}, nil)
+		})
+		combinedServer := httptest.NewServer(mux)
+		t.Cleanup(func() { combinedServer.Close() })
+
+		combinedURL, err := url.Parse(combinedServer.URL)
+		require.NoError(t, err)
+
+		rails := api.NewAPI(combinedURL, "test-version", http.DefaultTransport)
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		gitlabTools := []string{"search"}
+		orbitTools := []string{"query_graph", "get_graph_schema"}
+		servers := map[string]api.McpServerConfig{
+			"gitlab": {
+				Headers:          map[string]string{"Authorization": "Bearer gitlab-token"},
+				Tools:            &gitlabTools,
+				PreApprovedTools: &gitlabTools,
+				Trusted:          true,
+			},
+			"orbit": {
+				Headers:          map[string]string{"Authorization": "Bearer orbit-token"},
+				Tools:            &orbitTools,
+				PreApprovedTools: &orbitTools,
+			},
+		}
+
+		_ = gitlabServer
+		_ = orbitServer
+
+		mgr, err := newMcpManager(rails, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		assert.Len(t, mgr.tools, 3)
+
+		toolsByName := make(map[string]*pb.McpTool)
+		for _, tool := range mgr.tools {
+			toolsByName[tool.Name] = tool
+		}
+
+		assert.Contains(t, toolsByName, "gitlab_search")
+		assert.Contains(t, toolsByName, "orbit_query_graph")
+		assert.Contains(t, toolsByName, "orbit_get_graph_schema")
+
+		assert.Len(t, mgr.preApprovedTools, 3)
+		assert.Contains(t, mgr.preApprovedTools, "gitlab_search")
+		assert.Contains(t, mgr.preApprovedTools, "orbit_query_graph")
+		assert.Contains(t, mgr.preApprovedTools, "orbit_get_graph_schema")
+	})
+}
+
+func TestRoundTripper_serverNameGatesSendData(t *testing.T) {
+	t.Run("non-orbit server ignores SendData header", func(t *testing.T) {
+		responseBody := `{"result": "ok"}`
+		var transportFunc = func(_ *http.Request) (*http.Response, error) {
+			header := make(http.Header)
+			header.Set("Gitlab-Workhorse-Send-Data", "orbit-query:eyJ0ZXN0IjogdHJ1ZX0=")
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(responseBody)),
+				Header:     header,
+			}, nil
+		}
+
+		rt := &roundTripper{
+			serverName: "gitlab",
+			next:       &mockTransportFunc{fn: transportFunc},
+			headers:    map[string]string{},
+		}
+
+		req := httptest.NewRequest("GET", "http://example.com", nil)
+		resp, err := rt.RoundTrip(req)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		defer resp.Body.Close()
+
+		// Should NOT have processed the SendData -- body should be the original (wrapped in limitedReadCloser)
+		_, ok := resp.Body.(*limitedReadCloser)
+		assert.True(t, ok, "Non-orbit server should get normal limitedReadCloser wrapping")
+	})
+
+	t.Run("orbit server without SendData header gets normal response", func(t *testing.T) {
+		responseBody := `{"tools": []}`
+		var transportFunc = func(_ *http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: 200,
+				Body:       io.NopCloser(strings.NewReader(responseBody)),
+				Header:     make(http.Header),
+			}, nil
+		}
+
+		rt := &roundTripper{
+			serverName: "orbit",
+			next:       &mockTransportFunc{fn: transportFunc},
+			headers:    map[string]string{},
+		}
+
+		req := httptest.NewRequest("GET", "http://example.com", nil)
+		resp, err := rt.RoundTrip(req)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		defer resp.Body.Close()
+
+		_, ok := resp.Body.(*limitedReadCloser)
+		assert.True(t, ok, "Orbit server without SendData should get normal limitedReadCloser wrapping")
+	})
+}
+
+func TestManager_buildTools_propagatesTrustedFlag(t *testing.T) {
+	t.Run("sets Trusted on tools from trusted server", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "tool1", Description: "Tool 1"},
+		})
+
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		servers := map[string]api.McpServerConfig{
+			"trusted-server": {
+				URL:     mcpServer.URL,
+				Headers: map[string]string{},
+				Trusted: true,
+			},
+		}
+
+		mgr, err := newMcpManager(nil, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		require.Len(t, mgr.tools, 1)
+		require.NotNil(t, mgr.tools[0].Trusted)
+		assert.True(t, *mgr.tools[0].Trusted)
+	})
+
+	t.Run("sets Trusted false on tools from untrusted server", func(t *testing.T) {
+		mcpServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "tool1", Description: "Tool 1"},
+		})
+
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		servers := map[string]api.McpServerConfig{
+			"untrusted-server": {
+				URL:     mcpServer.URL,
+				Headers: map[string]string{},
+				Trusted: false,
+			},
+		}
+
+		mgr, err := newMcpManager(nil, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		require.Len(t, mgr.tools, 1)
+		require.NotNil(t, mgr.tools[0].Trusted)
+		assert.False(t, *mgr.tools[0].Trusted)
+	})
+
+	t.Run("mixed trusted and untrusted servers", func(t *testing.T) {
+		trustedServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "safe_tool", Description: "Safe tool"},
+		})
+		untrustedServer := setupMockMcpServer(t, "", []mcpTool{
+			{Name: "ext_tool", Description: "External tool"},
+		})
+
+		req := httptest.NewRequest("GET", "/test", nil)
+
+		servers := map[string]api.McpServerConfig{
+			"internal": {
+				URL:     trustedServer.URL,
+				Headers: map[string]string{},
+				Trusted: true,
+			},
+			"external": {
+				URL:     untrustedServer.URL,
+				Headers: map[string]string{},
+				Trusted: false,
+			},
+		}
+
+		mgr, err := newMcpManager(nil, req, servers)
+
+		require.NoError(t, err)
+		require.NotNil(t, mgr)
+		require.Len(t, mgr.tools, 2)
+
+		toolsByName := make(map[string]*pb.McpTool)
+		for _, tool := range mgr.tools {
+			toolsByName[tool.Name] = tool
+		}
+
+		require.NotNil(t, toolsByName["internal_safe_tool"].Trusted)
+		assert.True(t, *toolsByName["internal_safe_tool"].Trusted)
+
+		require.NotNil(t, toolsByName["external_ext_tool"].Trusted)
+		assert.False(t, *toolsByName["external_ext_tool"].Trusted)
 	})
 }

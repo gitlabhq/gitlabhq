@@ -87,7 +87,8 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
     end
   end
 
-  context 'service desk issue moved to a project with service desk disabled', :saas do
+  context 'service desk issue moved to a project with service desk disabled', :saas,
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41273' do
     let(:project_title) { 'service desk disabled project' }
     let(:warning_selector) { '.js-alert-moved-from-service-desk-warning' }
     let(:namespace) { create(:namespace) }
@@ -104,6 +105,8 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
       service_desk_project.add_reporter(user)
 
       visit issue_path(service_desk_issue)
+
+      expand_sidebar
 
       click_button _('Move issue')
       wait_for_requests
@@ -123,6 +126,16 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
       page.refresh
 
       expect(page).to have_no_selector(warning_selector)
+    end
+  end
+
+  private
+
+  def expand_sidebar
+    return unless page.has_css?('.right-sidebar.right-sidebar-collapsed', wait: 0) # rubocop: disable RSpec/AvoidConditionalStatements -- We need this to support both FOSS and EE runs of this spec
+
+    within '.right-sidebar' do
+      click_button "Expand sidebar"
     end
   end
 

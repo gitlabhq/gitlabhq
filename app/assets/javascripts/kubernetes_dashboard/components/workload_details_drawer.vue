@@ -1,6 +1,6 @@
 <script>
 import { GlDrawer } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { InternalEvents } from '~/tracking';

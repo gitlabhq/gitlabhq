@@ -10,7 +10,9 @@ module API
             expose_nil: true
           expose :description_html,
             documentation: { type: 'String', example: '<p>Repellendus impedit et vel velit dignissimos.</p>' },
-            expose_nil: true
+            expose_nil: true do |widget, options|
+            MarkupHelper.markdown_field(widget.work_item, :description, current_user: options[:current_user])
+          end
           expose :edited?, as: :edited,
             documentation: { type: 'Boolean', example: false }
           expose :last_edited_at,

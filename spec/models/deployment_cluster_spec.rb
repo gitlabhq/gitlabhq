@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeploymentCluster do
+RSpec.describe DeploymentCluster, feature_category: :continuous_delivery do
   let(:cluster) { create(:cluster) }
   let(:deployment) { create(:deployment) }
   let(:kubernetes_namespace) { 'an-example-namespace' }
@@ -11,6 +11,7 @@ RSpec.describe DeploymentCluster do
 
   it { is_expected.to belong_to(:deployment).required }
   it { is_expected.to belong_to(:cluster).required }
+  it { is_expected.to belong_to(:project).optional }
 
   it do
     is_expected.to have_attributes(

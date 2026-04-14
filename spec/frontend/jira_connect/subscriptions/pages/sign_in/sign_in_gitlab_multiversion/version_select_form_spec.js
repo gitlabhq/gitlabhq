@@ -49,7 +49,7 @@ describe('VersionSelectForm', () => {
     });
 
     it('selects "saas" radio option by default', () => {
-      expect(findFormRadioGroup().vm.$attrs.checked).toBe(VersionSelectForm.radioOptions.saas);
+      expect(findFormRadioGroup().props().checked).toBe(VersionSelectForm.radioOptions.saas);
     });
 
     it('renders submit button as "Save"', () => {

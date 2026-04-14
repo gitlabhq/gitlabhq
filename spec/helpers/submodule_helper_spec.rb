@@ -431,7 +431,7 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
     subject { helper.submodule_links(submodule_item) }
 
     before do
-      self.instance_variable_set(:@repository, repo)
+      instance_variable_set(:@repository, repo)
     end
 
     it_behaves_like 'submodule_links'

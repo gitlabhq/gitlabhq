@@ -105,6 +105,34 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
     end
   end
 
+  describe 'pagination' do
+    before do
+      # Stub the field object the resolver reads (@field.max_page_size) so the test
+      # repo's root produces hasNextPage: true without needing scroll manipulation.
+      allow(Types::RepositoryType.fields['paginatedTree']).to receive(:max_page_size).and_return(5)
+
+      visit project_tree_path(project, project.default_branch)
+      wait_for_requests
+    end
+
+    it 'shows the "Show more" button when there are more files to load' do
+      within('.file-tree-browser') do
+        expect(page).to have_button('Show more')
+      end
+    end
+
+    it 'loads additional files when "Show more" is clicked' do
+      within('.file-tree-browser') do
+        initial_count = all('[data-item-id]').count
+
+        click_button 'Show more'
+        wait_for_requests
+
+        expect(all('[data-item-id]').count).to be > initial_count
+      end
+    end
+  end
+
   describe 'when feature flag is disabled' do
     before do
       stub_feature_flags(repository_file_tree_browser: false)

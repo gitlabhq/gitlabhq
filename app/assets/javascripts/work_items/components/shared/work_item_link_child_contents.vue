@@ -210,7 +210,8 @@ export default {
           isGroup: this.isGroup,
           issueAsWorkItem: !this.isGroup,
         });
-      const hasListRoute = this.$router.getRoutes().some((route) => route.name === 'workItem');
+      const hasListRoute =
+        this.$router && this.$router.getRoutes().some((route) => route.name === 'workItem');
       if (shouldDefaultNavigate || !hasListRoute) {
         this.$emit('click', e);
       } else {
@@ -332,7 +333,7 @@ export default {
         :metadata-widgets="metadataWidgets"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :namespace-path="childItemFullPath"
-        class="@xl/panel:!gl-ml-0"
+        class="gl-relative gl-z-2 @xl/panel:!gl-ml-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">
         <gl-label

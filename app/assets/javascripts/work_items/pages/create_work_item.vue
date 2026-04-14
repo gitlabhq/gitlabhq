@@ -7,12 +7,9 @@ import CreateWorkItemCancelConfirmationModal from '../components/create_work_ite
 import {
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
-  BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_NEW_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
   WORK_ITEM_TYPE_ROUTE_ISSUE,
 } from '../constants';
@@ -89,19 +86,6 @@ export default {
     isIncident() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT;
     },
-    allowedWorkItemTypes() {
-      if (
-        [
-          WORK_ITEM_TYPE_NAME_ISSUE,
-          WORK_ITEM_TYPE_NAME_INCIDENT,
-          WORK_ITEM_TYPE_NAME_TASK,
-        ].includes(this.workItemType)
-      ) {
-        return BASE_ALLOWED_CREATE_TYPES;
-      }
-
-      return [];
-    },
     isNewGroupWorkItem() {
       return !this.isEpic && this.isGroup;
     },
@@ -177,7 +161,6 @@ export default {
       :should-discard-draft="shouldDiscardDraft"
       :always-show-work-item-type-select="!isEpic"
       :show-project-selector="isNewGroupWorkItem"
-      :allowed-work-item-types="allowedWorkItemTypes"
       @updateType="updateWorkItemType($event)"
       @confirmCancel="handleConfirmCancellation"
       @discardDraft="handleDiscardDraft('createPage')"

@@ -1,18 +1,19 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+info: This page is maintained by Developer Relations, author @dnsmichi, see <https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation>
 description: AIネイティブの機能と機能性。
 title: GitLab Duoのユースケース
 ---
 
-次のユースケースでは、GitLab Duoを使用した実践的な例、演習、およびワークフローを提供します。次を実行する方法を学びます:
+次のユースケースは、GitLab Duoを使用した実践的な例、演習、およびワークフローを提供します。次のことを実行する方法を学びます:
 
 - 既存のソースコードをリファクタリングする。
-- GitLab Duo根本原因分析を使用して、失敗したジョブの問題を解決する。
-- セキュリティ脆弱性を解決する。
+- GitLab Duo根本原因分析を使用して、失敗したジョブのトラブルシューティングを行う。
+- セキュリティ脆弱性を修正する。
 
-> [!note] GitLabセルフマネージドをお使いの場合: GitLab Duoで最適なユーザーエクスペリエンスと結果を得るには、GitLab 17.2以降が必要です。それ以前のバージョンでも動作する可能性はありますが、エクスペリエンスが低下するおそれがあります。
+> [!note]
+> GitLab Self-Managedをお使いの場合: GitLab Duoで最適なユーザーエクスペリエンスと結果を得るには、GitLab 17.2以降が必要です。それ以前のバージョンでも動作する可能性はありますが、エクスペリエンスが低下するおそれがあります。
 
 ## GitLab Duoを使用して開発課題を解決する {#use-gitlab-duo-to-solve-development-challenges}
 
@@ -35,7 +36,7 @@ title: GitLab Duoのユースケース
 
 - コード提案を使用して、新しいコードコメントでREST APIクライアントを生成します:
 
-  ```csharp
+  ```c#
   // Connect to a REST API and print the response
   ```
 
@@ -56,7 +57,7 @@ title: GitLab Duoのユースケース
   .NET 8.0
   ```
 
-- 後でテストを作成するには、GitLab Duoにコードタスク`/refactor`を使用して、選択したコードを関数にリファクタリングするように依頼します。
+- 後でテストを作成するには、GitLab Duoに、コードタスク`/refactor`を使用して、選択したコードを関数にリファクタリングするように依頼します。
 
 - Chatは、プログラミング言語固有のキーワードと関数、またはC#コンパイラエラーの説明にも役立ちます。
 
@@ -79,7 +80,7 @@ title: GitLab Duoのユースケース
   reference to another project in the existing solution?
   ```
 
-- より良い結果を得るには、プロンプトを改良する必要があります。プロンプト`/refactor into the public class`は、後でテストプロジェクトからアクセスできるコードの提案を作成します。
+- より良い結果を得るために、プロンプトを改良する必要があることがあります。プロンプト`/refactor into the public class`は、後でテストプロジェクトからアクセスできるコードの提案を作成します。
 
   ```markdown
   /refactor into the public class
@@ -107,7 +108,7 @@ title: GitLab Duoのユースケース
 再利用可能でテスト可能な関数にソースコードをリファクタリングするには:
 
 1. GitLab Duoが有効になっているVS CodeまたはWeb IDEを開きます。
-1. ソースコードを選択し、改良されたプロンプトを使用して、GitLab Duo Chatに関数にリファクタリングするように依頼します: 
+1. ソースコードを選択し、改良されたプロンプトを使用して、GitLab Duo Chatに、関数にリファクタリングするように依頼します: 
 
    ```markdown
    /refactor into functions
@@ -196,9 +197,9 @@ title: GitLab Duoのユースケース
   How to instantiate an object from a class in C++, call the constructor with the SQLite DB path and call the functions. Prefer shared pointers. Explain which header includes are necessary.
   ```
 
-- コード提案は、`std::shared_ptr`ポインター演算の正しい構文を生成し、コード品質の向上に役立ちます。
+- コード提案は、`std::shared_ptr`ポインター演算の正しい構文を生成し、コード品質を向上させることに役立ちます。
 
-  ```cpp
+  ```c++
   // Define the SQLite path in a variable, default value database.db
 
   // Create a shared pointer for the SQLite class
@@ -216,7 +217,7 @@ title: GitLab Duoのユースケース
 
 - 特定のSQLクエリ文字列は、より効率的な編集のために複数行の文字列にリファクタリングする必要があります。
 
-  ```cpp
+  ```c++
   std::string sql = "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, email TEXT NOT NULL)";
   ```
 
@@ -226,7 +227,7 @@ title: GitLab Duoのユースケース
   /refactor into a stringstream with multiple lines
   ```
 
-- また、C++で、ユーティリティ関数をstatic関数を持つクラスにリファクタリングし、それらを呼び出す方法をChatに尋ねることもできます。
+- また、C++で、ユーティリティ関数をstatic関数があるクラスにリファクタリングし、それらを呼び出す方法をChatに尋ねることもできます。
 
   ```markdown
   /refactor into a class providing static functions
@@ -242,7 +243,7 @@ title: GitLab Duoのユースケース
 
 ### Kotlinアプリケーションの説明、テスト、およびリファクタリング {#explain-test-and-refactor-a-kotlin-application}
 
-この例では、[Kotlinコード生成プロンプト](use_cases.md#kotlin-code-generation-prompts)のアプリケーションを分析し、リファクタリングとテストで改善する必要があります。
+この例では、[Kotlinコード生成プロンプト](use_cases.md#kotlin-code-generation-prompts)のアドベンチャーアプリケーションを分析し、リファクタリングとテストで改善する必要があります。
 
 現在のソースコードは次のようになります:
 
@@ -350,7 +351,7 @@ fun main() {
 
       ...
      }
-    ```
+   ```
 
 すべてがテストされていることを確認したら、選択したコードをリファクタリングするようにChatに依頼します:
 
@@ -431,7 +432,8 @@ fun main() {
 
 ### PowerShellのスタートガイド {#get-started-with-powershell}
 
-> [!note] PowerShellのサポートは[実験的](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages)です。
+> [!note]
+> PowerShellのサポートは[実験的](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages)です。
 
 1. GitLab Duo Chatを使用して、現在のディレクトリのファイルサイズを出力するPowerShellスクリプトを開始する方法を尋ねます。
 
@@ -523,7 +525,7 @@ fun main() {
     printf("Contents of region: %s\n", region);
 ```
 
-[SASTセキュリティスキャナー](../application_security/sast/analyzers.md)は、問題を検出してレポートできます。[脆弱性の説明](../application_security/vulnerabilities/_index.md#vulnerability-explanation)を使用して、問題を理解してください。脆弱性は、MRを生成するのに役立ちます。提案された変更が要件に適合しない場合、または問題につながる可能性がある場合は、コード提案とChatを使用して改良できます。例: 
+[SASTセキュリティスキャナー](../application_security/sast/_index.md)は、問題を検出してレポートできます。[脆弱性の説明](../application_security/analyze/duo.md)を使用して、問題を理解してください。脆弱性の修正は、MRを生成するのに役立ちます。提案された変更が要件に適合しない場合、または問題につながる可能性がある場合は、コード提案とChatを使用して改良できます。例: 
 
 1. GitLab Duoが有効になっているVS CodeまたはWeb IDEを開き、指示付きのコメントを追加します:
 
@@ -547,7 +549,7 @@ fun main() {
        printf("Contents of region: %s\n", region);
    ```
 
-1. GitLab Duo Chatを使用して質問をします。`/refactor`コードタスクは、さまざまな提案を生成できます。特定のアルゴリズムまたは関数を優先する場合は、プロンプトを改良します:
+1. GitLab Duo Chatを使用して質問します。`/refactor`コードタスクは、さまざまな提案を生成できます。特定のアルゴリズムまたは関数を優先する場合は、プロンプトを改良します:
 
    ```markdown
    /refactor using snprintf
@@ -564,13 +566,13 @@ fun main() {
 <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)でこれらの手順のチュートリアルをご覧ください。
 <!-- Video published on 2024-02-02 -->
 
-- GitLab Duo Chatを使用して、CI/CDエラーの説明をすることができます。
+- GitLab Duo Chatを使用して、CI/CDエラーを説明することができます。
 
   ```markdown
   Explain this CI/CD error: build.sh: line 14: go command not found
   ```
 
-- 性急に1つまたは2つの単語だけを入力するとどうなりますか?
+- 性急に1つまたは2つの単語だけを入力するとどうなるでしょうか?
 
   ```markdown
   labels
@@ -580,7 +582,7 @@ fun main() {
 
   GitLab Duo Chatは、より多くのコンテキストを要求します。
 
-- 質問を完全な文に絞り込み、問題を説明し、解決策を求めます。
+- 質問を完全な文に改良して、問題を説明し、解決策を求めます。
 
   ```markdown
   Explain labels in GitLab. Provide an example for efficient usage.
@@ -594,35 +596,35 @@ fun main() {
 
 根本原因分析を使用して、CI/CDジョブの失敗の根本原因を特定します。次の例は一般的なエラーを示しており、フォークを作成して、根本原因を見つけて修正する練習をすることをお勧めします。
 
-詳細については、ブログ記事[Developing GitLab Duo:Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)を参照してください。
+詳細については、ブログ記事[Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)を参照してください。
 
 ### Goランタイムの欠落を分析する {#analyze-missing-go-runtime}
 
-CI/CDジョブは、提供された`image`属性から起動されたコンテナ内で実行できます。コンテナがプログラミング言語のランタイムを提供しない場合、`go`バイナリを参照する`script`セクションの実行は失敗します。たとえば、エラーメッセージ`/bin/sh: eval: line 149: go: not found`を理解して修正する必要があります。コンテナのランタイムコンテキストで`go`コマンドが見つからない場合は、複数の理由が考えられます:
+CI/CDジョブは、コントリビュートされた`image`属性から起動されたコンテナ内で実行できます。コンテナがプログラミング言語のランタイムを提供しない場合、`go`バイナリを参照する`script`セクションの実行は失敗します。たとえば、エラーメッセージ`/bin/sh: eval: line 149: go: not found`を理解して修正する必要があります。コンテナのランタイムコンテキストで`go`コマンドが見つからない場合は、複数の理由が考えられます:
 
-- ジョブは`alpine`のような最低限のコンテナイメージを使用し、Go言語ランタイムがインストールされていませんでした。
-- ジョブは、CI/CD設定で指定された誤ったデフォルトのコンテナイメージを使用するか、`default`キーワードを使用します。
-- ジョブは、コンテナイメージの代わりにShell executorを使用します。ホストのオペレーティングシステムが破損しているか、Go言語ランタイムがインストールされていないか、設定されていません。
+- ジョブが`alpine`のような最低限のコンテナイメージを使用していて、Go言語ランタイムがインストールされていませんでした。
+- ジョブが、CI/CD設定で指定された誤ったデフォルトのコンテナイメージを使用しているか、`default`キーワードを使用しています。
+- ジョブが、コンテナイメージの代わりにShell executorを使用しています。ホストのオペレーティングシステムが破損しているか、Go言語ランタイムがインストールされていないか、設定されていません。
 
 プロジェクト[Challenge: Root Cause Analysis - Go GitLab Release Fetcher](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-challenges/root-cause-analysis/challenge-root-cause-analysis-go-gitlab-release-fetcher)は、Go TanukiアプリケーションでCI/CDの問題を分析して修正する演習を提供します。この演習では、`build`ジョブと`docker-build`ジョブが失敗しています。問題を修正すると、CI/CDパイプラインが成功し、`build`ジョブは出力を表示します。`solution/`ディレクトリは、2つの可能なソリューションを提供します。
 
 ## GitLabにコントリビュートするためにGitLab Duoを使用する {#use-gitlab-duo-to-contribute-to-gitlab}
 
-GitLab Duoの使用法は、GitLabコードベースへのコントリビュートと、顧客がより効率性を高める方法に重点を置いています。
+GitLab Duoの使用法は、GitLabコードベースへのコントリビュートと、顧客がより効率的にコントリビュートする方法に重点を置いています。
 
-GitLabコードベースは大きく、複雑なアルゴリズムまたはアプリケーション固有の実装を理解する必要があります。
+GitLabコードベースは大きく、複雑なアルゴリズムまたはアプリケーション固有の実装を理解する必要がある場合があります。
 
 ### フロントエンドにコントリビュート: プロファイル設定 {#contribute-to-frontend-profile-settings}
 
 この例では、課題は、GitLabプロファイルページを更新し、ソーシャルネットワークの設定を改善することです。
 
-<i class="fa-youtube-play" aria-hidden="true"></i>こちらで録画をご覧ください: [GitLab Duo Coffee Chat:Contribute to GitLab using Code Suggestions and Chat](https://www.youtube.com/watch?v=TauP7soXj-E)
+<i class="fa-youtube-play" aria-hidden="true"></i> こちらで録画をご覧ください: [GitLab Duo Coffee Chat:Contribute to GitLab using Code Suggestions and Chat](https://www.youtube.com/watch?v=TauP7soXj-E)
 <!-- Video published on 2024-02-23 -->
 
 GitLab Duo Chatを使用して、コードの説明とリファクタリングを行い、テストを生成できます。コード提案は、既存のコードを完成させるのに役立ち、Ruby、Go、またはVueJSで新しい関数とアルゴリズムを生成できます。
 
 1. `/explain`コードタスクを使用して、選択したコードセクションを説明し、HAMLテンプレートがどのように機能するかを学びます。
-1. コードタスクのプロンプトを改良し、代わりに`/explain how HAML rendering works`を尋ねることができます
+1. コードタスクのプロンプトを改良し、代わりに`/explain how HAML rendering works`と尋ねることができます。
 
 または、チャットプロンプトに直接書き込むこともできます。例:
 
@@ -630,10 +632,10 @@ GitLab Duo Chatを使用して、コードの説明とリファクタリング�
 how to populate a select in haml
 ```
 
-リファクタリングの例には、次が含まれます:
+リファクタリングの例には、以下が含まれます:
 
 1. `/refactor into a HAML dropdown`
-1. 既存のUIフォームコードを検査した後、プロンプトを`/refactor into a HAML dropdown with a form select`に改良します
+1. 既存のUIフォームコードを検査した後、プロンプトを`/refactor into a HAML dropdown with a form select`に改良します。
 
 GitLab Duo Chatは、エラーのデバッグをサポートし、エラーメッセージにプレフィックスを付けました:
 
@@ -643,13 +645,13 @@ Explain this error: undefined method `icon` for
 
 ## コード生成プロンプト {#code-generation-prompts}
 
-次の例では、GitLab Duoで[サポートされている言語](../project/repository/code_suggestions/supported_extensions.md)の[コード生成](../project/repository/code_suggestions/_index.md#best-practices-for-code-generation)プロンプトを示します。複数行のコメントを使用して、コード生成プロンプトを調整できます。
+次の例では、GitLab Duoで[サポートされている言語](../project/repository/code_suggestions/supported_extensions.md)の[コード生成](../project/repository/code_suggestions/_index.md#best-practices-for-code-generation)プロンプトを示します。複数行のコメントを使用して、コード生成プロンプトを改良できます。
 
-これらの例は、デベロッパーリレーションズチームが管理する[GitLab Duoプロンプトプロジェクト](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-prompts)に保存されています。これらの例は動作確認済みです。環境に合わせて確認し、適用する必要があります。
+これらの例は、デベロッパーリレーションズチームが管理する[GitLab Duoプロンプトプロジェクト](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-prompts)に保存されています。これらの例は動作確認済みです。例を確認し、環境に合わせて適用する必要があります。
 
 ### Cコード生成プロンプト {#c-code-generation-prompts}
 
-I/O、パフォーマンス、ディスク使用量、TCPレイテンシーを収集し、その出力を表示するLinux統計ツールを作成します。完全な例については、ブログ記事[Top tips for efficient AI-powered Code Suggestions with GitLab Duo blog post](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#code-suggestions-flow-with-comments)を参照してください。
+I/O、パフォーマンス、ディスク使用量、TCPレイテンシーを収集し、その出力を表示するLinux統計ツールを作成します。完全な例については、ブログ記事[Top tips for efficient AI-powered Code Suggestions with GitLab Duo blog post](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#code-suggestions-flow-with-comments)を参照してください。
 
 ```c
 // Create a Linux statistic tool
@@ -774,7 +776,7 @@ int main(){
 }
 ```
 
-`XDP`カーネルイベントに付属して、ネットワークトラフィックを測定するeBPFプログラムを作成します。Linuxカーネルでのみ動作します。
+`XDP`カーネルイベントにアタッチして、ネットワークトラフィックを測定するeBPFプログラムを作成します。Linuxカーネルでのみ動作します。
 
 ```c++
 // Create an eBPF program which attaches to XDP kernel events
@@ -812,7 +814,7 @@ AIによって生成されたソースコードの例は、[GitLab Duoプロン�
 
 ### `C#`コード生成プロンプト {#c-code-generation-prompts-2}
 
-さまざまなセンサーからの医療アナライザーアプリケーションを作成し、データを`MSSQL`に格納します。
+さまざまなセンサーから医療アナライザーアプリケーションを作成し、データを`MSSQL`に格納します。
 
 ```c#
 // Create a medical analyzer app
@@ -984,10 +986,10 @@ func printContainers(clientset *kubernetes.Clientset, namespace string) {
 }
 ```
 
-<i class="fa-youtube-play" aria-hidden="true"></i>こちらで録画をご覧ください: [GitLab Duo Coffee Chat:Code Generation Challenge with Go and Kubernetes Observability](https://www.youtube.com/watch?v=ORpRqp-A9hQ)
+<i class="fa-youtube-play" aria-hidden="true"></i> こちらで録画をご覧ください: [GitLab Duo Coffee Chat:Code Generation Challenge with Go and Kubernetes Observability](https://www.youtube.com/watch?v=ORpRqp-A9hQ)
 <!-- Video published on 2024-03-27. Maintainer: Developer Relations. -->
 
-Redisと同様の、メモリ内キー値ストアを作成します。完全なチュートリアルについては、ブログ記事[Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#iterate-faster-with-code-generation)を参照してください。
+Redisと同様の、メモリ内キー値ストアを作成します。完全なチュートリアルについては、ブログ記事[Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#iterate-faster-with-code-generation)を参照してください。
 
 ```go
 // Create an in-memory key value store, similar to Redis
@@ -1139,7 +1141,7 @@ AIによって生成されたソースコードの例は、[GitLab Duoプロン�
 
 ### PowerShellコード生成プロンプト {#powershell-code-generation-prompts}
 
-ディレクトリ内のすべてのファイルを収集し、そのサイズを出力するスクリプトを作成します。CSVまたはJSONファイルに結果を格納するようにプロンプトを調整します。
+ディレクトリ内のすべてのファイルを収集し、そのサイズを出力するスクリプトを作成します。CSVまたはJSONファイルに結果を格納するようにプロンプトを改良します。
 
 ```powershell
 # Collect the files in a directory and print their size
@@ -1174,7 +1176,7 @@ AIによって生成されたソースコードの例は、[GitLab Duoプロン�
 
 ### Pythonコード生成プロンプト {#python-code-generation-prompts}
 
-Flaskを使用してREST APIでユーザーを管理し、それらをSQLiteに格納するウェブサーバーを作成します。
+Flaskを使用してREST APIでユーザーを管理し、それらをSQLiteに格納するWebサーバーを作成します。
 
 ```python
 # Create a Flask webserver
@@ -1341,7 +1343,7 @@ fn main() {
 }
 ```
 
-RSSフィードリーダーアプリを作成します。例としてブログ記事[Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/2023/10/12/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)があります。
+RSSフィードリーダーアプリを作成します。例としてブログ記事[Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)があります。
 
 ```rust
     // Create a function that iterates over the source array
@@ -1454,24 +1456,24 @@ AIによって生成されたソースコードの例は、[GitLab Duoプロン�
 
 ## リソース {#resources}
 
-多くのユースケースは、[GitLab Duo Coffee Chat YouTubeプレイリスト](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ)で実践的な録画で確認できます。
+多くのユースケースは、[GitLab Duo Coffee Chat YouTubeプレイリスト](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ)の実践的な録画で確認できます。
 
 ### ブログリソース {#blog-resources}
 
 次のブログ投稿では、これらのユースケースのチュートリアルを提供しています:
 
-- [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
-- [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
-- [GitLab Duo Chat 101: Get more done on GitLab with our AI assistant](https://about.gitlab.com/blog/2024/05/29/gitlab-duo-chat-101-get-more-done-on-gitlab-with-our-ai-assistant/)
-- [Developing GitLab Duo: How we are dogfooding our AI features](https://about.gitlab.com/blog/2024/05/20/developing-gitlab-duo-how-we-are-dogfooding-our-ai-features/)
-- [Developing GitLab Duo: Secure and thoroughly test AI-generated code](https://about.gitlab.com/blog/2024/05/30/how-gitlab-duo-helps-secure-and-thoroughly-test-ai-generated-code/)
-- [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)
-- [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/)
+- [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
+- [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
+- [GitLab Duo Chat 101: Get more done on GitLab with our AI assistant](https://about.gitlab.com/blog/gitlab-duo-chat-101-get-more-done-on-gitlab-with-our-ai-assistant/)
+- [Developing GitLab Duo: How we are dogfooding our AI features](https://about.gitlab.com/blog/developing-gitlab-duo-how-we-are-dogfooding-our-ai-features/)
+- [Developing GitLab Duo: Secure and thoroughly test AI-generated code](https://about.gitlab.com/blog/how-gitlab-duo-helps-secure-and-thoroughly-test-ai-generated-code/)
+- [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)
+- [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/)
 
-コード提案のチュートリアルブログ記事は、次の言語で利用できます:
+次の言語について、コード提案のチュートリアルブログ記事を読むことができます。
 
-- [Learning Rust with a little help from AI](https://about.gitlab.com/blog/2023/08/10/learning-rust-with-a-little-help-from-ai-code-suggestions-getting-started/)
-- [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/2023/10/12/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)
-- [Learning Python with a little help from AI](https://about.gitlab.com/blog/2023/11/09/learning-python-with-a-little-help-from-ai-code-suggestions/)
-- [Write Terraform plans faster with GitLab Duo Code Suggestions](https://about.gitlab.com/blog/2024/01/24/write-terraform-plans-faster-with-gitlab-duo-code-suggestions/)
-- [Explore the Dragon Realm: Build a C++ adventure game with a little help from AI](https://about.gitlab.com/blog/2023/08/24/building-a-text-adventure-using-cplusplus-and-code-suggestions/)
+- [Learning Rust with a little help from AI](https://about.gitlab.com/blog/learning-rust-with-a-little-help-from-ai-code-suggestions-getting-started/)
+- [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)
+- [Learning Python with a little help from AI](https://about.gitlab.com/blog/learning-python-with-a-little-help-from-ai-code-suggestions/)
+- [Write Terraform plans faster with GitLab Duo Code Suggestions](https://about.gitlab.com/blog/write-terraform-plans-faster-with-gitlab-duo-code-suggestions/)
+- [Explore the Dragon Realm: Build a C++ adventure game with a little help from AI](https://about.gitlab.com/blog/building-a-text-adventure-using-cplusplus-and-code-suggestions/)

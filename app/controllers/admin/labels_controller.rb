@@ -19,7 +19,8 @@ class Admin::LabelsController < Admin::ApplicationController
   def edit; end
 
   def create
-    @label = Labels::CreateService.new(label_params).execute(template: true, organization_id: Current.organization.id)
+    @label = Labels::CreateService.new(nil, label_params).execute(template: true,
+      organization_id: Current.organization.id)
 
     if @label.persisted?
       redirect_to admin_labels_url, notice: _("Label was created")
@@ -29,7 +30,7 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def update
-    @label = Labels::UpdateService.new(label_params).execute(@label)
+    @label = Labels::UpdateService.new(nil, label_params).execute(@label)
 
     if @label.valid?
       redirect_to admin_labels_path, notice: _('Label was successfully updated.')

@@ -12,8 +12,11 @@ title: Trigger pipelines with the API
 
 {{< /details >}}
 
-To trigger a pipeline for a specific branch or tag, you can use an API call
-to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
+You can use an API call to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md)
+to trigger a pipeline for a specific branch or tag.
+
+You can also [trigger a downstream pipeline from a CI/CD job](../pipelines/downstream_pipelines.md)
+with the `trigger` keyword.
 
 If you are [migrating to GitLab CI/CD](../migration/plan_a_migration.md), you can
 trigger GitLab CI/CD pipelines by calling the API endpoint from the other provider's jobs.

@@ -118,6 +118,71 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
     end
   end
 
+  describe '.find_or_create_user_contributions_export!' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:offline_export) { create(:offline_export) }
+
+    let(:uc_relation) { BulkImports::FileTransfer::BaseConfig::USER_CONTRIBUTIONS_RELATION }
+
+    context 'when the export does not exist' do
+      it 'creates a new export with pending status for a group' do
+        export = described_class.find_or_create_user_contributions_export!(group, offline_export.id)
+
+        expect(export).to be_persisted
+        expect(export.group).to eq(group)
+        expect(export.relation).to eq(uc_relation)
+        expect(export.offline_export_id).to eq(offline_export.id)
+        expect(export).to be_pending
+      end
+
+      it 'creates a new export with pending status for a project' do
+        export = described_class.find_or_create_user_contributions_export!(project, offline_export.id)
+
+        expect(export).to be_persisted
+        expect(export.project).to eq(project)
+        expect(export.relation).to eq(uc_relation)
+        expect(export.offline_export_id).to eq(offline_export.id)
+        expect(export).to be_pending
+      end
+    end
+
+    context 'when the export already exists' do
+      let_it_be(:existing_export) do
+        create(:bulk_import_export, :finished, group: group, offline_export: offline_export,
+          relation: 'user_contributions')
+      end
+
+      it 'returns the existing export without creating a new one' do
+        expect { described_class.find_or_create_user_contributions_export!(group, offline_export.id) }
+          .not_to change { described_class.count }
+
+        export = described_class.find_or_create_user_contributions_export!(group, offline_export.id)
+        expect(export.id).to eq(existing_export.id)
+        expect(export).to be_finished
+      end
+    end
+
+    context 'with invalid arguments' do
+      let(:offline_export_id) { offline_export.id }
+
+      where(:portable_arg, :offline_export_id_arg) do
+        nil | ref(:offline_export_id)
+        'invalid' | ref(:offline_export_id)
+        ref(:group) | nil
+        ref(:group) | 'invalid'
+      end
+
+      with_them do
+        it 'raises ArgumentError' do
+          expect do
+            described_class.find_or_create_user_contributions_export!(portable_arg, offline_export_id_arg)
+          end.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   describe 'state machine transitions', :clean_gitlab_redis_shared_state do
     describe '#finish!' do
       let_it_be(:project) { create(:project) }

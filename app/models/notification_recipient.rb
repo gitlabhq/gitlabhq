@@ -31,25 +31,24 @@ class NotificationRecipient
 
   def notifiable?
     return false if composite_identity_enforced?
-    return false unless has_access?
+    return false unless user.can?(:receive_notifications)
     return false if emails_disabled?
     return false if own_activity?
-
-    # even users with :disabled notifications receive manual subscriptions
-    return !unsubscribed? if @type == :subscription
 
     return false unless suitable_notification_level?
     return false if email_blocked?
 
-    # check this last because it's expensive
+    has_access?
+  end
+
+  def suitable_notification_level?
+    # even users with :disabled notifications receive manual subscriptions
+    return !unsubscribed? if @type == :subscription
+
     # nobody should receive notifications if they've specifically unsubscribed
     # except if they were mentioned.
     return false if @type != :mention && unsubscribed?
 
-    true
-  end
-
-  def suitable_notification_level?
     case notification_level
     when :mention
       @type == :mention
@@ -96,6 +95,7 @@ class NotificationRecipient
     subscription = subscribable_target.subscriptions.find { |subscription| subscription.user_id == @user.id }
     subscription && !subscription.subscribed
   end
+  strong_memoize_attr :unsubscribed?
 
   def own_activity?
     return false unless @acting_user
@@ -119,7 +119,6 @@ class NotificationRecipient
 
   def has_access?
     DeclarativePolicy.subject_scope do
-      break false unless user.can?(:receive_notifications)
       break true if @skip_read_ability
 
       if @project

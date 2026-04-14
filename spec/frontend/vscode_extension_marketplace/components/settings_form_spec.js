@@ -6,8 +6,8 @@ import { PRESETS } from '../mock_data';
 
 // NOTE: Somewhere in the implementation, both the named import and deep
 // default are used. So both must be mocked.
-jest.mock('lodash', () => ({
-  ...jest.requireActual('lodash'),
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
   uniqueId: (x) => `${x}uniqueId`,
 }));
 jest.mock('lodash/uniqueId', () => (x) => `${x}uniqueId`);

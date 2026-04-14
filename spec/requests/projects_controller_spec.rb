@@ -95,55 +95,6 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
         it_behaves_like 'does not enforce step-up authentication'
       end
     end
-
-    context 'for feature flags' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, :public, :repository) }
-
-      before do
-        sign_in(user)
-        project.add_maintainer(user)
-      end
-
-      context 'when work_items_consolidated_list is disabled for project' do
-        before do
-          stub_feature_flags(work_item_planning_view: false)
-        end
-
-        it 'does not push work_item_planning_view feature flag' do
-          get edit_project_path(project)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).not_to have_pushed_frontend_feature_flags(workItemPlanningView: true)
-        end
-
-        context 'when work_items_consolidated_list is enabled for user' do
-          before do
-            stub_feature_flags(work_items_consolidated_list_user: true)
-          end
-
-          it 'pushes work_item_planning_view feature flag as true' do
-            get edit_project_path(project)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
-          end
-        end
-      end
-
-      context 'when work_items_consolidated_list is enabled' do
-        before do
-          stub_feature_flags(work_item_planning_view: true)
-        end
-
-        it 'pushes work_item_planning_view feature flag as true' do
-          get edit_project_path(project)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
-        end
-      end
-    end
   end
 
   context 'GET #new' do
@@ -206,6 +157,116 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
         make_request
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'PUT #transfer' do
+    context 'when namespace does not exist' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project) }
+
+      before_all do
+        project.add_owner(user)
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      it 'redirects with an error without enqueuing a worker' do
+        expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+        put transfer_project_path(project), params: { new_namespace_id: non_existing_record_id }
+
+        expect(response).to redirect_to(edit_project_path(project))
+        expect(flash[:alert]).to eq('Please select a new namespace for your project.')
+      end
+    end
+
+    context 'when groups_and_projects_async_transfer feature flag is enabled' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:new_namespace) { create(:group) }
+
+      before_all do
+        project.add_owner(user)
+        new_namespace.add_owner(user)
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      it 'enqueues the async transfer worker' do
+        expect(Projects::TransferWorker).to receive(:perform_async).with(
+          project.id,
+          new_namespace.id,
+          user.id
+        )
+
+        put transfer_project_path(project), params: { new_namespace_id: new_namespace.id }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(edit_project_path(project))
+        expect(flash[:notice]).to eq("Project transfer has been queued. You will be notified when it completes.")
+      end
+
+      it 'transitions the project namespace to transfer_scheduled and stores metadata' do
+        put transfer_project_path(project), params: { new_namespace_id: new_namespace.id }
+
+        project_namespace = project.project_namespace.reload
+        expect(project_namespace.state).to eq('transfer_scheduled')
+        expect(project_namespace.state_metadata['transfer_target_parent_id']).to eq(new_namespace.id)
+      end
+
+      context 'when the state transition fails' do
+        before do
+          project.project_namespace.update_column(:state, Namespace.states[:creation_in_progress])
+        end
+
+        it 'does not enqueue the worker and redirects with an error' do
+          expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+          put transfer_project_path(project), params: { new_namespace_id: new_namespace.id }
+
+          expect(response).to redirect_to(edit_project_path(project))
+          expect(flash[:alert]).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
+        end
+      end
+    end
+
+    context 'when groups_and_projects_async_transfer feature flag is disabled' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:new_namespace) { create(:group) }
+
+      before_all do
+        project.add_owner(user)
+        new_namespace.add_owner(user)
+      end
+
+      before do
+        stub_feature_flags(groups_and_projects_async_transfer: false)
+        sign_in(user)
+      end
+
+      it 'transfers the project synchronously' do
+        expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+        put transfer_project_path(project), params: { new_namespace_id: new_namespace.id }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(project.reload.namespace).to eq(new_namespace)
+      end
+
+      context 'when the transfer fails' do
+        it 'redirects with an error' do
+          put transfer_project_path(project), params: { new_namespace_id: project.namespace_id }
+
+          expect(response).to redirect_to(edit_project_path(project))
+          expect(flash[:alert]).to include('Project is already in this namespace')
+        end
       end
     end
   end

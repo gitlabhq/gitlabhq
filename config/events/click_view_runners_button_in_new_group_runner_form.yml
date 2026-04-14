@@ -5,7 +5,7 @@ action: click_view_runners_button_in_new_group_runner_form
 identifiers:
   - namespace
   - user
-product_group: runner
+product_group: runner_core
 product_categories:
   - runner_core
 milestone: '16.10'

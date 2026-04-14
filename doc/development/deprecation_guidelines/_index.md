@@ -86,27 +86,30 @@ Related Handbook pages:
 
 ## Update the breaking change windows documentation
 
-> [!note]
-> This process is on hold, as the breaking change windows for 19.0 have not yet been determined.
-> The auto-generation of the page [is disabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207514).
-> When ready to start updating the page again:
->
-> - In `lib/tasks/gitlab/docs/compile_windows.rake`:
-> - Uncomment the `# write_windows_content(file)` line.
-> - Add new dates for the breaking change windows.
-> - Update the page introduction.
-> - Run `bin/rake gitlab:docs:compile_windows`.
-> - In `.gitlab/ci/docs.gitlab-ci.yml`
-> - Uncomment the `# - bundle exec rake gitlab:docs:check_windows` line
-> - In: `doc/development/deprecation_guidelines/_index.md`:
-> - Remove this note.
-
 The [breaking change windows](../../update/breaking_windows.md)
-documentation is generated based on the `window` value in the YAML files located in
+documentation is generated from the YAML files located in
 [`gitlab/data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
 
-To update the breaking change windows page when a YAML file is added,
-edited, or removed:
+A deprecation is included in the breaking change windows page when all of the
+following are true:
+
+- `removal_milestone` matches the target milestone (for example, `19.0`).
+- `breaking_change` is `true`.
+- `gitlab_com` is not `false`. If the field is absent, it defaults to `true`.
+  Set `gitlab_com: false` for breaking changes that do not affect GitLab.com
+  (for example, changes that only affect self-managed instances).
+
+### Window assignment
+
+All matching deprecations are assigned to the **primary window** by default,
+regardless of the `window` value in the YAML file.
+
+A **contingency window** is available as a fallback. To move a breaking change
+to the contingency window, set `window: 2` in its YAML file. The contingency
+window section is only shown on the page when at least one deprecation is
+assigned to it.
+
+### How to update the page
 
 1. From the command line, go to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
@@ -130,6 +133,19 @@ edited, or removed:
 
 1. Commit the updated documentation and push the changes.
 1. Create a merge request.
+
+### YAML fields used by the breaking change windows page
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `title` | Yes | The title that appears as a link to the deprecation item. |
+| `removal_milestone` | Yes | Must match the target milestone. |
+| `breaking_change` | Yes | Must be `true`. |
+| `gitlab_com` | No | Set to `false` to exclude from the page. Defaults to `true`. |
+| `window` | No | Set to `2` to assign to the contingency window. Any other value (or absent) assigns to the primary window. |
+| `impact` | No | Shown in the table. Can be a string or array. |
+| `scope` | No | Shown in the table. Can be a string or array. |
+| `check_impact` | No | URL shown in the table. Only rendered if a value is present. |
 
 ## Update the related documentation
 

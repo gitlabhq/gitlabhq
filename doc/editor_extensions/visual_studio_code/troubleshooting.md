@@ -17,7 +17,9 @@ If you encounter any issues with the GitLab for VS Code extension, or have featu
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
-1. In VS Code, in the top bar, go to **Code** > **Settings** > **Settings**.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 
@@ -72,8 +74,10 @@ VS Code support for system certificates.
 
 To disable system certificates:
 
-1. In VS Code, in the top bar, go to **Code** > **Settings** > **Settings**.
-1. Under the **User** settings tab, select **Application** > **Proxy**.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. On the **User** settings tab, select **Application** > **Proxy**.
 1. Disable the settings for **Proxy Strict SSL** and **System Certificates**.
 
 ## HTTPS project cloning works but SSH cloning fails
@@ -111,17 +115,19 @@ To troubleshoot GitLab Duo errors in VS Code:
    1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
       <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
    1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
-1. If the diagnostics indicate that the feature is not enabled:
-   1. In the left sidebar in VS Code, select **Extensions** > **GitLab**.
-   1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-   1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
+1. If the diagnostics indicate that the feature is not turned on:
+   1. In VS Code, open the Settings editor:
+      - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+      - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+   1. Find the **GitLab ›** section for the missing feature and select the checkbox to turn it on.
 1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
    [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
 
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- Troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting)
+- Troubleshooting [Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting)
 
 ## Known issue: GitLab Duo Chat fails to initialize in remote environments
 
@@ -134,7 +140,9 @@ SSH connections), you might encounter initialization failures like:
 
 To resolve these issues:
 
-1. In VS Code, in the top bar, go to **Code** > **Settings** > **Settings**.
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
    - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
 1. Add or modify this setting:

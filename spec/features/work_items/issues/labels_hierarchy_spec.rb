@@ -18,13 +18,9 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     grandparent.add_owner(user)
 
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 
@@ -72,7 +68,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
             send_keys :enter
           end
 
-          expect_issues_list_count(1)
+          expect(page).to have_work_item_count(1)
           expect(page).to have_selector('.issue-title', text: labeled_issue.title)
         end
       end
@@ -123,7 +119,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
             send_keys :enter
           end
 
-          expect_issues_list_count(3)
+          expect(page).to have_work_item_count(3)
           expect(page).to have_selector('.issue-title', text: labeled_issue.title)
           expect(page).to have_selector('.issue-title', text: labeled_issue_2.title)
           expect(page).to have_selector('.issue-title', text: labeled_issue_3.title)
@@ -145,7 +141,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
       else
         select_tokens 'Label', '=', group_label_3.title, submit: true
 
-        expect_issues_list_count(1)
+        expect(page).to have_work_item_count(1)
         expect(page).to have_selector('.issue-title', text: labeled_issue_3.title)
       end
     end
@@ -213,7 +209,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
       before do
         project_1.add_developer(user)
 
-        visit project_issues_path(project_1)
+        visit project_work_items_path(project_1)
       end
 
       it_behaves_like 'filtering by ancestor labels for projects'
@@ -227,7 +223,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
 
     context 'on group issuable list' do
       before do
-        visit issues_group_path(parent)
+        visit group_work_items_path(parent)
       end
 
       it_behaves_like 'filtering by ancestor labels for groups'

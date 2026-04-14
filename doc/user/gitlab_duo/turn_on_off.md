@@ -32,18 +32,6 @@ You can turn GitLab Duo on or off:
 
 ### On GitLab.com
 
-{{< details >}}
-
-- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-
-{{< /details >}}
-
-{{< history >}}
-
-- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
-
-{{< /history >}}
-
 #### For a top-level group
 
 Prerequisites:
@@ -147,7 +135,7 @@ For information on how to turn GitLab Duo on or off in earlier GitLab versions, 
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
 - GitLab Duo availability settings and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
-- GitLab Duo Chat (non-agentic) [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
+- GitLab Duo Non-Agentic Chat [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 
 {{< /history >}}
 
@@ -161,18 +149,6 @@ when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn 
 
 ### On GitLab.com
 
-{{< details >}}
-
-- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-
-{{< /details >}}
-
-{{< history >}}
-
-- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
-
-{{< /history >}}
-
 Prerequisites:
 
 - The Owner role for the top-level group.
@@ -183,7 +159,7 @@ To change GitLab Duo Core availability for a top-level group:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on GitLab Duo Agent Platform access** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -202,7 +178,7 @@ To change GitLab Duo Core availability for an instance:
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on features for GitLab Duo Core** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on GitLab Duo Agent Platform access** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -213,18 +189,6 @@ GitLab Duo features that are experimental and beta are turned off by default.
 These features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 ### On GitLab.com
-
-{{< details >}}
-
-- Tier: [Free](../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
-
-{{< /details >}}
-
-{{< history >}}
-
-- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
-
-{{< /history >}}
 
 Prerequisites:
 

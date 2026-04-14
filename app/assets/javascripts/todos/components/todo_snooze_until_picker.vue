@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlTooltip } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__, sprintf } from '~/locale';
 import dateFormat from '~/lib/dateformat';
 import { nHoursAfter } from '~/lib/utils/datetime_utility';

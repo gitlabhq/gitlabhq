@@ -22,7 +22,8 @@ title: GitLab Duo with Amazon Qを設定する
 
 {{< /history >}}
 
-> [!note] GitLab Duo with Amazon Qは、他のGitLab Duoアドオンと組み合わせることはできません。
+> [!note]
+> GitLab Duo with Amazon Qは、他のGitLab Duoアドオンと組み合わせることはできません。
 
 GitLab Duo with Amazon Qのサブスクリプションを取得するには、アカウントエグゼクティブにお問い合わせください。
 
@@ -95,7 +96,8 @@ Amazon Q Developerプロファイルを作成します。
 
 次に、IAM Identity Providerを信頼してAmazon QにアクセスできるIAMロールを作成する必要があります。
 
-> [!note] IAMロールを設定した後、ロールに関連付けられているAWSアカウントを変更することはできません。
+> [!note]
+> IAMロールを設定した後、ロールに関連付けられているAWSアカウントを変更することはできません。
 
 1. AWS IAMコンソールで、**Access Management** > **Roles** > **Create role**を選択します。
 1. **Web identity**を選択します。

@@ -10,6 +10,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   let!(:acceptable_cross_schema_foreign_key_patterns) do
     [
       [:gitlab_main_cell_local, :gitlab_main_org],
+      [:gitlab_main_cell_local, :gitlab_main_user],
       [:gitlab_ci_cell_local, :gitlab_ci]
     ]
   end
@@ -40,9 +41,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
       'audit_events_streaming_http_instance_namespace_filters.namespace_id',
 
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/592220
-      'ai_instance_accessible_entity_rules.through_namespace_id',
-
       # Subscription add-ons are static/deprecated tables to be removed
       # https://gitlab.com/groups/gitlab-org/-/work_items/19981
       'subscription_add_on_purchases.subscription_add_on_id',
@@ -50,7 +48,9 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       # Plans are static/deprecated tables to be removed
       # https://gitlab.com/groups/gitlab-org/-/work_items/19409
       'gitlab_subscriptions.hosted_plan_id',
-      'plan_limits.plan_id'
+      'plan_limits.plan_id',
+
+      'pool_repositories.shard_id' # https://gitlab.com/gitlab-org/gitlab/-/work_items/594744
     ]
 
     keys

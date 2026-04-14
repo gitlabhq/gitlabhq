@@ -6,8 +6,10 @@
         const key = 'code-review-' + '#{j(mr_path)}';
         const stored = localStorage.getItem(key);
         if (stored) {
+          const linkedFileCodeReviewId = #{linked_file ? "'#{j(linked_file.code_review_id)}'" : 'null'};
           const ids = JSON.parse(stored);
           ids.forEach(id => {
+            if (linkedFileCodeReviewId && id === linkedFileCodeReviewId) return;
             const style = document.createElement('style');
             style.dataset.viewedFileStyle = id;
             style.textContent = `:where(diff-file[data-code-review-id="${CSS.escape(id)}"]) [data-file-body] { display: none; }`;

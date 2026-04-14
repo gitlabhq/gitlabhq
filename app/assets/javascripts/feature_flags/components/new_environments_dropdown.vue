@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
-import { debounce, memoize } from 'lodash';
+import { debounce, memoize } from 'lodash-es';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, n__, sprintf } from '~/locale';

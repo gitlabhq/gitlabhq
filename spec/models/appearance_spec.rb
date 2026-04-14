@@ -112,6 +112,10 @@ RSpec.describe Appearance do
     it { is_expected.to allow_value(triplet).for(:message_font_color) }
     it { is_expected.to allow_value(hex).for(:message_font_color) }
     it { is_expected.not_to allow_value('000').for(:message_font_color) }
+
+    it { is_expected.to allow_value('a' * 255).for(:site_name) }
+    it { is_expected.to allow_value(nil).for(:site_name) }
+    it { is_expected.not_to allow_value('a' * 256).for(:site_name) }
   end
 
   shared_examples 'validation allows' do

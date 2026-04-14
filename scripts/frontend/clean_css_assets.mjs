@@ -4,7 +4,7 @@ import { argv, cwd } from 'node:process';
 import { join, resolve, relative, dirname } from 'node:path';
 import { mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import glob from 'glob';
-import * as esbuild from 'esbuild';
+import { transform } from 'lightningcss';
 import * as prettier from 'prettier';
 
 /**
@@ -32,11 +32,12 @@ async function cleanUpCSSFile(sourceFile, sourceDir, targetDir) {
   await mkdir(dirname(targetFile), { recursive: true });
 
   const content = await readFile(sourceFile, 'utf-8');
-  const minified = await esbuild.transform(content, {
+  const { code } = transform({
+    filename: sourceFile,
+    code: Buffer.from(content),
     minify: true,
-    loader: 'css',
   });
-  const pretty = await prettier.format(minified.code, { parser: 'css' });
+  const pretty = await prettier.format(code.toString(), { parser: 'css' });
   console.log(`Copied ${relative(cwd(), sourceFile)} to \n\t${relative(cwd(), targetFile)}`);
   return writeFile(targetFile, pretty, 'utf-8');
 }

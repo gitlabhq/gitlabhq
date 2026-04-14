@@ -301,7 +301,7 @@ class PermissionCreator
   include PermissionHelpers
 
   PERMISSIONS_DIR = 'config/authz/permissions'
-  METADATA_FILENAME = '_metadata.yml'
+  METADATA_FILENAME = '.metadata.yml'
 
   attr_reader :options, :suggested_action, :suggested_resource
 

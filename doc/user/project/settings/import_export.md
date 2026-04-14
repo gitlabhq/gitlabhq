@@ -307,7 +307,7 @@ To import a project:
 1. Enter your project name and URL. Then select the file you exported previously.
 1. Select **Import project**.
 
-You can query the status of an import by using the [API](../../../api/project_import_export.md#import-status).
+You can query the status of an import by using the [API](../../../api/project_import_export.md#retrieve-the-status-of-a-project-import).
 The query might return an import error or exceptions.
 
 #### Changes to imported items

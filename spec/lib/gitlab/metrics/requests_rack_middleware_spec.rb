@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       end
 
       it 'tracks request count and duration' do
-        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '2xx', feature_category: 'unknown')
         expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
         expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
           .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
             it 'increments health endpoint counter rather than overall counter and does not record duration' do
               expect(described_class).not_to receive(:http_request_duration_seconds)
               expect(described_class).not_to receive(:http_requests_total)
-              expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '200')
+              expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '2xx')
 
               subject.call(env)
             end
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
             end
 
             it 'increments regular counters and tracks duration' do
-              expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
+              expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '2xx', feature_category: 'unknown')
               expect(described_class).not_to receive(:http_health_requests_total)
               expect(described_class)
                 .to receive_message_chain(:http_request_duration_seconds, :observe)
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       let(:status) { '500' }
 
       it 'tracks count and error rate but not duration and apdex' do
-        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '500', feature_category: 'unknown')
+        expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '5xx', feature_category: 'unknown')
         expect(described_class).not_to receive(:http_request_duration_seconds)
         expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
         expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment)
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         end
 
         it 'adds the feature category to the labels for required metrics' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'team_planning')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '2xx', feature_category: 'team_planning')
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex)
             .to receive(:increment).with(labels: { feature_category: 'team_planning', endpoint_id: 'IssuesController#show', request_urgency: :default }, success: true)
@@ -147,7 +147,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         it 'does not record a feature category for health check endpoints' do
           env['PATH_INFO'] = '/-/liveness'
 
-          expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '200')
+          expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get', status: '2xx')
           expect(described_class).not_to receive(:http_requests_total)
           expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
           expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_error_rate)
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
 
       context 'when the context is not available' do
         it 'sets the required labels to unknown' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '2xx', feature_category: 'unknown')
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
             .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
@@ -473,8 +473,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       it "sets labels for http_requests_total" do
         expected_labels = []
 
-        described_class::HTTP_METHODS.each do |method, statuses|
-          statuses.each do |status|
+        described_class::HTTP_METHODS.each do |method|
+          described_class::HTTP_STATUS_CLASSES.each do |status|
             described_class::FEATURE_CATEGORIES_TO_INITIALIZE.each do |feature_category|
               expected_labels << { method: method.to_s, status: status.to_s, feature_category: feature_category.to_s }
             end
@@ -487,7 +487,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       end
 
       it 'sets labels for http_request_duration_seconds' do
-        expected_labels = described_class::HTTP_METHODS.keys.map { |method| { method: method } }
+        expected_labels = described_class::HTTP_METHODS.map { |method| { method: method } }
 
         described_class.initialize_slis!
 

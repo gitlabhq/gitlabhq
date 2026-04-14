@@ -545,26 +545,6 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
         end
       end
     end
-
-    context 'when ci_pipeline_inputs_reactive_cache feature flag is disabled' do
-      let(:ref) { 'master' }
-
-      before do
-        stub_feature_flags(ci_pipeline_inputs_reactive_cache: false)
-
-        # Override the parent `before` block to call the original service
-        allow(Ci::PipelineCreation::FindPipelineInputsService)
-          .to receive(:new)
-          .and_call_original
-      end
-
-      it 'returns inputs directly without caching' do
-        post_graphql(query, current_user: user)
-
-        expect(graphql_data['project']['ciPipelineCreationInputs']).to be_an(Array)
-        expect(graphql_data['project']['ciPipelineCreationInputs'].length).to be > 0
-      end
-    end
   end
 
   context 'when current user cannot access the project' do

@@ -31,7 +31,7 @@ module Ci
 
       response = Ci::CreatePipelineService
         .new(project, trigger.owner, ref: params[:ref], variables_attributes: variables)
-        .execute(:trigger, ignore_skip_ci: true, inputs: inputs, trigger: trigger)
+        .execute(:trigger, ignore_skip_ci: true, inputs: inputs, trigger: trigger, trigger_api_request: true)
 
       pipeline_service_response(response.payload)
     end
@@ -59,7 +59,7 @@ module Ci
 
       response = Ci::CreatePipelineService
         .new(project, job.user, ref: params[:ref], variables_attributes: variables)
-        .execute(:pipeline, ignore_skip_ci: true, inputs: inputs) do |pipeline|
+        .execute(:pipeline, ignore_skip_ci: true, inputs: inputs, trigger_api_request: true) do |pipeline|
           source = job.sourced_pipelines.build(
             source_pipeline: job.pipeline,
             source_project: job.project,

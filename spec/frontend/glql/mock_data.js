@@ -187,4 +187,26 @@ export const MOCK_FIELDS = [
   { key: 'description', label: 'Description', name: 'description' },
 ];
 
+export const MOCK_PIPELINE = {
+  __typename: 'Pipeline',
+  id: 682,
+  name: 'Build pipeline',
+  path: '/gitlab-org/gitlab-shell/-/pipelines/682',
+  status: 'SUCCESS',
+  warnings: false,
+};
+
+export const MOCK_JOB = {
+  __typename: 'CiJob',
+  id: 2232,
+  name: 'rspec unit',
+  webPath: '/gitlab-org/gitlab-shell/-/jobs/2232',
+  status: 'FAILED',
+};
+
+export const MOCK_CI_STAGE = {
+  __typename: 'CiStage',
+  name: 'test',
+};
+
 export const MOCK_LINK = { title: 'title', webUrl: 'url' };

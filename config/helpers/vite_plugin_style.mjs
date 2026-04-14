@@ -53,7 +53,7 @@ export function StylePlugin({ shouldWatch = false } = {}) {
           },
         },
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             input: entrypoints,
           },
         },

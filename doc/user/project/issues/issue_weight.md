@@ -1,91 +1,13 @@
 ---
-stage: Plan
-group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Assign a numerical weight to GitLab issues to represent their estimated effort, value, or complexity and help with planning and prioritization.
-title: Issue weight
+redirect_to: '../../work_items/weight.md'
+remove_date: '2026-07-03'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+This document was moved to [another location](../../work_items/weight.md).
 
-{{< /details >}}
-
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
-When you have a lot of issues, it can be hard to get an overview.
-With weighted issues, you can get a better idea of how much time,
-value, or complexity a given issue has or costs. You can also [sort by weight](sorting_issue_lists.md#sorting-by-weight)
-to see which issues need to be prioritized.
-
-## View the issue weight
-
-You can view the issue weight on:
-
-- The right sidebar of each issue.
-- The issues page, next to a weight icon ({{< icon name="weight" >}}).
-- [Issue boards](../issue_board.md), next to a weight icon ({{< icon name="weight" >}}).
-- The [milestone](../milestones/_index.md) page, as a total sum of issue weights.
-
-## Set the issue weight
-
-{{< history >}}
-
-- Minimum role to set issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
-
-You can set the issue weight when you create or edit an issue.
-
-You must enter whole, positive numbers.
-
-When you change the weight of an issue, the new value overwrites the previous value.
-
-### When you create an issue
-
-To set the issue weight when you [create an issue](create_issues.md), enter a
-number under **Weight**.
-
-### From an existing issue
-
-To set the issue weight from an existing issue:
-
-1. Go to the issue.
-1. In the right sidebar, in the **Weight** section, select **Edit**.
-1. Enter the new weight.
-1. Select any area outside the dropdown list.
-
-### From an issue board
-
-To set the issue weight when you [edit an issue from an issue board](../issue_board.md#edit-an-issue):
-
-1. Go to your issue board.
-1. Select an issue card (not its title).
-1. In the right sidebar, in the **Weight** section, select **Edit**.
-1. Enter the new weight.
-1. Select any area outside the dropdown list.
-
-## Remove issue weight
-
-{{< history >}}
-
-- Minimum role to remove issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
-
-To remove the issue weight, follow the same steps as when you [set the issue weight](#set-the-issue-weight),
-and select **remove weight**.
+<!-- This redirect file can be deleted after <2026-07-03>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

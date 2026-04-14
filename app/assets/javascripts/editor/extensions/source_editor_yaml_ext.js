@@ -10,7 +10,7 @@
  * @property options SourceEditorExtension Options
  */
 
-import { toPath } from 'lodash';
+import { toPath } from 'lodash-es';
 import { parseDocument, Document, visit, isScalar, isCollection, isMap } from 'yaml';
 import { findPair } from 'yaml/util';
 

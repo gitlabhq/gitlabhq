@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrations do
-  let_it_be(:installation) { create(:jira_connect_installation) }
+RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization, feature_category: :integrations do
+  let_it_be(:installation) { create(:jira_connect_installation, organization: current_organization) }
 
   describe '#index' do
     before do

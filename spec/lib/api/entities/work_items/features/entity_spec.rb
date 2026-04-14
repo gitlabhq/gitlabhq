@@ -2,9 +2,22 @@
 
 require 'spec_helper'
 
+# Features not yet implemented in the REST API
+UNIMPLEMENTED_FEATURES = %w[
+  ai_session award_emoji crm_contacts current_user_todos custom_fields designs development
+  email_participants error_tracking hierarchy linked_items linked_resources notes
+  notifications participants requirement_legacy status test_reports time_tracking
+  verification_status vulnerabilities
+].freeze
+
 RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :team_planning do
-  let(:work_item) { build(:work_item, description: 'Add keyboard shortcut support') }
   let(:requested_features) { [] }
+  let(:work_item) { build(:work_item, description: 'Add keyboard shortcut support') }
+
+  it_behaves_like 'work item widget entity parity',
+    described_class,
+    Types::WorkItems::FeaturesType,
+    exceptions: UNIMPLEMENTED_FEATURES
 
   subject(:representation) do
     described_class
@@ -61,7 +74,8 @@ RSpec.describe API::Entities::WorkItems::Features::Entity, feature_category: :te
 
     context 'when the widget exposes a milestone' do
       it 'includes the milestone payload' do
-        expect(representation).to include(milestone: a_hash_including(title: exposed_milestone.title))
+        expect(representation).to include(:milestone)
+        expect(representation[:milestone]).to include(title: exposed_milestone.title)
       end
     end
 

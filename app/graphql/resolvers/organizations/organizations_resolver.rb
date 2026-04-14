@@ -3,10 +3,7 @@
 module Resolvers
   module Organizations
     class OrganizationsResolver < BaseResolver
-      include Gitlab::Graphql::Authorize::AuthorizeResource
-
       type Types::Organizations::OrganizationType.connection_type, null: true
-      authorize :read_organization
 
       argument :search, GraphQL::Types::String,
         required: false,

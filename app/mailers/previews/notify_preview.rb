@@ -522,6 +522,13 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def group_was_transferred_email
+    cleanup do
+      old_path = "old-namespace/#{group.path}"
+      ::Notify.group_was_transferred_email(group.id, user.id, old_path).message
+    end
+  end
+
   private
 
   def project

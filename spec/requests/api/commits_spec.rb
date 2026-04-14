@@ -673,13 +673,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     subject(:request) { post api(url, user), headers: workhorse_headers }
 
-    it_behaves_like 'authorizing granular token permissions', :authorize_commit do
-      let(:boundary_object) { project }
-      let(:request) do
-        post api(url, personal_access_token: pat), headers: workhorse_headers
-      end
-    end
-
     context 'with workhorse headers' do
       it 'authorizes the upload' do
         request
@@ -1592,7 +1585,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
               before do
                 # Restrict user from repository
-                Members::DestroyService.new(private_project.owner).execute(fork_owner_membership)
+                Members::DestroyService.new(fork_owner_membership, current_user: private_project.owner).execute
                 Sidekiq::Worker.drain_all
 
                 valid_c_params[:start_branch] = 'master'

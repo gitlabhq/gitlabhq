@@ -30,6 +30,39 @@ RSpec.describe BitbucketServer::Client, feature_category: :importers do
     end
   end
 
+  describe '#last_pull_request' do
+    let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests?state=ALL&orderBy=NEWEST" }
+
+    it 'requests a collection with limit 1' do
+      expect(BitbucketServer::Paginator).to receive(:new)
+        .with(anything, path, :pull_request, page_offset: 0, limit: 1)
+        .and_return(instance_double(BitbucketServer::Paginator))
+
+      collection = instance_double(BitbucketServer::Collection)
+      allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
+      allow(collection).to receive(:first)
+
+      subject.last_pull_request(project, repo_slug)
+    end
+
+    it 'returns the first pull request from the collection' do
+      pull_request = instance_double(BitbucketServer::Representation::PullRequest)
+      collection = instance_double(BitbucketServer::Collection, first: pull_request)
+
+      allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
+
+      expect(subject.last_pull_request(project, repo_slug)).to eq(pull_request)
+    end
+
+    it 'returns nil when there are no pull requests' do
+      collection = instance_double(BitbucketServer::Collection, first: nil)
+
+      allow(BitbucketServer::Collection).to receive(:new).and_return(collection)
+
+      expect(subject.last_pull_request(project, repo_slug)).to be_nil
+    end
+  end
+
   describe '#activities' do
     let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests/1/activities" }
 

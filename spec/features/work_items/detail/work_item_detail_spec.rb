@@ -20,15 +20,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let_it_be_with_refind(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
-  let(:list_path) { project_issues_path(project) }
+  let(:list_path) { project_work_items_path(project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
-
-  before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-  end
 
   shared_examples 'change type action is not displayed' do
     it 'change type action is not displayed' do
@@ -47,8 +40,9 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     before do
-      stub_feature_flags(notifications_todos_buttons: false, work_item_planning_view: false)
+      stub_feature_flags(notifications_todos_buttons: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
+      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
       visit work_items_path
     end
@@ -56,7 +50,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it 'shows breadcrumb links', :aggregate_failures do
       within_testid('breadcrumb-links') do
         expect(page).to have_link(project.name, href: project_path(project))
-        expect(page).to have_link('Issues', href: project_issues_path(project))
+        expect(page).to have_link('Work items', href: project_work_items_path(project))
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -64,6 +58,15 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items title'
     it_behaves_like 'work items description'
     it_behaves_like 'work items award emoji'
+
+    context 'when work_item_features_field feature flag is enabled' do
+      before do
+        stub_feature_flags(work_item_features_field: user)
+      end
+
+      it_behaves_like 'work items award emoji'
+      it_behaves_like 'work items crm contacts'
+    end
 
     context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554457' do
       it_behaves_like 'work items linked items'

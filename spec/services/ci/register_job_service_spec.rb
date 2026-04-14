@@ -21,6 +21,59 @@ module Ci
 
       subject(:execute) { service.execute }
 
+      context 'when ci_register_job_full_queue_count feature flag controls queue sampling' do
+        let(:runner) { create(:ci_runner, :instance) }
+        let!(:pending_job_1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+        let!(:pending_job_2) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+        let!(:pending_job_3) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+
+        before do
+          project.update!(shared_runners_enabled: true)
+          pending_job_1.reload.create_queuing_entry!
+          pending_job_2.reload.create_queuing_entry!
+          pending_job_3.reload.create_queuing_entry!
+        end
+
+        context 'when feature flag is enabled' do
+          before do
+            stub_const("#{described_class}::MAX_QUEUE_DEPTH", 2)
+          end
+
+          it 'uses count to determine the full queue size' do
+            result = described_class.new(runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build_presented.queue_size).to eq(3)
+          end
+
+          it 'observes the full queue size in metrics' do
+            expect(Gitlab::Ci::Queue::Metrics.queue_size_total).to receive(:observe)
+              .with({ runner_type: runner.runner_type }, 3)
+
+            described_class.new(runner, nil).execute
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_register_job_full_queue_count: false)
+          end
+
+          it 'uses build_and_partition_ids.size instead of count' do
+            expect_next_instance_of(Ci::Queue::BuildQueueService) do |queue|
+              # build_candidates is called only once (for the limited query), not twice
+              expect(queue).to receive(:build_candidates).once.and_call_original
+              allow(queue).to receive(:execute).and_call_original
+            end
+
+            result = described_class.new(runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build_presented.queue_size).to be <= described_class::MAX_QUEUE_DEPTH + 1
+          end
+        end
+      end
+
       context 'when checking database loadbalancing stickiness' do
         let(:runner) { shared_runner }
 

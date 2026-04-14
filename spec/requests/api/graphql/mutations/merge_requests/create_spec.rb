@@ -19,7 +19,7 @@ RSpec.describe 'Creation of a new merge request', feature_category: :code_review
   end
 
   let(:title) { 'MergeRequest' }
-  let(:source_branch) { 'new_branch' }
+  let(:source_branch) { 'feature' }
   let(:target_branch) { 'master' }
   let(:extra_params) { {} }
   let(:current_user) { user }

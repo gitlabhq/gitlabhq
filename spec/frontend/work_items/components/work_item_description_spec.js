@@ -229,6 +229,19 @@ describe('WorkItemDescription', () => {
       expect(confirmAction).toHaveBeenCalled();
     });
 
+    it('does not open a second confirmation dialog when cancel is triggered multiple times rapidly', async () => {
+      await createComponent({ isEditing: true });
+
+      editDescription('updated desc');
+
+      clickCancel();
+      clickCancel();
+
+      await nextTick();
+
+      expect(confirmAction).toHaveBeenCalledTimes(1);
+    });
+
     it('autosaves description', async () => {
       await createComponent({
         isEditing: true,

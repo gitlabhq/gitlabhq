@@ -93,6 +93,7 @@ class ProfilesController < Profiles::ApplicationController
       :mastodon,
       :name,
       :user_detail_organization,
+      :company,
       :private_profile,
       :pronouns,
       :pronunciation,

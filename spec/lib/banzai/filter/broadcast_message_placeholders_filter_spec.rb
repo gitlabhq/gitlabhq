@@ -17,7 +17,7 @@ RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter, feature_categ
     end
 
     context 'replaces placeholder when they are in a link' do
-      let(:text) { '<a href="http://example.com?email={{email}}"">link</a>' }
+      let(:text) { '<a href="http://example.com?email={{email}}">link</a>' }
 
       it { expect(subject).to eq("<a href=\"http://example.com?email=helloworld%40example.com\">link</a>") }
     end

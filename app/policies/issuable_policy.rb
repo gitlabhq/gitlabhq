@@ -12,18 +12,33 @@ class IssuablePolicy < BasePolicy
     @user && @subject.assignee_or_author?(@user)
   end
 
-  condition(:is_author) { @subject&.author == @user }
+  condition(:is_author) { @subject.author == @user }
+  condition(:is_assignee) { @user && @subject.assignee?(@user) }
 
   condition(:is_incident) { @subject.incident_type_issue? }
 
   desc "Issuable is hidden"
   condition(:hidden, scope: :subject) { @subject.hidden? }
 
-  rule { can?(:guest_access) & assignee_or_author & ~is_incident }.policy do
-    enable :read_issue
-    enable :update_issue
-    enable :reopen_issue
+  rule { is_incident }.policy do
+    prevent :_read_assigned_work_item
+    prevent :_read_authored_work_item
+
+    prevent :_reopen_assigned_work_item
+    prevent :_reopen_authored_work_item
+
+    prevent :_update_assigned_work_item
+    prevent :_update_authored_work_item
   end
+
+  rule { can?(:_read_assigned_work_item) & is_assignee }.enable :read_issue
+  rule { can?(:_read_authored_work_item) & is_author }.enable :read_issue
+
+  rule { can?(:_update_assigned_work_item) & is_assignee }.enable :update_issue
+  rule { can?(:_update_authored_work_item) & is_author }.enable :update_issue
+
+  rule { can?(:_reopen_assigned_work_item) & is_assignee }.enable :reopen_issue
+  rule { can?(:_reopen_authored_work_item) & is_author }.enable :reopen_issue
 
   rule { can?(:read_merge_request) & assignee_or_author }.policy do
     enable :update_merge_request
@@ -40,16 +55,9 @@ class IssuablePolicy < BasePolicy
     enable :read_incident_management_timeline_event
   end
 
-  rule { can?(:read_issue) & can?(:developer_access) }.policy do
-    enable :admin_incident_management_timeline_event
-  end
-
-  rule { can?(:reporter_access) }.policy do
-    enable :create_timelog
-  end
-
-  rule { can?(:planner_access) }.policy do
-    enable :create_timelog
+  rule { ~can_read_issuable }.policy do
+    prevent :create_timelog
+    prevent :admin_incident_management_timeline_event
   end
 
   rule { can_read_issuable }.policy do

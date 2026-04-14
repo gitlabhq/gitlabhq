@@ -4,6 +4,7 @@ class Issue::Email < ApplicationRecord
   self.table_name = 'issue_emails'
 
   belongs_to :issue
+  belongs_to :namespace
 
   validates :email_message_id, uniqueness: { scope: :namespace_id }, presence: true, length: { maximum: 1000 }
   validates :issue, presence: true, uniqueness: { scope: :namespace_id }

@@ -26,12 +26,12 @@ module Issues
     def description_for_discussions
       if discussions_to_resolve.empty?
         return "There are no unresolved discussions. " \
-               "Review the conversation in #{merge_request_to_resolve_discussions_of.to_reference}"
+          "Review the conversation in #{merge_request_to_resolve_discussions_of.to_reference}"
       end
 
       description = "The following #{'discussion'.pluralize(discussions_to_resolve.size)} " \
-                    "from #{merge_request_to_resolve_discussions_of.to_reference} " \
-                    "should be addressed:"
+        "from #{merge_request_to_resolve_discussions_of.to_reference} " \
+        "should be addressed:"
 
       [description, *items_for_discussions].join("\n\n")
     end
@@ -84,14 +84,9 @@ module Issues
       # In the future only params[:work_item_type] should be provided
       base_type = work_item_type&.base_type || params[:issue_type]
 
-      # For custom types we need to bypass this check and instead check create_work_item
-      # and check whether type belongs to namespace hierarchy
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581940
       issue.work_item_type = if create_issue_type_allowed?(container, base_type)
                                work_item_type || work_item_type_provider.find_by_base_type(base_type)
                              else
-                               # If no work item type was provided or not allowed, we need to set it to
-                               # the default issue_type
                                work_item_type_provider.default_issue_type
                              end
     end
@@ -129,7 +124,7 @@ module Issues
     end
 
     def author
-      Gitlab::Auth::Identity.invert_composite_identity(current_user)
+      Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
     end
   end
 end

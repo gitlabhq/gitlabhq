@@ -71,7 +71,7 @@ purposes. A security report is a JSON file.
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 To download a security report:
 
@@ -106,7 +106,7 @@ branch.
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 To view a pipeline security report:
 
@@ -122,7 +122,7 @@ Create an issue to track, document, and manage the remediation work for a findin
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 To create an issue:
 
@@ -176,7 +176,7 @@ purposes. A security report is a JSON file.
 
 Prerequisites:
 
-- The Developer, Maintainer, or Owner role for the project.
+- The Security Manager, Developer, Maintainer, or Owner role for the project.
 
 To download a security report:
 

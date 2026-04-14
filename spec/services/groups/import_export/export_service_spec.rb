@@ -80,6 +80,14 @@ RSpec.describe Groups::ImportExport::ExportService, feature_category: :importers
       service.execute
     end
 
+    describe '#savers' do
+      it 'saves the max IIDs metadata' do
+        expect(Gitlab::ImportExport::Group::MaxIidsSaver).to receive(:new).and_call_original
+
+        service.execute
+      end
+    end
+
     it 'compresses and removes tmp files' do
       expect(group.import_export_uploads).to be_empty
       expect(Gitlab::ImportExport::Saver).to receive(:new).and_call_original

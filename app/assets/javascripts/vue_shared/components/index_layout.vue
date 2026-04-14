@@ -17,15 +17,27 @@ export default {
       required: false,
       default: null,
     },
+    pageHeadingSrOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
 
 <template>
   <div class="gl-flex gl-flex-col gl-gap-5">
-    <page-heading :heading="heading" class="!gl-my-0">
+    <page-heading
+      :heading="heading"
+      class="!gl-my-0 gl-pt-5"
+      :class="{ 'gl-sr-only': pageHeadingSrOnly }"
+    >
       <template v-if="$scopedSlots.heading" #heading>
         <slot name="heading"></slot>
+      </template>
+      <template v-if="$scopedSlots.actions" #actions>
+        <slot name="actions"></slot>
       </template>
       <template v-if="$scopedSlots.description || description" #description>
         <slot v-if="$scopedSlots.description" name="description"></slot>

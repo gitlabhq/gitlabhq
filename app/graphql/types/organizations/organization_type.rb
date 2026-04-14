@@ -2,12 +2,13 @@
 
 module Types
   module Organizations
+    # rubocop: disable Graphql/AuthorizeTypes -- authorization is enforced in OrganizationsFinder#by_user_access
     class OrganizationType < BaseObject
       graphql_name 'Organization'
 
       connection_type_class Types::CountableConnectionType
 
-      authorize :read_organization
+      authorize_granular_token permissions: :read_organization, boundary: :instance, boundary_type: :instance
 
       field :avatar_url,
         type: GraphQL::Types::String,
@@ -66,6 +67,7 @@ module Types
         object.avatar_url(only_path: false)
       end
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end
 

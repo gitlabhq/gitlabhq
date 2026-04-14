@@ -126,7 +126,7 @@ export default {
     codeSuggestionsConfig: {
       type: Object,
       required: false,
-      default: () => ({}),
+      default: () => ({ lines: [], lineType: '', canSuggest: false, showPopover: false }),
     },
     noteableType: {
       type: String,
@@ -419,11 +419,8 @@ export default {
       :markdown-preview-path="renderMarkdownPath"
       :new-comment-template-paths="newCommentTemplatePaths"
       :can-attach-file="!disableAttachments"
-      :can-suggest="codeSuggestionsConfig.canSuggest"
+      :code-suggestions-config="codeSuggestionsConfig"
       :editor-ai-actions="editorAiActions"
-      :line="codeSuggestionsConfig.line"
-      :lines="codeSuggestionsConfig.lines"
-      :show-suggest-popover="codeSuggestionsConfig.showPopover"
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
       :enable-autocomplete="enableAutocomplete"

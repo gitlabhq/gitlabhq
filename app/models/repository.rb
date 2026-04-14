@@ -1458,6 +1458,24 @@ class Repository
       end
   end
 
+  # Update ref cache incrementally for a single ref change.
+  # @param ref [String] Full ref path (e.g., "refs/heads/main")
+  # @param deleted [Boolean] Whether the ref was deleted
+  def incremental_ref_cache_update(ref, deleted)
+    return unless Feature.enabled?(:ref_cache_with_rebuild_queue, project)
+
+    if Gitlab::Git.tag_ref?(ref)
+      cache_key = 'tag_names'
+    elsif Gitlab::Git.branch_ref?(ref)
+      cache_key = 'branch_names'
+    else
+      return
+    end
+
+    redis_set_cache.handle_ref_change(cache_key, ref, deleted)
+    clear_memoization(cache_key)
+  end
+
   private
 
   def expand_author_with_user_emails(author)

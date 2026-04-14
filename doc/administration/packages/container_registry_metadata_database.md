@@ -62,7 +62,6 @@ metadata database version.
 - Metadata import for existing registries requires a period of read-only time.
 - Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
-- Backup and restore jobs do not include the registry database. For more information, see [Backup with metadata database](#backup-with-metadata-database).
 - During metadata imports for existing registries, the `createdAt` and `publishedAt` timestamp values for image tags are set to the import date. This is intentional to ensure consistency, because the legacy registry does not collect tag published dates for all images. While some images have build dates in their metadata, many do not. For more information, see [issue 1384](https://gitlab.com/gitlab-org/container-registry/-/issues/1384).
 
 ## Metadata database feature support
@@ -181,6 +180,107 @@ delay ensures that online garbage collection does not interfere with image pushe
 Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
 to see how to monitor the progress and health of the online garbage collector.
 
+## Prefer mode
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9411) in GitLab 18.7.
+
+{{< /history >}}
+
+Prefer mode is a configuration option for the metadata database
+that lets the registry fall back to
+legacy metadata storage when an existing registry
+has not been imported to the database yet.
+
+### Enable prefer mode
+
+To enable prefer mode:
+
+1. In `/etc/gitlab/gitlab.rb`, set `database.enabled` to `"prefer"`
+   instead of `true` or `false`:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => 'prefer',
+     'host' => '<your_database_host>',
+     'port' => 5432,
+     'user' => '<your_database_user>',
+     'password' => '<your_database_password>',
+     'dbname' => '<your_database_name>',
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md).
+
+After you reconfigure GitLab, the registry evaluates which metadata backend to use at startup
+based on lockfiles that track previous writes to the filesystem or database:
+
+- Filesystem lockfile exists: The registry has existing filesystem metadata.
+  It falls back to legacy metadata storage and logs a warning.
+  The registry operates identically to `enabled: false` until you complete
+  a [metadata import](#enable-the-database-for-existing-registries).
+- Database lockfile exists: The registry already uses the database.
+  It connects to the database normally, identical to `enabled: true`.
+- Neither lockfile exists: The registry is a fresh installation.
+  It requires a configured and reachable database to start
+  and does not fall back to legacy storage.
+- Both lockfiles exist: The registry refuses to start. This indicates a
+  configuration error that you must resolve manually.
+
+The fallback decision occurs once at startup and does not change while the
+registry is running. There is no automatic retry or reconnection to the
+database after a fallback. To move from filesystem to database mode after a
+fallback, complete the standard [metadata import](#enable-the-database-for-existing-registries)
+and restart the registry.
+
+### Verify which metadata backend is active
+
+To verify which metadata backend your registry is using,
+use one of the following methods.
+
+#### Check the registry API response header
+
+1. Send a request to the registry `/v2/` endpoint:
+
+   ```shell
+   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlabcontainer-registry-database-enabled
+   ```
+
+1. Inspect the
+`gitlab-container-registry-database-enabled` response header:
+
+   - A value of `true` means the registry is using the metadata database.
+   - A value of `false` means it is using legacy filesystem storage.
+
+#### Check lockfiles on disk
+
+To check lockfiles on disk, look for these files in the configured storage backend at
+`<rootdirectory>/docker/registry/lockfiles/`:
+
+- `database-in-use`: The registry is using the metadata database.
+- `filesystem-in-use`: The registry is using legacy filesystem storage.
+
+If both lockfiles exist, the registry is in an invalid state and does not start.
+
+#### Check registry logs
+
+The registry logs which metadata backend it selects at startup.
+
+To check registry logs, look for one of the following messages:
+
+- If the registry falls back to legacy storage (prefer mode only):
+
+  ```plaintext
+  database prefer mode enabled, but found filesystem metadata: falling back to legacy metadata
+  ```
+
+- If the registry connects to the database:
+
+  ```plaintext
+  using the metadata database
+  ```
+
 ## Database migrations
 
 The container registry supports two types of migrations:
@@ -192,6 +292,42 @@ By default, the registry applies both regular schema and post-deployment migrati
 To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
 
 ### Apply database migrations
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.7 and later" >}}
+
+To apply both regular schema and post-deployment migrations before the application starts:
+
+1. Run database migrations:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up
+   ```
+
+To skip post-deployment migrations:
+
+1. Run regular schema migrations only:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up --skip-post-deployment
+   ```
+
+   As an alternative to the `--skip-post-deployment` flag, you can also set the `SKIP_POST_DEPLOYMENT_MIGRATIONS` environment variable to `true`:
+
+   ```shell
+   SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo gitlab-ctl registry-database migrate up
+   ```
+
+1. After starting the application, apply any pending post-deployment migrations:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up
+   ```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.6 and earlier" >}}
 
 To apply both regular schema and post-deployment migrations before the application starts:
 
@@ -220,6 +356,10 @@ To skip post-deployment migrations:
    ```shell
    sudo -u registry gitlab-ctl registry-database migrate up
    ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 > [!note]
 > The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
@@ -253,6 +393,91 @@ for how to enable Prometheus.
 Monitor the health and status of garbage collection task queues for blobs and manifests.
 
 #### Check the health of online garbage collection
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.10 and later" >}}
+
+The following command displays information related to online garbage collection.
+
+```shell
+sudo gitlab-ctl registry-database gc-stats
+```
+
+Example Output:
+
+```shell
+=== Blob Review Queue ===
+
+Tasks Pending Removal: 42
+Tasks ready for GC review (review_after has passed).
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬─────────────────┐
+│                              DIGEST                               │    REVIEW AFTER     │      EVENT      │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼─────────────────┤
+│ sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22e  │ 2026-01-16 21:56:13 │ blob_upload     │
+│ sha256:b4f5e6d7c8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2 │ 2026-01-16 19:56:13 │ manifest_delete │
+│ sha256:c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3 │ 2026-01-16 17:56:13 │ layer_delete    │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴─────────────────┘
+
+Long Overdue Tasks: 5
+Tasks pending longer than configured delay - may need attention.
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬──────────────┬─────────┐
+│                              DIGEST                               │    REVIEW AFTER     │    EVENT     │ OVERDUE │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼──────────────┼─────────┤
+│ sha256:d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4 │ 2026-01-11 23:56:13 │ blob_upload  │ 4d 0h   │
+│ sha256:e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5 │ 2026-01-13 23:56:13 │ layer_delete │ 2d 0h   │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴──────────────┴─────────┘
+
+High Retry Tasks: 2
+Tasks with >10 review attempts - may indicate persistent issues.
+
+┌───────────────────────────────────────────────────────────────────┬─────────────────────┬─────────────────┬─────────┐
+│                              DIGEST                               │    REVIEW AFTER     │      EVENT      │ RETRIES │
+├───────────────────────────────────────────────────────────────────┼─────────────────────┼─────────────────┼─────────┤
+│ sha256:f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 │ 2026-01-17 00:56:13 │ blob_upload     │ 15      │
+│ sha256:a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7 │ 2026-01-17 01:56:13 │ manifest_delete │ 12      │
+└───────────────────────────────────────────────────────────────────┴─────────────────────┴─────────────────┴─────────┘
+
+=== Manifest Review Queue ===
+
+Tasks Pending Removal: 128
+Tasks ready for GC review (review_after has passed).
+
+┌───────────────┬─────────────┬─────────────────────┬──────────────────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │        EVENT         │
+├───────────────┼─────────────┼─────────────────────┼──────────────────────┤
+│ 1001          │ 12345       │ 2026-01-16 22:56:13 │ tag_delete           │
+│ 1002          │ 67890       │ 2026-01-16 20:56:13 │ manifest_upload      │
+│ 1003          │ 11111       │ 2026-01-16 18:56:13 │ tag_switch           │
+│ 2001          │ 22222       │ 2026-01-16 16:56:13 │ manifest_list_delete │
+└───────────────┴─────────────┴─────────────────────┴──────────────────────┘
+
+Long Overdue Tasks: 8
+Tasks pending longer than configured delay - may need attention.
+
+┌───────────────┬─────────────┬─────────────────────┬─────────────────┬─────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │      EVENT      │ OVERDUE │
+├───────────────┼─────────────┼─────────────────────┼─────────────────┼─────────┤
+│ 3001          │ 33333       │ 2026-01-12 23:56:13 │ tag_delete      │ 3d 0h   │
+│ 3002          │ 44444       │ 2026-01-14 23:56:13 │ manifest_delete │ 1d 0h   │
+└───────────────┴─────────────┴─────────────────────┴─────────────────┴─────────┘
+
+High Retry Tasks: 3
+Tasks with >10 review attempts - may indicate persistent issues.
+
+┌───────────────┬─────────────┬─────────────────────┬─────────────────┬─────────┐
+│ REPOSITORY ID │ MANIFEST ID │    REVIEW AFTER     │      EVENT      │ RETRIES │
+├───────────────┼─────────────┼─────────────────────┼─────────────────┼─────────┤
+│ 4001          │ 55555       │ 2026-01-17 00:26:13 │ tag_delete      │ 18      │
+│ 4002          │ 66666       │ 2026-01-17 00:41:13 │ manifest_upload │ 11      │
+└───────────────┴─────────────┴─────────────────────┴─────────────────┴─────────┘
+```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 18.9 and earlier" >}}
 
 The following queries return tasks that were retried more than 10 times,
 or were eligible for review for longer than 24 hours. The online garbage collector should
@@ -306,39 +531,56 @@ LIMIT
   20;
 ```
 
-If these queries return any rows, check the registry logs for messages related
-to garbage collection. Filter for entries by `component="registry.gc.*` and
-investigate any error messages.
-
-The unfiltered size of the `gc_manifest_review_queue` and `gc_blob_review_queue`
-are not good indicators of the health of the online garbage collector.
-These queues never fully clear for an active registry.
-
-Large amounts of tasks eligible for review are also not necessarily a cause for concern.
-The garbage collector might be working through items caused by a spike in activity.
-
-Similarly, the `created_at` date of these tasks alone is not good health indicator.
-When an event adds the same blob or manifest to the queue, the `review_after`
-of the existing task is updated, which postpones the review. No duplicate task is created.
-
-This can occur any number of times, so
-tasks created months ago are not a cause for concern.
-
 #### Informational queries related to online garbage collection
 
 Check the number of tasks eligible for review by running the following queries:
 
-  ```sql
-  SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
-  SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
-  ```
+```sql
+SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
+SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
+```
 
-Generally, these queries should return relatively low counts, often nearing zero.
-However, these queries might return larger values if:
+{{< /tab >}}
 
-- An import was started 24 to 48 hours ago
-- Large amounts of tags were deleted or a container repository was removed
-- Online garbage collection was disabled for an extended period
+{{< /tabs >}}
+
+Generally, there should be relatively low counts of items ready for review,
+often nearing zero. However, there might be more if:
+
+- An import was started 24 to 48 hours ago.
+- Large amounts of tags were deleted or a container repository was removed.
+- Online garbage collection was disabled for an extended period.
+
+If there are tasks with retries or that are long overdue, check the registry logs
+for messages related to garbage collection. Filter for entries by
+`component="registry.gc.*` and investigate any error messages.
+
+#### Check before troubleshooting
+
+##### GC queue sizes
+
+The unfiltered size of the `gc_manifest_review_queue` and `gc_blob_review_queue`
+are not good indicators of the health of the online garbage collector. These
+queues constantly have new entries added to them; therefore, these queues
+never fully clear for an active registry.
+
+Additionally, not all items in these queues will be removed from storage.
+Consult the [online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)
+specification for a full explanation of these queues for more context.
+
+##### Lots of tasks ready to review
+
+Large amounts of tasks eligible for review are also not necessarily a cause for concern.
+The garbage collector might be working through items caused by a spike in activity.
+
+##### Some tasks are old
+
+Similarly, the `created_at` date of these tasks alone is not a good health indicator.
+When an event adds the same blob or manifest to the queue, the `review_after`
+of the existing task is updated, which postpones the review. No duplicate task is created.
+
+This can occur any number of times, so tasks created months ago are not a cause
+for concern.
 
 ### Adjust the garbage collector worker interval
 
@@ -406,21 +648,215 @@ registry['database'] = {
 }
 ```
 
-> [!note]
-> When using an external database, omit the `-u registry` option from the
-> commands throughout this documentation.
-
 ## Backup with metadata database
 
-> [!note]
-> If you have configured your own database for container registry metadata,
-> you must manage backups manually. `gitlab-backup` does not backup the metadata database.
-> For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
+{{< history >}}
 
-When the metadata database is enabled, backups must capture both the object storage
-used by the registry, as before, but also the database. Backups of object storage
-and the database should be coordinated to capture the state of the registry as close as possible
-to each other. To restore the registry, you must apply both backups together.
+- Automatic backup support for the registry metadata database [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/581279) in GitLab 18.10.
+
+{{< /history >}}
+
+When the metadata database is turned on, backups must include both the registry storage backend
+and the database.
+
+The backup method depends on your storage type:
+
+- Local filesystem storage: `gitlab-backup` includes the registry automatically.
+- Object storage: You must back up object storage separately.
+
+Back up storage and database as close together in time as possible to ensure a consistent
+registry state. To restore the registry, you must apply both backups.
+
+### Automatic backup
+
+In GitLab 18.10 and later, `gitlab-backup create` and `gitlab-backup restore` include the
+registry metadata database automatically when the metadata database is configured. On Helm chart
+(Kubernetes) installations, `backup-utility` behaves the same way.
+
+The metadata database must be configured in `gitlab.rb` or in your Helm values file.
+
+No additional configuration is required. The backup tools read the registry
+database connection settings from the existing configuration.
+
+If you call the backup Rake task directly, you must set the following
+environment variables on the node that runs the backup:
+
+| Variable | Required | Description |
+|---|---|---|
+| `REGISTRY_DATABASE_HOST` | Yes | The database host. |
+| `REGISTRY_DATABASE_NAME` | Yes | The database name. |
+| `REGISTRY_DATABASE_USER` | Yes | The database user. |
+| `REGISTRY_DATABASE_PORT` | No | The database port. Defaults to `5432`. |
+| `REGISTRY_DATABASE_PASSWORD` | No | The database password. |
+| `REGISTRY_DATABASE_SSLMODE` | No | Whether or not to require SSL mode. Set to `require` or omit. |
+| `REGISTRY_DATABASE_SSLCERT` | No | The path to the client certificate. |
+| `REGISTRY_DATABASE_SSLKEY` | No | The path to the client private key. |
+| `REGISTRY_DATABASE_SSLROOTCERT` | No | The path to the CA certificate. |
+| `REGISTRY_DATABASE_CONNECT_TIMEOUT` | No | The connection timeout in seconds. |
+
+The backup Rake task activates the registry database backup when it detects
+any of the following credentials:
+
+- `REGISTRY_DATABASE_PASSWORD`
+- `REGISTRY_DATABASE_SSLCERT`
+- `REGISTRY_DATABASE_SSLKEY`
+- `REGISTRY_DATABASE_SSLROOTCERT`
+
+Without
+credentials, the registry database is not included in the backup. The same
+environment variables must be set when restoring.
+
+### Manual backup
+
+If you use GitLab 18.9 or earlier, or if you prefer to manage registry database
+backups separately, use standard PostgreSQL tools like `pg_dump` and `pg_restore`
+to back up and restore the registry database independently.
+
+### Helm chart (Kubernetes) backup and restore
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6207) in GitLab 18.10.
+
+{{< /history >}}
+
+For Helm chart (Kubernetes) deployments, configure the toolbox pod with 
+dedicated database credentials for backup and restore operations.
+Two separate PostgreSQL users are required:
+
+- The backup user must have read-only permissions.
+- The restore user must have write permissions.
+
+Configure one or both users, depending on which operations you need.
+
+Before you begin, enable the container registry metadata database by setting `registry.database.enabled: true`.
+
+#### Create the Kubernetes Secret
+
+You must manually create the Kubernetes Secret before deploying. The chart does not
+auto-generate this secret.
+
+For example, to create a secret with both backup and restore passwords:
+
+```shell
+kubectl create secret generic my-registry-db-password-secret \
+  --from-literal=backupPassword="BACKUP_USER_PASSWORD" \
+  --from-literal=restorePassword="RESTORE_USER_PASSWORD"
+```
+
+#### Configure registry database credentials
+
+Add the required YAML to your Helm `values.yaml` to configure backup and restore users. Refer to the following table for configuration setting definitions. 
+
+| Setting | Default | Description |
+|---|---|---|
+| `backupUser` | | PostgreSQL username for backup operations. Required to enable registry database backups. |
+| `restoreUser` | | PostgreSQL username for restore operations. Required to enable registry database restores. |
+| `password.secret` | `<release-name>-toolbox-registry-database-password` | Name of the Kubernetes Secret containing the passwords. |
+| `password.backupPasswordKey` | `backupPassword` | Key in the Kubernetes Secret for the backup user's password. |
+| `password.restorePasswordKey` | `restorePassword` | Key in the Kubernetes Secret for the restore user's password. |
+
+The following example configures both
+backup and restore users:
+
+```yaml
+gitlab:
+  toolbox:
+    backups:
+      registry:
+        database:
+          # PostgreSQL username for backing up the registry database
+          backupUser: "registry_backup"
+          # PostgreSQL username for restoring the registry database
+          restoreUser: "registry_restore"
+          password:
+            # Name of the Kubernetes Secret containing the passwords
+            secret: "my-registry-db-password-secret"
+            # Key in the Secret for the backup user's password
+            backupPasswordKey: "backupPassword"
+            # Key in the Secret for the restore user's password
+            restorePasswordKey: "restorePassword"
+```
+
+If no `backupUser` or `restoreUser` is configured, the registry database backup
+is silently skipped and the toolbox pod operates normally.
+
+#### PostgreSQL user permissions
+
+The backup user requires read-only access to dump the registry database.
+The restore user requires superuser privileges to restore it.
+
+For Linux package installations, these users and permissions are created
+automatically when `database_backup_username`, `database_backup_password`,
+`database_restore_username`, and `database_restore_password` are configured.
+
+For self-compiled or external database installations, create the users and
+grant permissions manually:
+
+```sql
+-- Create the backup user with minimal privileges for pg_dump.
+-- The registry database uses both the 'public' and 'partitions' schemas.
+CREATE ROLE registry_backup WITH LOGIN PASSWORD 'password'
+  NOINHERIT NOCREATEDB NOSUPERUSER NOREPLICATION;
+
+GRANT CONNECT ON DATABASE registry TO registry_backup;
+
+-- Grant read-only access on both schemas
+GRANT USAGE ON SCHEMA public TO registry_backup;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO registry_backup;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA public
+  GRANT SELECT ON TABLES TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA public
+  GRANT SELECT ON SEQUENCES TO registry_backup;
+
+GRANT USAGE ON SCHEMA partitions TO registry_backup;
+GRANT SELECT ON ALL TABLES IN SCHEMA partitions TO registry_backup;
+GRANT SELECT ON ALL SEQUENCES IN SCHEMA partitions TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA partitions
+  GRANT SELECT ON TABLES TO registry_backup;
+ALTER DEFAULT PRIVILEGES FOR ROLE registry IN SCHEMA partitions
+  GRANT SELECT ON SEQUENCES TO registry_backup;
+
+-- Create the restore user with superuser privileges.
+-- SUPERUSER is required for database restore operations because the
+-- restore process must SET ROLE to the registry owner and
+-- CREATE TRIGGER on all tables.
+CREATE ROLE registry_restore WITH LOGIN PASSWORD 'password' SUPERUSER;
+```
+
+#### Credential volume workflow
+
+When configured, the chart creates a volume mounted at `/etc/gitlab/registry-db/` in both the
+toolbox Deployment and the backup CronJob. The volume is read-only and includes the
+following:
+
+- Connection parameters: A ConfigMap created by the registry chart containing
+  the database host, port, name, SSL mode, and connection timeout.
+- Backup and restore usernames: A ConfigMap created by the toolbox chart
+  with the configured `backupUser` and `restoreUser`.
+- Passwords: The user-provided Kubernetes Secret containing the backup
+  and restore passwords.
+
+The `backup-utility` in the toolbox pod reads these files and includes the registry
+metadata database in backup and restore operations.
+
+If any required credential files are missing, the `backup-utility` logs a warning
+and continues with the backup of other resources.
+
+#### Mutual TLS limitation
+
+SSL certificate paths for mutual TLS authentication with PostgreSQL are only
+included when SSL is configured globally (`global.psql.ssl`). If SSL is
+configured only at the registry subchart level (`registry.database.ssl`), those
+settings are not passed to the toolbox.
+
+### Geo considerations
+
+When using [Geo](#database-architecture-with-geo), each site maintains its own
+registry database and object storage. Back up the registry database and object
+storage at each site independently. Geo does not replicate the registry database
+between sites.
 
 ## Downgrade a registry
 

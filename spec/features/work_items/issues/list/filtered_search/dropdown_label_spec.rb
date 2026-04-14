@@ -11,15 +11,11 @@ RSpec.describe 'Dropdown label', :js, feature_category: :team_planning do
   let_it_be(:label) { create(:label, project: project, title: 'bug-label') }
 
   before do
-    # TODO: When removing the feature flag,
-    # we won't need the tests for the issues listing page, since we'll be using
-    # the work items listing page.
-    stub_feature_flags(work_item_planning_view: false)
-
     project.add_maintainer(user)
+    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
 
-    visit project_issues_path(project)
+    visit project_work_items_path(project)
   end
 
   describe 'behavior' do

@@ -5,6 +5,7 @@ class MergeRequestsClosingIssues < ApplicationRecord
 
   belongs_to :merge_request
   belongs_to :issue
+  belongs_to :project
 
   validates :merge_request_id, uniqueness: { scope: :issue_id }, presence: true
   validates :issue_id, presence: true

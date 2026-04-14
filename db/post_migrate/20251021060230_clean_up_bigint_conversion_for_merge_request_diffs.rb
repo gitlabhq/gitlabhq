@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
+# See https://docs.gitlab.com/development/migration_style_guide/
 # for more information on how to write migrations for GitLab.
 
 class CleanUpBigintConversionForMergeRequestDiffs < Gitlab::Database::Migration[2.3]

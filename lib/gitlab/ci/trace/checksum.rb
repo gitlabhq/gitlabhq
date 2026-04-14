@@ -63,7 +63,7 @@ module Gitlab
         #
         def trace_chunks
           strong_memoize(:trace_chunks) do
-            ::Ci::BuildTraceChunk.with_read_consistency(build) do
+            ::Ci::BuildTraceChunk.with_read_consistency do
               build.trace_chunks.persisted
                 .select(::Ci::BuildTraceChunk.metadata_attributes)
             end

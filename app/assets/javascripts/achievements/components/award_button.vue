@@ -7,8 +7,10 @@ import GlobalUserSelect from '~/vue_shared/components/user_select/global_user_se
 import { logError } from '~/lib/logger';
 
 import awardAchievementMutation from './graphql/award_achievement.mutation.graphql';
+import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
 
 export default {
+  name: 'AwardButton',
   components: {
     GlButton,
     GlModal,
@@ -35,6 +37,7 @@ export default {
     async awardAll() {
       this.loading = true;
       await Promise.all(this.usersToAward.map((user) => this.award(user)));
+      await this.$apollo.getClient().refetchQueries({ include: [getGroupAchievements] });
       this.loading = false;
     },
     async award(user) {

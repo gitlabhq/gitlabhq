@@ -129,14 +129,14 @@ describe("What's new single feature", () => {
     it('renders the first major release correctly', () => {
       createWrapper({ feature: { releaseHeading: true, release: 18 } });
 
-      expect(findReleaseHeading().text()).toBe('18.0 Release');
+      expect(findReleaseHeading().text()).toBe('18.0 release');
       expect(findReleaseHeading().element.tagName).toBe('H4');
     });
 
     it('renders other release correctly', () => {
       createWrapper({ feature: { releaseHeading: true, release: 18.11 } });
 
-      expect(findReleaseHeading().text()).toBe('18.11 Release');
+      expect(findReleaseHeading().text()).toBe('18.11 release');
       expect(findReleaseHeading().element.tagName).toBe('H4');
     });
 
@@ -144,6 +144,12 @@ describe("What's new single feature", () => {
       createWrapper({ feature: { releaseHeading: true, release: undefined } });
 
       expect(findReleaseHeading().text()).toBe('Other updates');
+      expect(findReleaseHeading().element.tagName).toBe('H4');
+    });
+
+    it('preserves trailing zeros in release number', () => {
+      createWrapper({ feature: { releaseHeading: true, release: '17.10' } });
+      expect(findReleaseHeading().text()).toBe('17.10 release');
       expect(findReleaseHeading().element.tagName).toBe('H4');
     });
   });

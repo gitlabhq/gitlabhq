@@ -26,9 +26,9 @@ If you want to use this API, your GitLab instance must meet certain
 > This API can't be used with the [group import and export API](group_import_export.md), which is for file-based
 > migration.
 
-## Schedule new export
+## Schedule a new export for a project
 
-Start a new project relations export:
+Schedules a relations export for a specified project.
 
 ```plaintext
 POST /projects/:id/export_relations
@@ -51,9 +51,9 @@ curl --request POST \
 }
 ```
 
-## Export status
+## Retrieve the status of an export
 
-View the status of the relations export:
+Retrieve the status of a relations export.
 
 ```plaintext
 GET /projects/:id/export_relations/status
@@ -106,9 +106,9 @@ The status can be one of the following:
 ]
 ```
 
-## Export download
+## Download an export
 
-Download the finished relations export:
+Download the finished relations export.
 
 ```plaintext
 GET /projects/:id/export_relations/download

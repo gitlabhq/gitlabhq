@@ -32,6 +32,15 @@ module Gitlab
           !column_exists?(table_name.to_s, convert_to_bigint_column(column_name))
         end
 
+        def skip_bigint_migration?(table, columns)
+          unless columns.all? { |column| column_exists?(table, convert_to_bigint_column(column)) }
+            say "No conversion columns found - migration skipped"
+            return true
+          end
+
+          false
+        end
+
         def columns_swapped?(table_name, column_name)
           table_columns = columns(table_name.to_s)
           temp_column_name = convert_to_bigint_column(column_name)
@@ -87,6 +96,10 @@ module Gitlab
           # First 20 digits of the hash is chosen to make sure it fits the 63 chars limit
           digest = Digest::SHA256.hexdigest(int_column_index_name).first(20)
           "bigint_idx_#{digest}"
+        end
+
+        def tmp_foreign_key_name(int_column_fk_name)
+          "#{int_column_fk_name}_tmp"
         end
 
         private

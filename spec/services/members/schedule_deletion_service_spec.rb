@@ -44,6 +44,7 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
         expect(deletion_schedule.namespace).to eq(namespace)
         expect(deletion_schedule.user).to eq(user)
         expect(deletion_schedule.scheduled_by).to eq(scheduled_by)
+        expect(deletion_schedule.ip_address).to be_nil
       end
 
       context 'when a deletion schedule is not unique' do
@@ -76,6 +77,17 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
 
           expect(result[:status]).to eq :error
           expect(result[:message]).to eq(['User must exist'])
+        end
+      end
+
+      context 'when given an ip_address' do
+        subject(:service) { described_class.new(namespace, user_id, scheduled_by, '100.12.10.5') }
+
+        it 'saves the ip_address with the schedule' do
+          service.execute
+
+          schedule = ::Members::DeletionSchedule.first
+          expect(schedule.ip_address).to eq('100.12.10.5')
         end
       end
     end

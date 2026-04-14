@@ -16,12 +16,12 @@ Use this API to access [group iterations](../user/group/iterations/_index.md).
 
 For project iterations, use the [project iterations API](iterations.md).
 
-## List group iterations
+## List all group iterations
 
-Returns a list of group iterations.
+Lists all iterations for a specified group.
 
 Iterations created by **Enable automatic scheduling** in
-[Iteration cadences](../user/group/iterations/_index.md#iteration-cadences) return `null` for
+[iteration cadences](../user/group/iterations/_index.md#iteration-cadences) return `null` for
 the `title` and `description` fields.
 
 ```plaintext

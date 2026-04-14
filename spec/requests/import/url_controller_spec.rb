@@ -21,6 +21,22 @@ RSpec.describe Import::UrlController, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      context 'when user is not allowed to import projects' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?)
+            .with(user, :import_projects, user.namespace)
+            .and_return(false)
+        end
+
+        it 'returns access denied' do
+          get new_import_url_path
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.body).to match(/You do not have permission to import projects/)
+        end
+      end
+
       context 'when user is allowed to create projects in this namespace' do
         let(:namespace) { create(:namespace, owner: user) }
 

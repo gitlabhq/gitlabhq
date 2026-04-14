@@ -300,6 +300,13 @@ Settings.ci_secure_files['storage_path'] = Settings.absolute(Settings.ci_secure_
 Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'], 'secure_files')
 
 #
+# AI Catalog
+#
+Settings['ai_catalog'] ||= {}
+Settings.ai_catalog['storage_path'] = Settings.absolute(Settings.ai_catalog['storage_path'] || File.join(Settings.shared['path'], "ai_catalog"))
+Settings.ai_catalog['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ai_catalog['object_store'], 'ai_catalog')
+
+#
 # Reply by email
 #
 Settings['incoming_email'] ||= {}
@@ -456,12 +463,6 @@ Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['e
 # If you are changing default storage paths, then you must change them in the gitlab-backup-cli gem as well
 Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
 Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'], 'dependency_proxy')
-
-# For first iteration dependency proxy uses Rails server to download blobs.
-# To ensure acceptable performance we only allow feature to be used with
-# multithreaded web-server Puma. This will be removed once download logic is moved
-# to GitLab workhorse
-Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
 
 #
 # Terraform state
@@ -846,6 +847,14 @@ Settings.cron_jobs['lost_transaction_recovery_worker']['job_class'] = 'Cells::Lo
 Settings.cron_jobs['topology_service_stale_requests_cleanup_worker'] ||= {}
 Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['cron'] ||= '*/5 * * * *'
 Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['job_class'] = 'Cells::StaleRequestsCleanupCronWorker'
+Settings.cron_jobs['cells_schedule_claims_verification_worker'] ||= {}
+Settings.cron_jobs['cells_schedule_claims_verification_worker']['cron'] ||= '0 0 * * 6'
+Settings.cron_jobs['cells_schedule_claims_verification_worker']['job_class'] = 'Gitlab::Scheduling::ScheduleWithinWorker'
+Settings.cron_jobs['cells_schedule_claims_verification_worker']['args'] = {
+  'worker_class' => 'Cells::ScheduleClaimsVerificationWorker',
+  'within_minutes' => 59,
+  'within_hours' => 23
+}
 Settings.cron_jobs['concurrency_limit_resume_worker'] ||= {}
 Settings.cron_jobs['concurrency_limit_resume_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['concurrency_limit_resume_worker']['job_class'] ||= 'ConcurrencyLimit::ResumeWorker'
@@ -995,6 +1004,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
+  Settings.cron_jobs['security_scan_execution_policies_schedule_worker'] ||= {}
+  Settings.cron_jobs['security_scan_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['security_scan_execution_policies_schedule_worker']['job_class'] = 'Security::ScanExecutionPolicies::ScheduleWorker'
   Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker'] ||= {}
   Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['security_unassign_policy_configurations_for_expired_licenses_worker']['job_class'] = 'Security::UnassignPolicyConfigurationsForExpiredLicensesCronWorker'
@@ -1101,6 +1113,9 @@ Gitlab.ee do
   Settings.cron_jobs['members_schedule_prune_deletions_worker'] ||= {}
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
+  Settings.cron_jobs['ai_catalog_items_aggregate_last30_day_usage_worker'] ||= {}
+  Settings.cron_jobs['ai_catalog_items_aggregate_last30_day_usage_worker']['cron'] ||= '0 0 * * *'
+  Settings.cron_jobs['ai_catalog_items_aggregate_last30_day_usage_worker']['job_class'] = 'Ai::Catalog::Items::AggregateLast30DayUsageWorker'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
@@ -1269,20 +1284,18 @@ Gitlab.ee do
 end
 
 #
-# Authentication
+# IAM Auth Service
 #
-Settings['authn'] ||= {}
-
-#
-# IAM Service
-#
-# Environment variables (IAM_SERVICE_ENABLED, IAM_SERVICE_URL, IAM_SERVICE_AUDIENCE) can be used
-# to override defaults for testing in sandbox environments. They are temporary and will be removed.
-Settings.authn['iam_service'] ||= {}
-Settings.authn.iam_service['enabled'] ||= Gitlab::Utils.to_boolean(ENV['IAM_SERVICE_ENABLED']) || false
-Settings.authn.iam_service['url'] ||= ENV['IAM_SERVICE_URL'] || 'http://localhost:8084'
-Settings.authn.iam_service['audience'] ||= ENV['IAM_SERVICE_AUDIENCE'] || 'gitlab-rails'
-Settings.authn.iam_service['jwks_cache_ttl'] ||= ENV['IAM_SERVICE_JWKS_CACHE_TTL']&.to_i || 3600
+Settings['iam_auth_service'] ||= {}
+Settings.iam_auth_service['enabled'] ||= false
+Settings.iam_auth_service['secret_file'] ||= nil
+Settings.iam_auth_service['http'] ||= {}
+Settings.iam_auth_service.http['host'] ||= 'localhost'
+Settings.iam_auth_service.http['port'] ||= 8084
+Settings.iam_auth_service['grpc'] ||= {}
+Settings.iam_auth_service.grpc['host'] ||= 'localhost'
+Settings.iam_auth_service.grpc['port'] ||= 8085
+Settings.iam_auth_service['jwt_audience'] ||= 'gitlab-rails'
 
 #
 # Gitlab Secrets Manager Openbao Integration

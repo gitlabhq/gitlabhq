@@ -359,7 +359,7 @@ describe('render_image_lightbox', () => {
       return img;
     };
 
-    const mockImageLoadWithTransparency = (hasAlpha = true) => {
+    const mockImageLoadWithTransparency = (transparentPixelCount = 0) => {
       jest.spyOn(window, 'Image').mockImplementation(() => {
         const fakeImg = {
           srcValue: '',
@@ -381,8 +381,8 @@ describe('render_image_lightbox', () => {
       });
 
       const pixelData = new Uint8ClampedArray(10 * 10 * 4).fill(255);
-      if (hasAlpha) {
-        pixelData[3] = 0;
+      for (let i = 0; i < transparentPixelCount; i += 1) {
+        pixelData[i * 4 + 3] = 0;
       }
 
       jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
@@ -393,9 +393,9 @@ describe('render_image_lightbox', () => {
 
     const renderWithTransparency = async (
       src = 'http://example.com/image.png',
-      hasAlpha = true,
+      transparentPixelCount = 5,
     ) => {
-      mockImageLoadWithTransparency(hasAlpha);
+      mockImageLoadWithTransparency(transparentPixelCount);
       const img = createTransparentImage(src);
       renderImageLightbox([img], container);
       await waitForPromises();
@@ -476,13 +476,25 @@ describe('render_image_lightbox', () => {
 
     describe('hasTransparency', () => {
       it('does not add toggle when image has no transparent pixels', async () => {
-        await renderWithTransparency('http://example.com/opaque.png', false);
+        await renderWithTransparency('http://example.com/opaque.png', 0);
 
         expect(container.querySelector('[data-transparency-toggle]')).toBeNull();
       });
 
-      it('adds toggle when image has transparent pixels', async () => {
-        await renderWithTransparency('http://example.com/transparent.png');
+      it('does not add toggle when transparency is below 5% threshold', async () => {
+        await renderWithTransparency('http://example.com/negligible.png', 4);
+
+        expect(container.querySelector('[data-transparency-toggle]')).toBeNull();
+      });
+
+      it('adds toggle when transparency meets 5% threshold', async () => {
+        await renderWithTransparency('http://example.com/transparent.png', 5);
+
+        expect(container.querySelector('[data-transparency-toggle]')).not.toBeNull();
+      });
+
+      it('adds toggle when image has significant transparent pixels', async () => {
+        await renderWithTransparency('http://example.com/transparent.png', 10);
 
         expect(container.querySelector('[data-transparency-toggle]')).not.toBeNull();
       });

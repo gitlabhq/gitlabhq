@@ -38,7 +38,8 @@ export default {
     },
     simulateSaas: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
   detailedMetrics: [

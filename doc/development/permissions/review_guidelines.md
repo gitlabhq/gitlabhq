@@ -126,6 +126,30 @@ rule { developer }.policy do
 end
 ```
 
+#### Exception: private permissions
+
+[Private permissions](conventions.md#private-permissions) (underscore-prefixed)
+are the one case where cascading through an intermediate ability is correct.
+A private permission like `_read_authored_issue` is assigned to a role in the
+role YAML definition and then combined with a subject-level condition in the
+policy to enable the broader public permission. This pattern is intentional
+because:
+
+- The private permission makes the role's conditional capability **explicit
+  and machine-readable**, which is required for privilege escalation checks
+  and custom role composition.
+- The cascade is always exactly one level deep: private permission + condition
+  enables public permission. Deeper chains are still not allowed.
+
+```ruby
+# good - private permission gates the broader permission with a condition
+rule { can?(:_read_authored_issue) & is_author }.enable :read_issue
+rule { can?(:_read_assigned_issue) & is_assignee }.enable :read_issue
+
+# bad - cascading through a non-private intermediate ability
+rule { can?(:read_security_resource) }.enable :read_vulnerability
+```
+
 ### Avoid nested conditions
 
 Avoid combining a role check and a settings/flag check into a single `rule`

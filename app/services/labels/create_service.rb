@@ -2,7 +2,12 @@
 
 module Labels
   class CreateService < Labels::BaseService
-    def initialize(params = {})
+    include Gitlab::InternalEventsTracking
+
+    attr_reader :current_user
+
+    def initialize(current_user = nil, params = {})
+      @current_user = current_user
       @params = params.to_h.dup.with_indifferent_access
     end
 
@@ -15,16 +20,27 @@ module Labels
       if project_or_group.present?
         params.delete(:lock_on_merge) unless project_or_group.supports_lock_on_merge?
 
-        project_or_group.labels.create(params)
+        project_or_group.labels.create(params).tap do |label|
+          track_label_creation_event(label) if label.persisted?
+        end
       elsif target_params[:template]
         label = Label.new(params)
         label.organization_id = target_params[:organization_id]
         label.template = true
         label.save
+        track_label_creation_event(label) if label.persisted?
         label
       else
         Gitlab::AppLogger.warn("target_params should contain :project or :group or :template, actual value: #{target_params}")
       end
     end
+
+    private
+
+    def track_label_creation_event(label)
+      track_internal_event('label_created', project: label.project, namespace: label.group)
+    end
   end
 end
+
+Labels::CreateService.prepend_mod_with('Labels::CreateService')

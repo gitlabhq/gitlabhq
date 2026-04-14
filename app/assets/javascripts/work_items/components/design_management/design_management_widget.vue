@@ -123,7 +123,7 @@ export default {
       },
       update(data) {
         const designWidget = findDesignsWidget(data.workItem);
-        if (designWidget.designCollection === null) {
+        if (!designWidget || designWidget.designCollection === null) {
           return null;
         }
         const { copyState } = designWidget.designCollection;

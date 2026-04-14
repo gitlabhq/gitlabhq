@@ -15,6 +15,7 @@ import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
+import PipelineEditorNewEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_new_empty_state.vue';
 import PipelineEditorMessages from '~/ci/pipeline_editor/components/ui/pipeline_editor_messages.vue';
 import PipelineEditorHeader from '~/ci/pipeline_editor/components/header/pipeline_editor_header.vue';
 import ValidationSegment, {
@@ -60,6 +61,7 @@ jest.mock('~/lib/utils/scroll_utils');
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const defaultProvide = {
+  ciCatalogPath: '/explore/catalog',
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
   emptyStateIllustrationPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
@@ -151,7 +153,10 @@ describe('Pipeline editor app component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
+  const findNewEmptyState = () => wrapper.findComponent(PipelineEditorNewEmptyState);
   const findEmptyStateButton = () => findEmptyState().findComponent(GlButton);
+  const findNewEmptyStateButton = () =>
+    findNewEmptyState().find('[data-testid="create-new-ci-button"]');
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
 
   beforeEach(() => {
@@ -363,6 +368,52 @@ describe('Pipeline editor app component', () => {
         await findEmptyStateButton().vm.$emit('click');
 
         expect(findEmptyState().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(true);
+      });
+    });
+
+    describe('when no CI config file exists and updateVisualLanguage is enabled', () => {
+      beforeEach(async () => {
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
+        await createComponentWithApollo({
+          provide: {
+            glFeatures: { updateVisualLanguage: true },
+          },
+          stubs: {
+            PipelineEditorNewEmptyState,
+          },
+          data: { currentBranch: mockDefaultBranch },
+        });
+      });
+
+      it('shows the new empty state and does not show editor home component', () => {
+        expect(findNewEmptyState().exists()).toBe(true);
+        expect(findEmptyState().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(false);
+      });
+    });
+
+    describe('with no CI config setup and updateVisualLanguage is enabled', () => {
+      it('user can click on CTA button to get started', async () => {
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
+        mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
+
+        await createComponentWithApollo({
+          provide: {
+            glFeatures: { updateVisualLanguage: true },
+          },
+          stubs: {
+            PipelineEditorHome,
+            PipelineEditorNewEmptyState,
+          },
+        });
+
+        expect(findNewEmptyState().exists()).toBe(true);
+        expect(findEditorHome().exists()).toBe(false);
+
+        await findNewEmptyStateButton().vm.$emit('click');
+
+        expect(findNewEmptyState().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(true);
       });
     });

@@ -9,6 +9,23 @@ module Gitlab
       class GroupVulnerabilitiesHistory
         include Prawn::View
 
+        CHART_HEIGHT = 400
+        ICON_SIZE = 14
+        TITLE_FONT_SIZE = 16
+        TITLE_Y_OFFSET = 10
+        DATE_FONT_SIZE = 12
+        DATE_Y_OFFSET = 40
+        TABLE_HEADER_Y_OFFSET = 80
+        COLUMN_LABEL_WIDTH = 100
+        COLUMN_LABEL_HEIGHT = 20
+        HEADER_FONT_SIZE = 12
+        PERCENT_COLUMN_RIGHT_OFFSET = 150
+        COUNT_COLUMN_RIGHT_OFFSET = 80
+        COLUMN_WIDTH = 50
+        ROW_HEIGHT = 70
+        SVG_WIDTH_RATIO = 0.5
+        BACKGROUND_COLOR = "F9F9F9"
+
         # rubocop:disable Layout/LineLength -- data strings
         SEVERITY_ICONS = {
           critical: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="#dd2b0e" d="M6.706.185l4.088 2.31c.437.246.706.702.706 1.195v4.62c0 .493-.269.949-.706 1.195l-4.088 2.31a1.438 1.438 0 0 1-1.412 0l-4.088-2.31A1.376 1.376 0 0 1 .5 8.31V3.69c0-.493.269-.949.706-1.195L5.294.185a1.438 1.438 0 0 1 1.412 0z"/></svg>',
@@ -29,39 +46,36 @@ module Gitlab
           @charts = process_raw(data)
           @selected_day_range = data&.dig(:selected_day_range)
           @date_info = data&.dig(:date_info)
-          @width = 500
-          @height = 400
-          @icon_size = 14
           @y = pdf.cursor
         end
 
         def render
           return :noop if @charts.blank?
 
-          @pdf.bounding_box([0, @y], width: @pdf.bounds.right, height: @height) do
+          @pdf.bounding_box([0, @y], width: @pdf.bounds.right, height: CHART_HEIGHT) do
             # Background
             @pdf.save_graphics_state
-            @pdf.fill_color "F9F9F9"
-            @pdf.fill_rectangle [0, @pdf.bounds.top], @pdf.bounds.right, @height
+            @pdf.fill_color BACKGROUND_COLOR
+            @pdf.fill_rectangle [0, @pdf.bounds.top], @pdf.bounds.right, CHART_HEIGHT
             @pdf.restore_graphics_state
 
             # Title
             @pdf.text_box(
-              s_('Vulnerability History'),
-              at: [0, @pdf.bounds.top - 10],
+              _('Vulnerability History'),
+              at: [0, @pdf.bounds.top - TITLE_Y_OFFSET],
               width: @pdf.bounds.right,
               align: :center,
               style: :bold,
-              size: 16
+              size: TITLE_FONT_SIZE
             )
 
             # Date information
             @pdf.text_box(
-              "#{@date_info} (#{@selected_day_range} #{s_('Days')})",
-              at: [0, @pdf.bounds.top - 40],
+              "#{@date_info} (#{@selected_day_range} #{_('Days')})",
+              at: [0, @pdf.bounds.top - DATE_Y_OFFSET],
               width: @pdf.bounds.right,
               align: :center,
-              size: 12
+              size: DATE_FONT_SIZE
             )
 
             # the info table
@@ -76,18 +90,20 @@ module Gitlab
 
         def draw_table_header
           @pdf.save_graphics_state
-          y_position = @pdf.bounds.top - 80
+          y_position = @pdf.bounds.top - TABLE_HEADER_Y_OFFSET
 
-          @pdf.bounding_box([10, y_position - 5], width: 100, height: 20) do
-            @pdf.text "Severity", style: :bold, size: 12
+          @pdf.bounding_box([10, y_position - 5], width: COLUMN_LABEL_WIDTH, height: COLUMN_LABEL_HEIGHT) do
+            @pdf.text "Severity", style: :bold, size: HEADER_FONT_SIZE
           end
 
-          @pdf.bounding_box([@pdf.bounds.right - 150, y_position - 5], width: 50, height: 20) do
-            @pdf.text "%", style: :bold, size: 12, align: :center
+          percent_x = @pdf.bounds.right - PERCENT_COLUMN_RIGHT_OFFSET
+          @pdf.bounding_box([percent_x, y_position - 5], width: COLUMN_WIDTH, height: COLUMN_LABEL_HEIGHT) do
+            @pdf.text "%", style: :bold, size: HEADER_FONT_SIZE, align: :center
           end
 
-          @pdf.bounding_box([@pdf.bounds.right - 80, y_position - 5], width: 50, height: 20) do
-            @pdf.text "#", style: :bold, size: 12, align: :center
+          count_x = @pdf.bounds.right - COUNT_COLUMN_RIGHT_OFFSET
+          @pdf.bounding_box([count_x, y_position - 5], width: COLUMN_WIDTH, height: COLUMN_LABEL_HEIGHT) do
+            @pdf.text "#", style: :bold, size: HEADER_FONT_SIZE, align: :center
           end
 
           @pdf.stroke_color "000000"
@@ -98,39 +114,38 @@ module Gitlab
         end
 
         def draw_chart_row(chart, index)
-          row_height = 70
-          y_position = @chart_start_position - (index * row_height)
+          y_position = @chart_start_position - (index * ROW_HEIGHT)
 
           icon_svg = SEVERITY_ICONS[chart[:severity].to_sym]
-          @pdf.svg(icon_svg, at: [10, @pdf.cursor - 25], width: @icon_size, height: @icon_size)
+          @pdf.svg(icon_svg, at: [10, @pdf.cursor - 25], width: ICON_SIZE, height: ICON_SIZE)
 
           @pdf.text_box(
             chart[:severity].capitalize,
             at: [30, @pdf.cursor + 12],
-            width: 100
+            width: COLUMN_LABEL_WIDTH
           )
 
-          svg_width = @pdf.bounds.right * 0.5
-          @pdf.svg chart[:svg], at: [100, y_position - 15], width: svg_width, height: 70
+          svg_width = @pdf.bounds.right * SVG_WIDTH_RATIO
+          @pdf.svg chart[:svg], at: [100, y_position - 15], width: svg_width, height: ROW_HEIGHT
 
           @pdf.text_box(
             chart[:change_in_percent],
-            at: [@pdf.bounds.right - 150, y_position - 15],
-            width: 50,
-            height: 20,
+            at: [@pdf.bounds.right - PERCENT_COLUMN_RIGHT_OFFSET, y_position - 15],
+            width: COLUMN_WIDTH,
+            height: COLUMN_LABEL_HEIGHT,
             align: :center,
             style: :bold,
-            size: 12
+            size: HEADER_FONT_SIZE
           )
 
           @pdf.text_box(
             chart[:current_count].to_s,
-            at: [@pdf.bounds.right - 80, y_position - 15],
-            width: 50,
-            height: 20,
+            at: [@pdf.bounds.right - COUNT_COLUMN_RIGHT_OFFSET, y_position - 15],
+            width: COLUMN_WIDTH,
+            height: COLUMN_LABEL_HEIGHT,
             align: :center,
             style: :bold,
-            size: 12
+            size: HEADER_FONT_SIZE
           )
         end
 
@@ -139,7 +154,7 @@ module Gitlab
           return if charts.blank?
 
           charts.each do |chart|
-            svg = CGI.unescape(chart[:svg]).delete!("\n")[%r{(<svg.*</svg>)}, 1]
+            svg = CGI.unescape(chart[:svg])[%r{(<svg.*?</svg>)}m, 1]
             chart[:svg] = svg
           end
 

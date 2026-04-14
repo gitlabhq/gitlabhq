@@ -96,7 +96,7 @@ RSpec.shared_examples 'XSS prevention' do
 
     'protocol-based JS injection: null char' => {
       input: "<a href=java\0script:alert(\"XSS\")>foo</a>",
-      output: '<a href="java"></a>'
+      output: '<a>foo</a>'
     },
 
     'protocol-based JS injection: invalid URL char' => {
@@ -111,7 +111,7 @@ RSpec.shared_examples 'XSS prevention' do
 
     'protocol-based JS injection: spaces and entities' => {
       input: '<a href=" &#14;  javascript:alert(\'XSS\');">foo</a>',
-      output: '<a href="">foo</a>'
+      output: '<a>foo</a>'
     },
 
     'protocol whitespace' => {

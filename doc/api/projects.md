@@ -578,7 +578,7 @@ Supported attributes:
 | `last_activity_after`         | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
@@ -940,7 +940,7 @@ Supported attributes:
 | `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID. |
 | `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer  | No       | Limit to projects where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
 | `search`                      | string   | No       | Return list of projects matching the search criteria. |
@@ -1874,7 +1874,7 @@ Supported attributes:
 |:--------------------------|:------------------|:---------|:------------|
 | `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`                  | string            | No       | Search for specific groups by group ID. |
-| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `shared_min_access_level` | integer           | No       | Limit to shared groups with at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `shared_visible_only`     | boolean           | No       | If `true`, returns only shared groups the authenticated user can access. |
 | `skip_groups`             | array of integers | No       | Skip the group IDs passed. |
 | `with_shared`             | boolean           | No       | Include projects shared with this group. Default is `false`. |
@@ -2003,7 +2003,7 @@ Supported attributes:
 |:-------------------------|:-----------------|:---------|:------------|
 | `id`                     | integer or string   | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria. |
-| `min_access_level`       | integer          | no       | Limit to groups where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`       | integer          | no       | Limit to groups where the current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `relation`               | array of strings | no       | Filter the groups by relation. Possible values: `direct` or `inherited`. |
 | `with_custom_attributes` | boolean          | no       | If `true`, returns [custom attributes](custom_attributes.md) in response. Requires administrator access. |
 
@@ -2091,7 +2091,7 @@ Manage a project, including creation, deletion, and archival.
 
 {{< /history >}}
 
-Creates a new project owned by the authenticated user.
+Creates a project owned by the authenticated user.
 
 If your HTTP repository isn't publicly accessible, add authentication information to the URL
 `https://username:password@gitlab.company.com/group/project.git`, where `password` is a public access key with the `api`
@@ -2189,7 +2189,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 
 {{< /history >}}
 
-Create a project for a user.
+Creates a project for a user.
 
 Prerequisites:
 
@@ -2271,7 +2271,7 @@ Supported general project attributes:
 To set the visibility level of individual project features,
 see [Project feature visibility level](#project-feature-visibility-level).
 
-### Edit a project
+### Update a project
 
 {{< history >}}
 
@@ -2283,7 +2283,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 
 {{< /history >}}
 
-Update an existing project.
+Updates an existing project.
 
 If your HTTP repository isn't publicly accessible, add authentication information
 to the URL `https://username:password@gitlab.company.com/group/project.git`,
@@ -2382,7 +2382,7 @@ Supported general project attributes:
 | `visibility`                                       | string            | No       | See [project visibility level](#project-visibility-level). |
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
-| `web_based_commit_signing_enabled`                 | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only on GitLab SaaS. |
+| `web_based_commit_signing_enabled`                 | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only on GitLab.com. |
 
 For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 
@@ -2397,7 +2397,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 
 ### Import members
 
-Import members from another project.
+Imports members from another project.
 
 If the importing member's role for the target project is:
 
@@ -2458,7 +2458,7 @@ Example responses:
 
 ### Archive a project
 
-Archive a project.
+Archives the specified project.
 
 Prerequisites:
 
@@ -2607,7 +2607,7 @@ Example response:
 
 ### Unarchive a project
 
-Unarchive a project.
+Unarchives the specified project.
 
 Prerequisites:
 
@@ -2793,7 +2793,7 @@ Supported attributes:
 
 ### Restore a project marked for deletion
 
-Restore a project that is marked for deletion.
+Restores a specified project that was marked for deletion.
 
 ```plaintext
 POST /projects/:id/restore
@@ -2807,7 +2807,7 @@ Supported attributes:
 
 ### Transfer a project to a new namespace
 
-Transfer a project to a new namespace.
+Transfers a project to a new namespace.
 
 For information on prerequisites for transferring a project, see
 [Transfer a project to another namespace](../user/project/working_with_projects.md#transfer-a-project).
@@ -2993,7 +2993,7 @@ Example response:
 
 ### Upload a project avatar
 
-Upload an avatar to the specified project.
+Uploads an avatar to the specified project.
 
 ```plaintext
 PUT /projects/:id
@@ -3048,7 +3048,7 @@ Example response:
 
 {{< /history >}}
 
-Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
+Downloads a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
 
 ```plaintext
 GET /projects/:id/avatar
@@ -3086,7 +3086,7 @@ For more information, see [Invite a group to a project](../user/project/members/
 
 ### Share a project with a group
 
-Share a project with a group.
+Shares a specified project with a group.
 
 ```plaintext
 POST /projects/:id/share
@@ -3096,14 +3096,14 @@ Supported attributes:
 
 | Attribute      | Type              | Required | Description |
 |:---------------|:------------------|:---------|:------------|
-| `group_access` | integer           | Yes      | The access level to grant to the group. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `group_access` | integer           | Yes      | The access level to grant to the group. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `group_id`     | integer           | Yes      | The ID of the group to share with. |
 | `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |
 
 ### Delete a shared project link in a group
 
-Unshare the project from the group. Returns `204` and no content on success.
+Unshares a project from a specified group. Returns `204` and no content on success.
 
 ```plaintext
 DELETE /projects/:id/share/:group_id
@@ -3126,7 +3126,7 @@ curl --request DELETE \
 
 ## Start the housekeeping task for a project
 
-Start the [housekeeping task](../administration/housekeeping.md) for a project.
+Starts the [housekeeping task](../administration/housekeeping.md) for a project.
 
 ```plaintext
 POST /projects/:id/housekeeping
@@ -3204,7 +3204,7 @@ Example response:
 
 This endpoint may only be accessed by an administrative user.
 
-Download a snapshot of the project (or wiki, if requested) Git repository. This
+Downloads a snapshot of the project (or wiki, if requested) Git repository. This
 snapshot is always in uncompressed [tar](https://en.wikipedia.org/wiki/Tar_(computing))
 format.
 
@@ -3222,9 +3222,9 @@ Supported attributes:
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `wiki`    | boolean           | No       | Whether to download the wiki, rather than project, repository. |
 
-## Get the path to repository storage
+## Retrieve the path to repository storage
 
-Get the path to repository storage for the specified project. If you're using Gitaly Cluster (Praefect), see [Praefect-generated replica paths](../administration/gitaly/praefect/_index.md#praefect-generated-replica-paths) instead.
+Retrieves the path to repository storage for the specified project. If you're using Gitaly Cluster (Praefect), see [Praefect-generated replica paths](../administration/gitaly/praefect/_index.md#praefect-generated-replica-paths) instead.
 
 Available for administrators only.
 
@@ -3264,7 +3264,7 @@ Supported attributes:
 
 {{< /history >}}
 
-If you have the Developer, Maintainer, or Owner role, the following requests could also return the `secret_push_protection_enabled` value.
+If you have the Security Manager, Developer, Maintainer, or Owner role, the following requests could also return the `secret_push_protection_enabled` value.
 Some of these requests have stricter requirements about roles. Refer to the endpoints previously mentioned for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
 To modify the `secret_push_protection_enabled` value, use the [Project Security Settings API](project_security_settings.md).

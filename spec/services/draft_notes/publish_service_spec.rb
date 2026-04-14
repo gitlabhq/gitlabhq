@@ -270,11 +270,36 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   context 'with no draft notes' do
     let(:merge_request) { create(:merge_request) }
 
-    it 'creates the correct pub-sub event' do
-      expect(::Gitlab::EventStore).to receive(:publish)
-      expect(MergeRequests::DraftNotePublishedEvent).to receive(:new)
+    it 'does not publish a DraftNotePublishedEvent' do
+      expect(::Gitlab::EventStore).not_to receive(:publish)
 
       publish
+    end
+
+    it 'does not track the publish event' do
+      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+        .not_to receive(:track_publish_review_action)
+
+      publish
+    end
+
+    it 'does not send resolved discussion notifications' do
+      expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+      publish
+    end
+
+    context 'when all discussions are already resolved' do
+      before do
+        allow(merge_request).to receive(:discussions_resolved?).and_return(true)
+      end
+
+      it 'does not send a duplicate resolved discussion notification' do
+        expect(::Gitlab::EventStore).not_to receive(:publish)
+        expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+        publish
+      end
     end
   end
 

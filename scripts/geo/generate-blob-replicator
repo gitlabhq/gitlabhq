@@ -214,7 +214,7 @@ module Geo
       when 'project_id'
         'project_id_in'
       when 'namespace_id'
-        'group_id_in'
+        'namespace_id_in'
       when 'organization_id'
         'organization_id_in'
       else
@@ -519,19 +519,19 @@ module Geo
                  let_it_be(:group_2) { create(:group, organization: organization_2) }
 
                  let!(:first_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, organization: organization_1))
                  end
 
                  let!(:second_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, organization: organization_1))
                  end
 
                  let!(:third_replicable_on_object_storage_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{parent_model_factory_name}, organization: organization_1))
                  end
 
                  let!(:last_replicable_and_not_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_2))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, organization: organization_2))
                  end
                RUBY
              when 'namespace_id'
@@ -541,19 +541,19 @@ module Geo
                  let_it_be(:nested_group_1) { create(:group, parent: group_1) }
 
                  let!(:first_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: group_1))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, group: group_1))
                  end
 
                  let!(:second_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: nested_group_1))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, group: nested_group_1))
                  end
 
                  let!(:third_replicable_on_object_storage_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, group: group_1))
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{parent_model_factory_name}, group: group_1))
                  end
 
                  let!(:last_replicable_and_not_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: group_2))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, group: group_2))
                  end
                RUBY
              when 'project_id'
@@ -566,19 +566,19 @@ module Geo
                  let_it_be(:project_3) { create(:project, group: group_2) }
 
                  let!(:first_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_1))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, project: project_1))
                  end
 
                  let!(:second_replicable_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_2))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, project: project_2))
                  end
 
                  let!(:third_replicable_on_object_storage_and_in_selective_sync) do
-                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, project: project_1))
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{parent_model_factory_name}, project: project_1))
                  end
 
                  let!(:last_replicable_and_not_in_selective_sync) do
-                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_3))
+                   create(:geo_#{replicable_name}, parent_model: create(:#{parent_model_factory_name}, project: project_3))
                  end
                RUBY
              end
@@ -661,7 +661,7 @@ module Geo
     end
 
     def upload_model_validation_include
-      upload_partition ? "\n            include ::Geo::Concerns::UploadReplicatorPreDownloadValidation" : ''
+      upload_partition ? "\n            include ::Geo::Concerns::UploadReplicatorBehavior" : ''
     end
 
     def generate_replicator
@@ -713,7 +713,7 @@ module Geo
           class #{registry_class_name} < Geo::BaseRegistry
             include ::Geo::ReplicableRegistry
             include ::Geo::VerifiableRegistry
-
+            #{upload_partition ? "include ::Geo::PartitionUploadRegistry\n" : ''}
             belongs_to :#{replicable_name}, class_name: '#{registry_belongs_to_class}'
 
             def self.model_class
@@ -1282,7 +1282,7 @@ module Geo
           let(:model_record) { create(:geo_#{replicable_name}) }
 
           include_examples 'a blob replicator with a read-only replicable model'
-          include_examples 'a blob replicator with pre-download validation'
+          include_examples 'a blob replicator with upload replicator behavior'
         end
       RUBY
     end
@@ -1301,6 +1301,7 @@ module Geo
           end
 
           include_examples 'a Geo framework registry'
+          #{upload_partition ? "include_examples 'a Geo framework partition upload registry'" : ''}
         end
       RUBY
     end
@@ -1475,8 +1476,8 @@ module Geo
       factory = ":geo_#{replicable_name}_registry"
 
       # Align columns like existing entries
-      col1 = registry_class.ljust(40)
-      col2 = registry_type.ljust(51)
+      col1 = registry_class.ljust(42)
+      col2 = registry_type.ljust(53)
 
       "    #{col1}| #{col2}| #{factory}"
     end
@@ -1519,15 +1520,28 @@ module Geo
       # Determine the creation line and variable name based on model type
       creation_line =
         if upload_partition
-          "      #{replicable_name} = create(:geo_#{model_factory_name})"
+          "        #{replicable_name} = create(:geo_#{model_factory_name})"
         else
-          "      #{replicable_name} = create(:#{replicable_name})"
+          "        #{replicable_name} = create(:#{replicable_name})"
         end
 
       foreign_key_value = "#{replicable_name}.id"
 
+      # Partition upload registries include Geo::PartitionUploadRegistry and are
+      # filtered out by registry_consistency_worker_enabled? when the legacy Upload
+      # replicator is active. They have their own context in the spec with an
+      # allow(Geo::UploadReplicator) stub. Regular blobs go in the main test.
+      if upload_partition
+        anchor_creation = 'abuse_report_upload = create(:geo_abuse_report_upload)'
+        anchor_pre = 'expect(Geo::AbuseReportUploadRegistry.where(abuse_report_upload_id: abuse_report_upload.id).count).to eq(0)'
+        anchor_post = 'expect(Geo::AbuseReportUploadRegistry.where(abuse_report_upload_id: abuse_report_upload.id).count).to eq(1)'
+      else
+        anchor_creation = 'helm_metadata_cache = create(:helm_metadata_cache)'
+        anchor_pre = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(0)'
+        anchor_post = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(1)'
+      end
+
       # Add creation line after the last similar creation
-      anchor_creation = 'helm_metadata_cache = create(:helm_metadata_cache)'
       if content.include?(anchor_creation)
         content = content.sub(
           anchor_creation,
@@ -1536,8 +1550,7 @@ module Geo
       end
 
       # Add pre-execution assertion
-      pre_assertion = "      expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(0)"
-      anchor_pre = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(0)'
+      pre_assertion = "        expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(0)"
       if content.include?(anchor_pre)
         content = content.sub(
           anchor_pre,
@@ -1546,8 +1559,7 @@ module Geo
       end
 
       # Add post-execution assertion
-      post_assertion = "      expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(1)"
-      anchor_post = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(1)'
+      post_assertion = "        expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(1)"
       if content.include?(anchor_post)
         content = content.sub(
           anchor_post,
@@ -2042,7 +2054,7 @@ module Geo
       puts
 
       run_task('Step 1: Geo tracking DB migration',
-        'bin/rake db:migrate:geo')
+        'bin/rake db:migrate:geo RAILS_ENV=test')
 
       run_task('Step 2: Main DB migration',
         'bin/rake db:migrate')

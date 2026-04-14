@@ -337,6 +337,50 @@ export const mockProjectParentWorkItemsQueryResponse = {
   },
 };
 
+export const allowedParentTypesResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/1',
+      workItemTypes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            widgetDefinitions: [
+              {
+                type: 'HIERARCHY',
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/8',
+                      name: 'Epic',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/6',
+                      name: 'Objective',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/1',
+                      name: 'Issue',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+        ],
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
 export const mockEmoji1 = {
   name: EMOJI_THUMBS_UP,
 };

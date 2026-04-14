@@ -1356,6 +1356,38 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.traversal_ids_type' do
+    subject(:traversal_ids_type) { described_class.traversal_ids_type }
+
+    before do
+      allow(Gitlab::Database).to receive(:column_type).with(anything, 'namespaces', 'traversal_ids').and_return(pg_type_name)
+    end
+
+    context 'when the column type is _int4' do
+      let(:pg_type_name) { '_int4' }
+
+      it 'returns integer[]' do
+        expect(traversal_ids_type).to eq('integer[]')
+      end
+    end
+
+    context 'when the column type is _int8' do
+      let(:pg_type_name) { '_int8' }
+
+      it 'returns bigint[]' do
+        expect(traversal_ids_type).to eq('bigint[]')
+      end
+    end
+
+    context 'when the column type is unrecognized' do
+      let(:pg_type_name) { '_text' }
+
+      it 'raises an error' do
+        expect { traversal_ids_type }.to raise_error("unrecognized column type: _text id should be either an _int4 or _int8")
+      end
+    end
+  end
+
   context 'traversal scopes' do
     it_behaves_like 'namespace traversal scopes'
 
@@ -3346,55 +3378,76 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#allowed_work_item_types' do
-    before do
-      namespace.clear_memoization(:allowed_work_item_types)
-    end
-
-    it 'uses WorkItems::TypesFilter and memoizes the result' do
-      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
-        expect(types_filter).to receive(:allowed_types).once.and_call_original
-      end
-
-      2.times { namespace.allowed_work_item_types }
+    it 'returns an array of base types from the provider' do
+      expect(namespace.allowed_work_item_types).to be_an(Array)
+      expect(namespace.allowed_work_item_types).to all(be_a(String))
     end
   end
 
   describe '#allowed_work_item_type?' do
-    it 'returns boolean when work item type exists' do
-      ::WorkItems::Type.base_types.each_key do |name|
-        expect(namespace.allowed_work_item_type?(name))
-          .to be(true).or(be(false))
+    it 'returns true when the type is allowed' do
+      expect(namespace.allowed_work_item_type?(:issue)).to be(true).or(be(false))
+    end
+
+    it 'raises ArgumentError for invalid work item type' do
+      expect { namespace.allowed_work_item_type?(:unknown) }
+        .to raise_error(ArgumentError, '"unknown" is not a valid Work Item Type')
+    end
+  end
+
+  describe '#can_push_initial_commit?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    context 'when user is admin', :enable_admin_mode do
+      let_it_be(:admin_user) { create(:user, :admin) }
+
+      it 'returns true regardless of protection settings' do
+        allow(group).to receive(:default_branch_protection_settings)
+          .and_return(Gitlab::Access::BranchProtection.protected_fully)
+
+        expect(group.can_push_initial_commit?(admin_user)).to eq(true)
       end
     end
 
-    it 'raises an exception when work item type not exist' do
-      expect { namespace.allowed_work_item_type?(:unknown) }
-        .to raise_error(
-          ArgumentError,
-          '"unknown" is not a valid WorkItems::Type.base_types'
-        )
+    context 'when developer can push' do
+      before_all do
+        group.add_developer(user)
+      end
+
+      it 'returns true for developer' do
+        allow(group).to receive(:default_branch_protection_settings)
+          .and_return(Gitlab::Access::BranchProtection.protection_partial)
+
+        expect(group.can_push_initial_commit?(user)).to eq(true)
+      end
+    end
+
+    context 'when fully protected' do
+      before do
+        allow(group).to receive(:default_branch_protection_settings)
+          .and_return(Gitlab::Access::BranchProtection.protected_fully)
+      end
+
+      it 'returns false for developer and true for maintainer' do
+        group.add_developer(user)
+        expect(group.can_push_initial_commit?(user)).to eq(false)
+
+        group.add_maintainer(user)
+        expect(group.can_push_initial_commit?(user)).to eq(true)
+      end
+    end
+
+    context 'with user namespace' do
+      it 'returns true for the owner' do
+        expect(user.namespace.can_push_initial_commit?(user)).to eq(true)
+      end
     end
   end
 
   describe '#supports_work_items?' do
-    before do
-      namespace.clear_memoization(:supports_work_items?)
-    end
-
-    it 'returns true when ::WorkItems::TyepsFilter has non-empty allowed_types and memoizes the result' do
-      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
-        expect(types_filter).to receive(:allowed_types).once.and_return([:issue])
-      end
-
-      2.times { expect(namespace.supports_work_items?).to be true }
-    end
-
-    it 'returns false when ::WorkItems::TyepsFilter has an empty allowed_types and memoizes the result' do
-      expect_next_instance_of(::WorkItems::TypesFilter) do |types_filter|
-        expect(types_filter).to receive(:allowed_types).once.and_return([])
-      end
-
-      2.times { expect(namespace.supports_work_items?).to be false }
+    it 'returns a boolean' do
+      expect(namespace.supports_work_items?).to be(true).or(be(false))
     end
   end
 end

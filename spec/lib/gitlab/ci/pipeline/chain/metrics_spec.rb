@@ -24,6 +24,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
     expect(step.break?).to be false
   end
 
+  it 'increments the pipelines_created_counter' do
+    counter = instance_double(Prometheus::Client::Counter)
+    allow(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipelines_created_counter).and_return(counter)
+
+    expect(counter).to receive(:increment).with(
+      source: pipeline.source,
+      partition_id: pipeline.partition_id
+    )
+
+    run_chain
+  end
+
   it 'enqueues PipelineCreationMetricsWorker with basic params' do
     expect(::Ci::PipelineCreationMetricsWorker)
       .to receive(:perform_async)

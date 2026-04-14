@@ -22,7 +22,7 @@
   documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
   image_url: https://img.youtube.com/vi/GPewPbqlFDE/hqdefault.jpg
   published_at: 2025-07-17
-  release: 18.2
+  release: "18.2"
 
 - name: Custom workflow statuses for issues and tasks
   description: |
@@ -52,7 +52,7 @@
   documentation_link: https://docs.gitlab.com/user/work_items/status/
   image_url: https://img.youtube.com/vi/oxN95MSo6UU/hqdefault.jpg
   published_at: 2025-07-17
-  release: 18.2
+  release: "18.2"
 
 - name: New merge request homepage
   description: |
@@ -77,7 +77,7 @@
   documentation_link: https://docs.gitlab.com/user/project/merge_requests/homepage/
   image_url: https://about.gitlab.com/images/18_2/create-action-focused-mr-homepage.png
   published_at: 2025-07-17
-  release: 18.2
+  release: "18.2"
 
 - name: Improve security with immutable container tags
   description: |
@@ -105,7 +105,7 @@
   documentation_link: https://docs.gitlab.com/user/packages/container_registry/immutable_container_tags/
   image_url: https://about.gitlab.com/images/18_2/immutable_tags_18_1.png
   published_at: 2025-07-17
-  release: 18.2
+  release: "18.2"
 
 - name: Group and project controls for Premium and Ultimate with GitLab Duo
   description: |
@@ -117,4 +117,4 @@
   documentation_link: https://docs.gitlab.com/user/gitlab_duo/turn_on_off/
   image_url: https://about.gitlab.com/images/18_2/Duo_Controls1.png
   published_at: 2025-07-17
-  release: 18.2
+  release: "18.2"

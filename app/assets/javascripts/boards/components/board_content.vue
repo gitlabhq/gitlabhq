@@ -130,10 +130,21 @@ export default {
       return this.isGroupBoard ? BoardType.group : BoardType.project;
     },
   },
+  watch: {
+    addColumnFormVisible(visible) {
+      if (visible && this.isSwimlanesOn) {
+        this.$nextTick(() => {
+          this.afterFormEnters();
+        });
+      }
+    },
+  },
   methods: {
     afterFormEnters() {
-      const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
-      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+      const formEl = this.$refs.addColumnForm?.$el;
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', inline: 'end', block: 'nearest' });
+      }
     },
     highlightList(listId) {
       this.highlightedLists.push(listId);
@@ -301,17 +312,16 @@ export default {
           @cannot-find-active-item="handleCannotFindActiveItem"
         />
       </component>
-      <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
-        <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
-          <board-add-new-column-trigger
-            :is-new-list-showing="addColumnFormVisible"
-            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
-          />
-        </div>
-      </transition>
+      <div v-if="!addColumnFormVisible && canAdminList" class="gl-inline-block gl-pl-2">
+        <board-add-new-column-trigger
+          :is-new-list-showing="addColumnFormVisible"
+          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+        />
+      </div>
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
         <board-add-new-column
           v-if="addColumnFormVisible"
+          ref="addColumnForm"
           :board-id="boardId"
           :list-query-variables="listQueryVariables"
           :lists="boardListsById"
@@ -343,6 +353,7 @@ export default {
       </template>
       <div v-if="addColumnFormVisible" class="gl-pl-2">
         <board-add-new-column
+          ref="addColumnForm"
           class="gl-sticky"
           :filter-params="filterParams"
           :list-query-variables="listQueryVariables"

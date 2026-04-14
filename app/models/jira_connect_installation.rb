@@ -12,7 +12,7 @@ class JiraConnectInstallation < ApplicationRecord
   has_many :subscriptions, class_name: 'JiraConnectSubscription'
   belongs_to :organization, class_name: 'Organizations::Organization'
 
-  validates :client_key, presence: true, uniqueness: true
+  validates :client_key, presence: true, uniqueness: { scope: :organization_id }
   validates :shared_secret, presence: true
   validates :base_url, presence: true, public_url: true
   validates :display_url, public_url: true, allow_blank: true

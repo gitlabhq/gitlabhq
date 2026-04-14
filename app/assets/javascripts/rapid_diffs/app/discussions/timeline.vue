@@ -1,7 +1,8 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { createAlert } from '~/alert';
+import { COMMENT_FORM } from '~/notes/i18n';
 import DiffDiscussions from './diff_discussions.vue';
 import NoteForm from './note_form.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
@@ -30,10 +31,13 @@ export default {
       const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
       if (!confirmSubmit) return;
 
-      const {
-        data: { discussion },
-      } = await axios.post(this.endpoints.discussions, { note: { note: noteText } });
-      this.store.addDiscussion(discussion);
+      try {
+        await this.store.createNewDiscussion({ note: noteText });
+      } catch {
+        createAlert({
+          message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
+        });
+      }
     },
   },
 };

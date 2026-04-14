@@ -1,0 +1,10 @@
+---
+view_name: postgres_triggers
+classes:
+  - Gitlab::Database::PostgresTrigger
+feature_categories:
+  - database
+description: SQL view to get information about postgres triggers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224874
+milestone: '18.10'
+gitlab_schema: gitlab_shared

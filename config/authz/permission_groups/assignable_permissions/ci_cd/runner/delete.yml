@@ -1,7 +1,0 @@
----
-name: delete_runner
-description: Grants the ability to delete runners
-boundaries:
-  - project
-permissions:
-  - delete_runner

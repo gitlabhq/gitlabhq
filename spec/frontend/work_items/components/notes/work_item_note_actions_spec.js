@@ -287,7 +287,7 @@ describe('Work Item Note Actions', () => {
 
         expect(findAuthorBadge().exists()).toBe(true);
         expect(findAuthorBadge().text()).toBe('Author');
-        expect(findAuthorBadge().attributes('title')).toBe('This user is the author of this task.');
+        expect(findAuthorBadge().attributes('title')).toBe('This user is the author of this Task.');
       });
     });
 

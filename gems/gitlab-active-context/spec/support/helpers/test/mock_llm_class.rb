@@ -6,13 +6,12 @@ module Test
 
     NIL_CONTENTS_ERROR_MESSAGE = 'The text content is empty.'
 
-    def self.generate_embeddings(contents, unit_primitive:, model: nil, user: nil)
-      new(contents, unit_primitive: unit_primitive, user: user, model: model).execute
+    def self.generate_embeddings(contents, model: nil, user: nil)
+      new(contents, user: user, model: model).execute
     end
 
-    def initialize(contents, unit_primitive: nil, model: nil, user: nil)
+    def initialize(contents, model: nil, user: nil)
       @contents = contents
-      @unit_primitive = unit_primitive
       @user = user
       @model = model
     end

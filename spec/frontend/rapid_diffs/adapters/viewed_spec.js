@@ -3,6 +3,7 @@ import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { viewedAdapter } from '~/rapid_diffs/adapters/viewed';
 import { toggleFileAdapter } from '~/rapid_diffs/adapters/toggle_file';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 
 const CODE_REVIEW_ID = 'abc123def456';
 const MR_PATH = '/namespace/project/-/merge_requests/1';
@@ -38,6 +39,9 @@ describe('Viewed Adapter', () => {
     get('file').onClick(event);
   };
 
+  const OLD_PATH = 'app/models/user.rb';
+  const NEW_PATH = 'app/models/user.rb';
+
   const mount = (reviewedIds = [], { codeReviewEnabled = true } = {}) => {
     if (reviewedIds.length) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(reviewedIds));
@@ -50,8 +54,9 @@ describe('Viewed Adapter', () => {
     store.restoreFromLegacyMrReviews();
 
     const viewer = 'any';
+    const fileData = { viewer, codeReviewId: CODE_REVIEW_ID, oldPath: OLD_PATH, newPath: NEW_PATH };
     document.body.innerHTML = `
-      <diff-file data-file-data='${JSON.stringify({ viewer, codeReviewId: CODE_REVIEW_ID })}' data-code-review-id="${CODE_REVIEW_ID}">
+      <diff-file data-file-data='${JSON.stringify(fileData)}' data-code-review-id="${CODE_REVIEW_ID}">
         <div class="rd-diff-file">
           <div class="rd-diff-file-header">
             <label class="rd-diff-file-viewed">
@@ -80,6 +85,7 @@ describe('Viewed Adapter', () => {
     createTestingPinia({ stubActions: false });
     localStorage.clear();
     document.head.innerHTML = '';
+    document.elementFromPoint = jest.fn().mockReturnValue(null);
   });
 
   afterEach(() => {
@@ -119,6 +125,15 @@ describe('Viewed Adapter', () => {
       mount([CODE_REVIEW_ID]);
 
       expect(get('file').diffElement.dataset.collapsed).toBe('true');
+    });
+
+    it('does not collapse a viewed file when it is the linked file', () => {
+      useDiffsList().setLinkedFileData({ old_path: OLD_PATH, new_path: NEW_PATH });
+      mount([CODE_REVIEW_ID]);
+
+      expect(get('checkbox').checked).toBe(true);
+      expect(get('body').open).toBe(true);
+      expect(Object.hasOwn(get('file').diffElement.dataset, 'collapsed')).toBe(false);
     });
 
     it('removes FOUC style tag on mount', () => {

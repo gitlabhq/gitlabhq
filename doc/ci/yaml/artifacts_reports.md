@@ -3,7 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Artifact report types for test results, security scans, code quality checks, and performance metrics.
-title: GitLab CI/CD artifacts reports types
+title: CI/CD artifacts reports types
 ---
 
 {{< details >}}
@@ -279,38 +279,10 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:dotenv`
 
-The `dotenv` report collects environment variables from a file
-and makes them available as CI/CD variables to later jobs in the pipeline.
+The `dotenv` report collects environment variables from a file and makes them
+available as CI/CD variables to later jobs in the pipeline.
 
-The collected variables are registered as job variables that you can
-[use in subsequent job scripts](../variables/job_scripts.md#pass-environment-variables-to-later-jobs)
-or [set dynamic environment URLs](../environments/_index.md#set-a-dynamic-environment-url).
-
-If the same variable name appears multiple times in a `dotenv` report, the last value is used.
-
-Don't include sensitive data like credentials, API keys, or tokens because they can be accessed by pipeline users.
-To restrict access, use [`artifacts:access`](_index.md#artifactsaccess).
-
-GitLab uses the [`dotenv` gem](https://github.com/bkeepers/dotenv) to handle `dotenv` files,
-but applies additional restrictions beyond both [the original dotenv rules](https://github.com/motdotla/dotenv?tab=readme-ov-file#what-rules-does-the-parsing-engine-follow)
-and the gem's implementation.
-
-File size and variable limits:
-
-- Maximum `dotenv` file size is 5 KB. This limit [can be changed](../../administration/instance_limits.md#limit-dotenv-file-size) on GitLab Self-Managed.
-- On GitLab.com, [maximum inherited variables](../../user/gitlab_com/_index.md#cicd) is 50 for Free, 100 for Premium, and 150 for Ultimate.
-  The default for GitLab Self-Managed is 20, and can be changed with the `dotenv_variables` [application limit](../../administration/instance_limits.md#limit-dotenv-variables).
-
-Format restrictions:
-
-- Only UTF-8 encoding is [supported](../jobs/job_artifacts_troubleshooting.md#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner).
-- The `dotenv` file cannot contain empty lines or comments (starting with `#`).
-- Variable names can contain only ASCII letters (`A-Za-z`), digits (`0-9`), and underscores (`_`).
-- The `dotenv` file does not support quoting. Single or double quotes are preserved as-is and cannot be used for escaping.
-- Values cannot contain newlines or other special characters that require escaping.
-- [Multiline values](https://github.com/motdotla/dotenv#multiline-values) are not supported. GitLab rejects the `dotenv` file on upload.
-- Leading and trailing spaces or newline characters (`\n`) are stripped.
-- For complex values (JSON, multiline text), use a different artifact report type or store data in a separate file artifact.
+For more information, see [dotenv variables](../variables/dotenv_variables.md).
 
 ## `artifacts:reports:junit`
 
@@ -388,6 +360,50 @@ artifact and existing [requirements](../../user/project/requirements/_index.md) 
 
 GitLab can display the results of one or more reports in the
 [project requirements](../../user/project/requirements/_index.md#view-a-requirement).
+
+## `artifacts:reports:sarif`
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452042) in GitLab 18.11
+  with a [feature flag](../../administration/feature_flags/_index.md) named `sarif_ingestion`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag named `sarif_ingestion`.
+> For more information, see the history.
+
+The `sarif` report collects security findings from tools that emit
+[SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html) output.
+The collected SARIF report uploads to GitLab as an artifact.
+
+Use this report type to ingest findings from any SARIF-compatible scanner,
+such as Semgrep, ESLint security plugins, or GitHub Advanced Security tools.
+
+GitLab can display the results of one or more reports in:
+
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
+- The [security dashboard](../../user/application_security/security_dashboard/_index.md).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
+
+**Example**:
+
+```yaml
+semgrep:
+  image: returntocorp/semgrep
+  script:
+    - semgrep ci --sarif --output gl-sarif-report.sarif
+  artifacts:
+    reports:
+      sarif: gl-sarif-report.sarif
+```
 
 ## `artifacts:reports:sast`
 

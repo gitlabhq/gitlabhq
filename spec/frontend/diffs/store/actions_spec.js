@@ -746,21 +746,21 @@ describe('DiffsStoreActions', () => {
       ]);
     });
 
-    it('should prevent default event', () => {
+    it('should prevent default event', async () => {
       const preventDefault = jest.fn();
       const target = { href: TEST_HOST };
       const event = { target, preventDefault };
-      testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+      await testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
         { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
       ]);
       expect(preventDefault).toHaveBeenCalled();
     });
 
-    it('should filter out linked file param', () => {
+    it('should filter out linked file param', async () => {
       const target = { href: `${TEST_HOST}/diffs?file=foo#abc_11` };
       const event = { target, preventDefault: jest.fn() };
-      testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+      await testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
         { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
       ]);
@@ -881,7 +881,7 @@ describe('DiffsStoreActions', () => {
 
   describe('removeDiscussionsFromDiff', () => {
     it('does not call mutation if no diff file is on discussion', () => {
-      testAction(
+      return testAction(
         diffActions.removeDiscussionsFromDiff,
         {
           id: '1',
@@ -2201,10 +2201,10 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('unlinkFile', () => {
-    it('unlinks linked file', () => {
+    it('unlinks linked file', async () => {
       const linkedFile = getDiffFileMock();
       setWindowLocation(`${TEST_HOST}/?file=${linkedFile.file_hash}#${linkedFile.file_hash}_10_10`);
-      testAction(
+      await testAction(
         diffActions.unlinkFile,
         undefined,
         { linkedFile },
@@ -2216,13 +2216,13 @@ describe('DiffsStoreActions', () => {
     });
 
     it('does nothing when no linked file present', () => {
-      testAction(diffActions.unlinkFile, undefined, {}, [], []);
+      return testAction(diffActions.unlinkFile, undefined, {}, [], []);
     });
   });
 
   describe('expandAllFiles', () => {
     it('triggers mutation', () => {
-      testAction(
+      return testAction(
         diffActions.expandAllFiles,
         undefined,
         {},
@@ -2239,7 +2239,7 @@ describe('DiffsStoreActions', () => {
 
   describe('collapseAllFiles', () => {
     it('triggers mutation', () => {
-      testAction(
+      return testAction(
         diffActions.collapseAllFiles,
         undefined,
         {},

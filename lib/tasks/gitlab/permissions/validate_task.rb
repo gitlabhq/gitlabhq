@@ -45,13 +45,15 @@ module Tasks
         def load_declarative_policy_permissions
           require_policy_files
 
-          permissions = []
+          @permission_policies = {}
 
           DeclarativePolicy::Base.descendants.each do |policy_class|
-            permissions += policy_class.ability_map.map.keys
+            policy_class.ability_map.map.each_key do |permission|
+              (@permission_policies[permission] ||= []) << policy_class
+            end
           end
 
-          permissions.sort.uniq
+          @permission_policies.keys.sort.uniq
         end
 
         def require_policy_files
@@ -64,7 +66,8 @@ module Tasks
           permission = Authz::Permission.get(permission_name)
 
           unless permission.present?
-            violations[:definition] << permission_name unless excluded
+            add_definition_violation(permission_name) unless excluded
+
             return
           end
 
@@ -75,6 +78,13 @@ module Tasks
           validate_file(permission)
 
           @resources << permission.resource
+        end
+
+        def add_definition_violation(permission_name)
+          policies = @permission_policies[permission_name]
+            &.filter_map { |p| policy_source_path(p, permission_name) }
+            &.uniq
+          violations[:definition] << { name: permission_name, sources: policies || [] }
         end
 
         def validate_action(permission)
@@ -146,16 +156,29 @@ module Tasks
         end
 
         def format_all_errors
-          out = format_error_list(:definition)
-          out += format_error_list(:excluded)
-          out += format_schema_errors
-          out += format_error_list(:name)
+          out = format_definition_errors
+          out += format_error_list_with_source(:excluded)
+          out += format_schema_errors { |name| permission_source_path(name) }
+          out += format_error_list_with_source(:name)
           out += format_action_errors
           out += format_file_errors
-          out += format_error_list(:unknown_permission)
+          out += format_error_list_with_source(:unknown_permission)
           out += format_error_list(:missing_resource_metadata)
           out += format_schema_errors(:resource_metadata_schema)
           out + format_error_list(:empty_resource_directory)
+        end
+
+        def format_error_list_with_source(kind)
+          return '' if violations[kind].empty?
+
+          out = "#{error_messages[kind]}\n\n"
+
+          violations[kind].each do |permission|
+            sources = [permission_source_path(permission), todo_source_path(permission)].compact
+            out += "  - #{permission} (#{sources.join(', ')})\n"
+          end
+
+          "#{out}\n"
         end
 
         def format_action_errors
@@ -166,19 +189,79 @@ module Tasks
           violations[:action].each_key do |permission|
             action = violations[:action][permission]
             preferred = DISALLOWED_ACTIONS[action]
+            source = permission_source_path(permission)
 
-            out += "  - #{permission}: Prefer #{preferred} over #{action}.\n"
+            out += "  - #{permission}: Prefer #{preferred} over #{action}. (#{source})\n"
           end
 
           "#{out}\n"
         end
 
+        def format_definition_errors
+          return '' if violations[:definition].empty?
+
+          out = "#{error_messages[:definition]}\n\n"
+
+          violations[:definition].each do |violation|
+            out += "  - #{violation[:name]}"
+            out += " (#{violation[:sources].join(', ')})" if violation[:sources].any?
+            out += "\n"
+          end
+
+          "#{out}\n"
+        end
+
+        def todo_source_path(permission_name)
+          line = @exclusion_line_numbers&.[](permission_name.to_sym)
+          "#{PERMISSION_TODO_FILE}:#{line}" if line
+        end
+
+        def permission_source_path(permission_name)
+          permission = Authz::Permission.get(permission_name.to_sym)
+          return unless permission&.source_file
+
+          relative_path(permission.source_file)
+        end
+
+        def policy_source_path(policy_class, permission_name = nil)
+          return unless policy_class.name
+
+          file, _line = Object.const_source_location(policy_class.name)
+          return unless file
+
+          path = relative_path(file)
+
+          if permission_name
+            line = find_permission_line(file, permission_name)
+            return "#{path}:#{line}" if line
+          end
+
+          path
+        end
+
+        def find_permission_line(file, permission_name)
+          needle = "enable :#{permission_name}"
+          match = File.foreach(file).with_index(1).find { |line, _| line.include?(needle) }
+          match&.last
+        end
+
         def exclusion_list
-          @excludes ||= if File.exist?(exclusion_file)
-                          File.read(exclusion_file).split("\n").reject(&:empty?).map { |p| p.strip.to_sym }
-                        else
-                          []
-                        end
+          @excludes ||= begin
+            @exclusion_line_numbers = {}
+
+            if File.exist?(exclusion_file)
+              File.readlines(exclusion_file).each_with_index.filter_map do |line, index|
+                stripped = line.strip
+                next if stripped.empty?
+
+                sym = stripped.to_sym
+                @exclusion_line_numbers[sym] = index + 1
+                sym
+              end
+            else
+              []
+            end
+          end
         end
 
         def exclusion_file
@@ -205,12 +288,12 @@ module Tasks
               "declarative policy.\nRemove the definition files for the unknown permissions." \
               "\n#{permission_definitions_link(anchor: 'permission-definition-file')}",
             missing_resource_metadata:
-              "The following permission resource directories are missing a _metadata.yml file." \
+              "The following permission resource directories are missing a .metadata.yml file." \
               "\n#{permission_definitions_link(anchor: 'resource-metadata-fields')}",
             resource_metadata_schema: "The following resource metadata files failed schema validation." \
               "\n#{permission_definitions_link(anchor: 'resource-metadata-fields')}",
             empty_resource_directory:
-              "The following resource directories contain only a _metadata.yml file with no permission definitions." \
+              "The following resource directories contain only a .metadata.yml file with no permission definitions." \
               "\nEither add permission definitions or remove the directory." \
               "\n#{permission_definitions_link(anchor: 'permission-naming-and-validation')}"
           }

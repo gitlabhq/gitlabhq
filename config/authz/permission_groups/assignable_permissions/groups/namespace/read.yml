@@ -1,0 +1,7 @@
+---
+name: read_namespace
+description: "Grants the ability to read namespaces."
+boundaries:
+  - user
+permissions:
+  - read_namespace

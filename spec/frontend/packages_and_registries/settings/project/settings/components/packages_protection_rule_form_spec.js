@@ -99,6 +99,7 @@ describe('Packages Protection Rule Form', () => {
           'NPM',
           'NUGET',
           'PYPI',
+          'TERRAFORM_MODULE',
         ]);
       });
     });

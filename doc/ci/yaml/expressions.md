@@ -127,11 +127,12 @@ For example:
 spec:
   component: [name, version]
   inputs:
-    image_tag:
-      default: latest
+    stage:
+      default: build
 ---
 
 build-job:
+  stage: $[[ inputs.stage ]]
   image: registry.example.com/$[[ component.name ]]:$[[ component.version ]]
   script:
     - echo "Building with component version $[[ component.version ]]"

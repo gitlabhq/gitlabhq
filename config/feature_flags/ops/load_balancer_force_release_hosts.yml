@@ -1,0 +1,8 @@
+---
+name: load_balancer_force_release_hosts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230066
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595862
+milestone: '18.11'
+group: group::database frameworks
+type: ops
+default_enabled: false

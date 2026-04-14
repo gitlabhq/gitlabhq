@@ -1,0 +1,9 @@
+---
+table: merge_request_diff_files_99208b8fac
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_merge_request_diff_files
+    dedup_by:
+      - merge_request_diff_id
+      - relative_order

@@ -36,8 +36,14 @@ Prerequisites:
 If you're on the Free tier and you start an Ultimate trial, your trial includes 24 [GitLab credits](gitlab_credits.md#included-credits) per user.
 You can use credits to test GitLab Duo Agent Platform features.
 
+For GitLab.com, if you have already [purchased a Monthly Commitment Pool](gitlab_credits.md#for-the-free-tier-on-gitlabcom), you are not allocated additional credits for the trial period.
+Credits used during the trial period are deducted from the pool.
+
 Credits are valid for the duration of the trial (30 days). Unused credits do not carry over if you buy a subscription, or when your trial ends.
 If you use all included credits before your trial ends, you cannot get more credits.
+
+If you have not set a [default GitLab Duo namespace](../user/profile/preferences.md#set-a-default-gitlab-duo-namespace), you cannot use AI features that require proxy endpoint use during your trial.
+This includes external agents and direct `/v1/proxy` API calls (for example, CLIs, IDEs, or custom scripts calling the proxy with a GitLab token). This restriction does not affect Agentic Chat, or custom and foundational agents and flows.
 
 If you already started or completed a trial that did not include credits, you can start a new trial:
 

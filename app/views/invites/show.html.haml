@@ -29,4 +29,4 @@
     - link_to_current_user = link_to(current_user.to_reference, user_url(current_user))
     = _("This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}.").html_safe % { mail_to_invite_email: mail_to_invite_email, mail_to_current_user: mail_to_current_user, link_to_current_user: link_to_current_user }
   %p
-    = _("Sign in as a user with the matching email address, add the email to this account, or sign-up for a new account using the matching email.")
+    = _("Sign in as a user with the matching email address, add the email to this account, or create an account that uses the matching email.")

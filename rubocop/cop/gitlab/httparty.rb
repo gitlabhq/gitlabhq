@@ -6,17 +6,17 @@ module RuboCop
       class HTTParty < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MSG_SEND = <<~EOL
+        MSG_SEND = <<~TEXT
           Avoid calling `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
           the option :allow_local_requests in the request call.
-        EOL
+        TEXT
 
-        MSG_INCLUDE = <<~EOL
+        MSG_INCLUDE = <<~TEXT
           Avoid including `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
           the option :allow_local_requests in the request call.
-        EOL
+        TEXT
 
         # @!method includes_httparty?(node)
         def_node_matcher :includes_httparty?, <<~PATTERN

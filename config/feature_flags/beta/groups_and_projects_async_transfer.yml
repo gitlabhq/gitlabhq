@@ -1,0 +1,10 @@
+---
+name: groups_and_projects_async_transfer
+description: "When enabled, group and project transfers are queued as background jobs instead of being processed synchronously."
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20521
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228697
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594575
+milestone: '18.11'
+group: group::organizations
+type: beta
+default_enabled: false

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
 import $ from 'jquery';
-import { uniq, escape } from 'lodash';
+import { uniq, escape } from 'lodash-es';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import { scrollToElement } from '~/lib/utils/scroll_utils';

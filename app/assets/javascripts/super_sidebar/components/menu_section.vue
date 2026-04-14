@@ -1,5 +1,5 @@
 <script>
-import { kebabCase } from 'lodash';
+import { kebabCase } from 'lodash-es';
 import {
   GlCollapse,
   GlIcon,

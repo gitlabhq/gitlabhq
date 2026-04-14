@@ -22,8 +22,6 @@ describe('Labels index', () => {
       </div>
     `);
 
-    window.gon = { features: { labelsArchive: true } };
-
     jest.spyOn(eventHub, '$on');
   });
 
@@ -33,21 +31,10 @@ describe('Labels index', () => {
   });
 
   describe('initLabels', () => {
-    it('registers EVENT_ARCHIVE_LABEL_SUCCESS event listener when labelsArchive feature is enabled', () => {
+    it('registers EVENT_ARCHIVE_LABEL_SUCCESS event listener', () => {
       initLabels();
 
       expect(eventHub.$on).toHaveBeenCalledWith(EVENT_ARCHIVE_LABEL_SUCCESS, expect.any(Function));
-    });
-
-    it('does not register EVENT_ARCHIVE_LABEL_SUCCESS event listener when labelsArchive feature is disabled', () => {
-      window.gon.features.labelsArchive = false;
-
-      initLabels();
-
-      expect(eventHub.$on).not.toHaveBeenCalledWith(
-        EVENT_ARCHIVE_LABEL_SUCCESS,
-        expect.any(Function),
-      );
     });
 
     describe('removeLabelSuccessCallback', () => {

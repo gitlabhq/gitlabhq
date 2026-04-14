@@ -210,7 +210,6 @@ create_note
 create_objective
 create_observability_access_request
 create_on_demand_dast_scan
-create_organization
 create_package
 create_pages
 create_path_lock
@@ -233,7 +232,6 @@ create_vulnerability_archive_export
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
-create_work_item
 create_workspace
 daily_statistics
 decline_terms
@@ -249,7 +247,6 @@ delete_project_secrets
 delete_project_subscription
 delete_tag
 delete_user
-delete_work_item
 destroy_alert_management_alert
 destroy_alert_management_metric_image
 destroy_approvers
@@ -285,7 +282,6 @@ destroy_project_bot_member
 destroy_project_group_link
 destroy_project_member
 destroy_protected_branch
-destroy_protected_tags
 destroy_release
 destroy_requirement
 destroy_resource_access_tokens
@@ -331,7 +327,6 @@ get_user_associations_count
 guest_access
 import_issues
 import_project_members_from_another_project
-import_projects
 import_requirements
 import_work_items
 invite_group_members
@@ -414,7 +409,6 @@ read_approvers
 read_attestation
 read_billing
 read_blob
-read_branch_rule
 read_build
 read_build_metadata
 read_build_report_results
@@ -425,7 +419,6 @@ read_ci_minutes_limited_summary
 read_ci_pipeline_schedules_plan_limit
 read_cloud_connector_status
 read_cluster_environments
-read_code
 read_code_review_analytics
 read_commit_committer_check
 read_commit_committer_name_check
@@ -456,7 +449,6 @@ read_design
 read_design_activity
 read_dora4_analytics
 read_duo_core_settings
-read_duo_usage_analytics
 read_duo_workflow
 read_duo_workflow_event
 read_emoji
@@ -522,7 +514,6 @@ read_merge_request_iid
 read_merge_train_car
 read_model_experiments
 read_model_registry
-read_namespace
 read_namespace_cluster_agent_mapping
 read_namespace_via_membership
 read_nested_project_resources
@@ -531,9 +522,7 @@ read_observability
 read_observability_portal
 read_on_demand_dast_scan
 read_operations_dashboard
-read_organization
 read_organization_cluster_agent_mapping
-read_organization_user
 read_package_within_public_registries
 read_pages
 read_pages_content
@@ -595,7 +584,6 @@ read_software_license_policy
 read_squash_option
 read_statistics
 read_storage_disk_path
-read_subscription_usage
 read_target_branch_rule
 read_timelog_category
 read_upload
@@ -708,7 +696,6 @@ update_max_pages_size
 update_name
 update_note
 update_o11y_settings
-update_organization_user
 update_owned_user_achievement
 update_package
 update_pages

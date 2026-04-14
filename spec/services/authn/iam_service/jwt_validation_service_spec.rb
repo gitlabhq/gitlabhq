@@ -206,10 +206,11 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         end
 
         before do
-          allow(Gitlab.config.authn.iam_service).to receive(:url).and_return(nil)
+          allow(Authn::IamAuthService).to receive(:url)
+            .and_raise(Authn::IamAuthService::ConfigurationError, 'IAM service is not configured')
         end
 
-        include_examples 'returns error', reason: :service_unavailable, message: /IAM service URL is not configured/
+        include_examples 'returns error', reason: :service_unavailable, message: /IAM service is not configured/
 
         it 'does not log the failure' do
           expect(Gitlab::AuthLogger).not_to receive(:error)

@@ -13,6 +13,10 @@ module Resolvers
 
       alias_method :user, :object
 
+      argument :id, ::Types::GlobalIDType[::PersonalAccessToken],
+        required: false,
+        description: 'Filter personal access tokens by ID.'
+
       argument :search, GraphQL::Types::String,
         required: false,
         description: 'Query to search personal access tokens by name.'
@@ -73,12 +77,14 @@ module Resolvers
           scopes: {
             granular_scopes: [:namespace]
           },
+          active: [:user],
           last_used_ips: [:last_used_ips]
         }
       end
 
       def filter_params(args)
         {
+          token_id: args[:id]&.model_id,
           search: args[:search],
           state: args[:state],
           sort: args[:sort],

@@ -139,10 +139,77 @@
         },
         "toolset": {
           "type": "array",
-          "description": "List of tools available to the agent. Examples: ['read_file', 'list_dir', 'edit_file']",
+          "description": "List of tools available to the agent. Can be tool names or objects with tool options. Examples: ['read_file', {'create_merge_request_note': {'internal': true}}]",
           "items": {
-            "type": "string",
-            "description": "Tool name from tools registry"
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Tool name from tools registry"
+              },
+              {
+                "type": "object",
+                "description": "Tool with options. Key is tool name, value is options object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "object",
+                  "description": "Tool-specific options as key-value pairs",
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         "ui_log_events": {
@@ -269,10 +336,77 @@
         "toolset": {
           "type": "array",
           "minItems": 1,
-          "description": "List of tools available to the component. Examples: ['read_file', 'list_dir', 'edit_file']",
+          "description": "List of tools available to the component. Can be tool names or objects with tool options. Examples: ['read_file', {'create_merge_request_note': {'internal': true}}]",
           "items": {
-            "type": "string",
-            "description": "Tool name from tools registry"
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Tool name from tools registry"
+              },
+              {
+                "type": "object",
+                "description": "Tool with options. Key is tool name, value is options object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "object",
+                  "description": "Tool-specific options as key-value pairs",
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         "inputs": {

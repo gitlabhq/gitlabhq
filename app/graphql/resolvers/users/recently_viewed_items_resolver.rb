@@ -32,7 +32,8 @@ module Resolvers
       private
 
       def available_types
-        [::Gitlab::Search::RecentIssues, ::Gitlab::Search::RecentMergeRequests]
+        [::Gitlab::Search::RecentIssues, ::Gitlab::Search::RecentMergeRequests,
+          ::Gitlab::Search::RecentWikiPages]
       end
 
       def authorized_to_read_item?(item)
@@ -41,6 +42,8 @@ module Resolvers
           Ability.allowed?(current_user, :read_issue, item)
         when MergeRequest
           Ability.allowed?(current_user, :read_merge_request, item)
+        when WikiPage::Meta
+          Ability.allowed?(current_user, :read_wiki, item)
         else
           false
         end

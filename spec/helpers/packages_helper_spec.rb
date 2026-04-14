@@ -580,8 +580,11 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#packages_and_registries_group_settings_template_data' do
+    let_it_be(:user) { create(:user) }
+
     before do
       helper.instance_variable_set(:@group, group)
+      allow(helper).to receive(:current_user).and_return(user)
     end
 
     it 'includes group and dependency proxy paths' do

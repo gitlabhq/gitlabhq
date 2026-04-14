@@ -29,7 +29,7 @@ but the default locations are:
 - `/var/opt/gitlab/gitlab-rails/shared/ci_secure_files` for installations using the Linux package.
 - `/home/git/gitlab/shared/ci_secure_files` for self-compiled installations.
 
-Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy)
+Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy-secure-files)
 configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
 
 ## Disabling Secure Files

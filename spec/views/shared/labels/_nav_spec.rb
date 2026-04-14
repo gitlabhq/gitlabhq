@@ -54,20 +54,4 @@ RSpec.describe 'shared/labels/_nav', :aggregate_failures, feature_category: :tea
       expect(rendered).to have_css('.gl-tab-nav-item.active', text: 'Active')
     end
   end
-
-  context 'when labels_archive feature flag is disabled' do
-    before do
-      stub_feature_flags(labels_archive: false)
-    end
-
-    it 'shows All tab instead of Active/Archived' do
-      render 'shared/labels/nav', labels_or_filters: true, can_admin_label: false
-
-      expected_all_href = project_labels_path(project)
-
-      expect(rendered).to have_link('All', href: expected_all_href)
-      expect(rendered).not_to have_link('Active')
-      expect(rendered).not_to have_link('Archived')
-    end
-  end
 end

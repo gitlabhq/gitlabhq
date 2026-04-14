@@ -5,6 +5,7 @@ permissions:
   - add_issue_spent_time
   - add_merge_request_spent_time
   - clone_issue
+  - create_work_item
   - create_epic
   - create_epic_award_emoji
   - create_epic_discussion
@@ -23,7 +24,6 @@ permissions:
   - create_issue_note
   - create_issue_note_award_emoji
   - create_issue_time_estimate
-  - create_label
   - create_merge_request_time_estimate
   - create_merge_request_award_emoji
   - create_merge_request_note
@@ -56,7 +56,6 @@ permissions:
   - update_issue_note
   - update_epic_discussion
   - update_epic_discussion_note
-  - update_label
   - update_merge_request_note
   - update_milestone
   - update_snippet_discussion

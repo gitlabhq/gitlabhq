@@ -78,5 +78,23 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: 
 
       it_behaves_like 'menu access rights'
     end
+
+    describe 'Achievements' do
+      let(:item_id) { :achievements }
+
+      before do
+        stub_feature_flags(achievements: true)
+      end
+
+      it_behaves_like 'menu access rights'
+
+      context 'when achievements feature flag is disabled' do
+        before do
+          stub_feature_flags(achievements: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 end

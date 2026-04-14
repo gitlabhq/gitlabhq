@@ -413,16 +413,16 @@ describe('AlertsSettingsWrapper', () => {
         expect(mockUpdateCurrentHttpIntegrationMutationHandler).toHaveBeenCalledTimes(1);
       }
 
-      it('calls `currentHttpIntegration` on editing HTTP integrations', () => {
+      it('calls `currentHttpIntegration` on editing HTTP integrations', async () => {
         findIntegrationsList().vm.$emit('edit-integration', updateHttpVariables);
 
-        expectCurrentIntegrationToBeFetched();
+        await expectCurrentIntegrationToBeFetched();
       });
 
-      it('calls `currentHttpIntegration` on editing Prometheus integrations', () => {
+      it('calls `currentHttpIntegration` on editing Prometheus integrations', async () => {
         findIntegrationsList().vm.$emit('edit-integration', updatePrometheusVariables);
 
-        expectCurrentIntegrationToBeFetched();
+        await expectCurrentIntegrationToBeFetched();
       });
     });
 

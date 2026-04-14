@@ -120,4 +120,32 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
       end
     end
   end
+
+  context 'with namespaceProjectsForLinksWidget query' do
+    let(:query) { get_graphql_query_as_string('work_items/graphql/namespace_projects_for_links_widget.query.graphql') }
+    let(:variables) { { 'fullPath' => group.full_path } }
+
+    before do
+      create(:project, group: create(:group, parent: group))
+    end
+
+    it 'does not execute N+1 queries', :use_sql_query_cache do
+      post_graphql(query, current_user: user, variables: variables) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: user, variables: variables)
+      end
+
+      expect_graphql_errors_to_be_empty
+
+      create_list(:project, 3, group: group)
+      create_list(:project, 2, group: create(:group, parent: group))
+
+      expect do
+        post_graphql(query, current_user: user, variables: variables)
+      end.not_to exceed_all_query_limit(control)
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
 end

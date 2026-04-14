@@ -1,0 +1,6 @@
+<%= s_('Notify|Group %{old_path_with_namespace} was moved to another location.') % { old_path_with_namespace: @old_path_with_namespace } %>
+
+<%= s_('Notify|The group is now located under') %>
+<%= group_url(@group) %>
+
+<%= s_('Notify|Please update any bookmarks or links that reference the old group path.') %>

@@ -20,7 +20,7 @@ import { initScrollingTabs } from '~/layout_nav';
  *      isLoading: Boolean
  *    },
  *   ]"
- *   @onChangeTab="onChangeTab"
+ *   @on-change-tab="onChangeTab"
  *   />
  */
 export default {
@@ -54,7 +54,7 @@ export default {
       return tab.isLoading || false;
     },
     onTabClick(tab) {
-      this.$emit('onChangeTab', tab.scope);
+      this.$emit('on-change-tab', tab.scope);
     },
   },
 };

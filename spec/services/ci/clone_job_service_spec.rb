@@ -75,7 +75,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         job_artifacts_cobertura needs job_artifacts_accessibility
         job_artifacts_requirements job_artifacts_coverage_fuzzing
         job_artifacts_requirements_v2 job_artifacts_repository_xray
-        job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx
+        job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx job_artifacts_sarif
         scoped_user_id exit_code job_annotations job_artifacts_annotations
         job_artifacts_jacoco supply_chain_attestation].freeze
     end

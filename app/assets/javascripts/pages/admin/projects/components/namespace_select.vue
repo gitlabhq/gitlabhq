@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import Api from '~/api';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

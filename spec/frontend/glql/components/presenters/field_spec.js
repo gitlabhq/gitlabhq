@@ -4,7 +4,13 @@ import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
 import BoolPresenter from '~/glql/components/presenters/bool.vue';
+import CiItemPresenter from '~/glql/components/presenters/ci_item.vue';
+import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
+import CodePresenter from '~/glql/components/presenters/code.vue';
+import DurationPresenter from '~/glql/components/presenters/duration.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
+import NamedTextPresenter from '~/glql/components/presenters/named_text.vue';
+import UrlPresenter from '~/glql/components/presenters/url.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import LinkPresenter from '~/glql/components/presenters/link.vue';
@@ -30,6 +36,11 @@ import {
   MOCK_WORK_ITEM,
   MOCK_STATUS,
   MOCK_WORK_ITEM_TYPE,
+  MOCK_PIPELINE,
+  MOCK_JOB,
+  MOCK_CI_STAGE,
+  MOCK_GROUP,
+  MOCK_PROJECT,
 } from '../../mock_data';
 
 const MOCK_LINK = { title: 'title', webUrl: 'url' };
@@ -67,6 +78,11 @@ describe('FieldPresenter', () => {
     ${'iteration'} | ${MOCK_ITERATION}       | ${IterationPresenter}  | ${'IterationPresenter'}
     ${'status'}    | ${MOCK_STATUS}          | ${StatusPresenter}     | ${'StatusPresenter'}
     ${'type'}      | ${MOCK_WORK_ITEM_TYPE}  | ${TypePresenter}       | ${'TypePresenter'}
+    ${'pipeline'}  | ${MOCK_PIPELINE}        | ${CiItemPresenter}     | ${'CiItemPresenter'}
+    ${'job'}       | ${MOCK_JOB}             | ${CiItemPresenter}     | ${'CiItemPresenter'}
+    ${'stage'}     | ${MOCK_CI_STAGE}        | ${NamedTextPresenter}  | ${'NamedTextPresenter'}
+    ${'project'}   | ${MOCK_PROJECT}         | ${LinkPresenter}       | ${'LinkPresenter'}
+    ${'group'}     | ${MOCK_GROUP}           | ${LinkPresenter}       | ${'LinkPresenter'}
   `('renders $presenterName for data type: $dataType', ({ field, presenter }) => {
     createWrapper({ key: field }, 'key');
 
@@ -87,12 +103,16 @@ describe('FieldPresenter', () => {
 
   describe('if fieldKey is passed', () => {
     it.each`
-      fieldKey          | field            | presenter          | presenterName
-      ${'health'}       | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
-      ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
-      ${'state'}        | ${'opened'}      | ${StatePresenter}  | ${'StatePresenter'}
-      ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}   | ${'HtmlPresenter'}
-      ${'type'}         | ${'TASK'}        | ${TypePresenter}   | ${'TypePresenter'}
+      fieldKey          | field            | presenter            | presenterName
+      ${'health'}       | ${'onTrack'}     | ${HealthPresenter}   | ${'HealthPresenter'}
+      ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter}   | ${'HealthPresenter'}
+      ${'state'}        | ${'opened'}      | ${StatePresenter}    | ${'StatePresenter'}
+      ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}     | ${'HtmlPresenter'}
+      ${'type'}         | ${'TASK'}        | ${TypePresenter}     | ${'TypePresenter'}
+      ${'duration'}     | ${3600}          | ${DurationPresenter} | ${'DurationPresenter'}
+      ${'webPath'}      | ${'/foo'}        | ${UrlPresenter}      | ${'UrlPresenter'}
+      ${'shortSha'}     | ${'abc123'}      | ${CodePresenter}     | ${'CodePresenter'}
+      ${'refName'}      | ${'main'}        | ${CodePresenter}     | ${'CodePresenter'}
     `('renders $presenterName for field key: $fieldKey', ({ fieldKey, field, presenter }) => {
       createWrapper({ [fieldKey]: field }, fieldKey);
 
@@ -101,6 +121,33 @@ describe('FieldPresenter', () => {
       expect(propsOrAttributes(component, 'item')).toBeDefined();
       expect(propsOrAttributes(component, 'data')).toBe(field);
       expect(propsOrAttributes(component, 'field-key')).toBe(fieldKey);
+    });
+  });
+
+  describe('type-scoped field key presenters', () => {
+    it('renders CiStatusPresenter for status on a CiJob', () => {
+      createWrapper({ __typename: 'CiJob', status: 'SUCCESS' }, 'status');
+
+      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(true);
+    });
+
+    it('renders CiStatusPresenter for status on a Pipeline', () => {
+      createWrapper({ __typename: 'Pipeline', status: 'FAILED' }, 'status');
+
+      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(true);
+    });
+
+    it('does not render CiStatusPresenter for status on other types', () => {
+      createWrapper({ __typename: 'Issue', status: 'open' }, 'status');
+
+      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(false);
+    });
+
+    it('handles items without __typename for type-scoped fields', () => {
+      createWrapper({ status: 'open' }, 'status');
+
+      expect(wrapper.findComponent(CiStatusPresenter).exists()).toBe(false);
+      expect(wrapper.findComponent(TextPresenter).exists()).toBe(true);
     });
   });
 });

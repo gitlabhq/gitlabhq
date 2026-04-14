@@ -1,4 +1,4 @@
-import { isFinite } from 'lodash';
+import { isFinite } from 'lodash-es';
 import {
   SORT_FIELD_MAPPING,
   TOKEN_TYPE_TAG_NAME,

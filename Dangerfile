@@ -37,7 +37,10 @@ Gitlab::Dangerfiles.for_project(self, project_name) do |gitlab_dangerfiles|
   gitlab_dangerfiles.config.ci_only_rules = ProjectHelper::CI_ONLY_RULES
   gitlab_dangerfiles.config.files_to_category = ProjectHelper::CATEGORIES
   gitlab_dangerfiles.config.excluded_required_codeowners_sections_for_roulette.push(
-    'Database', 'Analytics Instrumentation', 'Advanced Search Migration'
+    'Maintainers', # Currently duplicated by label-based roulette, also cannot suggest reviewers
+    'Database',
+    'Analytics Instrumentation',
+    'Advanced Search Migration'
   )
   gitlab_dangerfiles.config.included_optional_codeowners_sections_for_roulette.push(
     'Backend Static Code Analysis'

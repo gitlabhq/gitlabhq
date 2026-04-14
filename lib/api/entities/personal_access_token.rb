@@ -12,6 +12,7 @@ module API
       expose :user_id, documentation: { type: 'Integer', example: 3 }
       expose :last_used_at, documentation: { type: 'DateTime', example: '2020-08-31T15:53:00.073Z' }
       expose :active?, as: :active, documentation: { type: 'Boolean' }
+      expose :granular, documentation: { type: 'Boolean' }
       expose :expires_at, documentation:
         { type: 'DateTime', example: '2020-08-31T15:53:00.073Z' } do |personal_access_token|
         personal_access_token.expires_at ? personal_access_token.expires_at.iso8601 : nil

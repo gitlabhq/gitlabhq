@@ -2,7 +2,9 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import awardAchievementResponse from 'test_fixtures/graphql/award_achievement_response.json';
+import getGroupAchievementsResponse from 'test_fixtures/graphql/get_group_achievements_response.json';
 import awardAchievementMutation from '~/achievements/components/graphql/award_achievement.mutation.graphql';
+import getGroupAchievementsQuery from '~/achievements/components/graphql/get_group_achievements.query.graphql';
 import AwardButton from '~/achievements/components/award_button.vue';
 import GlobalUserSelect from '~/vue_shared/components/user_select/global_user_select.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -21,9 +23,17 @@ describe('Award button', () => {
   const modalStub = { show: jest.fn() };
   const GlModalStub = stubComponent(GlModal, { methods: modalStub });
 
+  const awardAchievementHandler = jest.fn().mockResolvedValue(awardAchievementResponse);
+  const groupAchievementsHandler = jest.fn().mockResolvedValue(getGroupAchievementsResponse);
+
   const mountComponent = () => {
-    const mockMutationResponse = jest.fn().mockResolvedValue(awardAchievementResponse);
-    fakeApollo = createMockApollo([[awardAchievementMutation, mockMutationResponse]]);
+    fakeApollo = createMockApollo([
+      [awardAchievementMutation, awardAchievementHandler],
+      [getGroupAchievementsQuery, groupAchievementsHandler],
+    ]);
+    fakeApollo.clients.defaultClient
+      .watchQuery({ query: getGroupAchievementsQuery, variables: { groupFullPath: '' } })
+      .subscribe();
     wrapper = shallowMountExtended(AwardButton, {
       apolloProvider: fakeApollo,
       propsData: {
@@ -65,32 +75,42 @@ describe('Award button', () => {
       expect(wrapper.findComponent(GlSprintf).html()).toContain('<b>Legend</b>');
     });
 
-    it('calls mutation with expected users', () => {
+    it('calls mutation with expected users', async () => {
       wrapper.findComponent(GlobalUserSelect).vm.$emit('input', [{ id: 1 }, { id: 10 }]);
-
-      const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate');
       wrapper.findComponent(GlModal).vm.$emit('primary');
 
-      expect(mutateSpy).toHaveBeenCalledWith(
+      await waitForPromises();
+
+      expect(awardAchievementHandler).toHaveBeenCalledTimes(2);
+
+      expect(awardAchievementHandler).toHaveBeenNthCalledWith(
+        1,
         expect.objectContaining({
-          variables: {
-            input: {
-              achievementId: 'gid://gitlab/Achievements::Achievement/123',
-              userId: 'gid://gitlab/User/1',
-            },
+          input: {
+            achievementId: 'gid://gitlab/Achievements::Achievement/123',
+            userId: 'gid://gitlab/User/1',
           },
         }),
       );
-      expect(mutateSpy).toHaveBeenCalledWith(
+      expect(awardAchievementHandler).toHaveBeenNthCalledWith(
+        2,
         expect.objectContaining({
-          variables: {
-            input: {
-              achievementId: 'gid://gitlab/Achievements::Achievement/123',
-              userId: 'gid://gitlab/User/10',
-            },
+          input: {
+            achievementId: 'gid://gitlab/Achievements::Achievement/123',
+            userId: 'gid://gitlab/User/10',
           },
         }),
       );
+    });
+
+    it('refetches achievements once after all awards complete', async () => {
+      groupAchievementsHandler.mockClear();
+
+      wrapper.findComponent(GlobalUserSelect).vm.$emit('input', [{ id: 1 }, { id: 10 }]);
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+      await waitForPromises();
+
+      expect(groupAchievementsHandler).toHaveBeenCalledTimes(1);
     });
   });
 });

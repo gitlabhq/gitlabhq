@@ -4,8 +4,6 @@ module Projects
   # Service class for counting and caching the number of open issues of a
   # project.
   class OpenIssuesCountService < Projects::CountService
-    include Gitlab::Utils::StrongMemoize
-
     # Cache keys used to store issues count
     PUBLIC_COUNT_KEY = 'public_open_issues_count'
     TOTAL_COUNT_KEY = 'total_open_issues_count'
@@ -21,13 +19,7 @@ module Projects
     end
 
     def public_only?
-      !user_is_at_least_planner?
-    end
-
-    def user_is_at_least_planner?
-      strong_memoize(:user_is_at_least_planner) do
-        @project.member?(@user, Gitlab::Access::PLANNER)
-      end
+      !Ability.allowed?(@user, :read_confidential_issues, @project)
     end
 
     def relation_for_count
@@ -63,7 +55,7 @@ module Projects
       end
     end
 
-    # We only show issues count including confidential for planners, who are allowed to view confidential issues.
+    # We only show issues count including confidential for users who have `:read_confidential_issues` permission.
     # This will still show a discrepancy on issues number but should be less than before.
     # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/38418 description.
 

@@ -133,7 +133,7 @@ describe('Board card component', () => {
   it('renders the work type icon when props is passed', () => {
     createWrapper({ props: { item: issue, list, showWorkItemTypeIcon: true } });
     expect(findWorkItemIcon().exists()).toBe(true);
-    expect(findWorkItemIcon().props('workItemType')).toBe(issue.type);
+    expect(findWorkItemIcon().props('workItemType')).toBe(issue.workItemType.name);
   });
 
   it('renders issue ID with # when work item icon is present', () => {

@@ -1,5 +1,5 @@
 import { buildSchema, graphql } from 'graphql';
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 
 // eslint-disable-next-line global-require
 const getGraphqlSchema = () => require('../../../../tmp/tests/graphql/gitlab_schema.graphql');

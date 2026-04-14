@@ -1,0 +1,17 @@
+- if Feature.enabled?(:granular_personal_access_tokens_enforcement, :instance)
+  .form-group
+    = form.label :enforce_granular_tokens, s_('AccessTokens|Fine-grained personal access tokens'), class: 'label-bold'
+    = form.gitlab_ui_checkbox_component :enforce_granular_tokens,
+      s_('AccessTokens|Require fine-grained personal access tokens after a specific date'),
+      help_text: s_('AccessTokens|When enforced, users can only create fine-grained personal access token after the specified enforcement date. Existing legacy personal access tokens can still be used.')
+
+    .form-group
+      = form.label :granular_tokens_enforced_after,
+        s_('AccessTokens|Fine-grained personal access tokens enforcement date')
+      = form.gitlab_ui_datepicker :granular_tokens_enforced_after,
+          placeholder: 'YYYY-MM-DD',
+          autocomplete: 'off',
+          value: form.object.granular_tokens_enforced_after || Date.current,
+          required: true
+      #application_setting_granular_tokens_enforced_after_error.form-text.gl-text-danger.gl-hidden
+        = _('Please enter a date value.')

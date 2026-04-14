@@ -3,6 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 
 export default {
+  name: 'DeletePipelineScheduleModal',
   modal: {
     id: 'delete-pipeline-schedule-modal',
     deleteConfirmation: s__(

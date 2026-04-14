@@ -129,6 +129,14 @@ Gitlab::Application.config.to_prepare do
         limit_connection_names: %i[main],
         table_name: 'merge_request_diff_files_99208b8fac',
         partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+      },
+      {
+        limit_connection_names: %i[main],
+        table_name: 'merge_request_diff_commits_b5377a7a34',
+        partitioned_column: :project_id,
+        strategy: :int_range,
+        partition_size: 2_000_000,
+        sequence_name: 'projects_id_seq'
       }
     ]
   )

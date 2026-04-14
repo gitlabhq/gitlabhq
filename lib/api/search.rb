@@ -10,6 +10,7 @@ module API
     SCOPE_ENTITY = {
       merge_requests: Entities::MergeRequestBasic,
       issues: Entities::IssueBasic,
+      work_items: Entities::WorkItem,
       projects: Entities::BasicProjectDetails,
       milestones: Entities::Milestone,
       notes: Entities::Note,
@@ -46,6 +47,7 @@ module API
           merge_requests: :with_api_entity_associations,
           projects: :with_api_entity_associations,
           issues: :with_api_entity_associations,
+          work_items: :with_api_entity_associations,
           milestones: :with_api_entity_associations,
           commits: :with_api_commit_entity_associations
         }.freeze
@@ -53,7 +55,11 @@ module API
 
       def search_service(additional_params = {})
         strong_memoize_with(:search_service, additional_params) do
-          SearchService.new(current_user, search_params.merge(additional_params))
+          # Skip legacy scope conversion for API requests to maintain backward compatibility
+          SearchService.new(
+            current_user,
+            search_params.merge(additional_params).merge(skip_legacy_scope_conversion: true)
+          )
         end
       end
 
@@ -70,6 +76,8 @@ module API
       def search(additional_params = {})
         return Kaminari.paginate_array([]) if @project.present? && !project_scope_allowed?
 
+        bad_request!('All requested work item types are unavailable or do not exist') if unavailable_work_item_types?
+
         search_service = search_service(additional_params)
         if search_service.global_search? && !search_service.global_search_enabled_for_scope?
           forbidden!('Global Search is disabled for this scope')
@@ -77,6 +85,10 @@ module API
 
         search_type_errors = search_service.search_type_errors
         bad_request!(search_type_errors) if search_type_errors
+
+        if search_service.scope != params[:scope]
+          bad_request!("Scope '#{params[:scope]}' is not available for this search")
+        end
 
         @search_duration_s = Benchmark.realtime do
           @results = search_service.search_objects(preload_method)
@@ -117,6 +129,15 @@ module API
         ::Search::Navigation.new(user: current_user, project: @project).tab_enabled_for_project?(params[:scope].to_sym)
       end
 
+      def unavailable_work_item_types?
+        # If user requested specific work item types but none are available, return true
+        # This prevents returning all work items when unavailable types (e.g., epic on CE) are requested
+        return false unless params[:type].present? && params[:scope] == 'work_items'
+
+        processed_params = Gitlab::Search::Params.new(params)
+        processed_params[:work_item_type_ids].blank?
+      end
+
       def snippets?
         %w[snippet_titles].include?(params[:scope]).to_s
       end
@@ -131,9 +152,7 @@ module API
 
       def verify_search_scope_for_ee!(_); end
 
-      def verify_ee_param_regex!(_); end
-
-      def verify_ee_param_exclude_forks!(_); end
+      def verify_ee_blob_search_params!(_); end
 
       def verify_ee_param_fields!(_); end
 
@@ -171,6 +190,8 @@ module API
       params :params_common do
         optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
         optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        optional :type, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          desc: Helpers::SearchHelpers.work_item_type_filter_desc
       end
 
       params :param_archived_filter do
@@ -183,6 +204,10 @@ module API
       end
 
       params :ee_param_exclude_forks do
+        # Overridden in EE
+      end
+
+      params :ee_param_num_context_lines do
         # Overridden in EE
       end
 
@@ -210,6 +235,7 @@ module API
         use :param_archived_filter
         use :ee_param_fields
         use :ee_param_exclude_forks
+        use :ee_param_num_context_lines
         use :ee_param_regex
         use :pagination
       end
@@ -218,8 +244,7 @@ module API
         params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get do
         verify_search_scope_for_ee!(search_type)
-        verify_ee_param_regex!(search_type)
-        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
 
         set_headers('Content-Transfer-Encoding' => 'binary')
@@ -244,6 +269,7 @@ module API
         use :param_archived_filter
         use :ee_param_fields
         use :ee_param_exclude_forks
+        use :ee_param_num_context_lines
         use :ee_param_regex
         use :pagination
       end
@@ -254,8 +280,7 @@ module API
         additional_params = { group_id: user_group.id }
         search_type = search_type(additional_params)
         verify_search_scope_for_ee!(search_type)
-        verify_ee_param_regex!(search_type)
-        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
 
         set_headers
@@ -281,6 +306,7 @@ module API
 
         use :params_common
         use :ee_param_fields
+        use :ee_param_num_context_lines
         use :ee_param_regex
         use :pagination
       end
@@ -290,8 +316,7 @@ module API
       get ':id/(-/)search' do
         additional_params = { project_id: user_project.id, repository_ref: params[:ref] }
         search_type = search_type(additional_params)
-        verify_ee_param_regex!(search_type)
-        verify_ee_param_exclude_forks!(search_type)
+        verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
 
         set_headers

@@ -16,7 +16,7 @@ module Gitlab
 
         def read_raw(key)
           value = backend.read(cache_key(key))
-          value = Gitlab::Json.parse(value.to_s) unless value.nil?
+          value = Gitlab::Json.safe_parse(value.to_s) unless value.nil?
           value
         rescue JSON::ParserError
           nil

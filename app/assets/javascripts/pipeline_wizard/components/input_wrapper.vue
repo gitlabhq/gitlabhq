@@ -1,6 +1,6 @@
 <script>
 import { isNode, isDocument, isSeq, visit } from 'yaml';
-import { capitalize } from 'lodash';
+import { capitalize } from 'lodash-es';
 import TextWidget from '~/pipeline_wizard/components/widgets/text.vue';
 import ListWidget from '~/pipeline_wizard/components/widgets/list.vue';
 import ChecklistWidget from '~/pipeline_wizard/components/widgets/checklist.vue';

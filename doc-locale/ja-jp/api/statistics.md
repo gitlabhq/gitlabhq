@@ -22,7 +22,8 @@ title: アプリケーション統計API
 
 GitLabのインスタンスから統計を取得します。
 
-> [!note] 10,000未満の値の場合、このエンドポイントは正確なカウントを返します。10,000以上の値の場合、[TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16)と[ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads)の戦略が計算に使用される場合にのみ、このエンドポイントは概算データのみを返します。
+> [!note]
+> 10,000未満の値の場合、このエンドポイントは正確なカウントを返します。10,000以上の値の場合、[TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16)と[ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads)の戦略が計算に使用される場合にのみ、このエンドポイントは概算データのみを返します。
 
 ```plaintext
 GET /application/statistics

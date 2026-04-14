@@ -94,7 +94,7 @@ module Gitlab
       def validate_protected_tag_deletion!
         return unless deletion?
 
-        unless user_access.user.can?(:maintainer_access, project)
+        unless user_access.user.can?(:delete_protected_tag, project)
           raise(GitAccess::ForbiddenError, ERROR_MESSAGES[:delete_protected_tag])
         end
 

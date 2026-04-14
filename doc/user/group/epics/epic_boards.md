@@ -24,7 +24,7 @@ Epic boards build on the existing [epic tracking functionality](_index.md) and
 [labels](../../project/labels.md). Your epics appear as cards in vertical lists, organized by their assigned
 labels.
 
-On the top of each list, you can see the number of epics in the list ({{< icon name="epic" >}}) and the total weight of all its epics ({{< icon name="weight" >}}).
+On the top of each list, you can see the number of epics in the list ({{< icon name="work-item-epic" >}}) and the total weight of all its epics ({{< icon name="weight" >}}).
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=eQUnHwbKEkY">Epics and Issue Boards - Project Management</a>.
@@ -167,11 +167,11 @@ You can filter by the following:
 - Author
 - Label
 
-### View count of issues, weight, and progress of an epic
+### View count of work items, weight, and progress of an epic
 
-Epics on an epic board show a summary of their issues, weight, and progress.
-To see the number of open and closed issues and the completed and incomplete
-weight, hover over the issues icon {{< icon name="issues" >}}, weight icon {{< icon name="weight" >}}, or
+Epics on an epic board show a summary of their work items, weight, and progress.
+To see the number of open and closed work items and the completed and incomplete
+weight, hover over the work items icon {{< icon name="work-items" >}}, weight icon {{< icon name="weight" >}}, or
 progress icon {{< icon name="progress" >}}.
 
 ### Move epics and lists

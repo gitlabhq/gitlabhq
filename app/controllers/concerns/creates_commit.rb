@@ -135,7 +135,7 @@ module CreatesCommit
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def new_merge_request_path(target_project)
+  def new_merge_request_path(_target_project)
     project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {

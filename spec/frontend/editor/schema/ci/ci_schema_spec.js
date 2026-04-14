@@ -37,6 +37,7 @@ import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 import IdTokensYaml from './yaml_tests/positive_tests/id_tokens.yml';
 import HooksYaml from './yaml_tests/positive_tests/hooks.yml';
+import JobInputsYaml from './yaml_tests/positive_tests/job_inputs.yml';
 import SecretsYaml from './yaml_tests/positive_tests/secrets.yml';
 import ServicesYaml from './yaml_tests/positive_tests/services.yml';
 import NeedsParallelMatrixYaml from './yaml_tests/positive_tests/needs_parallel_matrix.yml';
@@ -72,6 +73,7 @@ import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variable
 import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
 import IdTokensNegativeYaml from './yaml_tests/negative_tests/id_tokens.yml';
 import HooksNegative from './yaml_tests/negative_tests/hooks.yml';
+import JobInputsNegativeYaml from './yaml_tests/negative_tests/job_inputs.yml';
 import SecretsNegativeYaml from './yaml_tests/negative_tests/secrets.yml';
 import ServicesNegativeYaml from './yaml_tests/negative_tests/services.yml';
 import NeedsParallelMatrixNumericYaml from './yaml_tests/negative_tests/needs/parallel_matrix/numeric.yml';
@@ -120,6 +122,7 @@ describe('positive tests', () => {
       HooksYaml,
       IdTokensYaml,
       IncludeYaml,
+      JobInputsYaml,
       JobWhenYaml,
       NeedsParallelMatrixYaml,
       ParallelYaml,
@@ -187,6 +190,7 @@ describe('negative tests', () => {
       IdTokensNegativeYaml,
       ImageNegativeYaml,
       IncludeNegativeYaml,
+      JobInputsNegativeYaml,
       JobWhenNegativeYaml,
       MultipleCachesYamlNegative,
       NeedsParallelMatrixNumericYaml,

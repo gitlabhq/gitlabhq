@@ -71,12 +71,15 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
 
       it 'adds the correct prefix and explanation for /assign' do
         type_in_content_editor '/assign'
+        wait_for_requests
 
         expect(find(suggestions_dropdown)).to have_text('/assign')
         send_keys :enter
 
         expect(page).to have_text('/assign @')
         type_in_content_editor 'abc'
+        wait_for_requests
+
         expect(find(suggestions_dropdown)).to have_text('abc123')
         send_keys :enter
 

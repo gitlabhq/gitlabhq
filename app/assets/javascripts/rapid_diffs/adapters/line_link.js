@@ -1,21 +1,26 @@
 import { EXPANDED_LINES, INVISIBLE, MOUNTED, VISIBLE } from '~/rapid_diffs/adapter_events';
 import { preventScrollToFragment } from '~/lib/utils/scroll_utils';
 import { withLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
+import { hasScrolled, markAsScrolled } from '~/rapid_diffs/utils/scroll_to_linked_fragment';
 
 function scrollToLegacyFileFragment() {
+  if (hasScrolled()) return;
   const { legacyFileFragment } = this.appData;
   if (!legacyFileFragment) return;
   const { fileHash, oldLine, newLine } = legacyFileFragment;
   if (fileHash !== this.id) return;
   if (!oldLine && !newLine) {
     this.selectFile();
-    delete this.appData.legacyFileFragment;
+    markAsScrolled();
     return;
   }
   const lineLink = this.diffElement.querySelector(
     `[data-position="old"] [data-line-number="${oldLine}"], [data-position="new"] [data-line-number="${newLine}"]`,
   );
-  if (lineLink) lineLink.click();
+  if (lineLink) {
+    lineLink.click();
+    markAsScrolled();
+  }
 }
 
 function assignLinkedFileLink(lineNumber) {

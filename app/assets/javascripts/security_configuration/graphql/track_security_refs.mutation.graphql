@@ -1,0 +1,22 @@
+# @feature_category: vulnerability_management
+mutation securityRefsTrack($input: SecurityRefsTrackInput!) {
+  securityRefsTrack(input: $input) {
+    trackedRefs {
+      id
+      name
+      refType
+      isDefault
+      isProtected
+      commit {
+        id
+        sha
+        shortId
+        title
+        authoredDate
+        webPath
+      }
+      vulnerabilitiesCount
+    }
+    errors
+  }
+}

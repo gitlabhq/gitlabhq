@@ -7,6 +7,15 @@ RSpec.shared_context 'with mocked cosign execution' do
     Gitlab::Popen::Result.new([], expected_stdout, expected_stderr, process_status, expected_duration)
   end
 
+  let(:key) { OpenSSL::PKey::RSA.generate(3072) }
+  let(:key_data) { key.to_s }
+  let(:uuid) { SecureRandom.uuid }
+
+  before do
+    stub_application_setting(ci_jwt_signing_key: key_data)
+    allow(SecureRandom).to receive(:uuid).and_return(uuid)
+  end
+
   let_it_be(:signature_bundle) { File.read(SLSA_ATTESTATION_BUNDLE) }
   let_it_be(:expected_stderr) { "expected stderr outuput string" }
   let_it_be(:expected_stdout) { "expected stderr outuput string" }

@@ -9,7 +9,7 @@ title: GitLab Duo CLI (`duo`)
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -23,12 +23,15 @@ title: GitLab Duo CLI (`duo`)
 {{< history >}}
 
 - Introduced as [experiment](../../policy/development_stages_support.md#experiment) in GitLab 18.9.
-- [Added](https://gitlab.com/gitlab-org/cli/-/merge_requests/2838) to the GitLab CLI as an experiment in `glab` 1.87.0.
+- [Added](https://gitlab.com/gitlab-org/cli/-/merge_requests/2838) to the GitLab CLI as an experiment in `glab` 1.87.0, during the GitLab 18.9 release.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.68.0) model selection option and environment variable in GitLab Duo CLI 8.68.0, during the GitLab 18.10 release.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.76.0) model selection slash command in GitLab Duo CLI 8.76.0, during the GitLab 18.10 release.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/19716) from experiment to beta in GitLab 18.11.
 
 {{< /history >}}
 
-The GitLab Duo CLI is a command-line interface tool that brings [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md)
-to your terminal. Available for use with any operating system and editor, use `duo` to ask complex
+The GitLab Duo CLI is a command-line interface tool that brings [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md)
+to your terminal. Available for use with any operating system and editor, use the CLI to ask complex
 questions about your codebase and to autonomously perform actions on your behalf.
 
 The GitLab Duo CLI can help you:
@@ -42,12 +45,18 @@ The GitLab Duo CLI can help you:
 The GitLab Duo CLI offers two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
-  editor extensions.
+  editor extensions. Supports build and plan modes.
 - Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows.
+
+It also supports [custom instructions](../duo_agent_platform/customize/_index.md) set for
+the GitLab Duo Agent Platform, including `chat-rules.md`, `AGENTS.md`, and `SKILL.md` files.
 
 ## Prerequisites
 
+- GitLab 18.11 or later.
 - Meet the [prerequisites for GitLab Duo Agent Platform](../duo_agent_platform/_index.md#prerequisites).
+- [Beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features)
+  turned on.
 
 ## Set up the GitLab Duo CLI
 
@@ -63,7 +72,7 @@ and functionality.
 
 Prerequisites:
 
-- [GitLab CLI](https://docs.gitlab.com/cli/) 1.87.0 or later
+- [GitLab CLI](https://docs.gitlab.com/cli/) 1.87.0 or later.
 - GitLab CLI is [authenticated](https://docs.gitlab.com/cli/#authenticate-with-gitlab).
 
 To set up the GitLab Duo CLI for use through the GitLab CLI:
@@ -209,7 +218,7 @@ To use the GitLab Duo CLI in interactive mode:
 
    {{< /tabs >}}
 
-1. The prompt `Duo` appears in your terminal window. After the prompt, enter your question or
+1. The prompt `>` appears in your terminal window. After the prompt, enter your question or
    request and press <kbd>Enter</kbd>.
 
    For example:
@@ -224,10 +233,46 @@ To use the GitLab Duo CLI in interactive mode:
    The pipelines in MR 23 are failing. Please help me fix them.
    ```
 
+To cancel a response while the GitLab Duo CLI is working, press <kbd>Escape</kbd>.
+The GitLab Duo CLI stops the current operation and returns to the prompt.
+
+Use the <kbd>↑</kbd> key to view your prompt history, or <kbd>Control</kbd>+<kbd>R</kbd> to search it.
+
+#### Switch between build and plan modes
+
+In interactive mode, you can switch the GitLab Duo CLI between two modes as you work:
+
+| Mode                 | Permissions | How it works                                                                  |
+|----------------------|-------------|-------------------------------------------------------------------------------|
+| Build mode (default) | Read-write  | GitLab Duo can execute tasks and make changes to your project.               |
+| Plan mode            | Read-only   | GitLab Duo can analyze your project and create plans without making changes. |
+
+For example, start by discussing a problem with GitLab Duo in plan mode. When you're ready, switch
+to build mode and instruct GitLab Duo to implement the plan.
+
+The GitLab Duo CLI displays the current mode under the `>` prompt. To switch between modes, press
+<kbd>Tab</kbd>.
+
+#### Slash commands
+
+In interactive mode, use slash commands to configure the GitLab Duo CLI and perform
+actions. Enter a slash command at the prompt and press <kbd>Enter</kbd>.
+
+The following slash commands are available:
+
+| Command      | Description                                         |
+|--------------|-----------------------------------------------------|
+| `/copy`      | Copy the last GitLab Duo response to the clipboard. |
+| `/feedback`  | Submit a bug report or feature request.             |
+| `/help`      | Display a list of available slash commands.         |
+| `/model`     | Switch the AI model for the current session.        |
+| `/new`       | Start a new chat session.                           |
+| `/sessions`  | Browse, search, and switch sessions.                |
+
 ### Headless mode
 
 > [!caution]
-> Use headless mode with caution and in a controlled sandbox environment.
+> Use headless mode with caution and in a controlled [sandbox environment](../../editor_extensions/security_considerations.md#use-development-containers-for-isolation).
 
 To run a workflow in non-interactive mode, use the command for your setup:
 
@@ -273,6 +318,112 @@ When you use headless mode, the GitLab Duo CLI:
 - Does not maintain context from previous conversations.
   A new workflow starts every time you execute the `run` command.
 
+## Select a model
+
+You can select a model for interactive mode or headless mode.
+
+### For interactive mode
+
+The model you select persists across sessions, and you can switch models
+mid-conversation without losing context.
+
+Prerequisites:
+
+- GitLab Duo CLI 8.76.0 or later.
+
+To select a model for interactive mode:
+
+1. In interactive mode, type `/model` and press <kbd>Enter</kbd>.
+1. Use the arrow keys to scroll through the list of available models, or enter a model name to
+   filter the list.
+1. Select a model and press <kbd>Enter</kbd> to switch to it.
+
+### For headless mode
+
+The model you select does not persist across sessions.
+
+Prerequisites:
+
+- GitLab Duo CLI 8.68.0 or later.
+
+To select a model for headless mode:
+
+1. Find the [`gitlab_identifier` for the model](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/HEAD/ai_gateway/model_selection/models.yml).
+1. When you run the GitLab Duo CLI, set the `--model` option or the `GITLAB_DUO_MODEL` environment
+   variable to the `gitlab_identifier` value.
+
+   {{< tabs >}}
+
+   {{< tab title="glab" >}}
+
+   Use the `--model` option:
+
+   ```shell
+   glab duo cli --model <gitlab_identifier_for_the_model>
+   ```
+
+   Use the `GITLAB_DUO_MODEL` environment variable:
+
+   ```shell
+   GITLAB_DUO_MODEL=<gitlab_identifier_for_the_model> glab duo cli
+   ```
+
+   For example, to use [`GPT-5-Codex - OpenAI`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/HEAD/ai_gateway/model_selection/models.yml#L448):
+
+   ```shell
+   glab duo cli --model gpt_5_codex
+   ```
+
+   ```shell
+   GITLAB_DUO_MODEL=gpt_5_codex glab duo cli
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="duo" >}}
+
+   Use the `--model` option:
+
+   ```shell
+   duo --model <gitlab_identifier_for_the_model>
+   ```
+
+   Use the `GITLAB_DUO_MODEL` environment variable:
+
+   ```shell
+   GITLAB_DUO_MODEL=<gitlab_identifier_for_the_model> duo
+   ```
+
+   For example, to use [`GPT-5-Codex - OpenAI`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/HEAD/ai_gateway/model_selection/models.yml#L448):
+
+   ```shell
+   duo --model gpt_5_codex
+   ```
+
+   ```shell
+   GITLAB_DUO_MODEL=gpt_5_codex duo
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
+## Switch sessions
+
+GitLab Duo Chat sessions store your conversation history and workflow data, and are shared across
+the GitLab Duo CLI, the GitLab UI, and editor extensions.
+
+For example, you can start a conversation in your browser and continue it in your terminal.
+
+To browse and switch to a session:
+
+1. In interactive mode, type `/sessions` and press <kbd>Enter</kbd>.
+1. Use the arrow keys to scroll through the list of available sessions, or enter text to filter the
+   list.
+1. Select a session and press <kbd>Enter</kbd>.
+
+To switch to a session in headless mode, use the `--existing-session-id` option.
+
 ## Model Context Protocol (MCP) connections
 
 To connect the GitLab Duo CLI to local or remote MCP servers, use the same MCP configuration
@@ -287,7 +438,7 @@ The GitLab Duo CLI supports these options:
   `duo run --help`.
 - `--log-level <level>`: Set the logging level (`debug`, `info`, `warn`, `error`).
 - `-v`, `--version`: Display version information.
-- `--model <model>`: Select the AI model to use for your session.
+- `--model <model>`: Select the AI model to use for the session.
 
 Additional options for headless mode:
 
@@ -338,6 +489,7 @@ You can configure the GitLab Duo CLI using environment variables:
 - `DUO_WORKFLOW_GIT_HTTP_PASSWORD`: Git HTTP authentication password.
 - `DUO_WORKFLOW_GIT_HTTP_USER`: Git HTTP authentication username.
 - `GITLAB_BASE_URL` or `GITLAB_URL`: GitLab instance URL.
+- `GITLAB_DUO_MODEL`: AI model to use for the session.
 - `GITLAB_OAUTH_TOKEN` or `GITLAB_TOKEN`: Authentication token.
 - `LOG_LEVEL`: Logging level.
 
@@ -439,3 +591,5 @@ For information on contributing to the GitLab Duo CLI, see the
 
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
+- [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)
+- [GitLab Duo Agent Platform sessions](../duo_agent_platform/sessions/_index.md)

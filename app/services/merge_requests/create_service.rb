@@ -48,6 +48,11 @@ module MergeRequests
       # open while the Gitaly RPC waits. To avoid an idle in transaction
       # timeout, we do this before we attempt to save the merge request.
 
+      if Feature.enabled?(:validate_merge_request_branch_existence, merge_request.source_project)
+        merge_request.source_branch_exists?
+        merge_request.target_branch_exists?
+      end
+
       merge_request.skip_ensure_merge_request_diff = true
       merge_request.check_for_spam(user: current_user, action: :create)
     end

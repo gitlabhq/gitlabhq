@@ -5,7 +5,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import runnerDeleteMutation from '~/ci/runner/graphql/shared/runner_delete.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { captureException } from '~/ci/runner/sentry_utils';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 
@@ -20,7 +20,7 @@ const mockRunnerName = `#${mockRunnerId} (${mockRunner.shortSha})`;
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('RunnerDeleteAction', () => {
   let wrapper;
@@ -168,10 +168,7 @@ describe('RunnerDeleteAction', () => {
       });
 
       it('error is reported to sentry', () => {
-        expect(captureException).toHaveBeenCalledWith({
-          error: new Error(mockErrorMsg),
-          component: 'RunnerDeleteAction',
-        });
+        expect(captureException).toHaveBeenCalledWith(new Error(mockErrorMsg));
       });
 
       it('error is shown to the user', () => {
@@ -200,10 +197,9 @@ describe('RunnerDeleteAction', () => {
       });
 
       it('error is reported to sentry', () => {
-        expect(captureException).toHaveBeenCalledWith({
-          error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-          component: 'RunnerDeleteAction',
-        });
+        expect(captureException).toHaveBeenCalledWith(
+          new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
+        );
       });
 
       it('error is shown to the user', () => {

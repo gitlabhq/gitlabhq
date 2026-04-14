@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe WebIdeTerminalEntity do
-  let(:build) { create(:ci_build) }
+RSpec.describe WebIdeTerminalEntity, feature_category: :web_ide do
+  let(:build) { build_stubbed(:ci_build) }
   let(:entity) { described_class.new(WebIdeTerminal.new(build)) }
 
   subject { entity.as_json }

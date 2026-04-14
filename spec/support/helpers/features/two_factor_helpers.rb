@@ -65,7 +65,7 @@ module Features
       end
     end
 
-    # Adds webauthn device directly via database
+    # Adds webauthn device to the database and returns FakeWebauthnDevice to simulate the browser response
     def add_webauthn_device(app_id, user, fake_device = nil, name: 'My device')
       fake_device ||= WebAuthn::FakeClient.new(app_id)
 
@@ -119,14 +119,9 @@ module Features
     ## Passkeys
     #
     # Registers a passkey via the UI
-    #
-    # (Optional) Accepts a block to mock bad authenticator responses (`:device_response`)
-    #
-    def passkey_registration(name: 'My Passkey', password: 'fake')
+    def passkey_registration(name: 'My Passkey', password: 'fake', respond_to_webauthn_registration_proc: nil)
       click_on _('Add passkey')
-
       wait_for_requests
-
       # Redirect to passkeys#new
       expect(page).to have_content(_('Add passkey'))
 
@@ -140,11 +135,15 @@ module Features
       # - On clicking "Add passkey", immediately mock `navigator.credentials.create`
       # - In passkey#new, handle the success() state & show name/password form
       #
-      passkey ||= FakeWebauthnDevice.new(page, name)
-      block_given? ? yield : passkey.respond_to_webauthn_registration
+      passkey = FakeWebauthnDevice.new(page, name)
+
+      if respond_to_webauthn_registration_proc
+        respond_to_webauthn_registration_proc.call
+      else
+        passkey.respond_to_webauthn_registration
+      end
 
       click_button _('Try again') # Start of user interaction
-
       wait_for_requests
 
       passkey_fill_form_and_submit(name: name, password: password)
@@ -163,21 +162,21 @@ module Features
       end
     end
 
-    # Adds a passkey to the database & sends the browser response for authentication
-    def add_passkey(app_id, user, fake_device = nil, name: 'My passkey', save_passkey: true)
+    # Adds passkey to the database and returns FakeWebauthnDevice to simulate the browser response
+    def add_passkey(app_id, user, fake_device = nil, name: 'My passkey', save: true)
       fake_device ||= WebAuthn::FakeClient.new(app_id)
 
       options_for_create = passkey_webauthn_options(user)
       challenge = options_for_create.challenge
       options = {
         challenge: challenge,
-        user_verified: true,
-        extensions: { "credProps" => { "rk" => true } }
+        extensions: { "credProps" => { "rk" => true } },
+        user_verified: true
       }
       device_response = fake_device.create(**options).to_json # rubocop:disable Rails/SaveBang
       device_registration_params = { device_response: device_response, name: name }
 
-      Authn::Passkey::RegisterService.new(user, device_registration_params, challenge).execute if save_passkey
+      Authn::Passkey::RegisterService.new(user, device_registration_params, challenge).execute if save
 
       FakeWebauthnDevice.new(page, name, fake_device) # Simulates the browser
     end

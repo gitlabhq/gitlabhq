@@ -167,3 +167,8 @@ export const INCIDENTS_I18N = {
     'IncidentManagement|An error occurred while updating the incident status. Please reload the page and try again.',
   ),
 };
+
+export const MR_WORK_ITEM_RELATIONSHIP_TYPES = {
+  closing: 'CLOSES',
+  mentioned: 'MENTIONED',
+};

@@ -38,9 +38,6 @@ describe('WorkItemsCsvExportModal', () => {
       },
       provide: {
         userExportEmail: 'admin@example.com',
-        glFeatures: {
-          workItemPlanningView: true,
-        },
         ...injectedProperties,
       },
       stubs: {
@@ -74,71 +71,25 @@ describe('WorkItemsCsvExportModal', () => {
       });
     });
 
-    describe('when workItemPlanningView is enabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent();
-      });
+    it('displays the modal title "Export work items"', () => {
+      expect(findModal().props('title')).toBe('Export work items');
+    });
 
-      it('displays the modal title "Export work items"', () => {
-        expect(findModal().props('title')).toBe('Export work items');
-      });
-
-      it('displays the primary button with title "Export work items"', () => {
-        expect(findModal().props('actionPrimary')).toMatchObject({
-          text: 'Export work items',
-          attributes: {
-            variant: 'confirm',
-            'data-testid': 'export-work-items-button',
-            'data-track-action': 'click_button',
-            'data-track-label': 'export_work_items_csv',
-          },
-        });
-      });
-
-      it('displays formatted work item count text', () => {
-        expect(wrapper.text()).toContain(`${formatNumber(workItemCount)} work items selected`);
-        expect(findIcon().exists()).toBe(true);
+    it('displays the primary button with title "Export work items"', () => {
+      expect(findModal().props('actionPrimary')).toMatchObject({
+        text: 'Export work items',
+        attributes: {
+          variant: 'confirm',
+          'data-testid': 'export-work-items-button',
+          'data-track-action': 'click_button',
+          'data-track-label': 'export_work_items_csv',
+        },
       });
     });
 
-    describe('when workItemPlanningView is disabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent({
-          injectedProperties: {
-            glFeatures: {
-              workItemPlanningView: false,
-            },
-          },
-        });
-      });
-
-      it('displays the modal title "Export issues"', () => {
-        expect(findModal().props('title')).toBe('Export issues');
-      });
-
-      it('displays the primary button with title "Export issues"', () => {
-        expect(findModal().props('actionPrimary')).toMatchObject({
-          text: 'Export issues',
-          attributes: {
-            variant: 'confirm',
-            'data-testid': 'export-work-items-button',
-            'data-track-action': 'click_button',
-            'data-track-label': 'export_work_items_csv',
-          },
-        });
-      });
-
-      it('displays formatted issue count text', () => {
-        wrapper = createComponent({
-          injectedProperties: {
-            glFeatures: {
-              workItemPlanningView: false,
-            },
-          },
-        });
-        expect(wrapper.text()).toContain(`${formatNumber(workItemCount)} issues selected`);
-        expect(findIcon().exists()).toBe(true);
-      });
+    it('displays formatted work item count text', () => {
+      expect(wrapper.text()).toContain(`${formatNumber(workItemCount)} work items selected`);
+      expect(findIcon().exists()).toBe(true);
     });
   });
 
@@ -185,7 +136,7 @@ describe('WorkItemsCsvExportModal', () => {
     });
 
     describe('when export fails', () => {
-      it('shows work items error message when workItemPlanningView is enabled', async () => {
+      it('shows work items error message', async () => {
         const workItemsCsvExportHandler = jest
           .fn()
           .mockRejectedValue(workItemsCsvExportFailureResponse);
@@ -197,28 +148,6 @@ describe('WorkItemsCsvExportModal', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while exporting work items.',
-        });
-      });
-
-      it('shows issues error message when workItemPlanningView is disabled', async () => {
-        const workItemsCsvExportHandler = jest
-          .fn()
-          .mockRejectedValue(workItemsCsvExportFailureResponse);
-        wrapper = createComponent({
-          workItemsCsvExportHandler,
-          injectedProperties: {
-            glFeatures: {
-              workItemPlanningView: false,
-            },
-          },
-        });
-
-        findModal().vm.$emit('primary');
-
-        await waitForPromises();
-
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred while exporting issues.',
         });
       });
     });

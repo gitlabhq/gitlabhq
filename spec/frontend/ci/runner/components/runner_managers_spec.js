@@ -9,7 +9,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { runnerData } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockRunner = runnerData.data.runner;
 const mockRunnerManagers = runnerData.data.runner.managers.nodes;

@@ -1080,6 +1080,22 @@ describe('URL utility', () => {
     it('should treat plus as space when options.preservePlus is not set', () => {
       expect(getParameterByName('ref', '?ref=feature+c++')).toBe('feature c  ');
     });
+
+    it('should return an array when options.gatherArrays is true', () => {
+      expect(getParameterByName('list', 'foo=bar&list[]=one', { gatherArrays: true })).toEqual([
+        'one',
+      ]);
+      expect(getParameterByName('list', '?foo=bar&list[]=one', { gatherArrays: true })).toEqual([
+        'one',
+      ]);
+
+      expect(
+        getParameterByName('list', 'foo=bar&list[]=one&list[]=two', { gatherArrays: true }),
+      ).toEqual(['one', 'two']);
+      expect(
+        getParameterByName('list', '?foo=bar&list[]=one&list[]=two', { gatherArrays: true }),
+      ).toEqual(['one', 'two']);
+    });
   });
 
   describe('objectToQuery', () => {
@@ -1406,9 +1422,9 @@ describe('URL utility', () => {
       ${undefined}          | ${targetProj}         | ${mrIid}     | ${projectIDEPath}
       ${sourceProj}         | ${undefined}          | ${undefined} | ${projectIDEPath}
       ${sourceProj}         | ${targetProj}         | ${undefined} | ${projectIDEPath}
-      ${sourceProj}         | ${undefined}          | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=`}
-      ${sourceProj}         | ${sourceProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=`}
-      ${sourceProj}         | ${targetProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=${encodeURIComponent(targetProj)}`}
+      ${sourceProj}         | ${undefined}          | ${mrIid}     | ${`/-/ide/project/${sourceProj}?merge_request_id=${mrIid}&target_project=`}
+      ${sourceProj}         | ${sourceProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}?merge_request_id=${mrIid}&target_project=`}
+      ${sourceProj}         | ${targetProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}?merge_request_id=${mrIid}&target_project=${encodeURIComponent(targetProj)}`}
     `(
       'returns $expectedPath for "$sourceProjectFullPath + $targetProjectFullPath + $iid"',
       ({ expectedPath, ...args } = {}) => {

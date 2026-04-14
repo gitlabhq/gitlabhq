@@ -77,6 +77,20 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
       project.add_developer(current_user)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_pipeline_schedule do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:mutation) do
+        graphql_mutation(
+          :pipeline_schedule_create,
+          { project_path: project.full_path, **pipeline_schedule_parameters },
+          'errors'
+        )
+      end
+
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when success' do
       it 'creates and returns a pipeline schedule' do
         post_graphql_mutation(mutation, current_user: current_user)

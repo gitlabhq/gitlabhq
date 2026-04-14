@@ -7,11 +7,15 @@ class SandboxController < ApplicationController # rubocop:disable Gitlab/Namespa
 
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
-  content_security_policy(only: :mermaid) do |p|
+  content_security_policy(only: [:mermaid_v10, :mermaid_v11]) do |p|
     SandboxController.apply_mermaid_csp(p)
   end
 
-  def mermaid
+  def mermaid_v10
+    render layout: false
+  end
+
+  def mermaid_v11
     render layout: false
   end
 

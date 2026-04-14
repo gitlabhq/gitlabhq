@@ -1,11 +1,13 @@
 <script>
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import DraftNote from './draft_note.vue';
 import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
 
 export default {
   name: 'DiscussionNotes',
   components: {
+    DraftNote,
     SystemNote,
     NoteableNote,
     ToggleRepliesWidget,
@@ -40,13 +42,31 @@ export default {
       required: false,
       default: false,
     },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasReplies() {
       return Boolean(this.replies.length);
     },
     replies() {
-      return this.notes.slice(1);
+      return this.notes.slice(1).filter((note) => !note.isDraft);
+    },
+    draftReplies() {
+      return this.notes.slice(1).filter((note) => note.isDraft);
     },
     firstNote() {
       return this.notes[0];
@@ -64,30 +84,33 @@ export default {
       :timeline-layout="timelineLayout"
       :show-reply-button="userPermissions.can_create_note && !individual"
       :is-last-discussion="isLastDiscussion"
-      @noteDeleted="$emit('noteDeleted', firstNote)"
-      @noteUpdated="$emit('noteUpdated', $event)"
+      :can-resolve="canResolve"
+      :is-resolved="isResolved"
+      :is-resolving="isResolving"
+      @resolve="$emit('resolve')"
       @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
       @startReplying="$emit('startReplying')"
       @startEditing="$emit('startEditing', firstNote)"
       @cancelEditing="$emit('cancelEditing', firstNote)"
-      @toggleAward="$emit('toggleAward', { note: firstNote, award: $event })"
     >
       <template #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer>
         <div
-          v-if="hasReplies || userPermissions.can_create_note"
+          v-if="hasReplies || draftReplies.length || userPermissions.can_create_note"
           class="gl-m-0 gl-rounded-[var(--content-border-radius)] gl-bg-subtle"
         >
           <ul class="gl-list-none gl-p-0">
-            <toggle-replies-widget
-              v-if="hasReplies"
-              :collapsed="!expanded"
-              :replies="replies"
-              class="gl-border-t !gl-border-x-0 gl-border-t-subtle"
-              @toggle="$emit('toggleDiscussionReplies')"
-            />
+            <li v-if="hasReplies" class="gl-border-t gl-px-5" :aria-expanded="expanded">
+              <toggle-replies-widget
+                tag="div"
+                :collapsed="!expanded"
+                :replies="replies"
+                class="gl-mx-2 !gl-border-0 gl-border-t-subtle !gl-px-0"
+                @toggle="$emit('toggleDiscussionReplies')"
+              />
+            </li>
             <template v-if="expanded">
               <template v-for="note in replies">
                 <system-note
@@ -101,17 +124,15 @@ export default {
                   :key="note.id"
                   :note="note"
                   :is-last-discussion="isLastDiscussion"
-                  @noteDeleted="$emit('noteDeleted', note)"
-                  @noteUpdated="$emit('noteUpdated', $event)"
                   @noteEdited="$emit('noteEdited', { note, value: $event })"
                   @startEditing="$emit('startEditing', note)"
                   @cancelEditing="$emit('cancelEditing', note)"
-                  @toggleAward="$emit('toggleAward', { note, award: $event })"
                 />
               </template>
               <slot name="footer" :has-replies="hasReplies"></slot>
             </template>
           </ul>
+          <draft-note v-for="draft in draftReplies" :key="`draft-${draft.id}`" :draft="draft" />
         </div>
       </template>
     </noteable-note>

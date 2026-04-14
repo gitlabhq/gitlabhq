@@ -14,7 +14,8 @@ module Gitlab
             help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/sast/_index.md', anchor: 'configuration'),
-            type: 'sast'
+            type: 'sast',
+            required_permission_to_configure: :configure_security_scanner
           },
           sast_advanced: {
             name: _('GitLab Advanced SAST'),
@@ -25,7 +26,8 @@ module Gitlab
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/sast/gitlab_advanced_sast.md',
               anchor: 'configuration'),
-            type: 'sast_advanced'
+            type: 'sast_advanced',
+            required_permission_to_configure: :configure_security_scanner
           },
           sast_iac: {
             name: _('Infrastructure as Code (IaC) Scanning'),
@@ -35,7 +37,8 @@ module Gitlab
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/iac_scanning/_index.md',
               anchor: 'configuration'),
-            type: 'sast_iac'
+            type: 'sast_iac',
+            required_permission_to_configure: :configure_security_scanner
           },
           dast: {
             secondary: {
@@ -53,7 +56,8 @@ module Gitlab
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/dast/_index.md', anchor: 'enable-automatic-dast-run'),
             type: 'dast',
-            anchor: 'dast'
+            anchor: 'dast',
+            required_permission_to_configure: :configure_security_scanner
           },
           dependency_scanning: {
             name: _('Dependency Scanning'),
@@ -63,7 +67,8 @@ module Gitlab
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/dependency_scanning/_index.md', anchor: 'configuration'),
             type: 'dependency_scanning',
-            anchor: 'dependency-scanning'
+            anchor: 'dependency-scanning',
+            required_permission_to_configure: :configure_security_scanner
           },
           container_scanning: {
             name: _('Container Scanning'),
@@ -72,14 +77,16 @@ module Gitlab
               'user/application_security/container_scanning/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/container_scanning/_index.md', anchor: 'configuration'),
-            type: 'container_scanning'
+            type: 'container_scanning',
+            required_permission_to_configure: :configure_security_scanner
           },
           container_scanning_for_registry: {
             name: _('Container Scanning For Registry'),
             description: _('Run container scanning job whenever a container image with the latest tag is pushed.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/container_scanning/_index.md', anchor: 'container-scanning-for-registry'),
-            type: 'container_scanning_for_registry'
+            type: 'container_scanning_for_registry',
+            required_permission_to_configure: :enable_container_scanning_for_registry
           },
           license_information_source: {
             name: _('License information source'),
@@ -87,7 +94,8 @@ module Gitlab
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/compliance/license_scanning_of_cyclonedx_files/_index.md',
               anchor: 'use-cyclonedx-report-as-a-source-of-license-information'),
-            type: 'license_information_source'
+            type: 'license_information_source',
+            required_permission_to_configure: :set_license_information_source
           },
           secret_push_protection: {
             name: _('Secret push protection'),
@@ -96,7 +104,8 @@ module Gitlab
                            'If any secrets are detected, the push is blocked.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/secret_push_protection/_index.md'),
-            type: 'secret_push_protection'
+            type: 'secret_push_protection',
+            required_permission_to_configure: :enable_secret_push_protection
           },
           secret_detection: {
             name: _('Pipeline Secret Detection'),
@@ -105,14 +114,16 @@ module Gitlab
               'user/application_security/secret_detection/pipeline/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/pipeline/_index.md', anchor: 'configuration'),
-            type: 'secret_detection'
+            type: 'secret_detection',
+            required_permission_to_configure: :configure_security_scanner
           },
           api_fuzzing: {
             name: _('API Fuzzing'),
             description: _('Find bugs in your code with API fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/api_fuzzing/_index.md'),
-            type: 'api_fuzzing'
+            type: 'api_fuzzing',
+            required_permission_to_configure: :configure_security_scanner
           },
           coverage_fuzzing: {
             name: _('Coverage Fuzzing'),
@@ -128,7 +139,8 @@ module Gitlab
               description: s_('SecurityConfiguration|Manage corpus files used as seed ' \
                               'inputs with coverage-guided fuzzing.'),
               configuration_text: s_('SecurityConfiguration|Manage corpus')
-            }
+            },
+            required_permission_to_configure: :configure_security_scanner
           }
         }.freeze
       end

@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import EmptyState from '~/feature_flags/components/empty_state.vue';

@@ -3,17 +3,18 @@ import { GlTooltipDirective } from '@gitlab/ui';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
-
 import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_HIERARCHY,
   METADATA_KEYS,
 } from '~/work_items/constants';
+import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 
 export default {
   components: {
     ItemMilestone,
     WorkItemRolledUpCount,
+    WorkItemParentMetadata,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,6 +57,12 @@ export default {
     showMilestone() {
       return this.milestone && !this.hiddenMetadataKeys.includes(METADATA_KEYS.MILESTONE);
     },
+    parentWorkItem() {
+      return this.hierarchyWidget?.parent;
+    },
+    showParent() {
+      return this.parentWorkItem && !this.hiddenMetadataKeys.includes(METADATA_KEYS.PARENT);
+    },
   },
 };
 </script>
@@ -66,6 +73,11 @@ export default {
       class="gl-mb-2 gl-flex gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-subtle @sm/panel:gl-mb-0"
     >
       <span>{{ reference }}</span>
+      <work-item-parent-metadata
+        v-if="showParent"
+        :parent="parentWorkItem"
+        data-testid="work-item-parent-metadata"
+      />
       <work-item-rolled-up-count
         v-if="showRolledUpCounts"
         hide-count-when-zero

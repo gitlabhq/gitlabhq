@@ -529,6 +529,17 @@ class NotificationService
     mailer.user_deactivated_email(name, email).deliver_later
   end
 
+  def group_was_transferred(group, old_path_with_namespace)
+    return if group.emails_disabled?
+
+    recipients = group_transferred_recipients(group)
+    recipients = notifiable_users(recipients, :custom, custom_action: :moved_project)
+
+    recipients.each do |recipient|
+      mailer.group_was_transferred_email(group.id, recipient.id, old_path_with_namespace).deliver_later
+    end
+  end
+
   def project_was_moved(project, old_path_with_namespace)
     recipients = project_moved_recipients(project)
     recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)
@@ -996,6 +1007,18 @@ class NotificationService
     end
 
     recipients
+  end
+
+  def group_transferred_recipients(group)
+    recipients = group.members.active_without_invites_and_requests.owners_and_maintainers
+      .preload_user_and_notification_settings.to_a
+
+    if recipients.empty? && group.parent
+      recipients = group.parent.members.active_without_invites_and_requests.owners_and_maintainers
+        .preload_user_and_notification_settings.to_a
+    end
+
+    recipients.map(&:user)
   end
 
   def project_moved_recipients(project)

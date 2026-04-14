@@ -125,3 +125,10 @@ export const SEVERITY_LEVELS = {
   [SEVERITY_LEVEL_INFO]: s__('severity|Info'),
   [SEVERITY_LEVEL_UNKNOWN]: s__('severity|Unknown'),
 };
+
+export const FLOW_TRIGGER_EVENTS = {
+  MENTION: 'MENTION',
+  ASSIGN: 'ASSIGN',
+  ASSIGN_REVIEWER: 'ASSIGN_REVIEWER',
+  PIPELINE_HOOKS: 'PIPELINE_HOOKS',
+};

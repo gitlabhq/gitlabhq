@@ -1,0 +1,7 @@
+---
+name: read_ml_flow_artifact
+description: Grants the ability to read MLflow artifacts
+boundaries:
+  - project
+permissions:
+  - read_ml_flow_artifact

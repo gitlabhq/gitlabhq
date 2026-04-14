@@ -1,0 +1,7 @@
+---
+name: read_topic
+description: Grants the ability to read topics
+boundaries:
+  - instance
+permissions:
+  - read_topic

@@ -8,7 +8,7 @@ RSpec.shared_examples 'creates work item with widgets from a modal' do |work_ite
 
     fill_work_item_title("#{work_item_type} work item")
 
-    create_work_item_with_type(work_item_type)
+    create_work_item_with_type(work_item_type.to_s.capitalize)
 
     expect(page).to have_link "#{work_item_type} work item"
   end
@@ -22,7 +22,7 @@ RSpec.shared_examples 'creates work item in a particular namespace' do |work_ite
 
     fill_work_item_title("#{work_item_type} work item")
 
-    create_work_item_with_type(work_item_type)
+    create_work_item_with_type(work_item_type.to_s.capitalize)
 
     expect(page).to have_link "#{work_item_type} work item"
 
@@ -40,7 +40,7 @@ RSpec.shared_examples 'creates work item with widgets from new page' do |work_it
 
     fill_work_item_title("#{work_item_type} work item")
 
-    create_work_item_with_type(work_item_type)
+    create_work_item_with_type(work_item_type.to_s.capitalize)
 
     expect(page).to have_css('h1', text: "#{work_item_type} work item")
   end

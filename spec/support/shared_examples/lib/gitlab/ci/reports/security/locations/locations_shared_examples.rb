@@ -12,19 +12,9 @@ RSpec.shared_examples 'vulnerability location' do
       end
     end
 
-    where(:param) do
-      mandatory_params
-    end
-
-    with_them do
-      context "when param #{params[:param]} is missing" do
-        before do
-          params.delete(param)
-        end
-
-        it 'raises an error' do
-          expect { subject }.to raise_error(ArgumentError)
-        end
+    it 'raises an error when a mandatory param is missing' do
+      mandatory_params.each do |param|
+        expect { described_class.new(**params.except(param)) }.to raise_error(ArgumentError)
       end
     end
   end

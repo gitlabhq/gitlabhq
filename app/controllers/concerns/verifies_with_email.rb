@@ -86,7 +86,6 @@ module VerifiesWithEmail
   end
 
   def successful_verification
-    session.delete(:verifies_with_email_user_id)
     @redirect_url = after_sign_in_path_for(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     render layout: 'minimal'
@@ -255,20 +254,25 @@ module VerifiesWithEmail
   end
 
   def verify_token(user, token)
-    # Account locks take precendent over Email-based OTP. If the account
+    # Account locks take precedence over Email-based OTP. If the account
     # is locked, they need to receive and enter their unlock token.
-    validation_attr = if treat_as_locked?(user)
-                        :unlock_token
-                      else
-                        :email_otp
-                      end
+    locked = treat_as_locked?(user)
+
+    if locked
+      validation_attr = :unlock_token
+      redirect_path = users_successful_verification_path
+    else
+      validation_attr = :email_otp
+      redirect_path = after_sign_in_path_for(user)
+    end
 
     service = Users::EmailVerification::ValidateTokenService.new(attr: validation_attr, user: user, token: token)
     result = service.execute
 
     if result[:status] == :success
       handle_verification_success(user, :successful)
-      render json: { status: :success, redirect_path: users_successful_verification_path }
+      session.delete(:verifies_with_email_user_id)
+      render json: { status: :success, redirect_path: redirect_path }
     else
       handle_verification_failure(user, result[:reason], result[:message])
       render json: result

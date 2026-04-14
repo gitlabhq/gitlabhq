@@ -12,6 +12,7 @@ query getIncidents(
   $searchTerm: String = ""
   $authorUsername: String = ""
   $assigneeUsername: String = ""
+  $workItemTypeIds: [WorkItemsTypeID!]
 ) {
   project(fullPath: $projectPath) {
     id
@@ -26,6 +27,7 @@ query getIncidents(
       last: $lastPageSize
       after: $nextPageCursor
       before: $prevPageCursor
+      workItemTypeIds: $workItemTypeIds
     ) {
       nodes {
         id

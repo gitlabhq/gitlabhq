@@ -1,0 +1,9 @@
+---
+name: ci_config_fetch_timeout_override
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228835
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/594604
+rollout_issue_url:
+milestone: '18.11'
+type: ops
+group: group::pipeline authoring
+default_enabled: false

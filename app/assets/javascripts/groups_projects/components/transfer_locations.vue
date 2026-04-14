@@ -10,7 +10,7 @@ import {
   GlIntersectionObserver,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -18,7 +18,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import currentUserNamespace from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
 
 export const i18n = {
-  SELECT_A_NAMESPACE: __('Select a new namespace'),
   GROUPS: __('Groups'),
   USERS: __('Users'),
   ERROR_MESSAGE: s__(
@@ -41,7 +40,10 @@ export default {
     GlIntersectionObserver,
     GlLoadingIcon,
   },
-  inject: ['resourceId'],
+  inject: {
+    resourceId: {},
+    resourcePath: { default: undefined },
+  },
   props: {
     value: {
       type: Object,
@@ -63,11 +65,6 @@ export default {
       default() {
         return [];
       },
-    },
-    label: {
-      type: String,
-      required: false,
-      default: i18n.SELECT_A_NAMESPACE,
     },
   },
   data() {
@@ -95,7 +92,7 @@ export default {
       return this.filteredAdditionalDropdownItems.length;
     },
     selectedText() {
-      return this.value?.humanName || this.label;
+      return this.value?.humanName || s__('NamespaceTransfer|Select namespace');
     },
     hasNextPageOfGroups() {
       return this.page < this.totalPages;
@@ -156,9 +153,10 @@ export default {
         const { totalPages } = parseIntPagination(normalizeHeaders(headers));
         this.totalPages = totalPages;
 
-        return groupTransferLocations.map(({ id, full_name: humanName }) => ({
+        return groupTransferLocations.map(({ id, full_name: humanName, full_path: fullPath }) => ({
           id,
           humanName,
+          newPath: this.resourcePath ? `${fullPath}/${this.resourcePath}` : undefined,
         }));
       } catch {
         this.handleError();
@@ -188,6 +186,7 @@ export default {
           {
             id: getIdFromGraphQLId(namespace.id),
             humanName: namespace.fullName,
+            newPath: this.resourcePath ? `${namespace.fullPath}/${this.resourcePath}` : undefined,
           },
         ];
       } catch {
@@ -235,7 +234,7 @@ export default {
       @dismiss="handleAlertDismiss"
       >{{ $options.i18n.ERROR_MESSAGE }}</gl-alert
     >
-    <gl-form-group :label="label">
+    <gl-form-group :label="s__('NamespaceTransfer|Select destination namespace')">
       <gl-dropdown
         ref="transferLocationsDropdown"
         :text="selectedText"

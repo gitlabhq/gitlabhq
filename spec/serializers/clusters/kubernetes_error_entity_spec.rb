@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::KubernetesErrorEntity do
+RSpec.describe Clusters::KubernetesErrorEntity, feature_category: :deployment_management do
   describe '#as_json' do
-    let(:cluster) { create(:cluster, :provided_by_user, :group) }
+    let(:cluster) { build_stubbed(:cluster, :provided_by_user, :group) }
 
     subject { described_class.new(cluster).as_json }
 

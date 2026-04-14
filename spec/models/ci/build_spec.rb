@@ -2878,6 +2878,76 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '.any_stuck?' do
+    subject(:any_stuck?) { described_class.any_stuck?(pending_builds) }
+
+    context 'when pending_builds collection is empty' do
+      let(:pending_builds) { [] }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when project has no online runners' do
+      let(:pending_builds) { [create(:ci_build, :pending, pipeline: pipeline)] }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when build project cannot be found' do
+      let(:pending_builds) { [create(:ci_build, :pending, pipeline: pipeline)] }
+
+      before do
+        allow(Project).to receive(:where).and_return(Project.none)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when one build has a missing project and another has a valid project' do
+      let(:other_pipeline) { create(:ci_pipeline, project: create(:project)) }
+      let(:build_with_missing_project) { create(:ci_build, :pending, pipeline: pipeline) }
+      let(:build_with_valid_project) { create(:ci_build, :pending, pipeline: other_pipeline) }
+      let(:pending_builds) { [build_with_valid_project, build_with_missing_project] }
+
+      before do
+        build_with_missing_project # ensure build is persisted before stubbing
+        build_with_valid_project
+
+        allow(Project).to receive(:where).and_return(
+          Project.where(id: other_pipeline.project_id)
+        )
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when project has a matching online runner' do
+      let!(:runner) { create(:ci_runner, :project, projects: [project], contacted_at: 1.second.ago) }
+
+      context 'when all pending builds have a matching runner online' do
+        let(:pending_builds) { create_list(:ci_build, 2, :pending, pipeline: pipeline) }
+
+        it { is_expected.to be(false) }
+      end
+
+      it 'does not issue more queries when builds increase for the same project' do
+        single_pending_build = create_list(:ci_build, 1, :pending, pipeline: pipeline)
+        multi_pending_builds = create_list(:ci_build, 3, :pending, pipeline: pipeline)
+
+        baseline = ActiveRecord::QueryRecorder.new { described_class.any_stuck?(single_pending_build) }
+
+        expect { described_class.any_stuck?(multi_pending_builds) }.not_to exceed_query_limit(baseline)
+      end
+    end
+
+    context 'when project has runners but none match the build tags' do
+      let!(:runner) { create(:ci_runner, :project, projects: [project], contacted_at: 1.second.ago, tag_list: ['windows']) }
+      let(:pending_builds) { [create(:ci_build, :pending, pipeline: pipeline, tag_list: ['linux'])] }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '#has_expired_locked_archive_artifacts?' do
     subject { build.has_expired_locked_archive_artifacts? }
 
@@ -3042,6 +3112,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
           { key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at.iso8601, public: true, masked: false },
           { key: 'CI_PIPELINE_NAME', value: pipeline.name, public: true, masked: false },
+          { key: 'CI_CONFIG_REF_URI',
+            value: "#{Settings.build_server_fqdn}/#{project.full_path}" \
+              "//#{project.ci_config_path_or_default}@#{pipeline.source_ref_path}",
+            public: true, masked: false },
           { key: 'CI_COMMIT_SHA', value: build.sha, public: true, masked: false },
           { key: 'CI_COMMIT_SHORT_SHA', value: build.short_sha, public: true, masked: false },
           { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
@@ -4530,42 +4604,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    context 'when precompute_pending_build_args is enabled' do
-      it 'pre-computes pending build args outside the transaction' do
-        expect(Ci::PendingBuild).to receive(:args_from_build).with(build).and_wrap_original do |method, *args|
-          expect(Ci::ApplicationRecord).not_to be_inside_transaction
+    it 'pre-computes pending build args outside the transaction' do
+      expect(Ci::PendingBuild).to receive(:args_from_build).with(build).and_wrap_original do |method, *args|
+        expect(Ci::ApplicationRecord).not_to be_inside_transaction
 
-          method.call(*args)
-        end
-
-        build.enqueue
+        method.call(*args)
       end
 
-      it 'upserts using the pre-computed args inside the transaction' do
-        expect(Ci::PendingBuild).to receive(:upsert_from_args!)
-          .with(a_hash_including(:build, :project, :namespace))
-          .and_call_original
-
-        build.enqueue
-      end
+      build.enqueue
     end
 
-    context 'when precompute_pending_build_args is disabled' do
-      before do
-        stub_feature_flags(precompute_pending_build_args: false)
-      end
+    it 'upserts using the pre-computed args inside the transaction' do
+      expect(Ci::PendingBuild).to receive(:upsert_from_args!)
+        .with(a_hash_including(:build, :project, :namespace))
+        .and_call_original
 
-      it 'does not set pending_build_args on the build' do
-        build.enqueue
-
-        expect(build.pending_build_args).to be_nil
-      end
-
-      it 'computes args inline inside the transaction via create_queuing_entry!' do
-        expect(build).to receive(:create_queuing_entry!).and_call_original
-
-        build.enqueue
-      end
+      build.enqueue
     end
   end
 

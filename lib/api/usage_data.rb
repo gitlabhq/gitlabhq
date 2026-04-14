@@ -18,18 +18,38 @@ module API
           documentation: { example: 1234 }
         optional :project_id, type: Integer, desc: 'Project ID',
           documentation: { example: 1234 }
+        optional :project_path, type: String, desc: 'Project path (used to resolve project_id if not provided)',
+          documentation: { example: 'namespace/project' }
+        mutually_exclusive :project_id, :project_path
         optional :additional_properties, type: Hash, desc: 'Additional properties to be tracked',
           documentation: { example: { label: 'login_button', value: 1 } }
         optional :send_to_snowplow, type: Boolean, desc: 'Send the tracked event to Snowplow',
           documentation: { example: true, default: false }
       end
 
-      def process_event(params)
+      def process_event(params, resolved_projects = {})
         event_name = params[:event]
         namespace_id = params[:namespace_id]
         project_id = params[:project_id]
         additional_properties = params.fetch(:additional_properties, {}).symbolize_keys
         send_snowplow_event = !!params[:send_to_snowplow]
+
+        # Resolve project from project_path if provided
+        if params[:project_path].present?
+          resolved_project = resolved_projects[params[:project_path]]
+
+          if resolved_project.nil?
+            resolved_project = ::ProjectsFinder.new(
+              params: { full_paths: [params[:project_path]] },
+              current_user: current_user
+            ).execute.first
+          end
+
+          if resolved_project
+            project_id = resolved_project.id
+            namespace_id ||= resolved_project.namespace_id
+          end
+        end
 
         track_event(
           event_name,
@@ -106,8 +126,21 @@ module API
         if params[:events].count > MAXIMUM_TRACKED_EVENTS
           render_api_error!("Maximum #{MAXIMUM_TRACKED_EVENTS} events allowed in one request.", :bad_request)
         else
+          # Collect unique project_paths and resolve them once
+          project_paths = params[:events]
+            .filter_map { |e| e[:project_path] }
+            .uniq
+
+          resolved_projects = {}
+          if project_paths.any?
+            ::ProjectsFinder.new(
+              params: { full_paths: project_paths },
+              current_user: current_user
+            ).execute.each { |project| resolved_projects[project.full_path] = project }
+          end
+
           params[:events].each do |event_params|
-            process_event(event_params)
+            process_event(event_params, resolved_projects)
           end
 
           status :ok
@@ -128,7 +161,7 @@ module API
         optional :include_paths, type: Boolean, desc: 'Include file paths in the metric definitions',
           documentation: { example: true, default: false }
       end
-      route_setting :authorization, skip_granular_token_authorization: true
+      route_setting :authorization, skip_granular_token_authorization: :usage_data_auth
       get 'metric_definitions', urgency: :low do
         content_type 'application/yaml'
         env['api.format'] = :binary

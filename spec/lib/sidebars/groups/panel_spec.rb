@@ -15,13 +15,11 @@ RSpec.describe Sidebars::Groups::Panel, feature_category: :navigation do
     end
 
     it 'adds all standard menus' do
-      stub_feature_flags(work_item_planning_view: false)
-
       groups_panel.configure_menus
 
       standard_menus = [
         Sidebars::Groups::Menus::GroupInformationMenu,
-        Sidebars::Groups::Menus::IssuesMenu,
+        Sidebars::Groups::Menus::WorkItemsMenu,
         Sidebars::Groups::Menus::MergeRequestsMenu,
         Sidebars::Groups::Menus::CiCdMenu,
         Sidebars::Groups::Menus::KubernetesMenu,
@@ -34,21 +32,6 @@ RSpec.describe Sidebars::Groups::Panel, feature_category: :navigation do
 
       standard_menus.each do |menu_class|
         expect(menu_classes).to include(menu_class)
-      end
-    end
-
-    context 'when work_item_planning_view feature flag is enabled' do
-      before do
-        stub_feature_flags(work_item_planning_view: group)
-      end
-
-      it 'includes WorkItemsMenu instead of IssuesMenu' do
-        groups_panel.configure_menus
-
-        menu_classes = groups_panel.instance_variable_get(:@menus).map(&:class)
-
-        expect(menu_classes).to include(Sidebars::Groups::Menus::WorkItemsMenu)
-        expect(menu_classes).not_to include(Sidebars::Groups::Menus::IssuesMenu)
       end
     end
 

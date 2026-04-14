@@ -1,5 +1,5 @@
 <script>
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import { sha256 } from '~/lib/utils/text_utility';
 import { InternalEvents } from '~/tracking';
 import { parse } from '../../core/parser';
@@ -164,7 +164,7 @@ export default {
       :loading="loading"
       @error="handlePresenterError"
     />
-    <div v-if="hasNextPage" class="glql-load-more gl-border-t gl-border-section gl-p-3">
+    <div v-if="hasNextPage" class="glql-load-more gl-border-t gl-p-3">
       <glql-pagination
         :count="data.nodes.length"
         :total-count="data.count"

@@ -333,7 +333,7 @@ module API
             ]
             tags %w[packages]
           end
-          route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           put 'authorize', urgency: :low do
             authorize_nuget_upload
           end
@@ -368,7 +368,7 @@ module API
             ]
             tags %w[packages]
           end
-          route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
           put 'symbolpackage/authorize', urgency: :low do
             authorize_nuget_upload
           end
@@ -430,7 +430,7 @@ module API
               tags %w[packages]
             end
 
-            route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
+            route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
             put 'authorize', urgency: :low do
               authorize_nuget_upload
             end
@@ -461,7 +461,7 @@ module API
             desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
             documentation: { example: 'mynugetpkg' }
         end
-        route_setting :authorization, skip_granular_token_authorization: true
+        route_setting :authorization, skip_granular_token_authorization: :public_endpoint
         get 'FindPackagesById\(\)', urgency: :low do
           present_odata_entry
         end
@@ -483,7 +483,7 @@ module API
             desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
             documentation: { example: 'mynugetpkg' }
         end
-        route_setting :authorization, skip_granular_token_authorization: true
+        route_setting :authorization, skip_granular_token_authorization: :public_endpoint
         get 'Packages\(\)', urgency: :low do
           present_odata_entry
         end
@@ -504,7 +504,7 @@ module API
           requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
             regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.3.0.17' }
         end
-        route_setting :authorization, skip_granular_token_authorization: true
+        route_setting :authorization, skip_granular_token_authorization: :public_endpoint
         get 'Packages\(Id=\'*package_name\',Version=\'*package_version\'\)', urgency: :low do
           present_odata_entry
         end

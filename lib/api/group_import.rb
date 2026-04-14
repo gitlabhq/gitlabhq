@@ -38,7 +38,7 @@ module API
         detail 'This feature was introduced in GitLab 12.8'
         tags ['group_import_and_export']
       end
-      route_setting :authorization, permissions: :authorize_group_import, boundary_type: :instance
+      route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization
       post 'import/authorize' do
         require_gitlab_workhorse!
 

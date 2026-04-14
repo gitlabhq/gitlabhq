@@ -3,6 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe Shard do
+  describe 'associations' do
+    it { is_expected.to have_many(:project_repositories).dependent(:restrict_with_exception) }
+  end
+
+  describe 'deletion restriction' do
+    it 'cannot be deleted while it has associated project_repositories' do
+      shard = create(:shard, name: 'test-storage')
+      create(:project_repository, shard: shard)
+
+      expect { shard.destroy! }.to raise_error(ActiveRecord::DeleteRestrictionError)
+    end
+
+    it 'can be deleted when it has no associated project_repositories' do
+      shard = create(:shard, name: 'test-storage')
+
+      expect { shard.destroy! }.not_to raise_error
+    end
+  end
+
   describe '.populate!' do
     it 'creates shards based on the config file' do
       expect(described_class.all).to be_empty

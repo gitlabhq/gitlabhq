@@ -67,7 +67,7 @@ module Import
         source_user_id: import_source_user&.id
       )
 
-      import_source_user.fail_reassignment!
+      import_source_user.fail_reassignment!(exception.message)
     end
   end
 end

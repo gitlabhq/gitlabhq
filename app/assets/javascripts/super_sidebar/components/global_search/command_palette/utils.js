@@ -1,4 +1,4 @@
-import { isNil, omitBy } from 'lodash';
+import { isNil, omitBy } from 'lodash-es';
 import { objectToQuery, joinPaths, encodeSaferUrl } from '~/lib/utils/url_utility';
 import { TRACKING_UNKNOWN_ID } from '~/super_sidebar/constants';
 import {

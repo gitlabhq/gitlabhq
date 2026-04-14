@@ -62,7 +62,7 @@ application, the file already exists on local storage, so Rails merely has to mo
 directory to finalize the transaction.
 
 Local storage cannot be used with cloud-native GitLab (CNG) installations. It is therefore not used for
-GitLab SaaS either.
+GitLab.com either.
 
 ## Object storage
 
@@ -78,7 +78,7 @@ Using object storage provides two main benefits:
 - Enabling horizontal scaling of your GitLab installation: multiple GitLab application servers can access the same data
   when it is stored in object storage.
 
-CNG installations including GitLab SaaS always use object storage (GCS in the case of GitLab SaaS.)
+CNG installations including GitLab.com always use object storage (GCS in the case of GitLab.com.)
 
 A challenge with uploading to a remote object store is that it includes an outgoing HTTP request from
 GitLab to the object store provider. As mentioned above, there are three different strategies available for how
@@ -104,7 +104,7 @@ This strategy is only suitable for small file uploads, as it is subject to Puma'
 
 ### Direct upload
 
-Direct upload is the recommended way to move large files into object storage in CNG installations like GitLab SaaS.
+Direct upload is the recommended way to move large files into object storage in CNG installations like GitLab.com.
 
 With direct upload enabled, Workhorse:
 

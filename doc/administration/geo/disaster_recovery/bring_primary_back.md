@@ -69,6 +69,18 @@ To bring the former **primary** site up to date:
       and running `sudo gitlab-ctl reconfigure`.
    1. You can then set up database replication on the **secondary** site.
 
+   1. Configure JWT audience for OpenBao. If you have enabled GitLab Secrets Manager
+      and the primary and secondary sites don't share the same JWT audience,
+      set `jwt_audience` to the new primary's OpenBao URL in the re-added secondary's Helm values:
+
+      ```yaml
+      global:
+        openbao:
+          enabled: true
+          url: https://openbao.old-primary.example.com:8200
+          jwt_audience: https://openbao.promoted.example.com:8200
+      ```
+
 If you have lost your original **primary** site, follow the
 [setup instructions](../setup/_index.md) to set up a new **secondary** site.
 

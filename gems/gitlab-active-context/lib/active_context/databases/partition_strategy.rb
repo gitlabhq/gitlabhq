@@ -19,7 +19,7 @@ module ActiveContext
       end
 
       def generate_partition_name(index)
-        "#{@name}#{ActiveContext.adapter.separator}#{index}"
+        "#{@name}#{ActiveContext.separator}#{index}"
       end
 
       def fully_exists?(&partition_exists_check)

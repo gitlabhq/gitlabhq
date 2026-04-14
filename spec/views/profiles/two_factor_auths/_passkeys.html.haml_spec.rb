@@ -26,8 +26,10 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
       end
 
       it 'shows a notice' do
-        expect(rendered).to have_css('.gl-alert', text: s_('ProfilesAuthentication|Passkeys unavailable'))
         expect(rendered).to have_text('Passkey sign-in has been restricted for your account.')
+        expect(rendered).not_to have_text(
+          'Register your passkeys as a WebAuthn device to continue using them for two-factor authentication.'
+        )
       end
 
       it 'shows no passkeys message' do
@@ -35,9 +37,8 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
       end
     end
 
-    context 'when user has passkeys and 2FA disabled' do
+    context 'when user has passkeys' do
       before do
-        allow(user).to receive(:two_factor_enabled?).and_return(false)
         assign(:passkeys, [passkey])
         render
       end
@@ -47,27 +48,16 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
       end
 
       it 'shows a notice' do
-        expect(rendered).to have_css('.gl-alert', text: s_('ProfilesAuthentication|Passkeys unavailable'))
-        expect(rendered).to have_text('Passkey sign-in has been restricted for your account.')
-      end
-    end
-
-    context 'when user has passkeys and 2FA enabled' do
-      before do
-        allow(user).to receive(:two_factor_enabled?).and_return(true)
-        assign(:passkeys, [passkey])
-        render
-      end
-
-      it 'shows passkeys in the table' do
-        expect(rendered).to have_css("td[data-label='#{s_('ProfilesAuthentication|Name')}']", text: passkey.name)
-      end
-
-      it 'shows a notice' do
-        expect(rendered).to have_css('.gl-alert', text: s_('ProfilesAuthentication|Passkeys unavailable'))
         expect(rendered).to have_text('Passkey sign-in has been restricted for your account.')
         expect(rendered).to have_text(
           'Register your passkeys as a WebAuthn device to continue using them for two-factor authentication.'
+        )
+      end
+
+      it 'renders passkey table cells with subtle text style' do
+        expect(rendered).to have_css(
+          "td[data-label='#{s_('ProfilesAuthentication|Name')}'][style*='gl-text-color-subtle']",
+          text: passkey.name
         )
       end
     end

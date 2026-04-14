@@ -7,6 +7,11 @@ export default {
     IssuableForm,
   },
   props: {
+    allowScopedLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     descriptionPreviewPath: {
       type: String,
       required: true,
@@ -35,6 +40,7 @@ export default {
   <div class="issuable-create-container">
     <slot name="title"></slot>
     <issuable-form
+      :allow-scoped-labels="allowScopedLabels"
       :description-preview-path="descriptionPreviewPath"
       :description-help-path="descriptionHelpPath"
       :labels-fetch-path="labelsFetchPath"

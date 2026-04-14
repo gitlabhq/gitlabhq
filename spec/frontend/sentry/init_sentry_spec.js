@@ -67,7 +67,12 @@ describe('SentryConfig', () => {
             release: mockRevision,
             allowUrls: [mockGitlabUrl, 'webpack-internal://'],
             environment: mockEnvironment,
-            ignoreErrors: [/Network Error/i, /NetworkError/i],
+            ignoreErrors: [
+              /Network Error/i,
+              /NetworkError/i,
+              /NavigationDuplicated/,
+              /You must be logged in/,
+            ],
             tracePropagationTargets: [/^\//],
             tracesSampleRate: mockSentryClientsideTracesSampleRate,
             integrations: ['mockBrowserSessionIntegration', 'mockBrowserTracingIntegration'],

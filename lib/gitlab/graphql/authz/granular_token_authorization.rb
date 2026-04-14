@@ -7,6 +7,8 @@ module Gitlab
       class GranularTokenAuthorization < GraphQL::Schema::FieldExtension
         include ::Gitlab::Graphql::Authorize::AuthorizeResource
 
+        BOUNDARY_TYPE_EVALUATION_ORDER = %w[project group user instance].freeze
+
         def resolve(object:, arguments:, context:, **rest)
           authorize_field(object, arguments, context)
 
@@ -19,9 +21,11 @@ module Gitlab
           return unless authorization_enabled?(context)
           return if SkipRules.new(@field).should_skip?
 
-          directive = DirectiveFinder.new(@field).find(object)
-          boundary = boundary(object, arguments, context, directive)
-          permissions = permissions(directive)
+          directives = DirectiveFinder.new(@field).find_all(object)
+          matching_directive = find_matching_directive(directives, object, arguments, context)
+
+          boundary = boundary(object, arguments, context, matching_directive)
+          permissions = permissions(matching_directive)
 
           authorize_with_cache!(context, boundary, permissions)
         end
@@ -46,6 +50,33 @@ module Gitlab
           raise_resource_not_available_error!(response.message) if response.error?
 
           cache.add(cache_key)
+        end
+
+        # When multiple directives exist (multi-boundary), select the one whose boundary_type
+        # matches the actual extracted boundary. Returns nil if none match, which causes
+        # authorize_with_cache! to be called with nil boundary/permissions, denying access.
+        def find_matching_directive(directives, object, arguments, context)
+          return directives.first if directives.size <= 1
+
+          sorted = directives.sort_by do |d|
+            BOUNDARY_TYPE_EVALUATION_ORDER.index(d.arguments[:boundary_type].to_s) ||
+              BOUNDARY_TYPE_EVALUATION_ORDER.size
+          end
+
+          sorted.each do |d|
+            extracted = boundary(object, arguments, context, d)
+            next unless extracted
+
+            return d if boundary_matches_type?(extracted, d.arguments[:boundary_type])
+          end
+
+          nil
+        end
+
+        def boundary_matches_type?(boundary, boundary_type_str)
+          return true unless boundary_type_str
+
+          boundary.type_label == boundary_type_str.downcase
         end
 
         def boundary(object, arguments, context, directive)

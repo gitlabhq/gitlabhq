@@ -29,16 +29,18 @@ required by your organization. Each custom role is based on an existing default 
 you might create a custom role based on the Guest role, but also include permission to view code
 in a project repository.
 
-There are two types of custom roles:
+GitLab provides two types of custom roles:
 
 - Custom member roles:
   - Can be assigned to members of a group or project.
   - Gains the same permissions in any subgroups or projects. For more information, see [membership types](../project/members/_index.md#membership-types).
-  - [Uses a seat](../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage) and becomes a [billable user](../../subscriptions/manage_users_and_seats.md#billable-users).
+  - [Uses a seat](../../subscriptions/manage_seats.md#gitlabcom-billing-and-usage) and becomes a [billable user](../../subscriptions/manage_seats.md#billable-users).
     - A custom Guest member role that includes only the `read_code` permission does not use a seat.
+  - Can be assigned to members of an SAML or LDAP group.
 - Custom admin roles:
   - Can be assigned to any user on the instance.
   - Gains permissions to perform specific admin actions.
+  - Can be assigned to members of an LDAP group.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
@@ -268,63 +270,22 @@ You can assign custom roles and permissions to the following:
 | Groups | 17.7          | Partially supported. Further support for group assignment in projects is proposed in [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329) |
 | Tokens | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
 
-## Sync users to custom roles
+## Assign a custom role to an external group
 
-If you use tools like SAML or LDAP to manage your group membership, you can automatically sync your
-users to custom roles. For more information, see:
+{{< details >}}
 
-- [Configure SAML Group Links](../group/saml_sso/group_sync.md#configure-saml-group-links).
-- [Manage group memberships via LDAP](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-## Sync LDAP groups to admin roles
+{{< /details >}}
 
-You can link a custom admin role to an LDAP group. This link assigns the custom admin role to all users in the group.
+You can assign a custom member role to all users in an external LDAP or SAML group, or a custom
+admin role to users synced from an LDAP group only.
 
-If a user belongs to multiple LDAP groups with different assigned custom admin roles, GitLab assigns the role associated with whichever LDAP link was created earlier. For example, if a user is a member of the LDAP groups `owner` and `dev`. If the `owner` group was linked to a custom admin role before the `dev` group, the user would be assigned the role associated with the `owner` group.
+To assign custom roles to LDAP or SAML groups:
 
-For more information on the administration of LDAP and group sync, see [LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
-
-> [!note]
-> If an LDAP user with a custom admin role is removed from the LDAP group after configuring a sync, the custom role is not removed until the next sync.
-
-### Link a custom admin role with an LDAP CN
-
-Prerequisites:
-
-- An LDAP server integrated with your instance.
-- Administrator access.
-
-To link a custom admin role with an LDAP CN:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Roles and permissions**.
-1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
-1. In the **Sync method** field, select `Group cn`.
-1. In the **Group cn** field, begin typing the CN of the group. A dropdown list appears with matching CNs in the configured `group_base`.
-1. From the dropdown list, select your CN.
-1. In the **Custom admin role** field, select a custom admin role.
-1. Select **Add**.
-
-GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
-
-### Link a custom admin role with an LDAP filter
-
-Prerequisites:
-
-- An LDAP server integrated with your instance.
-- Administrator access.
-
-To link a custom admin role with an LDAP filter:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **Roles and permissions**.
-1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
-1. In the **Sync method** field, select `User filter`.
-1. In **User filter** box, enter a filter. For details, see [Set up LDAP user filter](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
-1. In the **Custom admin role** field, select a custom admin role.
-1. Select **Add**.
-
-GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
+- [Assign a custom member role to an SAML group](../group/saml_sso/group_sync.md#configure-saml-group-links).
+- [Assign a custom member role to an LDAP group](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
+- [Assign a custom admin role to an LDAP group](../../administration/auth/ldap/ldap_synchronization.md#assign-a-custom-admin-role-to-an-ldap-group).
 
 ## Contribute new permissions
 

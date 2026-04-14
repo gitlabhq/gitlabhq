@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import Default from '~/feature_flags/components/strategies/default.vue';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';
 import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';

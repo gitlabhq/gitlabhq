@@ -15,9 +15,11 @@ module WorkItems
         work_items_types_provider.fetch_work_item_type(work_item_type_id)
       end
 
+      delegate :icon_name, to: :work_item_type, allow_nil: true
+
       def work_item_type=(value)
         work_item_type = work_items_types_provider.fetch_work_item_type(value)
-        self.work_item_type_id = work_item_type&.id
+        self.work_item_type_id = persistable_type_id(work_item_type)
       end
 
       private
@@ -34,6 +36,11 @@ module WorkItems
         work_items_types_provider.find_by_id(work_item_type_id).present?
       end
 
+      # Overridden on EE
+      def persistable_type_id(type)
+        type&.id
+      end
+
       def work_items_types_provider
         ::WorkItems::TypesFramework::Provider.new(namespace)
       end
@@ -41,3 +48,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::TypesFramework::HasType.prepend_mod

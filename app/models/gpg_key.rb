@@ -7,7 +7,7 @@ class GpgKey < ApplicationRecord
   include ShaAttribute
   include Cells::Claimable
 
-  cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::GPG_KEYS, feature_flag: :cells_claims_keys
+  cells_claims_attribute :fingerprint, type: CLAIMS_BUCKET_TYPE::GPG_KEY_FINGERPRINTS, feature_flag: :cells_claims_keys
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 
@@ -131,7 +131,7 @@ class GpgKey < ApplicationRecord
   end
 
   def unique_attributes
-    [:key]
+    [:fingerprint]
   end
 end
 

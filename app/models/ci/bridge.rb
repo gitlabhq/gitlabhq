@@ -8,7 +8,6 @@ module Ci
     include AfterCommitQueue
     include Ci::HasRef
 
-    InvalidBridgeTypeError = Class.new(StandardError)
     InvalidTransitionError = Class.new(StandardError)
 
     FORWARD_DEFAULTS = {

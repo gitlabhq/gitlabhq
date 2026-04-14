@@ -68,15 +68,11 @@ export default {
   <div>
     <div class="title-container">
       <h1
-        v-if="issuable.titleHtml"
         v-safe-html="issuable.titleHtml"
         class="title gl-text-size-h-display"
         dir="auto"
         data-testid="issuable-title"
       ></h1>
-      <h1 v-else class="title gl-text-size-h-display" data-testid="issuable-title">
-        {{ issuable.title }}
-      </h1>
       <gl-button
         v-if="enableEdit && !hideEditButton"
         v-gl-tooltip.bottom

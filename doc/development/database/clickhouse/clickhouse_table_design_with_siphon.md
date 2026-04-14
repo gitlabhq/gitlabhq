@@ -70,7 +70,7 @@ Generated `CREATE TABLE` statement:
         lock_on_merge Bool DEFAULT false,
         archived Bool DEFAULT false,
         organization_id Nullable(Int64),
-        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
+        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_deleted Bool DEFAULT FALSE
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
@@ -94,22 +94,33 @@ Examples for such columns:
 
 ### Siphon Configuration
 
-After the table is created, you should update your Siphon configuration in `gdk.yml` and add your table:
+After the table is created, you should configure Siphon to replicate it by creating a YAML file in `db/siphon/tables/`. GDK detects these files automatically during `gdk reconfigure`.
+
+For example, create `db/siphon/tables/labels.yml`:
 
 ```yaml
-siphon:
-  enabled: true
-  tables:
-  - organizations
-  - namespaces
-  - projects
-  - labels
+table: labels
+database: main
+replication_targets:
+  - name: clickhouse_main
+    target: siphon_labels
 ```
 
-After this change, you can restart the Siphon-related processes in your GDK and eventually you should see data synchronized to your table.
+The configuration fields are:
+
+- **`table`**: The source table name in PostgreSQL.
+- **`database`**: The database identifier (`main`, `ci`, or `sec`).
+- **`ignored_columns`** *(optional)*: Columns to exclude from replication.
+- **`replication_targets`**: Specifies destination details:
+  - **`name`**: Must be `clickhouse_main` for ClickHouse replication.
+  - **`target`**: The destination table name in ClickHouse.
+  - **`priority`** *(optional)*: Lower values replicate first during the initial snapshot.
+
+After creating the file, apply the configuration and restart Siphon:
 
 ```shell
-gdk restart siphon-clickhouse-consumer siphon-producer-main-db
+gdk reconfigure
+gdk restart siphon
 ```
 
 The updated configuration triggers Siphon to perform two actions:
@@ -212,7 +223,7 @@ Generated `CREATE TABLE` statement:
           coalesce(organization_id, 0) != 0, dictGetOrDefault('organization_traversal_paths_dict', 'traversal_path', organization_id, '0/'),
           '0/'
         ),
-        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
+        _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
         _siphon_deleted Bool DEFAULT FALSE,
         PROJECTION pg_pkey_ordered (
           SELECT *
@@ -384,7 +395,8 @@ graph TD
     style MV fill:#fff4dd,stroke:#d4a017,stroke-width:2px
 ```
 
-*Note: For the sake of simplicity, unnecessary columns are omitted from the `merge_requests` table.*
+> [!note]
+> For the sake of simplicity, unnecessary columns are omitted from the `merge_requests` table.
 
 ##### 1. Create the `NULL` `siphon_merge_requests` table
 
@@ -411,7 +423,7 @@ CREATE TABLE IF NOT EXISTS siphon_merge_requests
   iid Nullable(Int64),
   description Nullable(String),
   traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
-  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))
 )
 ENGINE = Null;
@@ -442,7 +454,7 @@ CREATE TABLE IF NOT EXISTS siphon_merge_request_reviewers
   state Int8 DEFAULT 0,
   project_id Int64,
   traversal_path String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
-  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
   PROJECTION pg_pkey_ordered (
     SELECT *
@@ -479,7 +491,7 @@ CREATE TABLE IF NOT EXISTS merge_requests
   description Nullable(String),
   traversal_path String DEFAULT multiIf(coalesce(target_project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', target_project_id, '0/'), '0/') CODEC(ZSTD(3)),
   reviewers Array(Tuple(UInt64, Int8)),
-  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+  _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
   _siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1)),
   PROJECTION pg_pkey_ordered (
     SELECT *
@@ -619,7 +631,8 @@ arrayExists(x -> x.1 = 73 AND x.2 = 3, reviewers);
 
 ```
 
-*Note: Array data types may add extra overhead during parsing and filtering. When denormalized data is a simple list of IDs without associated state, a delimited string field (e.g., `'/user_id1/user_id2/'`) combined with `hasSubstr` can offer higher performance.*
+> [!note]
+> Array data types may add extra overhead during parsing and filtering. When denormalized data is a simple list of IDs without associated state, a delimited string field (e.g., `'/user_id1/user_id2/'`) combined with `hasSubstr` can offer higher performance.
 
 ### Consistency Guarantees
 

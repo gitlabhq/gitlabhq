@@ -12,6 +12,8 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
   let(:job_args) { [user.id, project.id, after_export_strategy, params] }
 
   before do
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
+
     allow_next_instance_of(described_class) do |job|
       allow(job).to receive(:jid).and_return(jid)
     end

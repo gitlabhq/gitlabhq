@@ -2,15 +2,15 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import IterationPopover from 'ee_component/issuable/popover/components/iteration_popover.vue';
 import createDefaultClient from '~/lib/graphql';
-import IssuePopover from './components/issue_popover.vue';
+import WorkItemPopover from './components/work_item_popover.vue';
 import MRPopover from './components/mr_popover.vue';
 import MilestonePopover from './components/milestone_popover.vue';
 import CommentPopover from './components/comment_popover.vue';
 
 export const componentsByReferenceTypeMap = {
-  epic: IssuePopover,
-  issue: IssuePopover,
-  work_item: IssuePopover,
+  epic: WorkItemPopover,
+  issue: WorkItemPopover,
+  work_item: WorkItemPopover,
   merge_request: MRPopover,
   milestone: MilestonePopover,
   iteration: IterationPopover,

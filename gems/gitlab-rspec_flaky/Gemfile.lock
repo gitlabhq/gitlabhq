@@ -6,6 +6,7 @@ PATH
       activesupport (>= 6.1, < 8)
       gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
+      test-prof (~> 1.5)
 
 PATH
   remote: .
@@ -281,6 +282,7 @@ GEM
     table_print (1.5.7)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
+    test-prof (1.6.0)
     timeout (0.4.1)
     tins (1.48.0)
       bigdecimal
@@ -414,6 +416,7 @@ CHECKSUMS
   sync (0.5.0) sha256=668356cc07c59ac7ed9ecf34fec3929831f179c07adb1f3e1c3b7a1609a638fd
   table_print (1.5.7) sha256=436664281f93387b882335795e16cfeeb839ad0c785ff7f9110fc0f17c68b5cb
   terminal-table (4.0.0) sha256=f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2
+  test-prof (1.6.0) sha256=b04cee7b9684b9b31e23e258f835ba67ee5b4fd5f6cc7204d076ef695805c335
   timeout (0.4.1) sha256=6f1f4edd4bca28cffa59501733a94215407c6960bd2107331f0280d4abdebb9a
   tins (1.48.0) sha256=547352491d5af17bc1af4ca8fcee884ffde3ff60c9799c7961977d697cde99c3
   trailblazer-option (0.1.2) sha256=20e4f12ea4e1f718c8007e7944ca21a329eee4eed9e0fa5dde6e8ad8ac4344a3

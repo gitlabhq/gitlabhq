@@ -29,10 +29,7 @@ module Gitlab
           return unless project
           return unless sha
 
-          allowed = instrument(:config_component_check_access) do
-            Ability.allowed?(current_user, :download_code, project)
-          end
-          raise Gitlab::Access::AccessDeniedError unless allowed
+          raise Gitlab::Access::AccessDeniedError unless access_allowed?(current_user)
 
           instrument(:config_component_fetch_content) do
             fetch_component_content
@@ -41,19 +38,27 @@ module Gitlab
 
         def project
           instrument(:config_component_find_project) do
-            Project.find_by_full_path(project_full_path, follow_redirects: true)
+            next unless project_full_path
+
+            if ci_optimize_component_instance_path_enabled?
+              Gitlab::SafeRequestStore.fetch(cache_key('project', project_full_path.downcase)) do
+                Project.find_by_full_path(project_full_path, follow_redirects: true)
+              end
+            else
+              Project.find_by_full_path(project_full_path, follow_redirects: true)
+            end
           end
         end
         strong_memoize_attr :project
 
         def sha
-          instrument(:config_component_find_sha) do
-            next unless project
+          return unless project
 
-            if ::Feature.enabled?(:ci_optimize_component_fetching, project)
-              # First, we try finding the sha from the catalog.
-              # Otherwise, from the repository.
-              find_catalog_version&.sha || sha_by_released_tag || sha_by_ref
+          instrument(:config_component_find_sha) do
+            if ci_optimize_component_instance_path_enabled?
+              Gitlab::SafeRequestStore.fetch(cache_key('sha', project.id, reference)) do
+                find_catalog_version&.sha || sha_by_released_tag || sha_by_ref
+              end
             else
               legacy_find_version_sha
             end
@@ -97,6 +102,22 @@ module Gitlab
           component_project.fetch_component(component_name)
         end
 
+        def access_allowed?(current_user)
+          instrument(:config_component_check_access) do
+            if ci_optimize_component_instance_path_enabled?
+              Gitlab::SafeRequestStore.fetch(cache_key('access_allowed', project.id, current_user&.id)) do
+                Ability.allowed?(current_user, :download_code, project)
+              end
+            else
+              Ability.allowed?(current_user, :download_code, project)
+            end
+          end
+        end
+
+        def cache_key(*parts)
+          [self.class.name, *parts]
+        end
+
         def legacy_find_version_sha
           return legacy_find_latest_sha if reference == LATEST
 
@@ -105,18 +126,28 @@ module Gitlab
 
         def find_catalog_version
           instrument(:config_component_find_catalog_version) do
-            next unless project.catalog_resource
+            next unless project&.catalog_resource
 
-            if reference == LATEST
-              catalog_resource_version_latest
-            elsif reference.match?(SHORTHAND_SEMVER_PATTERN)
-              catalog_resource_version_by_short_semver
+            if ci_optimize_component_instance_path_enabled?
+              Gitlab::SafeRequestStore.fetch(cache_key('catalog_version', project.id, reference)) do
+                fetch_catalog_version
+              end
             else
-              project.catalog_resource.versions.by_name(reference).first
+              fetch_catalog_version
             end
           end
         end
         strong_memoize_attr :find_catalog_version
+
+        def fetch_catalog_version
+          if reference == LATEST
+            catalog_resource_version_latest
+          elsif reference.match?(SHORTHAND_SEMVER_PATTERN)
+            catalog_resource_version_by_short_semver
+          else
+            project.catalog_resource.versions.by_name(reference).first
+          end
+        end
 
         def legacy_find_latest_sha
           return unless project.catalog_resource
@@ -177,6 +208,11 @@ module Gitlab
 
           logger.instrument(operation, &block)
         end
+
+        def ci_optimize_component_instance_path_enabled?
+          ::Feature.enabled?(:ci_optimize_component_instance_path, Feature.current_request)
+        end
+        strong_memoize_attr :ci_optimize_component_instance_path_enabled?
       end
     end
   end

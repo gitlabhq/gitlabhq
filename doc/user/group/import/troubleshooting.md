@@ -75,9 +75,9 @@ On the source instance, stale imports are often due to excessive memory usage,
 which might restart Sidekiq processes and interrupt export jobs.
 The destination instance might wait for the export files until the migration eventually times out.
 
-To check if the [group](../../../api/group_relations_export.md#export-status) or
-[project](../../../api/project_relations_export.md#export-status) relations were successfully exported,
-run the following command:
+To check if the [group](../../../api/group_relations_export.md#retrieve-the-status-of-an-export) or
+[project](../../../api/project_relations_export.md#retrieve-the-status-of-an-export) relations were
+successfully exported, run the following command:
 
 ```shell
 curl --request GET --location "https://example.gitlab.com/api/v4/projects/:ID/export_relations/status" \
@@ -116,8 +116,8 @@ If Sidekiq restarts are causing the issue:
   1. Restart Sidekiq for the changes to take effect.
 
 You can now trigger a new migration or use the
-[project relations export API](../../../api/project_relations_export.md#schedule-new-export) to manually trigger the export.
-Check the [export status](../../../api/project_relations_export.md#export-status) to see if
+[project relations export API](../../../api/project_relations_export.md#schedule-a-new-export-for-a-project) to manually trigger the export.
+Check the [export status](../../../api/project_relations_export.md#retrieve-the-status-of-an-export) to see if
 relations are being exported successfully.
 
 For example, to trigger the export of a specific project, run the following command:
@@ -196,8 +196,8 @@ To resolve this issue:
 1. Delete the partially imported project or group from the destination instance and initiate a new import.
 
 For more information about the relations and batches that failed to export,
-use the export status API endpoints for [projects](../../../api/project_relations_export.md#export-status)
-and [groups](../../../api/group_relations_export.md#export-status) on the source instance.
+use the export status API endpoints for [projects](../../../api/project_relations_export.md#retrieve-the-status-of-an-export)
+and [groups](../../../api/group_relations_export.md#retrieve-the-status-of-an-export) on the source instance.
 
 ## Error: `duplicate key value violates unique constraint`
 

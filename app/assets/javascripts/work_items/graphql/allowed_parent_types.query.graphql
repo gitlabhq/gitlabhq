@@ -1,0 +1,23 @@
+# @feature_category: portfolio_management
+query getAllowedParentTypes($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItemTypes {
+      nodes {
+        id
+        name
+        widgetDefinitions {
+          type
+          ... on WorkItemWidgetDefinitionHierarchy {
+            allowedParentTypes {
+              nodes {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

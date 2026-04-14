@@ -31,7 +31,7 @@ To troubleshoot GitLab Duo errors in your IDE:
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- [Troubleshooting GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
+- [Troubleshooting GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
 
 ## Enable debug mode
 

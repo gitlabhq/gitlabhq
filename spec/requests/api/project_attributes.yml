@@ -2,7 +2,6 @@
 itself: # project
   unexposed_attributes:
     - bfg_object_map
-    - delete_error
     - detected_repository_languages
     - disable_overriding_approvers_per_merge_request
     - external_authorization_classification_label
@@ -105,6 +104,7 @@ ci_cd_settings:
     - id_token_sub_claim_components
     - delete_pipelines_in_seconds
     - allow_composite_identities_to_run_pipelines
+    - max_pipelines_per_merge_train
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
@@ -172,6 +172,7 @@ project_setting:
     - updated_at
     - cve_id_request_enabled
     - mr_default_target_self
+    - mr_default_title_template
     - target_platforms
     - selective_code_owner_removals
     - suggested_reviewers_enabled
@@ -197,6 +198,7 @@ project_setting:
     - require_reauthentication_to_approve
     - observability_alerts_enabled
     - spp_repository_pipeline_access
+    - security_policy_pipeline_must_succeed
     - max_number_of_vulnerabilities
     - extended_prat_expiry_webhooks_execute
     - model_prompt_cache_enabled
@@ -208,9 +210,12 @@ project_setting:
     - duo_sast_vr_workflow_enabled
     - duo_secret_detection_fp_enabled
     - enabled_foundational_flows
-    - code_owner_reviewer_assignment_strategy
+    - reviewer_assignment_strategy
     - merge_request_title_regex
     - merge_request_title_regex_description
+    - pipeline_execution_policy_bot_access_enabled
+    - pipeline_execution_policy_bot_access_file_patterns
+    - pipeline_execution_policy_bot_access_group_id
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id

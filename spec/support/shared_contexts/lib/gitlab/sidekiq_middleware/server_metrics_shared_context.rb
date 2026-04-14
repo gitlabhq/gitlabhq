@@ -88,6 +88,9 @@ RSpec.shared_context 'server metrics call' do
   let(:elasticsearch_duration) { 0.54 }
 
   let(:mem_total_bytes) { 1000000000 }
+  let(:gvl_thread_wait) { 1.0 }
+  let(:gvl_process_wait) { 2.0 }
+
   let(:instrumentation) do
     {
       gitaly_duration_s: gitaly_duration,
@@ -95,12 +98,11 @@ RSpec.shared_context 'server metrics call' do
       redis_duration_s: redis_duration,
       elasticsearch_calls: elasticsearch_calls,
       elasticsearch_duration_s: elasticsearch_duration,
-      mem_total_bytes: mem_total_bytes
+      mem_total_bytes: mem_total_bytes,
+      gvl_thread_wait_s: gvl_thread_wait,
+      gvl_process_wait_s: gvl_process_wait
     }
   end
-
-  let(:gvl_thread_duration) { 1_000_000_000 } # 1s
-  let(:gvl_process_duration) { 2_000_000_000 } # 2s
 
   before do
     allow(subject).to receive(:get_thread_cputime).and_return(thread_cputime_before, thread_cputime_after)
@@ -108,8 +110,6 @@ RSpec.shared_context 'server metrics call' do
     allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
     allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
     allow(ActiveRecord::RuntimeRegistry).to receive(:sql_runtime).and_return(db_duration * 1000)
-    allow(GVLTools::LocalTimer).to receive(:monotonic_time).and_return(0, gvl_thread_duration)
-    allow(GVLTools::GlobalTimer).to receive(:monotonic_time).and_return(0, gvl_process_duration)
 
     job[:instrumentation] = instrumentation
     job[:gitaly_duration_s] = gitaly_duration

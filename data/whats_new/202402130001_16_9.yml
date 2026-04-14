@@ -11,15 +11,15 @@
     - Answer all your DevSecOps related question, whether you are a beginner or an expert. For example, "How can I set up Dynamic Application Security Testing for a REST API?"
     - Answer follow-up questions so you can iteratively work through all the previous scenarios.
 
-    GitLab Duo Chat is available as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature. It is also integrated into our Web IDE and GitLab Workflow extension for VS Code as [Experimental](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#experiment) features. In these IDEs, you can also use [predefined chat commands that help you do standard tasks more quickly](https://docs.gitlab.com/ee/user/gitlab_duo_chat.html#explain-code-in-the-ide) like writing tests.
+    GitLab Duo Chat is available as a [Beta](https://docs.gitlab.com/policy/experiment-beta-support/#beta) feature. It is also integrated into our Web IDE and GitLab Workflow extension for VS Code as [Experimental](https://docs.gitlab.com/policy/experiment-beta-support/#experiment) features. In these IDEs, you can also use [predefined chat commands that help you do standard tasks more quickly](https://docs.gitlab.com/user/gitlab_duo_chat/#explain-code-in-the-ide) like writing tests.
   stage: ai-powered
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat.html
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_chat/
   image_url: https://about.gitlab.com/images/16_9/gitlab_duo_chat_beta_now_available_in_premium.png
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: Improvements to the CI/CD variables user interface
   description: |
@@ -36,10 +36,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/variables/
+  documentation_link: https://docs.gitlab.com/ci/variables/
   image_url: https://img.youtube.com/vi/gdL2cEp3kw0/hqdefault.jpg
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: Request changes on merge requests
   description: |
@@ -56,24 +56,24 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#submit-a-review
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/reviews/#submit-a-review
   image_url: https://about.gitlab.com/images/16_9/create-request-changes-merge-requests.png
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: Expanded options for auto-canceling pipelines
   description: |
-    Currently, to use the [auto-cancel redundant pipeline feature](https://docs.gitlab.com/ee/ci/pipelines/settings.html#auto-cancel-redundant-pipelines), you must set jobs that can be canceled as [`interruptible: true`](https://docs.gitlab.com/ee/ci/yaml/#interruptible) to determine whether or not a pipeline can be canceled. But this only applies to jobs that are actively running when GitLab tries to cancel the pipeline. Any jobs that have not yet started (are in "pending" status) are also considered safe to cancel, regardless of their `interruptible` configuration.
+    Currently, to use the [auto-cancel redundant pipeline feature](https://docs.gitlab.com/ci/pipelines/settings/#auto-cancel-redundant-pipelines), you must set jobs that can be canceled as [`interruptible: true`](https://docs.gitlab.com/ci/yaml/#interruptible) to determine whether or not a pipeline can be canceled. But this only applies to jobs that are actively running when GitLab tries to cancel the pipeline. Any jobs that have not yet started (are in "pending" status) are also considered safe to cancel, regardless of their `interruptible` configuration.
 
     This lack of flexibility hinders users who want more control over which exact jobs can be canceled by the auto-cancel pipeline feature. To address this limitation, we are pleased to announce the introduction of the `auto_cancel:on_new_commit` keywords with more granular control over job cancellation. If the legacy behavior did not work for you, you now have the option to configure the pipeline to only cancel jobs that are explicitly set with `interruptible: true`, even if they haven't started yet. You can also set jobs to never be automatically canceled.
   stage: verify
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#workflowauto_cancelon_new_commit
+  documentation_link: https://docs.gitlab.com/ci/yaml/#workflowauto_cancelon_new_commit
   image_url: https://about.gitlab.com/images/16_9/interruptible.png
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: Validate Terraform modules from your group or subgroup
   description: |
@@ -84,10 +84,10 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/package_registry/#view-packages
+  documentation_link: https://docs.gitlab.com/user/packages/package_registry/#view-packages
   image_url: https://img.youtube.com/vi/1Ocypvrrdiw/hqdefault.jpg
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: More detailed security findings in VS Code
   description: |
@@ -107,15 +107,15 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/editor_extensions/visual_studio_code/
+  documentation_link: https://docs.gitlab.com/editor_extensions/visual_studio_code/
   image_url: https://about.gitlab.com/images/16_9/vs-code-security-finding-details.png
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"
 
 - name: Standards Adherence Report Improvements
   description: |
-    The [standards adherence report](https://docs.gitlab.com/ee/user/compliance/compliance_center/#view-the-standards-adherence-dashboard), within the
-    [compliance center](https://docs.gitlab.com/ee/user/compliance/compliance_center/), is the destination for compliance teams to monitor their compliance posture.
+    The [standards adherence report](https://docs.gitlab.com/user/compliance/compliance_center/#view-the-standards-adherence-dashboard), within the
+    [compliance center](https://docs.gitlab.com/user/compliance/compliance_center/), is the destination for compliance teams to monitor their compliance posture.
 
     In GitLab 16.5, we introduced the report with the GitLab Standard - a set of common compliance requirements all compliance teams should monitor. The standard helps
     you understand which projects meet these requirements, which ones fall short, and how to bring them into compliance. Over time, we'll be introducing more standards
@@ -132,7 +132,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/compliance/compliance_center/#standards-adherence-dashboard
+  documentation_link: https://docs.gitlab.com/user/compliance/compliance_center/#standards-adherence-dashboard
   image_url: https://about.gitlab.com/images/16_9/standards-adherence-grouping.png
   published_at: 2024-02-15
-  release: 16.9
+  release: "16.9"

@@ -6,7 +6,6 @@ RSpec.describe 'ActionCable', feature_category: :redis do
   let(:redis_connection) { ActionCable.server.pubsub.send(:redis_connection) }
 
   before do
-    allow(Gitlab::Popen).to receive(:popen).and_return(["password: 'custom-redis-password'\n", 0])
     ActionCable.server.restart
   end
 
@@ -14,121 +13,33 @@ RSpec.describe 'ActionCable', feature_category: :redis do
     ActionCable.server.restart
   end
 
-  describe 'redis_config_command' do
-    subject(:secondary) { redis_connection.secondary_store }
-
-    let(:fake_cable_config) do
+  describe 'redis connection' do
+    let(:fake_config) do
       {
-        adapter: 'redis',
-        config_command: '/opt/generate-redis-password rails',
-        url: 'redis://127.0.0.1:6379',
-        id: 'foobar',
-        channel_prefix: 'test_'
+        development: 'redis://127.0.0.1:6378/0',
+        test: 'redis://127.0.0.1:6375/11'
       }
     end
 
-    let(:expected_args) do
-      {
-        url: 'redis://127.0.0.1:6379',
-        password: 'custom-redis-password',
-        custom: {
-          instrumentation_class: 'ActionCable'
-        },
-        id: 'foobar',
-        reconnect_attempts: 1
+    before do
+      allow_next_instance_of(Gitlab::Redis::ActionCable) do |redis|
+        allow(redis).to receive(:fetch_config).and_return(fake_config[:test])
+      end
+
+      allow(Gitlab::Redis::ActionCable).to receive(:params).and_return(Gitlab::Redis::ActionCable.new.params)
+      ActionCable.server.restart
+    end
+
+    it 'uses the connection params defined in redis.action_cable.yml' do
+      connection_params = {
+        host: '127.0.0.1',
+        db: 11,
+        port: 6375,
+        location: '127.0.0.1:6375',
+        id: 'redis://127.0.0.1:6375/11'
       }
-    end
 
-    it 'process config_command on the secondary store' do
-      allow(::ActionCable.server.config).to receive(:cable).and_return(fake_cable_config)
-
-      connection_options = secondary.instance_variable_get(:@options)
-
-      expect(connection_options).to eq(expected_args)
-    end
-  end
-
-  describe 'redis multistore configuration' do
-    it 'uses MultiStore for redis connection' do
-      expect(redis_connection).to be_a(::Gitlab::Redis::MultiStore)
-    end
-
-    context 'with secondary connection' do
-      subject(:secondary_store) { redis_connection.secondary_store }
-
-      let(:fake_cable_config) do
-        {
-          adapter: 'redis',
-          url: 'redis://127.0.0.1:6377/10',
-          id: 'foobar',
-          channel_prefix: 'test_'
-        }
-      end
-
-      before do
-        allow(Gitlab::Popen).to receive(:popen).and_return(["password: 'custom-redis-password'\n", 0])
-        allow(::ActionCable.server.config).to receive(:cable).and_return(fake_cable_config)
-
-        ActionCable.server.restart
-      end
-
-      it 'is configured with a secondary_store' do
-        expect(secondary_store).not_to be_nil
-      end
-
-      it 'uses the connection params defined in cable.yml' do
-        connection_params = {
-          host: '127.0.0.1',
-          db: 10,
-          id: 'foobar',
-          port: 6377,
-          location: '127.0.0.1:6377'
-        }
-
-        expect(secondary_store.connection).to match(connection_params)
-      end
-    end
-
-    context 'with a primary connection' do
-      subject(:primary_store) { redis_connection.primary_store }
-
-      let(:fake_config) do
-        {
-          development: 'redis://127.0.0.1:6378/0',
-          test: 'redis://127.0.0.1:6375/11'
-        }
-      end
-
-      let(:expected_args) do
-        {
-          url: 'redis://127.0.0.1:6375/11'
-        }
-      end
-
-      before do
-        allow_next_instance_of(Gitlab::Redis::ActionCable) do |redis|
-          allow(redis).to receive(:fetch_config).and_return(fake_config[:test])
-        end
-
-        allow(Gitlab::Redis::ActionCable).to receive(:params).and_return(Gitlab::Redis::ActionCable.new.params)
-        ActionCable.server.restart
-      end
-
-      it 'is configured with a primary_store' do
-        expect(primary_store).not_to be_nil
-      end
-
-      it 'uses the connection params defined in redis.action_cable.yml' do
-        connection_params = {
-          host: '127.0.0.1',
-          db: 11,
-          port: 6375,
-          location: '127.0.0.1:6375',
-          id: 'redis://127.0.0.1:6375/11'
-        }
-
-        expect(primary_store.connection).to match(connection_params)
-      end
+      expect(redis_connection.connection).to match(connection_params)
     end
   end
 

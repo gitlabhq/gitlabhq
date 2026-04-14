@@ -3,6 +3,8 @@ data_category: optional
 key_path: analytics_unique_visits.p_analytics_valuestream
 description: Unique visitors to /:group/:project/-/value_stream_analytics
 product_group: optimize
+product_categories:
+- value_stream_management
 value_type: number
 status: active
 time_frame: 7d

@@ -228,14 +228,14 @@ the appropriate project and followed up from there.
 
 When you're creating a new issue, you can complete the following fields:
 
-- Title
+- Title: [limited formatting support](../../markdown.md#work-item-and-merge-request-titles)
 - Project: defaults to the current project
 - Type: either issue (default) or incident
 - [Description template](../description_templates.md): overwrites anything in the Description text box
 - Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
 - Checkbox to make the issue [confidential](confidential_issues.md)
 - [Assignees](managing_issues.md#assignees)
-- [Weight](issue_weight.md)
+- [Weight](../../work_items/weight.md)
 - [Parent](../../group/epics/_index.md)
 - [Dates](due_dates.md)
 - [Milestone](../milestones/_index.md)

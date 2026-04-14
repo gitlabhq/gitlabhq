@@ -535,6 +535,54 @@ Gitlab/DeprecatedAuditEventService:
     - 'app/services/audit_event_service.rb'
     - 'spec/services/audit_event_service_spec.rb'
 
+Database/AvoidUnpartitionedCiRelations:
+  Enabled: true
+  Exclude:
+    - 'app/controllers/projects/artifacts_controller.rb'
+    - 'app/controllers/projects/build_artifacts_controller.rb'
+    - 'app/controllers/projects/builds_controller.rb'
+    - 'app/controllers/projects/jobs_controller.rb'
+    - 'app/controllers/projects/pipelines_controller.rb'
+    - 'app/controllers/projects/pipelines/application_controller.rb'
+    - 'app/controllers/projects/tags_controller.rb'
+    - 'app/controllers/projects/web_ide_terminals_controller.rb'
+    - 'app/finders/ci/commit_statuses_finder.rb'
+    - 'app/finders/ci/job_artifacts_finder.rb'
+    - 'app/finders/ci/pipelines_finder.rb'
+    - 'app/finders/ci/pipelines_for_merge_request_finder.rb'
+    - 'app/finders/releases/evidence_pipeline_finder.rb'
+    - 'app/models/ci/commit_with_pipeline.rb'
+    - 'app/models/commit_collection.rb'
+    - 'app/models/concerns/integrations/base/pipelines_email.rb'
+    - 'app/models/merge_request.rb'
+    - 'app/models/projects/build_artifacts_size_refresh.rb'
+    - 'app/services/ci/create_commit_status_service.rb'
+    - 'app/services/ci/pipeline_creation/cancel_redundant_pipelines_service.rb'
+    - 'app/services/projects/auto_devops/disable_service.rb'
+    - 'ee/app/controllers/projects/security/scanned_resources_controller.rb'
+    - 'ee/app/finders/security/related_pipelines_finder.rb'
+    - 'ee/app/models/ee/merge_request.rb'
+    - 'ee/app/models/integrations/github.rb'
+    - 'ee/app/services/ai/slash_commands_service.rb'
+    - 'ee/app/services/concerns/security/scan_result_policies/related_pipelines.rb'
+    - 'ee/app/services/security/scan_result_policies/update_license_approvals_service.rb'
+    - 'ee/db/fixtures/development/25_downstream_pipelines.rb'
+    - 'ee/db/fixtures/development/94_ai_usage_stats.rb'
+    - 'ee/db/fixtures/development/98_pipeline_metrics.rb'
+    - 'ee/lib/compliance_management/compliance_requirements/project_fields.rb'
+    - 'ee/lib/quality/seeders/vulnerabilities.rb'
+    - 'lib/gitlab/ci/badge/coverage/report.rb'
+    - 'lib/gitlab/ci/badge/pipeline/status.rb'
+    - 'lib/gitlab/ci/charts.rb'
+    - 'lib/gitlab/ci/pipeline/chain/command.rb'
+    - 'lib/gitlab/code_navigation_path.rb'
+    - 'lib/gitlab/import_export/project/max_iids_saver.rb'
+    - 'lib/tasks/gitlab/artifacts/update_missing_expiration.rake'
+    - 'lib/tasks/gitlab/keep_around.rake'
+    - 'lib/tasks/gitlab/populate_job_traces.rake'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 Database/MultipleDatabases:
   Enabled: true
   Exclude:
@@ -908,6 +956,12 @@ API/DescriptionTags:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/EntityExposureGrowth:
+  Enabled: true
+  Include:
+    - 'lib/**/api/entities/**/*.rb'
+    - 'ee/lib/**/api/entities/**/*.rb'
+
 API/EntityFieldType:
   Enabled: true
   Include:
@@ -927,6 +981,12 @@ API/ParameterDocumentation:
     - 'ee/lib/**/api/**/*.rb'
 
 API/ParameterType:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/ParameterValuesProc:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'
@@ -1186,6 +1246,11 @@ Gitlab/RailsLogger:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Gitlab/DirectStdio:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 Gitlab/AvoidRailsCacheDeleteMatched:
   Enabled: true
   Exclude:
@@ -1381,6 +1446,7 @@ Search/NamespacedClass:
     - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
     - 'lib/tasks/**/*.rake'
     - 'ee/lib/tasks/**/*.rake'
+    - 'ee/lib/ee/gitlab/search/params.rb'
     - 'app/services/mcp/tools/**/*.rb'
     - 'ee/app/services/mcp/tools/**/*.rb'
     - 'ee/app/services/ee/mcp/tools/**/*.rb'
@@ -1572,6 +1638,9 @@ Gitlab/PreventOrganizationFirst:
 Gitlab/AvoidDefaultOrganization:
   Enabled: true
 
+Gitlab/AvoidDirectWorkItemTypeUsage:
+  Enabled: true
+
 Gitlab/AvoidConstDefaultOrganizationId:
   Enabled: true
 
@@ -1597,3 +1666,8 @@ Gitlab/Authz/EnableInBasePolicy:
   Include:
     - 'app/policies/base_policy.rb'
     - 'ee/app/policies/ee/base_policy.rb'
+
+Gitlab/Authz/AvoidHighestRoleUsage:
+  Include:
+    - 'app/policies/**/*.rb'
+    - 'ee/app/policies/**/*.rb'

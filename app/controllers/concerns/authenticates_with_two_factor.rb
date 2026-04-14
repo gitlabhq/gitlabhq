@@ -260,7 +260,7 @@ module AuthenticatesWithTwoFactor
     # overridden in EE
   end
 
-  def handle_changed_user_password(user)
+  def handle_changed_user_password(_user)
     clear_two_factor_attempt!
 
     redirect_to new_user_session_path, alert: _('An error occurred. Please sign in again.')

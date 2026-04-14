@@ -19,8 +19,7 @@ module Groups
 
       relation
         .preload(project: :namespace)
-        .with_work_item_type
-        .select(:iid, :title, :project_id, :namespace_id, 'work_item_types.icon_name')
+        .select(:iid, :title, :project_id, :namespace_id, :work_item_type_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

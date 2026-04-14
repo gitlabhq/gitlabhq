@@ -1,7 +1,6 @@
-- title = _('Two-Factor Authentication')
+- title = s_('ProfilesAuthentication|Password and authentication')
 - breadcrumb_title title
-- page_title title, _('Account')
-- add_to_breadcrumbs _('Account'), profile_account_path
+- page_title title
 - troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
 
 - content_for :after_flash_content do
@@ -15,26 +14,57 @@
 
     = render 'profiles/accounts/two_factor_enabled_alert'
 
+= render ::Layouts::PageHeadingComponent.new(s_('ProfilesAuthentication|Manage authentication')) do |c|
+  - c.with_description do
+    - unless current_user.allow_passkey_authentication?
+      - learn_more_link = link_to('', help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'password-and-passkey-authentication'), target: '_blank', rel: 'noreferrer')
+      %span.gl-text-warning= sprite_icon('warning')
+      = safe_format(s_('ProfilesAuthentication|Password and passkey sign-in have been restricted for your account. %{link_start}Learn more%{link_end}.'), tag_pair(learn_more_link, :link_start, :link_end))
+
+= render ::Layouts::SettingsSectionComponent.new(_('Password'), options: { class: '-gl-mb-[2rem]' }) do |c|
+  - c.with_description do
+    .gl-flex.gl-flex-wrap.gl-gap-3.gl-justify-between.gl-items-center.gl-mt-2
+      %div
+        - learn_more_link = link_to('', help_page_path('user/profile/user_passwords.md', anchor: 'password-requirements'),  target: '_blank', rel: 'noreferrer')
+        = safe_format(s_('ProfilesAuthentication|All passwords must meet %{link_start}password requirements%{link_end}.'), tag_pair(learn_more_link, :link_start, :link_end))
+      - if current_user.allow_password_authentication?
+        .gl-w-full{ class: "@sm/panel:gl-w-auto" }
+          = render Pajamas::ButtonComponent.new(variant: :default, href: edit_user_settings_password_path, button_options: { data: { testid: 'change-password-button' }}) do
+            = s_('ProfilesAuthentication|Change password')
+
 - if Feature.enabled?(:passkeys, current_user)
   = render ::Layouts::SettingsSectionComponent.new(s_("ProfilesAuthentication|Passkeys sign-in")) do |c|
     - c.with_description do
-      - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
-      = safe_format(s_("ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."), tag_pair(learn_more_link, :link_start, :link_end))
+      %div
+        - learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noreferrer')
+        = safe_format(s_("ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."), tag_pair(learn_more_link, :link_start, :link_end))
     - c.with_body do
       %p
         %span.gl-font-bold
           = _('Status:')
-        #{@passkeys.present? ? _('Enabled') : _('Disabled')}
+        - passkey_status = current_user.allow_passkey_authentication? && @passkeys.present? ? _('Active') : _('Inactive')
+        = passkey_status
       = render 'passkeys'
 
-= render ::Layouts::SettingsSectionComponent.new(title) do |c|
+- if display_providers_on_profile?
+  = render ::Layouts::SettingsSectionComponent.new(s_('ProfilesAuthentication|Service sign-in')) do |c|
+    - c.with_description do
+      %div
+        = s_('ProfilesAuthentication|Connect a service for sign-in.')
+    - c.with_body do
+      = render 'providers', providers: button_based_providers, group_saml_identities: local_assigns[:group_saml_identities]
+
+= render ::Layouts::SettingsSectionComponent.new(s_('ProfilesAuthentication|Two-factor authentication (2FA)')) do |c|
   - c.with_description do
     .gl-flex.gl-flex-wrap.gl-gap-3.gl-justify-between.gl-items-center.gl-mt-2
       %div
-        = _("Increase your account's security by enabling two-factor authentication (2FA).")
+        - if current_user.allow_passkey_authentication?
+          = s_('ProfilesAuthentication|Enable additional security methods for two-factor authentication. Once enabled, you can also use your passkeys for 2FA.')
+        - else
+          = s_('ProfilesAuthentication|Enable additional security methods for two-factor authentication.')
       - if current_user.two_factor_enabled?
         .gl-w-full{ class: "@sm/panel:gl-w-auto" }
-          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
+          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?, current_user.allow_passkey_authentication? && @passkeys.present?) }
     - if current_user.allow_passkey_authentication? && !current_user.two_factor_enabled? && @passkeys.present?
       = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mt-5' }) do |c|
         - c.with_body do
@@ -43,7 +73,7 @@
     %p
       %span.gl-font-bold
         = _('Status:')
-      #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
+      #{current_user.two_factor_enabled? ? _('Active') : _('Inactive')}
     = render 'default_2fa_method'
     = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
     = render 'webauthn_registration'

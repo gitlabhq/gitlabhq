@@ -131,6 +131,12 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
     end
 
+    describe '#server_error?' do
+      it 'returns false' do
+        expect(results.server_error?).to be false
+      end
+    end
+
     context 'when count_limit is lower than total amount' do
       before do
         allow(results).to receive(:count_limit).and_return(1)
@@ -651,64 +657,29 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
   describe '#formatted_count' do
     context 'when scope is work_items' do
-      context 'when work_items_search_enabled? is false' do
-        before do
-          stub_feature_flags(search_scope_work_item: false)
-        end
+      it 'formats limited issues count' do
+        allow(results).to receive(:limited_issues_count).and_return(42)
 
-        it 'returns "0"' do
-          expect(results.formatted_count('work_items')).to eq('0')
-        end
+        expect(results.formatted_count('work_items')).to eq('42')
       end
 
-      context 'when work_items_search_enabled? is true' do
-        before do
-          stub_feature_flags(search_scope_work_item: true)
-        end
+      it 'returns count limit message when count exceeds limit' do
+        allow(results).to receive(:limited_issues_count).and_return(100)
 
-        it 'formats limited issues count' do
-          allow(results).to receive(:limited_issues_count).and_return(42)
-
-          expect(results.formatted_count('work_items')).to eq('42')
-        end
-
-        it 'returns count limit message when count exceeds limit' do
-          allow(results).to receive(:limited_issues_count).and_return(100)
-
-          expect(results.formatted_count('work_items')).to eq('99+')
-        end
+        expect(results.formatted_count('work_items')).to eq('99+')
       end
     end
   end
 
   describe '#collection_for' do
     context 'when scope is work_items' do
-      context 'when work_items_search_enabled? is false' do
-        before do
-          stub_feature_flags(search_scope_work_item: false)
-        end
+      it 'returns work_items collection' do
+        work_items_collection = instance_double(WorkItems)
+        allow(results).to receive(:work_items).and_return(work_items_collection)
 
-        it 'returns Issue.none' do
-          result = results.send(:collection_for, 'work_items')
+        result = results.send(:collection_for, 'work_items')
 
-          expect(result).to eq(Issue.none)
-          expect(result).to be_empty
-        end
-      end
-
-      context 'when work_items_search_enabled? is true' do
-        before do
-          stub_feature_flags(search_scope_work_item: true)
-        end
-
-        it 'returns work_items collection' do
-          work_items_collection = instance_double(WorkItems)
-          allow(results).to receive(:work_items).and_return(work_items_collection)
-
-          result = results.send(:collection_for, 'work_items')
-
-          expect(result).to eq(work_items_collection)
-        end
+        expect(result).to eq(work_items_collection)
       end
     end
 
@@ -720,10 +691,6 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
       before_all do
         project.add_developer(user)
-      end
-
-      before do
-        stub_feature_flags(search_scope_work_item: true)
       end
 
       it 'filters by work_item_type_ids when present in filters' do

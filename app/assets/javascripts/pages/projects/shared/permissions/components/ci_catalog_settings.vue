@@ -1,8 +1,9 @@
 <script>
-import { GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlModal, GlSprintf, GlToggle, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { editProjectPath } from '~/lib/utils/path_helpers/project';
 
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
@@ -41,6 +42,9 @@ const i18n = {
   readMeHelpText: s__(
     'CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release.',
   ),
+  noDescriptionText: s__(
+    'CiCatalog|To set the project as a catalog resource, provide a brief description in the %{linkStart}project settings%{linkEnd}.',
+  ),
 };
 
 const ciCatalogHelpPath = helpPagePath('ci/components/_index', {
@@ -56,6 +60,7 @@ export default {
     GlModal,
     GlSprintf,
     GlToggle,
+    GlIcon,
   },
   props: {
     fullPath: {
@@ -65,12 +70,13 @@ export default {
   },
   data() {
     return {
+      ciCatalogProject: null,
       isCatalogResource: false,
       showCatalogResourceModal: false,
     };
   },
   apollo: {
-    isCatalogResource: {
+    ciCatalogProject: {
       query: getCiCatalogSettingsQuery,
       variables() {
         return {
@@ -78,10 +84,13 @@ export default {
         };
       },
       update({ project }) {
-        return project?.isCatalogResource || false;
+        return project;
       },
       error() {
         createAlert({ message: this.$options.i18n.catalogResourceQueryError });
+      },
+      result({ data }) {
+        this.isCatalogResource = data?.project?.isCatalogResource || false;
       },
     },
   },
@@ -97,7 +106,13 @@ export default {
         : this.$options.i18n.setCatalogResourceMutationError;
     },
     isLoading() {
-      return this.$apollo.queries.isCatalogResource.loading;
+      return this.$apollo.queries.ciCatalogProject.loading;
+    },
+    noDescriptionSet() {
+      return !this.ciCatalogProject?.description?.length;
+    },
+    settingsLink() {
+      return `${editProjectPath(this.fullPath)}#js-general-settings`;
     },
   },
   methods: {
@@ -162,15 +177,25 @@ export default {
           <gl-link :href="$options.ciCatalogHelpPath" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
-      <gl-toggle
-        class="gl-my-2"
-        :value="isCatalogResource"
-        :label="$options.i18n.ciCatalogLabel"
-        label-position="hidden"
-        name="ci_resource_enabled"
-        data-testid="catalog-resource-toggle"
-        @change="onToggleCatalogResource"
-      />
+      <div class="gl-my-2 gl-flex gl-items-center gl-gap-3">
+        <gl-toggle
+          :value="isCatalogResource"
+          :label="$options.i18n.ciCatalogLabel"
+          :disabled="noDescriptionSet"
+          label-position="hidden"
+          name="ci_resource_enabled"
+          data-testid="catalog-resource-toggle"
+          @change="onToggleCatalogResource"
+        />
+        <span v-if="noDescriptionSet" class="gl-text-subtle">
+          <gl-icon name="warning" class="gl-text-warning" />
+          <gl-sprintf :message="$options.i18n.noDescriptionText">
+            <template #link="{ content }">
+              <gl-link :href="settingsLink" data-testid="settings-link">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </span>
+      </div>
       <div class="gl-text-subtle">
         {{ $options.i18n.readMeHelpText }}
       </div>

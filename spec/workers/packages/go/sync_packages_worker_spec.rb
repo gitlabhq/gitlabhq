@@ -58,7 +58,7 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category
       it_behaves_like 'it creates a package', 'mod', 'v1.0.3'
       it_behaves_like 'it creates a package', 'v2', 'v2.0.0'
 
-      context 'marked as pending_destruction' do
+      context 'when marked as pending_destruction' do
         before do
           ::Packages::Go::Package.for_projects(project).each(&:pending_destruction!)
         end

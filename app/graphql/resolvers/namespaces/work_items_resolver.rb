@@ -35,8 +35,7 @@ module Resolvers
         required: false,
         default_value: false,
         description: 'Exclude group-level work items within the group and its descendants. ' \
-          'Ignored for project namespaces and when use_namespace_traversal_ids_for_work_items_finder feature flag is ' \
-          'enabled.',
+          'Ignored for project namespaces.',
         experiment: { milestone: '18.4' }
 
       argument :include_archived, GraphQL::Types::Boolean,

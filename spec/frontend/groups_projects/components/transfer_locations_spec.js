@@ -1,10 +1,10 @@
 import {
+  GlAlert,
   GlDropdown,
   GlDropdownItem,
-  GlAlert,
-  GlSearchBoxByType,
   GlIntersectionObserver,
   GlLoadingIcon,
+  GlSearchBoxByType,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -18,6 +18,7 @@ import TransferLocations, { i18n } from '~/groups_projects/components/transfer_l
 import { getTransferLocations } from '~/api/projects_api';
 import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
 import { ENTER_KEY } from '~/lib/utils/keys';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 jest.mock('~/api/projects_api', () => ({
   getTransferLocations: jest.fn(),
@@ -28,6 +29,7 @@ describe('TransferLocations', () => {
 
   // Default data
   const resourceId = '1';
+  const resourcePath = 'test-project';
   const defaultPropsData = {
     groupTransferLocationsApiMethod: getTransferLocations,
     value: null,
@@ -68,12 +70,15 @@ describe('TransferLocations', () => {
   // VTU wrapper helpers
   Vue.use(VueApollo);
   const createComponent = ({
+    provide = {},
     propsData = {},
     requestHandlers = [[currentUserNamespaceQuery, defaultQueryHandler]],
   } = {}) => {
     wrapper = mountExtended(TransferLocations, {
       provide: {
         resourceId,
+        resourcePath,
+        ...provide,
       },
       propsData: {
         ...defaultPropsData,
@@ -224,20 +229,61 @@ describe('TransferLocations', () => {
     });
   });
 
-  describe('when transfer location is selected', () => {
-    it('displays transfer location as selected', () => {
-      const [{ id, full_name: humanName }] = transferLocationsResponsePage1;
+  it('displays dropdown placeholder', () => {
+    createComponent();
 
-      createComponent({
-        propsData: {
-          value: {
-            id,
-            humanName,
-          },
+    expect(findDropdown().props('text')).toBe('Select namespace');
+  });
+
+  it('displays transfer location as selected', () => {
+    const [{ id, full_name: humanName }] = transferLocationsResponsePage1;
+
+    createComponent({
+      propsData: {
+        value: {
+          id,
+          humanName,
         },
+      },
+    });
+
+    expect(findDropdown().props('text')).toBe(humanName);
+  });
+
+  describe('when location is selected', () => {
+    const groupNamespace = {
+      id: transferLocationsResponsePage1[0].id,
+      humanName: transferLocationsResponsePage1[0].full_name,
+      fullPath: transferLocationsResponsePage1[0].full_path,
+    };
+
+    const { namespace: userNamespace } = currentUserNamespaceQueryResponse.data.currentUser;
+
+    describe.each`
+      type       | id                                      | value                       | namespacePath   | newPath
+      ${'group'} | ${groupNamespace.id}                    | ${groupNamespace.humanName} | ${'my-project'} | ${`${groupNamespace.fullPath}/my-project`}
+      ${'group'} | ${groupNamespace.id}                    | ${groupNamespace.humanName} | ${undefined}    | ${undefined}
+      ${'user'}  | ${getIdFromGraphQLId(userNamespace.id)} | ${userNamespace.fullName}   | ${'my-project'} | ${`${userNamespace.fullPath}/my-project`}
+      ${'user'}  | ${getIdFromGraphQLId(userNamespace.id)} | ${userNamespace.fullName}   | ${undefined}    | ${undefined}
+    `('when value is $type', ({ id, value, namespacePath, newPath }) => {
+      beforeEach(async () => {
+        mockResolvedGetTransferLocations();
+        createComponent({ provide: { resourcePath: namespacePath } });
+        await showDropdown();
+
+        const dropdownItem = findDropdownItemByText(value);
+        dropdownItem.vm.$emit('click');
+        await nextTick();
       });
 
-      expect(findDropdown().props('text')).toBe(humanName);
+      it('emits selected location with newPath field', () => {
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0][0]).toMatchObject({
+          id,
+          humanName: value,
+          newPath,
+        });
+      });
     });
   });
 
@@ -378,14 +424,12 @@ describe('TransferLocations', () => {
     });
   });
 
-  describe('when `label` prop is passed', () => {
-    it('renders label', () => {
-      const label = 'Foo bar';
+  it('renders default label', () => {
+    createComponent();
 
-      createComponent({ propsData: { label } });
-
-      expect(wrapper.findByRole('group', { name: label }).exists()).toBe(true);
-    });
+    expect(wrapper.findByRole('group', { name: 'Select destination namespace' }).exists()).toBe(
+      true,
+    );
   });
 
   describe('when there are no results', () => {

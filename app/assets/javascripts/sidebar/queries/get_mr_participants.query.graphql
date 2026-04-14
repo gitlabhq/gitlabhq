@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/user_disabled_for_duo_usage.fragment.graphql"
 
 query getMrParticipants($fullPath: ID!, $iid: String!, $getStatus: Boolean = false) {
   namespace: project(fullPath: $fullPath) {
@@ -10,6 +11,7 @@ query getMrParticipants($fullPath: ID!, $iid: String!, $getStatus: Boolean = fal
         nodes {
           ...User
           ...UserAvailability @include(if: $getStatus)
+          ...UserDisabledForDuoUsage
         }
       }
     }

@@ -32,11 +32,6 @@ module MembersHelper
     "#{text} #{action} the #{member.source.human_name} #{source_text(member)}?"
   end
 
-  def leave_confirmation_message(member_source)
-    "Are you sure you want to leave the " \
-      "\"#{member_source.human_name}\" #{member_source.model_name.to_s.humanize(capitalize: false)}?"
-  end
-
   def member_path(member)
     if member.is_a?(GroupMember)
       group_group_member_path(member.source, member)

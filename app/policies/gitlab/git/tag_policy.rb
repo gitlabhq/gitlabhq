@@ -9,7 +9,7 @@ module Gitlab
         ProtectedTag.protected?(project, @subject.name)
       end
 
-      rule { can?(:admin_tag) & (~protected_tag | can?(:maintainer_access)) }.enable :delete_tag
+      rule { can?(:admin_tag) & (~protected_tag | can?(:delete_protected_tag)) }.enable :delete_tag
 
       def project
         @subject.repository.container

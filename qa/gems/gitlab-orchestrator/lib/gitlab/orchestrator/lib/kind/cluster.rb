@@ -55,13 +55,14 @@ module Gitlab
           end
         end
 
-        def initialize(ci:, host_http_port:, host_ssh_port:, host_registry_port:, docker_hostname: nil)
+        def initialize(ci:, host_http_port:, host_ssh_port:, host_registry_port:, docker_hostname: nil, kind_image: nil)
           @ci = ci
           @name = CLUSTER_NAME
           @host_http_port = host_http_port
           @host_ssh_port = host_ssh_port
           @host_registry_port = host_registry_port
           @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
+          @kind_image = kind_image
         end
 
         def create
@@ -80,7 +81,7 @@ module Gitlab
 
         private
 
-        attr_reader :ci, :name, :docker_hostname, :host_http_port, :host_ssh_port, :host_registry_port
+        attr_reader :ci, :name, :docker_hostname, :host_http_port, :host_ssh_port, :host_registry_port, :kind_image
 
         # Helm client instance
         #
@@ -94,14 +95,17 @@ module Gitlab
         # @return [void]
         def create_cluster
           Helpers::Spinner.spin("performing cluster creation") do
-            puts execute_shell([
+            cmd = [
               "kind",
               "create",
               "cluster",
               "--name", name,
               "--wait", "30s",
               "--config", ci ? ci_config : default_config
-            ])
+            ]
+            cmd.push("--image", kind_image) if kind_image.present?
+
+            puts execute_shell(cmd)
           end
         end
 
