@@ -110,7 +110,9 @@ release-environments-build-omnibus:
 
 release-environments-deploy-env:
   stage: prepare
-  needs: ["release-environments-build-cng"]
+  needs:
+    - release-environments-build-cng
+    - release-environments-build-omnibus
   variables:
     DEPLOY_ENV: deploy.env
   script:
