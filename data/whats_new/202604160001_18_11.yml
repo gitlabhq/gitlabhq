@@ -1,0 +1,151 @@
+- name: "Vulnerability resolution with GitLab Duo Agent Platform (GA)"
+  description: |
+    Agentic SAST Vulnerability Resolution, which was first introduced as a beta in GitLab 18.9, is now
+    generally available in GitLab 18.11. It runs as part of your SAST scan, after SAST false positive detection
+    runs, or when manually triggered for individual SAST vulnerabilities.
+    GitLab Duo autonomously analyzes the finding, reasons through the surrounding code context, generates a
+    context-aware fix, and creates a ready-to-review merge request, without any manual intervention.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/vulnerabilities/agentic_vulnerability_resolution/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "GitLab Data Analyst Foundational Agent now generally available"
+  description: |
+    The Data Analyst Agent is a specialized AI chat assistant that helps you query, visualize, and surface
+    data across the GitLab platform. Backed by the [GitLab Query Language (GLQL)](https://docs.gitlab.com/user/glql),
+    the Data Analyst can retrieve and analyze data about each of the supported
+    [data sources](https://docs.gitlab.com/user/glql/data_sources/), and provide clear, actionable insights about your
+    software development health and engineering efficiency. These insights can be visualized directly in the agent
+    output and embedded directly into issues and epics for further evaluation.
+  stage: analytics
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/data_analyst/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "CI expert agent launches in beta"
+  description: |
+    The AI-powered CI expert agent launched as beta helps teams get from “code in GitLab” to a first working pipeline
+    without starting from a blank .gitlab-ci.yml. Using GitLab Duo Agent Platform, the CI agent inspects your repository,
+    asks a few guided questions about your build and test process, and generates a ready-to-run pipeline you can review,
+    edit, and commit. This closes a key CI activation gap for new and existing users by turning pipeline creation into
+    a conversational, context-aware experience, while still letting you take full control of the YAML once you’re ready to
+    evolve and optimize your configuration.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/ci_expert_agent/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Automated vulnerability severity overrides"
+  description: |
+    Default vulnerability severities don't always reflect your organization's actual risk. A critical CVE in an
+    internal-only service might not warrant the same urgency as one in a public-facing application, yet teams
+    spend significant time triaging findings that don't match their risk model. Vulnerability management policies
+    can now automatically adjust the severity of vulnerabilities based on conditions like CVE ID, CWE ID, file path,
+    and directory. When applied, the policy updates the severity of any vulnerability that matches the criteria on
+    the default branch. Manual overrides still take precedence, and all changes are logged in the vulnerability's
+    history and audit events. This reduces triage work and ensures developers focus on the findings that matter most
+    to your business.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/policies/vulnerability_management_policy/#severity-override-policies
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Create Service Account in subgroups and projects"
+  description: |
+    Teams can now create service accounts in subgroups and projects. Instead of broad, top-level group bots,
+    you can attach a dedicated service account to a single subgroup or project and manage its access like any
+    other member of that namespace. Group and subgroup service accounts can be invited to the group where they
+    were created or to any descendant subgroups and projects. Project service accounts are limited to their own project.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/profile/service_accounts/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Service Accounts available on GitLab Free"
+  description: |
+    Service accounts are now available on GitLab.com in all tiers. Previously limited to
+    Premium and Ultimate, service accounts let you perform automated actions, access data, or run
+    scheduled processes without tying credentials to individual team members. They're commonly used in
+    pipelines and third-party integrations where credentials must stay stable regardless of team
+    changes. On GitLab Free, you can create up to 100 service accounts per top-level group, including those
+    created in subgroups or projects.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/profile/service_accounts/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Deploy Gitaly on Kubernetes"
+  description: |
+    You can now deploy Gitaly on Kubernetes as a fully supported deployment method.
+    This gives you greater flexibility in managing your GitLab infrastructure by using Kubernetes
+    orchestration capabilities for scaling, high availability, and resource management.
+    Previously, Kubernetes deployments required custom configurations and weren't officially supported,
+    making it difficult to maintain reliable Gitaly clusters in containerized environments.
+  stage: tenant_scale
+  self-managed: true
+  gitlab-com: false
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitaly/kubernetes/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Fine-grained permissions for personal access tokens now available (Beta)"
+  description: |
+    Fine-grained personal access tokens (PATs) are now available in beta. Unlike legacy PATs, which grant
+    access to every project and group you belong to, fine-grained PATs let you limit each token to specific
+    resources and actions. This reduces the potential impact of a leaked or compromised token.
+    Your existing PATs continue to work as before, and you can still create legacy PATs without fine-grained permissions.
+    This beta release covers approximately 75% of the GitLab REST API. Full REST API coverage, GraphQL enforcement,
+    and administrator policy controls are planned for the GA release.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/auth/tokens/fine_grained_access_tokens/
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Top CWE chart in security dashboards"
+  description: |
+    The top CWE chart is now available on the new security dashboards. Identify the most common CWEs
+    across your project or instance to find opportunities for training, improvement, or program optimization.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/security_dashboard/#top-10-cwes
+  published_at: 2026-04-16
+  release: "18.11"
+
+- name: "Reconfigure inputs when manually running MR pipelines"
+  description: |
+    A powerful aspect of CI/CD inputs is that you can manually run new pipelines with new values for runtime customization.
+    This was not available in merge request pipelines before, but in this release you can now customize inputs in MR pipelines too.
+    After you configure inputs for MR pipelines, you can optionally modify those inputs and change the pipeline behavior any
+    time you run a new pipeline for a merge request.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/#run-a-merge-request-pipeline-with-custom-inputs
+  published_at: 2026-04-16
+  release: "18.11"
