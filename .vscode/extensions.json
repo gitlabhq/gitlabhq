@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ChrisChinchilla.vale-vscode",
+    "DavidAnson.vscode-markdownlint",
+    "deque-systems.vscode-axe-linter",
+    "EditorConfig.EditorConfig",
+    "gitlab.gitlab-workflow",
+    "shopify.ruby-lsp"
+  ]
+}

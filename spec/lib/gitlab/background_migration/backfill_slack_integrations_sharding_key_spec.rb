@@ -132,6 +132,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsShardingKey
   end
 
   after(:context) do
+    # The before context hook above will be skipped when `#skip` is called by an earlier hook
+    # that checks if migration is out of the test window. We also need to skip adding back the
+    # constraint if it was never dropped.
+    next if migration_out_of_test_window?(described_class)
+
     ApplicationRecord
       .connection
       .execute(
