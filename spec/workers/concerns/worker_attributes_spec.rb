@@ -491,6 +491,18 @@ RSpec.describe WorkerAttributes, feature_category: :sidekiq do
           expect(get_concurrency_limit).to eq(0)
         end
       end
+
+      context 'when sidekiq_concurrency_limit_default_calculation feature flag is disabled' do
+        before do
+          stub_feature_flags(sidekiq_concurrency_limit_default_calculation: false)
+          stub_env("GITLAB_SIDEKIQ_MAX_REPLICAS", 10)
+          stub_env("SIDEKIQ_CONCURRENCY", 10)
+        end
+
+        it 'returns 0' do
+          expect(get_concurrency_limit).to eq(0)
+        end
+      end
     end
   end
 end

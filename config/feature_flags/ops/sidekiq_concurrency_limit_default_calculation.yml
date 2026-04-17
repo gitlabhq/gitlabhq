@@ -1,0 +1,8 @@
+---
+name: sidekiq_concurrency_limit_default_calculation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230713
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/work_items/393
+milestone: '18.11'
+type: ops
+group: group::tenant services
+default_enabled: false
