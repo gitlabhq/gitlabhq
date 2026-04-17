@@ -247,6 +247,13 @@ GitLab Duo availability changes for the entire instance.
 
 #### For a group or subgroup
 
+> [!note]
+> For GitLab Duo Agent Platform Self-Hosted, due to a known issue, configuration settings for a group
+> are only available in GitLab 18.11 and later or in patch releases 18.8.9, 18.9.5, and 18.10.3.
+> These settings are required for turning on flows in a group.
+> If you do not see the **GitLab Duo features** section in **Settings** > **General**,
+> upgrade your instance to one of these versions.
+
 Prerequisites:
 
 - You must have the Owner role for the group or subgroup.
