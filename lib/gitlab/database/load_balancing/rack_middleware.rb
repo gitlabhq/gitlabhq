@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def clear
-          ::Gitlab::Database::LoadBalancing.release_hosts
+          ::Gitlab::Database::LoadBalancing.release_hosts(force: true)
           ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
         end
 

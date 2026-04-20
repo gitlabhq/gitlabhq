@@ -320,8 +320,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     it 'returns the default value when the database does not exist' do
       fake_default = double('fake default')
 
-      base_class = Feature::FlipperRecord
-      expect(base_class).to receive(:connection) { raise ActiveRecord::NoDatabaseError, "No database" }
+      allow(Feature::FlipperRecord).to receive(:with_connection).and_raise(ActiveRecord::NoDatabaseError, "No database")
 
       expect(described_class.enabled?(:a_feature, type: :undefined, default_enabled_if_undefined: fake_default)).to eq(fake_default)
     end
@@ -640,6 +639,29 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
           end
         end
       end
+    end
+
+    context 'when running outside of the rails executor' do
+      shared_examples 'does not leak database connections' do |flag|
+        it "checks in the database connection on #{flag}" do
+          # Run a feature flag check in a new thread so that the current thread's database connections do not interfere
+          test_thread = Thread.new do
+            expect(Feature::FlipperRecord.connection_pool.active_connection?).to be_falsey
+
+            described_class.enabled?(flag)
+
+            expect(Feature::FlipperRecord.connection_pool.active_connection?).to be_falsey
+          ensure
+            # Don't leak a connection even if this test fails
+            Feature::FlipperRecord.connection_pool.release_connection
+          end
+
+          test_thread.join
+        end
+      end
+
+      it_behaves_like 'does not leak database connections', :enabled_feature_flag
+      it_behaves_like 'does not leak database connections', :disabled_feature_flag
     end
   end
 

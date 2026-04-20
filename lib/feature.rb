@@ -13,16 +13,12 @@ module Feature
   ].freeze
 
   class FlipperRecord < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord -- This class perfectly replaces
+    extend SkipLoadBalancer
+
     # Flipper::Adapters::ActiveRecord::Model, which inherits ActiveRecord::Base
     include DatabaseReflection
 
     self.abstract_class = true
-
-    # Bypass the load balancer by restoring the default behavior of `connection`
-    # before the load balancer patches ActiveRecord::Base
-    def self.connection
-      retrieve_connection
-    end
   end
 
   class FlipperFeature < FlipperRecord
