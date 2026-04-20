@@ -26,6 +26,9 @@ class ExecuteBatchedBackgroundMigrationsAffectedBySingleRecordBug < Gitlab::Data
   FINALIZED = 6
 
   FINALIZE_JOBS = %w[
+    BackfillAwardEmojiShardingKey
+    BackfillMissingNamespaceIdOnNotes
+    BackfillShardingKeyAndCleanLabelLinksTable
     BackfillSlackIntegrationsScopesShardingKey
   ].freeze
 
