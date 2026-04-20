@@ -122,8 +122,6 @@ This setting is respected by the main GitLab application only, so other services
 Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
 rules.
 
-Due to an [existing bug (#544821)](https://gitlab.com/gitlab-org/gitlab/-/issues/544821), Geo region URLs must be added to the outbound allowlist.
-
 ## Allow outbound requests to certain IP addresses and domains
 
 Prerequisites:
