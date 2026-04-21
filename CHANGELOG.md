@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.6 (2026-04-21)
+
+### Fixed (3 changes)
+
+- [Fix Geo site validation when outbound request filtering is enabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b4781674556bf296a1d97bc617abf5b6701805d1) **GitLab Enterprise Edition**
+- [Run concurrency limit worker on secondary sites](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae6b1da70db140aaad763e426cbcfa86134cb1cf) **GitLab Enterprise Edition**
+- [Handle RecordInvalid in runner authentication token reset service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3181dfd94a72f5cc2baf48a981391fbfd2d5eaaa)
+
+### Security (9 changes)
+
+- [Enforce pagination in issuable discussions endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48e88d2976db4c3d5348078fdb697958220dfcae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6067))
+- [Unwrap nested <a> no matter how they're produced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a2d59cf583ca2e397fa478d71e951b0aa98dd50) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6030))
+- [Fix OAuth token not rejected](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ca9dd2b032a0523b90cb2ae2032e106e6d75d92d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6047))
+- [Owner of a project (Developer in the top-level group) can create a fork inside...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3d89db1152d1b4a4f48e2cfb8c1069132b722db4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5804))
+- [Add configurable Markdown length limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/91b3c6df96cc87502e7862789d4d907009c31149) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6056))
+- [Fix CSRF bypass via parser-differential in GraphQL API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db128b08f9c778710af5a2d08b36cde211f763ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6025))
+- [Pass Mermaid relativeUrlRoot by postMessage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e025c2dc90a47dfa35596519e72797925afebce5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6012))
+- [Limit endpoint for fetching latest notes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/90625c9ae78dc60ae08aea4de6db9b5853e92651) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6038))
+- [Validate JSON-like responses regardless of Content-Type header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f88f36c1f0483a830bafd30ffee20c76a26001ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5849))
+
+### Other (1 change)
+
+- [Fix flaky new_project_spec by scoping within pane](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f257aceaea45d1c22fe50a2d767262665cf96dde)
+
 ## 18.9.5 (2026-04-07)
 
 ### Changed (1 change)
