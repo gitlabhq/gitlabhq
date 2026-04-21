@@ -29,5 +29,6 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_ca
     end
 
     it_behaves_like 'filters by paginated notes', :resource_milestone_event
+    it_behaves_like 'filters by limit', :resource_milestone_event
   end
 end

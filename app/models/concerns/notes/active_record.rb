@@ -13,7 +13,8 @@ module Notes
       delegate :name, :email, to: :author, prefix: true
 
       validates :note, presence: true
-      validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
+      validates :note, bytesize: { maximum: -> { Gitlab::CurrentSettings.description_and_note_max_size } },
+        if: :note_changed?
       validates :author, presence: true
       validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
       validate :validate_created_after

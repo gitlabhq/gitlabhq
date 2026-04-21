@@ -19,5 +19,6 @@ RSpec.describe ResourceEvents::SyntheticLabelNotesBuilderService, feature_catego
     end
 
     it_behaves_like 'filters by paginated notes', :resource_label_event
+    it_behaves_like 'filters by limit', :resource_label_event
   end
 end

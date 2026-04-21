@@ -3,6 +3,21 @@
 # rubocop: disable Gitlab/NamespacedClass -- General utility
 module Gitlab
   class HttpResponseParser < HTTParty::Parser
+    # Override HTTParty::Parser#parse to detect JSON-like response bodies
+    # even when the Content-Type header doesn't map to a known format.
+    #
+    # Without this, a malicious server can return a massive JSON payload
+    # with a non-JSON Content-Type (e.g. "text"), causing the parent class
+    # to return the raw body string without calling our `json` method.
+    # Downstream consumers (e.g. jira-ruby gem) may then parse the raw
+    # body with JSON.parse without any size or depth limits, leading to
+    # memory exhaustion and DoS.
+    def parse
+      return json if !supports_format? && body_looks_like_json?
+
+      super
+    end
+
     # rubocop:disable Gitlab/Json -- Using JSON.parse for compatibility reasons
     def json
       validate_response_size!(:json)
@@ -24,6 +39,25 @@ module Gitlab
     end
 
     private
+
+    # Checks whether the response body starts with a JSON object ({) or
+    # array ([) delimiter, indicating it is likely a JSON payload
+    # regardless of the Content-Type header.
+    #
+    # The regex is anchored to the start of the string (\A) so it won't
+    # scan the entire body looking for a match. \s* skips any leading
+    # whitespace, then [\[{] matches { or [. This is a linear match
+    # with no backtracking risk, and match? returns only a boolean
+    # without allocating a MatchData object.
+    #
+    # We intentionally only check for { and [ (structured JSON) rather
+    # than bare values like strings or numbers, because only deeply
+    # nested or wide JSON structures pose a memory exhaustion risk.
+    def body_looks_like_json?
+      return false if body.nil? || body.empty?
+
+      body.match?(/\A\s*[\[{]/)
+    end
 
     def validate_response_size!(type)
       return unless oversize_response?(type)
