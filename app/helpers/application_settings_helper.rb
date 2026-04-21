@@ -547,6 +547,7 @@ module ApplicationSettingsHelper
       :push_event_activities_limit,
       :custom_http_clone_url_root,
       :snippet_size_limit,
+      :description_and_note_max_size,
       :email_restrictions_enabled,
       :email_restrictions,
       :issues_create_limit,

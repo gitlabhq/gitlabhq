@@ -10,6 +10,7 @@ module Namespaces
 
     rule { owner | admin }.policy do
       enable :create_projects
+      enable :create_project_fork
       enable :import_projects
       enable :admin_namespace
       enable :admin_runners

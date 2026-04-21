@@ -11,6 +11,11 @@
     .form-group
       = f.label :max_attachment_size, _('Maximum attachment size (MiB)'), class: 'label-bold'
       = f.number_field :max_attachment_size, class: 'form-control gl-form-input', title: _('Maximum size of individual attachments in comments.'), data: { toggle: 'tooltip', container: 'body' }
+    .form-group
+      = f.label :description_and_note_max_size, _('Maximum description or comment content size (bytes)'), class: 'label-bold'
+      = f.number_field :description_and_note_max_size, class: 'form-control gl-form-input'
+      .form-text.gl-text-subtle
+        = _('Work item, merge request, and vulnerability descriptions and comments exceeding this size are rejected on create or update. Default: 1048576 (1 MiB).')
 
     = render 'admin/application_settings/repository_size_limit_setting_registration_features_cta', form: f
     = render_if_exists 'admin/application_settings/repository_size_limit_setting', form: f

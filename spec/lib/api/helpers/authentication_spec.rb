@@ -8,6 +8,7 @@ RSpec.describe API::Helpers::Authentication do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:ci_build) { create(:ci_build, :running, user: user) }
+  let_it_be(:oauth_token) { create(:oauth_access_token, resource_owner_id: user.id) }
 
   describe 'class methods' do
     subject { Class.new.include(described_class::ClassMethods).new }
@@ -178,7 +179,12 @@ RSpec.describe API::Helpers::Authentication do
         expect(subject).to be(personal_access_token)
       end
 
-      it 'returns nil if #token_from_namespace_inheritable is not a personal access token' do
+      it 'returns #token_from_namespace_inheritable if it is an oauth access token' do
+        expect(object).to receive(:token_from_namespace_inheritable).and_return(oauth_token)
+        expect(subject).to be(oauth_token)
+      end
+
+      it 'returns nil if #token_from_namespace_inheritable is not an access token' do
         token = double
         expect(object).to receive(:token_from_namespace_inheritable).and_return(token)
         expect(subject).to be_nil
@@ -193,6 +199,18 @@ RSpec.describe API::Helpers::Authentication do
           expect_next_instance_of(PersonalAccessTokens::LastUsedService, personal_access_token) do |service|
             expect(service).to receive(:execute)
           end
+
+          subject
+        end
+      end
+
+      context 'when token is an oauth access token' do
+        before do
+          allow(object).to receive(:token_from_namespace_inheritable).and_return(oauth_token)
+        end
+
+        it 'does not call PersonalAccessTokens::LastUsedService' do
+          expect(PersonalAccessTokens::LastUsedService).not_to receive(:new)
 
           subject
         end

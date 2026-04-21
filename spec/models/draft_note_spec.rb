@@ -19,6 +19,28 @@ RSpec.describe DraftNote, feature_category: :code_review_workflow do
     it_behaves_like 'a valid diff positionable note' do
       subject { build(:draft_note, merge_request: merge_request, commit_id: commit_id, position: position) }
     end
+
+    context 'for note' do
+      subject(:draft_note) { build(:draft_note, merge_request: merge_request) }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:description_and_note_max_size).and_return(1)
+      end
+
+      it 'validates size' do
+        is_expected.to validate_length_of(:note).is_at_most(Gitlab::CurrentSettings.description_and_note_max_size)
+          .with_message("is too long (2 B). The maximum size is 1 B.")
+      end
+
+      it 'skips validation when unchanged' do
+        draft_note.note = 'over limit'
+        is_expected.not_to be_valid
+
+        draft_note.save!(validate: false)
+
+        is_expected.to be_valid
+      end
+    end
   end
 
   describe 'delegations' do

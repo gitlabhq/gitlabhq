@@ -52,21 +52,14 @@ RSpec.describe IssuableActions do
       allow(discussion_serializer).to receive(:represent)
     end
 
-    it 'instantiates and calls NotesFinder as expected' do
-      expect(issuable).to receive(:to_ability_name).and_return('issue')
-      expect(issuable).to receive(:project).and_return(project)
-      expect(Ability).to receive(:allowed?).at_least(1).and_return(true)
-      expect(Discussion).to receive(:build_collection).and_return([])
-      expect(DiscussionSerializer).to receive(:new).and_return(discussion_serializer)
-      expect(NotesFinder).to receive(:new).with(user, finder_params_for_issuable).and_call_original
-
-      expect_any_instance_of(NotesFinder).to receive(:execute).and_return(notes_result)
-
-      expect(notes_result).to receive_messages(
-        with_web_entity_associations: notes_result,
-        inc_relations_for_view: notes_result,
-        order_created_at_id_asc: notes_result
+    it 'instantiates and calls DiscussionsListService as expected' do
+      expect(Issuable::DiscussionsListService).to receive(:new).with(
+        user, issuable, finder_params_for_issuable
+      ).and_return(
+        double(execute: notes_result, paginator: double(has_next_page?: false))
       )
+
+      expect(DiscussionSerializer).to receive(:new).and_return(discussion_serializer)
 
       controller.discussions
     end

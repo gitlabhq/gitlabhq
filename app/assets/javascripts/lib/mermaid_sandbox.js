@@ -1,26 +1,16 @@
 import DOMPurify from 'dompurify';
-import { getParameterByName, isRootRelative } from '~/lib/utils/url_utility';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { resetServiceWorkersPublicPath } from '~/lib/utils/webpack';
 
-const resetWebpackPublicPath = () => {
-  const relativeRootPath = getParameterByName('relativeRootPath');
-
-  // Validate the path to prevent injection attacks (CVE-2025-12029 variant)
-  // Must start with / but not //
+const resetWebpackPublicPath = (relativeRootPath) => {
   if (!relativeRootPath) {
     return;
   }
 
-  const trimmedPath = relativeRootPath.trim();
-  if (!isRootRelative(trimmedPath)) {
-    return;
-  }
-
-  window.gon = { relative_url_root: trimmedPath };
+  window.gon = { relative_url_root: relativeRootPath };
   resetServiceWorkersPublicPath();
 };
 
-resetWebpackPublicPath();
 const setIframeRenderedSize = (h, w) => {
   const { origin } = window.location;
   window.parent.postMessage({ h, w }, origin);
@@ -111,8 +101,9 @@ const addListener = (mermaid) => {
       if (event.origin !== window.location.origin) {
         return;
       }
-      const { source } = event.data;
+      const { source, relativeRootPath } = event.data;
       proxiedUrls = event.data.proxiedUrls;
+      resetWebpackPublicPath(relativeRootPath);
       drawDiagram(mermaid, source);
     },
     false,

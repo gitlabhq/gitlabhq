@@ -3671,6 +3671,35 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
+      context 'and user is a maintainer of target group' do
+        let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+        let_it_be_with_reload(:project_fork_target) { create(:project, namespace: target_group) }
+
+        before do
+          target_group.add_maintainer(user)
+          project_fork_target.add_owner(user)
+        end
+
+        it 'allows project to be forked from an existing project' do
+          expect(project_fork_target).not_to be_forked
+
+          post api(path, user)
+
+          project_fork_target.reload
+          expect(response).to have_gitlab_http_status(:created)
+          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+          expect(project_fork_target.fork_network_member).to be_present
+          expect(project_fork_target).to be_forked
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :create_fork_relationship do
+          let(:boundary_object) { project_fork_target }
+          let(:request) do
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", personal_access_token: pat)
+          end
+        end
+      end
+
       context 'user is owner' do
         before do
           project_fork_target.add_owner(user)
@@ -3687,8 +3716,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           it 'fails as target namespace is unauthorized' do
             post api(path, user)
 
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(json_response['message']).to eq "401 Unauthorized - Target Namespace"
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq "403 Forbidden"
           end
         end
 
@@ -3706,17 +3735,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             post api(path, user)
             project_fork_target.reload
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-            expect(project_fork_target.fork_network_member).to be_present
-            expect(project_fork_target).to be_forked
-          end
-
-          it_behaves_like 'authorizing granular token permissions', :create_fork_relationship do
-            let(:boundary_object) { project_fork_target }
-            let(:request) do
-              post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", personal_access_token: pat)
-            end
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq('403 Forbidden')
           end
         end
 
@@ -3734,7 +3754,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         it 'denies project to be forked from a private project' do
           post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", user)
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 

@@ -33,7 +33,6 @@ module Issuable
   include Import::HasImportSource
 
   TITLE_LENGTH_MAX = 255
-  DESCRIPTION_LENGTH_MAX = 1.megabyte
   SEARCHABLE_FIELDS = %w[title description].freeze
   MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200
 
@@ -80,9 +79,10 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: TITLE_LENGTH_MAX }
-    # we validate the description against DESCRIPTION_LENGTH_MAX only for Issuables being created and on updates if
+    # we validate the description against the limit only for Issuables being created and on updates if
     # the description changes to avoid breaking the existing Issuables which may have their descriptions longer
-    validates :description, bytesize: { maximum: -> { DESCRIPTION_LENGTH_MAX } }, if: :validate_description_length?
+    validates :description, bytesize: { maximum: -> { Gitlab::CurrentSettings.description_and_note_max_size } },
+      if: :validate_description_length?
     validate :validate_assignee_size_length, unless: :importing?
 
     before_validation :truncate_description_on_import!
@@ -242,11 +242,11 @@ module Issuable
       # previous_description will be nil for new records
       return true if previous_description.blank?
 
-      previous_description.bytesize <= DESCRIPTION_LENGTH_MAX
+      previous_description.bytesize <= Gitlab::CurrentSettings.description_and_note_max_size
     end
 
     def truncate_description_on_import!
-      self.description = description&.slice(0, Issuable::DESCRIPTION_LENGTH_MAX) if importing?
+      self.description = description&.slice(0, Gitlab::CurrentSettings.description_and_note_max_size) if importing?
     end
 
     def validate_assignee_size_length
