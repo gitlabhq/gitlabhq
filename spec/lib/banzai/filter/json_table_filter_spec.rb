@@ -245,6 +245,19 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
     end
   end
 
+  context 'when cell values are not strings' do
+    it 'renders without raising' do
+      input = json_table_input(
+        "fields" => [{ "key" => "a" }],
+        "items" => [{ "a" => 42 }],
+        "markdown" => true
+      )
+      doc = filter(input)
+
+      expect(doc.at_css('td').text).to eq('42')
+    end
+  end
+
   context 'when cell data contains pipe characters' do
     it 'renders pipes within a single cell' do
       input = json_table_input(

@@ -45,23 +45,21 @@ module Banzai
         }.freeze
 
         def render(text)
-          # GLFMMarkdown requires UTF-8 input, and raises on anything else,
-          # like US-ASCII.  Occasionally we can get an empty US-ASCII `text`
-          # here, due to the following surprising result:
+          # GLFMMarkdown requires UTF-8 input and raises on anything else.
           #
-          # [7] pry(main)> "".encoding
-          # => #<Encoding:UTF-8>
-          # [8] pry(main)> [].join
-          # => ""
-          # [9] pry(main)> [].join.encoding
-          # => #<Encoding:US-ASCII>
+          # Fast path for empty input, and re-encode any non-UTF-8 as UTF-8; raises if the encoding
+          # is invalid.
+          #
+          # Practically, all web input is gathered as UTF-8, but internally we may sometimes call
+          # render with US-ASCII, as it's the encoding given to e.g.: `[].join`, `1.to_s`,
+          # `true.to_s`, etc., even if the source file that contained these calls was in UTF-8 and
+          # `""` is UTF-8!
           #
           # See related discussion with further links:
           # https://github.com/gjtorikian/commonmarker/issues/277.
-          #
-          # Obviate the need for checking anything encoding-related by shortcutting
-          # when given an empty input.
           return "" if text.empty?
+
+          text = text.encode(Encoding::UTF_8) unless text.encoding == Encoding::UTF_8
 
           ::GLFMMarkdown.to_html(text, options: render_options)
         end

@@ -101,6 +101,29 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
     end
   end
 
+  describe 'input encoding' do
+    let(:engine) { described_class.new({ no_sourcepos: true }) }
+
+    it 'renders UTF-8 input' do
+      expect(engine.render('hello')).to include('hello')
+    end
+
+    it 'renders US-ASCII input' do
+      text = 'hello'.encode(Encoding::US_ASCII)
+      expect(engine.render(text)).to include('hello')
+    end
+
+    it 'renders Shift_JIS input' do
+      text = 'こんにちは'.encode(Encoding::Shift_JIS)
+      expect(engine.render(text)).to include('こんにちは')
+    end
+
+    it 'raises on invalid encoding' do
+      text = (+"\xFF\xFE").force_encoding(Encoding::Shift_JIS)
+      expect { engine.render(text) }.to raise_error(Encoding::InvalidByteSequenceError)
+    end
+  end
+
   describe 'escaped reference chars' do
     # In order to allow a user to short-circuit our reference shortcuts
     # (such as # or !), the user should be able to escape them, like \#.
