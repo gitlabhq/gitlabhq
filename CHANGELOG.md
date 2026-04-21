@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.1 (2026-04-21)
+
+### Fixed (1 change)
+
+- [Fix JSON tables with non-string values](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e299d5b5961dd21b408dbc18798120bfe4a0b2a6)
+
+### Security (10 changes)
+
+- [Enforce pagination in issuable discussions endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a82ac3ef727e64aecdb8a41dce43362437223538) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6065))
+- [Unwrap nested <a> no matter how they're produced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b35a98202b9006b349f36b071359707946d04f7d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6032))
+- [Fix OAuth token not rejected](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b9eee199b929ed5aaef9e6500c539a8a0560c82e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6045))
+- [Owner of a project (Developer in the top-level group) can create a fork inside...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9c1c4c5f3f0031b69879e6629cc5e37056597909) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6040))
+- [Add configurable Markdown length limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9927fb03f12821044852857b7addd3556cc0d270) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6054))
+- [Fix CSRF bypass via parser-differential in GraphQL API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/087a22a8d8ea633ab7cdb1ec2207b50659594e44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6029))
+- [Pass Mermaid relativeUrlRoot by postMessage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6dc7e3cfcd2aa71fdbcff0413a03fdd9d88f06a9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6033))
+- [Limit endpoint for fetching latest notes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5af7c6396cc92ea25a4ab4b9eddb4c5d32a36121) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6036))
+- [Fix TOCTOU vulnerability in Web IDE asset authorization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9443eefa302d35d3db6e04718f6f259b1a430ed8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6028))
+- [Validate JSON-like responses regardless of Content-Type header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b0ef641df2c2e6a8db8ac01f655570c79b7d3b33) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5853))
+
 ## 18.11.0 (2026-04-15)
 
 ### Added (194 changes)
