@@ -39,7 +39,6 @@ project:
   - download_code
   - download_wiki_code
   - export_requirements
-  - fork_project
   - import_requirements
   - mark_note_as_internal
   - metrics_dashboard

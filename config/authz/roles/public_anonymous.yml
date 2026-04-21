@@ -28,7 +28,6 @@ project:
   - read_package
   - read_pipeline
   - read_project
-  - read_project_for_iids
   - read_project_member
   - read_release
   - read_snippet

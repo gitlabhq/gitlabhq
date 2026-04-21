@@ -8,10 +8,6 @@ project:
   raw_permissions:
   - access_security_and_compliance
   - add_project_to_instance_security_dashboard
-  - award_emoji
-  - download_code
-  - download_wiki_code
-  - export_work_items
   - public_user_access
   - read_approvers
   - read_ascp_component
@@ -20,14 +16,10 @@ project:
   - read_branch_rule
   - read_build
   - read_cluster
-  - read_code
-  - read_commit_status
   - read_compliance_adherence_report
   - read_compliance_dashboard
   - read_compliance_framework
   - read_compliance_violations_report
-  - read_container_image
-  - read_cycle_analytics
   - read_dependency
   - read_deployment
   - read_environment
@@ -35,37 +27,18 @@ project:
   - read_feature_flag
   - read_incident_management_escalation_policy
   - read_incident_management_oncall_schedule
-  - read_insights
   - read_issuable_resource_link
-  - read_issue
-  - read_issue_analytics
-  - read_issue_board
-  - read_issue_board_list
-  - read_issue_iid
-  - read_issue_link
-  - read_label
   - read_licenses
-  - read_merge_request
-  - read_merge_request_iid
   - read_merge_request_status_check_url
-  - read_merge_train
-  - read_milestone
   - read_namespace_cluster_agent_mapping
-  - read_note
   - read_observability
   - read_on_demand_dast_scan
-  - read_package
   - read_pages
-  - read_pipeline
   - read_pipeline_subscription
-  - read_project
   - read_project_audit_events
   - read_project_import
-  - read_project_member
   - read_project_merge_request_analytics
-  - read_project_metadata
   - read_project_security_exclusions
-  - read_release
   - read_runners
   - read_saved_replies
   - read_saved_view
@@ -78,7 +51,6 @@ project:
   - read_terraform_state
   - read_timelog_category
   - read_vulnerability
-  - read_wiki
 group:
   permissions: []
   raw_permissions:

@@ -3101,11 +3101,11 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context "when the project is public or internal and not on the allowlist" do
       where(:feature, :permissions) do
         :container_registry | [:build_read_container_image, :read_container_image]
-        :package_registry   | [:read_package]
+        :package_registry   | [:read_package, :read_project]
         :builds             | [:read_commit_status]
         :releases           | [:read_release]
         :environments       | [:read_environment]
-        :repository         | [:build_download_code]
+        :repository         | [:read_project]
       end
 
       with_them do

@@ -2,9 +2,6 @@
 
 class ProjectPolicy < BasePolicy
   include ::Ci::JobAbilities
-  include ::Authz::RolePermissions
-
-  define_role_permissions(:project)
 
   # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
   desc "Project-based pipeline visibility enabled"
@@ -17,9 +14,6 @@ class ProjectPolicy < BasePolicy
   # GUEST
   desc "User has guest access"
   condition(:guest) { team_member? }
-
-  desc "User is a member of the project"
-  condition(:team_member) { team_member? }
 
   # This is not a linear condition (some policies available for planner might not be available for higher access levels)
   desc "User has planner access"
@@ -157,11 +151,6 @@ class ProjectPolicy < BasePolicy
   desc "Deploy token with read_repository scope and project access"
   condition(:download_code_deploy_token) do
     user.is_a?(DeployToken) && user.read_repository && user.has_access_to?(project)
-  end
-
-  desc "If user is authenticated via CI job token"
-  condition(:from_ci_job_token, scope: :user) do
-    @user&.from_ci_job_token?
   end
 
   desc "If user is authenticated via CI job token then the target project should be in scope"
@@ -349,36 +338,12 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
-  rule { anonymous & ~public_project }.prevent_all do
-    # Private projects can make packages public
-    # This is controlled in Packages::Policies::ProjectPolicy
-    # This exception is needed since Packages::Policies::ProjectPolicy delegates to this one
-    except :read_package
-  end
-
-  rule { public_project }.policy do
-    enable :public_access
-
-    enable(*Authz::Role.get(:public_anonymous).direct_permissions(:project))
-  end
-
   # We define `:public_user_access` separately because there are cases in gitlab-ee
   # where we enable or prevent it based on other conditions.
   rule { (~anonymous & public_project) | internal_access }.policy do
     enable :public_user_access
-
-    enable :build_download_code
-    enable :create_merge_request_in
-    enable :fork_project
     enable :read_project_for_iids
-    enable :request_access
-
-    enable(*Authz::Role.get(:public_anonymous).direct_permissions(:project))
-    enable(*Authz::Role.get(:guest).direct_permissions(:project))
   end
-
-  # This is needed for Ability.users_that_can_read_project
-  rule { team_member }.enable :read_project
 
   rule { guest }.enable :guest_access
   rule { planner }.enable :planner_access
@@ -387,6 +352,56 @@ class ProjectPolicy < BasePolicy
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
   rule { owner | admin | organization_owner }.enable :owner_access
+
+  rule { can?(:public_user_access) }.policy do
+    enable :guest_access
+    enable :public_access
+
+    enable :build_download_code
+    enable :request_access
+  end
+
+  rule { can?(:public_access) }.policy do
+    enable(*Authz::Role.get(:public_anonymous).direct_permissions(:project))
+  end
+
+  # Role permissions are maintained in yaml in config/authz/roles/
+  rule { can?(:guest_access) }.policy do
+    enable(*Authz::Role.get(:guest).direct_permissions(:project))
+  end
+
+  rule { can?(:planner_access) }.policy do
+    enable :guest_access
+
+    enable(*Authz::Role.get(:planner).direct_permissions(:project))
+  end
+
+  rule { can?(:reporter_access) }.policy do
+    enable(*Authz::Role.get(:reporter).direct_permissions(:project))
+  end
+
+  rule { can?(:security_manager_access) }.policy do
+    enable(*Authz::Role.get(:security_manager).direct_permissions(:project))
+  end
+
+  rule { can?(:developer_access) }.policy do
+    enable(*Authz::Role.get(:developer).direct_permissions(:project))
+  end
+
+  rule { can?(:maintainer_access) }.policy do
+    enable(*Authz::Role.get(:maintainer).direct_permissions(:project))
+  end
+
+  rule { can?(:owner_access) }.policy do
+    enable :guest_access
+    enable :planner_access
+    enable :reporter_access
+    enable :security_manager_access
+    enable :developer_access
+    enable :maintainer_access
+
+    enable(*Authz::Role.get(:owner).direct_permissions(:project))
+  end
 
   rule { admin }.policy do
     enable :delete_custom_attribute
@@ -434,7 +449,9 @@ class ProjectPolicy < BasePolicy
     enable :build_read_container_image
   end
 
-  rule { ~forking_allowed }.prevent :fork_project
+  rule { (can?(:public_user_access) | can?(:reporter_access)) & forking_allowed }.policy do
+    enable :fork_project
+  end
 
   rule { metrics_dashboard_disabled }.policy do
     prevent(:metrics_dashboard)
@@ -712,6 +729,18 @@ class ProjectPolicy < BasePolicy
     prevent :destroy_container_registry_protection_tag_rule
   end
 
+  rule { anonymous & ~public_project }.prevent_all do
+    # Private projects can make packages public
+    # This is controlled in Packages::Policies::ProjectPolicy
+    # This exception is needed since Packages::Policies::ProjectPolicy delegates to this one
+    except :read_package
+  end
+
+  rule { public_project }.policy do
+    enable :public_access
+    enable :read_project_for_iids
+  end
+
   # If the project is private
   rule { ~project_allowed_for_job_token }.prevent_all
 
@@ -719,44 +748,45 @@ class ProjectPolicy < BasePolicy
     except :build_download_code
     except :build_read_container_image
     except :read_build
-    except :read_package
-    except :create_package
-    except :destroy_package
 
     except(*::Authz::Role.get(:public_anonymous).direct_permissions(:project))
+  end
+
+  rule { public_project & ~project_allowed_for_job_token_by_scope }.policy do
+    prevent :build_download_code
   end
 
   rule { can?(:developer_access) & push_repository_for_job_token_allowed }.policy do
     enable :build_push_code
   end
 
-  rule { from_ci_job_token & ~job_token_container_registry }.policy do
-    prevent :build_read_container_image
-    prevent :read_container_image
+  rule { public_or_internal & job_token_container_registry }.policy do
+    enable :build_read_container_image
+    enable :read_container_image
   end
 
-  rule { from_ci_job_token & ~job_token_package_registry }.policy do
-    prevent :read_package
-    prevent :create_package
-    prevent :destroy_package
+  rule { public_or_internal & job_token_package_registry }.policy do
+    enable :read_package
+    enable :read_project
   end
 
-  rule { from_ci_job_token & ~job_token_repository }.policy do
-    prevent :build_download_code
+  rule { public_or_internal & job_token_repository }.policy do
+    enable :read_project
+    enable :build_download_code
   end
 
-  rule { from_ci_job_token & ~job_token_builds }.policy do
+  rule { public_or_internal & job_token_builds }.policy do
     # this is additionally needed to download artifacts
-    prevent :read_commit_status
-    prevent :_read_public_build
+    enable :read_commit_status
+    enable :_read_public_build
   end
 
-  rule { from_ci_job_token & ~job_token_releases }.policy do
-    prevent :read_release
+  rule { public_or_internal & job_token_releases }.policy do
+    enable :read_release
   end
 
-  rule { from_ci_job_token & ~job_token_environments }.policy do
-    prevent :read_environment
+  rule { public_or_internal & job_token_environments }.policy do
+    enable :read_environment
   end
 
   rule { ~public_builds }.policy do

@@ -696,15 +696,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 context 'tries to push to other project' do
                   let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                  context 'when the project is public' do
-                    it_behaves_like 'LFS http 403 response'
-                  end
-
-                  context 'when the project is private' do
-                    let(:project) { create(:project, :private) }
-
-                    it_behaves_like 'LFS http 404 response'
-                  end
+                  it_behaves_like 'LFS http 404 response'
                 end
               end
 
@@ -1296,15 +1288,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               context 'tries to push to other project' do
                 let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                context 'when the project is public' do
-                  it_behaves_like 'LFS http 403 response'
-                end
-
-                context 'when the project is private' do
-                  let(:project) { create(:project, :private) }
-
-                  it_behaves_like 'LFS http 404 response'
-                end
+                it_behaves_like 'LFS http 404 response'
               end
             end
 
