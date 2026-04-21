@@ -12,6 +12,118 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
     end
   end
 
+  describe '#parse' do
+    subject(:parsed) { described_class.call(body, format) }
+
+    context 'when format is a known type' do
+      let(:format) { :json }
+      let(:body) { '{"key": "value"}' }
+
+      it 'delegates to the format-specific method as usual' do
+        expect(parsed).to eq({ 'key' => 'value' })
+      end
+    end
+
+    context 'when format is unknown and body looks like a JSON object' do
+      let(:format) { nil }
+      let(:body) { '{"key": "value"}' }
+
+      it 'routes through json method and returns parsed JSON' do
+        expect(parsed).to eq({ 'key' => 'value' })
+      end
+    end
+
+    context 'when format is unknown and body looks like a JSON array' do
+      let(:format) { nil }
+      let(:body) { '[1, 2, 3]' }
+
+      it 'routes through json method and returns parsed JSON' do
+        expect(parsed).to eq([1, 2, 3])
+      end
+    end
+
+    context 'when format is unknown and body has leading whitespace before JSON' do
+      let(:format) { nil }
+      let(:body) { "  \n\t {\"key\": \"value\"}" }
+
+      it 'routes through json method and returns parsed JSON' do
+        expect(parsed).to eq({ 'key' => 'value' })
+      end
+    end
+
+    context 'when format is unknown and body is plain text' do
+      let(:format) { nil }
+      let(:body) { 'hello world' }
+
+      it 'returns the raw body string' do
+        expect(parsed).to eq('hello world')
+      end
+    end
+
+    context 'when format is unknown and body is empty' do
+      let(:format) { nil }
+      let(:body) { '' }
+
+      it 'returns nil' do
+        expect(parsed).to be_nil
+      end
+    end
+
+    context 'when format is unknown and body is nil' do
+      let(:format) { nil }
+      let(:body) { nil }
+
+      it 'returns nil' do
+        expect(parsed).to be_nil
+      end
+    end
+
+    context 'when format is unknown and JSON-like body exceeds structural char limit' do
+      let(:format) { nil }
+      let(:body) { '{"a": [1, 2, 3], "b": {"c": "d"}}' }
+
+      before do
+        stub_application_setting(max_http_response_json_structural_chars: 1)
+      end
+
+      it 'raises JSON::ParserError from size validation' do
+        expect { parsed }.to raise_error(JSON::ParserError)
+      end
+    end
+
+    context 'when format is unknown and JSON-like body exceeds depth limit' do
+      let(:format) { nil }
+      let(:body) { '{"a": {"b": {"c": {"d": 1}}}}' }
+
+      before do
+        stub_application_setting(max_http_response_json_depth: 2)
+      end
+
+      it 'raises JSON::NestingError from depth validation' do
+        expect { parsed }.to raise_error(JSON::NestingError)
+      end
+    end
+
+    context 'when format is unknown and body starts with { but is invalid JSON' do
+      let(:format) { nil }
+      let(:body) { '{not valid json at all}' }
+
+      it 'raises JSON::ParserError' do
+        expect { parsed }.to raise_error(JSON::ParserError)
+      end
+    end
+
+    context 'when format is a known type like :xml even if body looks like JSON' do
+      let(:format) { :xml }
+      let(:body) { '<root><item>value</item></root>' }
+
+      it 'delegates to the xml method, not json' do
+        expect(parsed).to be_a(Hash)
+        expect(parsed['root']['item']).to eq('value')
+      end
+    end
+  end
+
   describe '#json' do
     let(:parsed_json) { described_class.new(body, :json).json }
     let(:body) { '{"key1": "value1", "key2": ["item1", "item2"], "key3": {"nested": "value"}}' }

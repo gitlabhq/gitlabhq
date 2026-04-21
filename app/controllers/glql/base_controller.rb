@@ -2,20 +2,33 @@
 
 module Glql
   class BaseController < GraphqlController
-    before_action :set_namespace_context, only: [:execute]
+    before_action :set_namespace_context, only: [:execute] # rubocop:disable Rails/LexicallyScopedActionFilter -- execute is defined in the parent GraphqlController
 
-    # Overrides GraphqlController#execute to add rate limiting for GLQL queries.
+    rescue_from ::Analytics::Glql::QueryService::GlqlQueryLockedError do |exception|
+      log_exception(exception)
+
+      render_error(exception.message, status: :forbidden)
+    end
+
+    protected
+
+    # Overrides GraphqlController#execute_single_query to add rate limiting for
+    # GLQL queries.
     # Uses the shared QueryService for consistent behavior with API::Glql.
-    def execute
+    #
+    # normalized_query is passed explicitly by the parent's execute() to guarantee
+    # the validator (disallow_mutations_for_get) and executor always operate on an
+    # identical string. Do not use permitted_params[:query] here for execution.
+    def execute_single_query(normalized_query)
       query_service = ::Analytics::Glql::QueryService.new(
         current_user: current_user,
-        original_query: permitted_params[:query].to_s,
+        original_query: normalized_query,
         request: request,
         current_organization: Current.organization
       )
 
       result = query_service.execute(
-        query: permitted_params[:query],
+        query: normalized_query,
         variables: permitted_params[:variables].to_h,
         context: context,
         operation_name: permitted_params[:operationName]
@@ -40,13 +53,7 @@ module Glql
       response_data = { 'data' => result[:data] }
       response_data['errors'] = result[:errors] if result[:errors]
 
-      render json: response_data
-    end
-
-    rescue_from ::Analytics::Glql::QueryService::GlqlQueryLockedError do |exception|
-      log_exception(exception)
-
-      render_error(exception.message, status: :forbidden)
+      response_data
     end
 
     private

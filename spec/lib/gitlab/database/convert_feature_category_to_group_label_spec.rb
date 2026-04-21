@@ -30,5 +30,18 @@ RSpec.describe Gitlab::Database::ConvertFeatureCategoryToGroupLabel, feature_cat
         expect(group_label).to be_nil
       end
     end
+
+    context 'when the HTTP request fails' do
+      let(:feature_category) { 'database' }
+
+      before do
+        stub_request(:get, 'https://gitlab.com/gitlab-com/www-gitlab-com/-/raw/master/data/stages.yml')
+          .to_return(status: 500, body: '', headers: {})
+      end
+
+      it 'raises an error' do
+        expect { group_label }.to raise_error(NoMethodError)
+      end
+    end
   end
 end

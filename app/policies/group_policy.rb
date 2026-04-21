@@ -328,6 +328,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_achievement
     enable :create_cluster
     enable :create_jira_connect_subscription
+    enable :create_project_fork
     enable :destroy_package
     enable :destroy_upload
     enable :import_projects

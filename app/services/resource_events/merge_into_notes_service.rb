@@ -24,7 +24,10 @@ module ResourceEvents
     end
 
     def execute(notes = [])
-      notes.to_a.concat(synthetic_notes).sort_by!(&:created_at)
+      result = notes.to_a.concat(synthetic_notes).sort_by!(&:created_at)
+      result = result.last(params[:limit]) if params[:limit].present?
+
+      result
     end
 
     private

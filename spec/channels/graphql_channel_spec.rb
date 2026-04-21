@@ -157,5 +157,19 @@ RSpec.describe GraphqlChannel, feature_category: :api do
         subscribe(subscribe_params)
       end
     end
+
+    describe 'query normalization' do
+      let(:raw_query) { "query NormTest { __typename(arg: \"hello\nworld\") }" }
+      let(:normalized_query) { "query NormTest { __typename(arg: \"hello\\nworld\") }" }
+
+      it 'normalizes single-quoted newlines before passing to GitlabSchema.execute' do
+        expect(GitlabSchema).to receive(:execute).with(
+          normalized_query,
+          hash_including(:context, :variables, :operation_name)
+        ).and_call_original
+
+        subscribe(query: raw_query, variables: {})
+      end
+    end
   end
 end

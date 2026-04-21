@@ -67,6 +67,17 @@ RSpec.describe ResourceEvents::MergeIntoNotesService, feature_category: :team_pl
       expect(notes.first.discussion_id).to eq event.reload.discussion_id
     end
 
+    it 'limits the total number of notes when limit is provided' do
+      note1 = create_note(created_at: 4.days.ago)
+      event = create_event(created_at: 3.days.ago)
+      note2 = create_note(created_at: 2.days.ago)
+
+      notes = described_class.new(resource, user, limit: 2).execute([note1, note2])
+
+      expected = [event, note2].map(&:reload).map(&:discussion_id)
+      expect(notes.map(&:discussion_id)).to eq expected
+    end
+
     it "preloads the note author's status" do
       event = create_event(created_at: time)
       create(:user_status, user: event.user)

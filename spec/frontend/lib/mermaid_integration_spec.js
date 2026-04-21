@@ -1,13 +1,13 @@
 /**
  * Integration tests for mermaid module initialization
- * Verifies that the module properly integrates path validation
- * with webpack public path initialization
+ * Verifies that the module properly integrates path initialization
+ * with webpack public path via postMessage
  */
 /* eslint-disable global-require */
 
 jest.mock('mermaid', () => ({
   mermaidAPI: {
-    render: jest.fn(),
+    render: jest.fn().mockResolvedValue({ svg: '<svg></svg>' }),
   },
   initialize: jest.fn(),
 }));
@@ -20,41 +20,53 @@ jest.mock('dompurify', () => ({
 jest.mock('~/lib/utils/webpack');
 
 describe('mermaid module - path validation integration', () => {
+  let resetServiceWorkersPublicPath;
+
   beforeEach(() => {
     jest.resetModules();
     delete window.gon;
+
+    const appDiv = document.createElement('div');
+    appDiv.id = 'app';
+    document.body.appendChild(appDiv);
+
+    resetServiceWorkersPublicPath = require('~/lib/utils/webpack').resetServiceWorkersPublicPath;
   });
 
-  it('should initialize webpack and set window.gon when path is valid', () => {
-    const urlUtility = require('~/lib/utils/url_utility');
-    jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('/gitlab');
+  afterEach(() => {
+    document.getElementById('app')?.remove();
+  });
 
-    const { resetServiceWorkersPublicPath } = require('~/lib/utils/webpack');
+  const loadMermaidAndPostMessage = (relativeRootPath, originOverride = null) => {
     require('~/lib/mermaid');
+
+    const origin = originOverride ?? window.location.origin;
+
+    const event = new MessageEvent('message', {
+      data: { source: 'graph TD', relativeRootPath },
+      origin,
+    });
+    window.dispatchEvent(event);
+  };
+
+  it('should initialize webpack and set window.gon when relativeRootPath is provided', () => {
+    loadMermaidAndPostMessage('/gitlab');
 
     expect(resetServiceWorkersPublicPath).toHaveBeenCalled();
     expect(window.gon).toEqual({ relative_url_root: '/gitlab' });
   });
 
-  it('should not initialize webpack or set window.gon when path is invalid', () => {
-    const urlUtility = require('~/lib/utils/url_utility');
-    jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('//attacker.com');
-
-    const { resetServiceWorkersPublicPath } = require('~/lib/utils/webpack');
-    require('~/lib/mermaid');
+  it('should not initialize webpack or set window.gon when relativeRootPath is null', () => {
+    loadMermaidAndPostMessage(null);
 
     expect(resetServiceWorkersPublicPath).not.toHaveBeenCalled();
     expect(window.gon).toBeUndefined();
   });
 
-  it('should trim whitespace from valid paths', () => {
-    const urlUtility = require('~/lib/utils/url_utility');
-    jest.spyOn(urlUtility, 'getParameterByName').mockReturnValue('  /gitlab  ');
+  it("should not initialize webpack or set window.gon when the origin doesn't match", () => {
+    loadMermaidAndPostMessage('/gitlab', 'elsewhere.example');
 
-    const { resetServiceWorkersPublicPath } = require('~/lib/utils/webpack');
-    require('~/lib/mermaid');
-
-    expect(resetServiceWorkersPublicPath).toHaveBeenCalled();
-    expect(window.gon).toEqual({ relative_url_root: '/gitlab' });
+    expect(resetServiceWorkersPublicPath).not.toHaveBeenCalled();
+    expect(window.gon).toBeUndefined();
   });
 });

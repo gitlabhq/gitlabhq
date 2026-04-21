@@ -380,10 +380,10 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
       Current.organization = create(:organization)
     end
 
-    it 'creates QueryService with correct parameters' do
+    it 'creates QueryService with the normalized query as original_query' do
       expect(::Analytics::Glql::QueryService).to receive(:new) do |args|
         expect(args[:current_user]).to eq(user)
-        expect(args[:original_query]).to eq(query)
+        expect(args[:original_query]).to eq(GraphQL::Language.escape_single_quoted_newlines(query))
         expect(args[:request]).to eq(request)
         expect(args[:current_organization]).to eq(Current.organization)
       end.and_call_original
@@ -404,6 +404,72 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
       end
 
       execute_request
+    end
+  end
+
+  # Regression tests for parser-differential CSRF bypass
+  describe 'GET #execute CSRF protection' do
+    let_it_be(:user) { create(:user) }
+    let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+    context 'with a normal mutation query' do
+      it 'rejects the GET request' do
+        get :execute,
+          params: { query: 'mutation { __typename }', access_token: token.token },
+          format: :json
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in GET requests/)
+      end
+    end
+
+    context 'with a parser-differential mutation payload' do
+      let(:differential_payload) do
+        # The odd interior `"` in the block string (`"""x"y"""`) causes
+        # escape_single_quoted_newlines to corrupt the following newline,
+        # producing a query that parses as invalid.
+        <<~'GQL'
+          mutation{createSnippet(input:{title:"t" description:"d" visibilityLevel:public blobActions:[{action:create filePath:"f" content:"""x"y"""
+          }]}){errors}}
+        GQL
+      end
+
+      it 'rejects the GET request even when the escaped query triggers a ParseError' do
+        get :execute,
+          params: { query: differential_payload, access_token: token.token },
+          format: :json
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in GET requests/)
+      end
+    end
+  end
+
+  describe 'defense boundary: raw params vs executed string' do
+    let_it_be(:user) { create(:user) }
+    let(:raw_query) { "query GLQL { __typename(arg: \"hello\nworld\") }" }
+    let(:normalized_query) { "query GLQL { __typename(arg: \"hello\\nworld\") }" }
+
+    before do
+      sign_in(user)
+      Current.organization = create(:organization)
+    end
+
+    it 'makes the executor receive the normalized form of the query' do
+      executed = nil
+
+      allow_next_instance_of(::Analytics::Glql::QueryService) do |instance|
+        allow(instance).to receive(:execute).and_wrap_original do |m, query:, **kwargs|
+          executed = query
+          m.call(query: query, **kwargs)
+        end
+      end
+
+      post :execute, params: { query: raw_query, operationName: 'GLQL' }
+
+      expect(executed).not_to be_nil
+      expect(executed).to eq(normalized_query)
+      expect(executed).not_to eq(raw_query)
     end
   end
 

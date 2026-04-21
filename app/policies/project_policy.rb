@@ -370,9 +370,9 @@ class ProjectPolicy < BasePolicy
 
     enable :change_namespace
     enable :change_visibility_level
+    enable :link_forked_project
     enable :remove_project
     enable :archive_project
-    enable :link_forked_project
     enable :remove_fork_project
     enable :destroy_merge_request
     enable :destroy_issue
@@ -395,6 +395,12 @@ class ProjectPolicy < BasePolicy
 
     enable :destroy_pipeline
   end
+
+  condition(:can_create_fork_in_namespace) do
+    can?(:create_project_fork, project.namespace.root_ancestor)
+  end
+
+  rule { ~can_create_fork_in_namespace }.prevent :link_forked_project
 
   rule { can?(:guest_access) }.policy do
     enable :read_project

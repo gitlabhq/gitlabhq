@@ -7,7 +7,7 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
   def subscribed
     @subscription_ids = []
 
-    query = params['query']
+    query = GraphQL::Language.escape_single_quoted_newlines(params['query'].to_s)
     variables = Gitlab::Graphql::Variables.new(params['variables']).to_h
     operation_name = params['operationName']
 

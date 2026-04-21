@@ -21629,6 +21629,10 @@ paths:
                 wiki_page_max_content_bytes:
                   type: integer
                   description: Maximum wiki page content size in bytes
+                description_and_note_max_size:
+                  type: integer
+                  description: Maximum work item, merge request, and vulnerability
+                    description and comment content size in bytes.
                 wiki_asciidoc_allow_uri_includes:
                   type: boolean
                   description: Allow URI includes for AsciiDoc wiki pages
@@ -93308,6 +93312,8 @@ components:
         custom_http_clone_url_root:
           type: string
         snippet_size_limit:
+          type: string
+        description_and_note_max_size:
           type: string
         email_restrictions_enabled:
           type: string

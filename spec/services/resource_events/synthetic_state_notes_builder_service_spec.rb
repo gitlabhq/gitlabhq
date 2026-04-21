@@ -7,5 +7,6 @@ RSpec.describe ResourceEvents::SyntheticStateNotesBuilderService, feature_catego
     let_it_be(:user) { create(:user) }
 
     it_behaves_like 'filters by paginated notes', :resource_state_event
+    it_behaves_like 'filters by limit', :resource_state_event
   end
 end
