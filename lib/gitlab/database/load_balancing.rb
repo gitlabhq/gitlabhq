@@ -38,8 +38,10 @@ module Gitlab
         each_load_balancer.find { |c| c.name == name }&.primary_only?
       end
 
-      def self.release_hosts
-        each_load_balancer(&:release_host)
+      def self.release_hosts(force: false)
+        each_load_balancer do |lb|
+          lb.release_host(force: force)
+        end
       end
 
       DB_ROLES = [

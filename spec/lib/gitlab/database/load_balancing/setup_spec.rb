@@ -3,6 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Setup do
+  shared_examples 'connection proxy with skippable load balancer' do
+    context 'when uses_load_balancer is false' do
+      before do
+        model.uses_load_balancer = false
+      end
+
+      it 'returns ActiveRecord::ConnectionAdapter' do
+        expect(subject).not_to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
+      end
+    end
+
+    context 'when uses_load_balancer is true (default)' do
+      it 'returns the connection proxy' do
+        expect(subject).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
+      end
+
+      it 'uses the load balancer' do
+        expect(model.uses_load_balancer).to be(true)
+      end
+    end
+  end
+
   describe '#setup' do
     it 'sets up the load balancer' do
       setup = described_class.new(ActiveRecord::Base)
@@ -69,16 +91,44 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     end
   end
 
-  describe '#with_connection' do
-    let(:model) { Class.new(ActiveRecord::Base) }
-
+  describe '#connection' do
     before do
       described_class.new(model).setup_connection_proxy
     end
 
-    it 'yields the connection proxy' do
-      model.with_connection do |conn|
-        expect(conn).to be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    subject { model.connection }
+
+    it_behaves_like 'connection proxy with skippable load balancer'
+  end
+
+  describe '#lease_connection' do
+    before do
+      described_class.new(model).setup_connection_proxy
+    end
+
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    subject { model.lease_connection }
+
+    it_behaves_like 'connection proxy with skippable load balancer'
+  end
+
+  describe '#with_connection' do
+    before do
+      described_class.new(model).setup_connection_proxy
+    end
+
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    subject { model.with_connection { |conn| conn } }
+
+    it_behaves_like 'connection proxy with skippable load balancer'
+
+    context 'when no block is given' do
+      it 'returns nil' do
+        expect(model.with_connection).to be_nil
       end
     end
   end
