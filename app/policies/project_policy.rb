@@ -413,6 +413,12 @@ class ProjectPolicy < BasePolicy
 
   rule { project_pipeline_override_role_owner & ~can?(:owner_access) }.prevent :change_restrict_user_defined_variables
 
+  condition(:can_create_fork_in_namespace) do
+    can?(:create_project_fork, project.namespace.root_ancestor)
+  end
+
+  rule { ~can_create_fork_in_namespace }.prevent :link_forked_project
+
   rule { internal_pages & ~anonymous & ~external_user }.policy do
     enable :read_pages_content
   end

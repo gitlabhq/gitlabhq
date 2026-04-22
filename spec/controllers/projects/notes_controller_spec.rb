@@ -76,6 +76,20 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
+    describe 'max notes limit' do
+      let!(:notes) { create_list(:note, 5, noteable: issue, project: project) }
+
+      before do
+        stub_const('NotesActions::MAX_NOTES_LIMIT', 3)
+      end
+
+      it 'exposes notes based on the max limit' do
+        get :index, params: request_params
+
+        expect(parsed_response[:notes].count).to eq(3)
+      end
+    end
+
     context 'when user notes_filter is present' do
       let(:notes_json) { parsed_response[:notes] }
       let!(:comment) { create(:note, noteable: issue, project: project) }

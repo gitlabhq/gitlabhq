@@ -84,12 +84,6 @@ export function getSandboxFrameSrc() {
   if (darkModeEnabled()) {
     absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, { url: absoluteUrl });
   }
-  if (window.gon?.relative_url_root) {
-    absoluteUrl = setUrlParams(
-      { relativeRootPath: window.gon.relative_url_root },
-      { url: absoluteUrl },
-    );
-  }
   return absoluteUrl;
 }
 
@@ -132,7 +126,10 @@ function renderMermaidEl(el, source) {
   const renderSandbox = () => {
     // Potential risk associated with '*' discussed in below thread
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74414#note_735183398
-    iframeEl.contentWindow?.postMessage({ source, proxiedUrls }, '*');
+    iframeEl.contentWindow?.postMessage(
+      { source, proxiedUrls, relativeRootPath: window.gon?.relative_url_root || null },
+      '*',
+    );
     hasRendered = true;
   };
 

@@ -361,6 +361,25 @@ func TestResolveCorsHeaders(t *testing.T) {
 			expectedStatus:  404,
 			expectedHeaders: map[string]string{},
 		},
+		{
+			desc:            "Path normalization prevents encoded path bypass",
+			path:            "/%2e%2fassets/webpack/gitlab-web-ide-vscode-workbench/test.js",
+			method:          "GET",
+			railsStatusCode: http.StatusOK,
+			railsHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Cross-Origin-Opener-Policy":   "same-origin",
+				"Content-Security-Policy":      "default-src 'self'",
+				"Cross-Origin-Resource-Policy": "cross-origin",
+			},
+			expectedStatus: 200,
+			expectedHeaders: map[string]string{
+				"Access-Control-Allow-Origin":  "https://example.com",
+				"Cross-Origin-Opener-Policy":   "same-origin",
+				"Content-Security-Policy":      "default-src 'self'",
+				"Cross-Origin-Resource-Policy": "cross-origin",
+			},
+		},
 	}
 
 	for _, tc := range testCases {

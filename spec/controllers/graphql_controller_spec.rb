@@ -1098,4 +1098,129 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       end
     end
   end
+
+  # Regression tests for parser-differential CSRF bypass
+  describe '#disallow_mutations_for_get' do
+    let(:differential_payload) do
+      # The odd interior `"` in the block string (`"""x"y"""`) causes
+      # escape_single_quoted_newlines to corrupt the following newline,
+      # producing a query that parses as invalid.
+      <<~'GQL'
+        mutation{createSnippet(input:{title:"t" description:"d" visibilityLevel:public blobActions:[{action:create filePath:"f" content:"""x"y"""
+        }]}){errors}}
+      GQL
+    end
+
+    it 'blocks GET mutations that exploit the escape_single_quoted_newlines differential' do
+      get :execute, params: { query: differential_payload }, format: :json
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in GET requests/)
+    end
+
+    it 'blocks GET multiplex requests that exploit the escape_single_quoted_newlines differential' do
+      get :execute, params: { _json: [{ query: differential_payload }] }, format: :json
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in GET requests/)
+    end
+
+    it 'blocks HEAD requests with mutations' do
+      head :execute, params: { query: 'mutation { __typename }' }, format: :json
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in HEAD requests/)
+    end
+
+    context 'with POST requests with the parser-differential payload' do
+      it 'executes normally (POST mutations are allowed)' do
+        sign_in(create(:user))
+        post :execute, params: { query: differential_payload }, format: :json
+
+        # POST should not be blocked, only GET/HEAD are restricted
+        expect(response).not_to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with operationName targeting a query in a document that also contains a mutation' do
+      it 'permits the GET request because executor scopes to the named non-mutation operation' do
+        payload = "query SafeQuery { __typename } mutation DangerousMutation { __typename }"
+
+        get :execute, params: { query: payload, operationName: 'SafeQuery' }, format: :json
+
+        expect(response).not_to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with multiplex containing mixed query and mutation operations' do
+      it 'blocks GET multiplex requests where any entry is a mutation' do
+        get :execute,
+          params: { _json: [
+            { query: '{ __typename }' },
+            { query: 'mutation { __typename }' }
+          ] },
+          format: :json
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['errors'].first['message']).to match(/Mutations are forbidden in GET requests/)
+      end
+
+      it 'permits GET multiplex requests where all entries are queries' do
+        get :execute,
+          params: { _json: [
+            { query: '{ __typename }' },
+            { query: 'query Q2 { __typename }' }
+          ] },
+          format: :json
+
+        expect(response).not_to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'defense boundary: raw params vs executed string' do
+    let(:user) { create(:user) }
+    let(:raw_query) { "query NormTest { __typename(arg: \"hello\nworld\") }" }
+    let(:normalized_query) { "query NormTest { __typename(arg: \"hello\\nworld\") }" }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'makes the executor receive the normalized form of the query' do
+      executed_string = nil
+
+      allow(GitlabSchema).to receive(:execute).and_wrap_original do |m, q, **kwargs|
+        executed_string = q
+        m.call(q, **kwargs)
+      end
+
+      post :execute, params: { query: raw_query, operationName: 'NormTest' }
+
+      expect(executed_string).not_to be_nil
+      expect(executed_string).to eq(normalized_query)
+      expect(executed_string).not_to eq(raw_query)
+    end
+  end
+
+  describe '#mutation?' do
+    it 'returns true when the query cannot be parsed, conservatively treating it as a mutation' do
+      expect(subject.send(:mutation?, 'this is { not {{ valid graphql')).to be(true)
+    end
+  end
+
+  describe 'subclass safety contract' do
+    it 'no subclass of GraphqlController overrides #execute directly' do
+      Rails.autoloaders.main.eager_load_dir(Rails.root.join('app/controllers'))
+
+      violators = ObjectSpace.each_object(Class)
+        .select { |c| c < GraphqlController }
+        .select { |c| c.instance_method(:execute).owner == c }
+
+      expect(violators).to be_empty,
+        "#{violators.map(&:name).join(', ')} override #execute directly. " \
+        "Override #execute_single_query(normalized_query) instead to preserve " \
+        "the validator/executor identity invariant. See issue #594937."
+    end
+  end
 end

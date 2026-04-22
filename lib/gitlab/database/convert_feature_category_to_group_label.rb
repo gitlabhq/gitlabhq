@@ -20,7 +20,7 @@ module Gitlab
       def stages
         response = Gitlab::HTTP.get(STAGES_URL)
 
-        YAML.safe_load(response) if response.success?
+        YAML.safe_load(response.body) if response.success?
       end
 
       def feature_categories_map

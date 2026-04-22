@@ -29,6 +29,8 @@ class DraftNote < ApplicationRecord
   validates :author_id, presence: true, uniqueness: { scope: [:merge_request_id, :discussion_id] }, if: :discussion_id?
   validates :discussion_id, allow_nil: true, format: { with: /\A\h{40}\z/ }
   validates :line_code, length: { maximum: 255 }, allow_nil: true
+  validates :note, bytesize: { maximum: -> { Gitlab::CurrentSettings.description_and_note_max_size } },
+    if: :note_changed?
 
   validates :position, :original_position, :change_position,
     'notes/position_serialized_size': { max_bytesize: 100.kilobytes }

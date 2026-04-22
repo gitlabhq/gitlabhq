@@ -61,7 +61,25 @@ module Banzai
           allowlist[:protocols].delete('a')
 
           # Remove `rel` attribute from `a` elements
-          allowlist[:transformers].push(self.class.remove_rel)
+          allowlist[:transformers].push(self.class.method(:remove_rel))
+
+          # Unwrap <a> tags nested within other <a> tags.
+          #
+          # Nested <a> tags are invalid HTML, but the HTML5 parser can produce
+          # them in several ways: table foster-parenting (`<a><table><a>`),
+          # foreign content (`<a><svg><a>`, `<a><math><a>`), and
+          # `<a><template><a>`. In all these cases an inner <a> ends up as a
+          # descendant of an outer <a> in the DOM.
+          #
+          # This is a security concern because later pipeline filters
+          # (ReferenceFilter, ReferenceRedactor) operate on <a> nodes
+          # independently. A nested <a> that resolves as a reference can have
+          # its content captured in the outer <a>'s data-original attribute. If
+          # the outer link is to a resource the viewer can access but the inner
+          # reference is to one they cannot, the redactor will leave the outer
+          # <a> intact, along with its data-original; this leaks the resolved
+          # content of the inner reference the viewer should not see.
+          allowlist[:transformers].push(self.class.method(:unwrap_nested_a))
 
           customize_allowlist(allowlist)
         end
@@ -84,16 +102,25 @@ module Banzai
       end
 
       class << self
-        def remove_rel
-          ->(env) do
-            if env[:node_name] == 'a'
-              # we allow rel="license" to support the Rel-license microformat
-              # http://microformats.org/wiki/rel-license
-              unless env[:node].attribute('rel')&.value == 'license'
-                env[:node].remove_attribute('rel')
-              end
-            end
-          end
+        def remove_rel(env)
+          return unless env[:node_name] == 'a'
+          # we allow rel="license" to support the Rel-license microformat
+          # http://microformats.org/wiki/rel-license
+          return if env[:node].attribute('rel')&.value == 'license'
+
+          env[:node].remove_attribute('rel')
+        end
+
+        # Replaces a nested <a> with its children, preserving the text content
+        # but removing the inner link. This is safe because nested <a> tags are
+        # not valid HTML to begin with; browsers would never render them nested,
+        # so we don't lose any meaningful structure.
+        def unwrap_nested_a(env)
+          node = env[:node]
+          return unless node.element? && node.name == 'a'
+          return unless node.ancestors.any? { |ancestor| ancestor.element? && ancestor.name == 'a' }
+
+          node.replace(node.children)
         end
       end
     end

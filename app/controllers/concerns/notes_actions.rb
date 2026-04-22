@@ -9,6 +9,8 @@ module NotesActions
   # precision as PostgreSQL "timestamp" fields.
   MICROSECOND = 1_000_000
 
+  MAX_NOTES_LIMIT = 100
+
   included do
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_last_fetched_at_header!, only: [:index]
@@ -114,7 +116,9 @@ module NotesActions
 
   def gather_all_notes
     now = Time.current
-    notes = merge_resource_events(notes_finder.execute.inc_relations_for_view(noteable))
+
+    notes = notes_finder.execute.inc_relations_for_view(noteable).limit(MAX_NOTES_LIMIT)
+    notes = merge_resource_events(notes)
 
     [notes, { last_fetched_at: (now.to_i * MICROSECOND) + now.usec }]
   end
@@ -123,7 +127,7 @@ module NotesActions
     return notes if notes_filter == UserPreference::NOTES_FILTERS[:only_comments]
 
     ResourceEvents::MergeIntoNotesService
-      .new(noteable, current_user, last_fetched_at: last_fetched_at)
+      .new(noteable, current_user, last_fetched_at: last_fetched_at, limit: MAX_NOTES_LIMIT)
       .execute(notes)
   end
 

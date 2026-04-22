@@ -374,7 +374,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
         it 'allows GET requests to unprotected paths over the rate limit' do
           (1 + requests_per_period).times do
-            get '/api/graphql'
+            get '/api/v4/projects'
             expect(response).to have_gitlab_http_status(:ok)
           end
         end

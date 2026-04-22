@@ -777,6 +777,13 @@ class ApplicationSetting < ApplicationRecord
     max_github_response_size_limit: [:integer, { default: 8 }],
     max_github_response_json_value_count: [:integer, { default: 250_000 }]
 
+  jsonb_accessor :markdown_settings,
+    description_and_note_max_size: [:integer, { default: 1.megabyte }]
+
+  validates :markdown_settings,
+    json_schema: { filename: "application_setting_markdown_settings" }
+  validates :description_and_note_max_size, numericality: { only_integer: true, greater_than: 0 }
+
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }],
     gitlab_product_usage_data_enabled: [:boolean, { default: Settings.gitlab['initial_gitlab_product_usage_data'] }]

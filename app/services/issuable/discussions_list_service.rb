@@ -8,6 +8,8 @@ module Issuable
 
     attr_reader :current_user, :issuable, :params
 
+    MAX_PER_PAGE = 100
+
     def initialize(current_user, issuable, params = {})
       @current_user = current_user
       @issuable = issuable
@@ -56,12 +58,13 @@ module Issuable
     end
 
     def paginator
-      return if params[:per_page].blank?
-
       strong_memoize(:paginator) do
+        per_page = [params[:per_page].to_i, MAX_PER_PAGE].min
+        per_page = Kaminari.config.default_per_page if per_page <= 0
+
         issuable
           .discussion_root_note_ids(notes_filter: params[:notes_filter], sort: params[:sort])
-          .keyset_paginate(cursor: params[:cursor], per_page: params[:per_page].to_i)
+          .keyset_paginate(cursor: params[:cursor], per_page: per_page)
       end
     end
 

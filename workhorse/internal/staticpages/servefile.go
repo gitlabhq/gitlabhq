@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -150,8 +151,10 @@ var errPathTraversal = errors.New("path traversal")
 //   - Allowed: true if the asset can be served, false if unauthorized
 //   - AuthorizationHeaders: map of CORS and security headers from the API response
 func (s *Static) resolveAssetAuthorization(r *http.Request) AssetAuthorizationResult {
-	isTargetAssetsPath := strings.HasPrefix(r.URL.Path, "/assets/webpack/gitlab-web-ide-vscode-workbench") ||
-		strings.HasPrefix(r.URL.Path, "/assets/gitlab-mono")
+	normalizedPath := path.Clean(r.URL.Path)
+
+	isTargetAssetsPath := strings.HasPrefix(normalizedPath, "/assets/webpack/gitlab-web-ide-vscode-workbench") ||
+		strings.HasPrefix(normalizedPath, "/assets/gitlab-mono")
 
 	if !isTargetAssetsPath || !slices.Contains(assetAuthorizationAllowedRequestMethods, r.Method) {
 		return allowedAssetAuthorizationResult

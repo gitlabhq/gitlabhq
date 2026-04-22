@@ -181,6 +181,7 @@ group:
   - create_ai_catalog_third_party_flow_item_consumer
   - create_ai_foundational_flow_item_consumer
   - create_cluster
+  - create_project_fork
   - create_jira_connect_subscription
   - create_protected_branch
   - delete_custom_emoji
