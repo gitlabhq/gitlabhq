@@ -4340,6 +4340,72 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'link_forked_project' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:top_level_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: top_level_group) }
+    let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
+    let_it_be(:top_level_group_project) { create(:project, group: top_level_group) }
+    let_it_be(:subgroup_project) { create(:project, group: subgroup) }
+
+    let(:current_user) { user }
+
+    where(:project_type, :project_role, :project_group_role, :top_level_group_role, :allowed) do
+      :personal           | nil         | nil          | nil          | true
+      :top_level_project  | :owner      | :reporter    | nil          | false
+      :top_level_project  | :owner      | :developer   | nil          | false
+      :top_level_project  | :owner      | :maintainer  | nil          | true
+      :top_level_project  | :owner      | :owner       | nil          | true
+      :top_level_project  | :developer  | :developer   | nil          | false
+      :top_level_project  | :maintainer | :maintainer  | nil          | false
+      :subgroup_project   | :owner      | :developer   | :developer   | false
+      :subgroup_project   | :owner      | :owner       | :maintainer  | true
+      :subgroup_project   | :owner      | :owner       | :owner       | true
+    end
+
+    with_them do
+      let(:project) do
+        case project_type
+        when :personal then personal_project
+        when :top_level_project then top_level_group_project
+        when :subgroup_project then subgroup_project
+        end
+      end
+
+      before do
+        case project_type
+        when :personal
+          # Personal project owner is implicit via namespace
+          nil
+        when :top_level_project
+          top_level_group_project.public_send("add_#{project_role}", user)
+          top_level_group.public_send("add_#{project_group_role}", user) if project_group_role
+        when :subgroup_project
+          subgroup_project.public_send("add_#{project_role}", user)
+          top_level_group.public_send("add_#{top_level_group_role}", user) if top_level_group_role
+          subgroup.public_send("add_#{project_group_role}", user) if project_group_role
+        end
+      end
+
+      after do
+        top_level_group_project.members.find_by(user: user)&.destroy!
+        subgroup_project.members.find_by(user: user)&.destroy!
+        top_level_group.members.find_by(user: user)&.destroy!
+        subgroup.members.find_by(user: user)&.destroy!
+      end
+
+      it "#{params[:allowed] ? 'allows' : 'denies'} link_forked_project", :aggregate_failures do
+        if allowed
+          expect_allowed(:link_forked_project)
+        else
+          expect_disallowed(:link_forked_project)
+        end
+      end
+    end
+  end
+
   describe ':delete_custom_attribute' do
     context 'when user is admin' do
       let(:current_user) { admin }

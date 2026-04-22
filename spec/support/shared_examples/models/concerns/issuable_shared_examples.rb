@@ -10,7 +10,7 @@ RSpec.shared_examples 'matches_cross_reference_regex? fails fast' do
 end
 
 RSpec.shared_examples 'validates description length with custom validation' do
-  let(:invalid_description) { 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1) }
+  let(:invalid_description) { 'x' * (Gitlab::CurrentSettings.description_and_note_max_size + 1) }
   let(:valid_description) { 'short description' }
   let(:issuable) { build(:issue, description: description) }
 
@@ -18,11 +18,15 @@ RSpec.shared_examples 'validates description length with custom validation' do
     format(
       _('is too long (%{size}). The maximum size is %{max_size}.'),
       size: ActiveSupport::NumberHelper.number_to_human_size(invalid_description.bytesize),
-      max_size: ActiveSupport::NumberHelper.number_to_human_size(::Issuable::DESCRIPTION_LENGTH_MAX)
+      max_size: ActiveSupport::NumberHelper.number_to_human_size(Gitlab::CurrentSettings.description_and_note_max_size)
     )
   end
 
   subject(:validate) { issuable.validate(context) }
+
+  before do
+    allow(Gitlab::CurrentSettings).to receive(:description_and_note_max_size).and_return(100)
+  end
 
   context 'when Issuable is a new record' do
     let(:context) { :create }
@@ -122,16 +126,17 @@ end
 RSpec.shared_examples 'truncates the description to its allowed maximum length on import' do
   before do
     allow(issuable).to receive(:importing?).and_return(true)
+    allow(Gitlab::CurrentSettings).to receive(:description_and_note_max_size).and_return(100)
   end
 
-  let(:issuable) { build(:issue, description: 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1)) }
+  let(:issuable) { build(:issue, description: 'x' * (Gitlab::CurrentSettings.description_and_note_max_size + 1)) }
 
   subject { issuable.validate(:create) }
 
   it 'truncates the description to its allowed maximum length' do
     subject
 
-    expect(issuable.description).to eq('x' * ::Issuable::DESCRIPTION_LENGTH_MAX)
+    expect(issuable.description).to eq('x' * Gitlab::CurrentSettings.description_and_note_max_size)
     expect(issuable.errors[:description]).to be_empty
   end
 end

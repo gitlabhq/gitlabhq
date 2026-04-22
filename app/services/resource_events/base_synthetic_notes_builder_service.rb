@@ -25,6 +25,7 @@ module ResourceEvents
 
     def apply_common_filters(events)
       events = apply_pagination(events)
+      events = apply_limit(events)
       apply_last_fetched_at(events)
     end
 
@@ -33,6 +34,12 @@ module ResourceEvents
       return events.none if params[:paginated_notes][table_name].blank?
 
       events.id_in(params[:paginated_notes][table_name].flat_map(&:ids))
+    end
+
+    def apply_limit(events)
+      return events if params[:limit].blank?
+
+      events.limit(params[:limit])
     end
 
     def apply_last_fetched_at(events)

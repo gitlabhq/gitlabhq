@@ -1,0 +1,12 @@
+---
+api_type:
+attr: markdown_settings
+clusterwide: false
+column: markdown_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: 'JSONB column storing settings related to Markdown'
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -41,9 +41,12 @@ module API
             unauthorized!
           end
 
+          # When a new access token type is introduced, update this method
+          # to handle it appropriately.
           def access_token_from_namespace_inheritable
             token = token_from_namespace_inheritable
-            return unless token.is_a? PersonalAccessToken
+            return token if token.is_a?(OauthAccessToken)
+            return unless token.is_a?(PersonalAccessToken)
 
             ::PersonalAccessTokens::LastUsedService.new(token).execute
 

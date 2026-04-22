@@ -62,6 +62,32 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role:, internal_di
       end
     end
 
+    context 'without per_page param' do
+      let(:finder_params_for_issuable) { {} }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(5)
+      end
+
+      it 'paginates with default per_page' do
+        expect(discussions_service.paginator).to be_present
+        expect(discussions_service.execute.count).to eq(5)
+      end
+    end
+
+    context 'with per_page param that exceeds the limit' do
+      let(:finder_params_for_issuable) { { per_page: 99 } }
+
+      before do
+        stub_const("#{described_class}::MAX_PER_PAGE", 5)
+      end
+
+      it 'paginates with max per_page value' do
+        expect(discussions_service.paginator).to be_present
+        expect(discussions_service.execute.count).to eq(5)
+      end
+    end
+
     # confidential notes are currently available only on issues and epics
     context 'and cannot read confidential notes' do
       before do
