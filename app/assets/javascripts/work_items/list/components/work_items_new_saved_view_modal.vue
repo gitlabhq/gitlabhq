@@ -14,6 +14,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__, n__, sprintf } from '~/locale';
 import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
+import { getAllItemsDraftFiltersStorageKey } from '~/work_items/utils';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -124,7 +125,7 @@ export default {
       return this.savedViewTitle ? '' : this.$options.i18n.validateTitle;
     },
     allItemsDraftFiltersStorageKey() {
-      return `${this.fullPath}-all-items-draft-filters`;
+      return getAllItemsDraftFiltersStorageKey(this.fullPath);
     },
   },
   watch: {

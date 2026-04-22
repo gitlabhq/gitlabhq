@@ -121,7 +121,11 @@ import {
   PARAM_PAGE_BEFORE,
   PARAM_STATE,
 } from '~/work_items/list/constants';
-import { getSortedWorkItems, combineWorkItemLists } from '~/work_items/utils';
+import {
+  getSortedWorkItems,
+  combineWorkItemLists,
+  getAllItemsDraftFiltersStorageKey,
+} from '~/work_items/utils';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 
@@ -547,7 +551,7 @@ export default {
       return { query };
     },
     allItemsDraftFiltersStorageKey() {
-      return `${this.rootPageFullPath}-all-items-draft-filters`;
+      return getAllItemsDraftFiltersStorageKey(this.rootPageFullPath);
     },
     namespace() {
       return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
