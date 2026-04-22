@@ -3,7 +3,7 @@ name: maintainer
 description: Manage branches, merge requests, CI/CD settings, and project members.
   Cannot delete the project.
 inherits_from:
-- developer
+  - developer
 project:
   permissions: []
   raw_permissions:
@@ -99,6 +99,7 @@ group:
   - award_achievement
   - create_cluster
   - create_jira_connect_subscription
+  - create_project_fork
   - create_protected_branch
   - destroy_package
   - destroy_protected_branch

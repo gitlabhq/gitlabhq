@@ -42000,6 +42000,9 @@ msgstr ""
 msgid "Maximum delay (Minutes)"
 msgstr ""
 
+msgid "Maximum description or comment content size (bytes)"
+msgstr ""
+
 msgid "Maximum diff patch size"
 msgstr ""
 
@@ -79055,6 +79058,9 @@ msgid "Work item not supported"
 msgstr ""
 
 msgid "Work item type %{work_item_type_name} can only have a maximum of %{limit} active custom fields."
+msgstr ""
+
+msgid "Work item, merge request, and vulnerability descriptions and comments exceeding this size are rejected on create or update. Default: 1048576 (1 MiB)."
 msgstr ""
 
 msgid "Work items"

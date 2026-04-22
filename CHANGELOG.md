@@ -2,6 +2,33 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.10.4 (2026-04-21)
+
+### Fixed (3 changes)
+
+- [Fix Geo site validation when outbound request filtering is enabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1eb239f96165dd4cea384c38e650d0b29d8c641f) **GitLab Enterprise Edition**
+- [Skip BBMs referencing dropped tables in single-record bug retry](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8607dfa997f2fa0e890089e04ac3e3290678292d)
+- [Handle RecordInvalid in runner authentication token reset service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/becd8e9794949d5bdf986b0e7eb2faa59cb6d34d)
+
+### Security (10 changes)
+
+- [Enforce pagination in issuable discussions endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/55f6d98bcb4ce96c3db6f79a0bb9199a92ebea61) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6066))
+- [Unwrap nested <a> no matter how they're produced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f647fe2bfcd070bb19aa8fc5a9f59b87e4d5011c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6031))
+- [Fix OAuth token not rejected](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4b81d965db977381a9d0870c3ec930d7a4715537) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6046))
+- [Owner of a project (Developer in the top-level group) can create a fork inside...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4d2de7d4cc65428503a02c3f79569dc4d9113d91) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5950))
+- [Add configurable Markdown length limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/876e4613a18d3ce7aafb4ed4fd7f4ac76c78e9fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6055))
+- [Fix CSRF bypass via parser-differential in GraphQL API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e7f3ba87de1650a669571d85044b80b19e147d6a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6024))
+- [Pass Mermaid relativeUrlRoot by postMessage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d1770a4c8e55263d24040690d8776fe933b00cae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6013))
+- [Limit endpoint for fetching latest notes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7bf029f04c17a26fcfc91f3ee3d322bc1f2df9a9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6037))
+- [Security fix toctou webide assets headers 18 10](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7df01e8afd86d4eb1c48cb10f944468e0eb4d52) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5996))
+- [Validate JSON-like responses regardless of Content-Type header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f349ae3688ed2d717ed725cbe9e6d2e28a8aeebe) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5929))
+
+### Other (3 changes)
+
+- [Backports dead connection fixes to 18.10](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09b5624a9978adab62329031c46bb2e9140cdccf)
+- [Skip CI finished builds backfill when ClickHouse is not configured](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2bc54b33683982d8eac1e61406d548b4bb723bbc)
+- [Fix flaky new_project_spec by scoping within pane](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3747e446d2b9eb52f1619000a23c21c171bcc89f)
+
 ## 18.10.3 (2026-04-07)
 
 ### Fixed (2 changes)

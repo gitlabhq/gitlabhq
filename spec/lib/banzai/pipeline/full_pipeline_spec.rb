@@ -63,7 +63,6 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
       HTML
 
       result = described_class.to_html(markdown, project: project)
-      expect(result).to include "<a alt='\"#{reference_link}'></a>"
 
       # As above, we assert the full result to clarify the full result. We used to interpret
       # this input as a valid reference link, which eventually lead to the original XSS whose
@@ -76,9 +75,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
           <a href="#{reference_link}&lt;i&gt;&lt;a%20alt='%22#{reference_link}'&gt;&lt;/a&gt;&lt;/i&gt;"
              rel="nofollow noreferrer noopener" target="_blank">
             #{reference_link}
-            <i>
-              <a alt='"#{reference_link}'></a>
-            </i>
+            <i></i>
           </a>
         </div>
       HTML

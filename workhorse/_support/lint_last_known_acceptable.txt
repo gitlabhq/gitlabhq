@@ -7,7 +7,7 @@ internal/testhelper/gitaly.go:338: 338-357 lines are duplicate of `internal/test
 cmd/gitlab-workhorse/main.go:119:6: Function 'buildConfig' has too many statements (43 > 40) (funlen)
 cmd/gitlab-workhorse/main.go:213:1: cognitive complexity 33 of func `run` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)
-internal/staticpages/servefile.go:62:1: cognitive complexity 22 of func `(*Static).ServeExisting` is high (> 20) (gocognit)
+internal/staticpages/servefile.go:63:1: cognitive complexity 22 of func `(*Static).ServeExisting` is high (> 20) (gocognit)
 internal/transport/transport.go:147:1: cognitive complexity 59 of func `validateIPAddress` is high (> 20) (gocognit)
 internal/git/io_test.go:89:14: string `test data` has 3 occurrences, make it a constant (goconst)
 internal/git/error.go:38:4: singleCaseSwitch: should rewrite switch statement to if statement (gocritic)
