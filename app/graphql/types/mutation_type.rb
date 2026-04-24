@@ -74,6 +74,7 @@ module Types
     mount_mutation Mutations::Import::SourceUsers::UndoKeepAsPlaceholder, experiment: { milestone: '18.4' }
     mount_mutation Mutations::Import::SourceUsers::Reassign, experiment: { milestone: '17.2' }
     mount_mutation Mutations::Import::SourceUsers::ResendNotification, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::RetryFailedReassignment, experiment: { milestone: '18.11' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, experiment: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update

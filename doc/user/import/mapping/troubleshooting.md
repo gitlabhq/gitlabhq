@@ -16,9 +16,37 @@ During placeholder user reassignment, you might encounter the following issues.
 
 ## Source user reassignment failed
 
-There is no way to retry reassignment for source users with `failed` status in the UI. See [issue 589632](https://gitlab.com/gitlab-org/gitlab/-/issues/589632).
+To retry reassignment for source users with `failed` status, you can use the GraphQL API or the Rails console. For more information, see [issue 589777](https://gitlab.com/gitlab-org/gitlab/-/work_items/589777). UI support is discussed in [issue 593001](https://gitlab.com/gitlab-org/gitlab/-/work_items/593001).
 
-However, you can manually retry failed source users in the [Rails console](../../../administration/operations/rails_console.md):
+### Use the GraphQL API
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589777) in GitLab 18.11.
+
+{{< /history >}}
+
+Use the `importSourceUserRetryFailedReassignment` mutation to retry a failed reassignment:
+
+```graphql
+mutation {
+  importSourceUserRetryFailedReassignment(input: { id: "gid://gitlab/Import::SourceUser/<SOURCE_USER_ID>" }) {
+    importSourceUser {
+      id
+      status
+    }
+    errors
+  }
+}
+```
+
+Replace `<SOURCE_USER_ID>` with the import source user ID.
+You can find this ID by querying `importSourceUsers` on the namespace.
+
+### Use the Rails console
+
+You can manually retry failed source users in the
+[Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 # Find by the source user's placeholder user ID because placeholder user IDs are easy to fetch from the UI
@@ -34,7 +62,10 @@ else
 end
 ```
 
-If the source user fails again, check [`importer.log`](../../../administration/logs/_index.md#importerlog) for any logs with the message `Failed to reassign placeholder user` to begin investigating the root cause.
+### Investigate repeated failures
+
+If the source user fails again, check [`importer.log`](../../../administration/logs/_index.md#importerlog)
+for any logs with the message `Failed to reassign placeholder user` to begin investigating the root cause.
 
 ## Source user reassigned successfully but its placeholder user was not deleted
 

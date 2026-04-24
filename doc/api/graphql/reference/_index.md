@@ -9207,6 +9207,30 @@ Input type: `ImportSourceUserResendNotificationInput`
 | <a id="mutation-importsourceuserresendnotification-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-importsourceuserresendnotification-importsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
 
+### `Mutation.importSourceUserRetryFailedReassignment`
+
+{{< details >}}
+**Introduced** in GitLab 18.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ImportSourceUserRetryFailedReassignmentInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-importsourceuserretryfailedreassignment-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-importsourceuserretryfailedreassignment-id"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-importsourceuserretryfailedreassignment-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-importsourceuserretryfailedreassignment-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-importsourceuserretryfailedreassignment-importsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
 ### `Mutation.importSourceUserUndoKeepAsPlaceholder`
 
 {{< details >}}
