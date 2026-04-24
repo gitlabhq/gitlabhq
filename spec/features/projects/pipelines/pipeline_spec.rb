@@ -817,7 +817,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         expect(page).to have_content('cross-build')
       end
 
-      context 'when a scheduled pipeline is created by a blocked user' do
+      context 'when a scheduled pipeline is created by a blocked user', :sidekiq_inline do
         let(:project)  { create(:project, :repository) }
 
         let(:schedule) do

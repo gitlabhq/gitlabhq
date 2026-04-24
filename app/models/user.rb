@@ -633,11 +633,7 @@ class User < ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     after_transition any => :blocked do |user|
       user.run_after_commit do
-        Ci::DropPipelinesAndDisableSchedulesForUserService.new.execute(
-          user,
-          reason: :user_blocked,
-          include_owned_projects_and_groups: false
-        )
+        Users::DropPipelinesForBlockedUserWorker.perform_async(user.id)
       end
     end
 

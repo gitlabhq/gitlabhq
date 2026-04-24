@@ -26,6 +26,18 @@ RSpec.describe Ci::DropPipelineService, feature_category: :continuous_integratio
       expect(success_pipeline.reload).to be_success
       expect(success_build.reload).to be_success
     end
+
+    context 'when a custom worker_class is provided' do
+      it 'uses the given worker class instead of Ci::DropPipelineWorker' do
+        expect(Ci::DropPipelineForBlockedUserWorker).to receive(:bulk_perform_async_with_contexts)
+        expect(Ci::DropPipelineWorker).not_to receive(:bulk_perform_async_with_contexts)
+
+        described_class.new.execute_async_for_all(
+          user.pipelines, failure_reason, user,
+          worker_class: Ci::DropPipelineForBlockedUserWorker
+        )
+      end
+    end
   end
 
   describe '#execute' do

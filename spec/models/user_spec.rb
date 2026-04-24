@@ -3973,16 +3973,16 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.blocked?).to be_truthy
     end
 
-    it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
-      let(:reason) { :user_blocked }
-      let(:include_owned_projects_and_groups) { false }
-      subject(:action) { user.block! }
+    it 'enqueues Users::DropPipelinesForBlockedUserWorker' do
+      expect(Users::DropPipelinesForBlockedUserWorker).to receive(:perform_async).with(user.id)
+
+      user.block!
     end
 
     context 'when user has active CI pipeline schedules' do
       let_it_be(:schedule) { create(:ci_pipeline_schedule, active: true, owner: user) }
 
-      it 'disables any pipeline schedules' do
+      it 'disables any pipeline schedules', :sidekiq_inline do
         expect { user.block }.to change { schedule.reload.active? }.to(false)
       end
     end

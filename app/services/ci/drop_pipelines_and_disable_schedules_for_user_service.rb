@@ -34,18 +34,30 @@ module Ci
 
     def drop_pipelines_for_user(user, reason)
       Ci::DropPipelineService.new.execute_async_for_all(
-        Ci::Pipeline.for_user(user),
+        Ci::Pipeline.for_user(user).with_status(*indexed_alive_statuses),
         reason,
-        user
+        user,
+        worker_class: drop_pipeline_worker_for(reason)
       )
     end
 
     def drop_pipelines_for_projects(user, project_ids, reason)
       Ci::DropPipelineService.new.execute_async_for_all(
-        Ci::Pipeline.for_project(project_ids),
+        Ci::Pipeline.for_project(project_ids).with_status(*indexed_alive_statuses),
         reason,
-        user
+        user,
+        worker_class: drop_pipeline_worker_for(reason)
       )
+    end
+
+    # Excluded the waiting_for_callback and cancelling for performance reasons
+    def indexed_alive_statuses
+      Ci::HasStatus::ALIVE_STATUSES - %w[waiting_for_callback canceling]
+    end
+
+    # DropPipelineForBlockedUserWorker is used for all pipelines (user and project) when reason is :user_blocked.
+    def drop_pipeline_worker_for(reason)
+      reason == :user_blocked ? Ci::DropPipelineForBlockedUserWorker : Ci::DropPipelineWorker
     end
 
     def disable_schedules_for_user(user)

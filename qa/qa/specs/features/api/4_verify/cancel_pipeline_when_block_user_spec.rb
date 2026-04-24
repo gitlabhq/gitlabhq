@@ -27,6 +27,11 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347999' do
         admin_user.block!(user.id)
 
+        # Schedule deactivation happens asynchronously via Users::DropPipelinesForBlockedUserWorker
+        Support::Waiter.wait_until(sleep_interval: 1, message: 'Wait for pipeline schedule to be deactivated') do
+          pipeline_schedule[:active] == false
+        end
+
         expect(pipeline_schedule[:active]).not_to be_truthy,
           "Expected schedule active state to be false - active state #{pipeline_schedule[:active]}"
       end
