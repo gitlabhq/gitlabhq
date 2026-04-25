@@ -164,6 +164,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Ci::CreateDownstreamPipelineWorker' => 3,
         'Ci::DailyBuildGroupReportResultsWorker' => 3,
         'Ci::DeleteObjectsWorker' => 0,
+        'Ci::DropPipelineForBlockedUserWorker' => 3,
         'Ci::DropPipelineWorker' => 3,
         'Ci::TimedOutBuilds::DropRunningWorker' => 1,
         'Ci::TimedOutBuilds::DropCancelingWorker' => 1,

@@ -94,6 +94,42 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
         end
       end
 
+      context 'when user owns blocked (manual/scheduled) pipelines' do
+        let_it_be(:user_blocked_pipelines) do
+          user_personal_projects.flat_map do |project|
+            create_list(:ci_pipeline, 2, :manual, project: project, user: user)
+          end
+        end
+
+        it 'does not cancel blocked pipelines', :sidekiq_inline do
+          expect { service }.not_to change {
+            user_blocked_pipelines.map(&:reload).map(&:status).uniq
+          }
+        end
+      end
+
+      context 'when reason is :user_blocked' do
+        subject(:service) { described_class.new.execute(user, reason: :user_blocked) }
+
+        it 'enqueues Ci::DropPipelineForBlockedUserWorker (low urgency)' do
+          allow(Ci::DropPipelineWorker).to receive(:bulk_perform_async_with_contexts)
+          expect(Ci::DropPipelineForBlockedUserWorker).to receive(:bulk_perform_async_with_contexts)
+
+          service
+        end
+      end
+
+      context 'when reason is :user_banned' do
+        subject(:service) { described_class.new.execute(user, reason: :user_banned) }
+
+        it 'enqueues Ci::DropPipelineWorker (high urgency)' do
+          allow(Ci::DropPipelineForBlockedUserWorker).to receive(:bulk_perform_async_with_contexts)
+          expect(Ci::DropPipelineWorker).to receive(:bulk_perform_async_with_contexts)
+
+          service
+        end
+      end
+
       it 'drops running pipelines/disabled active schedules owned by user', :sidekiq_inline do
         expect { service }.to change {
                                 user_owned_pipelines.map(&:reload).map(&:status).uniq

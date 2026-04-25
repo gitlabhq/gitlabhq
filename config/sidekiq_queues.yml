@@ -1241,6 +1241,8 @@
   - 1
 - - upload_checksum
   - 1
+- - users_drop_pipelines_for_blocked_user
+  - 1
 - - users_experimental_communication_opt_in
   - 1
 - - users_track_namespace_visits
