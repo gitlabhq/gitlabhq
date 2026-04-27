@@ -456,7 +456,7 @@ GitLab API endpoints (`/api/*`) must include the following HTTP response headers
 | `Access-Control-Allow-Headers` | `Authorization` | Permits the Authorization header in cross-origin requests. |
 | `Access-Control-Allow-Methods` | `GET, POST, PUT, DELETE, OPTIONS` | Specifies allowed HTTP methods (recommended). |
 | `Access-Control-Allow-Credentials` | `false` | The Web IDE does not need to include credentials controlled by this [header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Credentials) in HTTP requests. |
-| `Access-Control-Expose-Headers` | `Link, X-Total, X-Total-Pages, X-Per-Page, X-Page, X-Next-Page, X-Prev-Page, X-Gitlab-Blob-Id, X-Gitlab-Commit-Id, X-Gitlab-Content-Sha256, X-Gitlab-Encoding, X-Gitlab-File-Name, X-Gitlab-File-Path, X-Gitlab-Last-Commit-Id X-Gitlab-Ref, X-Gitlab-Size, X-Request-Id, ETag` | Headers used by GitLab Rest and GraphQL APIs. |
+| `Access-Control-Expose-Headers` | `Link, X-Total, X-Total-Pages, X-Per-Page, X-Page, X-Next-Page, X-Prev-Page, X-Gitlab-Blob-Id, X-Gitlab-Commit-Id, X-Gitlab-Content-Sha256, X-Gitlab-Encoding, X-Gitlab-File-Name, X-Gitlab-File-Path, X-Gitlab-Last-Commit-Id X-Gitlab-Ref, X-Gitlab-Size, X-Request-Id, ETag, X-Streaming-Format` | Headers used by GitLab Rest and GraphQL APIs. |
 | `Vary` | `Origin` | Ensures proper caching behavior for CORS responses. |
 
 The Web IDE dynamically generates the subdomain portion of the extension host domain. Ensure that
