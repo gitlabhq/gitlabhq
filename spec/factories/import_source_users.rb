@@ -46,6 +46,12 @@ FactoryBot.define do
       status { 6 }
     end
 
+    trait :failed do
+      with_reassign_to_user
+      status { 4 }
+      reassignment_error { 'Error during placeholder reassignment' }
+    end
+
     trait :user_type_namespace do
       namespace
     end

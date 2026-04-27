@@ -67,6 +67,7 @@ Gitlab/Authz/PermissionCheck:
     - 'app/services/import/source_users/keep_as_placeholder_service.rb'
     - 'app/services/import/source_users/reassign_service.rb'
     - 'app/services/import/source_users/resend_notification_service.rb'
+    - 'app/services/import/source_users/retry_failed_reassignment_service.rb'
     - 'app/services/import/source_users/undo_keep_as_placeholder_service.rb'
     - 'app/services/incident_management/link_alerts/base_service.rb'
     - 'app/services/incident_management/timeline_event_tags/base_service.rb'

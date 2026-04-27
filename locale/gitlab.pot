@@ -36540,6 +36540,9 @@ msgstr ""
 msgid "Import|Reassign contributions"
 msgstr ""
 
+msgid "Import|Reassignment retry has failed multiple times. Repeated failures suggest an unexpected error that may need time to resolve. Please try again in %{retry_cooldown_in_words}."
+msgstr ""
+
 msgid "Import|Show errors"
 msgstr ""
 

@@ -230,6 +230,34 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
+    context 'when switching to failed' do
+      subject(:source_user) { create(:import_source_user, :reassignment_in_progress) }
+
+      it 'sets the reassignment_error from the transition argument' do
+        source_user.fail_reassignment!('Something went wrong')
+
+        expect(source_user.reassignment_error).to eq('Something went wrong')
+      end
+    end
+
+    context 'when retrying a failed reassignment' do
+      subject(:source_user) { create(:import_source_user, :failed) }
+
+      it 'transitions from failed to reassignment_in_progress' do
+        expect { source_user.retry_reassignment }.to change {
+          source_user.reassignment_in_progress?
+        }.from(false).to(true)
+      end
+
+      it 'clears the reassignment_error' do
+        source_user.update_column(:reassignment_error, 'Previous error')
+
+        expect { source_user.retry_reassignment }.to change {
+          source_user.reassignment_error
+        }.from('Previous error').to(nil)
+      end
+    end
+
     context 'when switching to reassignment_in_progress without reassigned to user approval' do
       let_it_be(:reassign_to_user) { create(:user) }
       let_it_be(:reassigned_by_user) { create(:user, :admin) }
@@ -632,6 +660,78 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       let(:accepted) { false }
 
       it { is_expected.to eq(source_user.placeholder_user_id) }
+    end
+  end
+
+  describe '#reassignment_error=' do
+    let(:source_user) { build(:import_source_user, :reassignment_in_progress) }
+
+    it 'sanitizes URLs with credentials' do
+      source_user.reassignment_error = 'Error including source hostname user:password@example.com'
+
+      expect(source_user.reassignment_error).not_to include('password')
+      expect(source_user.reassignment_error).to include('*****:*****@example.com')
+    end
+
+    it 'filters file paths from the message' do
+      source_user.reassignment_error = "Error including file path /home/user/project/file.json"
+
+      expect(source_user.reassignment_error).to include('[FILTERED]')
+      expect(source_user.reassignment_error).not_to include('/home/user/project/file.json')
+    end
+
+    it 'truncates to 255 characters' do
+      source_user.reassignment_error = 'x' * 300
+
+      expect(source_user.reassignment_error.length).to eq(255)
+    end
+
+    it 'converts non-string values to string' do
+      source_user.reassignment_error = StandardError.new('error')
+
+      expect(source_user.reassignment_error).to eq('error')
+    end
+
+    it 'allows nil reassignment_error' do
+      source_user.reassignment_error = nil
+
+      expect(source_user.reassignment_error).to be_nil
+    end
+
+    it 'saves blank reassignment_error as nil' do
+      source_user.reassignment_error = ''
+
+      expect(source_user.reassignment_error).to be_nil
+    end
+
+    it 'applies all filters together' do
+      message = 'Error including file path /home/user/project/file.json and hostname user:password@example.com'
+      source_user.reassignment_error = message
+
+      expect(source_user.reassignment_error).not_to include('password')
+      expect(source_user.reassignment_error).not_to include('/home/user/file.json')
+      expect(source_user.reassignment_error).to include('*****:*****@example.com')
+      expect(source_user.reassignment_error).to include('[FILTERED]')
+    end
+
+    it 'sanitizes partially truncated URLs' do
+      long_message_start = 'x' * 245
+      message = "#{long_message_start} user:password@example.com"
+      source_user.reassignment_error = message
+
+      expect(source_user.reassignment_error).to eq(
+        "#{long_message_start} *****:*****@example.com".truncate(255)
+      )
+    end
+
+    it 'filters partially truncated filepaths' do
+      long_message_start = 'x' * 245
+      message = "#{long_message_start} /home/user/file.json"
+      source_user.reassignment_error = message
+
+      expect(source_user.reassignment_error).to eq(
+        "#{long_message_start} [FILTERED]".truncate(255)
+      )
     end
   end
 
