@@ -71514,6 +71514,8 @@ components:
           type: string
         ci_secure_files_verification_failed_count:
           type: string
+        ci_secure_files_oldest_unsynced_time:
+          type: string
         container_repositories_count:
           type: string
         container_repositories_checksum_total_count:
@@ -71533,6 +71535,8 @@ components:
         container_repositories_verified_count:
           type: string
         container_repositories_verification_failed_count:
+          type: string
+        container_repositories_oldest_unsynced_time:
           type: string
         dependency_proxy_blobs_count:
           type: string
@@ -71554,6 +71558,8 @@ components:
           type: string
         dependency_proxy_blobs_verification_failed_count:
           type: string
+        dependency_proxy_blobs_oldest_unsynced_time:
+          type: string
         dependency_proxy_manifests_count:
           type: string
         dependency_proxy_manifests_checksum_total_count:
@@ -71573,6 +71579,8 @@ components:
         dependency_proxy_manifests_verified_count:
           type: string
         dependency_proxy_manifests_verification_failed_count:
+          type: string
+        dependency_proxy_manifests_oldest_unsynced_time:
           type: string
         design_management_repositories_count:
           type: string
@@ -71594,6 +71602,8 @@ components:
           type: string
         design_management_repositories_verification_failed_count:
           type: string
+        design_management_repositories_oldest_unsynced_time:
+          type: string
         group_wiki_repositories_count:
           type: string
         group_wiki_repositories_checksum_total_count:
@@ -71613,6 +71623,8 @@ components:
         group_wiki_repositories_verified_count:
           type: string
         group_wiki_repositories_verification_failed_count:
+          type: string
+        group_wiki_repositories_oldest_unsynced_time:
           type: string
         job_artifacts_count:
           type: string
@@ -71634,6 +71646,8 @@ components:
           type: string
         job_artifacts_verification_failed_count:
           type: string
+        job_artifacts_oldest_unsynced_time:
+          type: string
         lfs_objects_count:
           type: string
         lfs_objects_checksum_total_count:
@@ -71653,6 +71667,8 @@ components:
         lfs_objects_verified_count:
           type: string
         lfs_objects_verification_failed_count:
+          type: string
+        lfs_objects_oldest_unsynced_time:
           type: string
         merge_request_diffs_count:
           type: string
@@ -71674,6 +71690,8 @@ components:
           type: string
         merge_request_diffs_verification_failed_count:
           type: string
+        merge_request_diffs_oldest_unsynced_time:
+          type: string
         package_files_count:
           type: string
         package_files_checksum_total_count:
@@ -71693,6 +71711,8 @@ components:
         package_files_verified_count:
           type: string
         package_files_verification_failed_count:
+          type: string
+        package_files_oldest_unsynced_time:
           type: string
         pages_deployments_count:
           type: string
@@ -71714,6 +71734,8 @@ components:
           type: string
         pages_deployments_verification_failed_count:
           type: string
+        pages_deployments_oldest_unsynced_time:
+          type: string
         pipeline_artifacts_count:
           type: string
         pipeline_artifacts_checksum_total_count:
@@ -71733,6 +71755,8 @@ components:
         pipeline_artifacts_verified_count:
           type: string
         pipeline_artifacts_verification_failed_count:
+          type: string
+        pipeline_artifacts_oldest_unsynced_time:
           type: string
         project_repositories_count:
           type: string
@@ -71754,6 +71778,8 @@ components:
           type: string
         project_repositories_verification_failed_count:
           type: string
+        project_repositories_oldest_unsynced_time:
+          type: string
         project_wiki_repositories_count:
           type: string
         project_wiki_repositories_checksum_total_count:
@@ -71773,6 +71799,8 @@ components:
         project_wiki_repositories_verified_count:
           type: string
         project_wiki_repositories_verification_failed_count:
+          type: string
+        project_wiki_repositories_oldest_unsynced_time:
           type: string
         snippet_repositories_count:
           type: string
@@ -71794,6 +71822,8 @@ components:
           type: string
         snippet_repositories_verification_failed_count:
           type: string
+        snippet_repositories_oldest_unsynced_time:
+          type: string
         terraform_state_versions_count:
           type: string
         terraform_state_versions_checksum_total_count:
@@ -71813,6 +71843,8 @@ components:
         terraform_state_versions_verified_count:
           type: string
         terraform_state_versions_verification_failed_count:
+          type: string
+        terraform_state_versions_oldest_unsynced_time:
           type: string
         uploads_count:
           type: string
@@ -71834,6 +71866,8 @@ components:
           type: string
         uploads_verification_failed_count:
           type: string
+        uploads_oldest_unsynced_time:
+          type: string
         packages_nuget_symbols_count:
           type: string
         packages_nuget_symbols_checksum_total_count:
@@ -71853,6 +71887,8 @@ components:
         packages_nuget_symbols_verified_count:
           type: string
         packages_nuget_symbols_verification_failed_count:
+          type: string
+        packages_nuget_symbols_oldest_unsynced_time:
           type: string
         supply_chain_attestations_count:
           type: string
@@ -71874,6 +71910,8 @@ components:
           type: string
         supply_chain_attestations_verification_failed_count:
           type: string
+        supply_chain_attestations_oldest_unsynced_time:
+          type: string
         packages_helm_metadata_caches_count:
           type: string
         packages_helm_metadata_caches_checksum_total_count:
@@ -71893,6 +71931,8 @@ components:
         packages_helm_metadata_caches_verified_count:
           type: string
         packages_helm_metadata_caches_verification_failed_count:
+          type: string
+        packages_helm_metadata_caches_oldest_unsynced_time:
           type: string
         design_management_action_uploads_count:
           type: string
@@ -71914,6 +71954,8 @@ components:
           type: string
         design_management_action_uploads_verification_failed_count:
           type: string
+        design_management_action_uploads_oldest_unsynced_time:
+          type: string
         user_uploads_count:
           type: string
         user_uploads_checksum_total_count:
@@ -71933,6 +71975,8 @@ components:
         user_uploads_verified_count:
           type: string
         user_uploads_verification_failed_count:
+          type: string
+        user_uploads_oldest_unsynced_time:
           type: string
         achievement_uploads_count:
           type: string
@@ -71954,6 +71998,8 @@ components:
           type: string
         achievement_uploads_verification_failed_count:
           type: string
+        achievement_uploads_oldest_unsynced_time:
+          type: string
         group_uploads_count:
           type: string
         group_uploads_checksum_total_count:
@@ -71973,6 +72019,8 @@ components:
         group_uploads_verified_count:
           type: string
         group_uploads_verification_failed_count:
+          type: string
+        group_uploads_oldest_unsynced_time:
           type: string
         project_uploads_count:
           type: string
@@ -71994,6 +72042,8 @@ components:
           type: string
         project_uploads_verification_failed_count:
           type: string
+        project_uploads_oldest_unsynced_time:
+          type: string
         abuse_report_uploads_count:
           type: string
         abuse_report_uploads_checksum_total_count:
@@ -72013,6 +72063,8 @@ components:
         abuse_report_uploads_verified_count:
           type: string
         abuse_report_uploads_verification_failed_count:
+          type: string
+        abuse_report_uploads_oldest_unsynced_time:
           type: string
         git_fetch_event_count_weekly:
           type: string
@@ -76743,6 +76795,8 @@ components:
           type: string
         ci_secure_files_verification_failed_count:
           type: string
+        ci_secure_files_oldest_unsynced_time:
+          type: string
         container_repositories_count:
           type: string
         container_repositories_checksum_total_count:
@@ -76762,6 +76816,8 @@ components:
         container_repositories_verified_count:
           type: string
         container_repositories_verification_failed_count:
+          type: string
+        container_repositories_oldest_unsynced_time:
           type: string
         dependency_proxy_blobs_count:
           type: string
@@ -76783,6 +76839,8 @@ components:
           type: string
         dependency_proxy_blobs_verification_failed_count:
           type: string
+        dependency_proxy_blobs_oldest_unsynced_time:
+          type: string
         dependency_proxy_manifests_count:
           type: string
         dependency_proxy_manifests_checksum_total_count:
@@ -76802,6 +76860,8 @@ components:
         dependency_proxy_manifests_verified_count:
           type: string
         dependency_proxy_manifests_verification_failed_count:
+          type: string
+        dependency_proxy_manifests_oldest_unsynced_time:
           type: string
         design_management_repositories_count:
           type: string
@@ -76823,6 +76883,8 @@ components:
           type: string
         design_management_repositories_verification_failed_count:
           type: string
+        design_management_repositories_oldest_unsynced_time:
+          type: string
         group_wiki_repositories_count:
           type: string
         group_wiki_repositories_checksum_total_count:
@@ -76842,6 +76904,8 @@ components:
         group_wiki_repositories_verified_count:
           type: string
         group_wiki_repositories_verification_failed_count:
+          type: string
+        group_wiki_repositories_oldest_unsynced_time:
           type: string
         job_artifacts_count:
           type: string
@@ -76863,6 +76927,8 @@ components:
           type: string
         job_artifacts_verification_failed_count:
           type: string
+        job_artifacts_oldest_unsynced_time:
+          type: string
         lfs_objects_count:
           type: string
         lfs_objects_checksum_total_count:
@@ -76882,6 +76948,8 @@ components:
         lfs_objects_verified_count:
           type: string
         lfs_objects_verification_failed_count:
+          type: string
+        lfs_objects_oldest_unsynced_time:
           type: string
         merge_request_diffs_count:
           type: string
@@ -76903,6 +76971,8 @@ components:
           type: string
         merge_request_diffs_verification_failed_count:
           type: string
+        merge_request_diffs_oldest_unsynced_time:
+          type: string
         package_files_count:
           type: string
         package_files_checksum_total_count:
@@ -76922,6 +76992,8 @@ components:
         package_files_verified_count:
           type: string
         package_files_verification_failed_count:
+          type: string
+        package_files_oldest_unsynced_time:
           type: string
         pages_deployments_count:
           type: string
@@ -76943,6 +77015,8 @@ components:
           type: string
         pages_deployments_verification_failed_count:
           type: string
+        pages_deployments_oldest_unsynced_time:
+          type: string
         pipeline_artifacts_count:
           type: string
         pipeline_artifacts_checksum_total_count:
@@ -76962,6 +77036,8 @@ components:
         pipeline_artifacts_verified_count:
           type: string
         pipeline_artifacts_verification_failed_count:
+          type: string
+        pipeline_artifacts_oldest_unsynced_time:
           type: string
         project_repositories_count:
           type: string
@@ -76983,6 +77059,8 @@ components:
           type: string
         project_repositories_verification_failed_count:
           type: string
+        project_repositories_oldest_unsynced_time:
+          type: string
         project_wiki_repositories_count:
           type: string
         project_wiki_repositories_checksum_total_count:
@@ -77002,6 +77080,8 @@ components:
         project_wiki_repositories_verified_count:
           type: string
         project_wiki_repositories_verification_failed_count:
+          type: string
+        project_wiki_repositories_oldest_unsynced_time:
           type: string
         snippet_repositories_count:
           type: string
@@ -77023,6 +77103,8 @@ components:
           type: string
         snippet_repositories_verification_failed_count:
           type: string
+        snippet_repositories_oldest_unsynced_time:
+          type: string
         terraform_state_versions_count:
           type: string
         terraform_state_versions_checksum_total_count:
@@ -77042,6 +77124,8 @@ components:
         terraform_state_versions_verified_count:
           type: string
         terraform_state_versions_verification_failed_count:
+          type: string
+        terraform_state_versions_oldest_unsynced_time:
           type: string
         uploads_count:
           type: string
@@ -77063,6 +77147,8 @@ components:
           type: string
         uploads_verification_failed_count:
           type: string
+        uploads_oldest_unsynced_time:
+          type: string
         packages_nuget_symbols_count:
           type: string
         packages_nuget_symbols_checksum_total_count:
@@ -77082,6 +77168,8 @@ components:
         packages_nuget_symbols_verified_count:
           type: string
         packages_nuget_symbols_verification_failed_count:
+          type: string
+        packages_nuget_symbols_oldest_unsynced_time:
           type: string
         supply_chain_attestations_count:
           type: string
@@ -77103,6 +77191,8 @@ components:
           type: string
         supply_chain_attestations_verification_failed_count:
           type: string
+        supply_chain_attestations_oldest_unsynced_time:
+          type: string
         packages_helm_metadata_caches_count:
           type: string
         packages_helm_metadata_caches_checksum_total_count:
@@ -77122,6 +77212,8 @@ components:
         packages_helm_metadata_caches_verified_count:
           type: string
         packages_helm_metadata_caches_verification_failed_count:
+          type: string
+        packages_helm_metadata_caches_oldest_unsynced_time:
           type: string
         design_management_action_uploads_count:
           type: string
@@ -77143,6 +77235,8 @@ components:
           type: string
         design_management_action_uploads_verification_failed_count:
           type: string
+        design_management_action_uploads_oldest_unsynced_time:
+          type: string
         user_uploads_count:
           type: string
         user_uploads_checksum_total_count:
@@ -77162,6 +77256,8 @@ components:
         user_uploads_verified_count:
           type: string
         user_uploads_verification_failed_count:
+          type: string
+        user_uploads_oldest_unsynced_time:
           type: string
         achievement_uploads_count:
           type: string
@@ -77183,6 +77279,8 @@ components:
           type: string
         achievement_uploads_verification_failed_count:
           type: string
+        achievement_uploads_oldest_unsynced_time:
+          type: string
         group_uploads_count:
           type: string
         group_uploads_checksum_total_count:
@@ -77202,6 +77300,8 @@ components:
         group_uploads_verified_count:
           type: string
         group_uploads_verification_failed_count:
+          type: string
+        group_uploads_oldest_unsynced_time:
           type: string
         project_uploads_count:
           type: string
@@ -77223,6 +77323,8 @@ components:
           type: string
         project_uploads_verification_failed_count:
           type: string
+        project_uploads_oldest_unsynced_time:
+          type: string
         abuse_report_uploads_count:
           type: string
         abuse_report_uploads_checksum_total_count:
@@ -77242,6 +77344,8 @@ components:
         abuse_report_uploads_verified_count:
           type: string
         abuse_report_uploads_verification_failed_count:
+          type: string
+        abuse_report_uploads_oldest_unsynced_time:
           type: string
         git_fetch_event_count_weekly:
           type: string

@@ -9,15 +9,12 @@ class QueueBackfillGroupWikiRepositoryLastUpdated < Gitlab::Database::Migration[
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :group_wiki_repositories,
-      :group_id,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration
+    # fixed-by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231783
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :group_wiki_repositories, :group_id, [])
+    # no-op because there was a bug in the original migration
+    # fixed-by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231783
   end
 end

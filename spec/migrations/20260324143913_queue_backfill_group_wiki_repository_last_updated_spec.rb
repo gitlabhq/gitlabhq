@@ -13,12 +13,7 @@ RSpec.describe QueueBackfillGroupWikiRepositoryLastUpdated, migration: :gitlab_m
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main,
-          table_name: :group_wiki_repositories,
-          column_name: :group_id,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end

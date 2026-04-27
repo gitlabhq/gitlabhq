@@ -72901,6 +72901,8 @@ definitions:
         type: string
       ci_secure_files_verification_failed_count:
         type: string
+      ci_secure_files_oldest_unsynced_time:
+        type: string
       container_repositories_count:
         type: string
       container_repositories_checksum_total_count:
@@ -72920,6 +72922,8 @@ definitions:
       container_repositories_verified_count:
         type: string
       container_repositories_verification_failed_count:
+        type: string
+      container_repositories_oldest_unsynced_time:
         type: string
       dependency_proxy_blobs_count:
         type: string
@@ -72941,6 +72945,8 @@ definitions:
         type: string
       dependency_proxy_blobs_verification_failed_count:
         type: string
+      dependency_proxy_blobs_oldest_unsynced_time:
+        type: string
       dependency_proxy_manifests_count:
         type: string
       dependency_proxy_manifests_checksum_total_count:
@@ -72960,6 +72966,8 @@ definitions:
       dependency_proxy_manifests_verified_count:
         type: string
       dependency_proxy_manifests_verification_failed_count:
+        type: string
+      dependency_proxy_manifests_oldest_unsynced_time:
         type: string
       design_management_repositories_count:
         type: string
@@ -72981,6 +72989,8 @@ definitions:
         type: string
       design_management_repositories_verification_failed_count:
         type: string
+      design_management_repositories_oldest_unsynced_time:
+        type: string
       group_wiki_repositories_count:
         type: string
       group_wiki_repositories_checksum_total_count:
@@ -73000,6 +73010,8 @@ definitions:
       group_wiki_repositories_verified_count:
         type: string
       group_wiki_repositories_verification_failed_count:
+        type: string
+      group_wiki_repositories_oldest_unsynced_time:
         type: string
       job_artifacts_count:
         type: string
@@ -73021,6 +73033,8 @@ definitions:
         type: string
       job_artifacts_verification_failed_count:
         type: string
+      job_artifacts_oldest_unsynced_time:
+        type: string
       lfs_objects_count:
         type: string
       lfs_objects_checksum_total_count:
@@ -73040,6 +73054,8 @@ definitions:
       lfs_objects_verified_count:
         type: string
       lfs_objects_verification_failed_count:
+        type: string
+      lfs_objects_oldest_unsynced_time:
         type: string
       merge_request_diffs_count:
         type: string
@@ -73061,6 +73077,8 @@ definitions:
         type: string
       merge_request_diffs_verification_failed_count:
         type: string
+      merge_request_diffs_oldest_unsynced_time:
+        type: string
       package_files_count:
         type: string
       package_files_checksum_total_count:
@@ -73080,6 +73098,8 @@ definitions:
       package_files_verified_count:
         type: string
       package_files_verification_failed_count:
+        type: string
+      package_files_oldest_unsynced_time:
         type: string
       pages_deployments_count:
         type: string
@@ -73101,6 +73121,8 @@ definitions:
         type: string
       pages_deployments_verification_failed_count:
         type: string
+      pages_deployments_oldest_unsynced_time:
+        type: string
       pipeline_artifacts_count:
         type: string
       pipeline_artifacts_checksum_total_count:
@@ -73120,6 +73142,8 @@ definitions:
       pipeline_artifacts_verified_count:
         type: string
       pipeline_artifacts_verification_failed_count:
+        type: string
+      pipeline_artifacts_oldest_unsynced_time:
         type: string
       project_repositories_count:
         type: string
@@ -73141,6 +73165,8 @@ definitions:
         type: string
       project_repositories_verification_failed_count:
         type: string
+      project_repositories_oldest_unsynced_time:
+        type: string
       project_wiki_repositories_count:
         type: string
       project_wiki_repositories_checksum_total_count:
@@ -73160,6 +73186,8 @@ definitions:
       project_wiki_repositories_verified_count:
         type: string
       project_wiki_repositories_verification_failed_count:
+        type: string
+      project_wiki_repositories_oldest_unsynced_time:
         type: string
       snippet_repositories_count:
         type: string
@@ -73181,6 +73209,8 @@ definitions:
         type: string
       snippet_repositories_verification_failed_count:
         type: string
+      snippet_repositories_oldest_unsynced_time:
+        type: string
       terraform_state_versions_count:
         type: string
       terraform_state_versions_checksum_total_count:
@@ -73200,6 +73230,8 @@ definitions:
       terraform_state_versions_verified_count:
         type: string
       terraform_state_versions_verification_failed_count:
+        type: string
+      terraform_state_versions_oldest_unsynced_time:
         type: string
       uploads_count:
         type: string
@@ -73221,6 +73253,8 @@ definitions:
         type: string
       uploads_verification_failed_count:
         type: string
+      uploads_oldest_unsynced_time:
+        type: string
       packages_nuget_symbols_count:
         type: string
       packages_nuget_symbols_checksum_total_count:
@@ -73240,6 +73274,8 @@ definitions:
       packages_nuget_symbols_verified_count:
         type: string
       packages_nuget_symbols_verification_failed_count:
+        type: string
+      packages_nuget_symbols_oldest_unsynced_time:
         type: string
       supply_chain_attestations_count:
         type: string
@@ -73261,6 +73297,8 @@ definitions:
         type: string
       supply_chain_attestations_verification_failed_count:
         type: string
+      supply_chain_attestations_oldest_unsynced_time:
+        type: string
       packages_helm_metadata_caches_count:
         type: string
       packages_helm_metadata_caches_checksum_total_count:
@@ -73280,6 +73318,8 @@ definitions:
       packages_helm_metadata_caches_verified_count:
         type: string
       packages_helm_metadata_caches_verification_failed_count:
+        type: string
+      packages_helm_metadata_caches_oldest_unsynced_time:
         type: string
       design_management_action_uploads_count:
         type: string
@@ -73301,6 +73341,8 @@ definitions:
         type: string
       design_management_action_uploads_verification_failed_count:
         type: string
+      design_management_action_uploads_oldest_unsynced_time:
+        type: string
       user_uploads_count:
         type: string
       user_uploads_checksum_total_count:
@@ -73320,6 +73362,8 @@ definitions:
       user_uploads_verified_count:
         type: string
       user_uploads_verification_failed_count:
+        type: string
+      user_uploads_oldest_unsynced_time:
         type: string
       achievement_uploads_count:
         type: string
@@ -73341,6 +73385,8 @@ definitions:
         type: string
       achievement_uploads_verification_failed_count:
         type: string
+      achievement_uploads_oldest_unsynced_time:
+        type: string
       group_uploads_count:
         type: string
       group_uploads_checksum_total_count:
@@ -73360,6 +73406,8 @@ definitions:
       group_uploads_verified_count:
         type: string
       group_uploads_verification_failed_count:
+        type: string
+      group_uploads_oldest_unsynced_time:
         type: string
       project_uploads_count:
         type: string
@@ -73381,6 +73429,8 @@ definitions:
         type: string
       project_uploads_verification_failed_count:
         type: string
+      project_uploads_oldest_unsynced_time:
+        type: string
       abuse_report_uploads_count:
         type: string
       abuse_report_uploads_checksum_total_count:
@@ -73400,6 +73450,8 @@ definitions:
       abuse_report_uploads_verified_count:
         type: string
       abuse_report_uploads_verification_failed_count:
+        type: string
+      abuse_report_uploads_oldest_unsynced_time:
         type: string
       git_fetch_event_count_weekly:
         type: string
@@ -73587,6 +73639,7 @@ definitions:
     - ci_secure_files_verification_total_count
     - ci_secure_files_verified_count
     - ci_secure_files_verification_failed_count
+    - ci_secure_files_oldest_unsynced_time
     - container_repositories_count
     - container_repositories_checksum_total_count
     - container_repositories_checksummed_count
@@ -73597,6 +73650,7 @@ definitions:
     - container_repositories_verification_total_count
     - container_repositories_verified_count
     - container_repositories_verification_failed_count
+    - container_repositories_oldest_unsynced_time
     - dependency_proxy_blobs_count
     - dependency_proxy_blobs_checksum_total_count
     - dependency_proxy_blobs_checksummed_count
@@ -73607,6 +73661,7 @@ definitions:
     - dependency_proxy_blobs_verification_total_count
     - dependency_proxy_blobs_verified_count
     - dependency_proxy_blobs_verification_failed_count
+    - dependency_proxy_blobs_oldest_unsynced_time
     - dependency_proxy_manifests_count
     - dependency_proxy_manifests_checksum_total_count
     - dependency_proxy_manifests_checksummed_count
@@ -73617,6 +73672,7 @@ definitions:
     - dependency_proxy_manifests_verification_total_count
     - dependency_proxy_manifests_verified_count
     - dependency_proxy_manifests_verification_failed_count
+    - dependency_proxy_manifests_oldest_unsynced_time
     - design_management_repositories_count
     - design_management_repositories_checksum_total_count
     - design_management_repositories_checksummed_count
@@ -73627,6 +73683,7 @@ definitions:
     - design_management_repositories_verification_total_count
     - design_management_repositories_verified_count
     - design_management_repositories_verification_failed_count
+    - design_management_repositories_oldest_unsynced_time
     - group_wiki_repositories_count
     - group_wiki_repositories_checksum_total_count
     - group_wiki_repositories_checksummed_count
@@ -73637,6 +73694,7 @@ definitions:
     - group_wiki_repositories_verification_total_count
     - group_wiki_repositories_verified_count
     - group_wiki_repositories_verification_failed_count
+    - group_wiki_repositories_oldest_unsynced_time
     - job_artifacts_count
     - job_artifacts_checksum_total_count
     - job_artifacts_checksummed_count
@@ -73647,6 +73705,7 @@ definitions:
     - job_artifacts_verification_total_count
     - job_artifacts_verified_count
     - job_artifacts_verification_failed_count
+    - job_artifacts_oldest_unsynced_time
     - lfs_objects_count
     - lfs_objects_checksum_total_count
     - lfs_objects_checksummed_count
@@ -73657,6 +73716,7 @@ definitions:
     - lfs_objects_verification_total_count
     - lfs_objects_verified_count
     - lfs_objects_verification_failed_count
+    - lfs_objects_oldest_unsynced_time
     - merge_request_diffs_count
     - merge_request_diffs_checksum_total_count
     - merge_request_diffs_checksummed_count
@@ -73667,6 +73727,7 @@ definitions:
     - merge_request_diffs_verification_total_count
     - merge_request_diffs_verified_count
     - merge_request_diffs_verification_failed_count
+    - merge_request_diffs_oldest_unsynced_time
     - package_files_count
     - package_files_checksum_total_count
     - package_files_checksummed_count
@@ -73677,6 +73738,7 @@ definitions:
     - package_files_verification_total_count
     - package_files_verified_count
     - package_files_verification_failed_count
+    - package_files_oldest_unsynced_time
     - pages_deployments_count
     - pages_deployments_checksum_total_count
     - pages_deployments_checksummed_count
@@ -73687,6 +73749,7 @@ definitions:
     - pages_deployments_verification_total_count
     - pages_deployments_verified_count
     - pages_deployments_verification_failed_count
+    - pages_deployments_oldest_unsynced_time
     - pipeline_artifacts_count
     - pipeline_artifacts_checksum_total_count
     - pipeline_artifacts_checksummed_count
@@ -73697,6 +73760,7 @@ definitions:
     - pipeline_artifacts_verification_total_count
     - pipeline_artifacts_verified_count
     - pipeline_artifacts_verification_failed_count
+    - pipeline_artifacts_oldest_unsynced_time
     - project_repositories_count
     - project_repositories_checksum_total_count
     - project_repositories_checksummed_count
@@ -73707,6 +73771,7 @@ definitions:
     - project_repositories_verification_total_count
     - project_repositories_verified_count
     - project_repositories_verification_failed_count
+    - project_repositories_oldest_unsynced_time
     - project_wiki_repositories_count
     - project_wiki_repositories_checksum_total_count
     - project_wiki_repositories_checksummed_count
@@ -73717,6 +73782,7 @@ definitions:
     - project_wiki_repositories_verification_total_count
     - project_wiki_repositories_verified_count
     - project_wiki_repositories_verification_failed_count
+    - project_wiki_repositories_oldest_unsynced_time
     - snippet_repositories_count
     - snippet_repositories_checksum_total_count
     - snippet_repositories_checksummed_count
@@ -73727,6 +73793,7 @@ definitions:
     - snippet_repositories_verification_total_count
     - snippet_repositories_verified_count
     - snippet_repositories_verification_failed_count
+    - snippet_repositories_oldest_unsynced_time
     - terraform_state_versions_count
     - terraform_state_versions_checksum_total_count
     - terraform_state_versions_checksummed_count
@@ -73737,6 +73804,7 @@ definitions:
     - terraform_state_versions_verification_total_count
     - terraform_state_versions_verified_count
     - terraform_state_versions_verification_failed_count
+    - terraform_state_versions_oldest_unsynced_time
     - uploads_count
     - uploads_checksum_total_count
     - uploads_checksummed_count
@@ -73747,6 +73815,7 @@ definitions:
     - uploads_verification_total_count
     - uploads_verified_count
     - uploads_verification_failed_count
+    - uploads_oldest_unsynced_time
     - packages_nuget_symbols_count
     - packages_nuget_symbols_checksum_total_count
     - packages_nuget_symbols_checksummed_count
@@ -73757,6 +73826,7 @@ definitions:
     - packages_nuget_symbols_verification_total_count
     - packages_nuget_symbols_verified_count
     - packages_nuget_symbols_verification_failed_count
+    - packages_nuget_symbols_oldest_unsynced_time
     - supply_chain_attestations_count
     - supply_chain_attestations_checksum_total_count
     - supply_chain_attestations_checksummed_count
@@ -73767,6 +73837,7 @@ definitions:
     - supply_chain_attestations_verification_total_count
     - supply_chain_attestations_verified_count
     - supply_chain_attestations_verification_failed_count
+    - supply_chain_attestations_oldest_unsynced_time
     - packages_helm_metadata_caches_count
     - packages_helm_metadata_caches_checksum_total_count
     - packages_helm_metadata_caches_checksummed_count
@@ -73777,6 +73848,7 @@ definitions:
     - packages_helm_metadata_caches_verification_total_count
     - packages_helm_metadata_caches_verified_count
     - packages_helm_metadata_caches_verification_failed_count
+    - packages_helm_metadata_caches_oldest_unsynced_time
     - design_management_action_uploads_count
     - design_management_action_uploads_checksum_total_count
     - design_management_action_uploads_checksummed_count
@@ -73787,6 +73859,7 @@ definitions:
     - design_management_action_uploads_verification_total_count
     - design_management_action_uploads_verified_count
     - design_management_action_uploads_verification_failed_count
+    - design_management_action_uploads_oldest_unsynced_time
     - user_uploads_count
     - user_uploads_checksum_total_count
     - user_uploads_checksummed_count
@@ -73797,6 +73870,7 @@ definitions:
     - user_uploads_verification_total_count
     - user_uploads_verified_count
     - user_uploads_verification_failed_count
+    - user_uploads_oldest_unsynced_time
     - achievement_uploads_count
     - achievement_uploads_checksum_total_count
     - achievement_uploads_checksummed_count
@@ -73807,6 +73881,7 @@ definitions:
     - achievement_uploads_verification_total_count
     - achievement_uploads_verified_count
     - achievement_uploads_verification_failed_count
+    - achievement_uploads_oldest_unsynced_time
     - group_uploads_count
     - group_uploads_checksum_total_count
     - group_uploads_checksummed_count
@@ -73817,6 +73892,7 @@ definitions:
     - group_uploads_verification_total_count
     - group_uploads_verified_count
     - group_uploads_verification_failed_count
+    - group_uploads_oldest_unsynced_time
     - project_uploads_count
     - project_uploads_checksum_total_count
     - project_uploads_checksummed_count
@@ -73827,6 +73903,7 @@ definitions:
     - project_uploads_verification_total_count
     - project_uploads_verified_count
     - project_uploads_verification_failed_count
+    - project_uploads_oldest_unsynced_time
     - abuse_report_uploads_count
     - abuse_report_uploads_checksum_total_count
     - abuse_report_uploads_checksummed_count
@@ -73837,6 +73914,7 @@ definitions:
     - abuse_report_uploads_verification_total_count
     - abuse_report_uploads_verified_count
     - abuse_report_uploads_verification_failed_count
+    - abuse_report_uploads_oldest_unsynced_time
     - git_fetch_event_count_weekly
     - git_push_event_count_weekly
     - proxy_remote_requests_event_count_weekly
