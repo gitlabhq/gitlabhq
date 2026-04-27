@@ -21126,6 +21126,7 @@ CREATE TABLE group_wiki_repositories (
     shard_id bigint NOT NULL,
     group_id bigint NOT NULL,
     disk_path text NOT NULL,
+    last_repository_updated_at timestamp with time zone,
     CONSTRAINT check_07f1c81806 CHECK ((char_length(disk_path) <= 80))
 );
 
