@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.2 (2026-04-28)
+
+### Changed (1 change)
+
+- [Expose X-Streaming-Format header for api requests](https://gitlab.com/gitlab-org/gitlab/-/commit/645e19bc102bfd366045cc044e944da81661a872) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233070))
+
 ## 18.11.1 (2026-04-21)
 
 ### Fixed (1 change)
