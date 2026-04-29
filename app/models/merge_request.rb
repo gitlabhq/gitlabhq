@@ -1661,6 +1661,7 @@ class MergeRequest < ApplicationRecord
         ::MergeRequests::Mergeability::CheckMergeTimeService
       ],
       heavy: [
+        ::MergeRequests::Mergeability::CheckApprovedStatusService,
         ::MergeRequests::Mergeability::CheckLfsFileLocksService,
         ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
         ::MergeRequests::Mergeability::CheckCiStatusService,
@@ -2052,6 +2053,18 @@ class MergeRequest < ApplicationRecord
 
   def only_allow_merge_if_all_discussions_are_resolved?
     project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
+  end
+
+  def requires_approvals?
+    project.approvals_before_merge.to_i > 0
+  end
+
+  def approvals_required
+    project.approvals_before_merge.to_i
+  end
+
+  def approvals_given
+    approvals.count
   end
 
   # We use a heuristic of if there are pipeline created, being created, or a ci integration is setup

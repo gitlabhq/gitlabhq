@@ -64,6 +64,7 @@ module API
         optional :public_builds, type: Boolean, desc: 'Deprecated: Use public_jobs instead.'
         optional :public_jobs, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+        optional :approvals_before_merge, type: Integer, desc: 'How many approvals are required before an MR can be merged'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all threads are resolved'
@@ -186,6 +187,7 @@ module API
           :merge_trains_enabled,
           :merge_method,
           :name,
+          :approvals_before_merge,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,
           :package_registry_access_level,

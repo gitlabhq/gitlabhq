@@ -160,6 +160,7 @@ module API
         SharedGroupWithProject.represent(project.visible_group_links(for_user: user), options)
       end
 
+      expose :approvals_before_merge, documentation: { type: 'Integer', example: 0 }
       expose :only_allow_merge_if_pipeline_succeeds, documentation: { type: 'Boolean' }
       expose :allow_merge_on_skipped_pipeline, documentation: { type: 'Boolean' }
       expose :request_access_enabled, documentation: { type: 'Boolean' }

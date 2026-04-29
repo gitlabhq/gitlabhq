@@ -689,6 +689,7 @@ class Project < ApplicationRecord
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :approvals_before_merge, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :suggestion_commit_message, length: { maximum: MAX_SUGGESTIONS_TEMPLATE_LENGTH }
 
   validate :path_availability, if: :path_changed?
