@@ -130,6 +130,12 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 |:-----------|:------------|:--------------|:------|:-----------|
 | View CRM contact | Read CRM contact. | [`read_crm_contact`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154017) | Group | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/443268) |
 
+## Virtual registry
+
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
+| Read virtual registry | Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups. | [`read_virtual_registry`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231294) | Group | GitLab [18.10](https://gitlab.com/gitlab-org/gitlab/-/work_items/596622) |
+
 ## Vulnerability management
 
 | Permission | Description | API Attribute | Scope | Introduced |

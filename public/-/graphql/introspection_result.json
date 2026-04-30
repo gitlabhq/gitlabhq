@@ -179779,6 +179779,12 @@
               "deprecationReason": null
             },
             {
+              "name": "READ_VIRTUAL_REGISTRY",
+              "description": "Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "READ_ADMIN_CICD",
               "description": "Read CI/CD details for runners and jobs in the Admin Area.",
               "isDeprecated": false,
@@ -180008,6 +180014,12 @@
             {
               "name": "READ_SECURITY_SCAN_PROFILES",
               "description": "Read security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "READ_VIRTUAL_REGISTRY",
+              "description": "Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups.",
               "isDeprecated": false,
               "deprecationReason": null
             },
