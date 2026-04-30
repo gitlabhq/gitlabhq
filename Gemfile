@@ -73,7 +73,10 @@ gem 'view_component', '~> 3.23.2', feature_category: :shared # rubocop:todo Gemf
 # Supported DBs
 gem 'pg', '~> 1.6.1', feature_category: :database
 
-gem 'rugged', '~> 1.9', feature_category: :gitaly
+# Pinned below 1.8 so rugged.so links libgit2's old http-parser instead of
+# the bundled llhttp, which collides with llhttp-ffi symbols at runtime.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/598564
+gem 'rugged', '~> 1.7.2', feature_category: :gitaly
 
 gem 'faraday', '~> 2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'faraday-retry', '~> 2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
