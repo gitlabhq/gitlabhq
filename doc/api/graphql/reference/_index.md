@@ -58522,6 +58522,7 @@ Member role permission.
 | <a id="memberrolepermission-read_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolepermission-read_security_attribute"></a>`READ_SECURITY_ATTRIBUTE` | Allows read-only access to the security categories and attributes belonging to a top-level group. |
 | <a id="memberrolepermission-read_security_scan_profiles"></a>`READ_SECURITY_SCAN_PROFILES` | Read security scan profiles. |
+| <a id="memberrolepermission-read_virtual_registry"></a>`READ_VIRTUAL_REGISTRY` | Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups. |
 | <a id="memberrolepermission-read_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolepermission-remove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | <a id="memberrolepermission-remove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
@@ -58560,6 +58561,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermission-read_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolestandardpermission-read_security_attribute"></a>`READ_SECURITY_ATTRIBUTE` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.6. **Status**: Experiment. Allows read-only access to the security categories and attributes belonging to a top-level group. |
 | <a id="memberrolestandardpermission-read_security_scan_profiles"></a>`READ_SECURITY_SCAN_PROFILES` | Read security scan profiles. |
+| <a id="memberrolestandardpermission-read_virtual_registry"></a>`READ_VIRTUAL_REGISTRY` | Allows read access to virtual registries at the group level. Enables users to resolve packages through the virtual registry without requiring broader group membership permissions. Only works on top level groups. |
 | <a id="memberrolestandardpermission-read_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolestandardpermission-remove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | <a id="memberrolestandardpermission-remove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |

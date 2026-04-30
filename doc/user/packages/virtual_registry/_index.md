@@ -79,8 +79,8 @@ Tokens need one of the following scopes:
 Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 
 - A direct member of the top-level group with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
+- A direct member of the top-level group with a [custom role](../../custom_roles/_index.md) with minimal access that has the `read_virtual_registry` ability.
 - A GitLab instance administrator.
-- A direct member of one of the projects included in the top-level group.
 
 ## Manage virtual registries
 
