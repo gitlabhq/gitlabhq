@@ -17,7 +17,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
     stub_env(
       'RUBY_VERSION' => '3.1',
       'CI_MERGE_REQUEST_PROJECT_PATH' => 'fake-mr-project-path',
-      'CI_MERGE_REQUEST_IID' => 'fake-mr-iid')
+      'CI_MERGE_REQUEST_IID' => 'fake-mr-iid',
+      'CI_MERGE_REQUEST_LABELS' => 'fake-mr-labels')
   end
 
   shared_context 'when there are all jobs' do
@@ -84,7 +85,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
   describe '#variables' do
     include_context 'when there are all jobs'
 
-    it 'returns correct variables' do
+    it 'mirrors parent pipeline jobs to ENABLE variables' do
       expect(generate.variables).to eq({
         START_AS_IF_FOSS: 'true',
         RUBY_VERSION: ENV['RUBY_VERSION'],
@@ -144,6 +145,54 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           ENABLE_JEST_INTEGRATION: 'true',
           ENABLE_JEST_PREDICTIVE: 'true'
         })
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS contains pipeline:as-if-foss-run-predictive' do
+      include_context 'when there are all jobs'
+
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS' => 'pipeline::tier-3,pipeline:as-if-foss-run-predictive')
+      end
+
+      it 'returns only predictive variables instead of mirroring parent pipeline' do
+        expect(generate.variables).to eq({
+          START_AS_IF_FOSS: 'true',
+          RUBY_VERSION: ENV['RUBY_VERSION'],
+          FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+          FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+          ENABLE_DETECT_TESTS: 'true',
+          ENABLE_COMPILE_TEST_ASSETS: 'true',
+          ENABLE_RSPEC_FRONTEND_FIXTURE: 'true',
+          ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE: 'true',
+          ENABLE_RSPEC_PREDICTIVE_TRIGGER: 'true',
+          ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB: 'true',
+          ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: 'true',
+          ENABLE_JEST_PREDICTIVE: 'true',
+          ENABLE_RSPEC: 'true',
+          ENABLE_RUBOCOP: 'true',
+          ENABLE_ESLINT: 'true',
+          ENABLE_STATIC_ANALYSIS: 'true'
+        })
+      end
+    end
+
+    context 'when both pipeline:run-as-if-foss and pipeline:as-if-foss-run-predictive labels are present' do
+      include_context 'when there are all jobs'
+
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS' => 'pipeline:run-as-if-foss,pipeline:as-if-foss-run-predictive')
+      end
+
+      it 'mirrors parent pipeline jobs because run-as-if-foss takes priority' do
+        expect(generate.variables.keys).to include(
+          :ENABLE_RSPEC,
+          :ENABLE_RSPEC_UNIT,
+          :ENABLE_RSPEC_INTEGRATION,
+          :ENABLE_RSPEC_SYSTEM,
+          :ENABLE_BUILD_QA_IMAGE,
+          :ENABLE_COMPILE_PRODUCTION_ASSETS
+        )
       end
     end
   end
@@ -206,6 +255,14 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         expect(rules_yaml).to include("- if: '$#{variable} == \"true\"'")
       end
     end
+
+    context 'with predictive variables' do
+      it 'uses all the predictive ENABLE variables' do
+        described_class::PREDICTIVE_VARIABLES.each do |variable|
+          expect(rules_yaml).to include("- if: '$#{variable} == \"true\"'")
+        end
+      end
+    end
   end
 
   describe '.gitlab/ci/as-if-foss.gitlab-ci.yml' do
@@ -220,6 +277,14 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         next unless variable.start_with?('ENABLE_')
 
         expect(ci_yaml).to include("#{variable}: $#{variable}")
+      end
+    end
+
+    context 'with predictive variables' do
+      it 'passes all predictive ENABLE variables to the child pipeline' do
+        described_class::PREDICTIVE_VARIABLES.each do |variable|
+          expect(ci_yaml).to include("#{variable}: $#{variable}")
+        end
       end
     end
   end

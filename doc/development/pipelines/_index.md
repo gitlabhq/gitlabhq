@@ -342,6 +342,8 @@ project, which should be even closer to an actual FOSS environment.
 We run them in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
+- when the `pipeline:as-if-foss-run-predictive` label is set on the merge request
+  (runs only predictive tests, RuboCop, eslint, and static analysis in the FOSS pipeline)
 - when the merge request is created in the `gitlab-org/security/gitlab` project
 - when CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 

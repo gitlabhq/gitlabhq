@@ -58,6 +58,24 @@ class GenerateAsIfFossEnv
     /^rspec #{PG_JOB} single-redis\b/ => 'ENABLE_RSPEC_SINGLE_REDIS'
   }.freeze
 
+  PREDICTIVE_VARIABLES = %w[
+    ENABLE_DETECT_TESTS
+    ENABLE_COMPILE_TEST_ASSETS
+    ENABLE_RSPEC
+    ENABLE_RSPEC_FRONTEND_FIXTURE
+    ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION
+    ENABLE_JEST_PREDICTIVE
+    ENABLE_RUBOCOP
+    ENABLE_ESLINT
+    ENABLE_STATIC_ANALYSIS
+  ].freeze
+
+  AS_IF_FOSS_RUN_PREDICTIVE_LABEL = 'pipeline:as-if-foss-run-predictive'
+  RUN_AS_IF_FOSS_LABEL = 'pipeline:run-as-if-foss'
+
   def initialize
     @client = Gitlab.client(
       endpoint: ENV['CI_API_V4_URL'],
@@ -84,21 +102,42 @@ class GenerateAsIfFossEnv
       RUBY_VERSION: ENV['RUBY_VERSION'],
       FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
       FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
-      **variables_from_jobs
+      **enable_variables
     }
   end
 
-  def variables_from_jobs
+  def enable_variables
+    if force_predictive?
+      predictive_variables
+    else
+      variables_mirrored_from_parent_pipeline
+    end
+  end
+
+  def force_predictive?
+    labels = ENV['CI_MERGE_REQUEST_LABELS'].to_s
+
+    labels.include?(AS_IF_FOSS_RUN_PREDICTIVE_LABEL) && !labels.include?(RUN_AS_IF_FOSS_LABEL) # rubocop:disable Rails/NegateInclude -- plain ruby script
+  end
+
+  def predictive_variables
+    PREDICTIVE_VARIABLES.to_h { |v| [v.to_sym, 'true'] }
+  end
+
+  # Reads jobs from the parent pipeline via the API and maps them
+  # to ENABLE_* variables, so the child as-if-foss pipeline mirrors
+  # the same set of jobs as the parent.
+  def variables_mirrored_from_parent_pipeline
     variable_set = Set.new
 
-    each_job do |job|
-      variable_set.merge(variables_from(job.name))
+    each_parent_pipeline_job do |job|
+      variable_set.merge(variables_matching_job(job.name))
     end
 
     variable_set.to_h { |v| [v.to_sym, 'true'] }
   end
 
-  def each_job
+  def each_parent_pipeline_job
     %i[pipeline_jobs pipeline_bridges].each do |kind|
       client.public_send(kind, ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job| # rubocop:disable GitlabSecurity/PublicSend -- We're sending with static values, no concerns
         yield(job)
@@ -106,7 +145,7 @@ class GenerateAsIfFossEnv
     end
   end
 
-  def variables_from(job_name)
+  def variables_matching_job(job_name)
     JOB_VARIABLES.select { |match, _| match === job_name }.map(&:last)
   end
 end

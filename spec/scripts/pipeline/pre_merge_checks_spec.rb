@@ -247,7 +247,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         end
 
         context 'and it is a predictive pipeline' do
-          let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [predictive]" }
+          let(:latest_mr_pipeline_name) { "Ruby 3.3.10 MR [tier:3, types:rspec-predictive, opts:mr-approved]" }
 
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
@@ -258,16 +258,14 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
             expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
           end
 
-          context 'when also matching the required tier identifier' do
-            let(:latest_mr_pipeline_name) { "Ruby 3.3 MR [predictive,tier:3]" }
+          context 'when predictive only appears in opts' do
+            let(:latest_mr_pipeline_name) do
+              "Ruby 3.3.10 MR [tier:3, types:e2e-gdk,e2e-cng,code,docs, opts:as-if-foss-run-predictive,mr-approved]"
+            end
 
-            it 'returns a failed PreMergeChecksStatus' do
+            it 'returns a successful PreMergeChecksStatus' do
               expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
-              expect(instance.execute).not_to be_success
-              expect(instance.execute.message).to include(
-                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) not to be a predictive pipeline!"
-              )
-              expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
+              expect(instance.execute).to be_success
             end
           end
 
