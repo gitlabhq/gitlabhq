@@ -75,6 +75,18 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
       end
     end
 
+    context 'when UrlSanitizer raises InvalidURIError' do
+      let(:url) { 'http:example.com' }
+
+      it 'falls back to simple parsing and returns an error response' do
+        result = described_class.new(url: url).execute
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq('Unable to access repository with the URL and credentials provided')
+      end
+    end
+
     context 'when remote times out' do
       before do
         allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).and_raise(GRPC::DeadlineExceeded)
@@ -112,6 +124,64 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
           expect(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('https://foo:bar@demo.host/repo')
 
           described_class.new(url: url, user: user, password: password).execute
+        end
+      end
+
+      context 'when password in URL contains special characters' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:special_password, :encoded_password) do
+          'pass#word'  | 'pass%23word'
+          'pass?word'  | 'pass%3Fword'
+          'pass/word'  | 'pass%2Fword'
+          'p#s/?w'     | 'p%23s%2F%3Fw'
+          'pass\\word' | 'pass%5Cword'
+          'pass!word'  | 'pass%21word'
+          'pass`word'  | 'pass%60word'
+          'pass~word'  | 'pass~word'
+          'pass{word'  | 'pass%7Bword'
+          'pass%word'  | 'pass%25word'
+          'pass|word'  | 'pass%7Cword'
+          'pass##word' | 'pass%23%23word'
+          'pass???word' | 'pass%3F%3F%3Fword'
+          'pass//word' | 'pass%2F%2Fword'
+          'p##??//w'   | 'p%23%23%3F%3F%2F%2Fw'
+          '#password'  | '%23password'
+          'password#'  | 'password%23'
+          '#?/'        | '%23%3F%2F'
+        end
+
+        with_them do
+          let(:url) { "https://myuser:#{special_password}@demo.host/repo" }
+
+          it 'correctly parses the URL and percent-encodes the password' do
+            expect(Gitlab::GitalyClient::RemoteService)
+              .to receive(:exists?)
+              .with("https://myuser:#{encoded_password}@demo.host/repo")
+              .and_return(true)
+
+            result = described_class.new(url: url).execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result.success?).to be(true)
+          end
+        end
+      end
+
+      context 'when password in params contains special characters' do
+        let(:user) { 'myuser' }
+        let(:password) { 'pass#word' }
+
+        it 'correctly percent-encodes the password' do
+          expect(Gitlab::GitalyClient::RemoteService)
+            .to receive(:exists?)
+            .with('https://myuser:pass%23word@demo.host/repo')
+            .and_return(true)
+
+          result = described_class.new(url: url, user: user, password: password).execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.success?).to be(true)
         end
       end
 

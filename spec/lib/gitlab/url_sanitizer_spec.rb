@@ -116,6 +116,36 @@ RSpec.describe Gitlab::UrlSanitizer, feature_category: :source_code_management d
       true  | 'git://foo:bar@example.com/group/group/project.git'
       true  | 'http://foo:bar@example.com/group/group/project.git'
       true  | 'https://foo:bar@example.com/group/group/project.git'
+
+      # special characters in password that were previously broken
+      true  | 'https://user:pass#word@example.com/group/project.git'
+      true  | 'https://user:pass?word@example.com/group/project.git'
+      true  | 'https://user:pass/word@example.com/group/project.git'
+      true  | 'https://user:p#s/?w@example.com/group/project.git'
+      true  | 'https://user:pass+word@example.com/group/project.git'
+      true  | 'https://user:pass word@example.com/group/project.git'
+
+      # other special characters permitted in passwords
+      true  | 'https://user:pass\\word@example.com/group/project.git'
+      true  | 'https://user:pass!word@example.com/group/project.git'
+      true  | 'https://user:pass`word@example.com/group/project.git'
+      true  | 'https://user:pass~word@example.com/group/project.git'
+      true  | 'https://user:pass{word@example.com/group/project.git'
+      true  | 'https://user:pass%25word@example.com/group/project.git'
+      true  | 'https://user:pass|word@example.com/group/project.git'
+
+      # repeated and consecutive special characters in password
+      true  | 'https://user:pass##word@example.com/group/project.git'
+      true  | 'https://user:pass###word@example.com/group/project.git'
+      true  | 'https://user:pass??word@example.com/group/project.git'
+      true  | 'https://user:pass//word@example.com/group/project.git'
+      true  | 'https://user:p##??//w@example.com/group/project.git'
+      true  | 'https://user:#password@example.com/group/project.git'
+      true  | 'https://user:password#@example.com/group/project.git'
+      true  | 'https://user:#?/@example.com/group/project.git'
+
+      # special characters in password must not bypass scheme validation
+      false | '123://user:pass#word@example.com/group/project.git'
     end
 
     with_them do
