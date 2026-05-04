@@ -51,11 +51,27 @@ module Gitlab
     end
     private_class_method :sanitize_unencoded
 
+    # Strips the userinfo (user:password@) portion from a URL string so that
+    # special characters in the password (e.g. #, ?, /) don't confuse URI parsers.
+    # Only operates on scheme-based URLs (http://, https://, ssh://, git://).
+    #
+    # NOTE: The greedy .*@ matches up to the last @ in the URL. This mirrors
+    # the behavior in #parse_url and correctly handles passwords containing @.
+    def self.strip_userinfo(url)
+      url.sub(%r{\A((?:git|ssh|https?):)//(.*@)}i) do
+        "#{::Regexp.last_match(1)}//"
+      end
+    end
+    private_class_method :strip_userinfo
+
     def self.valid?(url, allowed_schemes: ALLOWED_SCHEMES)
       return false unless url.present?
       return false unless url.is_a?(String)
 
-      uri = Addressable::URI.parse(url.strip)
+      # Strip userinfo (credentials) before parsing so that special characters
+      # in the password (e.g. #, ?, /) don't break Addressable::URI.parse.
+      sanitized = strip_userinfo(url.strip)
+      uri = Addressable::URI.parse(sanitized)
 
       allowed_schemes.include?(uri.scheme)
     rescue Addressable::URI::InvalidURIError
@@ -64,6 +80,12 @@ module Gitlab
 
     def self.valid_web?(url)
       valid?(url, allowed_schemes: ALLOWED_WEB_SCHEMES)
+    end
+
+    # Percent-encodes a string for safe use in URL userinfo.
+    # CGI.escape converts spaces to +, but this doesn't work for git clone.
+    def self.encode_percent(string)
+      CGI.escape(string).gsub('+', '%20')
     end
 
     # The url associated with records like `WebHookLog` may contain masked
@@ -156,8 +178,7 @@ module Gitlab
     end
 
     def encode_percent(string)
-      # CGI.escape converts spaces to +, but this doesn't work for git clone
-      CGI.escape(string).gsub('+', '%20')
+      self.class.encode_percent(string)
     end
   end
 end
