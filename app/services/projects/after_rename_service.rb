@@ -30,11 +30,13 @@ module Projects
 
     # @param [Project] project The Project being renamed.
     # @param [String] path_before The path slug the project was using, before the rename took place.
-    def initialize(project, path_before:, full_path_before:)
+    # @param [Boolean] send_move_instructions Whether to email project move instructions.
+    def initialize(project, path_before:, full_path_before:, send_move_instructions: true)
       @project = project
       @path_before = path_before
       @full_path_before = full_path_before
       @full_path_after = project.full_path
+      @send_move_instructions = send_move_instructions
     end
 
     def execute
@@ -117,7 +119,7 @@ module Projects
     end
 
     def send_move_instructions?
-      !project.import_started?
+      @send_move_instructions && !project.import_started?
     end
 
     def rename_uploads?

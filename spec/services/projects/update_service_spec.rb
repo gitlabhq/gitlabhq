@@ -537,6 +537,43 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     context 'when renaming a project' do
       let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(user.namespace.full_path, 'existing.git'), nil, nil) }
 
+      context 'with send_move_instructions option' do
+        let(:after_rename_service) { instance_double(Projects::AfterRenameService, execute: true) }
+        let(:new_path) { "#{project.path}-renamed" }
+
+        it 'passes send_move_instructions: false when send_move_instructions is false' do
+          old_path = project.path
+          old_full_path = project.full_path
+
+          expect(Projects::AfterRenameService).to receive(:new).with(
+            project,
+            path_before: old_path,
+            full_path_before: old_full_path,
+            send_move_instructions: false
+          ).and_return(after_rename_service)
+
+          result = update_project(project, admin, path: new_path, send_move_instructions: false)
+
+          expect(result).to eq({ status: :success })
+        end
+
+        it 'passes send_move_instructions: true by default' do
+          old_path = project.path
+          old_full_path = project.full_path
+
+          expect(Projects::AfterRenameService).to receive(:new).with(
+            project,
+            path_before: old_path,
+            full_path_before: old_full_path,
+            send_move_instructions: true
+          ).and_return(after_rename_service)
+
+          result = update_project(project, admin, path: new_path)
+
+          expect(result).to eq({ status: :success })
+        end
+      end
+
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 

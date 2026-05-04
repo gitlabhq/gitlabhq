@@ -17,7 +17,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
   before do
     allow(NotificationService).to receive(:new).and_return(notification_service)
-    allow(notification_service).to receive(:project_was_moved).with(any_args)
     allow(notification_service).to receive(:project_scheduled_for_deletion).with(project)
   end
 
@@ -69,6 +68,7 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
     end
 
     it 'sends notification' do
+      expect(notification_service).not_to receive(:project_was_moved)
       expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
 
       result

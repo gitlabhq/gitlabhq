@@ -9,6 +9,12 @@ module Projects
     ValidationError = Class.new(StandardError)
     ApiError = Class.new(StandardError)
 
+    def initialize(project, user = nil, params = {})
+      super
+      @send_move_instructions = @params.delete(:send_move_instructions)
+      @send_move_instructions = true if @send_move_instructions.nil?
+    end
+
     def execute
       build_topics
       ensure_ci_cd_settings
@@ -256,7 +262,12 @@ module Projects
     end
 
     def after_rename_service(project)
-      AfterRenameService.new(project, path_before: project.path_before_last_save, full_path_before: project.full_path_before_last_save)
+      AfterRenameService.new(
+        project,
+        path_before: project.path_before_last_save,
+        full_path_before: project.full_path_before_last_save,
+        send_move_instructions: @send_move_instructions
+      )
     end
 
     def raise_validation_error(message)

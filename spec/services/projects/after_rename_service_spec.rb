@@ -56,6 +56,12 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
       service_execute
     end
 
+    it 'does not send move instructions when disabled' do
+      expect(project).not_to receive(:send_move_instructions)
+
+      service_execute(send_move_instructions: false)
+    end
+
     context 'when renaming or migrating fails' do
       before do
         allow_any_instance_of(::Projects::HashedStorage::MigrationService)
@@ -171,11 +177,17 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
     end
   end
 
-  def service_execute
+  def service_execute(send_move_instructions: true)
     # AfterRenameService is called by UpdateService after a successful model.update
     # the initialization will include before and after paths values
     project.update!(path: path_after_rename)
-
-    described_class.new(project, path_before: path_before_rename, full_path_before: full_path_before_rename).execute
+    described_class
+      .new(
+        project,
+        path_before: path_before_rename,
+        full_path_before: full_path_before_rename,
+        send_move_instructions: send_move_instructions
+      )
+      .execute
   end
 end
