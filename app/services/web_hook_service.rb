@@ -37,7 +37,7 @@ class WebHookService
   RESPONSE_HEADERS_COUNT_LIMIT = 50
   RESPONSE_HEADERS_SIZE_LIMIT = 1.kilobyte
 
-  CUSTOM_TEMPLATE_INTERPOLATION_REGEX = /{{(.+?)}}/
+  CUSTOM_TEMPLATE_INTERPOLATION_REGEX = WebHooks::Hook::CUSTOM_TEMPLATE_INTERPOLATION_REGEX
 
   attr_accessor :hook, :data, :hook_name, :request_options
   attr_reader :uniqueness_token, :idempotency_key
@@ -320,8 +320,8 @@ class WebHookService
   strong_memoize_attr :request_payload
 
   def render_custom_template(template, params)
-    template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) do
-      value = params.dig(*Regexp.last_match(1).split('.'))
+    CUSTOM_TEMPLATE_INTERPOLATION_REGEX.replace_gsub(template) do |match|
+      value = params.dig(*match[:field].split('.'))
       value_json = value.to_json
       value.is_a?(String) ? value_json[1..-2] : value_json
     end

@@ -20,6 +20,8 @@ module WebHooks
 
     DANGEROUS_EXPONENT_RE = Gitlab::UntrustedRegexp.new('\d+(\.\d+)?[eE][+-]?\d{4,}')
 
+    CUSTOM_TEMPLATE_INTERPOLATION_REGEX = Gitlab::UntrustedRegexp.new('{{(?P<field>.+?)}}')
+
     # See app/validators/json_schemas/web_hooks_url_variables.json
     VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/
 
@@ -254,7 +256,8 @@ module WebHooks
           return
         end
 
-        parsed = Gitlab::Json.safe_parse(custom_webhook_template, parse_limits: TEMPLATE_PARSE_LIMITS)
+        sanitized = CUSTOM_TEMPLATE_INTERPOLATION_REGEX.replace_gsub(custom_webhook_template) { '0' }
+        parsed = Gitlab::Json.safe_parse(sanitized, parse_limits: TEMPLATE_PARSE_LIMITS)
         return unless parsed
 
         Gitlab::Json::LimitedEncoder.check_numbers!(parsed)

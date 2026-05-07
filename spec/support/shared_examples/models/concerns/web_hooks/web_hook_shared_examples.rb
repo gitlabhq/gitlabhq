@@ -85,6 +85,7 @@ RSpec.shared_examples 'a webhook' do |factory:|
         subject { hook }
 
         it { is_expected.to allow_value('{"count": 42}').for(:custom_webhook_template) }
+        it { is_expected.to allow_value('{"value": {{id}}}').for(:custom_webhook_template) }
         it { is_expected.to allow_value('{"value": 1.5E2}').for(:custom_webhook_template) }
         it { is_expected.to allow_value('{"text": "hello"}').for(:custom_webhook_template) }
         it { is_expected.to allow_value('{"ref": "{{before}}"}').for(:custom_webhook_template) }
@@ -92,6 +93,7 @@ RSpec.shared_examples 'a webhook' do |factory:|
         it { is_expected.to allow_value('false').for(:custom_webhook_template) }
         it { is_expected.not_to allow_value('9E9999999').for(:custom_webhook_template) }
         it { is_expected.not_to allow_value('{"value": 1E100000}').for(:custom_webhook_template) }
+        it { is_expected.not_to allow_value('{"v": {{9E9999999}}}').for(:custom_webhook_template) }
         it { is_expected.not_to allow_value("{\"value\": #{'1' * 1002}}").for(:custom_webhook_template) }
         it { is_expected.not_to allow_value(('[[' * 50) + (']]' * 50)).for(:custom_webhook_template) }
       end
