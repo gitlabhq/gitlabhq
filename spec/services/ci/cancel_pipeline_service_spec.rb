@@ -214,7 +214,7 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
             described_class.new(pipeline: pipeline2, current_user: current_user).force_execute
           end
 
-          extra_update_queries = 5 # transition ... => :canceled, queue pop
+          extra_update_queries = 4 # transition ... => :canceled, queue pop
           extra_generic_commit_status_validation_queries = 2 # name_uniqueness_across_types
           extra_savepoint_operations = 6
 

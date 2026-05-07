@@ -478,7 +478,6 @@ builds:
 - taggings
 - tags
 - security_scans
-- security_report_artifacts
 - dast_site_profiles_build
 - dast_site_profile
 - dast_scanner_profiles_build
