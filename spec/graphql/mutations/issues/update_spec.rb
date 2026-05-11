@@ -86,6 +86,26 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
         end
       end
 
+      context 'when milestone_id is not provided' do
+        before do
+          issue.update_column(:milestone_id, milestone.id)
+        end
+
+        it 'does not clear the milestone when adding labels' do
+          mutation_params.except!(:title, :description, :confidential, :due_date, :discussion_locked, :milestone_id)
+          mutation_params[:add_label_ids] = []
+
+          expect { subject }.not_to change { issue.reload.milestone }
+        end
+
+        it 'does not clear the milestone when closing the issue' do
+          mutation_params.except!(:title, :description, :confidential, :due_date, :discussion_locked, :milestone_id)
+          mutation_params[:state_event] = 'close'
+
+          expect { subject }.not_to change { issue.reload.milestone }
+        end
+      end
+
       context 'when changing state' do
         let_it_be_with_refind(:issue) { create(:issue, project: project, state: :opened) }
 

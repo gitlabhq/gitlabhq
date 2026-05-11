@@ -73,7 +73,7 @@ module Mutations
       private
 
       def parse_arguments(args)
-        args[:milestone_id] = parse_milestone_id(args[:milestone_id])
+        args[:milestone_id] = parse_milestone_id(args[:milestone_id]) if args.key?(:milestone_id)
         args[:add_label_ids] = parse_label_ids(args[:add_label_ids])
         args[:remove_label_ids] = parse_label_ids(args[:remove_label_ids])
         args[:label_ids] = parse_label_ids(args[:label_ids])
