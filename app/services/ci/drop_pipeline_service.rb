@@ -37,5 +37,3 @@ module Ci
     end
   end
 end
-
-Ci::DropPipelineService.prepend_mod
