@@ -21,14 +21,24 @@ RSpec.describe GroupTree, feature_category: :groups_and_projects do
 
   describe 'GET #index' do
     shared_examples 'supports keyset pagination' do
-      it 'sets expected headers', :aggregate_failures do
+      before do
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+      end
 
+      it 'sets expected headers', :aggregate_failures do
         get :index, params: params.merge(pagination: 'keyset'), format: :json
 
         expect(response.headers).to have_key('X-Per-Page')
         expect(response.headers).to have_key('X-Prev-Page')
         expect(response.headers).to have_key('X-Next-Page')
+      end
+
+      context 'when has sort parameter' do
+        it 'returns 200' do
+          get :index, params: params.merge(pagination: 'keyset', sort: 'name_asc'), format: :json
+
+          expect(response.code).to eq('200')
+        end
       end
     end
 

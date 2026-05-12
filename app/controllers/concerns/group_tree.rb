@@ -8,7 +8,7 @@ module GroupTree
     groups = groups.sort_by_attribute(@sort = safe_params[:sort])
 
     if search_descendants?
-      pagination_resource = filtered_groups_with_id_only(groups)
+      pagination_resource = filtered_groups(groups)
       @groups = groups_with_ancestors(pagination_resource.map(&:id))
     elsif safe_params[:parent_id].present?
       @groups = subgroups(groups)
@@ -46,8 +46,8 @@ module GroupTree
     paginate(query)
   end
 
-  def filtered_groups_with_id_only(groups)
-    paginate(groups.select(:id).search(safe_params[:filter]))
+  def filtered_groups(groups)
+    paginate(groups.search(safe_params[:filter]))
   end
 
   def groups_with_ancestors(group_ids)
