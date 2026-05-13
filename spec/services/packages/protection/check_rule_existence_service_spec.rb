@@ -34,6 +34,15 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
       minimum_access_level_for_delete: :admin)
   end
 
+  let_it_be(:package_protection_rule_pypi_normalizable) do
+    create(:package_protection_rule,
+      project: project,
+      package_type: :pypi,
+      package_name_pattern: 'my-pypi-package*',
+      minimum_access_level_for_push: :maintainer,
+      minimum_access_level_for_delete: :owner)
+  end
+
   let(:params) { { package_name: package_name, package_type: package_type, action: action } }
 
   let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
@@ -101,6 +110,15 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
       :delete    | lazy { "@other/#{project.full_path}" } | :npm     | ref(:project_maintainer)   | 'protection rule does not exist'
       :delete    | lazy { "@other/#{project.full_path}" } | :npm     | ref(:project_owner)        | 'protection rule does not exist'
       :delete    | lazy { "@other/#{project.full_path}" } | :npm     | ref(:instance_admin)       | 'protection rule does not exist'
+
+      # PyPI PEP 503 normalization - deploy token and blank user paths
+      :push      | 'my_pypi_package'                      | :pypi    | ref(:project_deploy_token) | 'protection rule exists'
+      :push      | 'my.pypi.package'                      | :pypi    | ref(:project_deploy_token) | 'protection rule exists'
+      :push      | 'MY-PYPI-PACKAGE'                      | :pypi    | ref(:project_deploy_token) | 'protection rule exists'
+      :push      | 'my_pypi_package'                      | :pypi    | nil                        | 'protection rule exists'
+      :push      | 'my.pypi.package'                      | :pypi    | nil                        | 'protection rule exists'
+      :delete    | 'my_pypi_package'                      | :pypi    | ref(:project_deploy_token) | 'protection rule exists'
+      :delete    | 'my.pypi.package'                      | :pypi    | ref(:project_deploy_token) | 'protection rule exists'
 
       # Edge cases
       :push      | lazy { "@#{project.full_path}" }       | :no_type | nil                        | 'error response for invalid package type'

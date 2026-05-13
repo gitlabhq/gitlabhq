@@ -44,6 +44,45 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
         is_expected.to eq(status: :success, deleted: ['A'])
       end
 
+      context 'with invalid tag names' do
+        shared_examples 'returning error with invalid tag message' do
+          it 'blocks deletion and returns an error' do
+            expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
+
+            is_expected.to include(status: :error, message: described_class::INVALID_TAGS_ERROR_MESSAGE)
+          end
+        end
+
+        context 'when some tags are invalid' do
+          let(:tag_names) { ['A', '', nil, 'Ba'] }
+
+          before do
+            stub_delete_reference_requests(%w[A Ba])
+            expect_delete_tags(%w[A Ba])
+          end
+
+          it { is_expected.to include(status: :success) }
+        end
+
+        context 'when all tags are invalid' do
+          let(:tag_names) { ['', nil] }
+
+          it_behaves_like 'returning error with invalid tag message'
+        end
+
+        context 'when a tag name exceeds the maximum length' do
+          let(:tag_names) { ['a' * 129] }
+
+          it_behaves_like 'returning error with invalid tag message'
+        end
+
+        context 'when a tag name is a digest-like string with hex and separators' do
+          let(:tag_names) { ["sha256:#{'a' * 64}"] }
+
+          it_behaves_like 'returning error with invalid tag message'
+        end
+      end
+
       context 'with tag protection rules' do
         let(:tag_names) { %w[A Ba Bb C D] }
         let(:protected_patterns) { nil }

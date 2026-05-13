@@ -19,16 +19,16 @@ module Gitlab
       )
     end
 
-    # rubocop:disable CodeReuse/ActiveRecord
     def users
+      return User.none unless Ability.allowed?(current_user, :read_group_member, group)
+
       groups = group.self_and_hierarchy_intersecting_with_user_groups(current_user)
-      members = GroupMember.where(group: groups).non_invite
+      member_ids = GroupMember.of_groups(groups).non_invite.select(:user_id)
 
       users = super
 
-      users.where(id: members.select(:user_id))
+      users.id_in(member_ids)
     end
-    # rubocop:enable CodeReuse/ActiveRecord
 
     override :milestones
     def milestones

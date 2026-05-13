@@ -435,8 +435,7 @@ module API
       post ':id/issues/:issue_iid/move' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 260)
 
-        issue = user_project.issues.find_by(iid: params[:issue_iid])
-        not_found!('Issue') unless issue
+        issue = find_project_issue(params[:issue_iid])
 
         new_project = Project.find_by(id: params[:to_project_id])
         not_found!('Project') unless new_project
@@ -469,8 +468,7 @@ module API
       post ':id/issues/:issue_iid/clone' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/340252')
 
-        issue = user_project.issues.find_by(iid: params[:issue_iid])
-        not_found!('Issue') unless issue
+        issue = find_project_issue(params[:issue_iid])
 
         target_project = Project.find_by(id: params[:to_project_id])
         not_found!('Project') unless target_project

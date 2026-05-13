@@ -80,15 +80,20 @@ module API
               get '*file_name/*signature/*same_file_name', format: false, urgency: :low do
                 bad_request!('Missing checksum header') if headers['Symbolchecksum'].blank?
 
-                project_or_group_without_auth
+                project_ids = if project_or_group_without_auth.is_a?(::Project)
+                                project_or_group_without_auth.id
+                              else
+                                project_or_group_without_auth.all_active_project_ids
+                              end
 
                 checksums = headers['Symbolchecksum'].scan(SHA256_REGEX).flatten
 
                 symbol = ::Packages::Nuget::Symbol
-                  .find_by_signature_and_file_and_checksum(
-                    declared_params[:signature],
-                    declared_params[:file_name],
-                    checksums
+                  .find_by_project_and_signature_and_file_and_checksum(
+                    signature: declared_params[:signature],
+                    file_name: declared_params[:file_name],
+                    checksums: checksums,
+                    project_ids: project_ids
                   )
 
                 not_found!('Symbol') unless symbol

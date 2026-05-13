@@ -134,9 +134,10 @@ module Gitlab
     # , => Number of comma separators
     # \t => Number of tab separators
     # ; => Number of semicolon separators
-    # \n => Number of row separators
+    # \n => Number of newline row separators
+    # \r => Number of carriage-return row separators (\r\n pairs count as 2)
     def estimate_total_csv_structural_chars
-      @estimate_total_csv_structural_chars ||= body.count(",\t;\n")
+      @estimate_total_csv_structural_chars ||= body.count(",\t;\n\r")
     end
 
     def max_json_depth

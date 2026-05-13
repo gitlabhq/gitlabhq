@@ -21,6 +21,7 @@ module Banzai
         Sanitize.clean_node!(doc, allowlist)
       end
 
+      # rubocop:disable Metrics/AbcSize -- Our allowlist is complicated.
       def allowlist
         strong_memoize(:allowlist) do
           allowlist = super.deep_dup
@@ -81,9 +82,23 @@ module Banzai
           # content of the inner reference the viewer should not see.
           allowlist[:transformers].push(self.class.method(:unwrap_nested_a))
 
-          customize_allowlist(allowlist)
+          allowlist = customize_allowlist(allowlist)
+
+          # The HTML5 parser creates namespaced attributes (e.g. xlink:href) inside SVG
+          # and MathML foreign content. A namespaced attribute can share its local name
+          # with an existing HTML attribute on the same element (e.g. both href and
+          # xlink:href have local name "href"), and Nokogiri's attribute accessor and
+          # mutator methods will only affect one at a time, potentially letting dangerous
+          # values survive sanitisation.
+          #
+          # Strip every namespaced attribute before any other transformer runs so the rest
+          # of the pipeline sees only simple, unambiguous HTML attributes.
+          allowlist[:transformers].unshift(self.class.method(:remove_namespaced_attributes))
+
+          allowlist
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       def customize_allowlist(allowlist)
         raise NotImplementedError
@@ -121,6 +136,12 @@ module Banzai
           return unless node.ancestors.any? { |ancestor| ancestor.element? && ancestor.name == 'a' }
 
           node.replace(node.children)
+        end
+
+        def remove_namespaced_attributes(env)
+          env[:node].attribute_nodes.each do |attr|
+            attr.remove if attr.namespace
+          end
         end
       end
     end

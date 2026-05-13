@@ -52,10 +52,18 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       project.add_guest(current_user)
     end
 
-    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_issue do
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_issue, :update_issue] do
       let(:user) { current_user }
       let(:boundary_object) { project }
       let(:issue_fields) { all_graphql_fields_for('Issue', max_depth: 1) }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_issue do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      # createNoteEmail requires write permissions since it can be used to create issues and notes.
+      let(:issue_fields) { all_graphql_fields_for('Issue', max_depth: 1, excluded: ["createNoteEmail"]) }
       let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
     end
 

@@ -82,4 +82,25 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       end
     end
   end
+
+  describe 'create_note_email field scope' do
+    it 'only allows :api scope and excludes :read_api' do
+      field = described_class.fields['createNoteEmail']
+      scopes = field.instance_variable_get(:@scopes)
+
+      expect(scopes).to eq([:api])
+      expect(scopes).not_to include(:read_api)
+    end
+
+    it 'has a field-level granular scope directive requiring create_issue_note on the project boundary' do
+      field = described_class.fields['createNoteEmail']
+      directive = field.directives.find { |d| d.is_a?(Directives::Authz::GranularScope) }
+      expect(directive).not_to be_nil
+
+      args = directive.arguments.keyword_arguments
+      expect(args[:permissions]).to include('create_issue_note')
+      expect(args[:boundary_type]).to eq('project')
+      expect(args[:boundary]).to eq('project')
+    end
+  end
 end

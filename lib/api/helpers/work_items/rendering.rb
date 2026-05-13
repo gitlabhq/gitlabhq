@@ -22,6 +22,10 @@ module API
           present paginate_with_strategies(work_items_relation),
             with: Entities::WorkItemBasic,
             current_user: current_user,
+            scope_validator: ::Gitlab::Auth::ScopeValidator.new(
+              access_token.present?, Gitlab::Auth::RequestAuthenticator.new(request)
+            ),
+            access_token: access_token,
             requested_features: feature_keys,
             fields: field_keys,
             resource_parent: resource_parent
@@ -46,6 +50,10 @@ module API
           present work_item,
             with: Entities::WorkItemDetail,
             current_user: current_user,
+            scope_validator: ::Gitlab::Auth::ScopeValidator.new(
+              access_token.present?, Gitlab::Auth::RequestAuthenticator.new(request)
+            ),
+            access_token: access_token,
             requested_features: feature_keys,
             fields: field_keys
         end

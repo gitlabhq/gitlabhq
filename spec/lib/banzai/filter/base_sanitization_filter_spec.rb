@@ -94,4 +94,65 @@ RSpec.describe Banzai::Filter::BaseSanitizationFilter, feature_category: :markdo
       expect(doc.text).to include('x', 'y')
     end
   end
+
+  describe 'namespaced attributes from HTML5 foreign content' do
+    # The HTML5 parser creates namespaced attributes inside SVG and MathML
+    # foreign content.  For example, <a href="x" xlink:href="y"> inside
+    # <svg> produces two attribute nodes that both have local name "href"
+    # but live in different XML namespaces.  Nokogiri's remove_attribute
+    # may remove the wrong one when duplicates exist, so the sanitisation
+    # filter must strip all namespaced attributes before anything else runs.
+
+    it 'strips xlink:href from an SVG anchor, leaving only the HTML href' do
+      doc = filter_class.call('<svg><a href="https://safe.example" xlink:href="replaced">link</a></svg>')
+      anchor = doc.at_css('a')
+
+      expect(anchor).to be_present
+      expect(anchor['href']).to eq('https://safe.example')
+      expect(anchor.attribute_nodes.count { |a| a.name == 'href' }).to eq(1)
+    end
+
+    it 'strips xlink:href even when no null-namespace href is present' do
+      doc = filter_class.call('<svg><a xlink:href="https://example.com">link</a></svg>')
+      anchor = doc.at_css('a')
+
+      expect(anchor).to be_present
+      expect(anchor.attribute_nodes.select { |a| a.name == 'href' }).to be_empty
+    end
+
+    it 'strips xlink:title while keeping the HTML title attribute' do
+      doc = filter_class.call(
+        '<svg><a href="https://safe.example" xlink:title="injected" title="original">link</a></svg>')
+      anchor = doc.at_css('a')
+
+      expect(anchor).to be_present
+      expect(anchor['title']).to eq('original')
+      expect(anchor.attribute_nodes.count { |a| a.name == 'title' }).to eq(1)
+    end
+
+    it 'strips xml:lang from SVG elements' do
+      doc = filter_class.call('<svg xml:lang="en"><text>hello</text></svg>')
+
+      expect(doc.to_html).not_to include('xml:lang')
+    end
+
+    it 'strips namespaced attributes from MathML foreign content' do
+      doc = filter_class.call(
+        '<math><annotation-xml encoding="application/xhtml+xml">' \
+          '<svg><a href="https://safe.example" xlink:href="replaced">link</a></svg>' \
+          '</annotation-xml></math>'
+      )
+      anchor = doc.at_css('a')
+
+      expect(anchor.attribute_nodes.none?(&:namespace)).to be(true)
+    end
+
+    it 'does not affect normal HTML attributes' do
+      doc = filter_class.call('<a href="https://example.com" title="hi">link</a>')
+      anchor = doc.at_css('a')
+
+      expect(anchor['href']).to eq('https://example.com')
+      expect(anchor['title']).to eq('hi')
+    end
+  end
 end

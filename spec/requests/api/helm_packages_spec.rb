@@ -308,8 +308,15 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:params) { { chart: temp_file(file_name) } }
     let(:file_key) { :chart }
     let(:send_rewritten_field) { true }
+    let(:extract_service) do
+      instance_double(::Packages::Helm::ExtractFileMetadataService, execute: { 'name' => 'rook-ceph', 'version' => 'v1.5.8' })
+    end
 
-    subject do
+    before do
+      allow(::Packages::Helm::ExtractFileMetadataService).to receive(:new).and_return(extract_service)
+    end
+
+    subject(:request) do
       workhorse_finalize(
         api(url),
         method: :post,
@@ -368,14 +375,61 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         create(:package_protection_rule, package_name_pattern: 'rook-ceph', package_type: :helm, project: project)
       end
 
-      # The helm chart contains the file Chart.yml that defined the name 'rook-ceph' of the helm chart.
+      # The helm chart contains the file Chart.yaml that defines the name 'rook-ceph' of the helm chart.
       let(:params) { { chart: fixture_file_upload('spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz') } }
 
+      context 'as developer (below minimum access level)' do
+        let(:user_headers) { basic_auth_header(user.username, personal_access_token.token) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
+
+        before_all do
+          project.add_developer(user)
+        end
+
+        it 'rejects the upload with 403 and cleans up' do
+          expect { request }
+            .to not_change { ::Packages::Helm::Package.for_projects(project).count }
+            .and not_change { Packages::PackageFile.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'as maintainer (at minimum access level)' do
+        let(:user_headers) { basic_auth_header(user.username, personal_access_token.token) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: :maintainer) }
+
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        it_behaves_like 'process helm upload', :maintainer, :created
+      end
+    end
+
+    context 'with invalid chart file' do
       let(:user_headers) { basic_auth_header(user.username, personal_access_token.token) }
       let(:headers) { user_headers.merge(workhorse_headers) }
-      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: :developer) }
+      let(:params) { { chart: fixture_file_upload('spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz') } }
 
-      it_behaves_like 'process helm upload', :developer, :created
+      before_all do
+        project.add_developer(user)
+      end
+
+      before do
+        allow(extract_service).to receive(:execute).and_raise(
+          Packages::Helm::ExtractFileMetadataService::ExtractionError, 'Chart.yaml not found within a directory'
+        )
+      end
+
+      it 'rejects the upload with 400' do
+        expect { request }
+          .to not_change { ::Packages::Helm::Package.for_projects(project).count }
+          .and not_change { Packages::PackageFile.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
 
     context 'when an invalid token is passed' do

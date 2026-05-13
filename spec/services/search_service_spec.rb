@@ -567,4 +567,87 @@ RSpec.describe SearchService, feature_category: :global_search do
       end
     end
   end
+
+  describe 'user search redaction' do
+    let_it_be(:unauthorized_user) { create(:user, username: 'unauthorized_user') }
+    let(:search_results) { instance_double(Gitlab::SearchResults) }
+    let(:mock_results) do
+      [unauthorized_user].tap { |r| allow(r).to receive_messages(total_count: 1, limit_value: 20, offset_value: 0) }
+    end
+
+    before do
+      allow(search_service).to receive(:search_results).and_return(search_results)
+      allow(search_results).to receive(:objects).and_return(mock_results)
+      allow(Ability).to receive(:allowed?).and_call_original
+    end
+
+    context 'when searching users at global level' do
+      let(:search_service) { described_class.new(user, search: 'user', scope: 'users') }
+
+      context 'when read_users_list permission is denied' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_users_list).and_return(false)
+        end
+
+        it 'redacts users' do
+          results = search_service.search_objects
+
+          expect(results).to be_empty
+        end
+      end
+
+      context 'when read_users_list permission is granted' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_users_list).and_return(true)
+        end
+
+        it 'includes users' do
+          results = search_service.search_objects
+
+          expect(results).to include(unauthorized_user)
+        end
+      end
+    end
+
+    context 'when searching users at group level' do
+      let(:search_service) { described_class.new(user, search: 'user', scope: 'users', group_id: accessible_group.id) }
+
+      context 'when read_group_member permission is denied' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_group_member, accessible_group).and_return(false)
+        end
+
+        it 'redacts users' do
+          results = search_service.search_objects
+
+          expect(results).to be_empty
+        end
+      end
+
+      context 'when read_group_member permission is granted' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_group_member, accessible_group).and_return(true)
+        end
+
+        it 'includes users' do
+          results = search_service.search_objects
+
+          expect(results).to include(unauthorized_user)
+        end
+      end
+    end
+
+    context 'when searching users at project level' do
+      let(:search_service) do
+        described_class.new(user, search: 'user', scope: 'users', project_id: accessible_project.id)
+      end
+
+      it 'always allows users since :read_project implies :read_project_member' do
+        # No need to stub permissions - if user can access the project, they can see members
+        results = search_service.search_objects
+
+        expect(results).to include(unauthorized_user)
+      end
+    end
+  end
 end

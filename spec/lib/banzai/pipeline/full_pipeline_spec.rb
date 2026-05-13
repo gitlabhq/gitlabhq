@@ -392,6 +392,57 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     end
   end
 
+  describe 'SVG foreign content XSS prevention' do
+    # The HTML5 parser creates namespaced attributes (e.g. xlink:href) inside
+    # SVG foreign content.  These can shadow same-named HTML attributes and
+    # cause Nokogiri's remove_attribute to remove the wrong one, letting a
+    # javascript: URL survive sanitisation.
+    #
+    # BaseSanitizationFilter strips namespaced attributes so that
+    # SanitizeLinkFilter can then remove the dangerous href normally.
+
+    it 'strips javascript: href from an SVG anchor with xlink:href' do
+      result = described_class.to_html(
+        '<svg><a href="javascript:alert(1)" xlink:href="x">click</a></svg>',
+        project: nil
+      )
+
+      doc = Nokogiri::HTML5.fragment(result)
+      anchor = doc.at_css('a')
+
+      expect(anchor).to be_present
+      expect(anchor['href']).to be_nil
+      expect(anchor.text).to eq('click')
+    end
+
+    it 'strips javascript: href from a MathML-nested SVG anchor with xlink:href' do
+      result = described_class.to_html(
+        '<math><annotation-xml encoding="application/xhtml+xml">' \
+          '<svg><a href="javascript:alert(1)" xlink:href="x">click</a></svg>' \
+          '</annotation-xml></math>',
+        project: nil
+      )
+
+      doc = Nokogiri::HTML5.fragment(result)
+      anchor = doc.at_css('a')
+
+      expect(anchor['href']).to be_nil
+    end
+
+    it 'preserves safe hrefs on SVG anchors after namespace stripping' do
+      result = described_class.to_html(
+        '<svg><a href="https://example.com" xlink:href="x">click</a></svg>',
+        project: nil
+      )
+
+      doc = Nokogiri::HTML5.fragment(result)
+      anchor = doc.at_css('a')
+
+      expect(anchor).to be_present
+      expect(anchor['href']).to eq('https://example.com')
+    end
+  end
+
   describe 'pathological input' do
     it 'returns an error message for deeply nested emphasis when run in a thread' do
       thread = Thread.start do

@@ -15,8 +15,9 @@ module Achievements
     validates :name,
       presence: true,
       length: { maximum: 255 },
-      uniqueness: { case_sensitive: false, scope: [:namespace_id] }
-    validates :description, length: { maximum: 1024 }
+      uniqueness: { case_sensitive: false, scope: [:namespace_id] },
+      html_safety: true
+    validates :description, length: { maximum: 1024 }, html_safety: true
 
     def unique_users
       users.distinct

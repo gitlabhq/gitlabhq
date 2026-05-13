@@ -18,12 +18,16 @@ module IssuableActions
   def show
     respond_to do |format|
       format.html do
-        @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar', # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          scope_validator: ::Gitlab::Auth::ScopeValidator.new(!!sessionless_user?, request_authenticator),
+          granular_token: request_authenticator.granular_access_token?)
         render 'show'
       end
 
       format.json do
-        render json: serializer.represent(issuable, serializer: params[:serializer])
+        render json: serializer.represent(issuable, serializer: params[:serializer],
+          scope_validator: ::Gitlab::Auth::ScopeValidator.new(!!sessionless_user?, request_authenticator),
+          granular_token: request_authenticator.granular_access_token?)
       end
     end
   end

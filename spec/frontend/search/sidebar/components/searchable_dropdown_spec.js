@@ -93,6 +93,25 @@ describe('Global Search Searchable Dropdown', () => {
       expect(findGlDropdown().props('searchable')).toBe(true);
     });
 
+    it('renders item name as plain text in the list item slot', () => {
+      const store = new Vuex.Store({ state: { query: MOCK_QUERY } });
+
+      const localWrapper = shallowMount(SearchableDropdown, {
+        store,
+        propsData: { ...defaultProps, frequentItems: [MOCK_GROUPS[0]] },
+        stubs: {
+          GlCollapsibleListbox: {
+            props: ['items'],
+            template: '<div><slot name="list-item" :item="items[1].options[0]" /></div>',
+          },
+        },
+      });
+
+      const itemTitle = localWrapper.find('[data-testid="item-title"]');
+      expect(itemTitle.exists()).toBe(true);
+      expect(itemTitle.text()).toBe(MOCK_GROUPS[0].name);
+    });
+
     describe('events', () => {
       it('emits select', () => {
         findGlDropdown().vm.$emit('select', 1);

@@ -23,4 +23,15 @@ RSpec.describe 'notify/new_achievement_email.html.haml', feature_category: :user
 
     expect(rendered).to have_content("View your achievements on your profile")
   end
+
+  context 'when achievement name contains HTML' do
+    let(:achievement) { build(:achievement, name: '<script>alert(1)</script>') }
+
+    it 'renders the achievement name as text, not HTML', :skip_html_escaped_tags_check do
+      render
+
+      expect(rendered).to have_content('<script>alert(1)</script>')
+      expect(rendered).to have_no_selector('script')
+    end
+  end
 end

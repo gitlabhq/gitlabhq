@@ -451,7 +451,7 @@ ApplicationSetting.update(max_http_response_xml_structural_chars: 500000)
 
 This setting restricts the maximum allowed object count in CSV HTTP
 responses from outbound requests. The number of objects is estimated based on
-the number of occurrences of `,`, `;`, `\t` and `\n` in the response.
+the number of occurrences of `,`, `;`, `\t`, `\r`, and `\n` in the response.
 
 The default maximum count is 250,000 objects. To disable this limit, set the value to 0.
 
