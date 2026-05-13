@@ -71,6 +71,10 @@ module Gitlab
         access_token&.scopes.to_a
       end
 
+      def granular_access_token?
+        access_token&.try(:granular?) || false
+      end
+
       private
 
       # Use a minimal subset of find_user_from_any_authentication_method

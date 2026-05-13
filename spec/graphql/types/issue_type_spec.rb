@@ -31,6 +31,16 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
     end
   end
 
+  describe 'create_note_email field scope' do
+    it 'only allows :api scope and excludes :read_api' do
+      field = described_class.fields['createNoteEmail']
+      scopes = field.instance_variable_get(:@scopes)
+
+      expect(scopes).to eq([:api])
+      expect(scopes).not_to include(:read_api)
+    end
+  end
+
   it_behaves_like 'issuables pagination and count' do
     let_it_be(:issuables) { create_list(:issue, 10, project: project, created_at: now) }
     let(:container_name) { 'project' }

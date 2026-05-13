@@ -158,6 +158,7 @@ module Types
       description: 'Issue the issue was closed as a duplicate of.'
 
     field :create_note_email, GraphQL::Types::String, null: true,
+      scopes: [:api],
       description: 'User specific email address for the issue.'
 
     field :timelogs, Types::TimelogType.connection_type, null: false,
