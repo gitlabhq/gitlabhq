@@ -52216,8 +52216,9 @@ definitions:
         description: Enable viewing Jira issues in GitLab.
       project_keys:
         type: array
-        description: Keys of Jira projects. When `issues_enabled` is `true`, this
-          setting specifies which Jira projects to view issues from in GitLab.
+        description: Keys of Jira projects to display. When `issues_enabled` is `true`,
+          this setting filters which Jira projects are shown in GitLab. It does not
+          restrict the API token's access.
         items:
           type: string
       vulnerabilities_enabled:
@@ -59972,8 +59973,9 @@ definitions:
         description: Enable viewing Jira issues in GitLab.
       project_keys:
         type: array
-        description: Keys of Jira projects. When `issues_enabled` is `true`, this
-          setting specifies which Jira projects to view issues from in GitLab.
+        description: Keys of Jira projects to display. When `issues_enabled` is `true`,
+          this setting filters which Jira projects are shown in GitLab. It does not
+          restrict the API token's access.
         items:
           type: string
       vulnerabilities_enabled:
@@ -61916,8 +61918,9 @@ definitions:
         description: Enable viewing Jira issues in GitLab.
       project_keys:
         type: array
-        description: Keys of Jira projects. When `issues_enabled` is `true`, this
-          setting specifies which Jira projects to view issues from in GitLab.
+        description: Keys of Jira projects to display. When `issues_enabled` is `true`,
+          this setting filters which Jira projects are shown in GitLab. It does not
+          restrict the API token's access.
         items:
           type: string
       vulnerabilities_enabled:

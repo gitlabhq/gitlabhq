@@ -57430,9 +57430,9 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: Keys of Jira projects. When `issues_enabled` is `true`,
-                    this setting specifies which Jira projects to view issues from
-                    in GitLab.
+                  description: Keys of Jira projects to display. When `issues_enabled`
+                    is `true`, this setting filters which Jira projects are shown
+                    in GitLab. It does not restrict the API token's access.
                 vulnerabilities_enabled:
                   type: boolean
                   description: Turn on Jira issue creation for GitLab vulnerabilities.
@@ -60965,9 +60965,9 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: Keys of Jira projects. When `issues_enabled` is `true`,
-                    this setting specifies which Jira projects to view issues from
-                    in GitLab.
+                  description: Keys of Jira projects to display. When `issues_enabled`
+                    is `true`, this setting filters which Jira projects are shown
+                    in GitLab. It does not restrict the API token's access.
                 vulnerabilities_enabled:
                   type: boolean
                   description: Turn on Jira issue creation for GitLab vulnerabilities.
@@ -64500,9 +64500,9 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: Keys of Jira projects. When `issues_enabled` is `true`,
-                    this setting specifies which Jira projects to view issues from
-                    in GitLab.
+                  description: Keys of Jira projects to display. When `issues_enabled`
+                    is `true`, this setting filters which Jira projects are shown
+                    in GitLab. It does not restrict the API token's access.
                 vulnerabilities_enabled:
                   type: boolean
                   description: Turn on Jira issue creation for GitLab vulnerabilities.
