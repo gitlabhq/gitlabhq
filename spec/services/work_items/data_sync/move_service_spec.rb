@@ -29,6 +29,22 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
 
+    context 'when user cannot read confidential work item and moving to the same namespace' do
+      let_it_be(:guest_user) { create(:user, guest_of: project) }
+      let_it_be(:confidential_work_item) { create(:work_item, :confidential, project: project) }
+      let_it_be(:current_user) { guest_user }
+
+      let(:service) do
+        described_class.new(
+          work_item: confidential_work_item,
+          target_namespace: project.project_namespace,
+          current_user: current_user
+        )
+      end
+
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
+    end
+
     context 'when user cannot create work items in target namespace' do
       let_it_be(:current_user) { source_project_member }
 
@@ -52,6 +68,10 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     context 'when moving project level work item to a group' do
       let(:target_namespace) { group }
 
+      before_all do
+        group.add_reporter(current_user)
+      end
+
       it_behaves_like 'fails to transfer work item',
         'Unable to move. Moving across projects and groups is not supported.'
     end
@@ -59,6 +79,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     context 'when moving to a pending delete project' do
       before do
         target_namespace.project.update!(pending_delete: true)
+        allow(original_work_item).to receive(:can_move?).and_return(true)
       end
 
       after do

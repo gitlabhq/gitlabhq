@@ -592,6 +592,24 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   describe 'GET /api/v4/projects/:id/packages/nuget/symbolfiles/*file_name/*signature/*file_name' do
     it_behaves_like 'nuget symbol file endpoint' do
       let(:url) { "/projects/#{target.id}/packages/nuget/symbolfiles/#{filename}/#{signature}/#{filename}" }
+
+      context 'when symbol belongs to a different project within the same namespace' do
+        before do
+          allow_next_instance_of(::Namespace::PackageSetting) do |setting|
+            allow(setting).to receive(:nuget_symbol_server_enabled).and_return(true)
+          end
+        end
+
+        let_it_be(:other_project) { create(:project, namespace: project.namespace) }
+        let_it_be(:other_package) { create(:nuget_package, project: other_project, without_package_files: true) }
+        let_it_be(:other_symbol) { create(:nuget_symbol, package: other_package) }
+
+        let(:filename) { other_symbol.file.filename }
+        let(:signature) { other_symbol.signature }
+        let(:checksum) { other_symbol.file_sha256.delete("\n") }
+
+        it_behaves_like 'returning response status', :not_found
+      end
     end
   end
 
