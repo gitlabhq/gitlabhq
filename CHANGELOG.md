@@ -2,6 +2,45 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.7 (2026-05-13)
+
+### Fixed (1 change)
+
+- [Fix import_url validation for passwords with special characters](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0b301fe1a28d32c2d5eb8d04519350c62efae5a)
+
+### Security (26 changes)
+
+- [18.9 Backport: Fix missing DuoApiAuthenticator stub in json_validation_spec](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f1918c533f3890a6e4b736796bbac011e3f0800) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6170))
+- [Address XSS via file path in global search](https://gitlab.com/gitlab-org/security/gitlab/-/commit/92771d281a6cfd979e2cb5798822f0558ee30800) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6097))
+- [Sanitize HTML in Duo Chat markdown renderer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/17778985d7c7d74bf526b50dc8f32d7e58a9c6e6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6154))
+- [Fix the group permission user search results](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d2662d28e0bfe76d55f934165c125579f2bef497) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6143))
+- [Filter tag names with invalid formats during deletion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14b45d2ea527d2740ce6cc1d63af78562d85ace8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6001))
+- [Prevent source issue disclosure via issue links API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/50825601bcc0ccad865ef3e0a41fa59064d86e58) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6150))
+- [Remove componentProps from analytics dashboards DataTable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a9b628821726a92beda17e7b5c3d853ad7473434) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6144))
+- [Fix `value_stream` data source passing arbitrary query fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/87828a0f94fa4f08f7cf2b505842a86ab5a5dfdd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6147))
+- [Fix HTML injection in achievement email notifications](https://gitlab.com/gitlab-org/security/gitlab/-/commit/75f514670eb575c9e6dcedfe0d43e7817161b0c9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6138))
+- [Authenticate internal API requests pre JSON parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d63972fa448c80173f8cc2dee3cd1ec880a8ebdd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5969))
+- [Approval rule lock bypass via GraphQL mutations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c51a8c23ccbd2a51f56a9e873ccbf5a28e10b87e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6114))
+- [Gate create_note_email on write-level token scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d9480021793d24e811e44901397989ea070fc8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5989))
+- [Reject oversized job tokens early in AuthJobFinder](https://gitlab.com/gitlab-org/security/gitlab/-/commit/31e959fc58d1d2c096b4f89b9e3dd24327fa8673) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6109))
+- [Normalize PyPI package names in protection rule checks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14f07119da15b038320e3d0e89167bfee90c4264) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6059))
+- [Clarify Jira integration access scope in docs and UI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb42f656bfee2a27e846c3031cc9001b49215308) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6126))
+- [Enhance DNS rebinding protection in VirtualRegistries RedirectHandler](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac8e8dbde287aa9fc26dff71d0a89657afc353b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6103))
+- [Count carriage-return separators in CSV structural char estimate](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3d1cd97fd9242b55d3e96317d661c74549a84be2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6122))
+- [Fix DoS via unauthenticated POST to Duo Workflow endpoints - 18.9 backport](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26b61a7a1bcf4e19642ed41e110ce5c49df4d6ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6087))
+- [Remove legacy JiraConnect::Subscriptions#create to close CSRF vector](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cfb23a137da9f53d67b127ea93c5d30b6a882f49) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6100))
+- [Remove all namespaced attributes in BaseSanitizationFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fcdf172835244edcb04d14fe234214d21e57f5bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6092))
+- [Filter out non-user-defined rules on approval update](https://gitlab.com/gitlab-org/security/gitlab/-/commit/60c154b6515a8e1f5b9cbc21e15bf871d4bb9e16) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6080))
+- [Fix orphaned scan_result_policy_reads  on policy project reassignment](https://gitlab.com/gitlab-org/security/gitlab/-/commit/732f277d94079b2aed883e44c1cf7431b9fd03c4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6090))
+- [Fix confidential issue data leak via move/clone API endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/797f88111b8d113b1e659e836c202fbd005a561d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6016))
+- [Add Helm package protection rule check to CreatePackageFileService](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd2d70a4fe160cb196f7d90499be3cfd2d2edd1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6068))
+- [Scope NuGet symbols lookup to projects within the requested namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/79901c110f56a1c05a6879445245bed48d05d96e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5992))
+- [Security Fix Vulnerability 586634](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d34af05c7209562fe84b53538d464d8ce4abd2c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5960))
+
+### Other (1 change)
+
+- [Backports dead connection fixes to 18.9](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7fbc175f2c2fea8c7e2feb003d8b2af9ccb2494)
+
 ## 18.9.6 (2026-04-21)
 
 ### Fixed (3 changes)
