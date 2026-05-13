@@ -984,10 +984,12 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth
 end
 
 RSpec.shared_examples 'nuget symbol file endpoint' do
-  let_it_be(:symbol) { create(:nuget_symbol) }
-  let_it_be(:filename) { symbol.file.filename }
-  let_it_be(:signature) { symbol.signature }
-  let_it_be(:checksum) { symbol.file_sha256.delete("\n") }
+  let_it_be(:symbol_package) { create(:nuget_package, project: project, without_package_files: true) }
+  let_it_be(:symbol) { create(:nuget_symbol, package: symbol_package) }
+
+  let(:filename) { symbol.file.filename }
+  let(:signature) { symbol.signature }
+  let(:checksum) { symbol.file_sha256.delete("\n") }
 
   let(:headers) { { 'Symbolchecksum' => "SHA256:#{checksum}" } }
 
@@ -1048,6 +1050,18 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
       let(:signature) { symbol.signature.upcase }
 
       it_behaves_like 'successful response'
+    end
+
+    context 'when symbol belongs to a different namespace' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:other_package) { create(:nuget_package, project: other_project, without_package_files: true) }
+      let_it_be(:other_symbol) { create(:nuget_symbol, package: other_package) }
+
+      let(:filename) { other_symbol.file.filename }
+      let(:signature) { other_symbol.signature }
+      let(:checksum) { other_symbol.file_sha256.delete("\n") }
+
+      it_behaves_like 'returning response status', :not_found
     end
   end
 

@@ -495,7 +495,24 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         where(:description, :path_info) do
           [
             ['Internal API endpoint', '/api/v4/internal/some/endpoint'],
-            ['Internal API nested path', '/api/v4/internal/pages/domains'],
+            ['Internal API nested path', '/api/v4/internal/pages/domains']
+          ]
+        end
+
+        with_them do
+          it 'validates payloads' do
+            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+            expect(app).to receive(:call).with(env)
+
+            result = middleware.call(env)
+            expect(result).to eq([200, {}, ['OK']])
+          end
+        end
+      end
+
+      context 'with Duo Workflow routes' do
+        where(:description, :path_info) do
+          [
             ['Duo workflow endpoint', '/api/v4/ai/duo_workflows/workflows/123'],
             ['Duo workflow nested path', '/api/v4/ai/duo_workflows/workflows/456/execute']
           ]
@@ -508,6 +525,24 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
 
             result = middleware.call(env)
             expect(result).to eq([200, {}, ['OK']])
+          end
+        end
+
+        context 'for a body exceeding 4 megabytes' do
+          let(:env) do
+            {
+              'REQUEST_METHOD' => 'POST',
+              'CONTENT_TYPE' => content_type,
+              'PATH_INFO' => '/api/v4/ai/duo_workflows/workflows/123',
+              'rack.input' => StringIO.new(body)
+            }
+          end
+
+          let(:body) { "{\"json\" : \"#{'a' * 4_200_000}\"}" }
+
+          it 'rejects the large payload' do
+            result = middleware.call(env)
+            expect(result).to eq([400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']])
           end
         end
       end

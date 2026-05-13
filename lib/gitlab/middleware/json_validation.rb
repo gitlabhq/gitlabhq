@@ -162,8 +162,8 @@ module Gitlab
             max_depth: 32,
             max_array_size: 5000,
             max_hash_size: 5000,
-            max_total_elements: 0, # Regularly exceeds 10,000, disable for now
-            max_json_size_bytes: 25.megabytes,
+            max_total_elements: 100_000,
+            max_json_size_bytes: 4.megabytes,
             mode: :enforced
           }
         },
