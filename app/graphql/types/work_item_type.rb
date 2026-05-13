@@ -71,8 +71,8 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was last updated.'
 
-    field :create_note_email, GraphQL::Types::String,
-      null: true,
+    field :create_note_email, GraphQL::Types::String, null: true,
+      scopes: [:api],
       description: 'User specific email address for the work item.'
     field :user_discussions_count, GraphQL::Types::Int, null: false,
       scopes: [:api, :read_api, :ai_workflows],

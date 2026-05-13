@@ -9,7 +9,11 @@ module Projects
         include ::Projects::ContainerRepository::Gitlab::Timeoutable
         include ContainerRegistry::Protection::Concerns::TagRule
 
+        INVALID_TAGS_ERROR_MESSAGE = 'invalid tag name(s)'
         PROTECTED_TAGS_ERROR_MESSAGE = 'cannot delete protected tag(s)'
+
+        # OCI Distribution Spec: https://github.com/opencontainers/distribution-spec/blob/main/spec.md#pulling-manifests
+        VALID_TAG_NAME_REGEX = /\A[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}\z/
 
         def initialize(current_user:, container_repository:, tag_names:)
           @current_user = current_user
@@ -24,6 +28,9 @@ module Projects
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23325 for details.
         def execute
           return success(deleted: []) if tag_names.empty?
+
+          filter_out_invalid!
+          return error(INVALID_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
 
           filter_out_protected!
           return error(PROTECTED_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
@@ -50,6 +57,10 @@ module Projects
           end
 
           deleted_tags.any? ? success(deleted: deleted_tags) : error("could not delete tags: #{tag_names.join(', ')}".truncate(1000))
+        end
+
+        def filter_out_invalid!
+          tag_names.select! { |name| name&.match?(VALID_TAG_NAME_REGEX) }
         end
 
         def filter_out_protected!

@@ -1,7 +1,8 @@
 - namespace_link = link_to(@achievement.namespace.full_path, group_url(@achievement.namespace))
-- profile_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">' % { url: user_url(@user) }
+- bold_tag_pair = tag_pair(tag.b, :bold_start, :bold_end)
+- profile_link_tag_pair = tag_pair(link_to('', user_url(@user), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
 
 %p
-  = sprintf(s_("Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"), { namespace_link: namespace_link, achievement_name: @achievement.name, bold_start: '<b>', bold_end: '</b>' }).html_safe
+  = safe_format(s_("Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"), bold_tag_pair, namespace_link: namespace_link, achievement_name: @achievement.name)
 %p
-  = sprintf(s_("Achievements|View your achievements on your %{link_start}profile%{link_end}."), { link_start: profile_link_start, link_end: '</a>' }).html_safe
+  = safe_format(s_("Achievements|View your achievements on your %{link_start}profile%{link_end}."), profile_link_tag_pair)

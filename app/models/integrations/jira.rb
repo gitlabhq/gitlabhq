@@ -176,8 +176,9 @@ module Integrations
       type: :string_array,
       api_only: true,
       description: -> {
-        s_('JiraIntegration|Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies ' \
-        'which Jira projects to view issues from in GitLab.')
+        s_('JiraIntegration|Keys of Jira projects to display. When `issues_enabled` is `true`, ' \
+        'this setting filters which Jira projects are shown in GitLab. ' \
+        'It does not restrict the API token\'s access.')
       }
 
     # TODO: we can probably just delegate as part of

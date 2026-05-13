@@ -2,16 +2,14 @@
 import { GlLink, GlLabel } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { sanitize } from '~/lib/dompurify';
-import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import { containsPotentialRegex } from '~/lib/utils/regexp';
 import { EVENT_CLICK_CLIPBOARD_BUTTON, EVENT_CLICK_HEADER_LINK } from '~/search/results/tracking';
 import { GL_LIGHT } from '~/constants';
-import { CODE_THEME_DEFAULT, DEFAULT_HEADER_LABEL_COLOR, CODE_THEME_DARK } from '../constants';
+import { CODE_THEME_DEFAULT, CODE_THEME_DARK, DEFAULT_HEADER_LABEL_COLOR } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -22,9 +20,7 @@ export default {
     ClipboardButton,
     GlLink,
     GlLabel,
-  },
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    HighlightedText,
   },
   mixins: [trackingMixin],
   props: {
@@ -59,25 +55,7 @@ export default {
   computed: {
     ...mapState(['query']),
     gfmCopyText() {
-      return `\`${this.purePath(this.filePath)}\``;
-    },
-    highlightedFilePath() {
-      const cleanFilePath = this.purePath(this.filePath);
-
-      if (!this?.query?.search) {
-        return cleanFilePath;
-      }
-
-      if (containsPotentialRegex(this.query.search)) {
-        return cleanFilePath;
-      }
-
-      const regex = new RegExp(`(${this.query.search})`, 'g');
-      return cleanFilePath.replace(
-        regex,
-        (match, p1) =>
-          `<span class="highlight-search-term ${this.systemMatchCodeTheme}">${p1}</span>`,
-      );
+      return `\`${this.filePath}\``;
     },
     systemMatchCodeTheme() {
       return this.systemColorScheme === GL_LIGHT ? CODE_THEME_DEFAULT : CODE_THEME_DARK;
@@ -88,6 +66,9 @@ export default {
     showSecondLine() {
       return !this.query.project_id && this.projectPath;
     },
+    searchMatch() {
+      return (this.query && this.query.search) || '';
+    },
   },
   methods: {
     trackClipboardClick() {
@@ -95,9 +76,6 @@ export default {
     },
     trackHeaderClick() {
       this.trackEvent(EVENT_CLICK_HEADER_LINK);
-    },
-    purePath(path) {
-      return sanitize(path, { ALLOWED_TAGS: [] });
     },
   },
   DEFAULT_HEADER_LABEL_COLOR,
@@ -115,11 +93,13 @@ export default {
         :class="codeTheme"
         @click="trackHeaderClick"
       >
-        <strong
-          v-safe-html="highlightedFilePath"
-          class="file-name-content"
+        <highlighted-text
+          :text="filePath"
+          :match="searchMatch"
+          :highlight-class="`highlight-search-term ${systemMatchCodeTheme}`"
+          global
           data-testid="file-name-content"
-        ></strong>
+        />
       </gl-link>
       <clipboard-button
         :text="filePath"

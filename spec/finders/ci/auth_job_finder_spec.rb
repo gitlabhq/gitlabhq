@@ -162,6 +162,19 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       end
     end
 
+    context 'when token exceeds maximum bytesize' do
+      let(:token) { 'a' * (described_class::MAX_TOKEN_BYTESIZE + 1) }
+
+      it { is_expected.to be_nil }
+
+      it 'does not attempt JWT decoding or database lookup' do
+        expect(::Ci::JobToken::Jwt).not_to receive(:decode)
+        expect(::Ci::Build).not_to receive(:find_by_token)
+
+        execute
+      end
+    end
+
     context 'with wrong job token' do
       let(:token) { 'missing' }
 

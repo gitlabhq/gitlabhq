@@ -531,7 +531,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: target_project.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Issue Not Found')
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
@@ -541,7 +541,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: target_project.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Issue Not Found')
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
@@ -561,6 +561,23 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: 0 }
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when issue is confidential' do
+        it 'returns 404 for users who cannot access the confidential issue' do
+          post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/move", non_member),
+            params: { to_project_id: project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'allows users with access to confidential issues to move them' do
+          post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/move", user),
+            params: { to_project_id: target_project.id }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['project_id']).to eq(target_project.id)
         end
       end
     end
@@ -623,7 +640,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: valid_target_project.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Issue Not Found')
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
@@ -633,7 +650,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: valid_target_project.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Issue Not Found')
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
@@ -676,6 +693,25 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/issues/#{issue.iid}/clone", personal_access_token: pat), params: { to_project_id: valid_target_project.id }
+        end
+      end
+
+      context 'when issue is confidential' do
+        it 'returns 404 for users who cannot access the confidential issue' do
+          post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/clone", non_member),
+            params: { to_project_id: valid_target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'allows users with access to confidential issues to clone them' do
+          expect do
+            post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/clone", user),
+              params: { to_project_id: valid_target_project.id }
+          end.to change { valid_target_project.issues.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['project_id']).to eq(valid_target_project.id)
         end
       end
     end

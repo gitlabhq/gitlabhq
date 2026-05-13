@@ -42,7 +42,7 @@
     "max_http_response_csv_structural_chars": {
       "type": "integer",
       "minimum": 0,
-      "description": "Maximum allowed object count in CSV HTTP API responses. Count is an estimate based on the number of occurrences of ',', ';', '\t' and '\n' in the response."
+      "description": "Maximum allowed object count in CSV HTTP API responses. Count is an estimate based on the number of occurrences of ',', ';', '\t', '\r' and '\n' in the response."
     }
   }
 }

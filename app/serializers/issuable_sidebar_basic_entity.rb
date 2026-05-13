@@ -110,6 +110,14 @@ class IssuableSidebarBasicEntity < Grape::Entity
   end
 
   expose :create_note_email do |issuable|
+    scope_validator = options[:scope_validator]
+    next if scope_validator && !scope_validator.valid_for?([:api])
+    # blocking all granular PATs here since:
+    # - This is non API facing serializer. This is supposed to be only rendered in the UI, and we're not using granular
+    # pats accessing sidebar data
+    # - To enable granular access we would need to expose access key to this presenter
+    next if options[:granular_token]
+
     issuable.creatable_note_email_address(current_user)
   end
 

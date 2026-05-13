@@ -45,7 +45,7 @@ module Gitlab
       }xi
 
       INTERNAL_API_PATH = %r{
-        \A/api/v4/internal/
+        \A/api/v4/internal/(?!orbit/)
       }xi
 
       DUO_WORKFLOW_PATH = %r{
@@ -162,8 +162,8 @@ module Gitlab
             max_depth: 32,
             max_array_size: 5000,
             max_hash_size: 5000,
-            max_total_elements: 0, # Regularly exceeds 10,000, disable for now
-            max_json_size_bytes: 25.megabytes,
+            max_total_elements: 100_000,
+            max_json_size_bytes: 4.megabytes,
             mode: :enforced
           }
         },
@@ -242,6 +242,24 @@ module Gitlab
       end
 
       def allow_if_validated(env, request, limits)
+        # Authenticate internal endpoints BEFORE reading body
+        if internal_endpoint?(request)
+          if request.get?
+            strip_get_request_body(request)
+          elsif !::Gitlab::Middleware::InternalApiAuthenticator.verify!(request)
+            return error_response(nil, 401, message: "Unauthorized")
+          end
+        end
+
+        # Authenticate Duo endpoints BEFORE reading body
+        if duo_endpoint?(request)
+          if request.get?
+            strip_get_request_body(request)
+          elsif !::Gitlab::Middleware::DuoApiAuthenticator.verify!(request)
+            return error_response(nil, 401, message: "Unauthorized")
+          end
+        end
+
         validate_json_request!(env, request, limits)
         @app.call(env)
       rescue ::Gitlab::Json::StreamValidator::LimitExceededError => ex
@@ -356,14 +374,26 @@ module Gitlab
         env[RACK_ENV_METADATA_KEY] = metadata
       end
 
-      def error_response(error, status)
-        message = ::Gitlab::Json::StreamValidator.user_facing_error_message(error)
+      def error_response(error, status, message: nil)
+        message ||= ::Gitlab::Json::StreamValidator.user_facing_error_message(error)
 
         [
           status,
           { 'Content-Type' => 'application/json' },
           [{ error: message }.to_json]
         ]
+      end
+
+      def internal_endpoint?(request)
+        INTERNAL_API_PATH.match?(request.path.delete_prefix(relative_url))
+      end
+
+      def duo_endpoint?(request)
+        DUO_WORKFLOW_PATH.match?(request.path.delete_prefix(relative_url))
+      end
+
+      def strip_get_request_body(request)
+        request.env['rack.input'] = StringIO.new('{}')
       end
     end
   end

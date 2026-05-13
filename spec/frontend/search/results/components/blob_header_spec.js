@@ -5,6 +5,7 @@ import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import BlobHeader from '~/search/results/components/blob_header.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { EVENT_CLICK_CLIPBOARD_BUTTON, EVENT_CLICK_HEADER_LINK } from '~/search/results/tracking';
@@ -115,7 +116,7 @@ describe('BlobHeader', () => {
     });
   });
 
-  describe('path sanitization', () => {
+  describe('path rendering', () => {
     const maliciousFilePaths = [
       '<a href=#>malicious.js</a>',
       '<a href=# onclick="alert(1)">file.js</a>',
@@ -124,23 +125,22 @@ describe('BlobHeader', () => {
       "\u003cdiv class=js-new-user-signups-cap-reached data-dismiss-endpoint='/api/v4/user/emails?email=attacker123@test.se' data-defer-links=false data-feature-id=1\u003e\u003cbutton class='js-close fixed-top gl-h-full gl-w-full'\u003eCloud Flare check you are human\u003c/button\u003e\u003c/div\u003e",
     ];
 
-    it.each(maliciousFilePaths)('sanitizes malicious file path: %s', (filePath) => {
-      createComponent({
-        filePath,
-        projectPath: 'Testjs/Test',
-        fileUrl: 'https://gitlab.com/test/file.js',
-        systemColorScheme: 'gl-light',
-      });
+    it.each(maliciousFilePaths)(
+      'passes malicious file path to HighlightedText as text: %s',
+      (filePath) => {
+        createComponent({
+          filePath,
+          projectPath: 'Testjs/Test',
+          fileUrl: 'https://gitlab.com/test/file.js',
+          systemColorScheme: 'gl-light',
+        });
 
-      const fileNameContent = findProjectName();
-      expect(fileNameContent.exists()).toBe(true);
-      expect(fileNameContent.text()).not.toContain('<script>');
-      expect(fileNameContent.text()).not.toContain('onclick');
-      expect(fileNameContent.text()).not.toContain('<button>');
-      expect(fileNameContent.text()).not.toContain('data-');
-    });
+        const highlightedText = wrapper.findComponent(HighlightedText);
+        expect(highlightedText.props('text')).toBe(filePath);
+      },
+    );
 
-    it('passes sanitized path to clipboard button', () => {
+    it('passes raw path to clipboard button', () => {
       const maliciousPath = '<script>alert("XSS")</b>innocent.js';
 
       createComponent({
@@ -151,12 +151,12 @@ describe('BlobHeader', () => {
       });
 
       expect(findClipboardButton().props('text')).toBe(maliciousPath);
-      expect(findClipboardButton().props('gfm')).not.toContain('<script>');
+      expect(findClipboardButton().props('gfm')).toBe(`\`<script>alert("XSS")</b>innocent.js\``);
     });
   });
 
   describe('highlighting with search query', () => {
-    it('applies highlighting when search term is in file path', () => {
+    it('passes file path and search term to HighlightedText', () => {
       const filePath = 'folder/searchTerm/file.js';
 
       createComponent(
@@ -168,15 +168,16 @@ describe('BlobHeader', () => {
         },
         { query: { search: 'searchTerm' } },
       );
-      const fileNameContent = findProjectName().html();
-      expect(fileNameContent).toContain('<span class="highlight-search-term');
-      expect(fileNameContent).toContain('searchTerm');
+
+      const highlightedText = wrapper.findComponent(HighlightedText);
+      expect(highlightedText.props('text')).toBe(filePath);
+      expect(highlightedText.props('match')).toBe('searchTerm');
+      expect(highlightedText.props('highlightClass')).toContain('highlight-search-term');
+      expect(highlightedText.props('global')).toBe(true);
     });
 
-    it('does not apply highlighting for potential regex patterns', () => {
+    it('applies highlighting for searches containing special characters', () => {
       const filePath = 'folder/test+/file.js';
-
-      window.containsPotentialRegex = jest.fn().mockReturnValue(true);
 
       createComponent(
         {
@@ -188,11 +189,11 @@ describe('BlobHeader', () => {
         { query: { search: 'test+' } },
       );
 
-      const fileNameContent = findProjectName().html();
-      expect(fileNameContent).not.toContain('<span class="highlight-search-term');
+      const highlightedText = wrapper.findComponent(HighlightedText);
+      expect(highlightedText.props('match')).toBe('test+');
     });
 
-    it('handles empty search query gracefully', () => {
+    it('passes empty match to HighlightedText when search query is empty', () => {
       const filePath = 'folder/test/file.js';
 
       createComponent(
@@ -205,10 +206,8 @@ describe('BlobHeader', () => {
         { query: { search: '' } },
       );
 
-      const fileNameContent = findProjectName();
-
-      expect(fileNameContent.html()).not.toContain('<span class="highlight-search-term');
-      expect(fileNameContent.text()).toContain(filePath);
+      const highlightedText = wrapper.findComponent(HighlightedText);
+      expect(highlightedText.props('match')).toBe('');
     });
   });
 });

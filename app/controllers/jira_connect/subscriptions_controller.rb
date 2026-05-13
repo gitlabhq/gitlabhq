@@ -30,7 +30,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   before_action :allow_rendering_in_iframe, only: :index
   before_action :verify_qsh_claim!, only: :index
   before_action :allow_self_managed_content_security_policy, only: :index
-  before_action :authenticate_user!, only: :create
 
   def index
     @subscriptions = current_jira_installation.subscriptions.preload_namespace_route
@@ -40,16 +39,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
       format.json do
         render json: JiraConnect::AppDataSerializer.new(@subscriptions).as_json
       end
-    end
-  end
-
-  def create
-    result = create_service.execute
-
-    if result[:status] == :success
-      render json: { success: true }
-    else
-      render json: { error: result[:message] }, status: result[:http_status]
     end
   end
 
@@ -70,15 +59,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
     request.content_security_policy.directives['connect-src'] ||= []
     request.content_security_policy.directives['connect-src'].concat(allowed_instance_connect_src)
-  end
-
-  def create_service
-    JiraConnectSubscriptions::CreateService.new(
-      current_jira_installation,
-      current_user,
-      namespace_path: params['namespace_path'],
-      jira_user: jira_user
-    )
   end
 
   def destroy_service
