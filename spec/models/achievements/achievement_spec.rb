@@ -27,6 +27,22 @@ RSpec.describe Achievements::Achievement, type: :model, feature_category: :user_
 
       expect(achievement.name).to eq('AchievementTest')
     end
+
+    it 'is invalid when it contains HTML' do
+      achievement = build(:achievement, name: '<script>alert(1)</script>')
+
+      expect(achievement).not_to be_valid
+      expect(achievement.errors[:name]).to include(HtmlSafetyValidator.error_message)
+    end
+  end
+
+  describe '#description' do
+    it 'is invalid when it contains HTML' do
+      achievement = build(:achievement, description: '<script>alert(1)</script>')
+
+      expect(achievement).not_to be_valid
+      expect(achievement.errors[:description]).to include(HtmlSafetyValidator.error_message)
+    end
   end
 
   it_behaves_like Avatarable do

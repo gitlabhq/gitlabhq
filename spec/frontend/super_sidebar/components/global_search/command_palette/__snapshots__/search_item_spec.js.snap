@@ -17,11 +17,12 @@ exports[`SearchItem should render the item 1`] = `
   <span
     class="gl-flex gl-gap-2 gl-items-center gl-min-w-0"
   >
-    <span
-      class="gl-text-strong gl-truncate"
-    >
-      Cole Dickinson
-    </span>
+    <highlighted-text-stub
+      class="gl-truncate"
+      highlightclass=""
+      match="root"
+      text="Cole Dickinson"
+    />
   </span>
 </div>
 `;
@@ -40,11 +41,12 @@ exports[`SearchItem should render the item 2`] = `
   <span
     class="gl-flex gl-gap-2 gl-items-center gl-min-w-0"
   >
-    <span
-      class="gl-text-strong gl-truncate"
-    >
-      Manage &gt; Activity
-    </span>
+    <highlighted-text-stub
+      class="gl-truncate"
+      highlightclass=""
+      match="root"
+      text="Manage > Activity"
+    />
   </span>
 </div>
 `;
@@ -66,11 +68,12 @@ exports[`SearchItem should render the item 3`] = `
   <span
     class="gl-flex gl-gap-2 gl-items-center gl-min-w-0"
   >
-    <span
-      class="gl-text-strong gl-truncate"
-    >
-      MockProject1
-    </span>
+    <highlighted-text-stub
+      class="gl-truncate"
+      highlightclass=""
+      match="root"
+      text="MockProject1"
+    />
     <span
       aria-hidden="true"
       class="gl-text-subtle"
@@ -78,12 +81,13 @@ exports[`SearchItem should render the item 3`] = `
     >
       ·
     </span>
-    <span
+    <highlighted-text-stub
       class="gl-text-sm gl-text-subtle gl-truncate"
       data-testid="namespace"
-    >
-      Gitlab Org / MockProject1
-    </span>
+      highlightclass=""
+      match="root"
+      text="Gitlab Org / MockProject1"
+    />
   </span>
 </div>
 `;
@@ -105,11 +109,12 @@ exports[`SearchItem should render the item 4`] = `
   <span
     class="gl-flex gl-gap-2 gl-items-center gl-min-w-0"
   >
-    <span
-      class="gl-text-strong gl-truncate"
-    >
-      Dismiss Cipher with no integrity
-    </span>
+    <highlighted-text-stub
+      class="gl-truncate"
+      highlightclass=""
+      match="root"
+      text="Dismiss Cipher with no integrity"
+    />
   </span>
 </div>
 `;

@@ -1,7 +1,6 @@
 <script>
 import { GlAvatar, GlIcon } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
-import highlight from '~/lib/utils/highlight';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import { AVATAR_SHAPE_OPTION_RECT, AVATAR_SHAPE_OPTION_CIRCLE } from '~/vue_shared/constants';
 import { USER_CATEGORY_VALUE } from './constants';
 
@@ -10,9 +9,7 @@ export default {
   components: {
     GlAvatar,
     GlIcon,
-  },
-  directives: {
-    SafeHtml,
+    HighlightedText,
   },
   props: {
     item: {
@@ -25,9 +22,6 @@ export default {
     },
   },
   computed: {
-    highlightedName() {
-      return highlight(this.item.text, this.searchQuery);
-    },
     avatarShape() {
       return this.item.category === USER_CATEGORY_VALUE
         ? this.$options.AVATAR_SHAPE_OPTION_CIRCLE
@@ -53,14 +47,15 @@ export default {
     />
     <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" data-testid="icon" />
     <span class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
-      <span v-safe-html="highlightedName" class="gl-truncate gl-text-strong"></span>
+      <highlighted-text :text="item.text" :match="searchQuery" class="gl-truncate" />
       <template v-if="item.namespace">
         <span class="gl-text-subtle" aria-hidden="true" data-testid="namespace-bullet">·</span>
-        <span
-          v-safe-html="item.namespace"
+        <highlighted-text
+          :text="item.namespace"
+          :match="searchQuery"
           class="gl-truncate gl-text-sm gl-text-subtle"
           data-testid="namespace"
-        ></span>
+        />
       </template>
     </span>
   </div>

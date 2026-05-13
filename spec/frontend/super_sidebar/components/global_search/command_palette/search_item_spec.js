@@ -1,14 +1,11 @@
 import { GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SearchItem from '~/super_sidebar/components/global_search/command_palette/search_item.vue';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import { getFormattedItem } from '~/super_sidebar/components/global_search/utils';
 import { linksReducer } from '~/super_sidebar/components/global_search/command_palette/utils';
 import { USERS, LINKS, PROJECT, ISSUE } from './mock_data';
 
-jest.mock('~/lib/utils/highlight', () => ({
-  __esModule: true,
-  default: (text) => text,
-}));
 const mockUser = getFormattedItem(USERS[0]);
 const mockCommand = LINKS.reduce(linksReducer, [])[1];
 const mockProject = getFormattedItem(PROJECT);
@@ -85,7 +82,6 @@ describe('SearchItem', () => {
 
       expect(findIcon().exists()).toBe(false);
     });
-
     it('should render namespace when present', () => {
       const item = {
         text: 'Test Item',
@@ -95,7 +91,10 @@ describe('SearchItem', () => {
       createComponent(item);
 
       expect(findNamespaceBullet().exists()).toBe(true);
-      expect(findNamespace().text()).toBe('test-namespace');
+
+      const namespaceHighlight = wrapper.findByTestId('namespace');
+      expect(namespaceHighlight.props('text')).toBe('test-namespace');
+      expect(namespaceHighlight.props('match')).toBe('root');
     });
 
     it('should not render namespace when not present', () => {
@@ -107,6 +106,15 @@ describe('SearchItem', () => {
 
       expect(findNamespaceBullet().exists()).toBe(false);
       expect(findNamespace().exists()).toBe(false);
+    });
+
+    it('renders HighlightedText with item text and searchQuery as match', () => {
+      createComponent(mockProject);
+
+      const highlightedText = wrapper.findComponent(HighlightedText);
+      expect(highlightedText.exists()).toBe(true);
+      expect(highlightedText.props('text')).toBe(mockProject.text);
+      expect(highlightedText.props('match')).toBe('root');
     });
   });
 });
