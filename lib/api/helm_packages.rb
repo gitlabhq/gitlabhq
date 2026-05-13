@@ -170,9 +170,14 @@ module API
             file_name: PACKAGE_FILENAME
           }
 
-          chart_package_file = ::Packages::CreatePackageFileService.new(
+          result = ::Packages::Helm::CreatePackageFileService.new(
             package, chart_params.merge(build: current_authenticated_job)
           ).execute
+
+          forbidden!(result.message) if result.reason == :package_protected
+          bad_request!(result.message) if result.reason == :extraction_error
+
+          chart_package_file = result.payload[:package_file]
 
           track_package_event('push_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace,
             property: 'i_package_helm_user')

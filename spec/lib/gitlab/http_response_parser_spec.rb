@@ -327,6 +327,15 @@ RSpec.describe Gitlab::HttpResponseParser, feature_category: :importers do
       end
     end
 
+    context 'with carriage-return-only row separators' do
+      let(:body) { "name,age,city\rJohn,30,NYC\rJane,25,LA" }
+
+      it 'counts carriage returns in structural characters' do
+        expect(parsed_csv).to be_an(Array)
+        expect(parsed_csv.size).to eq(3)
+      end
+    end
+
     context 'when body content exceeds the number of CSV structural characters' do
       before do
         stub_application_setting(max_http_response_csv_structural_chars: 5)

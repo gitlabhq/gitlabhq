@@ -62,7 +62,7 @@ module Packages
       def check_rule_exists_for_deploy_token_or_blank_user
         project.package_protection_rules
                .for_package_type(params[:package_type])
-               .for_package_name(params[:package_name])
+               .for_package_name_by_type(params[:package_name], params[:package_type])
                .exists?
       end
 

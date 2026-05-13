@@ -68,6 +68,38 @@ module Packages
         )
       end
 
+      scope :for_pypi_package_name, ->(package_name) do
+        return none if package_name.blank?
+
+        # Note: This query uses regexp_replace on both sides, which is non-sargable.
+        # This is acceptable because:
+        # 1. The query is scoped to a single project's protection rules
+        #   (typically a small number of rows, but there are no limits at the moment)
+        # 2. It's called once per package upload, not in a hot path
+        # 3. The existing for_package_name scope has similar characteristics
+
+        pypi_regex = connection.quote(Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING)
+        quoted_name = connection.quote(package_name)
+        normalize = ->(expr) { "regexp_replace(#{expr}, #{pypi_regex}, '-', 'g')" }
+
+        where(
+          Arel::Nodes::Matches.new(
+            Arel.sql(normalize.call(quoted_name)),
+            Arel.sql(::Gitlab::SQL::Glob.to_like(normalize.call('package_name_pattern')))
+          )
+        )
+      end
+
+      scope :for_package_name_by_type, ->(package_name, package_type) do
+        return none if package_name.blank?
+
+        if package_types[package_type] == package_types[:pypi]
+          for_pypi_package_name(package_name)
+        else
+          for_package_name(package_name)
+        end
+      end
+
       scope :for_package_type, ->(package_type) { where(package_type: package_type) }
 
       def self.for_delete_exists?(access_level:, package_name:, package_type:)
@@ -82,8 +114,37 @@ module Packages
 
         for_package_type(package_type)
           .where(":access_level < #{minimum_access_level_column}", access_level: access_level)
-          .for_package_name(package_name)
+          .for_package_name_by_type(package_name, package_type)
           .exists?
+      end
+
+      # Builds an Arel node that matches a CTE column expression against package_name_pattern,
+      # applying PEP 503 normalization for PyPI packages and standard ILIKE for all other types.
+      # The branching is delegated to the database via a SQL CASE on the package_type column.
+      #
+      # Only used by .for_push_exists_for_projects_and_packages where the package name comes
+      # from a CTE column reference rather than a user-supplied bind parameter.
+      #
+      # @param [String] input_sql a SQL column expression (e.g. a CTE column reference)
+      # @return [Arel::Nodes::Case] an Arel CASE node for use in a WHERE clause
+      def self.package_name_match_node(input_sql)
+        pypi_regex = connection.quote(Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING)
+        normalize = ->(expr) { "regexp_replace(#{expr}, #{pypi_regex}, '-', 'g')" }
+
+        pypi_ilike = Arel::Nodes::Matches.new(
+          Arel.sql(normalize.call(input_sql)),
+          Arel.sql(::Gitlab::SQL::Glob.to_like(normalize.call('package_name_pattern')))
+        )
+
+        std_ilike = Arel::Nodes::Matches.new(
+          Arel.sql(input_sql),
+          Arel.sql(::Gitlab::SQL::Glob.to_like('package_name_pattern'))
+        )
+
+        Arel::Nodes::Case.new
+          .when(arel_table[:package_type].eq(package_types[:pypi]))
+          .then(pypi_ilike)
+          .else(std_ilike)
       end
 
       ##
@@ -141,7 +202,7 @@ module Packages
         protection_rule_exsits_subquery = select(1)
           .where("#{rules_cte_project_id} = project_id")
           .where(arel_table[:package_type].eq(Arel.sql(rules_cte_package_type)))
-          .where("#{rules_cte_package_name} ILIKE #{::Gitlab::SQL::Glob.to_like('package_name_pattern')}")
+          .where(package_name_match_node(rules_cte_package_name))
 
         query = select(
           rules_cte_project_id,
