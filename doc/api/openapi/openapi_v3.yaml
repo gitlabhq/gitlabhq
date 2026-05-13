@@ -43187,7 +43187,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_629ab9562708"
+              "$ref": "#/components/schemas/RequestBody_9b4265abef27"
   "/api/v4/projects/{id}/services/jira-cloud-app":
     put:
       operationId: putApiV4ProjectsIdServicesJiraCloudApp
@@ -44874,7 +44874,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_629ab9562708"
+              "$ref": "#/components/schemas/RequestBody_9b4265abef27"
   "/api/v4/projects/{id}/integrations/jira-cloud-app":
     put:
       operationId: putApiV4ProjectsIdIntegrationsJiraCloudApp
@@ -46561,7 +46561,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_629ab9562708"
+              "$ref": "#/components/schemas/RequestBody_9b4265abef27"
   "/api/v4/groups/{id}/integrations/jira-cloud-app":
     put:
       operationId: putApiV4GroupsIdIntegrationsJiraCloudApp
@@ -98429,7 +98429,7 @@ components:
       required:
       - jenkins_url
       - project_name
-    RequestBody_629ab9562708:
+    RequestBody_9b4265abef27:
       type: object
       properties:
         url:
@@ -98483,8 +98483,9 @@ components:
           type: array
           items:
             type: string
-          description: Keys of Jira projects. When `issues_enabled` is `true`, this
-            setting specifies which Jira projects to view issues from in GitLab.
+          description: Keys of Jira projects to display. When `issues_enabled` is
+            `true`, this setting filters which Jira projects are shown in GitLab.
+            It does not restrict the API token's access.
           nullable: true
         vulnerabilities_enabled:
           type: boolean

@@ -186,14 +186,23 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       end
     end
 
-    describe '.find_by_signature_and_file_and_checksum' do
-      subject { described_class.find_by_signature_and_file_and_checksum(signature, file_name, checksum) }
+    describe '.find_by_project_and_signature_and_file_and_checksum' do
+      subject do
+        described_class.find_by_project_and_signature_and_file_and_checksum(
+          signature: signature,
+          file_name: file_name,
+          checksums: checksum,
+          project_ids: scoped_project_ids
+        )
+      end
 
       let_it_be(:signature) { 'signature' }
       let_it_be(:file_name) { 'file.pdb' }
       let_it_be(:checksum) { OpenSSL::Digest.hexdigest('SHA256', 'checksums') }
       let_it_be(:symbol) { create(:nuget_symbol, signature: signature, file_sha256: checksum) }
       let_it_be(:another_symbol) { create(:nuget_symbol) }
+
+      let(:scoped_project_ids) { symbol.project_id }
 
       before do
         symbol.update_column(:file, file_name)
@@ -207,6 +216,20 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
         end
 
         it { is_expected.to be_nil }
+      end
+
+      context 'when project_ids does not match the symbol project' do
+        let_it_be(:other_project) { create(:project) }
+        let(:scoped_project_ids) { other_project.id }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when project_ids is a relation including the symbol project' do
+        let_it_be(:other_project) { create(:project) }
+        let(:scoped_project_ids) { ::Project.id_in([symbol.project_id, other_project.id]) }
+
+        it { is_expected.to eq(symbol) }
       end
     end
   end

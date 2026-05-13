@@ -91,11 +91,15 @@ To configure your project settings in GitLab:
    1. Select the **View Jira issues** checkbox.
 
       > [!warning]
-      > When you enable this setting, all users with access to your GitLab project
-      > can view all issues from the Jira projects you've specified.
+      > All users with access to your GitLab project can view any Jira issue the
+      > API token used to authenticate can access. The Jira project keys you enter
+      > below filter the issue list displayed in GitLab. They do not restrict the
+      > API token's access. To limit which issues the integration can read, use a
+      > Jira account with access only to the Jira projects you want to expose, and
+      > generate the API token from that account.
 
-   1. Enter one or more Jira project keys.
-      Leave blank to include all available keys.
+   1. Enter one or more Jira project keys to display.
+      Leave blank to display all keys the API token can access.
 1. Optional. To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability),
    in the **Jira issues for vulnerabilities** section:
    1. Select the **Create Jira issues for vulnerabilities** checkbox.

@@ -12,6 +12,7 @@ import Vuex from 'vuex';
 import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
 import SearchResultFocusLayover from '~/super_sidebar/components/global_search/components/global_search_focus_overlay.vue';
 import GlobalSearchNoResults from '~/super_sidebar/components/global_search/components/global_search_no_results.vue';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
@@ -29,6 +30,7 @@ import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
   MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
+  MOCK_AUTOCOMPLETE_HIGHLIGHTED_TEXTS,
 } from '../mock_data';
 
 Vue.use(Vuex);
@@ -133,7 +135,7 @@ describe('GlobalSearchAutocompleteItems', () => {
         });
 
         it('renders sub-titles correctly', () => {
-          const expectedSubTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.filter((o) => o.value).map(
+          const expectedSubTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.filter((o) => o.namespace).map(
             (o) => o.namespace,
           );
 
@@ -154,6 +156,19 @@ describe('GlobalSearchAutocompleteItems', () => {
 
         it('does not render no-results-found component', () => {
           expect(findNoResults().exists()).toBe(false);
+        });
+
+        it('renders HighlightedText with item text and search query as match', () => {
+          const searchTerm = 'mock';
+          createComponent({ search: searchTerm });
+
+          const highlightedTexts = wrapper.findAllComponents(HighlightedText);
+          expect(highlightedTexts.wrappers.map((ht) => ht.props('text'))).toStrictEqual(
+            MOCK_AUTOCOMPLETE_HIGHLIGHTED_TEXTS,
+          );
+          highlightedTexts.wrappers.forEach((ht) => {
+            expect(ht.props('match')).toBe(searchTerm);
+          });
         });
       });
 

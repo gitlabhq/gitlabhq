@@ -82,4 +82,14 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       end
     end
   end
+
+  describe 'create_note_email field scope' do
+    it 'only allows :api scope and excludes :read_api' do
+      field = described_class.fields['createNoteEmail']
+      scopes = field.instance_variable_get(:@scopes)
+
+      expect(scopes).to eq([:api])
+      expect(scopes).not_to include(:read_api)
+    end
+  end
 end

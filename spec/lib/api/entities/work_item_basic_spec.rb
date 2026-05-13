@@ -92,6 +92,61 @@ RSpec.describe API::Entities::WorkItemBasic, feature_category: :team_planning do
         expect(representation[:create_note_email]).to eq('issue-1@example.com')
         expect(work_item).to have_received(:creatable_note_email_address).with(user)
       end
+
+      context 'when scope_validator permits api scope' do
+        let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+        let(:represent_options) { { scope_validator: scope_validator } }
+
+        it 'exposes create_note_email' do
+          allow(work_item).to receive(:creatable_note_email_address).with(user).and_return('issue-1@example.com')
+          expect(representation[:create_note_email]).to eq('issue-1@example.com')
+        end
+      end
+
+      context 'when scope_validator rejects api scope (read_api token)' do
+        let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: false) }
+        let(:represent_options) { { scope_validator: scope_validator } }
+
+        it 'does not expose create_note_email' do
+          expect(representation[:create_note_email]).to be_nil
+        end
+      end
+
+      context 'when no scope_validator is passed (session-based request)' do
+        let(:represent_options) { {} }
+
+        it 'exposes create_note_email' do
+          allow(work_item).to receive(:creatable_note_email_address).with(user).and_return('issue-1@example.com')
+          expect(representation[:create_note_email]).to eq('issue-1@example.com')
+        end
+      end
+
+      context 'when access_token is a granular PAT with write access (create_issue_note)' do
+        let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+        let(:granular_tkn) { instance_double(PersonalAccessToken, granular?: true) }
+        let(:boundary) { instance_double(::Authz::Boundary::ProjectBoundary) }
+        let(:represent_options) { { scope_validator: scope_validator, access_token: granular_tkn } }
+
+        it 'exposes create_note_email' do
+          allow(::Authz::Boundary).to receive(:for).with(work_item.project).and_return(boundary)
+          allow(granular_tkn).to receive(:permitted_for_boundary?).with(boundary, :create_issue_note).and_return(true)
+          allow(work_item).to receive(:creatable_note_email_address).with(user).and_return('issue-1@example.com')
+          expect(representation[:create_note_email]).to eq('issue-1@example.com')
+        end
+      end
+
+      context 'when access_token is a granular PAT without write access (read-only)' do
+        let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+        let(:granular_tkn) { instance_double(PersonalAccessToken, granular?: true) }
+        let(:boundary) { instance_double(::Authz::Boundary::ProjectBoundary) }
+        let(:represent_options) { { scope_validator: scope_validator, access_token: granular_tkn } }
+
+        it 'does not expose create_note_email' do
+          allow(::Authz::Boundary).to receive(:for).with(work_item.project).and_return(boundary)
+          allow(granular_tkn).to receive(:permitted_for_boundary?).with(boundary, :create_issue_note).and_return(false)
+          expect(representation[:create_note_email]).to be_nil
+        end
+      end
     end
 
     context 'when URLs are requested' do

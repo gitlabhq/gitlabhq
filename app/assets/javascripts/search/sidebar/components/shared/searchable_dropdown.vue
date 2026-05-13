@@ -1,8 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlAvatar } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
-import SafeHtml from '~/vue_shared/directives/safe_html';
-import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -14,9 +12,6 @@ export default {
   components: {
     GlAvatar,
     GlCollapsibleListbox,
-  },
-  directives: {
-    SafeHtml,
   },
   i18n: {
     frequentlySearched: __('Frequently searched'),
@@ -154,9 +149,6 @@ export default {
 
       return truncateNamespace(namespaceWithFallback);
     },
-    highlightedItemName(item) {
-      return highlight(item.name, item.searchText);
-    },
     onSelectGroup(selected) {
       if (selected === ANY_OPTION.name) {
         this.$emit('change', ANY_OPTION);
@@ -212,11 +204,9 @@ export default {
           aria-hidden="true"
         />
         <div class="gl-flex gl-flex-col">
-          <span
-            v-safe-html="highlightedItemName(item)"
-            class="gl-whitespace-nowrap gl-font-bold"
-            data-testid="item-title"
-          ></span>
+          <span class="gl-whitespace-nowrap gl-font-bold" data-testid="item-title">{{
+            item.name
+          }}</span>
           <span class="gl-text-sm gl-text-subtle" data-testid="item-namespace">
             {{ truncatedNamespace(item) }}</span
           >

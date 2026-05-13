@@ -48,6 +48,15 @@ module API
       expose_field :create_note_email,
         documentation: { type: 'String', example: 'issue-1@example.com' },
         expose_nil: true do |work_item, options|
+        scope_validator = options[:scope_validator]
+
+        next if scope_validator && !scope_validator.valid_for?([:api])
+
+        if (token = options[:access_token]).try(:granular?)
+          boundary = ::Authz::Boundary.for(work_item.project)
+          next unless token.permitted_for_boundary?(boundary, :create_issue_note)
+        end
+
         work_item.creatable_note_email_address(options[:current_user])
       end
 

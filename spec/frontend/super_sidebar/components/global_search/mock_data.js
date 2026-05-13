@@ -619,6 +619,24 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
   },
 ];
 
+export const MOCK_AUTOCOMPLETE_HIGHLIGHTED_TEXTS = [
+  'MockGroup1',
+  'Gitlab Org / MockGroup1',
+  'MockProject1',
+  'Gitlab Org / MockProject1',
+  'MockProject2',
+  'Gitlab Org / MockProject2',
+  'Madelein van Niekerk',
+  'maddievn',
+  'Ben Madden',
+  'benmadden',
+  'Dean Kadiev',
+  'dean.kadiev',
+  'Chris Madden',
+  'chris1062',
+  'GitLab Help',
+];
+
 export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_HELP = [
   {
     category: 'Help',
