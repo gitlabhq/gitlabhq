@@ -606,6 +606,10 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
       end
 
       context 'with Duo Workflow routes' do
+        before do
+          allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
+        end
+
         where(:description, :path_info) do
           [
             ['Duo workflow endpoint', '/api/v4/ai/duo_workflows/workflows/123'],
