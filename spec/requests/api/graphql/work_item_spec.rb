@@ -104,6 +104,22 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       )
     end
 
+    context 'when using a read_api scoped token' do
+      let(:read_api_token) { create(:personal_access_token, user: current_user, scopes: [:read_api]) }
+
+      before do
+        post_graphql(
+          graphql_query_for('workItem', { 'id' => global_id }, 'createNoteEmail'),
+          current_user: current_user,
+          token: { personal_access_token: read_api_token }
+        )
+      end
+
+      it 'does not return createNoteEmail' do
+        expect(work_item_data).to include('createNoteEmail' => nil)
+      end
+    end
+
     context 'when work_item_planning_view is disabled' do
       before do
         stub_feature_flags(work_item_planning_view: false)

@@ -94,7 +94,8 @@ module API
         issue = find_project_issue(params[:issue_iid])
         issue_link = IssueLink.for_source_or_target(issue).find(declared_params[:issue_link_id])
 
-        find_project_issue(issue_link.target.iid.to_s, issue_link.target.project_id.to_s)
+        linked_issue = issue_link.source == issue ? issue_link.target : issue_link.source
+        find_project_issue(linked_issue.iid.to_s, linked_issue.project_id.to_s)
 
         present issue_link, with: Entities::IssueLink
       end

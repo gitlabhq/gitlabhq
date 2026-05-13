@@ -7,6 +7,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
   let_it_be(:guest_user) { create(:user) }
   let_it_be(:public_project) { create(:project, :public, guests: guest_user) }
   let_it_be(:private_project) { create(:project, :private, guests: guest_user) }
+  let_it_be(:private_project_2) { create(:project, :private) }
 
   let_it_be(:project) { public_project }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -238,7 +239,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       context 'when user cannot read issue link' do
         context 'when the issue link targets an issue in a non-accessible project' do
           it 'returns 404' do
-            private_issue = create(:issue, project: create(:project, :private))
+            private_issue = create(:issue, project: private_project_2)
             private_link = create(:issue_link, source: issue, target: private_issue)
 
             perform_request(private_link.id, guest_user)
@@ -255,6 +256,30 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
             perform_request(confidential_link.id, guest_user)
 
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the issue link source is in a non-accessible project' do
+          it 'returns 404' do
+            private_issue = create(:issue, project: private_project_2)
+            private_link = create(:issue_link, source: private_issue, target: issue)
+
+            perform_request(private_link.id, guest_user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('404 Project Not Found')
+          end
+        end
+
+        context 'when the issue link source is a non-accessible confidential issue' do
+          it 'returns 404' do
+            confidential_issue = create(:issue, :confidential, project: private_project_2)
+            confidential_link = create(:issue_link, source: confidential_issue, target: issue)
+
+            perform_request(confidential_link.id, guest_user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('404 Project Not Found')
           end
         end
       end
