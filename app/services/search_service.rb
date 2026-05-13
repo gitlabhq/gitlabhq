@@ -135,8 +135,21 @@ class SearchService
 
   def visible_result?(object)
     return true unless object.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(object)
+    return Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object) unless scope == 'users'
 
-    Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object)
+    # For user search, check member visibility permissions based on search level
+    case level
+    when 'project'
+      # Project level: :read_project always implies :read_project_member, so always allow
+      # The :read_project check happens in the #project method, which returns nil if denied
+      # If :read_project is denied, #project returns nil and #level returns 'global' instead
+      # Therefore, if we reach this branch, the user already has :read_project access
+      true
+    when 'group'
+      Ability.allowed?(current_user, :read_group_member, group)
+    else
+      Ability.allowed?(current_user, :read_users_list)
+    end
   end
 
   def redact_unauthorized_results(results_collection)

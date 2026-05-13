@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         expect(app).to receive(:call).with(env)
 
         result = middleware.call(env)
-        expect(result).to eq([200, {}, ['OK']])
+        expect(result).to match_array([200, {}, ['OK']])
       end
     end
 
@@ -201,7 +201,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         expect(app).to receive(:call).with(env)
 
         result = middleware.call(env)
-        expect(result).to eq([200, {}, ['OK']])
+        expect(result).to match_array([200, {}, ['OK']])
       end
 
       it 'rewinds the request body after reading' do
@@ -269,7 +269,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           expect(app).to receive(:call).with(env)
 
           result = middleware.call(env)
-          expect(result).to eq([200, {}, ['OK']])
+          expect(result).to match_array([200, {}, ['OK']])
         end
       end
     end
@@ -357,7 +357,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         expect(app).to receive(:call).with(env)
 
         result = middleware.call(env)
-        expect(result).to eq([200, {}, ['OK']])
+        expect(result).to match_array([200, {}, ['OK']])
       end
     end
 
@@ -393,14 +393,58 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           }
         end
 
-        it 'validates internal API' do
-          # Should validate but not fail due to route-specific internal API limits
-          expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
-          expect(app).to receive(:call).with(env)
+        context 'when request authorized' do
+          before do
+            allow(::Gitlab::Middleware::InternalApiAuthenticator).to receive(:verify!).and_return(true)
+          end
 
-          result = middleware.call(env)
+          it 'validates internal API' do
+            # Should validate but not fail due to route-specific internal API limits
+            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+            expect(app).to receive(:call).with(env)
 
-          expect(result).to eq([200, {}, ['OK']])
+            result = middleware.call(env)
+
+            expect(result).to match_array([200, {}, ['OK']])
+          end
+        end
+
+        context 'when request unauthorized' do
+          before do
+            allow(::Gitlab::Middleware::InternalApiAuthenticator).to receive(:verify!).and_return(false)
+          end
+
+          it 'returns and error response without parsing JSON body' do
+            # When internal requests are unauthorized they should not parse the body of the request
+            expect(::Gitlab::Json::StreamValidator).not_to receive(:new).and_call_original
+            expect(app).not_to receive(:call).with(env)
+
+            result = middleware.call(env)
+
+            expect(result).to match_array(
+              [401, { "Content-Type" => "application/json" }, ["{\"error\":\"Unauthorized\"}"]]
+            )
+          end
+        end
+
+        context 'when request is GET' do
+          let(:env) do
+            {
+              'REQUEST_METHOD' => 'GET',
+              'CONTENT_TYPE' => content_type,
+              'PATH_INFO' => '/api/v4/internal/some/endpoint',
+              'rack.input' => StringIO.new(body)
+            }
+          end
+
+          it 'strips the request body and continues without authenticating' do
+            expect(::Gitlab::Middleware::InternalApiAuthenticator).not_to receive(:verify!)
+            expect(app).to receive(:call).with(env)
+
+            middleware.call(env)
+
+            expect(env['rack.input'].read).to eq('{}')
+          end
         end
       end
 
@@ -414,15 +458,59 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           }
         end
 
-        it 'validates Duo Workflow API' do
-          # Should validate but not fail due to route-specific internal API limits
+        context 'when request authorized' do
+          before do
+            allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
+          end
 
-          expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
-          expect(app).to receive(:call).with(env)
+          it 'validates Duo Workflow API' do
+            # Should validate but not fail due to route-specific internal API limits
 
-          result = middleware.call(env)
+            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+            expect(app).to receive(:call).with(env)
 
-          expect(result).to eq([200, {}, ['OK']])
+            result = middleware.call(env)
+
+            expect(result).to match_array([200, {}, ['OK']])
+          end
+        end
+
+        context 'when request unauthorized' do
+          before do
+            allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(false)
+          end
+
+          it 'returns and error response without parsing JSON body' do
+            # When duo requests are unauthorized they should not parse the body of the request
+            expect(::Gitlab::Json::StreamValidator).not_to receive(:new).and_call_original
+            expect(app).not_to receive(:call).with(env)
+
+            result = middleware.call(env)
+
+            expect(result).to match_array(
+              [401, { "Content-Type" => "application/json" }, ["{\"error\":\"Unauthorized\"}"]]
+            )
+          end
+        end
+
+        context 'when request is GET' do
+          let(:env) do
+            {
+              'REQUEST_METHOD' => 'GET',
+              'CONTENT_TYPE' => content_type,
+              'PATH_INFO' => '/api/v4/ai/duo_workflows/workflows/123',
+              'rack.input' => StringIO.new(body)
+            }
+          end
+
+          it 'strips the request body and continues without authenticating' do
+            expect(::Gitlab::Middleware::DuoApiAuthenticator).not_to receive(:verify!)
+            expect(app).to receive(:call).with(env)
+
+            middleware.call(env)
+
+            expect(env['rack.input'].read).to eq('{}')
+          end
         end
       end
     end
@@ -465,7 +553,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             expect(app).to receive(:call).with(env)
 
             result = middleware.call(env)
-            expect(result).to eq([200, {}, ['OK']])
+            expect(result).to match_array([200, {}, ['OK']])
           end
         end
       end
@@ -478,7 +566,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           expect(app).to receive(:call).with(env)
 
           result = middleware.call(env)
-          expect(result).to eq([200, {}, ['OK']])
+          expect(result).to match_array([200, {}, ['OK']])
         end
 
         context 'for a very large body exceeding 10 megabytes' do
@@ -486,12 +574,19 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
 
           it 'rejects the large payload' do
             result = middleware.call(env)
-            expect(result).to eq([400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']])
+            expect(result).to match_array(
+              [400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']]
+            )
           end
         end
       end
 
       context 'with internal API routes' do
+        before do
+          allow(::Gitlab::Middleware::InternalApiAuthenticator).to receive(:verify!).and_return(true)
+          allow(::Gitlab::Middleware::DuoApiAuthenticator).to receive(:verify!).and_return(true)
+        end
+
         where(:description, :path_info) do
           [
             ['Internal API endpoint', '/api/v4/internal/some/endpoint'],
@@ -524,7 +619,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             expect(app).to receive(:call).with(env)
 
             result = middleware.call(env)
-            expect(result).to eq([200, {}, ['OK']])
+            expect(result).to match_array([200, {}, ['OK']])
           end
         end
 
@@ -664,7 +759,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           expect(app).to receive(:call).with(env)
 
           result = middleware.call(env)
-          expect(result).to eq([200, {}, ['OK']])
+          expect(result).to match_array([200, {}, ['OK']])
         end
       end
 
@@ -753,7 +848,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             expect(app).to receive(:call).with(env)
 
             result = middleware.call(env)
-            expect(result).to eq([200, {}, ['OK']])
+            expect(result).to match_array([200, {}, ['OK']])
           end
         end
       end
@@ -802,7 +897,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           expect(app).to receive(:call).with(env)
 
           result = middleware.call(env)
-          expect(result).to eq([200, {}, ['OK']])
+          expect(result).to match_array([200, {}, ['OK']])
         end
       end
 
@@ -823,7 +918,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
           expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
 
           result = middleware.call(env)
-          expect(result).to eq([200, {}, ['OK']])
+          expect(result).to match_array([200, {}, ['OK']])
         end
       end
 
@@ -902,7 +997,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             expect(app).to receive(:call).with(env)
             expect(::Gitlab::Json::StreamValidator).not_to receive(:new)
             result = middleware.call(env)
-            expect(result).to eq([200, {}, ['OK']])
+            expect(result).to match_array([200, {}, ['OK']])
           end
         end
 

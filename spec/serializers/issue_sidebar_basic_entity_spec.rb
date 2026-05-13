@@ -30,6 +30,53 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
     expect(entity).to include(:due_date, :confidential, :severity)
   end
 
+  describe 'create_note_email' do
+    before do
+      stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+    end
+
+    context 'when no scope_validator is passed (session-based request)' do
+      subject(:entity) { serializer.represent(issue, serializer: 'sidebar') }
+
+      it 'exposes create_note_email' do
+        expect(entity[:create_note_email]).not_to be_nil
+      end
+    end
+
+    context 'when scope_validator permits api scope' do
+      let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+
+      subject(:entity) { serializer.represent(issue, serializer: 'sidebar', scope_validator: scope_validator) }
+
+      it 'exposes create_note_email' do
+        expect(entity[:create_note_email]).not_to be_nil
+      end
+    end
+
+    context 'when scope_validator rejects api scope (read_api token)' do
+      let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: false) }
+
+      subject(:entity) { serializer.represent(issue, serializer: 'sidebar', scope_validator: scope_validator) }
+
+      it 'does not expose create_note_email' do
+        expect(entity[:create_note_email]).to be_nil
+      end
+    end
+
+    context 'when granular_token is true (granular PAT)' do
+      let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
+
+      subject(:entity) do
+        serializer.represent(issue, serializer: 'sidebar', scope_validator: scope_validator,
+          granular_token: true)
+      end
+
+      it 'does not expose create_note_email' do
+        expect(entity[:create_note_email]).to be_nil
+      end
+    end
+  end
+
   describe 'current_user' do
     let_it_be(:incident) { create(:issue, :incident, project: project, assignees: [user]) }
 

@@ -190,6 +190,23 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
       subject
     end
+
+    context 'when private project member searches for user in private group' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:private_project) { create(:project, :private, group: private_group) }
+      let_it_be(:user2) { create(:user, username: 'gob_bluth') }
+
+      let(:private_results) { described_class.new(user, query, limit_projects, group: private_group, filters: filters) }
+
+      before_all do
+        private_group.add_guest(user2)
+        private_project.add_guest(user)
+      end
+
+      it 'returns empty when user does not have read_group_member permission' do
+        expect(private_results.objects('users')).to be_empty
+      end
+    end
   end
 
   describe "#issuable_params" do

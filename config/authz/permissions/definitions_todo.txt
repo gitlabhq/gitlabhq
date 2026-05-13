@@ -721,7 +721,6 @@ update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback
 update_web_ide_terminal
-update_work_item
 update_workspace
 upload_alert_management_metric_image
 upload_file

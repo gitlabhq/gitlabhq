@@ -69,6 +69,21 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
     it_behaves_like 'a working graphql query'
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_work_item, :update_work_item] do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 1) }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :read_work_item do
+      let(:user) { developer }
+      let(:boundary_object) { project }
+      # createNoteEmail requires write permissions since it can be used to create issues and notes.
+      let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 1, excluded: ["createNoteEmail"]) }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
     it 'returns all fields' do
       expect(work_item_data).to include(
         'description' => work_item.description,
@@ -102,6 +117,22 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         ),
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
+    end
+
+    context 'when using a read_api scoped token' do
+      let(:read_api_token) { create(:personal_access_token, user: current_user, scopes: [:read_api]) }
+
+      before do
+        post_graphql(
+          graphql_query_for('workItem', { 'id' => global_id }, 'createNoteEmail'),
+          current_user: current_user,
+          token: { personal_access_token: read_api_token }
+        )
+      end
+
+      it 'does not return createNoteEmail' do
+        expect(work_item_data).to include('createNoteEmail' => nil)
+      end
     end
 
     it 'uses the work items path for webPath and webUrl' do

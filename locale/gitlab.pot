@@ -39428,7 +39428,7 @@ msgstr ""
 msgid "JiraIntegration|Key of the project to use when creating issues from vulnerabilities.This parameter is required if using the integration to create Jira issues from vulnerabilities."
 msgstr ""
 
-msgid "JiraIntegration|Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab."
+msgid "JiraIntegration|Keys of Jira projects to display. When `issues_enabled` is `true`, this setting filters which Jira projects are shown in GitLab. It does not restrict the API token's access."
 msgstr ""
 
 msgid "JiraIntegration|Prefix to match Jira issue keys."
@@ -39548,7 +39548,7 @@ msgstr ""
 msgid "JiraService|Check issue status"
 msgstr ""
 
-msgid "JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys."
+msgid "JiraService|Comma-separated list of Jira project keys to display. This filter does not restrict the API token's access. Leave blank to display all keys the token can access."
 msgstr ""
 
 msgid "JiraService|Comma-separated list of allowed Jira issue statuses."
@@ -39734,7 +39734,7 @@ msgstr ""
 msgid "JiraService|View issues from multiple Jira projects in this GitLab project. Access a read-only list of your Jira issues."
 msgstr ""
 
-msgid "JiraService|Warning: All users with access to this GitLab project can view all issues from the Jira project you specify."
+msgid "JiraService|Warning: All users with access to this GitLab project can view any Jira issue the API token used to authenticate can access, including issues outside the Jira project keys specified below."
 msgstr ""
 
 msgid "JiraService|Web URL"

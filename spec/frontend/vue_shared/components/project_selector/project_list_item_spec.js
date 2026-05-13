@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 describe('ProjectListItem component', () => {
@@ -21,7 +22,6 @@ describe('ProjectListItem component', () => {
   };
 
   const findProjectNamespace = () => wrapper.findByTestId('project-namespace');
-  const findProjectName = () => wrapper.findByTestId('project-name');
 
   it.each([true, false])('renders a checkmark correctly when selected === "%s"', (selected) => {
     createWrapper({
@@ -106,12 +106,12 @@ describe('ProjectListItem component', () => {
         },
       },
     });
-    const renderedName = trimText(findProjectName().text());
 
-    expect(renderedName).toBe('my-test-project');
+    const highlightedText = wrapper.findComponent(HighlightedText);
+    expect(highlightedText.props('text')).toBe('my-test-project');
   });
 
-  it(`renders the project name with highlighting in the case of a search query match`, () => {
+  it(`passes text and match to HighlightedText for rendering`, () => {
     createWrapper({
       propsData: {
         project: {
@@ -121,27 +121,27 @@ describe('ProjectListItem component', () => {
         matcher: 'pro',
       },
     });
-    const renderedName = trimText(findProjectName().html());
-    const expected = 'my-test-<b>p</b><b>r</b><b>o</b>ject';
 
-    expect(renderedName).toContain(expected);
+    const highlightedText = wrapper.findComponent(HighlightedText);
+    expect(highlightedText.props('text')).toBe('my-test-project');
+    expect(highlightedText.props('match')).toBe('pro');
   });
 
-  it('prevents search query and project name XSS', () => {
+  it('passes malicious input to HighlightedText without executing it', () => {
     const alertSpy = jest.spyOn(window, 'alert');
+    const maliciousName = "my-xss-pro<script>alert('XSS');</script>ject";
+    const maliciousMatcher = "pro<script>alert('XSS');</script>";
+
     createWrapper({
       propsData: {
-        project: {
-          ...project,
-          name: "my-xss-pro<script>alert('XSS');</script>ject",
-        },
-        matcher: "pro<script>alert('XSS');</script>",
+        project: { ...project, name: maliciousName },
+        matcher: maliciousMatcher,
       },
     });
-    const renderedName = trimText(findProjectName().html());
-    const expected = 'my-xss-project';
 
-    expect(renderedName).toContain(expected);
+    const highlightedText = wrapper.findComponent(HighlightedText);
+    expect(highlightedText.props('text')).toBe(maliciousName);
+    expect(highlightedText.props('match')).toBe(maliciousMatcher);
     expect(alertSpy).not.toHaveBeenCalled();
   });
 });

@@ -10,8 +10,7 @@ import {
 import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import SafeHtml from '~/vue_shared/directives/safe_html';
-import highlight from '~/lib/utils/highlight';
+import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import { AVATAR_SHAPE_OPTION_RECT, AVATAR_SHAPE_OPTION_CIRCLE } from '~/vue_shared/constants';
 import {
   AUTOCOMPLETE_ERROR_MESSAGE,
@@ -72,9 +71,7 @@ export default {
     GlDisclosureDropdownItem,
     SearchResultFocusLayover,
     GlobalSearchNoResults,
-  },
-  directives: {
-    SafeHtml,
+    HighlightedText,
   },
   AVATAR_SHAPE_OPTION_RECT,
   AVATAR_SHAPE_OPTION_CIRCLE,
@@ -105,9 +102,6 @@ export default {
     },
   },
   methods: {
-    highlightedName(val) {
-      return highlight(val, this.search);
-    },
     overlayText(group) {
       let text = OVERLAY_GOTO;
 
@@ -221,20 +215,21 @@ export default {
                 aria-hidden="true"
               />
               <span class="gl-flex gl-flex-row gl-items-center gl-gap-2 gl-truncate">
-                <span
-                  v-safe-html="highlightedName(item.text)"
-                  class="gl-truncate gl-text-strong"
+                <highlighted-text
+                  :text="item.text"
+                  :match="search"
+                  class="gl-truncate"
                   data-testid="autocomplete-item-name"
-                ></span>
-                <span v-if="item.value && item.namespace" class="gl-text-subtle" aria-hidden="true"
-                  >·</span
-                >
-                <span
-                  v-if="item.value"
-                  v-safe-html="item.namespace"
-                  class="gl-truncate gl-text-sm gl-text-subtle"
-                  data-testid="autocomplete-item-namespace"
-                ></span>
+                />
+                <template v-if="item.namespace">
+                  <span class="gl-text-subtle" aria-hidden="true">·</span>
+                  <highlighted-text
+                    :text="item.namespace"
+                    :match="search"
+                    class="gl-truncate gl-text-sm gl-text-subtle"
+                    data-testid="autocomplete-item-namespace"
+                  />
+                </template>
               </span>
             </search-result-focus-layover>
           </template>

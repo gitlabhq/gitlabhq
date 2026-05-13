@@ -16,6 +16,8 @@ module Ci
       end
     end
 
+    MAX_TOKEN_BYTESIZE = ::Gitlab::Auth::AuthFinders::MAX_JOB_TOKEN_SIZE_BYTES
+
     def initialize(token:)
       @token = token
     end
@@ -40,6 +42,8 @@ module Ci
     attr_reader :token
 
     def find_job_by_token
+      return if token.bytesize > MAX_TOKEN_BYTESIZE
+
       # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
       find_job_by_jwt || find_from_database_token
     end
