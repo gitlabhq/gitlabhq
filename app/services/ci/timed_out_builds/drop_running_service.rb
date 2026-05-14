@@ -11,7 +11,7 @@ module Ci
         Gitlab::AppLogger.info "#{self.class}: Cleaning timed-out builds"
 
         Ci::Partition.find_each do |partition|
-          drop_incomplete(timed_out_builds(partition), failure_reason: :job_execution_timeout)
+          drop(timed_out_builds(partition), failure_reason: :job_execution_timeout)
         end
       end
 

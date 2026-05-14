@@ -22,7 +22,7 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
 
     context 'when job becomes complete before processing the timeout' do
       it 'does not doom the job' do
-        allow(service).to receive(:drop_incomplete_build).and_wrap_original do |method, *args|
+        allow(service).to receive(:drop_build).and_wrap_original do |method, *args|
           job.success
           method.call(*args)
         end

@@ -33,6 +33,19 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
         it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         it_behaves_like 'when invalid dooms the job bypassing validations'
 
+        context 'when job becomes successful before processing the drop' do
+          it 'does not doom the successful job' do
+            allow(service).to receive(:drop_build).and_wrap_original do |method, *args|
+              job.success!
+              method.call(*args)
+            end
+
+            service.execute
+
+            expect(job.reload.status).to eq('success')
+          end
+        end
+
         context 'when job is timed out' do
           before do
             job.update!(timeout: 1.minute.ago)
@@ -60,21 +73,28 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
 
   include_examples 'running builds'
 
-  %w[success skipped failed canceled scheduled pending].each do |status|
-    context "when job is #{status}" do
-      let(:status) { status }
-      let(:updated_at) { 2.days.ago }
+  context 'when job is not running' do
+    let!(:job) do
+      create(:ci_build, runner: runner, created_at: created_at, updated_at: updated_at, status: status)
+    end
 
-      context 'when created_at is the same as updated_at' do
-        let(:created_at) { 2.days.ago }
+    let(:updated_at) { 2.days.ago }
 
-        it_behaves_like 'job is unchanged'
-      end
+    %w[success skipped failed canceled scheduled pending].each do |status|
+      context "when job is #{status}" do
+        let(:status) { status }
 
-      context 'when created_at is before updated_at' do
-        let(:created_at) { 3.days.ago }
+        context 'when created_at is the same as updated_at' do
+          let(:created_at) { 2.days.ago }
 
-        it_behaves_like 'job is unchanged'
+          it_behaves_like 'job is unchanged'
+        end
+
+        context 'when created_at is before updated_at' do
+          let(:created_at) { 3.days.ago }
+
+          it_behaves_like 'job is unchanged'
+        end
       end
     end
   end
