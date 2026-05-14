@@ -162,4 +162,79 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
       expect(result.message).to eq('Could not update wiki page')
     end
   end
+
+  describe 'preserving comments' do
+    let(:project) { container if container.is_a?(Project) }
+    let(:namespace) { container.is_a?(Group) ? container : container.namespace }
+
+    before do
+      container.add_developer(user)
+    end
+
+    context 'when a page is moved to a subdirectory' do
+      it 'preserves the meta record, updates the slug, and keeps comments', :aggregate_failures do
+        page = create(:wiki_page, container: container, title: 'foo')
+        meta = page.find_or_create_meta
+        original_id = meta.id
+        create(:note, project: project, namespace: namespace, noteable: meta, author: user, note: 'important comment')
+
+        move_params = {
+          title: 'Done-Items/foo',
+          content: page.content,
+          format: 'markdown',
+          message: 'Move page to subdirectory'
+        }
+
+        service = described_class.new(container: container, current_user: user, params: move_params)
+
+        expect { service.execute(page) }.not_to change { WikiPage::Meta.count }
+
+        fresh_meta = WikiPage::Meta.find(original_id)
+        expect(fresh_meta.canonical_slug).to eq('Done-Items/foo')
+        expect(fresh_meta.notes.pluck(:note)).to include('important comment')
+      end
+    end
+
+    context 'when a page is moved from a subdirectory to root' do
+      it 'preserves comments on the moved page' do
+        page = create(:wiki_page, container: container, title: 'subdir/bar')
+        meta = page.find_or_create_meta
+        create(:note, project: project, namespace: namespace, noteable: meta, author: user, note: 'subdir comment')
+
+        move_params = {
+          title: '/bar',
+          content: page.content,
+          format: 'markdown',
+          message: 'Move page to root'
+        }
+
+        service = described_class.new(container: container, current_user: user, params: move_params)
+        service.execute(page)
+
+        fresh_meta = WikiPage::Meta.find(meta.id)
+        expect(fresh_meta.notes.pluck(:note)).to include('subdir comment')
+      end
+    end
+
+    context 'when a page is renamed without changing directory' do
+      it 'preserves comments on the renamed page' do
+        page = create(:wiki_page, container: container, title: 'original-name')
+        meta = page.find_or_create_meta
+        create(:note, project: project, namespace: namespace, noteable: meta, author: user, note: 'rename comment')
+
+        rename_params = {
+          title: 'new-name',
+          content: page.content,
+          format: 'markdown',
+          message: 'Rename page'
+        }
+
+        service = described_class.new(container: container, current_user: user, params: rename_params)
+        service.execute(page)
+
+        fresh_meta = WikiPage::Meta.find(meta.id)
+        expect(fresh_meta.notes.pluck(:note)).to include('rename comment')
+      end
+    end
+  end
 end

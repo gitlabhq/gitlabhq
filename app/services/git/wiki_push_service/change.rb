@@ -67,7 +67,13 @@ module Git
         return unless filename
 
         encoded_filename = Gitlab::EncodingHelper.encode_utf8(filename.dup)
-        File.basename(encoded_filename, File.extname(encoded_filename))
+
+        # Use Pathname to strip only the file extension while preserving
+        # the full directory path. File.basename was previously used here,
+        # which dropped directory components and caused slug mismatches
+        # when wiki pages were moved between directories.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/536746
+        Pathname.new(encoded_filename).sub_ext('').to_s
       end
     end
   end

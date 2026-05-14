@@ -245,6 +245,24 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
       end
     end
 
+    it 'calls log_error for every event we cannot create' do
+      base_sha = current_sha
+      count = 3
+      count.times { write_new_page }
+      message = 'something went very very wrong'
+      allow_next_instance_of(WikiPages::EventCreateService, current_user) do |service|
+        allow(service).to receive(:execute)
+          .with(String, WikiPage, Symbol, String)
+          .and_return(ServiceResponse.error(message: message))
+      end
+
+      service = create_service(base_sha)
+
+      expect(service).to receive(:log_error).exactly(count).times.with(message)
+
+      service.execute
+    end
+
     describe 'feature flags' do
       shared_examples 'a no-op push' do
         it 'does not create any events' do
@@ -262,16 +280,6 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
           service.execute
         end
       end
-    end
-
-    it_behaves_like 'internal event tracking' do
-      let(:event) { 'performed_wiki_action' }
-      let(:category) { described_class.name }
-      let(:project) { wiki.respond_to?(:project) ? wiki.project : nil }
-      let(:user) { current_user }
-      let(:additional_properties) { { label: 'created' } }
-
-      subject { process_changes { write_new_page } }
     end
   end
 
@@ -312,6 +320,39 @@ RSpec.shared_examples 'Git::WikiPushService' do |wiki_type|
       expect(housekeeping).to receive(:increment!)
 
       subject
+    end
+  end
+
+  describe 'when a page is moved to a subdirectory via git' do
+    it 'reuses the existing WikiPage::Meta record instead of creating a new one' do
+      title = write_new_page
+
+      page = wiki.find_page(title)
+      meta = page.find_or_create_meta
+      original_meta_id = meta.id
+
+      base_sha = current_sha
+
+      # Move the page to a subdirectory via raw git operations
+      old_path = Wiki.sluggified_full_path(title, 'md')
+      new_path = "subdir/#{old_path}"
+
+      repository.update_file(
+        current_user, new_path, 'Hello',
+        branch_name: default_branch,
+        message: 'move page',
+        author_email: current_user.email,
+        author_name: current_user.name,
+        previous_path: old_path
+      )
+
+      create_service(base_sha).execute
+
+      moved_page = wiki.find_page("subdir/#{title}")
+      expect(moved_page).to be_present
+
+      moved_meta = moved_page.find_or_create_meta
+      expect(moved_meta.id).to eq(original_meta_id)
     end
   end
 
