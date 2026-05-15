@@ -47,29 +47,39 @@ module QA
         end
       end
 
+      let(:pipeline) { create(:pipeline, project: project) }
+
       before do
         add_file_variables
         add_ci_file
-        trigger_pipeline
+        pipeline
         wait_for_pipeline
       end
 
       after do
+        unless pipeline.finished?
+          pipeline.cancel!
+          pipeline.wait_until_finished
+        end
+      rescue StandardError => e
+        Runtime::Logger.warn("Could not cancel pipeline: #{e.message}")
+      ensure
         runner.remove_via_api!
       end
 
       it(
         'does not expose file variable content with echo',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/593602',
-          type: :investigating
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_echo')[:id])
 
+        trace = Support::Waiter.wait_until(max_duration: 60, sleep_interval: 5,
+          message: 'Wait for job trace to be available') do
+          t = job.trace
+          t.presence || false
+        end
+
         aggregate_failures do
-          trace = job.trace
           expect(trace).to include('run something -f', "#{project.name}.tmp/TEST_FILE")
           expect(trace).to include('docker run --tlscacert=', "#{project.name}.tmp/DOCKER_CA_CERT")
           expect(trace).to include('run --output=', "#{project.name}.tmp/DOCKER_CA_CERT.crt")
@@ -83,8 +93,13 @@ module QA
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
 
+        trace = Support::Waiter.wait_until(max_duration: 60, sleep_interval: 5,
+          message: 'Wait for job trace to be available') do
+          t = job.trace
+          t.presence || false
+        end
+
         aggregate_failures do
-          trace = job.trace
           expect(trace).to have_content('hello, this is test')
           expect(trace).to have_content('This is secret')
         end
@@ -96,13 +111,15 @@ module QA
         create(:ci_variable, project: project, key: key, value: value, variable_type: 'file')
       end
 
-      def trigger_pipeline
-        create(:pipeline, project: project)
-      end
-
       def wait_for_pipeline
-        Support::Waiter.wait_until do
-          project.pipelines.present? && project.pipelines.first[:status] == 'success'
+        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10,
+          message: 'Wait for pipeline to complete successfully') do
+          pipeline = project.latest_pipeline
+          if %w[failed canceled].include?(pipeline[:status])
+            raise "Pipeline did not succeed, got status: #{pipeline[:status]}"
+          end
+
+          pipeline[:status] == 'success'
         end
       end
     end
