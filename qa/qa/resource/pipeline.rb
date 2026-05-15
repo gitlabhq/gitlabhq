@@ -14,6 +14,8 @@ module QA
         :ref,
         :sha
 
+      TERMINAL_STATUSES = %w[success failed canceled skipped manual].freeze
+
       # array in form
       # [
       #   { key: 'UPLOAD_TO_S3', variable_type: 'file', value: true },
@@ -109,6 +111,28 @@ module QA
 
       def jobs
         parse_body(api_get_from(api_jobs_path))
+      end
+
+      def cancel!
+        response = post(request_url("#{api_get_path}/cancel"))
+
+        return if response.code == HTTP_STATUS_OK
+
+        raise ResourceActionFailedError,
+          "Could not cancel pipeline. Request returned (#{response.code}): `#{response}`."
+      end
+
+      def finished?
+        TERMINAL_STATUSES.include?(reload!.status)
+      end
+
+      def wait_until_finished(max_duration: 60, sleep_interval: 1)
+        QA::Support::Waiter.wait_until(
+          max_duration: max_duration,
+          sleep_interval: sleep_interval,
+          message: "Wait for pipeline #{id} to reach a terminal status",
+          raise_on_failure: false
+        ) { finished? }
       end
     end
   end
