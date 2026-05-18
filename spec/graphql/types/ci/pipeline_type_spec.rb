@@ -101,11 +101,24 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
   end
 
   describe 'field scopes' do
-    {
+    fields_with_scopes = {
       'id' => %i[api read_api ai_workflows],
+      'iid' => %i[api read_api ai_workflows],
+      'sha' => %i[api read_api ai_workflows],
+      'status' => %i[api read_api ai_workflows],
+      'ref' => %i[api read_api ai_workflows],
       'name' => %i[api read_api ai_workflows],
       'createdAt' => %i[api read_api ai_workflows]
-    }.each do |field, scopes|
+    }
+
+    if Gitlab.ee?
+      fields_with_scopes.merge!(
+        'securityReportFindings' => %i[api read_api ai_workflows],
+        'securityReportFinding' => %i[api read_api ai_workflows]
+      )
+    end
+
+    fields_with_scopes.each do |field, scopes|
       it "includes the correct scopes for #{field}" do
         expect(described_class.fields[field].instance_variable_get(:@scopes)).to include(*scopes)
       end

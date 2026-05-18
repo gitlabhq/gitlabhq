@@ -23,14 +23,16 @@ module Types
         scopes: [:api, :read_api, :ai_workflows]
 
       field :iid, GraphQL::Types::String, null: false,
-        description: 'Internal ID of the pipeline.'
+        description: 'Internal ID of the pipeline.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :name, GraphQL::Types::String, null: true,
         description: 'Name of the pipeline.',
         scopes: [:api, :read_api, :ai_workflows]
 
       field :sha, GraphQL::Types::String, null: true,
-        description: "SHA of the pipeline's commit." do
+        description: "SHA of the pipeline's commit.",
+        scopes: [:api, :read_api, :ai_workflows] do
         argument :format,
           type: Types::ShaFormatEnum,
           required: false,
@@ -45,7 +47,8 @@ module Types
         description: 'Indicates if a pipeline is complete.'
 
       field :status, PipelineStatusEnum, null: false,
-        description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
+        description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})",
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :warnings, GraphQL::Types::Boolean, null: false, method: :has_warnings?,
         description: "Indicates if a pipeline has warnings."
@@ -177,7 +180,8 @@ module Types
         resolver: Resolvers::Ci::TestSuiteResolver
 
       field :ref, GraphQL::Types::String, null: true,
-        description: 'Reference to the branch from which the pipeline was triggered.'
+        description: 'Reference to the branch from which the pipeline was triggered.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :ref_path, GraphQL::Types::String, null: true,
         description: 'Reference path to the branch from which the pipeline was triggered.',

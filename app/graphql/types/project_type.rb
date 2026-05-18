@@ -497,6 +497,7 @@ module Types
       calls_gitaly: true,
       description: 'Pipelines of the project.',
       extras: [:lookahead],
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::Ci::ProjectPipelinesResolver
 
     field :pipeline_schedules,
@@ -520,6 +521,7 @@ module Types
       description: 'Pipeline of the project. If no arguments are provided, returns the latest pipeline for the ' \
         'head commit on the default branch',
       extras: [:lookahead],
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::Ci::ProjectPipelineResolver
 
     field :pipeline_counts, Types::Ci::PipelineCountsType,
